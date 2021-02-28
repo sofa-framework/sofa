@@ -26,6 +26,7 @@
 
 #include <sofa/core/topology/BaseTopologyData.h>
 #include <SofaBaseTopology/TopologyDataEngine.h>
+#include <sofa/core/topology/TopologyEngine.h>
 #include <SofaBaseTopology/TopologyDataHandler.h>
 
 
@@ -115,10 +116,10 @@ public:
     void linkToTetrahedronDataArray();
     void linkToHexahedronDataArray();
 
-    sofa::component::topology::TopologyDataEngine<VecT>* getTopologicalEngine()
+   /* sofa::component::topology::TopologyDataEngine<VecT>* getTopologicalEngine()
     {
         return m_topologicalEngine.get();
-    }
+    }*/
 
     sofa::core::topology::BaseMeshTopology* getTopology()
     {
@@ -132,7 +133,7 @@ public:
 
 protected:
 
-    typename sofa::component::topology::TopologyDataEngine<VecT>::SPtr m_topologicalEngine;
+    typename sofa::component::topology::TopologyDataEngine<TopologyElementType,VecT>::SPtr m_topologicalEngine;
     sofa::core::topology::BaseMeshTopology* m_topology;
     sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* m_topologyHandler;
 

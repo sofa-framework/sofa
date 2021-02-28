@@ -29,11 +29,11 @@
 namespace sofa::component::topology
 {
 
-template <typename VecT>
-TopologyDataEngine< VecT>::TopologyDataEngine(t_topologicalData *_topologicalData,
+template <typename TopologyElementType, typename VecT>
+TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topologicalData *_topologicalData,
         sofa::core::topology::BaseMeshTopology *_topology,
         sofa::core::topology::TopologyHandler *_topoHandler) :
-    m_topologicalData(_topologicalData),
+    m_topologyData(_topologicalData),
     m_topology(nullptr),
     m_topoHandler(_topoHandler),
     m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false),
@@ -48,16 +48,16 @@ TopologyDataEngine< VecT>::TopologyDataEngine(t_topologicalData *_topologicalDat
         msg_error() << "Topology Handler not available";
 }
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::init()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::init()
 {
     // A pointData is by default child of positionSet Data
     //this->linkToPointDataArray();  // already done while creating engine
 
     // Name creation
     if (m_prefix.empty()) m_prefix = "TopologyEngine_";
-    m_data_name = this->m_topologicalData->getName();
-    this->addOutput(this->m_topologicalData);
+    m_data_name = this->m_topologyData->getName();
+    this->addOutput(this->m_topologyData);
 
     sofa::core::topology::TopologyEngine::init();
 
@@ -68,15 +68,15 @@ void TopologyDataEngine< VecT>::init()
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::reinit()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::reinit()
 {
     this->update();
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::doUpdate()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::doUpdate()
 {
     std::string msg = this->name.getValue() + " - doUpdate: Nbr changes: " + std::to_string(m_changeList.getValue().size());
     sofa::helper::AdvancedTimer::stepBegin(msg.c_str());
@@ -85,8 +85,8 @@ void TopologyDataEngine< VecT>::doUpdate()
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::registerTopology(sofa::core::topology::BaseMeshTopology *_topology)
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::registerTopology(sofa::core::topology::BaseMeshTopology *_topology)
 {
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
@@ -100,8 +100,8 @@ void TopologyDataEngine< VecT>::registerTopology(sofa::core::topology::BaseMeshT
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::registerTopology()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
 {
     if (m_topology == nullptr)
     {
@@ -113,8 +113,8 @@ void TopologyDataEngine< VecT>::registerTopology()
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::ApplyTopologyChanges()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChanges()
 {
     // Rentre ici la premiere fois aussi....
     if(m_topoHandler)
@@ -127,8 +127,8 @@ void TopologyDataEngine< VecT>::ApplyTopologyChanges()
 
 
 /// Function to link DataEngine with Data array from topology
-template <typename VecT>
-void TopologyDataEngine< VecT>::linkToPointDataArray()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::linkToPointDataArray()
 {
     if (m_pointsLinked) // avoid second registration
         return;
@@ -146,8 +146,8 @@ void TopologyDataEngine< VecT>::linkToPointDataArray()
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::linkToEdgeDataArray()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::linkToEdgeDataArray()
 {
     if (m_edgesLinked) // avoid second registration
         return;
@@ -165,8 +165,8 @@ void TopologyDataEngine< VecT>::linkToEdgeDataArray()
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::linkToTriangleDataArray()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::linkToTriangleDataArray()
 {
     if (m_trianglesLinked) // avoid second registration
         return;
@@ -184,8 +184,8 @@ void TopologyDataEngine< VecT>::linkToTriangleDataArray()
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::linkToQuadDataArray()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::linkToQuadDataArray()
 {
     if (m_quadsLinked) // avoid second registration
         return;
@@ -203,8 +203,8 @@ void TopologyDataEngine< VecT>::linkToQuadDataArray()
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::linkToTetrahedronDataArray()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::linkToTetrahedronDataArray()
 {
     if (m_tetrahedraLinked) // avoid second registration
         return;
@@ -222,8 +222,8 @@ void TopologyDataEngine< VecT>::linkToTetrahedronDataArray()
 }
 
 
-template <typename VecT>
-void TopologyDataEngine< VecT>::linkToHexahedronDataArray()
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::linkToHexahedronDataArray()
 {
     if (m_hexahedraLinked) // avoid second registration
         return;
@@ -239,5 +239,185 @@ void TopologyDataEngine< VecT>::linkToHexahedronDataArray()
     (_container->getHexahedronDataArray()).addOutput(this);
     m_hexahedraLinked = true;
 }
+
+
+/// Apply swap between indices elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const EIndicesSwap* event)
+{
+    this->swap(event->index[0], event->index[1]);
+}
+/// Apply adding elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const EAdded* event)
+{
+    //this->add(event->getNbAddedElements(), event->getElementArray(),
+    //    event->ancestorsList, event->coefs);
+    this->add(event->getIndexArray(), event->getElementArray(),
+        event->ancestorsList, event->coefs, event->ancestorElems);
+}
+
+/// Apply removing elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const ERemoved* event)
+{
+    this->remove(event->getArray());
+}
+
+/// Apply renumbering on elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const ERenumbering* event)
+{
+    this->renumber(event->getIndexArray());
+}
+
+/// Apply moving elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const EMoved* /*event*/)
+{
+    msg_warning("TopologyElementHandler") << "MOVED topology event not handled on " << ElementInfo::name()
+        << " (it should not even exist!)";
+}
+
+
+
+///////////////////// Private functions on TopologyDataEngine changes /////////////////////////////
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine <TopologyElementType, VecT>::swap(Index i1, Index i2)
+{
+    container_type& data = *(m_topologyData->beginEdit());
+    value_type tmp = data[i1];
+    data[i1] = data[i2];
+    data[i2] = tmp;
+    m_topologyData->endEdit();
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine <TopologyElementType, VecT>::add(const sofa::helper::vector<Index>& index,
+    const sofa::helper::vector< TopologyElementType >& elems,
+    const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
+    const sofa::helper::vector<sofa::helper::vector<double> >& coefs,
+    const sofa::helper::vector< AncestorElem >& ancestorElems)
+{
+    std::size_t nbElements = index.size();
+    if (nbElements == 0) return;
+    // Using default values
+    container_type& data = *(m_topologyData->beginEdit());
+    std::size_t i0 = data.size();
+    if (i0 != index[0])
+    {
+        msg_error(this->m_topologyData->getOwner()) << "TopologyDataEngine SIZE MISMATCH in Data "
+            << this->m_topologyData->getName() << ": " << nbElements << " "
+            << core::topology::TopologyElementInfo<TopologyElementType>::name()
+            << " ADDED starting from index " << index[0]
+            << " while vector size is " << i0;
+        i0 = index[0];
+    }
+    data.resize(i0 + nbElements);
+
+    const sofa::helper::vector< Index > empty_vecint;
+    const sofa::helper::vector< double > empty_vecdouble;
+
+    for (Index i = 0; i < nbElements; ++i)
+    {
+        value_type& t = data[i0 + i];
+        this->applyCreateFunction(Index(i0 + i), t, elems[i],
+            (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
+            (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
+            (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
+    }
+    m_topologyData->endEdit();
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine <TopologyElementType, VecT>::move(const sofa::helper::vector<Index>& indexList,
+    const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+    const sofa::helper::vector< sofa::helper::vector< double > >& coefs)
+{
+    container_type& data = *(m_topologyData->beginEdit());
+
+    for (std::size_t i = 0; i < indexList.size(); i++)
+    {
+        this->applyDestroyFunction(indexList[i], data[indexList[i]]);
+        this->applyCreateFunction(indexList[i], data[indexList[i]], ancestors[i], coefs[i]);
+    }
+
+    m_topologyData->endEdit();
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine <TopologyElementType, VecT>::remove(const sofa::helper::vector<Index>& index)
+{
+
+    container_type& data = *(m_topologyData->beginEdit());
+    if (data.size() > 0)
+    {
+        Index last = Index(data.size() - 1);
+
+        for (std::size_t i = 0; i < index.size(); ++i)
+        {
+            this->applyDestroyFunction(index[i], data[index[i]]);
+            this->swap(index[i], last);
+            --last;
+        }
+
+        data.resize(data.size() - index.size());
+    }
+    m_topologyData->endEdit();
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine <TopologyElementType, VecT>::renumber(const sofa::helper::vector<Index>& index)
+{
+    container_type& data = *(m_topologyData->beginEdit());
+
+    container_type copy = m_topologyData->getValue(); // not very efficient memory-wise, but I can see no better solution...
+    for (std::size_t i = 0; i < index.size(); ++i)
+        data[i] = copy[index[i]];
+
+    m_topologyData->endEdit();
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
+    const sofa::helper::vector<TopologyElementType>& elems)
+{
+    container_type& data = *(m_topologyData->beginEdit());
+
+    // Recompute data
+    sofa::helper::vector< Index > ancestors;
+    sofa::helper::vector< double >  coefs;
+    coefs.push_back(1.0);
+    ancestors.resize(1);
+
+    for (std::size_t i = 0; i < indexList.size(); i++)
+    {
+        ancestors[0] = indexList[i];
+        this->applyCreateFunction(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
+    }
+    m_topologyData->endEdit();
+}
+
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataEngine <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index>& indices)
+{
+    container_type& data = *(m_topologyData->beginEdit());
+
+    for (std::size_t i = 0; i < indices.size(); i++)
+        this->applyDestroyFunction(indices[i], data[indices[i]]);
+
+    m_topologyData->endEdit();
+
+    // TODO check why this call.
+    //this->remove( indices );
+}
+
 
 } //namespace sofa::component::topology

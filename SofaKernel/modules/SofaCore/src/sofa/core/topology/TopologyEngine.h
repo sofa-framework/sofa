@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/DataEngine.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/fwd.h>
 
 #ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
@@ -63,6 +64,107 @@ public:
     // really need to be a Data??
     Data <std::list<const TopologyChange *> >m_changeList;
 
+
+    virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize);
+
+    virtual void ApplyTopologyChange(const core::topology::EndingEvent* /*event*/) {}
+
+    ///////////////////////// Functions on Points //////////////////////////////////////
+    /// Apply swap between point indicPointes elements.
+    virtual void ApplyTopologyChange(const core::topology::PointsIndicesSwap* /*event*/) {}
+    /// Apply adding points elements.
+    virtual void ApplyTopologyChange(const core::topology::PointsAdded* /*event*/) {}
+    /// Apply removing points elements.
+    virtual void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/) {}
+    /// Apply renumbering on points elements.
+    virtual void ApplyTopologyChange(const core::topology::PointsRenumbering* /*event*/) {}
+    /// Apply moving points elements.
+    virtual void ApplyTopologyChange(const core::topology::PointsMoved* /*event*/) {}
+
+    ///////////////////////// Functions on Edges //////////////////////////////////////
+    /// Apply swap between edges indices elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesIndicesSwap* /*event*/) {}
+    /// Apply adding edges elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesAdded* /*event*/) {}
+    /// Apply removing edges elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesRemoved* /*event*/) {}
+    /// Apply removing function on moved edges elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved edges elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesMoved_Adding* /*event*/) {}
+    /// Apply renumbering on edges elements.
+    virtual void ApplyTopologyChange(const core::topology::EdgesRenumbering* /*event*/) {}
+
+    ///////////////////////// Functions on Triangles //////////////////////////////////////
+    /// Apply swap between triangles indices elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesIndicesSwap* /*event*/) {}
+    /// Apply adding triangles elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/) {}
+    /// Apply removing triangles elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesRemoved* /*event*/) {}
+    /// Apply removing function on moved triangles elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved triangles elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesMoved_Adding* /*event*/) {}
+    /// Apply renumbering on triangles elements.
+    virtual void ApplyTopologyChange(const core::topology::TrianglesRenumbering* /*event*/) {}
+
+    ///////////////////////// Functions on Quads //////////////////////////////////////
+    /// Apply swap between quads indices elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsIndicesSwap* /*event*/) {}
+    /// Apply adding quads elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsAdded* /*event*/) {}
+    /// Apply removing quads elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsRemoved* /*event*/) {}
+    /// Apply removing function on moved quads elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved quads elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsMoved_Adding* /*event*/) {}
+    /// Apply renumbering on quads elements.
+    virtual void ApplyTopologyChange(const core::topology::QuadsRenumbering* /*event*/) {}
+
+    ///////////////////////// Functions on Tetrahedron //////////////////////////////////////
+    /// Apply swap between tetrahedron indices elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraIndicesSwap* /*event*/) {}
+    /// Apply adding tetrahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/) {}
+    /// Apply removing tetrahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraRemoved* /*event*/) {}
+    /// Apply removing function on moved tetrahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved tetrahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraMoved_Adding* /*event*/) {}
+    /// Apply renumbering on tetrahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::TetrahedraRenumbering* /*event*/) {}
+
+    ///////////////////////// Functions on Hexahedron //////////////////////////////////////
+    /// Apply swap between hexahedron indices elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraIndicesSwap* /*event*/) {}
+    /// Apply adding hexahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraAdded* /*event*/) {}
+    /// Apply removing hexahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraRemoved* /*event*/) {}
+    /// Apply removing function on moved hexahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraMoved_Removing* /*event*/) {}
+    /// Apply adding function on moved hexahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraMoved_Adding* /*event*/) {}
+    /// Apply renumbering on hexahedron elements.
+    virtual void ApplyTopologyChange(const core::topology::HexahedraRenumbering* /*event*/) {}
+
+    // Needed to remove override warnings in TopologyElementHandler
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Point>::EMoved_Adding* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Point>::EMoved_Removing* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Edge>::EMoved* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Triangle>::EMoved* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Quad>::EMoved* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Tetrahedron>::EMoved* /*event*/) {}
+    virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Hexahedron>::EMoved* /*event*/) {}
+
+
+
+    virtual bool isTopologyDataRegistered() { return false; }
+
+
     size_t getNumberOfTopologicalChanges();
 
     virtual void createEngineName();
@@ -75,7 +177,14 @@ public:
 
     void setNamePrefix(const std::string& s) { m_prefix = s; }
 
+    virtual void registerTopology();
 protected:
+    /// to handle PointSubsetData
+    void setDataSetArraySize(const Index s) { lastElementIndex = s - 1; }
+
+    /// to handle properly the removal of items, the container must know the index of the last element
+    Index lastElementIndex;
+
     /// use to define engine name.
     std::string m_prefix;
     /// use to define data handled name.
