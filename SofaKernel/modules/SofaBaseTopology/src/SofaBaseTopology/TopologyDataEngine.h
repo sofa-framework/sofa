@@ -69,8 +69,7 @@ public:
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
     TopologyDataEngine(t_topologicalData* _topologicalData,
-            sofa::core::topology::BaseMeshTopology* _topology,
-            sofa::core::topology::TopologyHandler* _topoHandler);
+            sofa::core::topology::BaseMeshTopology* _topology);
 
 public:
 
@@ -186,7 +185,6 @@ protected:
 
     t_topologicalData* m_topologyData;
     sofa::core::topology::TopologyContainer* m_topology;
-    sofa::core::topology::TopologyHandler* m_topoHandler;
     value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
 
 

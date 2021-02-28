@@ -31,11 +31,9 @@ namespace sofa::component::topology
 
 template <typename TopologyElementType, typename VecT>
 TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topologicalData *_topologicalData,
-        sofa::core::topology::BaseMeshTopology *_topology,
-        sofa::core::topology::TopologyHandler *_topoHandler) :
+        sofa::core::topology::BaseMeshTopology *_topology) :
     m_topologyData(_topologicalData),
     m_topology(nullptr),
-    m_topoHandler(_topoHandler),
     m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false),
     m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
@@ -43,9 +41,6 @@ TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topological
 
     if (m_topology == nullptr)
         msg_error() << "Topology is not dynamic";
-
-    if (m_topoHandler == nullptr)
-        msg_error() << "Topology Handler not available";
 }
 
 template <typename TopologyElementType, typename VecT>
@@ -116,13 +111,7 @@ void TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
 template <typename TopologyElementType, typename VecT>
 void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChanges()
 {
-    // Rentre ici la premiere fois aussi....
-    if(m_topoHandler)
-    {
-        m_topoHandler->ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
-
-        m_changeList.endEdit();
-    }
+    sofa::core::topology::TopologyEngine::ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
 }
 
 
