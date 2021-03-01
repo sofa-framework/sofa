@@ -41,7 +41,7 @@ sofa_create_package_with_targets(
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFABASETOPOLOGY_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+cmake_dependent_option(SOFABASEVISUAL_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 if(SOFABASEVISUAL_BUILD_TESTS)
     enable_testing()
     add_subdirectory(${PROJECT_NAME}_test)
