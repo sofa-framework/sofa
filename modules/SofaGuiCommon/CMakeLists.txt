@@ -4,6 +4,7 @@ project(SofaGuiCommon)
 find_package(SofaBase REQUIRED)
 find_package(SofaUserInteraction REQUIRED)
 find_package(SofaGraphComponent REQUIRED)
+find_package(SofaSimulationCommon REQUIRED)
 sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
 if(Sofa.GL_FOUND)
     message("-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
@@ -43,7 +44,8 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction SofaSimulationCommon)
+
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
 endif()
@@ -60,7 +62,3 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     )
-
-# sofa_create_package_with_targets add automatically PROJECT_NAME as include_dir
-# but SofaGui's code is like sofa/gui... so we need to forcefully add src/SofaGuiCommon
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}>")

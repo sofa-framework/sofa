@@ -52,10 +52,10 @@ void RGBAColorDataWidget::readFromData()
 
 void RGBAColorDataWidget::writeToData()
 {
-    RGBAColor* color = getData()->virtualBeginEdit();
+    RGBAColor* color = getData()->beginEdit();
     (*color) = m_colorPicker->getColor() ;
 
-    getData()->virtualEndEdit();
+    getData()->endEdit();
 }
 
 } //namespace sofa::gui::qt::rgbacolordatawidget_h

@@ -24,7 +24,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
@@ -38,6 +37,7 @@ namespace sofa::component::projectiveconstraintset
 template <class DataTypes>
 PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     : d_fixedDirections( initData(&d_fixedDirections,"fixedDirections","for each direction, 1 if fixed, 0 if free") )
+    , d_projectVelocity(initData(&d_projectVelocity, false, "projectVelocity", "project velocity to ensure no drift of the fixed point"))
 {
     // default to indice 0
     this->d_indices.beginEdit()->push_back(0);
@@ -47,6 +47,13 @@ PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     for( unsigned i=0; i<NumDimensions; i++)
         blockedDirection[i] = true;
     d_fixedDirections.setValue(blockedDirection);
+
+    this->addUpdateCallback("updateIndices", { &this->d_indices}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        this->checkIndices();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 
@@ -113,6 +120,47 @@ void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalPa
     helper::WriteAccessor<DataVecDeriv> res = resData;
     projectResponseT(mparams, res.wref());
 }
+
+// projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
+// Each fixed point received a null velocity vector.
+// When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
+// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null or 
+// to set the projectVelocity option to True. If not, the fixed point is going to drift.
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
+{
+    SOFA_UNUSED(mparams);
+
+    if(!d_projectVelocity.getValue()) return;
+
+    const VecBool& blockedDirection = d_fixedDirections.getValue();
+    helper::WriteAccessor<DataVecDeriv> res = vData;
+
+    if ( this->d_fixAll.getValue() )
+    {
+        // fix everyting
+        for (Size i = 0; i < res.size(); i++)
+        {
+            for (unsigned int c = 0; c < NumDimensions; ++c)
+            {
+                if (blockedDirection[c]) res[i][c] = 0;
+            }
+        }
+    }
+    else
+    {
+        const SetIndexArray & indices = this->d_indices.getValue();
+        for(Index ind : indices)
+        {
+            for (unsigned int c = 0; c < NumDimensions; ++c)
+            {
+                if (blockedDirection[c])
+                    res[ind][c] = 0;
+            }
+        }
+    }
+}
+
 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)

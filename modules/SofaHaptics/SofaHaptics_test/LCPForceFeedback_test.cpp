@@ -22,13 +22,13 @@
 
 #include <sofa/helper/testing/BaseTest.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
-
+#include <sofa/simulation/Node.h>
 #include <SofaBase/initSofaBase.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <thread>
-
+#include <sofa/simulation/Node.h>
 
 namespace sofa 
 {

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "SofaWindowProfiler.h"
 
+#include <stack>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>

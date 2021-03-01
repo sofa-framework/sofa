@@ -1,7 +1,15 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <VisualStyle displayFlags="showBehavior showVisual" />
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+
+    <!-- Using the VisualStyle choose your visual options! -->
+    <!-- ACTIVATE: showVisual showBehavior showForceFields showInteractionForceFields showCollision showCollisionModels showWireFrame -->
+    <!-- DE-ACTIVATE: hideVisual hideBehavior hideForceFields hideInteractionForceFields hideCollision hideCollisionModels hideWireFrame -->
+    <VisualStyle displayFlags="showVisual showCollisionModels" />
     
     <Node name="Liver" >
         <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />

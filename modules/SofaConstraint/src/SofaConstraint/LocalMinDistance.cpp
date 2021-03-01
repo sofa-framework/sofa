@@ -23,10 +23,9 @@
 #include <SofaConstraint/LocalMinDistance.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/proximity.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/simulation/Node.h>
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 #define EMIT_EXTRA_DEBUG_MESSAGE false
 
@@ -128,7 +127,7 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
     b[0] = AB*AC;
     b[1] = -CD*AC;
 
-    const double det = determinant(A);
+    const double det = defaulttype::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -190,7 +189,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     A[0][1] = A[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const double det = determinant(A);
+    const double det = defaulttype::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -303,7 +302,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
-    const double det = determinant(A);
+    const double det = defaulttype::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -360,7 +359,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 
 
 
-    const double det = determinant(A);
+    const double det = defaulttype::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -459,7 +458,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
-    const double det = determinant(A);
+    const double det = defaulttype::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -520,7 +519,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
 
 
 
-    const double det = determinant(A);
+    const double det = defaulttype::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;

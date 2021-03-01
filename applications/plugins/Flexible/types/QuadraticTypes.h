@@ -30,6 +30,7 @@
 #include <sofa/helper/decompose.h>
 
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 
 #include "DeformableFrameMass.h"
 
@@ -244,10 +245,10 @@ public:
     {
         Affine m;
 #ifdef DEBUG
-        bool invertible = invertMatrix(m,c.getAffine());
+        bool invertible = defaulttype::invertMatrix(m,c.getAffine());
         assert(invertible);
 #else
-        invertMatrix(m,c.getAffine());
+        defaulttype::invertMatrix(m,c.getAffine());
 #endif
         return Coord( -(m*c.getCenter()),m );
     }
@@ -379,7 +380,7 @@ public:
                     // the projection matrix is however non symmetric..
 
                     // Compute velocity tensor W = Adot.Ainv
-                    Affine Ainv;  invertMatrix(Ainv,c.getAffine());
+                    Affine Ainv;  defaulttype::invertMatrix(Ainv,c.getAffine());
                     Affine W = getAffine() * Ainv;
 
                     // make it skew-symmetric

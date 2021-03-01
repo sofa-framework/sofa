@@ -32,9 +32,6 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
-
 
 
 #include <sofa/helper/Factory.h>

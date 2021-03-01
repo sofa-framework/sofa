@@ -1,6 +1,12 @@
 <!-- SphereGrid examples -->
 <Node name="root" dt="0.02" gravity="0 -10 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaDeformable'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralTopology'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/> 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <Node name="SphereFEMTetra">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

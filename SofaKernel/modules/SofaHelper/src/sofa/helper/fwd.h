@@ -23,6 +23,11 @@
 
 #include <sofa/helper/config.h>
 
+namespace sofa::helper
+{
+    class StateMask;
+}
+
 namespace sofa::helper::visual
 {
     class DrawTool;

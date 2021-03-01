@@ -5,12 +5,14 @@ set(SOFAMESHCOLLISION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAMESHCOLLISION_SRC}/config.h.in
+    ${SOFAMESHCOLLISION_SRC}/fwd.h
     ${SOFAMESHCOLLISION_SRC}/initSofaMeshCollision.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.inl
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.inl
     ${SOFAMESHCOLLISION_SRC}/CollisionPM.h
+    ${SOFAMESHCOLLISION_SRC}/EmptyFilter.h
     ${SOFAMESHCOLLISION_SRC}/EndPoint.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.inl

@@ -24,7 +24,6 @@
 #include <SofaBoundaryCondition/LinearMovementConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <iostream>

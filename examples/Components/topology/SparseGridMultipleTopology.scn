@@ -1,5 +1,11 @@
 <Node name="root" gravity="0 0 0" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaNonUniformFem'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/>
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />

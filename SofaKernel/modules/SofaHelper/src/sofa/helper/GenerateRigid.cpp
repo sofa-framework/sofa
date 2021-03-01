@@ -259,7 +259,7 @@ void generateRigid( GenerateRigidInfo& res
         Decompose<SReal>::eigenDecomposition_iterative( res.inertia, U, res.inertia_diagonal );
 
         // det should be 1->rotation or -1->reflexion
-        if( determinant( U ) < 0 ) // reflexion
+        if( defaulttype::determinant( U ) < 0 ) // reflexion
         {
             // made it a rotation by negating a column
             U[0][0] = -U[0][0];

@@ -23,6 +23,7 @@ endif()
 set(HEADER_FILES
     include/gtest/gtest.h
     include/gtest/gtest-death-test.h
+    include/gtest/gtest-matchers.h
     include/gtest/gtest-message.h
     include/gtest/gtest-param-test.h
     include/gtest/gtest_pred_impl.h
@@ -77,7 +78,9 @@ target_include_directories(gtest
     PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" # for src/gtest.cc -> src/gtest-internal-inl.h
     )
 
-include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
+target_compile_features(gtest PUBLIC cxx_std_17)
+
+include(SofaMacros)
 sofa_create_package_with_targets(
     PACKAGE_NAME GTest
     PACKAGE_VERSION ${PROJECT_VERSION}

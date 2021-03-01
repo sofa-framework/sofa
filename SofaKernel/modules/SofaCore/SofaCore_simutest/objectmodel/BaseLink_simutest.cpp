@@ -31,6 +31,7 @@ using sofa::simulation::Node ;
 using sofa::core::objectmodel::BaseObject;
 
 #include <sofa/core/PathResolver.h>
+using sofa::core::PathResolver;
 
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Vec3Types;
@@ -79,10 +80,10 @@ TEST_P(MultiLink_simutest, checkPaths)
 {
     ASSERT_NE(node,nullptr);
     auto& t = GetParam();
-    if(t[2]=="true")
-        ASSERT_TRUE(node->object.CheckPaths(t[0], node)) << t[1] << " " << t[2];
+    if(t[2]=="true") 
+        ASSERT_TRUE(PathResolver::CheckPaths(node, node->object.getDestClass(), t[0])) << t[1] << " " << t[2];
     else
-        ASSERT_FALSE(node->object.CheckPaths(t[0], node)) << t[1] << " " << t[2];
+        ASSERT_FALSE(PathResolver::CheckPaths(node, node->object.getDestClass(), t[0])) << t[1] << " " << t[2];
 }
 
 std::vector<std::vector<std::string>> multiLinkValues={
@@ -103,9 +104,9 @@ TEST_P(SingleLink_simutest, CheckPath)
     ASSERT_NE(node,nullptr);
     auto& t = GetParam();
     if(t[2]=="true")
-        ASSERT_TRUE(node->mechanicalState.CheckPath(t[0], node)) << t[1] << " " << t[2];
+        ASSERT_TRUE(PathResolver::CheckPath(node, node->mechanicalState.getDestClass(), t[0])) << t[1] << " " << t[2];
     else
-        ASSERT_FALSE(node->mechanicalState.CheckPath(t[0], node)) << t[1] << " " << t[2];
+        ASSERT_FALSE(PathResolver::CheckPath(node, node->mechanicalState.getDestClass(), t[0])) << t[1] << " " << t[2];
 }
 
 std::vector<std::vector<std::string>> singleLinkValues={

@@ -23,6 +23,8 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/testing/NumericTest.h>
+#include <sofa/helper/logging/Messaging.h>
+
 using namespace sofa::helper::testing ;
 
 
@@ -115,7 +117,7 @@ TEST(MatTypesTest, invert)
     Matrix2 Mtest(Matrix2::Line(0.6,-0.7),
                   Matrix2::Line(-0.2,0.4));
 
-    invertMatrix(Minv, M);
+    defaulttype::invertMatrix(Minv, M);
     EXPECT_EQ(Minv, Mtest);
 
     EXPECT_EQ(M.inverted(), Mtest);

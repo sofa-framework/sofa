@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {

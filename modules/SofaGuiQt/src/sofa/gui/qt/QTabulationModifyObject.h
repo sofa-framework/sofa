@@ -20,9 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/gui/qt/config.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 #include <QWidget>
 #include <QTextEdit>

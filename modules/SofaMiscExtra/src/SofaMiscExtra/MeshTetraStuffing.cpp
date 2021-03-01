@@ -22,7 +22,6 @@
 #include <SofaMiscExtra/MeshTetraStuffing.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/Simulation.h>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 

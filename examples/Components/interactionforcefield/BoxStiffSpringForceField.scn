@@ -2,6 +2,12 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields showInteractionForceFields" />
     <RequiredPlugin name='SofaMiscCollision' />
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>
+    <RequiredPlugin pluginName='SofaGeneralObjectInteraction'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/>
 
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
