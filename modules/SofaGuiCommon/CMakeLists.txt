@@ -6,7 +6,7 @@ find_package(SofaUserInteraction REQUIRED)
 find_package(SofaGraphComponent REQUIRED)
 find_package(SofaSimulationCommon REQUIRED)
 sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
-sofa_find_package(Boost REQUIRED COMPONENTS program_options BOTH_SCOPES)
+sofa_find_package(Boost REQUIRED COMPONENTS program_options)
 
 if(Sofa.GL_FOUND)
     message("-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
