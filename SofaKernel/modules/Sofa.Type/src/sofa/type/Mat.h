@@ -28,6 +28,7 @@
 #include <sofa/type/Vec.h>
 
 #include <iostream>
+#include <stdexcept>
 
 namespace // anonymous
 {
@@ -630,21 +631,46 @@ public:
     {
         static_assert(L == C, "Cannot invert a non-square matrix");
         Mat<L,C,real> m = *this;
-        invertMatrix(m, *this);
+
+        try
+        {
+            invertMatrix(m, *this);
+        }
+        catch (std::logic_error e)
+        {
+            throw e;
+        }
+
         return m;
     }
 
     /// Invert square matrix m
-    bool invert(const Mat<L,C,real>& m)
+    void invert(const Mat<L,C,real>& m)
     {
         static_assert(L == C, "Cannot invert a non-square matrix");
         if (&m == this)
         {
             Mat<L,C,real> mat = m;
-            bool res = invertMatrix(*this, mat);
-            return res;
+            try
+            {
+                invertMatrix(*this, mat);
+            }
+            catch (std::logic_error e)
+            {
+                throw e;
+            }
         }
-        return invertMatrix(*this, m);
+        else
+        {
+            try
+            {
+                invertMatrix(*this, m);
+            }
+            catch (std::logic_error e)
+            {
+                throw e;
+            }
+        }
     }
 
     static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t)
@@ -709,9 +735,16 @@ public:
     }
 
     /// Invert transformation matrix m
-    bool transformInvert(const Mat<L,C,real>& m)
+    void transformInvert(const Mat<L,C,real>& m)
     {
-        return transformInvertMatrix(*this, m);
+        try
+        {
+            transformInvertMatrix(*this, m);
+        }
+        catch (std::logic_error e)
+        {
+            throw e;
+        }
     }
 
     /// for square matrices
@@ -841,7 +874,7 @@ inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
 
 /// Matrix inversion (general case).
 template<sofa::Size S, class real>
-[[nodiscard]] bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
+void invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     sofa::Size i, j, k;
     Vec<S, sofa::Size> r, c, row, col;
@@ -874,7 +907,7 @@ template<sofa::Size S, class real>
 
         if (pivot <= (real) MIN_DETERMINANT)
         {
-            return false;
+            throw std::logic_error("This matrix is non-invertible (determinant = " + std::to_string(pivot) + ")");
         }
 
         row[r[k]] = col[c[k]] = 1;
@@ -904,18 +937,17 @@ template<sofa::Size S, class real>
     for ( i = 0; i < S; i++ )
         dest[i] = m2[row[i]];
 
-    return true;
 }
 
 /// Matrix inversion (special case 3x3).
 template<class real>
-[[nodiscard]] bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
+void invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
     real det=determinant(from);
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        return false;
+        throw std::logic_error("This matrix is non-invertible (determinant = " + std::to_string(det) + ")");
     }
 
     dest(0,0)= (from(1,1)*from(2,2) - from(2,1)*from(1,2))/det;
@@ -927,37 +959,40 @@ template<class real>
     dest(0,2)= (from(0,1)*from(1,2) - from(1,1)*from(0,2))/det;
     dest(1,2)= (from(0,2)*from(1,0) - from(1,2)*from(0,0))/det;
     dest(2,2)= (from(0,0)*from(1,1) - from(1,0)*from(0,1))/det;
-
-    return true;
 }
 
 /// Matrix inversion (special case 2x2).
 template<class real>
-bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
+void invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 {
     real det=determinant(from);
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        return false;
+        throw std::logic_error("This matrix is non-invertible (determinant = " + std::to_string(det) + ")");
     }
 
     dest(0,0)=  from(1,1)/det;
     dest(0,1)= -from(0,1)/det;
     dest(1,0)= -from(1,0)/det;
     dest(1,1)=  from(0,0)/det;
-
-    return true;
 }
 #undef MIN_DETERMINANT
 
 /// Inverse Matrix considering the matrix as a transformation.
 template<sofa::Size S, class real>
-bool transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
+void transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     Mat<S-1,S-1,real> R, R_inv;
     from.getsub(0,0,R);
-    bool b = invertMatrix(R_inv, R);
+    try
+    {
+        invertMatrix(R_inv, R);
+    }
+    catch (std::logic_error e)
+    {
+        throw e;
+    }
 
     Mat<S-1,1,real> t, t_inv;
     from.getsub(0,S-1,t);
@@ -969,7 +1004,6 @@ bool transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
         dest(S-1,i)=0.0;
     dest(S-1,S-1)=1.0;
 
-    return b;
 }
 
 template <sofa::Size L, sofa::Size C, typename real>

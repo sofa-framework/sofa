@@ -115,40 +115,61 @@ inline Vec<N, real> diagonal(const Mat<N, N, real>& m)
 template<sofa::Size S, class real>
 bool invertMatrix(Mat<S, S, real>& dest, const Mat<S, S, real>& from)
 {
-    auto res = type::invertMatrix(dest, from);
-    if(!res)
+    try
     {
-        msg_error("Mat") << "invertMatrix (general case) finds too small determinant for matrix = " << from;
+        type::invertMatrix(dest, from);
     }
-    return res;
+    catch(std::logic_error e)
+    {
+        msg_error("Mat") << e.what() << "(matrix was " << from << ")";
+        return false;
+    }
+    return true;
 }
 
 template<class real>
 bool invertMatrix(Mat<3, 3, real>& dest, const Mat<3, 3, real>& from)
 {
-    auto res = type::invertMatrix(dest, from);
-    if (!res)
+    try
     {
-        msg_error("Mat") << "invertMatrix (special case 3x3) finds too small determinant for matrix = " << from;
+        type::invertMatrix(dest, from);
     }
-    return res;
+    catch (std::logic_error e)
+    {
+        msg_error("Mat") << e.what() << "(3x3 matrix was " << from << ")";
+        return false;
+    }
+    return true;
 }
 
 template<class real>
 bool invertMatrix(Mat<2, 2, real>& dest, const Mat<2, 2, real>& from)
 {
-    auto res = type::invertMatrix(dest, from);
-    if (!res)
+    try
     {
-        msg_error("Mat") << "invertMatrix (general case) finds too small determinant for matrix = " << from;
+        type::invertMatrix(dest, from);
     }
-    return res;
+    catch (std::logic_error e)
+    {
+        msg_error("Mat") << e.what() << "(2x2 matrix was " << from << ")";
+        return false;
+    }
+    return true;
 }
 
 template<sofa::Size S, class real>
 bool transformInvertMatrix(Mat<S, S, real>& dest, const Mat<S, S, real>& from)
 {
-    return type::transformInvertMatrix(dest, from);
+    try
+    {
+        type::transformInvertMatrix(dest, from);
+    }
+    catch (std::logic_error e)
+    {
+        msg_error("Mat") << e.what() << "(matrix was " << from << ")";
+        return false;
+    }
+    return true;
 }
 
 template <sofa::Size L, sofa::Size C, typename real>
