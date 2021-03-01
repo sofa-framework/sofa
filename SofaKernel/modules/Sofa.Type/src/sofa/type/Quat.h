@@ -218,10 +218,10 @@ public:
 };
 
 /// write to an output stream
-template<class Real> std::ostream& operator << ( std::ostream& out, const Quat<Real>& v );
+template<class Real> SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const Quat<Real>& v );
 
 /// read from an input stream
-template<class Real> std::istream& operator >> ( std::istream& in, Quat<Real>& v );
+template<class Real> SOFA_TYPE_API std::istream& operator >> ( std::istream& in, Quat<Real>& v );
 
 #if !defined(SOFA_TYPE_QUAT_CPP)
 extern template class SOFA_TYPE_API Quat<double>;

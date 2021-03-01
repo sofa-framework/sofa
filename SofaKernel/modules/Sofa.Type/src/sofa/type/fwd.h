@@ -96,4 +96,8 @@ typedef Mat<4,4,SReal> Mat4x4;
 typedef Mat<2,2,SReal> Matrix2;
 typedef Mat<3,3,SReal> Matrix3;
 typedef Mat<4,4,SReal> Matrix4;
+
+template <typename RealType> class Quat;
+using Quatd = type::Quat<double>;
+using Quatf = type::Quat<float>;
 }
