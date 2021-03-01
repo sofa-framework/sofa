@@ -22,12 +22,10 @@
 #pragma once
 
 #include <sofa/type/config.h>
+#include <sofa/type/fwd.h>
 
-#include <sofa/type/Vec.h>
-#include <sofa/type/Mat.h>
-#include <cmath>
+#include <iosfwd>
 #include <cassert>
-#include <iostream>
 
 namespace sofa::type
 {
@@ -38,30 +36,35 @@ class SOFA_TYPE_API Quat
 private:
     Real _q[4];
 
-public:
+    typedef type::Vec<3, Real> Vec3;
+    typedef type::Mat<3,3, Real> Mat3x3;
+    typedef type::Mat<4,4, Real> Mat4x4;
 
+public:
     typedef Real value_type;
     typedef sofa::Size Size;
 
     Quat();
     ~Quat();
     Quat(Real x, Real y, Real z, Real w);
+
     template<class Real2>
     Quat(const Real2 q[]) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
+
     template<class Real2>
     Quat(const Quat<Real2>& q) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
-    Quat( const type::Vec<3,Real>& axis, Real angle );
+
+    Quat( const Vec3& axis, Real angle );
 
     /** Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo.        
         vFrom and vTo are assumed to be normalized.
     */
-    Quat(const type::Vec<3, Real>& vFrom, const type::Vec<3, Real>& vTo);
+    Quat(const Vec3& vFrom, const Vec3& vTo);
 
     static Quat identity()
     {
         return Quat(0,0,0,1);
     }
-
 
     void set(Real x, Real y, Real z, Real w)
     {
@@ -70,7 +73,6 @@ public:
         _q[2] = z;
         _q[3] = w;
     }
-
 
     /// Cast into a standard C array of elements.
     const Real* ptr() const
@@ -92,74 +94,36 @@ public:
 
     void clear()
     {
-        _q[0]=0.0;
-        _q[1]=0.0;
-        _q[2]=0.0;
-        _q[3]=1.0;
+        set(0.0,0.0,0.0,1);
     }
 
-    void fromFrame(type::Vec<3,Real>& x, type::Vec<3,Real>&y, type::Vec<3,Real>&z);
+    void fromFrame(Vec3& x, Vec3&y, Vec3&z);
+    void fromMatrix(const Mat3x3 &m);
 
-
-    void fromMatrix(const type::Matrix3 &m);
-
-    template<class Mat33>
-    void toMatrix(Mat33 &m) const
-    {
-        m[0][0] = typename Mat33::Real (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
-        m[0][1] = typename Mat33::Real (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
-        m[0][2] = typename Mat33::Real (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
-
-        m[1][0] = typename Mat33::Real (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
-        m[1][1] = typename Mat33::Real (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
-        m[1][2] = typename Mat33::Real (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
-
-        m[2][0] = typename Mat33::Real (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
-        m[2][1] = typename Mat33::Real (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
-        m[2][2] = typename Mat33::Real (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
-    }
+    void toMatrix(Mat3x3 &m) const;
+    void toMatrix(Mat4x4 &m) const;
 
     /// Apply the rotation to a given vector
-    template<class Vec>
-    Vec rotate( const Vec& v ) const
-    {
-        return Vec(
-                typename Vec::value_type((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]))*v[0] + (2.0f * (_q[0] * _q[1] - _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] + _q[1] * _q[3])) * v[2]),
-                typename Vec::value_type((2.0f * (_q[0] * _q[1] + _q[2] * _q[3]))*v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]))*v[1] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]))*v[2]),
-                typename Vec::value_type((2.0f * (_q[2] * _q[0] - _q[1] * _q[3]))*v[0] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]))*v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]))*v[2])
-                );
-
-    }
+    auto rotate( const Vec3& v ) const -> Vec3;
 
     /// Apply the inverse rotation to a given vector
-    template<class Vec>
-    Vec inverseRotate( const Vec& v ) const
-    {
-        return Vec(
-                typename Vec::value_type((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]))*v[0] + (2.0f * (_q[0] * _q[1] + _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] - _q[1] * _q[3])) * v[2]),
-                typename Vec::value_type((2.0f * (_q[0] * _q[1] - _q[2] * _q[3]))*v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]))*v[1] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]))*v[2]),
-                typename Vec::value_type((2.0f * (_q[2] * _q[0] + _q[1] * _q[3]))*v[0] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]))*v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]))*v[2])
-                );
-
-    }
+    auto inverseRotate( const Vec3& v ) const -> Vec3;
 
     /// Given two quaternions, add them together to get a third quaternion.
     /// Adding quaternions to get a compound rotation is analagous to adding
     /// translations to get a compound translation.
-    Quat<Real> operator+(const Quat<Real> &q1) const;
+    auto operator+(const Quat &q1) const -> Quat;
+    auto operator*(const Quat &q1) const -> Quat;
 
-    Quat<Real> operator*(const Quat<Real> &q1) const;
-
-    Quat<Real> operator*(const Real &r) const;
-    Quat<Real> operator/(const Real &r) const;
+    auto operator*(const Real &r) const -> Quat;
+    auto operator/(const Real &r) const -> Quat;
     void operator*=(const Real &r);
     void operator/=(const Real &r);
 
     /// Given two Quats, multiply them together to get a third quaternion.
 
-    Quat quatVectMult(const type::Vec<3,Real>& vect);
-
-    Quat vectQuatMult(const type::Vec<3,Real>& vect);
+    auto quatVectMult(const Vec3& vect) -> Quat;
+    auto vectQuatMult(const Vec3& vect) -> Quat;
 
     Real& operator[](Size index)
     {
@@ -173,53 +137,34 @@ public:
         return _q[index];
     }
 
-    Quat inverse() const;
+    auto inverse() const -> Quat;
 
-
-    type::Vec<3,Real> quatToRotationVector() const;
-
-    type::Vec<3,Real> toEulerVector() const;
-
+    auto quatToRotationVector() const -> Vec3;
+    auto toEulerVector() const -> Vec3;
 
     /*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.
-
      \p t should range in [0,1]. Result is \p a when \p t=0 and \p b when \p t=1.
-
      When \p allowFlip is \c true (default) the slerp interpolation will always use the "shortest path"
      between the Quaternions' orientations, by "flipping" the source Quaternion if needed (see
      negate()). */
     void slerp(const Quat& a, const Quat& b, Real t, bool allowFlip=true);
 
-    // A useful function, builds a rotation matrix in Matrix based on
-    // given quaternion.
-
+    /// A useful function, builds a rotation matrix in Matrix based on
+    /// given quaternion.
     void buildRotationMatrix(Real m[4][4]) const;
     void writeOpenGlMatrix( double* m ) const;
     void writeOpenGlMatrix( float* m ) const;
 
-    // This function computes a quaternion based on an axis (defined by
-    // the given vector) and an angle about which to rotate.  The angle is
-    // expressed in radians.
-    Quat axisToQuat(type::Vec<3,Real> a, Real phi);
-    void quatToAxis(type::Vec<3,Real> & a, Real &phi) const;
+    /// This function computes a quaternion based on an axis (defined by
+    /// the given vector) and an angle about which to rotate.  The angle is
+    /// expressed in radians.
+    auto axisToQuat(Vec3 a, Real phi) -> Quat;
+    void quatToAxis(Vec3 & a, Real &phi) const;
 
-
-    static Quat createQuaterFromFrame(const type::Vec<3, Real> &lox, const type::Vec<3, Real> &loy,const type::Vec<3, Real> &loz);
+    static auto createQuaterFromFrame(const Vec3 &lox, const Vec3 &loy,const Vec3 &loz) -> Quat;
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
-    template<class V>
-    static Quat createFromRotationVector(const V& a)
-    {
-        Real phi = Real(sqrt(a*a));
-        if( phi < 1.0e-5 )
-            return Quat(0,0,0,1);
-        else
-        {
-            Real nor = 1/phi;
-            Real s = Real(sin(phi/2));
-            return Quat( a[0]*s*nor, a[1]*s*nor,a[2]*s*nor, Real(cos(phi/2)));
-        }
-    }
+    static auto createFromRotationVector(const Vec3& a) -> Quat;
 
     /// Create a quaternion from Euler angles
     /// Thanks to https://github.com/mrdoob/three.js/blob/dev/src/math/Quaternion.js#L199
@@ -228,154 +173,40 @@ public:
         XYZ, YXZ, ZXY, ZYX, YZX, XZY
     };
 
-    static Quat createQuaterFromEuler( type::Vec<3,Real> v, EulerOrder order = EulerOrder::ZYX)
-    {
-        Real quat[4];
-
-        Real c1 = cos( v.elems[0] / 2 );
-        Real c2 = cos( v.elems[1] / 2 );
-        Real c3 = cos( v.elems[2] / 2 );
-
-        Real s1 = sin( v.elems[0] / 2 );
-        Real s2 = sin( v.elems[1] / 2 );
-        Real s3 = sin( v.elems[2] / 2 );
-
-        switch(order)
-        {
-        case EulerOrder::XYZ:
-            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
-            break;
-        case EulerOrder::YXZ:
-            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
-            break;
-        case EulerOrder::ZXY:
-            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
-            break;
-        case EulerOrder::YZX:
-            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
-            break;
-        case EulerOrder::XZY:
-            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
-            break;
-        default:
-        case EulerOrder::ZYX:
-            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
-            break;
-        }
-
-        Quat quatResult{ quat[0], quat[1], quat[2], quat[3] };
-        return quatResult;
-    }
-
+    static auto createQuaterFromEuler( Vec3 v, EulerOrder order = EulerOrder::ZYX) -> Quat;
 
     /// Create a quaternion from Euler angles
-    static Quat fromEuler( Real alpha, Real beta, Real gamma, EulerOrder order = EulerOrder::ZYX ){
-        return createQuaterFromEuler( {alpha, beta, gamma }, order );
-    }
+    static auto fromEuler( Real alpha, Real beta, Real gamma, EulerOrder order = EulerOrder::ZYX ) -> Quat;
 
     /// Create using the entries of a rotation vector (axis*angle) given in parent coordinates
-    template<class T>
-    static Quat createFromRotationVector(T a0, T a1, T a2 )
-    {
-        Real phi = Real(sqrt(a0*a0+a1*a1+a2*a2));
-        if( phi < 1.0e-5 )
-            return Quat(0,0,0,1);
-        else
-        {
-            Real nor = 1/phi;
-            Real s = sin(phi/2.0);
-            return Quat( a0*s*nor, a1*s*nor,a2*s*nor, cos(phi/2.0) );
-        }
-    }
+    static auto createFromRotationVector(Real a0, Real a1, Real a2 ) -> Quat;
+
     /// Create using rotation vector (axis*angle) given in parent coordinates
-    template<class V>
-    static Quat set(const V& a) { return createFromRotationVector(a); }
+    static auto set(const Vec3& a) { return createFromRotationVector(a); }
 
     /// Create using using the entries of a rotation vector (axis*angle) given in parent coordinates
-    template<class T>
-    static Quat set(T a0, T a1, T a2) { return createFromRotationVector(a0,a1,a2); }
+    static auto set(Real a0, Real a1, Real a2) { return createFromRotationVector(a0,a1,a2); }
 
     /// Return the quaternion resulting of the movement between 2 quaternions
-    Quat quatDiff( Quat a, const Quat& b)
-    {
-        // If the axes are not oriented in the same direction, flip the axis and angle of a to get the same convention than b
-        if (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]<0)
-        {
-            a[0] = -a[0];
-            a[1] = -a[1];
-            a[2] = -a[2];
-            a[3] = -a[3];
-        }
-
-        Quat q = b.inverse() * a;
-        return q;
-    }
+    auto quatDiff( Quat a, const Quat& b) -> Quat;
 
     /// Return the eulerian vector resulting of the movement between 2 quaternions
-    type::Vec<3,Real> angularDisplacement( Quat a, const Quat& b)
-    {
-        return quatDiff(a,b).quatToRotationVector();    // Use of quatToRotationVector instead of toEulerVector:
-                                                        // this is done to keep the old behavior (before the
-                                                        // correction of the toEulerVector function).
-    }
+    auto angularDisplacement( Quat a, const Quat& b) -> Vec3;
 
     /// Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo. vFrom and vTo are assumed to be normalized.
-    void setFromUnitVectors(const type::Vec<3, Real>& vFrom, const type::Vec<3, Real>& vTo);
-
+    void setFromUnitVectors(const Vec3& vFrom, const Vec3& vTo);
 
     // Print the quaternion (C style)
+    [[deprecated("The function print will be removed soon")]]
     void print();
-    Quat<Real> slerp(Quat<Real> &q1, Real t);
-    Quat<Real> slerp2(Quat<Real> &q1, Real t);
+
+    auto slerp(Quat &q1, Real t) -> Quat;
+    auto slerp2(Quat &q1, Real t) -> Quat;
 
     void operator+=(const Quat& q2);
     void operator*=(const Quat& q2);
-
-    bool operator==(const Quat& q) const
-    {
-        for (int i=0; i<4; i++)
-            if ( std::abs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return false;
-        return true;
-    }
-
-    bool operator!=(const Quat& q) const
-    {
-        for (int i=0; i<4; i++)
-            if ( std::abs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return true;
-        return false;
-    }
-
-    /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const Quat& v )
-    {
-        out<<v._q[0]<<" "<<v._q[1]<<" "<<v._q[2]<<" "<<v._q[3];
-        return out;
-    }
-
-    /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, Quat& v )
-    {
-        in>>v._q[0]>>v._q[1]>>v._q[2]>>v._q[3];
-        return in;
-    }
+    bool operator==(const Quat& q) const;
+    bool operator!=(const Quat& q) const;
 
     enum { static_size = 4 };
     static unsigned int size() {return 4;}
@@ -386,9 +217,11 @@ public:
     enum { spatial_dimensions = 3 };
 };
 
-using Quatd = type::Quat<double>;
-using Quatf = type::Quat<float>;
-using Quaternion = type::Quat<SReal>;
+/// write to an output stream
+template<class Real> std::ostream& operator << ( std::ostream& out, const Quat<Real>& v );
+
+/// read from an input stream
+template<class Real> std::istream& operator >> ( std::istream& in, Quat<Real>& v );
 
 #if !defined(SOFA_TYPE_QUAT_CPP)
 extern template class SOFA_TYPE_API Quat<double>;
