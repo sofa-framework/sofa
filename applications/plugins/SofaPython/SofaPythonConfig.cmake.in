@@ -5,9 +5,10 @@
 
 set(SOFAPYTHON_HAVE_SOFATEST @SOFAPYTHON_HAVE_SOFATEST@)
 
-find_package(PythonLibs 2.7 REQUIRED)
-find_package(SofaGui REQUIRED)
-find_package(SofaMiscMapping REQUIRED)
+find_package(PythonLibs 2.7 QUIET REQUIRED)
+find_package(SofaGui QUIET REQUIRED)
+find_package(SofaMiscMapping QUIET REQUIRED)
+find_package(SofaUserInteraction QUIET REQUIRED)
 find_package(Eigen3 QUIET REQUIRED)
 
 if(SOFAPYTHON_HAVE_SOFATEST)
