@@ -22,7 +22,6 @@
 #define SOFA_HELPER_VECTOR_CPP
 #include <sofa/helper/vector.h>
 #include <sofa/helper/vector_device.h>
-#include <sofa/helper/integer_id.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <cassert>
