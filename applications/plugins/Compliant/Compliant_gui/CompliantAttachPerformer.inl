@@ -294,7 +294,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     interactionNode->addObject(compliance);
     compliance->rayleighStiffness.setValue(_compliance!=0?0.1:0);
 
-    interactionNode->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
+    interactionNode->execute<simulation::InitVisitor>(sofa::core::execparams::defaultInstance());
 
 }
 
@@ -324,8 +324,8 @@ void CompliantAttachPerformer<DataTypes>::execute()
 
 
 
-//    mouseMapping->apply(core::MechanicalParams::defaultInstance());
-//    mouseMapping->applyJ(core::MechanicalParams::defaultInstance());
+//    mouseMapping->apply(core::GetDefaultMechanicalParamsInstance());
+//    mouseMapping->applyJ(core::GetDefaultMechanicalParamsInstance());
 
     this->interactor->setMouseAttached(true);
 }

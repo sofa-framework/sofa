@@ -53,7 +53,7 @@ static PyObject * Node_executeVisitor(PyObject *self, PyObject * args) {
         return nullptr;
     }
 
-    PythonVisitor visitor(ExecParams::defaultInstance(), pyVisitor);
+    PythonVisitor visitor(sofa::core::execparams::defaultInstance(), pyVisitor);
     node->executeVisitor(&visitor);
 
     Py_RETURN_NONE;
@@ -92,7 +92,7 @@ static PyObject * Node_reset(PyObject * self, PyObject * /*args*/) {
 static PyObject * Node_init(PyObject * self, PyObject * /*args*/) {
     Node* node = get_node(self);
 
-    node->init(ExecParams::defaultInstance());
+    node->init(sofa::core::execparams::defaultInstance());
 
     Py_RETURN_NONE;
 }
@@ -383,7 +383,7 @@ static PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args) {
     }
 
     PythonScriptEvent event(node, eventName, pyUserData);
-    node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    node->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
     Py_RETURN_NONE;
 }
 
@@ -396,7 +396,7 @@ static PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args) {
     }
 
     sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
-    node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    node->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
     Py_RETURN_NONE;
 }
 
@@ -409,7 +409,7 @@ static PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args) {
     }
 
     sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
-    node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    node->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
     Py_RETURN_NONE;
 }
 
@@ -503,7 +503,7 @@ static PyObject * Node_initVisual(PyObject *self, PyObject * /*args*/) {
         return nullptr;
     }
 
-    loop->initStep(sofa::core::ExecParams::defaultInstance());
+    loop->initStep(sofa::core::execparams::defaultInstance());
     Py_RETURN_NONE;
 }
 

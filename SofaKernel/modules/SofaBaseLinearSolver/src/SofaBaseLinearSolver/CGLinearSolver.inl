@@ -106,7 +106,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     simulation::Visitor::printNode("VectorAllocation");
 #endif
 
-    const core::ExecParams* params = core::ExecParams::defaultInstance();
+    const core::ExecParams* params = core::execparams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
     Vector& p = *vtmp.createTempVector();
     Vector& q = *vtmp.createTempVector();

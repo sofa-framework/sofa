@@ -39,8 +39,6 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/core/MechanicalParams.h>
-
 namespace sofa
 {
 
@@ -55,7 +53,7 @@ namespace simulation
  class SOFA_SCENECREATOR_API GetAssembledSizeVisitor: public Visitor
 {
 public:
-    GetAssembledSizeVisitor( const sofa::core::ExecParams* params=core::MechanicalParams::defaultInstance() );
+    GetAssembledSizeVisitor( const sofa::core::ExecParams* params= sofa::core::mechanicalparams::asExecParams(core::mechanicalparams::defaultInstance()));
     ~GetAssembledSizeVisitor() override;
 
     Result processNodeTopDown( simulation::Node*  ) override;

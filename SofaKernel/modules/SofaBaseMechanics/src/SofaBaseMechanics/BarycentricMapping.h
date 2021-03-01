@@ -25,7 +25,6 @@
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
 
 #include <sofa/core/Mapping.h>
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>

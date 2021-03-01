@@ -31,7 +31,7 @@ using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -208,7 +208,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* planeff = root->getTreeNode("Level 1")->getObject("myPlaneForceField") ;
         EXPECT_NE(planeff, nullptr) ;
@@ -245,7 +245,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                                                               scene.str().c_str(),
                                                               scene.str().size()) ;
             EXPECT_NE(root.get(), nullptr) ;
-            root->init(ExecParams::defaultInstance()) ;
+            root->init(sofa::core::execparams::defaultInstance()) ;
 
             BaseObject* planeff = root->getTreeNode("Level 1")->getObject("myPlaneForceField") ;
             EXPECT_NE(planeff, nullptr) ;
@@ -280,7 +280,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* planeff = root->getTreeNode("Level 1")->getObject("myPlaneForceField") ;
         EXPECT_NE(planeff, nullptr) ;
@@ -314,7 +314,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                                                           scene.str().size()) ;
 
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         return true;
     }

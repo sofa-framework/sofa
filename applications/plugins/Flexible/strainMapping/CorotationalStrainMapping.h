@@ -356,7 +356,7 @@ protected:
 
         if(this->assemble.getValue())
         {
-            this->K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+            this->K.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
         }
         else
         {
@@ -373,7 +373,7 @@ protected:
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
-                    this->jacobian[i].addDForce_qr( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                    this->jacobian[i].addDForce_qr( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
                 }
                 break;
             }
@@ -384,7 +384,7 @@ protected:
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
-                    this->jacobian[i].addDForce_polar( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                    this->jacobian[i].addDForce_polar( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
                 }
                 break;
             }
@@ -395,7 +395,7 @@ protected:
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
-                    this->jacobian[i].addDForce_svd( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                    this->jacobian[i].addDForce_svd( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
                 }
                 break;
             }
@@ -406,7 +406,7 @@ protected:
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
-                    this->jacobian[i].addDForce_frobenius( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                    this->jacobian[i].addDForce_frobenius( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
                 }
                 break;
             }

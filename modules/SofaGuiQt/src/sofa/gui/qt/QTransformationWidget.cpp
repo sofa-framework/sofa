@@ -133,7 +133,7 @@ bool QTransformationWidget::isDefaultValues() const
 
 void QTransformationWidget::applyTransformation(simulation::Node *node)
 {
-    sofa::simulation::TransformationVisitor transform(sofa::core::ExecParams::defaultInstance());
+    sofa::simulation::TransformationVisitor transform(sofa::core::execparams::defaultInstance());
     transform.setTranslation(translation[0]->getValue(),translation[1]->getValue(),translation[2]->getValue());
     transform.setRotation(rotation[0]->getValue(),rotation[1]->getValue(),rotation[2]->getValue());
     transform.setScale(scale[0]->getValue(),scale[1]->getValue(),scale[2]->getValue());

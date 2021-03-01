@@ -447,7 +447,7 @@ void SpringForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 		const VecDeriv& dx1 = d_dx1.getValue(); \
 		VecDeriv& df2 = *d_df2.beginEdit(); \
 		const VecDeriv& dx2 = d_dx2.getValue(); \
-		data.addDForce(this, true, df1, df2, dx1, dx2, mparams->kFactor(), mparams->bFactor()); \
+		data.addDForce(this, true, df1, df2, dx1, dx2, mparams->kFactor(), sofa::core::mechanicalparams::bFactor(mparams)); \
 		d_df1.endEdit(); \
 		d_df2.endEdit(); \
 	}

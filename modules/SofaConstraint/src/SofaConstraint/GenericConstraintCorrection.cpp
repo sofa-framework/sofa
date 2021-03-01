@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
-
+using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
 
 namespace sofa::component::constraintset 
 {
@@ -252,7 +252,7 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 {
     if (!m_ODESolver) return;
 
-    ConstraintParams cparams(*ExecParams::defaultInstance());
+    ConstraintParams cparams(*sofa::core::execparams::defaultInstance());
 
 
     computeMotionCorrectionFromLambda(&cparams, cparams.dx(), f);
@@ -273,7 +273,7 @@ void GenericConstraintCorrection::getComplianceMatrix(defaulttype::BaseMatrix* M
     if (!m_ODESolver)
         return;
 
-    ConstraintParams cparams(*ExecParams::defaultInstance());
+    ConstraintParams cparams(*sofa::core::execparams::defaultInstance());
     const_cast<GenericConstraintCorrection*>(this)->addComplianceInConstraintSpace(&cparams, Minv);
 }
 

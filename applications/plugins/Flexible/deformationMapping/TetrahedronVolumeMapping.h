@@ -5,7 +5,7 @@
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {
@@ -143,7 +143,7 @@ public:
     {
         Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get()].write();
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
-        geometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+        geometricStiffness.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
     }
 
 

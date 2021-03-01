@@ -104,8 +104,8 @@ public:
         if (mapping!=NULL)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            map->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+            map->apply(core::GetDefaultMechanicalParamsInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+            map->applyJ(core::GetDefaultMechanicalParamsInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }
 
@@ -114,7 +114,7 @@ public:
         if (mapping!=NULL)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            map->apply(core::GetDefaultMechanicalParamsInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
         }
     }
 };

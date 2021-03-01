@@ -448,7 +448,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
@@ -599,7 +599,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
         d_pos.setValue(pos);
 
         //this->addForce( force1, pos, force1 );
-        this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force1, d_pos, d_force1 );
+        this->addForce( core::mechanicalparams::defaultInstance() /* PARAMS FIRST */, d_force1, d_pos, d_force1 );
 
         // get current energy around
         Real energy1 = 0;
@@ -614,7 +614,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
         epsilon[2]= cs * ((Real)rand()/(Real)(RAND_MAX - 0.5));
         deltaPos[moveIdx] = epsilon;
         // calc derivative
-        this->addDForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_deltaForceCalculated, d_deltaPos );
+        this->addDForce( core::mechanicalparams::defaultInstance() /* PARAMS FIRST */, d_deltaForceCalculated, d_deltaPos );
         deltaPos[moveIdx] = zero;
         // calc factual change
         pos[moveIdx] = pos[moveIdx] + epsilon;
@@ -622,7 +622,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
         DataVecCoord d_force2;
         d_force2.setValue(force2);
         //this->addForce( force2, pos, force2 );
-        this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force2, d_pos, d_force2 );
+        this->addForce( core::mechanicalparams::defaultInstance() /* PARAMS FIRST */, d_force2, d_pos, d_force2 );
 
         pos[moveIdx] = pos[moveIdx] - epsilon;
         // check first derivative:

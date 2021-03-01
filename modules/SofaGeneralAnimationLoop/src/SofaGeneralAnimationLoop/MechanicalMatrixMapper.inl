@@ -26,7 +26,7 @@
 #include <sofa/helper/rmath.h>
 
 // accumulate jacobian
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>

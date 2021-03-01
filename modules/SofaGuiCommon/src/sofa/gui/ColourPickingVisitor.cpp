@@ -22,6 +22,7 @@
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/visual/VisualParams.h>
 #if SOFAGUICOMMON_HAVE_SOFA_GL
 #include <sofa/gl/gl.h>
 #include <sofa/gl/BasicShapes.h>

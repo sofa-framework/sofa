@@ -40,7 +40,7 @@ using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
@@ -78,7 +78,7 @@ void checkAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     EXPECT_NE(lm, nullptr) ;

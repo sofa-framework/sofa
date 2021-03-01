@@ -64,7 +64,7 @@ ModifyObject::ModifyObject(void *Id,
     :QDialog(parent, f),
       Id_(Id),
       item_(item_clicked),
-      node(nullptr),
+      basenode(nullptr),
       data_(nullptr),
       dialogFlags_(dialogFlags),
       messageTab(nullptr),
@@ -96,7 +96,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 #ifdef DEBUG_GUI
     std::cout << "GUI<emit beginObjectModification(" << base->getName() << ")" << std::endl;
 #endif
-    node = base;
+    basenode = base;
     data_ = nullptr;
 
     //Layout to organize the whole window
@@ -139,10 +139,10 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     buttonRefresh->setText( tr( "Refresh" ) );
 
     // displayWidget
-    if (node)
+    if (basenode)
     {
-        const sofa::core::objectmodel::Base::VecData& fields = node->getDataFields();
-        const sofa::core::objectmodel::Base::VecLink& links = node->getLinks();
+        const sofa::core::objectmodel::Base::VecData& fields = basenode->getDataFields();
+        const sofa::core::objectmodel::Base::VecLink& links = basenode->getLinks();
 
         std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
 
@@ -155,7 +155,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             core::objectmodel::BaseData* data=*it;
             if (!data)
             {
-                dmsg_error("ModifyObject") << "nullptr Data in '" << node->getName() << "'" ;
+                dmsg_error("ModifyObject") << "nullptr Data in '" << basenode->getName() << "'" ;
                 continue;
             }
 
@@ -183,7 +183,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             if (tabs.empty() || tabs.back()->isFull())
             {
                 newTab = true;
-                m_tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+                m_tabs.push_back(new QTabulationModifyObject(this,basenode, item_,tabs.size()+1));
                 tabs.push_back(m_tabs.back());
             }
             currentTab = tabs.back();
@@ -233,7 +233,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             if (tabs.empty()) tabNames.push_back(currentGroup);
             if (tabs.empty() || tabs.back()->isFull())
             {
-                m_tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+                m_tabs.push_back(new QTabulationModifyObject(this,basenode, item_,tabs.size()+1));
                 tabs.push_back(m_tabs.back() );
             }
             currentTab = tabs.back();
@@ -270,7 +270,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 #if SOFAGUIQT_HAVE_QT5_CHARTS
         //Energy Widget
-        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(node))
+        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(basenode))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -280,7 +280,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         }
 
         //Momentum Widget
-        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(node))
+        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(basenode))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -293,7 +293,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
         /// Info Widget
         {
-            QDataDescriptionWidget* description=new QDataDescriptionWidget(dialogTab, node);
+            QDataDescriptionWidget* description=new QDataDescriptionWidget(dialogTab, basenode);
             dialogTab->addTab(description, QString("Infos"));
         }
 
@@ -303,7 +303,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             if (messageTab)
             {
                 std::stringstream tmp;
-                int numMessages = node->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
+                int numMessages = basenode->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
                                                              Message::Error, Message::Warning, Message::Fatal});
                 tmp << "Messages(" << numMessages << ")" ;
                 dialogTab->addTab(messageTab, QString::fromStdString(tmp.str()));
@@ -336,11 +336,11 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 void ModifyObject::clearMessages()
 {
-    node->clearWarnings();
+    basenode->clearWarnings();
     messageEdit->clear();
 
     std::stringstream tmp;
-    int numMessages = node->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
+    int numMessages = basenode->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
                                                  Message::Error, Message::Warning, Message::Fatal});
     tmp << "Messages(" << numMessages << ")" ;
 
@@ -352,7 +352,7 @@ void ModifyObject::clearMessages()
 void ModifyObject::createDialog(core::objectmodel::BaseData* data)
 {
     data_ = data;
-    node = nullptr;
+    basenode = nullptr;
 
 #ifdef DEBUG_GUI
     std::cout << "GUI>emit beginDataModification("<<data->getName()<<")" << std::endl;
@@ -473,7 +473,7 @@ void ModifyObject::updateConsole()
         tmp << "<table>";
         tmp << "<tr><td><td><td><td>" ;
         m_numMessages = 0 ;
-        for(const Message& message : node->getLoggedMessages())
+        for(const Message& message : basenode->getLoggedMessages())
         {
             tmp << "<tr>";
             tmp << "<td>["<<toHtmlString(message.type())<<"]</td>" ;
@@ -494,13 +494,13 @@ void ModifyObject::updateValues()
     if (buttonUpdate == nullptr) return;
 
     //Make the update of all the values
-    if (node)
+    if (basenode)
     {
-        bool isNode =( sofa::simulation::node::getNodeFrom(node) != nullptr);
+        bool isNode =( sofa::simulation::node::getNodeFrom(basenode) != nullptr);
         //If the current element is a node of the graph, we first apply the transformations
         if (transformation && dialogFlags_.REINIT_FLAG && isNode)
         {
-            simulation::Node* current_node = sofa::simulation::node::getNodeFrom(node);
+            simulation::Node* current_node = sofa::simulation::node::getNodeFrom(basenode);
             if (!transformation->isDefaultValues())
                 transformation->applyTransformation(current_node);
             transformation->setDefaultValues();
@@ -508,11 +508,11 @@ void ModifyObject::updateValues()
 
         if (dialogFlags_.REINIT_FLAG)
         {
-            if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
+            if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(basenode))
             {
                 obj->reinit();
             }
-            else if (simulation::Node *n = sofa::simulation::node::getNodeFrom(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
+            else if (simulation::Node *n = sofa::simulation::node::getNodeFrom(basenode)) n->reinit(sofa::core::ExecParams::defaultInstance());
         }
 
     }
@@ -525,19 +525,19 @@ void ModifyObject::updateValues()
     std::cout << "GUI<emit objectUpdated()" << std::endl;
 #endif
 
-    if (node)
+    if (basenode)
     {
 #ifdef DEBUG_GUI
         std::cout << "GUI>emit endObjectModification("<<node->getName()<<")" << std::endl;
 #endif
-        emit endObjectModification(node);
+        emit endObjectModification(basenode);
 #ifdef DEBUG_GUI
         std::cout << "GUI<emit endObjectModification("<<node->getName()<<")" << std::endl;
 #endif
 #ifdef DEBUG_GUI
         std::cout << "GUI>emit beginObjectModification("<<node->getName()<<")" << std::endl;
 #endif
-        emit beginObjectModification(node);
+        emit beginObjectModification(basenode);
 #ifdef DEBUG_GUI
         std::cout << "GUI<emit beginObjectModification("<<node->getName()<<")" << std::endl;
 #endif
@@ -586,7 +586,7 @@ void ModifyObject::updateTables()
     }
 #endif
 
-    if(node)
+    if(basenode)
     {
         updateConsole();
     }
@@ -594,12 +594,12 @@ void ModifyObject::updateTables()
 
 void ModifyObject::reject   ()
 {
-    if (node)
+    if (basenode)
     {
 #ifdef DEBUG_GUI
         std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
-        emit endObjectModification(node);
+        emit endObjectModification(basenode);
 #ifdef DEBUG_GUI
         std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
@@ -626,12 +626,12 @@ void ModifyObject::accept   ()
         emit  dataModified( dataModifiedString  );
     }
 
-    if (node)
+    if (basenode)
     {
 #ifdef DEBUG_GUI
         std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
-        emit endObjectModification(node);
+        emit endObjectModification(basenode);
 #ifdef DEBUG_GUI
         std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif

@@ -25,7 +25,6 @@
 #define SOFA_STANDARDTEST_Mapping_test_H
 
 #include "Sofa_test.h"
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/VectorOperations.h>
 
 #include <SceneCreator/SceneCreator.h>

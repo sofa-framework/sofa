@@ -25,6 +25,7 @@
 #include "BaseDeformationMapping.h"
 #include "BaseDeformationImpl.inl"
 #include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/IndexOpenMP.h>
