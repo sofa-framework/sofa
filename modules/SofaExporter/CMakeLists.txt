@@ -3,7 +3,6 @@ project(SofaExporter LANGUAGES CXX)
 
 find_package(SofaBaseVisual REQUIRED)
 sofa_find_package(ZLIB REQUIRED)
-sofa_find_package(SofaPython QUIET)
 
 set(SRC_ROOT src/SofaExporter)
 
@@ -45,19 +44,6 @@ list(APPEND SOURCE_FILES
     ${SRC_ROOT}/WriteState.cpp
     ${SRC_ROOT}/WriteTopology.cpp
     )
-
-if(SofaPython_FOUND)
-    list(APPEND HEADER_FILES
-        ${SRC_ROOT}/bindings/Binding_OBJExporter.h
-        ${SRC_ROOT}/bindings/Binding_STLExporter.h
-    )
-    list(APPEND SOURCE_FILES
-        ${SRC_ROOT}/bindings/Binding_OBJExporter.cpp
-        ${SRC_ROOT}/bindings/Binding_STLExporter.cpp
-    )
-else()
-    message(STATUS "SofaPython disabled, will not compile python bindings.")
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual)

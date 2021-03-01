@@ -160,6 +160,21 @@ else()
     message(STATUS "SofaPython: optional dependency SofaTest NOT found, Python_test won't be built")
 endif()
 
+sofa_find_package(SofaExporter QUIET)
+if(SofaExporter_FOUND)
+    list(APPEND HEADER_FILES
+        SofaExporter/Binding_OBJExporter.h
+        SofaExporter/Binding_STLExporter.h
+    )
+    list(APPEND SOURCE_FILES
+        SofaExporter/Binding_OBJExporter.cpp
+        SofaExporter/Binding_STLExporter.cpp
+    )
+    message(STATUS "SofaPython: optional dependency SofaExporter found, will compile its python bindings.")
+else()
+    message(STATUS "SofaPython: optional dependency SofaExporter NOT found, will not compile its python bindings.")
+endif()
+
 GET_FILENAME_COMPONENT(LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} NAME_WE)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(LIBRARY_NAME ${LIBRARY_NAME}_d)
@@ -191,7 +206,10 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaMiscMapping ${PYTHON_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 if(SofaTest_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaTest)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaTest)
+endif()
+if(SofaExporter_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaExporter)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
