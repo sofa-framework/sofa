@@ -51,9 +51,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     sofa_install_libraries(TARGETS ZLIB::ZLIB)
 endif()
-if(SofaPython_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaPython)
-endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME SofaExporter
