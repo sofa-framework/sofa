@@ -57,7 +57,7 @@ public:
     MechanicalMatrix operator - () const { return MechanicalMatrix(- factors); }
     MechanicalMatrix operator * (SReal f) const { return MechanicalMatrix(factors * f); }
     MechanicalMatrix operator / (SReal f) const { return MechanicalMatrix(factors / f); }
-    friend std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
+    friend SOFA_CORE_API std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
 };
 
 SOFA_CORE_API std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
