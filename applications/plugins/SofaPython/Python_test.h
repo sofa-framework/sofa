@@ -5,7 +5,7 @@
 #include <string>
 #include <SofaPython/SceneLoaderPY.h>
 
-#include "InitPlugin_test.h"
+#include <SofaTest/InitPlugin_test.h>
 
 namespace sofa {
 
