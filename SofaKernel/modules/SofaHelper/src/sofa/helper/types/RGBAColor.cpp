@@ -221,7 +221,7 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
             g = (hexval(str[3])*16+hexval(str[4]))/255.0f;
             b = (hexval(str[5])*16+hexval(str[6]))/255.0f;
 
-            if (str.length()>7)
+            if (str.length()>8)
                 a = (hexval(str[7])*16+hexval(str[8]))/255.0f;
         }else if (str.length()>=4){
             r = (hexval(str[1])*17)/255.0f;

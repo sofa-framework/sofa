@@ -76,6 +76,13 @@ FixedConstraint<DataTypes>::FixedConstraint()
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
+
+    this->addUpdateCallback("updateIndices", { &d_indices}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        checkIndices();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 
@@ -145,7 +152,7 @@ void FixedConstraint<DataTypes>::init()
     {
         msg_info() << "Can not find the topology, won't be able to handle topological changes";
     }
-   
+
     this->checkIndices();
     this->d_componentState.setValue(ComponentState::Valid);
 }

@@ -61,9 +61,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Boost::program_options)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
 source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
-# This is required to be able to #include <sofa/gui/BaseGui.h> instead of #include <SofaGuiCommon/sofa/gui/BaseGui.h>
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}/${PROJECT_NAME}>")
-
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
 endif()
@@ -80,7 +77,3 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     )
-
-# sofa_create_package_with_targets add automatically PROJECT_NAME as include_dir
-# but SofaGui's code is like sofa/gui... so we need to forcefully add src/SofaGuiCommon
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}>")

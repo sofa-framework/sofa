@@ -12,8 +12,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/Frame.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
-    ${SRC_ROOT}/Quat.h
-    ${SRC_ROOT}/Quat.inl
     ${SRC_ROOT}/RGBAColor.h
     ${SRC_ROOT}/RigidTypes.h
     ${SRC_ROOT}/RigidVec6Types.h
@@ -64,6 +62,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SRC_ROOT}/AbstractTypeInfo.cpp
     ${SRC_ROOT}/BaseMatrix.cpp
+    ${SRC_ROOT}/BaseVector.cpp
     ${SRC_ROOT}/BoundingBox.cpp
     ${SRC_ROOT}/Frame.cpp
     ${SRC_ROOT}/SolidTypes.cpp
@@ -88,12 +87,30 @@ set(SOURCE_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.cpp
 )
 
+# Compatibility files
+set (COMPATSRC_ROOT "compat/")
+set(COMPAT_HEADER_FILES
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Vec.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/MatSym.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_Cholesky.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_LU.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.inl
+)
+
 find_package(Eigen3 REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
+                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
+source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework

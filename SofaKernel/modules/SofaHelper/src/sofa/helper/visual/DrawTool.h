@@ -21,10 +21,10 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/config.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/fwd.h>
+#include <sofa/defaulttype/Quat.h>
 #include <vector>
 
 namespace sofa::helper::visual

@@ -171,7 +171,7 @@ public:
     void setWidget(const char* val) { widget = val; }
 
     /// True if the counter of modification gives valid information.
-    [[deprecated("2021-01-01: This method has been removed as Data<> must have, by design, their counter valid.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA("Data<> must have, by design, their counter valid.")
     bool isCounterValid() const { return true; }
 
     /// @name Flags
@@ -236,30 +236,28 @@ public:
 
     /// @name Optimized edition and retrieval API (for multi-threading performances)
     /// @{
-    //SOFA_BEGIN_DEPRECATION_AS_ERROR
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)s
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     bool isSet(const core::ExecParams*) const { return isSet(); }
     bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     void unset(const core::ExecParams*) { unset(); }
     void unset() { m_isSet = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     void forceSet(const core::ExecParams*) { forceSet(); }
     void forceSet() { m_isSet = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     int getCounter(const core::ExecParams*) const { return getCounter(); }
     int getCounter() const { return m_counter; }
-    //SOFA_END_DEPRECATION_AS_ERROR
     /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
@@ -278,8 +276,8 @@ public:
     ///
     /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
     /// @return true if the copy was successful.
-    [[deprecated("2021-01-01: This method has been replaced with copyValueFrom(), please update your code.")]]
-    bool copyValue(const BaseData* data);
+    SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA("Use copyValueFrom() instead.")
+    bool copyValue(const BaseData* data){ return copyValueFrom(data); }
 
     /// Copy the value from another Data.
     ///

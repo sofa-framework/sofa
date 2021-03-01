@@ -28,6 +28,8 @@ if(SOFAHELPER_HAVE_GTEST)
     find_package(GTest CONFIG QUIET REQUIRED)
 endif()
 
+find_package(Sofa.Config QUIET REQUIRED)
+
 # Eigen3 is required by SofaDefaultType and SofaHelper
 find_package(Eigen3 QUIET REQUIRED)
 

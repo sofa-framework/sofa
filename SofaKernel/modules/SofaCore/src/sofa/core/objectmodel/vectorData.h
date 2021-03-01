@@ -19,30 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_VECTORDATA_H
-#define SOFA_HELPER_VECTORDATA_H
+#pragma once
+#include <sofa/core/config.h>
 
 #include <string>
 
+#include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/config.h>
 
 #include <sofa/helper/StringUtils.h>
 using sofa::helper::getAStringCopy ;
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
 
-namespace helper
-{
-
-
-
-typedef enum{DataEngineNothing,DataEngineInput,DataEngineOutput} DataEngineDataType;
-
-
+enum class DataEngineDataType {DataEngineNothing,DataEngineInput,DataEngineOutput} ;
 
 /** A helper class which implements a vector of a variable number of Data
  *
@@ -53,14 +46,14 @@ typedef enum{DataEngineNothing,DataEngineInput,DataEngineOutput} DataEngineDataT
  * @author Thomas Lemaire @date 2014
  */
 template<class T>
-class vectorData : public vector< core::objectmodel::Data<T>* > {
+class vectorData : public helper::vector< core::objectmodel::Data<T>* > {
 
 public:
 
-    typedef vector< core::objectmodel::Data<T>* > Inherit;
+    typedef helper::vector< core::objectmodel::Data<T>* > Inherit;
 
     /// 'dataEngineInOut' is only valid if 'component' is a DataEngine
-    vectorData(core::objectmodel::Base* component, std::string const& name, std::string const& help, DataEngineDataType dataEngineDataType=DataEngineNothing, const T& defaultValue=T())
+    vectorData(core::objectmodel::Base* component, std::string const& name, std::string const& help, DataEngineDataType dataEngineDataType= DataEngineDataType::DataEngineNothing, const T& defaultValue=T())
         : m_component(component)
         , m_name(name)
         , m_help(help)
@@ -70,14 +63,14 @@ public:
 
     ~vectorData()
     {
-        if( m_dataEngineDataType!=DataEngineNothing )
+        if( m_dataEngineDataType!= DataEngineDataType::DataEngineNothing )
         {
             if( core::DataEngine* componentAsDataEngine = m_component->toDataEngine() )
             {
                 for (unsigned int i=0; i<this->size(); ++i)
                 {
-                    if(m_dataEngineDataType==DataEngineInput) componentAsDataEngine->delInput((*this)[i]);
-                    else if(m_dataEngineDataType==DataEngineOutput) componentAsDataEngine->delOutput((*this)[i]);
+                    if(m_dataEngineDataType== DataEngineDataType::DataEngineInput) componentAsDataEngine->delInput((*this)[i]);
+                    else if(m_dataEngineDataType== DataEngineDataType::DataEngineOutput) componentAsDataEngine->delOutput((*this)[i]);
                 }
             }
         }
@@ -112,15 +105,15 @@ public:
 
     void resize(const unsigned int size)
     {
-        core::DataEngine* componentAsDataEngine = m_dataEngineDataType!=DataEngineNothing ? m_component->toDataEngine() : nullptr;
+        core::DataEngine* componentAsDataEngine = m_dataEngineDataType!= DataEngineDataType::DataEngineNothing ? m_component->toDataEngine() : nullptr;
 
         if (size < this->size()) {
             // removing some data if size is inferior than current size
             for (unsigned int i=size; i<this->size(); ++i) {
                 if (componentAsDataEngine!=nullptr)
                 {
-                    if(m_dataEngineDataType==DataEngineInput) componentAsDataEngine->delInput((*this)[i]);
-                    else if(m_dataEngineDataType==DataEngineOutput) componentAsDataEngine->delOutput((*this)[i]);
+                    if(m_dataEngineDataType== DataEngineDataType::DataEngineInput) componentAsDataEngine->delInput((*this)[i]);
+                    else if(m_dataEngineDataType== DataEngineDataType::DataEngineOutput) componentAsDataEngine->delOutput((*this)[i]);
                 }
                 delete (*this)[i];
             }
@@ -141,8 +134,8 @@ public:
                     m_component->addData(d);
                 if (componentAsDataEngine!=nullptr)
                 {
-                    if(m_dataEngineDataType==DataEngineInput) componentAsDataEngine->addInput(d);
-                    else if(m_dataEngineDataType==DataEngineOutput) componentAsDataEngine->addOutput(d);
+                    if(m_dataEngineDataType== DataEngineDataType::DataEngineInput) componentAsDataEngine->addInput(d);
+                    else if(m_dataEngineDataType== DataEngineDataType::DataEngineOutput) componentAsDataEngine->addOutput(d);
                 }
             }
         }
@@ -175,8 +168,4 @@ protected:
     T m_defaultValue;
 };
 
-} // namespace helper
-
-} // namespace sofa
-
-#endif // SOFA_HELPER_VECTORDATA_H
+} // namespace sofa::core::objectmodel
