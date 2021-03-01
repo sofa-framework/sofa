@@ -434,7 +434,7 @@ public:
     /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION("")
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string typeName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -447,7 +447,7 @@ public:
     /// \code  std::string type = Base::className<B>(); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION("")
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string className(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -460,7 +460,7 @@ public:
     /// \code  std::string type = Base::namespaceName<T>(); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION("")
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string namespaceName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -473,7 +473,7 @@ public:
     /// \code  std::string type = Base::templateName<B>); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION("")
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string templateName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);

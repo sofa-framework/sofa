@@ -229,7 +229,7 @@ public:
         return RealObject::HeaderFileLocation();
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION("")
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     virtual std::string shortName(objectmodel::BaseObjectDescription* arg) override
     {
         SOFA_UNUSED(arg);
