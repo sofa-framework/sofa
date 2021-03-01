@@ -141,12 +141,24 @@ set(PYTHON_FILES
     python/SofaPython/PythonAdvancedTimer.py
 )
 
-
 find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
 find_package(SofaUserInteraction REQUIRED)
 find_package(SofaMiscMapping REQUIRED)
 find_package(Eigen3 REQUIRED)
+
+sofa_find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    list(APPEND HEADER_FILES "Python_test.h")
+    list(APPEND SOURCE_FILES "Python_test.cpp")
+    list(APPEND PYTHON_FILES
+        python/SofaTest/Macro.py
+        python/SofaTest/__init__.py
+        )
+    message(STATUS "SofaPython: optional dependency SofaTest found, Python_test will be built")
+else()
+    message(STATUS "SofaPython: optional dependency SofaTest NOT found, Python_test won't be built")
+endif()
 
 GET_FILENAME_COMPONENT(LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} NAME_WE)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -178,6 +190,9 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaMiscMapping ${PYTHON_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
+if(SofaTest_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaTest)
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
@@ -195,3 +210,15 @@ sofa_create_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     RELOCATABLE "plugins"
     )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAPYTHON_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAPYTHON_BUILD_TESTS)
+    if(SofaTest_FOUND)
+        enable_testing()
+        add_subdirectory(${PROJECT_NAME}_test)
+    else()
+        message("Tests for SofaPython needs SofaTest; build SofaTest to enable testing for SofaPython")
+    endif()
+endif()
