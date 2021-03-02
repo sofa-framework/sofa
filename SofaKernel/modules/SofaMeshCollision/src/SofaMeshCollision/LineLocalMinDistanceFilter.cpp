@@ -21,12 +21,9 @@
 ******************************************************************************/
 
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/TopologyData.inl>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
-
 #include <sofa/core/ObjectFactory.h>
 
 

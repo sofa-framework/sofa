@@ -22,8 +22,10 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaBaseLinearSolver/MatrixExpr.h>
 #include <SofaBaseLinearSolver/matrix_bloc_traits.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 
 namespace sofa::component::linearsolver
 {
@@ -541,7 +543,7 @@ public:
 
     static const char* Name()
     {
-        static std::string name = std::string("BlockDiagonalMatrix") + std::string(traits::Name());
+        static std::string name = std::string("BlockDiagonalMatrix") + sofa::defaulttype::DataTypeInfo<Bloc>::name();
         return name.c_str();
     }
 

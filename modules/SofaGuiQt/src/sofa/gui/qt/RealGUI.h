@@ -28,6 +28,7 @@
 #include <ui_GUI.h>
 #include "GraphListenerQListView.h"
 #include "QMenuFilesRecentlyOpened.h"
+#include "AboutSOFADialog.h"
 #include "PickHandlerCallBacks.h"
 
 #include <sofa/gui/BaseGUI.h>
@@ -386,6 +387,7 @@ public slots:
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
     virtual void showDocBrowser() ;
+    virtual void showAbout() ;
     virtual void showPluginManager();
     virtual void showMouseManager();
     virtual void showVideoRecorderManager();

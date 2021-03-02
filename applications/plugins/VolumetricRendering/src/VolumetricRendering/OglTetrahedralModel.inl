@@ -342,7 +342,7 @@ void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params
             }
         }
 
-        this->f_bbox.setValue(params, sofa::defaulttype::TBoundingBox<SReal>(minBBox, maxBBox));
+        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox, maxBBox));
     }
 }
 

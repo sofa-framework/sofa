@@ -24,7 +24,6 @@
 #include <LMConstraint/BaseLMConstraint.h>
 #include <LMConstraint/DistanceLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -224,7 +223,15 @@ void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
         vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::green());
     }
     vparams->drawTool()->restoreLastState();
+}
 
+template <class DataTypes>
+bool DistanceLMConstraint<DataTypes>::isCorrectionComputedWithSimulatedDOF(core::ConstraintParams::ConstOrder /*order*/) const
+{
+    simulation::Node* node1=(simulation::Node*) this->constrainedObject1->getContext();
+    simulation::Node* node2=(simulation::Node*) this->constrainedObject2->getContext();
+    if (node1->mechanicalMapping.empty() && node2->mechanicalMapping.empty()) return true;
+    else return false;
 }
 
 } //namespace sofa::component::constraintset

@@ -23,7 +23,6 @@
 #include "TetrahedralCorotationalFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <cassert>

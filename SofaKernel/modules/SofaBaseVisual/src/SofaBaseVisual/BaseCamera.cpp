@@ -26,6 +26,9 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Mat.h>
+using Mat3 = sofa::defaulttype::Mat3x3;
+using Mat4 = sofa::defaulttype::Mat4x4;
+
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 

@@ -21,7 +21,5 @@
 ******************************************************************************/
 #pragma once
 #include <SofaUserInteraction/config.h>
-
 #include <SofaUserInteraction/RayModel.h>
 
-#endif

@@ -565,7 +565,7 @@ void QtGLViewer::DisplayOBJs()
 {
 
 
-    if (_background==0)
+    if (_background == 0 || _background == 1)
         DrawLogo();
 
     if (!groot) return;
@@ -795,8 +795,10 @@ void QtGLViewer::draw()
     if (_background==0)
         glClearColor(0.0f,0.0f,0.0f,1.0f);
     else if (_background==1)
-        glClearColor(0.0f,0.0f,0.0f,0.0f);
+        glClearColor(0.0f,0.0f,0.0f,1.0f);
     else if (_background==2)
+        glClearColor(0.0f,0.0f,0.0f,0.0f);
+    else if (_background==3)
         glClearColor(backgroundColour[0],backgroundColour[1],backgroundColour[2], 1.0f);
     glClearDepth(1.0);
     glClear(_clearBuffer);
@@ -866,7 +868,6 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         default:
         {
             SofaViewer::keyPressEvent(e);
-            QGLViewer::keyPressEvent(e);
         }
         }
     }

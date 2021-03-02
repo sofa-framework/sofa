@@ -163,7 +163,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<In2,In2>    SparseKMatrixEigen2;
     //@}	
 
-    typedef typename Inherit::ForceMask ForceMask;
+    typedef typename sofa::helper::StateMask ForceMask;
 
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.

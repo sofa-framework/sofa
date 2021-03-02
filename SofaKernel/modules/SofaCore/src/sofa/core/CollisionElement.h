@@ -22,10 +22,8 @@
 #ifndef SOFA_CORE_COLLISIONELEMENT_H
 #define SOFA_CORE_COLLISIONELEMENT_H
 #include <sofa/core/config.h>
+#include <sofa/core/fwd.h>
 
-#include <sofa/defaulttype/TopologyTypes.h>
-
-#include <cstddef>
 #include <vector>
 
 namespace sofa
@@ -33,14 +31,6 @@ namespace sofa
 
 namespace core
 {
-
-namespace visual
-{
-class VisualParams;
-} // namespace visual
-
-class CollisionModel;
-class CollisionElementIterator;
 
 /**
  *  \brief Base class for reference to an collision element defined by its <i>index</i>

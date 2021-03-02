@@ -2,6 +2,9 @@
 <Node name="root" dt="0.05" gravity="0 0 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaBoundaryCondition"/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
     
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <Node name="M0">

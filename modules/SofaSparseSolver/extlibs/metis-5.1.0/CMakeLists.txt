@@ -19,7 +19,6 @@ if(UNIX)
     target_link_libraries(${PROJECT_NAME} m)
 endif()
 
-include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
 sofa_create_package_with_targets(
     PACKAGE_NAME Metis
     PACKAGE_VERSION 5.1.0

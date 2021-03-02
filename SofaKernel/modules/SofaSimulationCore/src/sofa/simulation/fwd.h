@@ -23,6 +23,7 @@
 
 #include <sofa/simulation/config.h>
 #include <sofa/core/sptr.h>
+#include <sofa/core/fwd.h>
 
 namespace sofa::core::objectmodel { class BaseContext; }
 
@@ -34,10 +35,23 @@ namespace sofa::simulation
     class Simulation;
     typedef sofa::core::sptr<Simulation> SimulationSPtr;
 
+    /// Set the (unique) simulation which controls the scene
+    SOFA_SIMULATION_CORE_API void setSimulation(Simulation* s);
+
+    /** Get the (unique) simulation which controls the scene.
+        Automatically creates one if no Simulation has been set.
+     */
+    SOFA_SIMULATION_CORE_API Simulation* getSimulation();
+
     class LocalStorage;
     class MutationListener;
     class Visitor;
+}
 
-    SOFA_SIMULATION_CORE_API Node* getNodeFromContext(sofa::core::objectmodel::BaseContext*);
-    SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* getContextFromNode(Node*);
+namespace sofa::simulation::node
+{
+SOFA_SIMULATION_CORE_API sofa::core::objectmodel::Base* toBase(Node*);
+SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* toBaseContext(Node*);
+SOFA_SIMULATION_CORE_API Node* getNodeFrom(sofa::core::objectmodel::Base*);
+SOFA_SIMULATION_CORE_API Node* getNodeFrom(sofa::core::objectmodel::BaseContext*);
 }

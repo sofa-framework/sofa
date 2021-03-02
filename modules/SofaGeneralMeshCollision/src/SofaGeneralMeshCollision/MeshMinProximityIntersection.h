@@ -87,7 +87,7 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, TSphere<T>& e1
     A[0][1] = A[1][0] = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
-    const SReal det = determinant(A);
+    const SReal det = defaulttype::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -130,7 +130,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, TSphere<T>& 
     A[0][1] = A[1][0] = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
-    const SReal det = determinant(A);
+    const SReal det = defaulttype::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;

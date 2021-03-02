@@ -22,7 +22,7 @@
 #ifndef SOFAOPENCL_OPENCLTYPES_H
 #define SOFAOPENCL_OPENCLTYPES_H
 
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>

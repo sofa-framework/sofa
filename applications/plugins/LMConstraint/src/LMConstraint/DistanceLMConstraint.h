@@ -27,7 +27,6 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <LMConstraint/LMConstraint.h>
-#include <sofa/simulation/Node.h>
 
 namespace sofa::component::constraintset
 {
@@ -81,13 +80,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    bool isCorrectionComputedWithSimulatedDOF(core::ConstraintParams::ConstOrder /*order*/) const override
-    {
-        simulation::Node* node1=(simulation::Node*) this->constrainedObject1->getContext();
-        simulation::Node* node2=(simulation::Node*) this->constrainedObject2->getContext();
-        if (node1->mechanicalMapping.empty() && node2->mechanicalMapping.empty()) return true;
-        else return false;
-    }
+    bool isCorrectionComputedWithSimulatedDOF(core::ConstraintParams::ConstOrder /*order*/) const override;
 
     //Edges involving a distance constraint
     Data< SeqEdges > vecConstraint; ///< List of the edges to constrain

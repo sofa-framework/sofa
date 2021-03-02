@@ -110,7 +110,7 @@ void TriangleDeformationMapping<TIn, TOut>::init()
             InDeriv v = cross(normal,edge01);                        // second axis orthogonal to the first, in the plane of the triangle
             m[1] = MCoord( edge01*edge02/edge01.norm(), v*edge02 );  // second edge in the local orthonormal frame
 
-            if( ! invertMatrix(inverseRestEdges[i], m) )
+            if( ! defaulttype::invertMatrix(inverseRestEdges[i], m) )
             {
                 cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), matrix not invertible: " << endl << m << endl;
             }

@@ -47,6 +47,7 @@
 #include <sofa/simulation/Node.h>
 #endif
 
+
 #include <QScreen>
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
@@ -82,6 +83,7 @@ using sofa::gui::GuiDataRepository;
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory;
 
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
 #include <QHBoxLayout>
@@ -495,6 +497,10 @@ RealGUI::RealGUI ( const char* viewername)
     connect(m_docbrowser, SIGNAL(visibilityChanged(bool)), this, SLOT(docBrowserVisibilityChanged(bool)));
 #endif
 
+    // Trigger QDialog for "About" section
+    connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(showAbout()));
+
+
     m_filelistener = new RealGUIFileListener(this);
 }
 
@@ -809,7 +815,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if( currentSimulation() ) this->unloadScene();
 
     const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
-    mSimulation = simulation::getSimulation()->load ( filename, reload, sceneArgs );
+    mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == nullptr )
@@ -1180,6 +1186,17 @@ void RealGUI::showDocBrowser()
     msg_warning("RealGUI") << "Doc browser has been disabled because Qt5WebEngine is not available";
 #endif
 }
+
+//------------------------------------
+
+void RealGUI::showAbout()
+{
+    //create the QDialog for About
+    AboutSOFADialog* aboutSOFA_dialog = new sofa::gui::qt::AboutSOFADialog(this);
+    aboutSOFA_dialog->show();
+}
+
+//------------------------------------
 
 void RealGUI::showPluginManager()
 {

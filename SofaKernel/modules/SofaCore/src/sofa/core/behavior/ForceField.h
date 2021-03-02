@@ -25,7 +25,6 @@
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/fwd.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 namespace sofa
 {

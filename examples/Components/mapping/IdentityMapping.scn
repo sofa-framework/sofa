@@ -1,6 +1,12 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
+
     <VisualStyle displayFlags="showBehaviorModels showMappings" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />

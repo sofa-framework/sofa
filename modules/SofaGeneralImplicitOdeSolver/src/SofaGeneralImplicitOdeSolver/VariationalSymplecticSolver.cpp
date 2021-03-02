@@ -23,6 +23,7 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <cmath>
