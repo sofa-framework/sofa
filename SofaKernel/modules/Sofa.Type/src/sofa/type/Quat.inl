@@ -365,19 +365,19 @@ void Quat<Real>::buildRotationMatrix(Real m[4][4]) const
 template<class Real>
 void Quat<Real>::writeOpenGlMatrix(double *m) const
 {
-    m[0*4+0] = (double)(1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[1*4+0] = (double)(2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[2*4+0] = (double)(2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
+    m[0*4+0] = (double)(1.0 - 2.0 * Real(_q[1]) * _q[1] + _q[2] * _q[2]);
+    m[1*4+0] = (double)(2.0 * Real(_q[0]) * _q[1] - _q[2] * _q[3]);
+    m[2*4+0] = (double)(2.0 * Real(_q[2]) * _q[0] + _q[1] * _q[3]);
     m[3*4+0] = (double)0.0;
 
-    m[0*4+1] = (double)(2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1*4+1] = (double)(1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[2*4+1] = (double)(2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
+    m[0*4+1] = (double)(2.0 * Real(_q[0]) * _q[1] + _q[2] * _q[3]);
+    m[1*4+1] = (double)(1.0 - 2.0 * Real(_q[2]) * _q[2] + _q[0] * _q[0]);
+    m[2*4+1] = (double)(2.0 * Real(_q[1]) * _q[2] - _q[0] * _q[3]);
     m[3*4+1] = (double)0.0;
 
-    m[0*4+2] = (double)(2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[1*4+2] = (double)(2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2*4+2] = (double)(1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
+    m[0*4+2] = (double)(2.0 * Real(_q[2]) * _q[0] - _q[1] * _q[3]);
+    m[1*4+2] = (double)(2.0 * Real(_q[1]) * _q[2] + _q[0] * _q[3]);
+    m[2*4+2] = (double)(1.0 - 2.0 * Real(_q[1]) * _q[1] + _q[0] * _q[0]);
     m[3*4+2] = (double)0.0;
 
     m[0*4+3] = (double)0.0;
