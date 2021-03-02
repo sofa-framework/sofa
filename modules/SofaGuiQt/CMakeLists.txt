@@ -375,11 +375,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BIN
 
 # Qt deployment
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-    if(SOFAGUIQT_HAVE_QT6)
-        include(windeployqt6)
-        windeployqt6(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin bin)
-    else()
-        include(windeployqt)
-        windeployqt(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin bin)
-    endif()
+    include(windeployqt)
+    windeployqt(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin bin)
 endif()
