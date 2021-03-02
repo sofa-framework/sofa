@@ -8,18 +8,13 @@ set(SOFAGENERALVISUAL_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFAGENERALVISUAL_SRC}/config.h.in
     ${SOFAGENERALVISUAL_SRC}/initSofaGeneralVisual.h
-    )
-
-set(SOURCE_FILES
-    ${SOFAGENERALVISUAL_SRC}/initSofaGeneralVisual.cpp
-    )
-
-list(APPEND HEADER_FILES
     ${SOFAGENERALVISUAL_SRC}/RecordedCamera.h
     ${SOFAGENERALVISUAL_SRC}/VisualTransform.h
     ${SOFAGENERALVISUAL_SRC}/Visual3DText.h
     )
-list(APPEND SOURCE_FILES
+
+set(SOURCE_FILES
+    ${SOFAGENERALVISUAL_SRC}/initSofaGeneralVisual.cpp
     ${SOFAGENERALVISUAL_SRC}/RecordedCamera.cpp
     ${SOFAGENERALVISUAL_SRC}/VisualTransform.cpp
     ${SOFAGENERALVISUAL_SRC}/Visual3DText.cpp

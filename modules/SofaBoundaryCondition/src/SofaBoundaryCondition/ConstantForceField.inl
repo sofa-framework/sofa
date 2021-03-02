@@ -22,7 +22,6 @@
 #pragma once
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
@@ -546,7 +545,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             points.push_back(defaulttype::Vector3(xx, xy, xz ));
             points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
         }
-        vparams->drawTool()->drawLines(points, 2, defaulttype::Vec<4,float>(0,1,0,1));
+        vparams->drawTool()->drawLines(points, 2, sofa::helper::types::RGBAColor::green());
     }
     else
     {

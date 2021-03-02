@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include "HexahedralFEMForceField.h"
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/decompose.h>
@@ -634,7 +635,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
-    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::helper::types::RGBAColor> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

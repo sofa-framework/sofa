@@ -19,10 +19,10 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALIMPLICITODESOLVER_SRC}/VariationalSymplecticSolver.cpp
     )
 
-find_package(SofaSimulation REQUIRED)
+find_package(SofaFramework REQUIRED) # SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

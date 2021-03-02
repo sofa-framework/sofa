@@ -23,7 +23,6 @@
 
 #include "MechanicalMatrixMapper.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/rmath.h>
 
 // accumulate jacobian
@@ -37,6 +36,9 @@
 
 //  Eigen Sparse Matrix
 #include <Eigen/Sparse>
+
+#include <sofa/simulation/Node.h>
+
 
 namespace sofa::component::interactionforcefield
 {
@@ -131,7 +133,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation:
     msg_info() << "parsing node:";
     for(BaseForceField* forcefield : node->forceField)
     {
-        if (forcefield->name != massName)
+        if (forcefield->name.getValue() != massName)
         {
             bool found = true;
             if (!empty)

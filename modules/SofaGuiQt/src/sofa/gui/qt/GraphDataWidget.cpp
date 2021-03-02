@@ -26,13 +26,7 @@
 #include <sofa/helper/map.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 using sofa::helper::Creator;
@@ -153,8 +147,4 @@ void GraphOptionWidget::exportImage()
     graph->exportImage(filename);
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

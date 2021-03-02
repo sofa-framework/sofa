@@ -40,7 +40,7 @@ if(NOT SOFA_NO_OPENGL)
     if(SOFAGUI_QGLVIEWER)
         find_package(QGLViewer QUIET)
         if(NOT QGLViewer_FOUND)
-            add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
+            add_subdirectory(libQGLViewer-2.7.1/QGLViewer)
         endif()
     endif()
 else()
@@ -80,6 +80,7 @@ endif()
 set(SRC_ROOT src/sofa/gui/qt)
 
 set(MOC_HEADER_FILES
+    ${SRC_ROOT}/AboutSOFADialog.h    
     ${SRC_ROOT}/AddObject.h
     ${SRC_ROOT}/DataFilenameWidget.h
     ${SRC_ROOT}/DataWidget.h
@@ -111,6 +112,7 @@ set(MOC_HEADER_FILES
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/SofaGuiQt.h
+    ${SRC_ROOT}/qt.conf.h
     ${SRC_ROOT}/FileManagement.h
     ${SRC_ROOT}/GraphListenerQListView.h
     ${SRC_ROOT}/PickHandlerCallBacks.h
@@ -124,6 +126,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/GenericWidget.h
     )
 set(SOURCE_FILES
+    ${SRC_ROOT}/AboutSOFADialog.cpp
     ${SRC_ROOT}/AddObject.cpp
     ${SRC_ROOT}/DataFilenameWidget.cpp
     ${SRC_ROOT}/DataWidget.cpp
@@ -161,6 +164,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/viewer/VisualModelPolicy.cpp    
 )
 set(UI_FILES
+    ${SRC_ROOT}/AboutDialog.ui
     ${SRC_ROOT}/BaseGenGraphForm.ui
     ${SRC_ROOT}/DialogAddObject.ui
     ${SRC_ROOT}/GUI.ui
@@ -306,12 +310,18 @@ install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION
 
 install(DIRECTORY "${SRC_ROOT}/resources/" DESTINATION "share/sofa/gui/qt" COMPONENT resources)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaGui
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaGui"
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    RELOCATABLE "plugins"
     )
+
+# sofa_create_package_with_targets add automatically PROJECT_NAME as include_dir
+# but SofaGui's code is like sofa/gui... so we need to forcefully add src/SofaGuiQt
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}>")
 
 # Qt deployment
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)

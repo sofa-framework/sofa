@@ -23,12 +23,10 @@
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <sofa/helper/Factory.inl>
@@ -165,7 +163,8 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, 
     Tetrahedron t(this, index);
     this->addTetraToDraw(t, tetraVertices, normalVertices);
 
-    vparams->drawTool()->drawTetrahedra(tetraVertices, defaulttype::Vec<4, float>(getColor4f()));
+    const auto c = getColor4f();
+    vparams->drawTool()->drawTetrahedra(tetraVertices, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
 
     vparams->drawTool()->restoreLastState();
 }
@@ -179,7 +178,10 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->setPolygonMode(0, true);
 
         vparams->drawTool()->enableLighting();
-        vparams->drawTool()->setMaterial(defaulttype::Vec<4, float>(getColor4f()));
+
+        const auto c = getColor4f();
+        const auto color = sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]);
+        vparams->drawTool()->setMaterial(color);
 
         std::vector<sofa::defaulttype::Vector3> tetraVertices;
         std::vector<sofa::defaulttype::Vector3> normalVertices;
@@ -189,10 +191,10 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
             this->addTetraToDraw(t, tetraVertices, normalVertices);
         }
 
-        vparams->drawTool()->drawTetrahedra(tetraVertices, defaulttype::Vec<4, float>(getColor4f()));
+        vparams->drawTool()->drawTetrahedra(tetraVertices, color);
         if (vparams->displayFlags().getShowNormals())
         {
-            vparams->drawTool()->drawLines(normalVertices, 1.0, defaulttype::Vec<4, float>(getColor4f()));
+            vparams->drawTool()->drawLines(normalVertices, 1.0, color);
         }
 
         if (vparams->displayFlags().getShowWireFrame())

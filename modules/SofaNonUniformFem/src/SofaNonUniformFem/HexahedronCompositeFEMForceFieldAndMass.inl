@@ -25,7 +25,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaDenseSolver/NewMatMatrix.h>
 #include <SofaNonUniformFem/SparseGridMultipleTopology.h>
-#include <sofa/simulation/Simulation.h>
 #include <iomanip>
 
 namespace sofa::component::forcefield

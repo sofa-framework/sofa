@@ -52,6 +52,8 @@
 #include <SofaGeneralLinearSolver/CholeskySolver.h>
 #endif
 
+#include <sofa/simulation/Node.h>
+
 
 namespace sofa
 {
@@ -311,14 +313,13 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         linearSolver = ptr->toLinearSolver();
     }
 
-    if(EulerSolver && CGlinearSolver)
+    if(EulerSolver && CGlinearSolver) {
         msg_info() << "use EulerImplicitSolver &  CGLinearSolver";
-    else if(EulerSolver && linearSolver)
-        msg_info() << "use EulerImplicitSolver &  LinearSolver" ;
-    else if(EulerSolver)
+    } else if(EulerSolver && linearSolver) {
+        msg_info() << "use EulerImplicitSolver &  LinearSolver";
+    } else if(EulerSolver) {
         msg_info() << "use EulerImplicitSolver";
-    else
-    {
+    } else {
         msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation";
         return;
     }

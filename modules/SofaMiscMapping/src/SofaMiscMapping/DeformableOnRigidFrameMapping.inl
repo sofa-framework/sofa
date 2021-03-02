@@ -24,6 +24,7 @@
 #include <SofaMiscMapping/DeformableOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 namespace sofa::component::mapping
 {
@@ -518,7 +519,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual:
         point = Out::getCPos(x[i]);
         points.push_back(point);
     }
-    vparams->drawTool()->drawPoints(points, 7, sofa::defaulttype::Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(points, 7, sofa::helper::types::RGBAColor::yellow());
 }
 
 } // namespace sofa::component::mapping

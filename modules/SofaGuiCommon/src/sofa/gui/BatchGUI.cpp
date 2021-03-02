@@ -23,6 +23,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
 #include <sstream>
@@ -30,10 +31,7 @@
 
 #include <boost/program_options.hpp>
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 const signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
@@ -63,7 +61,7 @@ int BatchGUI::mainLoop()
 
         sofa::helper::AdvancedTimer::begin("Animate");
         sofa::simulation::getSimulation()->animate(groot.get());
-        msg_info("BatchGUI") << "Processing." << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
+        msg_info("BatchGUI") << "Processing." << sofa::helper::AdvancedTimer::end("Animate", groot->getTime(), groot->getDt()) << msgendl;
         sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
         sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
@@ -75,8 +73,9 @@ int BatchGUI::mainLoop()
         {
             if (i != nbIter)
             {
-                sofa::helper::ScopedAdvancedTimer("Animate");
+                sofa::helper::AdvancedTimer::begin("Animate");
                 sofa::simulation::getSimulation()->animate(groot.get());
+                sofa::helper::AdvancedTimer::end("Animate");
             }
 
             if ( i == nbIter || (nbIter == -1 && i%1000 == 0) )
@@ -178,6 +177,4 @@ int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
     return 0;
 }
 
-} // namespace gui
-
-} // namespace sofaa
+} // namespace sofa::gui

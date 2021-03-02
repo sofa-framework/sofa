@@ -19,13 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QTVIEWER_H
-#define SOFA_GUI_QT_QTVIEWER_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <qgl.h>
 #include <qtimer.h>
 #include <cmath>
@@ -48,9 +46,9 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/gl/Trackball.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/helper/visual/Transformation.h>
+#include <sofa/helper/visual/Trackball.h>
+#include <sofa/gl/Texture.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <SofaSimulationCommon/xml/Element.h>
@@ -58,25 +56,14 @@
 // allow catheter navigation using the tracking system (very simple version, surely will be modified)
 //#define TRACKING
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
-{
-
-namespace qt
+namespace sofa::gui::qt::viewer::qt
 {
 
 //using namespace sofa::defaulttype;
 using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Quaternion;
-using namespace sofa::helper::gl;
+using namespace sofa::gl;
+using namespace sofa::helper::visual;
 using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
@@ -294,16 +281,4 @@ private:
     virtual bool mouseEvent ( QMouseEvent * e ) override;
 };
 
-} // namespace qt
-
-} // namespace viewer
-
-} //namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::gui::qt::viewer::qt

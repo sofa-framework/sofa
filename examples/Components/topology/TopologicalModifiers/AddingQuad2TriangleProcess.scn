@@ -1,9 +1,14 @@
 <!-- Automatic Quad adding example with Quad2Triangle mapping: Element added are define in: ./AddingQuadsProcess.txt -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9.81 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name='SofaMiscCollision' />
-    <RequiredPlugin name='SofaMiscTopology'/>
-    <RequiredPlugin name='SofaTopologyMapping'/>  
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaMiscCollision' />
+    <RequiredPlugin pluginName='SofaMiscTopology'/>
+    <RequiredPlugin pluginName='SofaTopologyMapping'/>  
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/> 
     
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" />
@@ -18,7 +23,6 @@
         <MechanicalObject template="Vec3d" src="@loader" name="Quads" showObject="1" />
         <QuadSetTopologyContainer src="@loader" name="Quad_topo" listening="1" />
         <QuadSetTopologyModifier name="Modifier" />
-        <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <QuadSetGeometryAlgorithms />
         <TopologicalChangeProcessor listening="1" filename="AddingQuadsProcess.txt" />
         <!--		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/> -->
@@ -28,7 +32,6 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" listening="1" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" />
             <Quad2TriangleTopologicalMapping input="@../Quad_topo" output="@Triangle_topo" />
             <!--      		<TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />

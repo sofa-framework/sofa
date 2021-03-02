@@ -22,8 +22,20 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H
 #define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H
 
-#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/DataEngine.h>
+#include <sofa/core/fwd.h>
+
+#ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
+namespace std
+{
+    extern template class list<const sofa::core::topology::TopologyChange*>;
+}
+namespace sofa::core::objectmodel
+{
+    extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+}
+
+#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
 
 namespace sofa
 {
@@ -34,67 +46,27 @@ namespace core
 namespace topology
 {
 
-
-
 /** A class that will interact on a topological Data */
-class TopologyEngine : public sofa::core::DataEngine
+class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
 {
 public:
     SOFA_ABSTRACT_CLASS(TopologyEngine, DataEngine);
-    //typedef sofa::core::objectmodel::Data< sofa::helper::vector <void*> > t_topologicalData;
 
 protected:
-    TopologyEngine() {}//m_topologicalData(nullptr)  {}
-
-    ~TopologyEngine() override
-    {
-        //if (this->m_topologicalData != nullptr)
-        //    this->removeTopologicalData();
-    }
+    TopologyEngine() {}
+    ~TopologyEngine() override {}
 
 public:
-
-    void init() override
-    {
-        sofa::core::DataEngine::init();
-        // TODO: see if necessary or not....
-        // this->addInput(&m_changeList);
-
-        // TODO: understand why this crash!!
-        //this->addOutput(this->m_topologicalData);
-
-        this->createEngineName();
-    }
-
+    void init() override ;
     void handleTopologyChange() override {}
-
 
 public:
     // really need to be a Data??
     Data <std::list<const TopologyChange *> >m_changeList;
 
-    size_t getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
+    size_t getNumberOfTopologicalChanges();
 
-    //virtual void registerTopologicalData(t_topologicalData* topologicalData) {m_topologicalData = topologicalData;}
-    /*
-        virtual void removeTopologicalData()
-        {
-            if (this->m_topologicalData)
-                delete this->m_topologicalData;
-        }
-    */
-    //virtual const t_topologicalData* getTopologicalData() {return m_topologicalData;}
-
-    virtual void createEngineName()
-    {
-        if (m_data_name.empty())
-            setName( m_prefix + "no_name" );
-        else
-            setName( m_prefix + m_data_name );
-
-        return;
-    }
-
+    virtual void createEngineName();
     virtual void linkToPointDataArray() {}
     virtual void linkToEdgeDataArray() {}
     virtual void linkToTriangleDataArray() {}
@@ -105,11 +77,6 @@ public:
     void setNamePrefix(const std::string& s) { m_prefix = s; }
 
 protected:
-    /// Data handle by the topological engine
-    //t_topologicalData* m_topologicalData;
-
-    //TopologyHandler* m_topologyHandler;
-
     /// use to define engine name.
     std::string m_prefix;
     /// use to define data handled name.

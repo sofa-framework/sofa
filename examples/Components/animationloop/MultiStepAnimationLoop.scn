@@ -1,6 +1,13 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="1.0">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaGeneralAnimationLoop'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaRigid'/>
+
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
@@ -16,7 +23,7 @@
             <MeshObjLoader name="meshLoader_4" filename="mesh/torus2.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_4" color="gray" />
         </Node>
-        <Node name="TorusRigid">
+        <Node name="TorusRigid-1">
             <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3d" dx="2.5" />
@@ -34,7 +41,7 @@
                 <RigidMapping />
             </Node>
         </Node>
-        <Node name="TorusRigid">
+        <Node name="TorusRigid-2">
             <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3d" dx="5" />
@@ -52,7 +59,7 @@
                 <RigidMapping />
             </Node>
         </Node>
-        <Node name="TorusRigid">
+        <Node name="TorusRigid-3">
             <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3d" dx="7.5" />
@@ -70,7 +77,7 @@
                 <RigidMapping />
             </Node>
         </Node>
-        <Node name="TorusRigid">
+        <Node name="TorusRigid-4">
             <EulerImplicitSolver />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3d" dx="10" />

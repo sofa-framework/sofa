@@ -47,6 +47,8 @@
 #include <sofa/simulation/Node.h>
 #endif
 
+
+#include <QScreen>
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
 #include "FileManagement.h"
@@ -81,6 +83,7 @@ using sofa::gui::GuiDataRepository;
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory;
 
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
 #include <QHBoxLayout>
@@ -144,19 +147,12 @@ using sofa::core::ExecParams;
 #include <boost/program_options.hpp>
 
 
-namespace sofa
-{
-
 #ifdef SOFA_PML
-using namespace filemanager::pml;
+using namespace sofa::gui::filemanager::pml;
 #endif
 
-namespace gui
+namespace sofa::gui::qt
 {
-
-namespace qt
-{
-
 
 using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
@@ -393,7 +389,11 @@ RealGUI::RealGUI ( const char* viewername)
     }
 
     this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     dockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures);
+#else
+    dockWidget->setFeatures(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+#endif
     dockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
 
     connect(dockWidget, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
@@ -452,7 +452,11 @@ RealGUI::RealGUI ( const char* viewername)
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+#else
+    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
     this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
@@ -493,6 +497,10 @@ RealGUI::RealGUI ( const char* viewername)
     /// Signal to the realGUI that the visibility has changed (eg: to update the menu bar)
     connect(m_docbrowser, SIGNAL(visibilityChanged(bool)), this, SLOT(docBrowserVisibilityChanged(bool)));
 #endif
+
+    // Trigger QDialog for "About" section
+    connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(showAbout()));
+
 
     m_filelistener = new RealGUIFileListener(this);
 }
@@ -807,7 +815,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if( currentSimulation() ) this->unloadScene();
 
     const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
-    mSimulation = simulation::getSimulation()->load ( filename, reload, sceneArgs );
+    mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == nullptr )
@@ -1179,6 +1187,17 @@ void RealGUI::showDocBrowser()
 #endif
 }
 
+//------------------------------------
+
+void RealGUI::showAbout()
+{
+    //create the QDialog for About
+    AboutSOFADialog* aboutSOFA_dialog = new sofa::gui::qt::AboutSOFADialog(this);
+    aboutSOFA_dialog->show();
+}
+
+//------------------------------------
+
 void RealGUI::showPluginManager()
 {
     pluginManager_dialog->updatePluginsListView();
@@ -1225,8 +1244,11 @@ void RealGUI::setViewerResolution ( int w, int h )
         QSize winSize = size();
         QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
         const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
-
+#else
+        const QRect screen = QGuiApplication::screens().at(QApplication::desktop()->screenNumber(this))->availableGeometry();
+#endif
         QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
         if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
         if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);
@@ -2632,8 +2654,4 @@ void RealGUI::appendToDataLogFile(QString dataModifiedString)
 
 //======================= SIGNALS-SLOTS ========================= }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui::qt

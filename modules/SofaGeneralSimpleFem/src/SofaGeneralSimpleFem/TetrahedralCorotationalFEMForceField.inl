@@ -23,7 +23,6 @@
 #include "TetrahedralCorotationalFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <cassert>
@@ -82,10 +81,10 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
     , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
     , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
-    , drawColor1(initData(&drawColor1,defaulttype::Vec4f(0.0f,0.0f,1.0f,1.0f),"drawColor1"," draw color for faces 1"))
-    , drawColor2(initData(&drawColor2,defaulttype::Vec4f(0.0f,0.5f,1.0f,1.0f),"drawColor2"," draw color for faces 2"))
-    , drawColor3(initData(&drawColor3,defaulttype::Vec4f(0.0f,1.0f,1.0f,1.0f),"drawColor3"," draw color for faces 3"))
-    , drawColor4(initData(&drawColor4,defaulttype::Vec4f(0.5f,1.0f,1.0f,1.0f),"drawColor4"," draw color for faces 4"))
+    , drawColor1(initData(&drawColor1,sofa::helper::types::RGBAColor(0.0f,0.0f,1.0f,1.0f),"drawColor1"," draw color for faces 1"))
+    , drawColor2(initData(&drawColor2,sofa::helper::types::RGBAColor(0.0f,0.5f,1.0f,1.0f),"drawColor2"," draw color for faces 2"))
+    , drawColor3(initData(&drawColor3,sofa::helper::types::RGBAColor(0.0f,1.0f,1.0f,1.0f),"drawColor3"," draw color for faces 3"))
+    , drawColor4(initData(&drawColor4,sofa::helper::types::RGBAColor(0.5f,1.0f,1.0f,1.0f),"drawColor4"," draw color for faces 4"))
     , l_topology(initLink("topology", "link to the topology container"))
     , tetrahedronHandler(nullptr)
 {

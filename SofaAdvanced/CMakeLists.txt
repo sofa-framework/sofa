@@ -1,21 +1,12 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaAdvanced)
 
-## Dependencies
-find_package(SofaGeneral REQUIRED)
-
 ## Version
 set(SOFAADVANCED_VERSION ${SofaFramework_VERSION})
 
 ## Subdirectories
 set(SOFAADVANCED_MODULES
     SofaNonUniformFem
-    )
-
-message(DEPRECATION
-    " ${PROJECT_NAME} is deprecated.\n"
-    " You should now explicitely find (find_package) and link (target_link_library) each module you need within: \n"
-    " ${SOFAADVANCED_MODULES}"
     )
 
 foreach(module ${SOFAADVANCED_MODULES})

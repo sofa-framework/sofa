@@ -34,9 +34,9 @@
 #include <sofa/gui/qt/QMomentumStatWidget.h>
 #endif
 #include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::Message ;
+using sofa::helper::logging::Message;
 
-
+#include <sofa/simulation/Node.h>
 #include <iostream>
 
 #include <QPushButton>
@@ -52,15 +52,8 @@ using sofa::helper::logging::Message ;
 // uncomment to show traces of GUI operations in this file
 // #define DEBUG_GUI
 
-namespace sofa
+namespace sofa::gui::qt
 {
-
-namespace gui
-{
-
-namespace qt
-{
-
 
 ModifyObject::ModifyObject(void *Id,
                            QTreeWidgetItem* item_clicked,
@@ -277,7 +270,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 #if SOFAGUIQT_HAVE_QT5_CHARTS
         //Energy Widget
-        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(node))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -287,7 +280,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         }
 
         //Momentum Widget
-        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(node))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -503,11 +496,11 @@ void ModifyObject::updateValues()
     //Make the update of all the values
     if (node)
     {
-        bool isNode =( dynamic_cast< simulation::Node *>(node) != nullptr);
+        bool isNode =( sofa::simulation::node::getNodeFrom(node) != nullptr);
         //If the current element is a node of the graph, we first apply the transformations
         if (transformation && dialogFlags_.REINIT_FLAG && isNode)
         {
-            simulation::Node* current_node = dynamic_cast< simulation::Node *>(node);
+            simulation::Node* current_node = sofa::simulation::node::getNodeFrom(node);
             if (!transformation->isDefaultValues())
                 transformation->applyTransformation(current_node);
             transformation->setDefaultValues();
@@ -519,7 +512,7 @@ void ModifyObject::updateValues()
             {
                 obj->reinit();
             }
-            else if (simulation::Node *n = dynamic_cast< simulation::Node *>(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
+            else if (simulation::Node *n = sofa::simulation::node::getNodeFrom(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
         }
 
     }
@@ -668,8 +661,7 @@ QString ModifyObject::parseDataModified()
     return cat;
 }
 
-} // namespace qt
+bool ModifyObject::hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
 
-} // namespace gui
 
-} // namespace sofa
+} // namespace sofa::gui::qt

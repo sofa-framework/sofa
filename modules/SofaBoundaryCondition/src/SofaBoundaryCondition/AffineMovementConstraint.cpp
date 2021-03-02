@@ -25,8 +25,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/simulation/Node.h>
-
 #include <SofaBoundaryCondition/AffineMovementConstraint.inl>
 
 namespace sofa::component::projectiveconstraintset
@@ -35,7 +33,6 @@ namespace sofa::component::projectiveconstraintset
 int AffineMovementConstraintRegister = core::RegisterObject("Constraint the movement by a rigid transform.")
         .add< AffineMovementConstraint<defaulttype::Vec3Types> >()
         .add< AffineMovementConstraint<defaulttype::Rigid3Types> >()
- 
         ;
 
 template class SOFA_SOFABOUNDARYCONDITION_API AffineMovementConstraint<defaulttype::Vec3Types>;

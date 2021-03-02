@@ -32,13 +32,7 @@
 // uncomment to show traces of GUI operations in this file
 //#define DEBUG_GUI
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
@@ -122,7 +116,7 @@ void QTabulationModifyObject::dataValueChanged(QString dataValue)
 
 void QTabulationModifyObject::updateListViewItem()
 {
-    if (simulation::Node *node=dynamic_cast< simulation::Node *>(object))
+    if (simulation::Node *node=sofa::simulation::node::getNodeFrom(object))
     {
         item->setText(0,object->getName().c_str());
         emit nodeNameModification(node);
@@ -204,8 +198,4 @@ void QTabulationModifyObject::addStretch()
     dynamic_cast<QVBoxLayout*>(this->layout())->addStretch();
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

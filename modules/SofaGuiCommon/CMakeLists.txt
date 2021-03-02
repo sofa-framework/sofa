@@ -2,15 +2,20 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaGuiCommon)
 
 find_package(SofaBase REQUIRED)
-find_package(SofaCommon REQUIRED)
-find_package(SofaGeneral REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
 find_package(SofaGraphComponent REQUIRED)
-
+find_package(SofaSimulationCommon REQUIRED)
+sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
+if(Sofa.GL_FOUND)
+    message("-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
+else()
+    message("-- ${PROJECT_NAME}: Sofa.GL dependent features disabled.")
+endif()
 
 set(SRC_ROOT src/sofa/gui)
 
 set(HEADER_FILES
-    ${SRC_ROOT}/config.h
+    ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/BaseGUI.h
     ${SRC_ROOT}/BaseViewer.h
     ${SRC_ROOT}/BatchGUI.h
@@ -39,11 +44,21 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaCommon SofaGeneral SofaGraphComponent SofaUserInteraction)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction SofaSimulationCommon)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaGui
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
+endif()
+
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaGui"
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     )

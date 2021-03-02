@@ -73,8 +73,8 @@ template<class TCoord, class TDeriv, class TReal>
 void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::init(Main* m)
 {
     Data& data = *m->data;
-    data.minIndex = -1;
-    data.maxIndex = -1;
+    data.minIndex = sofa::InvalidID;
+    data.maxIndex = sofa::InvalidID;
     data.cudaIndices.clear();
     m->core::behavior::template ProjectiveConstraintSet<DataTypes>::init();
     const SetIndexArray& indices = m->d_indices.getValue();
@@ -89,16 +89,18 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         {
             data.minIndex = *sortedIndices.begin();
             data.maxIndex = *sortedIndices.rbegin();
-            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" contiguous fixed indices, "<<data.minIndex<<" - "<<data.maxIndex<<sendl;
+            msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " contiguous fixed indices, " << data.minIndex << " - " << data.maxIndex;
         }
         else
         {
-            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" non-contiguous fixed indices"<<sendl;
+            msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " non-contiguous fixed indices";
             data.cudaIndices.reserve(sortedIndices.size());
             for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); ++it)
                 data.cudaIndices.push_back(*it);
         }
     }
+
+    m->d_componentState.setValue(ComponentState::Valid);
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -110,35 +112,35 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     m->d_indices.endEdit();
     if (data.cudaIndices.empty())
     {
-        if (data.minIndex == -1)
+        if (data.minIndex == sofa::InvalidID)
         {
             //std::cout << "CudaFixedConstraint: single index "<<index<<"\n";
             data.minIndex = index;
             data.maxIndex = index;
         }
-        else if ((int)index >= data.minIndex && (int)index <= data.maxIndex)
+        else if (index >= data.minIndex && index <= data.maxIndex)
         {
             // point already fixed
         }
-        else if (data.minIndex == (int)index+1)
+        else if (data.minIndex == index + 1)
         {
             data.minIndex = index;
             //std::cout << "CudaFixedConstraint: new min index "<<index<<"\n";
         }
-        else if (data.maxIndex == (int)index-1)
+        else if (data.maxIndex == sofa::InvalidID || data.maxIndex == index - 1)
         {
             data.maxIndex = index;
             //std::cout << "CudaFixedConstraint: new max index "<<index<<"\n";
         }
         else
         {
-            data.cudaIndices.reserve(data.maxIndex-data.minIndex+2);
-            for (int i=data.minIndex; i<data.maxIndex; ++i)
+            data.cudaIndices.reserve(data.maxIndex - data.minIndex + 2);
+            for (int i = data.minIndex; i < data.maxIndex; ++i)
                 data.cudaIndices.push_back(i);
             data.cudaIndices.push_back(index);
-            data.minIndex = -1;
-            data.maxIndex = -1;
-            std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices.size()<<"\n";
+            data.minIndex = sofa::InvalidID;
+            data.maxIndex = sofa::InvalidID;
+            msg_info("CudaFixedConstraint") << "new indices array size " << data.cudaIndices.size() << "\n";
         }
     }
     else
@@ -156,29 +158,29 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     m->d_indices.endEdit();
     if (data.cudaIndices.empty())
     {
-        if (data.minIndex <= (int)index && (int)index <= data.maxIndex)
+        if (data.minIndex <= index && index <= data.maxIndex)
         {
-            if (data.minIndex == (int)index)
+            if (data.minIndex == index)
             {
-                if (data.maxIndex == (int)index)
+                if (data.maxIndex == index)
                 {
                     // empty set
-                    data.minIndex = -1;
-                    data.maxIndex = -1;
+                    data.minIndex = sofa::InvalidID;
+                    data.maxIndex = sofa::InvalidID;
                 }
                 else
                     ++data.minIndex;
             }
-            else if (data.maxIndex == (int)index)
+            else if (data.maxIndex == index)
                 --data.maxIndex;
             else
             {
                 data.cudaIndices.reserve(data.maxIndex-data.minIndex);
                 for (int i=data.minIndex; i<data.maxIndex; ++i)
-                    if (i != (int)index)
+                    if (i != index)
                         data.cudaIndices.push_back(i);
-                data.minIndex = -1;
-                data.maxIndex = -1;
+                data.minIndex = sofa::InvalidID;
+                data.maxIndex = sofa::InvalidID;
             }
         }
     }
@@ -189,7 +191,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         {
             if (found)
                 data.cudaIndices[i-1] = data.cudaIndices[i];
-            else if (data.cudaIndices[i] == (int)index)
+            else if (data.cudaIndices[i] == index)
                 found = true;
         }
         if (found)
@@ -201,8 +203,8 @@ template<int N, class real>
 void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Main* m)
 {
     Data& data = *m->data;
-    data.minIndex = -1;
-    data.maxIndex = -1;
+    data.minIndex = sofa::InvalidID;
+    data.maxIndex = sofa::InvalidID;
     data.cudaIndices.clear();
     m->core::behavior::template ProjectiveConstraintSet<DataTypes>::init();
     const SetIndexArray& indices = m->d_indices.getValue();
@@ -217,16 +219,18 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
         {
             data.minIndex = *sortedIndices.begin();
             data.maxIndex = *sortedIndices.rbegin();
-            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" contiguous fixed indices, "<<data.minIndex<<" - "<<data.maxIndex<<sendl;
+            msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " contiguous fixed indices, " << data.minIndex << " - " << data.maxIndex;
         }
         else
         {
-            //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" non-contiguous fixed indices"<<sendl;
+            msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " non-contiguous fixed indices";
             data.cudaIndices.reserve(sortedIndices.size());
             for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); ++it)
                 data.cudaIndices.push_back(*it);
         }
     }
+
+    m->d_componentState.setValue(ComponentState::Valid);
 }
 
 template<int N, class real>
@@ -238,22 +242,22 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConst
     m->d_indices.endEdit();
     if (data.cudaIndices.empty())
     {
-        if (data.minIndex == -1)
+        if (data.minIndex == sofa::InvalidID)
         {
             //std::cout << "CudaFixedConstraint: single index "<<index<<"\n";
             data.minIndex = index;
             data.maxIndex = index;
         }
-        else if ((int)index >= data.minIndex && (int)index <= data.maxIndex)
+        else if (index >= data.minIndex && index <= data.maxIndex)
         {
             // point already fixed
         }
-        else if (data.minIndex == (int)index+1)
+        else if (data.minIndex == index+1)
         {
             data.minIndex = index;
             //std::cout << "CudaFixedConstraint: new min index "<<index<<"\n";
         }
-        else if (data.maxIndex == (int)index-1)
+        else if (data.maxIndex == sofa::InvalidID || data.maxIndex == index-1)
         {
             data.maxIndex = index;
             //std::cout << "CudaFixedConstraint: new max index "<<index<<"\n";
@@ -264,9 +268,9 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConst
             for (int i=data.minIndex; i<data.maxIndex; ++i)
                 data.cudaIndices.push_back(i);
             data.cudaIndices.push_back(index);
-            data.minIndex = -1;
-            data.maxIndex = -1;
-            std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices.size()<<"\n";
+            data.minIndex = sofa::InvalidID;
+            data.maxIndex = sofa::InvalidID;
+            msg_info("CudaFixedConstraint") << "new indices array size "<<data.cudaIndices.size()<<"\n";
         }
     }
     else
@@ -284,29 +288,29 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
     m->d_indices.endEdit();
     if (data.cudaIndices.empty())
     {
-        if (data.minIndex <= (int)index && (int)index <= data.maxIndex)
+        if (data.minIndex <= index && index <= data.maxIndex)
         {
-            if (data.minIndex == (int)index)
+            if (data.minIndex == index)
             {
-                if (data.maxIndex == (int)index)
+                if (data.maxIndex == index)
                 {
                     // empty set
-                    data.minIndex = -1;
-                    data.maxIndex = -1;
+                    data.minIndex = sofa::InvalidID;
+                    data.maxIndex = sofa::InvalidID;
                 }
                 else
                     ++data.minIndex;
             }
-            else if (data.maxIndex == (int)index)
+            else if (data.maxIndex == index)
                 --data.maxIndex;
             else
             {
                 data.cudaIndices.reserve(data.maxIndex-data.minIndex);
                 for (int i=data.minIndex; i<data.maxIndex; ++i)
-                    if (i != (int)index)
+                    if (i != index)
                         data.cudaIndices.push_back(i);
-                data.minIndex = -1;
-                data.maxIndex = -1;
+                data.minIndex = sofa::InvalidID;
+                data.maxIndex = sofa::InvalidID;
             }
         }
     }
@@ -317,7 +321,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
         {
             if (found)
                 data.cudaIndices[i-1] = data.cudaIndices[i];
-            else if (data.cudaIndices[i] == (int)index)
+            else if (data.cudaIndices[i] == index)
                 found = true;
         }
         if (found)
@@ -342,12 +346,12 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec1fTypes>::projectResponse(Mai
 
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
-{
+{    
     Data& data = *m->data;
     if (m->d_fixAll.getValue())
-        FixedConstraintCuda3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
-    else if (data.minIndex >= 0)
-        FixedConstraintCuda3f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+3*data.minIndex);
+        FixedConstraintCuda3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));        
+    else if (data.minIndex != sofa::InvalidID)
+        FixedConstraintCuda3f_projectResponseContiguous(data.maxIndex - data.minIndex + 1, ((float*)dx.deviceWrite()) + 3 * data.minIndex);
     else
         FixedConstraintCuda3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
@@ -359,7 +363,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Ma
     Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedConstraintCuda3f1_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
-    else if (data.minIndex >= 0)
+    else if (data.minIndex != sofa::InvalidID)
         FixedConstraintCuda3f1_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+4*data.minIndex);
     else
         FixedConstraintCuda3f1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
@@ -371,7 +375,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3fTypes>::projectResponse(M
     Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedConstraintCudaRigid3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
-    else if (data.minIndex >= 0)
+    else if (data.minIndex != sofa::InvalidID)
         FixedConstraintCudaRigid3f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+6*data.minIndex);
     else
         FixedConstraintCudaRigid3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());

@@ -24,7 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseMapping.h>
 #include <SofaUserInteraction/MouseInteractor.h>
-#include <sofa/simulation/Simulation.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

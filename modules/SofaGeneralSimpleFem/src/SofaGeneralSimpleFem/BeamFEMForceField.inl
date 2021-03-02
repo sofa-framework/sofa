@@ -24,16 +24,14 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>
 #include <set>
-#include <sofa/helper/system/gl.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/simulation/Node.h>
 
 #include "StiffnessContainer.h"
 #include "PoissonContainer.h"
@@ -99,8 +97,8 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::bwdInit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
-    assert(state);
-    m_matS.resize(state->getMatrixSize(),state->getMatrixSize());
+    if(!state)
+        msg_warning() << "Missing mechanical state";
     m_lastUpdatedStep=-1.0;
 }
 
@@ -683,9 +681,9 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
         for (unsigned int i=0; i<m_indexedElements->size(); ++i)
             drawElement(i, points, x);
     }
-    vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,0,1));
-    vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,0,1));
-    vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(0,0,1,1));
+    vparams->drawTool()->drawLines(points[0], 1, sofa::helper::types::RGBAColor::red());
+    vparams->drawTool()->drawLines(points[1], 1, sofa::helper::types::RGBAColor::green());
+    vparams->drawTool()->drawLines(points[2], 1, sofa::helper::types::RGBAColor::blue());
 
     vparams->drawTool()->restoreLastState();
 }

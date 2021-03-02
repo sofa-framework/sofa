@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <sofa/helper/testing/BaseTest.h>
-#include <SofaBaseTopology/SofaBaseTopology_test/fake_TopologyScene.h>
+#include "fake_TopologyScene.h"
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -61,7 +61,7 @@ bool EdgeSetTopology_test::testEmptyContainer()
 
 bool EdgeSetTopology_test::testEdgeBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyObjectType::EDGE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -126,7 +126,7 @@ bool EdgeSetTopology_test::testEdgeBuffers()
 
 bool EdgeSetTopology_test::testVertexBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyObjectType::EDGE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -166,7 +166,7 @@ bool EdgeSetTopology_test::testVertexBuffers()
 
 bool EdgeSetTopology_test::checkTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyObjectType::EDGE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)

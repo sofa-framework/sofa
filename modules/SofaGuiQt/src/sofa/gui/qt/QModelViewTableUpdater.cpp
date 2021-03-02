@@ -28,11 +28,7 @@
 #include <QStandardItemModel>
 #include <QApplication>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 QTableViewUpdater::QTableViewUpdater(QWidget * parent )
@@ -63,7 +59,11 @@ QVariant QTableModelUpdater::data(const QModelIndex &index, int role) const
     if(m_isReadOnly){
         switch(role){
         case Qt::BackgroundRole:
+#if (QT_VERSION < QT_VERSION_CHECK(5, 13, 0))
             return QApplication::palette().color(QPalette::Disabled, QPalette::Background) ;
+#else
+            return QApplication::palette().color(QPalette::Disabled, QPalette::Window) ;
+#endif
         case Qt::ForegroundRole:
             return QApplication::palette().color(QPalette::Disabled, QPalette::Text);
         }
@@ -124,8 +124,4 @@ void QTableModelUpdater::resizeTableH( int number )
     }
 }
 
-
-}
-}
-}
-
+} // namespace sofa::gui::qt

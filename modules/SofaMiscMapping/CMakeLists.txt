@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscMapping LANGUAGES CXX)
 
-find_package(SofaCommon REQUIRED) # SofaSimpleFem SofaRigid
-find_package(SofaGeneral REQUIRED) # SofaGeneralSimpleFem
-
 set(SOFAMISCMAPPING_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -61,8 +58,17 @@ list(APPEND SOURCE_FILES
     ${SOFAMISCMAPPING_SRC}/VoidMapping.cpp
     )
 
+find_package(SofaSimpleFem REQUIRED)
+find_package(SofaRigid REQUIRED) 
+find_package(SofaGeneralSimpleFem REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid SofaGeneralSimpleFem)
+
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

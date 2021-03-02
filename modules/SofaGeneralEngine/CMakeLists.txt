@@ -111,8 +111,6 @@ list(APPEND HEADER_FILES
     ${SOFAGENERALENGINE_SRC}/SubsetTopology.inl
     ${SOFAGENERALENGINE_SRC}/SumEngine.h
     ${SOFAGENERALENGINE_SRC}/SumEngine.inl
-    ${SOFAGENERALENGINE_SRC}/TextureInterpolation.h
-    ${SOFAGENERALENGINE_SRC}/TextureInterpolation.inl
     ${SOFAGENERALENGINE_SRC}/TransformEngine.h
     ${SOFAGENERALENGINE_SRC}/TransformEngine.inl
     ${SOFAGENERALENGINE_SRC}/TransformMatrixEngine.h
@@ -177,7 +175,6 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALENGINE_SRC}/Spiral.cpp
     ${SOFAGENERALENGINE_SRC}/SubsetTopology.cpp
     ${SOFAGENERALENGINE_SRC}/SumEngine.cpp
-    ${SOFAGENERALENGINE_SRC}/TextureInterpolation.cpp
     ${SOFAGENERALENGINE_SRC}/TransformEngine.cpp
     ${SOFAGENERALENGINE_SRC}/TransformMatrixEngine.cpp
     ${SOFAGENERALENGINE_SRC}/TransformPosition.cpp
@@ -186,11 +183,33 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALENGINE_SRC}/Vertex2Frame.cpp
     )
 
-find_package(SofaCommon REQUIRED) # SofaMeshCollision
+find_package(SofaMeshCollision REQUIRED)
 find_package(SofaGeneralMeshCollision REQUIRED)
+sofa_find_package(Sofa.GL QUIET)
+
+if(Sofa.GL_FOUND)
+    list(APPEND HEADER_FILES
+        ${SOFAGENERALENGINE_SRC}/TextureInterpolation.h
+        ${SOFAGENERALENGINE_SRC}/TextureInterpolation.inl
+        )
+    list(APPEND SOURCE_FILES
+        ${SOFAGENERALENGINE_SRC}/TextureInterpolation.cpp
+        )
+endif()
+
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision) 
+
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL) # Needs OpenGL for TextureInterpolation
+endif()  
+
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

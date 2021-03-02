@@ -2,6 +2,7 @@
 <Node dt="0.01" gravity="0 -10 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaSphFluid"/>
+    <RequiredPlugin name='SofaExplicitOdeSolver'/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <Node>

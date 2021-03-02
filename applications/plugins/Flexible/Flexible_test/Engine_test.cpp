@@ -60,6 +60,7 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
     virtual void init()
     {
         sofa::simpleapi::importPlugin("SofaOpenglVisual");
+        sofa::simpleapi::importPlugin("SofaLoader");
         DataEngine_test<DataEngineType>::init();
 
         const DDGLinkContainer& parent_inputs = this->m_engineInput->DDGNode::getInputs();
@@ -255,7 +256,7 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE( FlexibleDataEngine_test, TestTypes );
+TYPED_TEST_SUITE( FlexibleDataEngine_test, TestTypes );
 
 // test number of call to DataEngine::update
 TYPED_TEST( FlexibleDataEngine_test, basic_test )

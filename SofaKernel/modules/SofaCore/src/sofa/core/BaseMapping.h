@@ -22,10 +22,11 @@
 #ifndef SOFA_CORE_BASEMAPPING_H
 #define SOFA_CORE_BASEMAPPING_H
 
-
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/config.h>
+#include <sofa/core/fwd.h>
+#include <sofa/defaulttype/fwd.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
 {
@@ -174,8 +175,6 @@ protected:
     bool m_forceMaskNewStep;
 #endif
 
-    /// type used for masks
-    typedef behavior::BaseMechanicalState::ForceMask ForceMask;
     /// Useful when the mapping is applied only on a subset of parent dofs.
     /// It is automatically called by applyJT.
     ///
@@ -183,12 +182,9 @@ protected:
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask() = 0;
 
-
 public:
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
-
 };
 
 } // namespace core

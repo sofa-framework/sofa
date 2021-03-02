@@ -395,9 +395,9 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     bool checkEigenDenseMatrix()
     {
         if( matMultiplier.nbCols != eiDenseMultiplier.cols() || matMultiplier.nbLines != eiDenseMultiplier.rows() ) return false;
-        for( int j=0; j<matMultiplier.nbCols; j++)
+        for( sofa::Index j=0; j<matMultiplier.nbCols; j++)
         {
-            for( int i=0; i<matMultiplier.nbLines; i++)
+            for( sofa::Index i=0; i<matMultiplier.nbLines; i++)
             {
                 if( matMultiplier(i,j) != eiDenseMultiplier(i,j) ) return false;
             }

@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
@@ -76,6 +76,13 @@ FixedConstraint<DataTypes>::FixedConstraint()
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
+
+    this->addUpdateCallback("updateIndices", { &d_indices}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        checkIndices();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 
@@ -145,7 +152,7 @@ void FixedConstraint<DataTypes>::init()
     {
         msg_info() << "Can not find the topology, won't be able to handle topological changes";
     }
-   
+
     this->checkIndices();
     this->d_componentState.setValue(ComponentState::Valid);
 }
@@ -272,26 +279,28 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
 // Each fixed point received a null velocity vector.
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
-// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
+// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null or 
+// to set the projectVelocity option to True. If not, the fixed point is going to drift.
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
     SOFA_UNUSED(mparams);
 
     if(!d_projectVelocity.getValue()) return;
-    const SetIndexArray & indices = this->d_indices.getValue();
+
     helper::WriteAccessor<DataVecDeriv> res (vData );
 
-    if( d_fixAll.getValue() )    // fix everyting
+    if ( d_fixAll.getValue() )    // fix everyting
     {
-        for( unsigned i=0; i<res.size(); i++ )
+        for(Size i=0; i<res.size(); i++)
             res[i] = Deriv();
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        const SetIndexArray & indices = this->d_indices.getValue();
+        for(Index ind : indices)
         {
-            res[*it] = Deriv();
+            res[ind] = Deriv();
         }
     }
 }
@@ -307,7 +316,8 @@ void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
     if(r)
     {
         const unsigned int N = Deriv::size();
@@ -345,7 +355,8 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    int o = matrix->getGlobalOffset(this->mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    int o = matrix->getGlobalOffset(this->mstate.get());
     if (o >= 0)
     {
         unsigned int offset = (unsigned int)o;
@@ -353,7 +364,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 
         if( d_fixAll.getValue() )
         {
-            for(Size i=0; i<vect->size(); i++ )
+            for(sofa::Size i=0; i < (sofa::Size) vect->size(); i++ )
             {
                 for (unsigned int c=0; c<N; ++c)
                     vect->clear(offset + N * i + c);
@@ -362,10 +373,10 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
         else
         {
             const SetIndexArray & indices = d_indices.getValue();
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (const auto & index : indices)
             {
                 for (unsigned int c=0; c<N; ++c)
-                    vect->clear(offset + N * (*it) + c);
+                    vect->clear(offset + N * index + c);
             }
         }
     }
@@ -403,7 +414,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(point);
             }
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
@@ -425,7 +436,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(point);
             }
         }
-        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
     vparams->drawTool()->restoreLastState();

@@ -63,16 +63,16 @@ protected:
     void populateMesh_1triangle_1tetra()
     {
         MeshTestLoader::waPositions my_positions(meshLoader.d_positions);
-        meshLoader.addPosition(&(my_positions.wref()), 0.,0.,0.);
-        meshLoader.addPosition(&(my_positions.wref()), 1.,0.,0.);
-        meshLoader.addPosition(&(my_positions.wref()), 0.,1.,0.);
-        meshLoader.addPosition(&(my_positions.wref()), 0.,0.,1.);
+        meshLoader.addPosition((my_positions.wref()), 0.,0.,0.);
+        meshLoader.addPosition((my_positions.wref()), 1.,0.,0.);
+        meshLoader.addPosition((my_positions.wref()), 0.,1.,0.);
+        meshLoader.addPosition((my_positions.wref()), 0.,0.,1.);
 
         MeshTestLoader::waTtriangles my_triangles(meshLoader.d_triangles);
-        meshLoader.addTriangle(&(my_triangles.wref()), MeshLoader::Triangle(0,1,2));
+        meshLoader.addTriangle((my_triangles.wref()), MeshLoader::Triangle(0,1,2));
 
         MeshTestLoader::waTetrahedra my_tetrahedra(meshLoader.d_tetrahedra);
-        meshLoader.addTetrahedron(&(my_tetrahedra.wref()), MeshLoader::Tetrahedron(0,1,2,3) );
+        meshLoader.addTetrahedron((my_tetrahedra.wref()), MeshLoader::Tetrahedron(0,1,2,3) );
 
     }
 

@@ -21,14 +21,14 @@
 ******************************************************************************/
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/simulation/Simulation.h>
-
-namespace sofa
-{
-namespace gui
+#include <sofa/simulation/Node.h>
+#if SOFAGUICOMMON_HAVE_SOFA_GL
+#include <sofa/gl/gl.h>
+#include <sofa/gl/BasicShapes.h>
+#endif // SOFAGUICOMMON_HAVE_SOFA_GL
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+namespace sofa::gui
 {
 
 using namespace sofa::component::collision;
@@ -46,9 +46,7 @@ void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::compon
 
     if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  ) // make sure we are not picking the background...
     {
-
         helper::vector<core::CollisionModel*> listCollisionModel;
-        //sofa::simulation::getSimulation()->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         if (body.body) body.body->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         const std::size_t totalCollisionModel = listCollisionModel.size();
         const int indexListCollisionModel = (int) ( colour[0] * (float)totalCollisionModel + 0.5) - 1;
@@ -106,7 +104,7 @@ void ColourPickingVisitor::processCollisionModel(simulation::Node*  node , core:
 
 void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> * tmodel)
 {
-#ifndef SOFA_NO_OPENGL
+#if SOFAGUICOMMON_HAVE_SOFA_GL
     using namespace sofa::core::collision;
     using namespace sofa::defaulttype;
     glDisable(GL_LIGHTING);
@@ -117,7 +115,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
 
     helper::vector<Vector3> points;
     helper::vector<Vector3> normals;
-    helper::vector< Vec<4,float> > colours;
+    std::vector<sofa::helper::types::RGBAColor> colours;
     helper::vector<core::CollisionModel*> listCollisionModel;
     helper::vector<core::CollisionModel*>::iterator iter;
     float r,g;
@@ -162,12 +160,12 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
     default: assert(false);
     }
     vparams->drawTool()->drawTriangles(points,normals,colours);
-#endif /* SOFA_NO_OPENGL */
+#endif // SOFAGUICOMMON_HAVE_SOFA_GL
 }
 
 void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types> * smodel)
 {
-#ifndef SOFA_NO_OPENGL
+#if SOFAGUICOMMON_HAVE_SOFA_GL
     typedef Sphere::Coord Coord;
 
     if( method == ENCODE_RELATIVEPOSITION ) return; // we pick the center of the sphere.
@@ -204,14 +202,11 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
         glPushMatrix();
         ratio = (float)i / (float)npoints;
         glColor4f(red,ratio,0,1);
-		helper::gl::drawSphere(p, radius[i], 32, 16);
+		sofa::gl::drawSphere(p, radius[i], 32, 16);
 
         glPopMatrix();
     }
-#endif /* SOFA_NO_OPENGL */
+#endif // SOFAGUICOMMON_HAVE_SOFA_GL
 }
 
-
-
-}
-}
+} // namespace sofa::gui

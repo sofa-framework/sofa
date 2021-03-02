@@ -70,7 +70,7 @@ void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalP
 
     if (mstate)
     {
-        projectJacobianMatrix(mparams, *cId[mstate.get(mparams)].write());
+        projectJacobianMatrix(mparams, *cId[mstate.get()].write());
     }
 }
 
@@ -83,7 +83,7 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams*
         return;
     if (mstate)
     {
-            projectResponse(mparams, *dxId[mstate.get(mparams)].write());
+            projectResponse(mparams, *dxId[mstate.get()].write());
     }
     msg_error_when(!mstate) << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName();
 }
@@ -97,7 +97,7 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
     if (mstate)
     {
 
-            projectVelocity(mparams, *vId[mstate.get(mparams)].write());
+            projectVelocity(mparams, *vId[mstate.get()].write());
     }
     msg_error_when(!mstate) << "ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName();
 }
@@ -111,7 +111,7 @@ void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams*
     if (mstate)
     {
 
-            projectPosition(mparams, *xId[mstate.get(mparams)].write());
+            projectPosition(mparams, *xId[mstate.get()].write());
     }
 }
 

@@ -28,9 +28,11 @@
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaBoundaryCondition/PatchTestMovementConstraint.h>
 
-
+#ifdef FLEXIBLE_TEST_WITH_IMAGE
 #include <image/ImageTypes.h>
 #include <image/ImageContainer.h>
+#endif
+
 #include <Flexible/types/DeformationGradientTypes.h>
 #include <Flexible/types/StrainTypes.h>
 #include <Flexible/material/HookeForceField.h>
@@ -42,11 +44,13 @@
 #include <Flexible/strainMapping/CauchyStrainMapping.h>
 #include <Flexible/strainMapping/InvariantMapping.h>
 #include <Flexible/strainMapping/PrincipalStretchesMapping.h>
-#include <Flexible/shapeFunction/VoronoiShapeFunction.h>
 #include <Flexible/shapeFunction/ShepardShapeFunction.h>
 #include <Flexible/shapeFunction/HatShapeFunction.h>
+#ifdef FLEXIBLE_TEST_WITH_IMAGE
+#include <Flexible/shapeFunction/VoronoiShapeFunction.h>
 #include <Flexible/shapeFunction/ShapeFunctionDiscretizer.h>
 #include <Flexible/shapeFunction/DiffusionShapeFunction.h>
+#endif
 
 
 

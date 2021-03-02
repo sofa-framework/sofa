@@ -33,7 +33,6 @@ namespace component
 namespace visualmodel
 {
 
-using namespace helper::gl;
 using namespace simulation;
 
 //Register RenderingSRGB in the Object Factory

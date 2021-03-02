@@ -21,8 +21,10 @@
 ******************************************************************************/
 #pragma once
 
+
 #include <SofaBoundaryCondition/SurfacePressureForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <vector>
@@ -437,7 +439,7 @@ void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(unsigned int q
 template <class DataTypes>
 bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) const
 {
-    if ( (m_max == Coord()) && (m_min == Coord()) )
+    if ( (m_max.getValue() == Coord()) && (m_min.getValue() == Coord()) )
         return true;
 
     return ( (x[0] >= m_min.getValue()[0])

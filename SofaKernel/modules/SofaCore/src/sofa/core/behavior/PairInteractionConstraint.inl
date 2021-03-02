@@ -83,7 +83,7 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[mstate1.get(cParams)].write(), *cId[mstate2.get(cParams)].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        buildConstraintMatrix(cParams, *cId[mstate1.get()].write(), *cId[mstate2.get()].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
         updateForceMask();
     }
 }
@@ -93,7 +93,7 @@ void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* c
 {
     if (cParams)
     {
-        storeLambda(cParams, *res[mstate1.get(cParams)].write(), *res[mstate2.get(cParams)].write(), *cParams->readJ(mstate1), *cParams->readJ(mstate2), lambda);
+        storeLambda(cParams, *res[mstate1.get()].write(), *res[mstate2.get()].write(), *cParams->readJ(mstate1), *cParams->readJ(mstate2), lambda);
     }
 }
 
@@ -102,8 +102,8 @@ template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result1, Data<VecDeriv>& result2,
     const Data<MatrixDeriv>& jacobian1, const Data<MatrixDeriv>& jacobian2, const sofa::defaulttype::BaseVector* lambda)
 {
-    auto res1 = sofa::helper::write(result1);
-    auto res2 = sofa::helper::write(result2);
+    auto res1 = sofa::helper::getWriteAccessor(result1);
+    auto res2 = sofa::helper::getWriteAccessor(result2);
     const MatrixDeriv& j1 = jacobian1.getValue();
     const MatrixDeriv& j2 = jacobian2.getValue();
 

@@ -29,7 +29,6 @@
 
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
@@ -624,9 +623,6 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
             m_topology->getContext()->get(triangleMod);
 
-            sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
-            m_topology->getContext()->get(triangleAlg);
-
             sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
@@ -682,7 +678,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 }
 
                 // Output declarations
-                sofa::helper::vector<sofa::core::topology::TopologyObjectType>       topoPath_list;
+                sofa::helper::vector<sofa::core::topology::TopologyElementType>       topoPath_list;
                 sofa::helper::vector<Index> indices_list;
                 sofa::helper::vector<Vec<3, double> > coords2_list;
 
@@ -717,7 +713,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 sofa::helper::vector<Index> new_edges;
 
                 //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
-                triangleAlg->SplitAlongPath(a_last, a, b_last, b,
+                triangleGeo->SplitAlongPath(a_last, a, b_last, b,
                         topoPath_list, indices_list, coords2_list,
                         new_edges, 0.1, 0.25);
 
@@ -726,7 +722,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 bool reachBorder = false;
 
                 //Duplicates the given edges
-                triangleAlg->InciseAlongEdgeList(new_edges,
+                triangleGeo->InciseAlongEdgeList(new_edges,
                         new_points, end_points, reachBorder);
 
                 if (!end_points.empty())
@@ -1038,13 +1034,6 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, Index& triangl
     //get the number of triangle in the topology
     size_t nbTriangle = m_topology->getNbTriangles();
 
-    sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
-    m_topology->getContext()->get(triangleAlg);
-    if (!triangleAlg)
-    {
-        msg_error() <<"TopologicalChangeProcessor needs a TriangleSetTopologyAlgorithms component." ;
-    }
-
     sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
     if (!triangleGeo)
@@ -1192,9 +1181,6 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
     m_topology->getContext()->get(triangleMod);
 
-    sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
-    m_topology->getContext()->get(triangleAlg);
-
     sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
@@ -1260,7 +1246,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         b = coordinates[i];
 
         // Output declarations
-        sofa::helper::vector< sofa::core::topology::TopologyObjectType> topoPath_list;
+        sofa::helper::vector< sofa::core::topology::TopologyElementType> topoPath_list;
         sofa::helper::vector<Index> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
@@ -1299,14 +1285,14 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         sofa::helper::vector< Index > new_edges;
 
         //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
-        triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, m_epsilonSnapPath.getValue(), m_epsilonSnapBorder.getValue());
+        triangleGeo->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, m_epsilonSnapPath.getValue(), m_epsilonSnapBorder.getValue());
 
         sofa::helper::vector<Index> new_points;
         sofa::helper::vector<Index> end_points;
         bool reachBorder = false;
 
         //Duplicates the given edges
-        triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
+        triangleGeo->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
 
         msg_info_when(reachBorder) << "Incision has reached a border.";
 
@@ -1421,8 +1407,8 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         }
     }
 
-    vparams->drawTool()->drawTriangles(trianglesToDraw, Vec<4,float>(0.0,0.0,1.0,1.0));
-    vparams->drawTool()->drawPoints(pointsToDraw, 15.0,  Vec<4,float>(1.0,0.0,1.0,1.0));
+    vparams->drawTool()->drawTriangles(trianglesToDraw, sofa::helper::types::RGBAColor::blue());
+    vparams->drawTool()->drawPoints(pointsToDraw, 15.0,  sofa::helper::types::RGBAColor::magenta());
 
     if (!errorTrianglesIndices.empty())
     {
@@ -1430,17 +1416,17 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         /* initialize random seed: */
         srand ( (unsigned int)time(nullptr) );
 
-        for (size_t i = 0 ; i < errorTrianglesIndices.size() ; i++)
+        for (unsigned int errorTrianglesIndex : errorTrianglesIndices)
         {
             Vec3Types::Coord coord[3];
-            triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndices[i], coord);
+            triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndex, coord);
 
-            for(unsigned int k = 0 ; k < 3 ; k++)
-                trianglesToDraw.push_back(coord[k]);
+            for(auto & k : coord)
+                trianglesToDraw.push_back(k);
         }
 
         vparams->drawTool()->drawTriangles(trianglesToDraw,
-                Vec<4,float>(1.0f,(float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, 1.0f));
+                sofa::helper::types::RGBAColor(1.0f,(float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, 1.0f));
     }
 }
 

@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralExplicitOdeSolver LANGUAGES CXX)
 
-
 set(SOFAGENERALEXPLICITODESOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -24,10 +23,10 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALEXPLICITODESOLVER_SRC}/RungeKutta4Solver.cpp
     )
 
-find_package(SofaSimulation REQUIRED)
+find_package(SofaFramework REQUIRED) # SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

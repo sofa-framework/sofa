@@ -57,30 +57,27 @@ using namespace gpu::opencl;
 template <>
 void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fTypes>::apply( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
 {
-    OutVecCoord& out = *dOut.beginEdit(mparams);
-    const InVecCoord& in = dIn.getValue(mparams);
+    auto out = sofa::helper::getWriteOnlyAccessor(dOut).wref();
+    const InVecCoord& in = dIn.getValue();
     out.fastResize(in.size());
     gpu::opencl::MechanicalObjectOpenCLVec3f_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit(mparams);
 }
 
 template <>
 void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fTypes>::applyJ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
-    OutVecDeriv& out = *dOut.beginEdit(mparams);
-    const InVecDeriv& in = dIn.getValue(mparams);
+    auto out = sofa::helper::getWriteOnlyAccessor(dOut).wref();
+    const InVecDeriv& in = dIn.getValue();
     out.fastResize(in.size());
     gpu::opencl::MechanicalObjectOpenCLVec3f_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit(mparams);
 }
 
 template <>
 void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fTypes>::applyJT( const core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
-    InVecDeriv& out = *dOut.beginEdit(mparams);
-    const OutVecDeriv& in = dIn.getValue(mparams);
+    auto out = sofa::helper::getWriteOnlyAccessor(dOut).wref();
+    const OutVecDeriv& in = dIn.getValue();
     gpu::opencl::MechanicalObjectOpenCLVec3f_vPEq(out.size(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit(mparams);
 }
 
 
@@ -89,30 +86,27 @@ void IdentityMapping<gpu::opencl::OpenCLVec3fTypes, gpu::opencl::OpenCLVec3fType
 template <>
 void IdentityMapping<gpu::opencl::OpenCLVec3f1Types, gpu::opencl::OpenCLVec3f1Types>::apply( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
 {
-    OutVecCoord& out = *dOut.beginEdit(mparams);
-    const InVecCoord& in = dIn.getValue(mparams);
+    auto out = sofa::helper::getWriteOnlyAccessor(dOut).wref();
+    const InVecCoord& in = dIn.getValue();
     out.fastResize(in.size());
     gpu::opencl::MechanicalObjectOpenCLVec3f1_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit(mparams);
 }
 
 template <>
 void IdentityMapping<gpu::opencl::OpenCLVec3f1Types, gpu::opencl::OpenCLVec3f1Types>::applyJ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
-    OutVecDeriv& out = *dOut.beginEdit(mparams);
-    const InVecDeriv& in = dIn.getValue(mparams);
+    auto out = sofa::helper::getWriteOnlyAccessor(dOut).wref();
+    const InVecDeriv& in = dIn.getValue();
     out.fastResize(in.size());
     gpu::opencl::MechanicalObjectOpenCLVec3f1_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit(mparams);
 }
 
 template <>
 void IdentityMapping<gpu::opencl::OpenCLVec3f1Types, gpu::opencl::OpenCLVec3f1Types>::applyJT( const core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
-    InVecDeriv& out = *dOut.beginEdit(mparams);
-    const OutVecDeriv& in = dIn.getValue(mparams);
+    auto out = sofa::helper::getWriteOnlyAccessor(dOut).wref();
+    const OutVecDeriv& in = dIn.getValue();
     gpu::opencl::MechanicalObjectOpenCLVec3f1_vPEq(out.size(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit(mparams);
 }
 
 } // namespace mapping

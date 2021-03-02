@@ -72,6 +72,10 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     m_root->setDt(0.01);
     createObject(m_root, "RequiredPlugin", { { "name","SofaGeneralSimpleFem" } });
     createObject(m_root, "RequiredPlugin", { { "name","SofaTopologyMapping" } });
+    createObject(m_root, "RequiredPlugin", { { "name","SofaGeneralLoader" } });
+    createObject(m_root, "RequiredPlugin", { { "name","SofaEngine" } });
+    createObject(m_root, "RequiredPlugin", { { "name","SofaImplicitOdeSolver" } });
+
     // create collision pipeline
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
     createObject(m_root, "BruteForceDetection", { { "name","Detection" } });
@@ -124,10 +128,6 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     createObject(nodeVolume, "TetrahedronSetTopologyModifier", {
         { "name","Modifier" }
         });
-    createObject(nodeVolume, "TetrahedronSetTopologyAlgorithms", {
-        { "name","TopoAlgo" },
-        { "template", "Vec3" }
-        });
     createObject(nodeVolume, "TetrahedronSetGeometryAlgorithms", {
         { "name","GeomAlgo" },
         { "template", "Vec3" }
@@ -164,10 +164,6 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         });
     createObject(nodeSurface, "TriangleSetTopologyModifier", {
         { "name","Modifier" }
-        });
-    createObject(nodeSurface, "TriangleSetTopologyAlgorithms", {
-        { "name","TopoAlgo" },
-        { "template", "Vec3" }
         });
     createObject(nodeSurface, "TriangleSetGeometryAlgorithms", {
         { "name","GeomAlgo" },

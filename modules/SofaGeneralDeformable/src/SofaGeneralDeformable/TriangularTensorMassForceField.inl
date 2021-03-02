@@ -432,7 +432,7 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     size_t nbTriangles=m_topology->getNbTriangles();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::helper::types::RGBAColor> colors;
     std::vector<sofa::defaulttype::Vector3> normals;
 
     vparams->drawTool()->disableLighting();

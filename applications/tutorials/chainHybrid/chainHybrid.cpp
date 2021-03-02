@@ -30,7 +30,7 @@ using VecCoord3 = sofa::helper::vector<Coord3>;
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Rigid3Mass;
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -55,8 +55,7 @@ using MeshSpringForceField3 = sofa::component::interactionforcefield::MeshSpring
 using RegularGridSpringForceField3 = sofa::component::interactionforcefield::RegularGridSpringForceField<Vec3Types>;
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>;
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
+#include <SofaSimulationGraph/SimpleApi.h>
 
 using sofa::core::objectmodel::New;
 
@@ -229,14 +228,14 @@ Node *createChainHybrid(Node *root)
 
 int main(int argc, char** argv)
 {
-    sofa::simulation::tree::init();
     ArgumentParser argParser(argc, argv);
     sofa::gui::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
-    sofa::gui::initMain();
+    sofa::gui::initSofaGui();
     sofa::gui::GUIManager::Init(argv[0]);
 
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    auto simulation = sofa::simpleapi::createSimulation();
+    sofa::simulation::setSimulation( simulation.get() );
 
     // The graph root node
     sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaMiscCollision");
@@ -254,7 +253,5 @@ int main(int argc, char** argv)
     //=======================================
     // Run the main loop
     sofa::gui::GUIManager::MainLoop(root);
-
-    sofa::simulation::tree::cleanup();
     return 0;
 }

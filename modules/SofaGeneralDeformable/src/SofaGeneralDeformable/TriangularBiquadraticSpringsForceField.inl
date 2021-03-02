@@ -74,7 +74,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
         }
         area=sqrt(area)/4;
         tinfo.restArea=area;
-        tinfo.currentNormal= cross<Real>((restPosition)[t[1]]-(restPosition)[t[0]],(restPosition)[t[2]]-(restPosition)[t[0]])/(2*area);
+        tinfo.currentNormal= cross((restPosition)[t[1]]-(restPosition)[t[0]],(restPosition)[t[2]]-(restPosition)[t[0]])/(2*area);
         tinfo.lastValidNormal=tinfo.currentNormal;
 
         for(j=0; j<3; ++j)
@@ -311,7 +311,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
             }
             if (compressible)
             {
-                tinfo->currentNormal= -cross<Real>(tinfo->dp[2],tinfo->dp[1]);
+                tinfo->currentNormal= -cross(tinfo->dp[2],tinfo->dp[1]);
                 tinfo->area=tinfo->currentNormal.norm()/2;
                 tinfo->J=(tinfo->area/tinfo->restArea);
                 if (tinfo->J<1)   // only apply compressible force if the triangle is compressed
@@ -557,7 +557,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
     size_t nbTriangles=m_topology->getNbTriangles();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::helper::types::RGBAColor> colors;
     std::vector<sofa::defaulttype::Vector3> normals;
 
     vparams->drawTool()->disableLighting();

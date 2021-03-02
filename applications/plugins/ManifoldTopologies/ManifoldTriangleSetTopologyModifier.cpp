@@ -651,7 +651,7 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
 }
 
 
-void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const size_t nTri2Add,
+void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const sofa::Size nTri2Add,
         const sofa::helper::vector< Triangle >& triangles2Add,
         const sofa::helper::vector< Index >& trianglesIndex2Add,
         const sofa::helper::vector< sofa::helper::vector< Index > > & ancestors,

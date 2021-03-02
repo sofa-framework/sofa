@@ -22,6 +22,8 @@
 #pragma once
 
 #include <SofaBoundaryCondition/FixedPlaneConstraint.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -106,7 +108,8 @@ FixedPlaneConstraint<DataTypes>::~FixedPlaneConstraint()
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix)
 {
-    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate.get());
     if(r)
     {
         /// Implement plane constraint only when the direction is along the coordinates directions
@@ -133,7 +136,8 @@ void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mp
                                                       BaseVector* vect,
                                                       const MultiMatrixAccessor* matrix)
 {
-    int o = matrix->getGlobalOffset(mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    int o = matrix->getGlobalOffset(mstate.get());
     if (o >= 0)
     {
         unsigned int offset = (unsigned int)o;
@@ -289,7 +293,7 @@ void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
         points.push_back({x[index][0], x[index][1], x[index][2]});
     }
 
-    vparams->drawTool()->drawPoints(points, 10, {1,1.0,0.5,1});
+    vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor{1,1.0,0.5,1});
 }
 
 /// This function are there to provide kind of type translation to the vector one so we can

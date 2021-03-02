@@ -21,10 +21,10 @@
 ******************************************************************************/
 #pragma once
 
-
+#include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <sofa/helper/cast.h>
 
@@ -178,7 +178,6 @@ void AffineMovementConstraint<DataTypes>::projectVelocity(const core::Mechanical
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
-    sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
     helper::WriteAccessor<DataVecCoord> x = xData;
     const SetIndexArray & indices = m_indices.getValue();
 
@@ -203,7 +202,7 @@ void AffineMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
     if (xf.size() == 0)
         this->initializeFinalPositions(indices,xData,x0,xf);
     // Update the intermediate Dofs positions computed by linear interpolation
-    SReal time = root->getTime();
+    SReal time = sofa::core::objectmodel::basecontext::getTime(this->getContext()->getRootContext());
     if( time > beginTime && time <= endTime && totalTime > 0)
     {
         for (auto index : indices)
@@ -328,7 +327,7 @@ void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
     }
 }
 

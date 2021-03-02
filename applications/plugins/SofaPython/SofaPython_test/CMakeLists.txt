@@ -43,8 +43,8 @@ set(PYTHON_FILES
 )
 
 
-find_package(SofaTest)
-find_package(SofaPython)
+find_package(SofaTest REQUIRED)
+find_package(SofaPython REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaPython SofaTest SofaGTestMain)

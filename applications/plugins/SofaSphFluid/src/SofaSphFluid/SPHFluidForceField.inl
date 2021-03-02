@@ -29,10 +29,6 @@
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
 
-#if __has_include(<execution>) && !defined(__APPLE__)
-#include <execution>
-#endif
-
 namespace sofa
 {
 
@@ -152,24 +148,6 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
     // This is an O(n2) step, except if a hash-grid is used to optimize it
     if (m_grid == nullptr)
     {
-#if __has_include(<execution>) && !defined(__APPLE__)
-        std::for_each(std::execution::par, x.begin(), x.end(), [&](const auto& ri)
-        {
-            auto i = &ri - &x[0]; // only possible with vector, etc.
-
-            for (size_t j = i + 1; j<n; j++)
-            {
-                const Coord& rj = x[j];
-                Real r2 = (rj - ri).norm2();
-                if (r2 < h2)
-                {
-                    Real r_h = (Real)sqrt(r2 / h2);
-                    m_particles[i].neighbors.push_back(std::make_pair(j, r_h));
-                }
-            }
-
-        });
-#else
         for (size_t i = 0; i<n; i++)
         {
             const Coord& ri = x[i];
@@ -185,7 +163,6 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
                 }
             }
         }
-#endif
     }
     else
     {
@@ -447,7 +424,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::helper::types::RGBAColor> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
     if (d_debugGrid.getValue())
     {
@@ -456,7 +433,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             Particle& Pi = m_particles[i];
             if (Pi.neighbors.size() != Pi.neighbors2.size())
             {
-                colorVector.push_back(sofa::defaulttype::Vec4f(1, 0, 0, 1));
+                colorVector.push_back(sofa::helper::types::RGBAColor::red());
                 for (unsigned int j = 0; j < Pi.neighbors.size(); j++)
                 {
                     int index = Pi.neighbors[j].first;
@@ -473,7 +450,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
                 vertices.clear();
                 colorVector.clear();
 
-                colorVector.push_back(sofa::defaulttype::Vec4f(1, 0, 1, 1));
+                colorVector.push_back(sofa::helper::types::RGBAColor::magenta());
                 for (unsigned int j = 0; j < Pi.neighbors2.size(); j++)
                 {
                     int index = Pi.neighbors2[j].first;
@@ -504,11 +481,11 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
                 float f = r_h * 2;
                 if (f < 1)
                 {
-                    colorVector.push_back(sofa::defaulttype::Vec4f(0, 1 - f, f, 1 - r_h));
+                    colorVector.push_back({0.0f, 1.0f - f, f, 1.0f - r_h});
                 }
                 else
                 {
-                    colorVector.push_back(sofa::defaulttype::Vec4f(f - 1, 0, 2 - f, 1 - r_h));
+                    colorVector.push_back({f - 1.0f, 0.0f, 2.0f - f, 1.0f - r_h});
                 }
                 vertices.push_back(sofa::defaulttype::Vector3(x[i]));
                 vertices.push_back(sofa::defaulttype::Vector3(x[j]));
@@ -529,11 +506,11 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         f = 1+10*(f-1);
         if (f < 1)
         {
-            colorVector.push_back(sofa::defaulttype::Vec4f(0,1-f,f,1));
+            colorVector.push_back({0.0f, 1.0f - f, f, 1.0f});
         }
         else
         {
-            colorVector.push_back(sofa::defaulttype::Vec4f(f-1,0,2-f,1));
+            colorVector.push_back( { f - 1.0f, 0.0f, 2.0f - f, 1.0f});
         }
         vertices.push_back(sofa::defaulttype::Vector3(x[i]));
     }

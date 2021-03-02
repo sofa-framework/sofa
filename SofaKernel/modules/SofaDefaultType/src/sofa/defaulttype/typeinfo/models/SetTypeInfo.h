@@ -61,7 +61,7 @@ struct SetTypeInfo
     static sofa::Size size(const DataType& data)
     {
         if (BaseTypeInfo::FixedSize)
-            return data.size()*BaseTypeInfo::size();
+            return sofa::Size(data.size()*BaseTypeInfo::size());
         else
         {
             sofa::Size s = 0;

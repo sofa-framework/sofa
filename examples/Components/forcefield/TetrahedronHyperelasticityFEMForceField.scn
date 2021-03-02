@@ -1,5 +1,14 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9 0">
+	<RequiredPlugin pluginName='SofaBoundaryCondition'/>
+	<RequiredPlugin pluginName='SofaEngine'/>
+	<RequiredPlugin pluginName='SofaGeneralVisual'/>
+	<RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+	<RequiredPlugin pluginName='SofaMiscCollision'/>
+	<RequiredPlugin pluginName='SofaMiscFem'/>
+	<RequiredPlugin pluginName='SofaSimpleFem'/>
+	<RequiredPlugin pluginName='SofaTopologyMapping'/>
+
 	<VisualStyle displayFlags="showForceFields showBehaviorModels" />
 	<DefaultPipeline verbose="0" />
 	<BruteForceDetection name="N2" />
@@ -34,7 +43,6 @@
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier" />
-			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 			<Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
 			
@@ -58,7 +66,6 @@
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier" />
-			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 			<Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
 			
@@ -83,7 +90,6 @@
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier" />
-			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 			<Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
 			
@@ -108,7 +114,6 @@
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier" />
-			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 			<Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
 			

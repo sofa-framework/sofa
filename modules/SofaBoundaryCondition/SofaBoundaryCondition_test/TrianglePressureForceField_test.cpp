@@ -113,7 +113,7 @@ typedef testing::Types<
 
 
 // Tests to run for each instantiated type
-TYPED_TEST_CASE(TrianglePressureForceField_test, TestTypes);
+TYPED_TEST_SUITE(TrianglePressureForceField_test, TestTypes);
 
 // first test case: test force value
 TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)

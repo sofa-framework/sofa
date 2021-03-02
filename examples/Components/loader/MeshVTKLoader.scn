@@ -1,12 +1,16 @@
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
 <Node name="Root" gravity="0 -9.81 0" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/> 
+    <RequiredPlugin pluginName='SofaLoader'/> 
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
     <BruteForceDetection name="Detection" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="default" />
-    <TreeCollisionGroupManager name="Group" />
+    <DefaultCollisionGroupManager name="Group" />
     <Node name="vtk file">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -15,7 +19,6 @@
         <MechanicalObject name="dofs" scale="1" src="@VtkLoader" />
         <TriangleSetTopologyContainer name="topo" src="@VtkLoader" />
         <TriangleSetTopologyModifier name="modif" />
-        <TriangleSetTopologyAlgorithms name="algo" />
         <TriangleSetGeometryAlgorithms name="triGeo" />
         <OglModel name="VisualModel" src="@VtkLoader" color="red" texturename="textures/liver-texture-square.png" />
     </Node>

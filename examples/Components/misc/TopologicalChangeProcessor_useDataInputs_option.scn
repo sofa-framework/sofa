@@ -1,11 +1,19 @@
 <Node name="root" gravity="0 -9 0" dt="0.01">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
+    <RequiredPlugin pluginName='SofaMiscTopology'/>
+
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="default1" response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <TreeCollisionGroupManager name="default2" />
+    <DefaultCollisionGroupManager name="default2" />
     <Node name="SquareGravity" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -13,9 +21,8 @@
         <MechanicalObject name="mecaObj" src="@loader" template="Vec3d" scale3d="10 10 10" restScale="1" />
         <TriangleSetTopologyContainer src="@loader" name="Container" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass template="Vec3d" name="default5" massDensity="0.15" />
+        <DiagonalMass name="default5" massDensity="0.15" />
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleCollisionModel name="default7" />

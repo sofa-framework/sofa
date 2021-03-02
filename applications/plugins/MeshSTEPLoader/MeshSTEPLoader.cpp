@@ -416,9 +416,9 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
                             {
                                 int nodesOfPol_1 = aNodesOfPol(i) - aLower + aNumOfNodes, nodesOfPol_2 = aNodesOfPol(i+1) - aLower + aNumOfNodes;
                                 if (!_keepDuplicate.getValue())
-                                    addEdge(&my_edges, Edge(nodeIndex[nodesOfPol_1], nodeIndex[nodesOfPol_2]));
+                                    addEdge(my_edges, Edge(nodeIndex[nodesOfPol_1], nodeIndex[nodesOfPol_2]));
                                 else
-                                    addEdge(&my_edges, Edge(nodesOfPol_1, nodesOfPol_2));
+                                    addEdge(my_edges, Edge(nodesOfPol_1, nodesOfPol_2));
                             }
                         }
                     }
@@ -442,9 +442,9 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
                 }
                 n1 -= aLower - aNumOfNodes; n2 -= aLower - aNumOfNodes; n3 -= aLower - aNumOfNodes;
                 if (!_keepDuplicate.getValue())
-                    addTriangle(&my_triangles, Triangle(nodeIndex[n1], nodeIndex[n2], nodeIndex[n3]));
+                    addTriangle(my_triangles, Triangle(nodeIndex[n1], nodeIndex[n2], nodeIndex[n3]));
                 else
-                    addTriangle(&my_triangles, Triangle(n1, n2, n3));
+                    addTriangle(my_triangles, Triangle(n1, n2, n3));
             }
 
             aNumOfNodes += aNbOfNodesOfFace;
@@ -563,7 +563,7 @@ void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::
                                 for (int i=aLower; i<anUpper ; ++i)
                                 {
                                     int nodesOfPol_1 = aNodesOfPol(i) - aLower + aNumOfNodes, nodesOfPol_2 = aNodesOfPol(i+1) - aLower + aNumOfNodes;
-                                    addEdge(&my_edges, Edge(nodesOfPol_1, nodesOfPol_2));
+                                    addEdge(my_edges, Edge(nodesOfPol_1, nodesOfPol_2));
                                 }
                             }
                         }
@@ -586,7 +586,7 @@ void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::
                         triangles(nt).Get(n2, n1, n3);
                     }
                     n1 -= aLower - aNumOfNodes; n2 -= aLower - aNumOfNodes; n3 -= aLower - aNumOfNodes;
-                    addTriangle(&my_triangles, Triangle(n1, n2, n3));
+                    addTriangle(my_triangles, Triangle(n1, n2, n3));
                 }
 
                 aNumOfNodes += aNbOfNodesOfFace;

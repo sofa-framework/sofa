@@ -23,6 +23,13 @@
 #include <SofaPython/config.h>
 #include "PythonEnvironment.h"
 
+#if SOFAPYTHON_HAVE_SOFAEXPORTER
+#include <SofaPython/PythonFactory.h>
+using sofa::PythonFactory;
+#include <SofaPython/SofaExporter/Binding_OBJExporter.h>
+#include <SofaPython/SofaExporter/Binding_STLExporter.h>
+#endif // SOFAPYTHON_HAVE_SOFAEXPORTER
+
 
 extern "C" {
 
@@ -32,8 +39,16 @@ SOFA_SOFAPYTHON_API void initExternalModule()
     if (firstPythonInit)
     {
         sofa::simulation::PythonEnvironment::Init();
+#if SOFAPYTHON_HAVE_SOFAEXPORTER
+        SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
+        SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)
+#endif // SOFAPYTHON_HAVE_SOFAEXPORTER
         firstPythonInit = false;
     }
+
+    // Add a callback in PluginManager
+    // to auto-add future loaded plugins to sys.path
+    sofa::simulation::PythonEnvironment::addPluginManagerCallback();
 }
 
 SOFA_SOFAPYTHON_API const char* getModuleName()

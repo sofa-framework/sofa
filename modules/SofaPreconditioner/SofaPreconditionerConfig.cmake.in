@@ -5,8 +5,9 @@
 
 set(SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER @SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER@)
 
-find_package(SofaCommon QUIET REQUIRED)
-find_package(SofaGeneral QUIET REQUIRED)
+find_package(SofaImplicitOdeSolver QUIET REQUIRED)
+find_package(SofaSimpleFem QUIET REQUIRED)
+find_package(SofaGeneralLinearSolver QUIET REQUIRED)
 
 if(SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER)
     find_package(SofaSparseSolver QUIET REQUIRED)

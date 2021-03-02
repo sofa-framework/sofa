@@ -18,7 +18,7 @@ include(CMakePackageConfigHelpers)
 ### CImgConfig.cmake
 ## Build tree
 set(CIMG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
-configure_file(CImgConfig.cmake.in ${CMAKE_BINARY_DIR}/cmake/CImgConfig.cmake)
+configure_file(CImgConfig.cmake.in ${CMAKE_BINARY_DIR}/lib/cmake/CImgConfig.cmake)
 
 ## Install tree
 set(CIMG_INCLUDE_DIR include)

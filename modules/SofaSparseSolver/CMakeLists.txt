@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaSparseSolver LANGUAGES CXX)
 
 # Dependencies
-find_package(SofaBase REQUIRED) # SofaGeneralLinearSolver
-find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
-find_package(SofaGeneral REQUIRED) # SofaGeneralLinearSolver
+find_package(SofaBase REQUIRED)
+find_package(SofaImplicitOdeSolver REQUIRED) 
+find_package(SofaSimpleFem REQUIRED)
+find_package(SofaGeneralLinearSolver REQUIRED)
 
 add_subdirectory(extlibs/csparse)
 sofa_set_01(SOFASPARSESOLVER_HAVE_CSPARSE VALUE TRUE)
@@ -28,6 +29,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/SparseLDLSolverImpl.h
     ${SRC_ROOT}/SparseCholeskySolver.h
     ${SRC_ROOT}/SparseLUSolver.h
+    ${SRC_ROOT}/SparseLUSolver.inl
     )
 set(SOURCE_FILES
     ${SRC_ROOT}/initSparseSolver.cpp
