@@ -22,7 +22,3 @@
 #pragma once
 #include <sofa/helper/vector_T.h>
 
-//#ifndef SOFA_HELPER_VECTOR_REAL_DEFINITION
-//extern template class sofa::helper::vector<float>;
-//extern template class sofa::helper::vector<double>;
-//#endif // #ifndef SOFA_HELPER_VECTOR_REAL_DEFINITION

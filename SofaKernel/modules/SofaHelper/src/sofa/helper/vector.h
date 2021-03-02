@@ -25,5 +25,5 @@
 #include "vector_T.inl"            ///< Definition of the default vector      (the default implementation)
 #include "vector_Integral.h"       ///< Extern declaration for integral types (the specialization)
 #include "vector_String.h"         ///< Extern declaration for string types   (the specialization)
-#include "vector_Real.h"           ///< Extern declaration for real types   (the specialization)
+#include "vector_Real.h"           ///< Extern declaration for real types     (the specialization)
 

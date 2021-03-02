@@ -24,6 +24,3 @@
 
 template<> SOFA_HELPER_API std::ostream& sofa::helper::vector<std::string>::write(std::ostream& os) const;
 
-//#ifndef SOFA_HELPER_VECTOR_STRING_DEFINITION
-//extern template class sofa::helper::vector<std::string>;
-//#endif /// SOFA_HELPER_VECTOR_STRING_DEFINITION

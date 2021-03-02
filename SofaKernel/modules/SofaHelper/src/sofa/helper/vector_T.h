@@ -120,7 +120,7 @@ public:
             if (n >= this->size())
                 vector_access_failure(this, this->size(), n, typeid(T));
         }
-        return *(this->begin() + n);
+        return std::vector<T>::operator[](n);
     }
 
     /// Read-only random access
@@ -131,7 +131,7 @@ public:
             if (n >= this->size())
                 vector_access_failure(this, this->size(), n, typeid(T));
         }
-        return *(this->begin() + n);
+        return std::vector<T>::operator[](n);
     }
 
     std::ostream& write(std::ostream& os) const
