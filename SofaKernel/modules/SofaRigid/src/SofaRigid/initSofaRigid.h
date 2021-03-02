@@ -22,8 +22,9 @@
 #pragma once
 #include <SofaRigid/config.h>
 
-
 namespace sofa::component
 {
+
+SOFA_SOFARIGID_API void initSofaRigid();
 
 } // namespace sofa::component

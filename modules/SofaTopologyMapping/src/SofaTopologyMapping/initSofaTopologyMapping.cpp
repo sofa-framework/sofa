@@ -28,6 +28,15 @@ using sofa::core::ObjectFactory;
 namespace sofa::component
 {
 
+void initSofaTopologyMapping()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
 extern "C" {
     SOFA_SOFATOPOLOGYMAPPING_API void initExternalModule();
     SOFA_SOFATOPOLOGYMAPPING_API const char* getModuleName();
@@ -39,11 +48,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    initSofaTopologyMapping();
 }
 
 const char* getModuleName()

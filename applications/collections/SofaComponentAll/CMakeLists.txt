@@ -55,16 +55,21 @@ set(SOFACOMPONENTALL_MODULES
     SofaMiscTopology
     )
 
+set(SOFACOMPONENTALL_MODULES_INCLUDES "")
+set(SOFACOMPONENTALL_MODULES_INITS "")
 foreach(module ${SOFACOMPONENTALL_MODULES})
     sofa_find_package(${module} REQUIRED)
+    set(SOFACOMPONENTALL_MODULES_INCLUDES "${SOFACOMPONENTALL_MODULES_INCLUDES}\n#include <${module}/init${module}.h>")
+    set(SOFACOMPONENTALL_MODULES_INITS "${SOFACOMPONENTALL_MODULES_INITS} \\\n    init${module}();")
 endforeach()
 
 set(HEADER_FILES
-    config.h
-    initComponentAll.h
+    config.h.in
+    components.h.in
+    initSofaComponentAll.h
     )
 set(SOURCE_FILES
-    initComponentAll.cpp
+    initSofaComponentAll.cpp
     )
 set(EXTRA_FILES
     README.md

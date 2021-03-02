@@ -25,4 +25,6 @@
 namespace sofa::component
 {
 
+void initSofaExplicitOdeSolver();
+
 } // namespace sofa::component

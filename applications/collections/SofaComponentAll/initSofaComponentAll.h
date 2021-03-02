@@ -19,14 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaComponentAll/initComponentAll.h>
-
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
-
-#include <sofa/helper/logging/Messaging.h>
+#ifndef SOFA_COMPONENT_ALL_INIT_H
+#define SOFA_COMPONENT_ALL_INIT_H
+#include <SofaComponentAll/config.h>
 
 namespace sofa
 {
@@ -34,54 +29,11 @@ namespace sofa
 namespace component
 {
 
-/// Convenient functions to help user to know what contains the plugin
-extern "C" {
-    SOFA_SOFACOMPONENTALL_API void initExternalModule();
-    SOFA_SOFACOMPONENTALL_API const char* getModuleName();
-    SOFA_SOFACOMPONENTALL_API const char* getModuleVersion();
-    SOFA_SOFACOMPONENTALL_API const char* getModuleLicense();
-    SOFA_SOFACOMPONENTALL_API const char* getModuleDescription();
-    SOFA_SOFACOMPONENTALL_API const char* getModuleComponentList();
-}
+SOFA_SOFACOMPONENTALL_API void initSofaComponentAll();
 
-void initExternalModule()
-{
-    static bool first = true;
-    if(!first) return;
-    first = false;
+} // namespace component
 
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
-}
+} // namespace sofa
 
-const char* getModuleName()
-{
-    return "SofaComponentAll";
-}
+#endif
 
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This package exposes all SOFA components.";
-}
-
-const char* getModuleComponentList()
-{
-    return "";
-}
-
-
-} /// namespace component
-
-} /// namespace sofa

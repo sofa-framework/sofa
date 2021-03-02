@@ -5,11 +5,11 @@ set(SOFAMISCFORCEFIELD_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAMISCFORCEFIELD_SRC}/config.h.in
-    ${SOFAMISCFORCEFIELD_SRC}/initSofaMiscForcefield.h
+    ${SOFAMISCFORCEFIELD_SRC}/initSofaMiscForceField.h
     )
 
 set(SOURCE_FILES
-    ${SOFAMISCFORCEFIELD_SRC}/initSofaMiscForcefield.cpp
+    ${SOFAMISCFORCEFIELD_SRC}/initSofaMiscForceField.cpp
     )
 
 list(APPEND HEADER_FILES

@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ALL_INIT_H
-#define SOFA_COMPONENT_ALL_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
+#include <SofaNonUniformFem/config.h>
+
+namespace sofa::component
 {
 
-namespace component
-{
+SOFA_SOFANONUNIFORMFEM_API void initSofaNonUniformFem();
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component

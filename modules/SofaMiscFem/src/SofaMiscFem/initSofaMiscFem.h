@@ -20,9 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralExplicitOdeSolver/config.h>
+
+#include <SofaMiscFem/config.h>
 
 namespace sofa::component
 {
 
-} //namespace sofa::component
+SOFA_SOFAMISCFEM_API void initSofaMiscFem();
+
+} // namespace sofa::component

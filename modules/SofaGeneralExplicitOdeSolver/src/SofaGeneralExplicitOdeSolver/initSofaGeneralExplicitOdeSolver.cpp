@@ -19,13 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
-#define SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
+#include <SofaGeneralExplicitOdeSolver/initSofaGeneralExplicitOdeSolver.h>
 
-#ifdef SOFA_BUILD_MISC_COLLISION
-#  define SOFA_SOFACOMPONENTALL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFACOMPONENTALL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
 
-#endif
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace sofa::component
+{
+
+void initSofaGeneralExplicitOdeSolver()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+extern "C" {
+    SOFA_SOFAGENERALEXPLICITODESOLVER_API void initExternalModule();
+    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleName();
+    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleVersion();
+    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleLicense();
+    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleDescription();
+    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    initSofaGeneralExplicitOdeSolver();
+}
+
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
+
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALEXPLICITODESOLVER_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Explicit Ode Solver.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

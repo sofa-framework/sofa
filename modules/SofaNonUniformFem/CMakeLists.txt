@@ -9,11 +9,11 @@ set(SOFANONUNIFORMFEM_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFANONUNIFORMFEM_SRC}/config.h.in
-    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFEM.h
+    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFem.h
     )
 
 set(SOURCE_FILES
-    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFEM.cpp
+    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFem.cpp
     )
 
 list(APPEND HEADER_FILES

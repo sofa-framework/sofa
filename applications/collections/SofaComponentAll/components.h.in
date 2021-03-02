@@ -19,58 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <SofaNonUniformFem/initSofaNonUniformFEM.h>
+// Auto-generated include list from modules in CMakeLists.txt
+@SOFACOMPONENTALL_MODULES_INCLUDES@
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
 
-namespace sofa::component
-{
-
-extern "C" {
-    SOFA_SOFANONUNIFORMFEM_API void initExternalModule();
-    SOFA_SOFANONUNIFORMFEM_API const char* getModuleName();
-    SOFA_SOFANONUNIFORMFEM_API const char* getModuleVersion();
-    SOFA_SOFANONUNIFORMFEM_API const char* getModuleLicense();
-    SOFA_SOFANONUNIFORMFEM_API const char* getModuleDescription();
-    SOFA_SOFANONUNIFORMFEM_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFANONUNIFORMFEM_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about non uniform FEM.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+// Auto-generated init list from modules in CMakeLists.txt
+#define SOFACOMPONENTALL_MODULES_INITS @SOFACOMPONENTALL_MODULES_INITS@

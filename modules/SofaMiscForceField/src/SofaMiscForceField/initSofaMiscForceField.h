@@ -22,3 +22,10 @@
 #pragma once
 
 #include <SofaMiscForceField/config.h>
+
+namespace sofa::component
+{
+
+SOFA_SOFAMISCFORCEFIELD_API void initSofaMiscForceField();
+
+} // namespace sofa::component

@@ -19,10 +19,65 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaGeneralImplicitOdeSolver/config.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
+#include <SofaComponentAll/components.h>
 
-namespace sofa::component
+namespace sofa
 {
 
-} //namespace sofa::component
+namespace component
+{
+
+void initSofaComponentAll()
+{
+    static bool first = true;
+    if(!first) return;
+    first = false;
+
+    SOFACOMPONENTALL_MODULES_INITS;
+}
+
+// Convenient functions to help user to know what contains the plugin
+extern "C" {
+    SOFA_SOFACOMPONENTALL_API void initExternalModule();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleName();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleVersion();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleLicense();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleDescription();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    initSofaComponentAll();
+}
+
+const char* getModuleName()
+{
+    return "SofaComponentAll";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This package exposes all SOFA components.";
+}
+
+const char* getModuleComponentList()
+{
+    return "";
+}
+
+
+} // namespace component
+
+} // namespace sofa
