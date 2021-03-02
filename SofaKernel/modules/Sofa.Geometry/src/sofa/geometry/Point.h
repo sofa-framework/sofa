@@ -23,8 +23,6 @@
 
 #include <sofa/topology/config.h>
 
-#include <sofa/helper/vector.h>
-
 namespace sofa::geometry
 {
     

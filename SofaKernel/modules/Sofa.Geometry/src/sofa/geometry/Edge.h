@@ -21,8 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/geometry//Point.h>
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/topology/config.h>
 
 namespace sofa::geometry
 {
