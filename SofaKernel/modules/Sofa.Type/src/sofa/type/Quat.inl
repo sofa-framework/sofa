@@ -34,6 +34,7 @@ namespace sofa::type
 {
 
 #define RENORMCOUNT 50
+constexpr double quaternion_equality_thresold=1e-6;
 
 // Constructor
 template<class Real>
@@ -365,19 +366,19 @@ void Quat<Real>::buildRotationMatrix(Real m[4][4]) const
 template<class Real>
 void Quat<Real>::writeOpenGlMatrix(double *m) const
 {
-    m[0*4+0] = (double)(1.0 - 2.0 * Real(_q[1]) * _q[1] + _q[2] * _q[2]);
-    m[1*4+0] = (double)(2.0 * Real(_q[0]) * _q[1] - _q[2] * _q[3]);
-    m[2*4+0] = (double)(2.0 * Real(_q[2]) * _q[0] + _q[1] * _q[3]);
+    m[0*4+0] = (double)(1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
+    m[1*4+0] = (double)(2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
+    m[2*4+0] = (double)(2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
     m[3*4+0] = (double)0.0;
 
-    m[0*4+1] = (double)(2.0 * Real(_q[0]) * _q[1] + _q[2] * _q[3]);
-    m[1*4+1] = (double)(1.0 - 2.0 * Real(_q[2]) * _q[2] + _q[0] * _q[0]);
-    m[2*4+1] = (double)(2.0 * Real(_q[1]) * _q[2] - _q[0] * _q[3]);
+    m[0*4+1] = (double)(2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
+    m[1*4+1] = (double)(1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
+    m[2*4+1] = (double)(2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
     m[3*4+1] = (double)0.0;
 
-    m[0*4+2] = (double)(2.0 * Real(_q[2]) * _q[0] - _q[1] * _q[3]);
-    m[1*4+2] = (double)(2.0 * Real(_q[1]) * _q[2] + _q[0] * _q[3]);
-    m[2*4+2] = (double)(1.0 - 2.0 * Real(_q[1]) * _q[1] + _q[0] * _q[0]);
+    m[0*4+2] = (double)(2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
+    m[1*4+2] = (double)(2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
+    m[2*4+2] = (double)(1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
     m[3*4+2] = (double)0.0;
 
     m[0*4+3] = (double)0.0;
@@ -899,7 +900,7 @@ template<class Real>
 bool Quat<Real>::operator==(const Quat& q) const
 {
     for (int i=0; i<4; i++)
-        if ( std::abs( _q[i] - q._q[i] ) > std::numeric_limits<Real>::epsilon() ) return false;
+        if ( std::abs( _q[i] - q._q[i] ) > quaternion_equality_thresold ) return false;
     return true;
 }
 
@@ -907,7 +908,7 @@ template<class Real>
 bool Quat<Real>::operator!=(const Quat& q) const
 {
     for (int i=0; i<4; i++)
-        if ( std::abs( _q[i] - q._q[i] ) > std::numeric_limits<Real>::epsilon() ) return true;
+        if ( std::abs( _q[i] - q._q[i] ) > quaternion_equality_thresold ) return true;
     return false;
 }
 
