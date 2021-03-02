@@ -14,7 +14,8 @@ set(IMAGE_HAVE_FREENECT @IMAGE_HAVE_FREENECT@)
 set(IMAGE_HAVE_DIFFUSIONSOLVER @IMAGE_HAVE_DIFFUSIONSOLVER@)
 
 find_package(SofaBase REQUIRED)
-find_package(SofaGeneral REQUIRED)
+find_package(SofaGeneralVisual REQUIRED)
+find_package(Sofa.GL REQUIRED)
 
 if(IMAGE_HAVE_OPENGL)
     find_package(OpenGL QUIET REQUIRED)

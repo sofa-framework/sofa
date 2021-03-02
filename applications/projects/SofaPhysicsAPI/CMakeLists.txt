@@ -27,6 +27,7 @@ find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SceneCreator REQUIRED)
 find_package(SofaValidation REQUIRED)
+sofa_find_package(SofaSimulationCommon REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGui SofaGeneral SceneCreator SofaValidation SofaSimulationCommon)

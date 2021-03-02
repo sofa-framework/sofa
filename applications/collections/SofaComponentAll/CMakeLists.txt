@@ -1,10 +1,63 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaComponentAll VERSION 1.0)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaCommon REQUIRED)
-find_package(SofaGeneral REQUIRED)
-find_package(SofaMisc REQUIRED)
+set(SOFACOMPONENTALL_MODULES
+    # SofaBase
+    SofaBaseLinearSolver
+    SofaEigen2Solver
+    SofaBaseTopology
+    SofaBaseCollision
+    SofaBaseMechanics
+    SofaBaseVisual
+    SofaBaseUtils
+
+    # SofaCommon
+    SofaSimpleFem
+    SofaRigid
+    SofaDeformable
+    SofaObjectInteraction
+    SofaMeshCollision
+    SofaEngine
+    SofaExplicitOdeSolver
+    SofaImplicitOdeSolver
+    SofaLoader
+
+    # SofaGeneral
+    SofaBoundaryCondition
+    SofaGeneralMeshCollision
+    SofaGeneralVisual
+    SofaGraphComponent
+    SofaGeneralAnimationLoop
+    SofaGeneralDeformable
+    SofaGeneralEngine
+    SofaGeneralExplicitOdeSolver
+    SofaGeneralImplicitOdeSolver
+    SofaGeneralLinearSolver
+    SofaGeneralRigid
+    SofaGeneralObjectInteraction
+    SofaGeneralSimpleFem
+    SofaGeneralTopology
+    SofaTopologyMapping
+    SofaUserInteraction
+    SofaConstraint
+    SofaGeneralLoader
+
+    # SofaAdvanced
+    SofaNonUniformFem
+
+    # SofaMisc
+    SofaMiscExtra
+    SofaMiscEngine
+    SofaMiscFem
+    SofaMiscForceField
+    SofaMiscMapping
+    SofaMiscSolver
+    SofaMiscTopology
+    )
+
+foreach(module ${SOFACOMPONENTALL_MODULES})
+    sofa_find_package(${module} REQUIRED)
+endforeach()
 
 set(HEADER_FILES
     config.h
@@ -18,7 +71,7 @@ set(EXTRA_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBase SofaCommon SofaGeneral SofaMisc)
+target_link_libraries(${PROJECT_NAME} ${SOFACOMPONENTALL_MODULES})
 
 find_package(SofaOpenglVisual QUIET)
 if(SofaOpenglVisual_FOUND)
