@@ -20,10 +20,24 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/helper/vector_T.h>
 
-#include "vector_T.h"              ///< Declaration of the class vector       (the interface)
-#include "vector_T.inl"            ///< Definition of the default vector      (the default implementation)
-#include "vector_Integral.h"       ///< Extern declaration for integral types (the specialization)
-#include "vector_String.h"         ///< Extern declaration for string types   (the specialization)
-#include "vector_Real.h"           ///< Extern declaration for real types   (the specialization)
+/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
+template<> SOFA_HELPER_API std::istream& sofa::helper::vector<int>::read( std::istream& in );
+template<> SOFA_HELPER_API std::istream& sofa::helper::vector<unsigned int>::read( std::istream& in );
 
+/// Specialization for writing vectors of unsigned char
+template<> SOFA_HELPER_API std::ostream& sofa::helper::vector<unsigned char>::write(std::ostream& os) const;
+template<> SOFA_HELPER_API std::istream& sofa::helper::vector<unsigned char>::read(std::istream& in);
+
+//#ifndef SOFA_HELPER_VECTOR_INTEGRAL_DEFINITION
+//extern template class SOFA_HELPER_API sofa::helper::vector<bool>;
+//extern template class SOFA_HELPER_API sofa::helper::vector<char>;
+//extern template class SOFA_HELPER_API sofa::helper::vector<unsigned char>;
+//extern template class SOFA_HELPER_API sofa::helper::vector<int>;
+//extern template class SOFA_HELPER_API sofa::helper::vector<unsigned int>;
+//extern template class SOFA_HELPER_API sofa::helper::vector<long>;
+//extern template class SOFA_HELPER_API sofa::helper::vector<unsigned long>;
+//extern template class SOFA_HELPER_API sofa::helper::vector<long long>;
+//extern template class SOFA_HELPER_API sofa::helper::vector<unsigned long long>;
+//#endif // SOFA_HELPER_VECTOR_INTEGRAL_DEFINITION

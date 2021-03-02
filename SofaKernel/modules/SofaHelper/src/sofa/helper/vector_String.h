@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/helper/vector_T.h>
 
-#include "vector_T.h"              ///< Declaration of the class vector       (the interface)
-#include "vector_T.inl"            ///< Definition of the default vector      (the default implementation)
-#include "vector_Integral.h"       ///< Extern declaration for integral types (the specialization)
-#include "vector_String.h"         ///< Extern declaration for string types   (the specialization)
-#include "vector_Real.h"           ///< Extern declaration for real types   (the specialization)
+template<> SOFA_HELPER_API std::ostream& sofa::helper::vector<std::string>::write(std::ostream& os) const;
 
+//#ifndef SOFA_HELPER_VECTOR_STRING_DEFINITION
+//extern template class sofa::helper::vector<std::string>;
+//#endif /// SOFA_HELPER_VECTOR_STRING_DEFINITION
