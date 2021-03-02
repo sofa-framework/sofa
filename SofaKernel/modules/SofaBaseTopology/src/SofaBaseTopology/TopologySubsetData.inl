@@ -36,32 +36,32 @@ namespace sofa::component::topology
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
 {
-    this->m_topology = _topology;
-    if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
-    {
-        this->m_topologicalEngine = sofa::core::objectmodel::New< TopologyDataEngine<TopologyElementType, VecT> >((sofa::component::topology::TopologySubsetData<TopologyElementType, VecT>*)this, _topology);
-        this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("SubsetEngine_"));
-        if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
-        this->m_topologicalEngine->init();
-        this->linkToElementDataArray((TopologyElementType*)nullptr);
-        msg_info(this->getOwner())<<"TopologySubsetData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << " Topology.";
-    }
-    else if (_topology)
-    {
-        msg_info(this->getOwner())<<"TopologySubsetData: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology.";
-    }
-    else
-    {
-        msg_info(this->getOwner())<<"TopologySubsetData: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled.";
-    }
+    //this->m_topology = _topology;
+    //if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
+    //{
+    //    this->m_topologicalEngine = sofa::core::objectmodel::New< TopologyDataEngine<TopologyElementType, VecT> >((sofa::component::topology::TopologySubsetData<TopologyElementType, VecT>*)this, _topology);
+    //    this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("SubsetEngine_"));
+    //    if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
+    //    this->m_topologicalEngine->init();
+    //    this->linkToElementDataArray((TopologyElementType*)nullptr);
+    //    msg_info(this->getOwner())<<"TopologySubsetData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << " Topology.";
+    //}
+    //else if (_topology)
+    //{
+    //    msg_info(this->getOwner())<<"TopologySubsetData: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology.";
+    //}
+    //else
+    //{
+    //    msg_info(this->getOwner())<<"TopologySubsetData: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled.";
+    //}
 }
 
 
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
 {
-    this->m_topologyHandler = new TopologySubsetDataHandler<TopologyElementType, VecT>(this);
-    createTopologicalEngine(_topology, this->m_topologyHandler);
+    //this->m_topologyHandler = new TopologySubsetDataHandler<TopologyElementType, VecT>(this);
+    //createTopologicalEngine(_topology, this->m_topologyHandler);
 }
 
 } //namespace sofa::component::topology

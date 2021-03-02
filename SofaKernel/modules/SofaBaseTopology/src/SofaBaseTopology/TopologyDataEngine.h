@@ -87,7 +87,7 @@ public:
 
     void ApplyTopologyChanges();
 
-    void registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
+    virtual void registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
 
     virtual void registerTopology();
 
