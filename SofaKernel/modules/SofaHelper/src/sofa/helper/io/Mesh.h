@@ -37,7 +37,7 @@ namespace helper
 
 namespace io
 {
-    using namespace sofa::topology::geometry;
+    using namespace sofa::topology;
 
 class SOFA_HELPER_API Mesh
 {    

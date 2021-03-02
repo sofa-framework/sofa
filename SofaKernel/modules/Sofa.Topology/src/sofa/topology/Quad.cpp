@@ -19,21 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/topology/Quad.h>
 
-#include <sofa/topology/geometry/Point.h>
-#include <sofa/type/stdtype/fixed_array.h>
-
-namespace sofa::topology::geometry
+namespace sofa::topology
 {
-    using QuadID = Index;
 
-    class Quad : public sofa::type::stdtype::fixed_array<PointID, 4>
-    {
-    public:
-        Quad() : sofa::type::stdtype::fixed_array<PointID, 4>(InvalidID, InvalidID, InvalidID, InvalidID) {}
-        Quad(PointID a, PointID b, PointID c, PointID d) : sofa::type::stdtype::fixed_array<PointID, 4>(a, b, c, d) {}
-    };
-
-    inline static const Quad InvalidQuad;
+Quad::Quad() 
+    : sofa::type::stdtype::fixed_array<PointID, 4>(InvalidID, InvalidID, InvalidID, InvalidID)
+{
 }
+
+Quad::Quad(PointID a, PointID b, PointID c, PointID d) 
+    : sofa::type::stdtype::fixed_array<PointID, 4>(a, b, c, d)
+{
+}
+
+} // namespace sofa::topology

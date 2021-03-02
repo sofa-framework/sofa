@@ -21,18 +21,18 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/geometry/Point.h>
+#include <sofa/topology/Point.h>
 #include <sofa/type/stdtype/fixed_array.h>
 
-namespace sofa::topology::geometry
+namespace sofa::topology
 {
     using PyramidID = Index;
 
-    class Pyramid : public sofa::type::stdtype::fixed_array<PointID, 5>
+    class SOFA_TOPOLOGY_API Pyramid : public sofa::type::stdtype::fixed_array<PointID, 5>
     {
     public:
-        Pyramid() : sofa::type::stdtype::fixed_array<PointID, 5>(InvalidID, InvalidID, InvalidID, InvalidID, InvalidID) {}
-        Pyramid(PointID a, PointID b, PointID c, PointID d, PointID e) : sofa::type::stdtype::fixed_array<PointID, 5>(a, b, c, d, e) {}
+        Pyramid();
+        Pyramid(PointID a, PointID b, PointID c, PointID d, PointID e);
     };
 
     inline static const Pyramid InvalidPyramid;

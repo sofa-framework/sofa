@@ -48,45 +48,45 @@ public:
     SOFA_CLASS(Topology, core::objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(Topology)
 
-    using Index = sofa::topology::geometry::Index;
-    static constexpr Index InvalidID = sofa::topology::geometry::InvalidID;
+    using Index = sofa::topology::Index;
+    static constexpr Index InvalidID = sofa::topology::InvalidID;
 
-    using ElemID = sofa::topology::geometry::ElemID;
-    using PointID = sofa::topology::geometry::PointID;
-    using EdgeID = sofa::topology::geometry::EdgeID;
-    using TriangleID = sofa::topology::geometry::TriangleID;
-    using QuadID = sofa::topology::geometry::QuadID;
-    using TetraID = sofa::topology::geometry::TetraID;
-    using TetrahedronID = sofa::topology::geometry::TetrahedronID;
-    using HexaID = sofa::topology::geometry::HexaID;
-    using HexahedronID = sofa::topology::geometry::HexahedronID;
-    using PentahedronID = sofa::topology::geometry::PentahedronID;
-    using PentaID = sofa::topology::geometry::PentaID;
-    using PyramidID = sofa::topology::geometry::PyramidID;
+    using ElemID = sofa::topology::ElemID;
+    using PointID = sofa::topology::PointID;
+    using EdgeID = sofa::topology::EdgeID;
+    using TriangleID = sofa::topology::TriangleID;
+    using QuadID = sofa::topology::QuadID;
+    using TetraID = sofa::topology::TetraID;
+    using TetrahedronID = sofa::topology::TetrahedronID;
+    using HexaID = sofa::topology::HexaID;
+    using HexahedronID = sofa::topology::HexahedronID;
+    using PentahedronID = sofa::topology::PentahedronID;
+    using PentaID = sofa::topology::PentaID;
+    using PyramidID = sofa::topology::PyramidID;
 
-    inline static auto InvalidSet = sofa::topology::geometry::InvalidSet;
-    inline static auto InvalidEdge = sofa::topology::geometry::InvalidEdge;
-    inline static auto InvalidTriangle = sofa::topology::geometry::InvalidTriangle;
-    inline static auto InvalidQuad = sofa::topology::geometry::InvalidQuad;
-    inline static auto InvalidTetrahedron = sofa::topology::geometry::InvalidTetrahedron;
-    inline static auto InvalidPentahedron = sofa::topology::geometry::InvalidPentahedron;
-    inline static auto InvalidHexahedron = sofa::topology::geometry::InvalidHexahedron;
-    inline static auto InvalidPyramid = sofa::topology::geometry::InvalidPyramid;
+    inline static auto InvalidSet = sofa::topology::InvalidSet;
+    inline static auto InvalidEdge = sofa::topology::InvalidEdge;
+    inline static auto InvalidTriangle = sofa::topology::InvalidTriangle;
+    inline static auto InvalidQuad = sofa::topology::InvalidQuad;
+    inline static auto InvalidTetrahedron = sofa::topology::InvalidTetrahedron;
+    inline static auto InvalidPentahedron = sofa::topology::InvalidPentahedron;
+    inline static auto InvalidHexahedron = sofa::topology::InvalidHexahedron;
+    inline static auto InvalidPyramid = sofa::topology::InvalidPyramid;
 
-    using SetIndex = sofa::topology::geometry::SetIndex;
-    using SetIndices = sofa::topology::geometry::SetIndices;
+    using SetIndex = sofa::topology::SetIndex;
+    using SetIndices = sofa::topology::SetIndices;
 
     using Point = PointID;
-    using Edge = sofa::topology::geometry::Edge;
-    using Triangle = sofa::topology::geometry::Triangle;
-    using Quad = sofa::topology::geometry::Quad;
-    using Tetrahedron = sofa::topology::geometry::Tetrahedron;
-    using Tetra = sofa::topology::geometry::Tetra;
-    using Pentahedron = sofa::topology::geometry::Pentahedron;
-    using Penta = sofa::topology::geometry::Penta;
-    using Pyramid = sofa::topology::geometry::Pyramid;
-    using Hexahedron = sofa::topology::geometry::Hexahedron;
-    using Hexa = sofa::topology::geometry::Hexa;
+    using Edge = sofa::topology::Edge;
+    using Triangle = sofa::topology::Triangle;
+    using Quad = sofa::topology::Quad;
+    using Tetrahedron = sofa::topology::Tetrahedron;
+    using Tetra = sofa::topology::Tetra;
+    using Pentahedron = sofa::topology::Pentahedron;
+    using Penta = sofa::topology::Penta;
+    using Pyramid = sofa::topology::Pyramid;
+    using Hexahedron = sofa::topology::Hexahedron;
+    using Hexa = sofa::topology::Hexa;
         
     bool insertInNode(objectmodel::BaseNode* node) override;
     bool removeInNode(objectmodel::BaseNode* node) override;

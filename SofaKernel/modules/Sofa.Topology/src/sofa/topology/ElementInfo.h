@@ -24,14 +24,14 @@
 #include <sofa/topology/config.h>
 
 #include <sofa/topology/ElementType.h>
-#include <sofa/topology/geometry/Point.h>
-#include <sofa/topology/geometry/Edge.h>
-#include <sofa/topology/geometry/Triangle.h>
-#include <sofa/topology/geometry/Quad.h>
-#include <sofa/topology/geometry/Pentahedron.h>
-#include <sofa/topology/geometry/Tetrahedron.h>
-#include <sofa/topology/geometry/Pyramid.h>
-#include <sofa/topology/geometry/Hexahedron.h>
+#include <sofa/topology/Point.h>
+#include <sofa/topology/Edge.h>
+#include <sofa/topology/Triangle.h>
+#include <sofa/topology/Quad.h>
+#include <sofa/topology/Pentahedron.h>
+#include <sofa/topology/Tetrahedron.h>
+#include <sofa/topology/Pyramid.h>
+#include <sofa/topology/Hexahedron.h>
 
 namespace sofa::topology
 {
@@ -51,14 +51,14 @@ struct ElementInfo
 };
 
 #ifndef SOFA_TOPOLOGY_TOPOLOGYELEMENTINFO_DEFINITION
-extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Point>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Edge>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Triangle>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Quad>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Pentahedron>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Tetrahedron>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Pyramid>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Hexahedron>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<Point>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<Edge>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<Triangle>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<Quad>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<Pentahedron>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<Tetrahedron>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<Pyramid>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<Hexahedron>;
 #endif
 
 } // namespace sofa::topology

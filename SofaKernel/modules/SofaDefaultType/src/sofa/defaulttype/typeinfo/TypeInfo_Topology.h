@@ -30,45 +30,45 @@ namespace sofa::defaulttype
 {
 
 template<>
-struct DataTypeInfo< sofa::topology::geometry::Edge > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,2> >
+struct DataTypeInfo< sofa::topology::Edge > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,2> >
 {
-    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::geometry::Edge>::name(); }
+    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::Edge>::name(); }
 };
 
 template<>
-struct DataTypeInfo< sofa::topology::geometry::Triangle > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,3> >
+struct DataTypeInfo< sofa::topology::Triangle > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,3> >
 {
-    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::geometry::Triangle>::name(); }
+    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::Triangle>::name(); }
 };
 
 template<>
-struct DataTypeInfo< sofa::topology::geometry::Quad > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
+struct DataTypeInfo< sofa::topology::Quad > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
 {
-    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::geometry::Quad>::name(); }
+    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::Quad>::name(); }
 };
 
 template<>
-struct DataTypeInfo< sofa::topology::geometry::Tetrahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
+struct DataTypeInfo< sofa::topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
 {
-    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::geometry::Tetrahedron>::name(); }
+    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::Tetrahedron>::name(); }
 };
 
 template<>
-struct DataTypeInfo< sofa::topology::geometry::Pyramid > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,5> >
+struct DataTypeInfo< sofa::topology::Pyramid > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,5> >
 {
-    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::geometry::Pyramid>::name(); }
+    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::Pyramid>::name(); }
 };
 
 template<>
-struct DataTypeInfo< sofa::topology::geometry::Pentahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,6> >
+struct DataTypeInfo< sofa::topology::Pentahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,6> >
 {
-    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::geometry::Pentahedron>::name(); }
+    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::Pentahedron>::name(); }
 };
 
 template<>
-struct DataTypeInfo< sofa::topology::geometry::Hexahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,8> >
+struct DataTypeInfo< sofa::topology::Hexahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,8> >
 {
-    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::geometry::Hexahedron>::name(); }
+    static std::string name() { return sofa::topology::ElementInfo<sofa::topology::Hexahedron>::name(); }
 };
 
 } // namespace sofa::defaulttype

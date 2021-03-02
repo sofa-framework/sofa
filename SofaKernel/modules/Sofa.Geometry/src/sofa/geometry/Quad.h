@@ -21,24 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/geometry/Point.h>
+#include <sofa/geometry//Point.h>
 #include <sofa/type/stdtype/fixed_array.h>
 
-namespace sofa::topology::geometry
+namespace sofa::geometry
 {
-    using HexahedronID = Index;
-    using HexaID = Index;
-
-    class Hexahedron : public sofa::type::stdtype::fixed_array<PointID, 8>
+    template<typename real, typename dim>
+    class Quad
     {
-    public:
-        Hexahedron() : sofa::type::stdtype::fixed_array<PointID, 8>(InvalidID, InvalidID, InvalidID, InvalidID,
-            InvalidID, InvalidID, InvalidID, InvalidID) {}
-        Hexahedron(PointID a, PointID b, PointID c, PointID d,
-            PointID e, PointID f, PointID g, PointID h) : sofa::type::stdtype::fixed_array<PointID, 8>(a, b, c, d, e, f, g, h) {}
+
     };
-
-    using Hexa = Hexahedron;
-
-    inline static const Hexahedron InvalidHexahedron;
 }

@@ -21,23 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/geometry//Point.h>
+#include <sofa/type/stdtype/fixed_array.h>
 
-#include <sofa/helper/vector.h>
-
-namespace sofa::topology::geometry
+namespace sofa::geometry
 {
-    using Index = sofa::Index;
-    static constexpr Index InvalidID = sofa::InvalidID;
+    template<typename real, typename dim>
+    class Triangle
+    {
 
-    using ElemID = Index;
-    using PointID = Index;
-
-    using SetIndex = sofa::helper::vector<Index>;
-    using SetIndices = sofa::helper::vector<Index>;
-
-    using Point = PointID;
-
-    // inline variable (c++17): https://en.cppreference.com/w/cpp/language/inline
-    inline static const sofa::helper::vector<Index> InvalidSet;
+    };
 }

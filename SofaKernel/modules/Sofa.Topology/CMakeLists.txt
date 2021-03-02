@@ -9,23 +9,28 @@ set(HEADER_FILES
     ${SOFATOPOLOGYSRC_ROOT}/Topology.h
     ${SOFATOPOLOGYSRC_ROOT}/ElementType.h
     ${SOFATOPOLOGYSRC_ROOT}/ElementInfo.h
-)
-
-set(GEOMETRY_HEADER_FILES
-    ${SOFATOPOLOGYSRC_ROOT}/geometry/Point.h
-    ${SOFATOPOLOGYSRC_ROOT}/geometry/Edge.h
-    ${SOFATOPOLOGYSRC_ROOT}/geometry/Triangle.h
-    ${SOFATOPOLOGYSRC_ROOT}/geometry/Quad.h
-    ${SOFATOPOLOGYSRC_ROOT}/geometry/Tetrahedron.h
-    ${SOFATOPOLOGYSRC_ROOT}/geometry/Pentahedron.h
-    ${SOFATOPOLOGYSRC_ROOT}/geometry/Pyramid.h
-    ${SOFATOPOLOGYSRC_ROOT}/geometry/Hexahedron.h
+    ${SOFATOPOLOGYSRC_ROOT}/Point.h
+    ${SOFATOPOLOGYSRC_ROOT}/Edge.h
+    ${SOFATOPOLOGYSRC_ROOT}/Triangle.h
+    ${SOFATOPOLOGYSRC_ROOT}/Quad.h
+    ${SOFATOPOLOGYSRC_ROOT}/Tetrahedron.h
+    ${SOFATOPOLOGYSRC_ROOT}/Pentahedron.h
+    ${SOFATOPOLOGYSRC_ROOT}/Pyramid.h
+    ${SOFATOPOLOGYSRC_ROOT}/Hexahedron.h
 )
 
 set(SOURCE_FILES
     ${SOFATOPOLOGYSRC_ROOT}/init.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Topology.cpp
     ${SOFATOPOLOGYSRC_ROOT}/ElementInfo.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Point.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Edge.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Triangle.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Quad.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Tetrahedron.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Pentahedron.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Pyramid.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Hexahedron.cpp
 )
 
 # Compatibility files
@@ -36,15 +41,18 @@ set(COMPAT_HEADER_FILES
 find_package(Sofa.Config REQUIRED)
 # find_package(Sofa.Type REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${GEOMETRY_HEADER_FILES} ${COMPAT_HEADER_FILES} )
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES} )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config Sofa.Type SofaHelper)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config Sofa.Type)
+
+# needs vector(header) from SofaHelper :/
+# to remove once vector has moved to Sofa.Type
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaHelper/src>")
 
 target_include_directories(${PROJECT_NAME} PUBLIC
                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
                            $<INSTALL_INTERFACE:include/SofaFramework/compat>)
 source_group("compat" FILES ${COMPAT_HEADER_FILES})
-source_group("geometry" FILES ${GEOMETRY_HEADER_FILES})
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework

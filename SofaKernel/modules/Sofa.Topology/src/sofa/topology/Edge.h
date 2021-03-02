@@ -21,19 +21,19 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/geometry/Point.h>
+#include <sofa/topology/Point.h>
 #include <sofa/type/stdtype/fixed_array.h>
 
-namespace sofa::topology::geometry
+namespace sofa::topology
 {
-    using TriangleID = Index;
+    using EdgeID = Index;
 
-    class Triangle : public sofa::type::stdtype::fixed_array<PointID, 3>
+    class SOFA_TOPOLOGY_API Edge : public sofa::type::stdtype::fixed_array<topology::PointID, 2>
     {
     public:
-        Triangle() : sofa::type::stdtype::fixed_array<PointID, 3>(InvalidID, InvalidID, InvalidID) {}
-        Triangle(PointID a, PointID b, PointID c) : sofa::type::stdtype::fixed_array<PointID, 3>(a, b, c) {}
+        Edge();
+        Edge(PointID a, PointID b);
     };
 
-    inline static const Triangle InvalidTriangle;
+    inline static const Edge InvalidEdge;
 }

@@ -22,13 +22,21 @@
 #pragma once
 
 #include <sofa/topology/config.h>
+#include <sofa/helper/vector.h>
 
-#include <sofa/topology/ElementType.h>
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Edge.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Pentahedron.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Pyramid.h>
-#include <sofa/topology/Hexahedron.h>
+namespace sofa::topology
+{
+    using Index = sofa::Index;
+    static constexpr Index InvalidID = sofa::InvalidID;
+
+    using ElemID = Index;
+    using PointID = Index;
+    using Point = Index;
+
+    using SetIndex = sofa::helper::vector<Index>;
+    using SetIndices = sofa::helper::vector<Index>;
+
+    // inline variable (c++17): https://en.cppreference.com/w/cpp/language/inline
+    inline static const sofa::helper::vector<Index> InvalidSet;
+
+}

@@ -21,22 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/geometry/Point.h>
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/topology/config.h>
 
-namespace sofa::topology::geometry
+#include <sofa/helper/vector.h>
+
+namespace sofa::geometry
 {
-    using TetraID = Index;
-    using TetrahedronID = Index;
-
-    class Tetrahedron : public sofa::type::stdtype::fixed_array<PointID, 4>
-    {
-    public:
-        Tetrahedron() : sofa::type::stdtype::fixed_array<PointID, 4>(InvalidID, InvalidID, InvalidID, InvalidID) {}
-        Tetrahedron(PointID a, PointID b, PointID c, PointID d) : sofa::type::stdtype::fixed_array<PointID, 4>(a, b, c, d) {}
-    };
-
-    using Tetra = Tetrahedron;
-
-    inline static const Tetrahedron InvalidTetrahedron;
+    
 }

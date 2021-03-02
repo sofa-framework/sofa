@@ -21,14 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/geometry//Point.h>
+#include <sofa/type/stdtype/fixed_array.h>
 
-#include <sofa/topology/ElementType.h>
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Edge.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Pentahedron.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Pyramid.h>
-#include <sofa/topology/Hexahedron.h>
+namespace sofa::geometry
+{
+    template<typename real, typename dim>
+    class Pyramid
+    {
+
+    };
+}

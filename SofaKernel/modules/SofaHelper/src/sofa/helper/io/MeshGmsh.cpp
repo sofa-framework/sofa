@@ -39,7 +39,7 @@ namespace io
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::topology::geometry;
+using namespace sofa::topology;
 
 Creator<Mesh::FactoryMesh, MeshGmsh> MeshGmshClass("gmsh");
 

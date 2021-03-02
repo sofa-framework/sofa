@@ -28,97 +28,97 @@ namespace sofa::topology
 {
 
 template<>
-SOFA_TOPOLOGY_API ElementType ElementInfo<geometry::Point>::type()
+SOFA_TOPOLOGY_API ElementType ElementInfo<Point>::type()
 {
     return ElementType::POINT;
 }
 
 template<>
-SOFA_TOPOLOGY_API const char* ElementInfo<geometry::Point>::name()
+SOFA_TOPOLOGY_API const char* ElementInfo<Point>::name()
 {
     return "Point";
 }
 
 template<>
-SOFA_TOPOLOGY_API ElementType ElementInfo<geometry::Edge>::type()
+SOFA_TOPOLOGY_API ElementType ElementInfo<Edge>::type()
 {
     return ElementType::EDGE;
 }
 
 template<>
-SOFA_TOPOLOGY_API const char* ElementInfo<geometry::Edge>::name()
+SOFA_TOPOLOGY_API const char* ElementInfo<Edge>::name()
 {
     return "Edge";
 }
 
 template<>
-SOFA_TOPOLOGY_API ElementType ElementInfo<geometry::Triangle>::type()
+SOFA_TOPOLOGY_API ElementType ElementInfo<Triangle>::type()
 {
     return ElementType::TRIANGLE;
 }
 
 template<>
-SOFA_TOPOLOGY_API const char* ElementInfo<geometry::Triangle>::name()
+SOFA_TOPOLOGY_API const char* ElementInfo<Triangle>::name()
 {
     return "Triangle";
 }
 
 template<>
-SOFA_TOPOLOGY_API ElementType ElementInfo<geometry::Quad>::type()
+SOFA_TOPOLOGY_API ElementType ElementInfo<Quad>::type()
 {
     return ElementType::QUAD;
 }
 
 template<>
-SOFA_TOPOLOGY_API const char* ElementInfo<geometry::Quad>::name()
+SOFA_TOPOLOGY_API const char* ElementInfo<Quad>::name()
 {
     return "Quad";
 }
 
 template<>
-SOFA_TOPOLOGY_API ElementType ElementInfo<geometry::Tetrahedron>::type()
+SOFA_TOPOLOGY_API ElementType ElementInfo<Tetrahedron>::type()
 {
     return ElementType::TETRAHEDRON;
 }
 
 template<>
-SOFA_TOPOLOGY_API const char* ElementInfo<geometry::Tetrahedron>::name()
+SOFA_TOPOLOGY_API const char* ElementInfo<Tetrahedron>::name()
 {
     return "Tetrahedron";
 }
 
 template<>
-SOFA_TOPOLOGY_API ElementType ElementInfo<geometry::Pyramid>::type()
+SOFA_TOPOLOGY_API ElementType ElementInfo<Pyramid>::type()
 {
     return ElementType::PYRAMID;
 }
 
 template<>
-SOFA_TOPOLOGY_API const char* ElementInfo<geometry::Pyramid>::name()
+SOFA_TOPOLOGY_API const char* ElementInfo<Pyramid>::name()
 {
     return "Pyramid";
 }
 
 template<>
-SOFA_TOPOLOGY_API ElementType ElementInfo<geometry::Pentahedron>::type()
+SOFA_TOPOLOGY_API ElementType ElementInfo<Pentahedron>::type()
 {
     return ElementType::PENTAHEDRON;
 }
 
 template<>
-SOFA_TOPOLOGY_API const char* ElementInfo<geometry::Pentahedron>::name()
+SOFA_TOPOLOGY_API const char* ElementInfo<Pentahedron>::name()
 {
     return "Pentahedron";
 }
 
 template<>
-SOFA_TOPOLOGY_API ElementType ElementInfo<geometry::Hexahedron>::type()
+SOFA_TOPOLOGY_API ElementType ElementInfo<Hexahedron>::type()
 {
     return ElementType::HEXAHEDRON;
 }
 
 template<>
-SOFA_TOPOLOGY_API const char* ElementInfo<geometry::Hexahedron>::name()
+SOFA_TOPOLOGY_API const char* ElementInfo<Hexahedron>::name()
 {
     return "Hexahedron";
 }

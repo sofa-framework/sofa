@@ -21,19 +21,23 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/geometry/Point.h>
+#include <sofa/topology/Point.h>
 #include <sofa/type/stdtype/fixed_array.h>
 
-namespace sofa::topology::geometry
+namespace sofa::topology
 {
-    using EdgeID = Index;
+    using HexahedronID = Index;
+    using HexaID = Index;
 
-    class Edge : public sofa::type::stdtype::fixed_array<PointID, 2>
+    class SOFA_TOPOLOGY_API Hexahedron : public sofa::type::stdtype::fixed_array<PointID, 8>
     {
     public:
-        Edge() : sofa::type::stdtype::fixed_array<PointID, 2>(InvalidID, InvalidID) {}
-        Edge(PointID a, PointID b) : sofa::type::stdtype::fixed_array<PointID, 2>(a, b) {}
+        Hexahedron();
+        Hexahedron(PointID a, PointID b, PointID c, PointID d,
+            PointID e, PointID f, PointID g, PointID h);
     };
 
-    inline static const Edge InvalidEdge;
+    using Hexa = Hexahedron;
+
+    inline static const Hexahedron InvalidHexahedron;
 }

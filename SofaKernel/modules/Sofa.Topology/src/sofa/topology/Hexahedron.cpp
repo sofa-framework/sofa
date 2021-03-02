@@ -19,16 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/topology/config.h>
-
-#include <sofa/topology/ElementType.h>
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Edge.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Pentahedron.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Pyramid.h>
 #include <sofa/topology/Hexahedron.h>
+
+namespace sofa::topology
+{
+
+Hexahedron::Hexahedron() 
+    : sofa::type::stdtype::fixed_array<PointID, 8>(InvalidID, InvalidID, InvalidID, InvalidID, 
+        InvalidID, InvalidID, InvalidID, InvalidID) 
+{
+}
+
+Hexahedron::Hexahedron(PointID a, PointID b, PointID c, PointID d,
+    PointID e, PointID f, PointID g, PointID h) : sofa::type::stdtype::fixed_array<PointID, 8>(a, b, c, d, e, f, g, h) 
+{
+}
+
+} // namespace sofa::topology
