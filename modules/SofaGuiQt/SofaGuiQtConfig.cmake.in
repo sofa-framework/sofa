@@ -30,9 +30,7 @@ if(SOFAGUIQT_HAVE_QT5)
     if(SOFAGUIQT_HAVE_QGLVIEWER)
         find_package(QGLViewer QUIET REQUIRED)
     endif()
-endif()
-
-if(SOFAGUIQT_HAVE_QT6)
+elseif(SOFAGUIQT_HAVE_QT6)
     find_package(Qt6 COMPONENTS Widgets OpenGLWidgets QUIET REQUIRED)
 endif()
 

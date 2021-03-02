@@ -74,12 +74,12 @@ set(UI_FILES
     VRenderInterface.ui
     )
 
-if (Qt6_FOUND)
-    qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
-    qt6_wrap_ui(FORM_FILES ${UI_FILES})
-else()
+if (Qt5_FOUND)
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
+elseif (Qt6_FOUND)
+    qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    qt6_wrap_ui(FORM_FILES ${UI_FILES})
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
