@@ -21,36 +21,36 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/geometry/config.h>
 
 #include <string>
 
-namespace sofa::topology
+namespace sofa::geometry
 {
 
-/// @brief Initialize the Sofa.Topology library.
-SOFA_TOPOLOGY_API void init();
+/// @brief Initialize the Sofa.Geometry library.
+SOFA_GEOMETRY_API void init();
 
-/// @brief Return true if and only if the Sofa.Topology library has been
+/// @brief Return true if and only if the Sofa.Geometry library has been
 /// initialized.
-SOFA_TOPOLOGY_API bool isInitialized();
+SOFA_GEOMETRY_API bool isInitialized();
 
-/// @brief Clean up the resources used by the Sofa.Topology library.
-SOFA_TOPOLOGY_API void cleanup();
+/// @brief Clean up the resources used by the Sofa.Geometry library.
+SOFA_GEOMETRY_API void cleanup();
 
-/// @brief Return true if and only if the Sofa.Topology library has been cleaned
+/// @brief Return true if and only if the Sofa.Geometry library has been cleaned
 /// up.
-SOFA_TOPOLOGY_API bool isCleanedUp();
+SOFA_GEOMETRY_API bool isCleanedUp();
 
 /// @brief Print a warning about a library not being initialized (meant for
 /// internal use).
-SOFA_TOPOLOGY_API void printUninitializedLibraryWarning(const std::string& library,
+SOFA_GEOMETRY_API void printUninitializedLibraryWarning(const std::string& library,
                                                       const std::string& initFunction);
 
 /// @brief Print a warning about a library not being cleaned up (meant for
 /// internal use).
-SOFA_TOPOLOGY_API void printLibraryNotCleanedUpWarning(const std::string& library,
+SOFA_GEOMETRY_API void printLibraryNotCleanedUpWarning(const std::string& library,
                                                      const std::string& cleanupFunction);
 
-} // namespace sofa::topology
+} // namespace sofa::geometry
 

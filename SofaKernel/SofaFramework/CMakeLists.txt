@@ -5,7 +5,7 @@ project(SofaFramework)
 set(SOFAFRAMEWORK_VERSION "${Sofa_VERSION}")
 
 # Package install include directory
-set(SOFAFRAMEWORK_TARGETS Sofa.Type Sofa.Topology SofaHelper SofaDefaultType SofaCore SofaSimulationCore)
+set(SOFAFRAMEWORK_TARGETS Sofa.Type Sofa.Topology Sofa.Geometry SofaHelper SofaDefaultType SofaCore SofaSimulationCore)
 if(NOT SOFA_NO_OPENGL)
     list(APPEND SOFAFRAMEWORK_TARGETS Sofa.GL)
 endif()
