@@ -35,7 +35,7 @@ using namespace sofa::defaulttype;
 void test_transformInverse(Matrix4 const& M)
 {
     Matrix4 M_inv;
-    M_inv.transformInvert(M);
+    EXPECT_NO_THROW(M_inv.transformInvert(M));
     Matrix4 res = M*M_inv;
     Matrix4 I;I.identity();
     EXPECT_MAT_NEAR(I, res, (SReal)1e-12);
@@ -43,10 +43,10 @@ void test_transformInverse(Matrix4 const& M)
 
 TEST(MatTypesTest, transformInverse)
 {
-    test_transformInverse(Matrix4::s_identity);
-    test_transformInverse(Matrix4::transformTranslation(Vector3(1.,2.,3.)));
-    test_transformInverse(Matrix4::transformScale(Vector3(1.,2.,3.)));
-    test_transformInverse(Matrix4::transformRotation(Quat::fromEuler(M_PI_4,M_PI_2,M_PI/3.)));
+    EXPECT_NO_THROW(test_transformInverse(Matrix4::s_identity));
+    EXPECT_NO_THROW(test_transformInverse(Matrix4::transformTranslation(Vector3(1.,2.,3.))));
+    EXPECT_NO_THROW(test_transformInverse(Matrix4::transformScale(Vector3(1.,2.,3.))));
+    EXPECT_NO_THROW(test_transformInverse(Matrix4::transformRotation(Quat::fromEuler(M_PI_4,M_PI_2,M_PI/3.))));
 }
 
 TEST(MatTypesTest, setsub_vec)
@@ -117,14 +117,19 @@ TEST(MatTypesTest, invert)
     Matrix2 Mtest(Matrix2::Line(0.6,-0.7),
                   Matrix2::Line(-0.2,0.4));
 
-    defaulttype::invertMatrix(Minv, M);
+    EXPECT_NO_THROW(defaulttype::invertMatrix(Minv, M));
     EXPECT_EQ(Minv, Mtest);
 
     EXPECT_EQ(M.inverted(), Mtest);
 
-    Minv.invert(M);
+    EXPECT_NO_THROW(Minv.invert(M));
     EXPECT_EQ(Minv, Mtest);
 
-    M.invert(M);
+    EXPECT_NO_THROW(M.invert(M));
     EXPECT_EQ(M, Mtest);
+
+    // non invertibility test
+    Matrix2 M2noninv(Matrix2::Line(0, 0), Matrix2::Line(0,0));
+    EXPECT_ANY_THROW(sofa::type::invertMatrix(Minv, M2noninv)); // expect any exception
+    EXPECT_THROW(sofa::type::invertMatrix(Minv, M2noninv), std::logic_error); // expect this exact exception type
 }

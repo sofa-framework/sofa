@@ -71,6 +71,7 @@ public:
     BilateralConstraintResolution3Dof(sofa::defaulttype::Vec3d* vec = nullptr)
         : ConstraintResolution(3)
         , _f(vec)
+        , m_bValid(true)
     {
     }
     void init(int line, double** w, double *force) override
@@ -86,9 +87,17 @@ public:
         temp[2][1] = w[line+2][line+1];
         temp[2][2] = w[line+2][line+2];
 
-        invertMatrix(invW, temp);
+        try
+        {
+            invertMatrix(invW, temp);
+        }
+        catch (std::logic_error e)
+        {
+            msg_error("BilateralConstraintResolution3Dof") << e.what();
+            m_bValid = false;
+        }
 
-        if(_f)
+        if(m_bValid && _f)
         {
             for(int i=0; i<3; i++)
                 force[line+i] = (*_f)[i];
@@ -97,7 +106,7 @@ public:
 
     void initForce(int line, double* force) override
     {
-        if(_f)
+        if(m_bValid && _f)
         {
             for(int i=0; i<3; i++)
                 force[line+i] = (*_f)[i];
@@ -106,6 +115,9 @@ public:
 
     void resolution(int line, double** /*w*/, double* d, double* force, double * dFree) override
     {
+        if (!m_bValid)
+            return;
+
         SOFA_UNUSED(dFree);
         for(int i=0; i<3; i++)
         {
@@ -116,7 +128,7 @@ public:
 
     void store(int line, double* force, bool /*convergence*/) override
     {
-        if(_f)
+        if(m_bValid && _f)
         {
             for(int i=0; i<3; i++)
                 (*_f)[i] = force[line+i];
@@ -126,6 +138,7 @@ public:
 protected:
     sofa::defaulttype::Mat<3,3,double> invW;
     sofa::defaulttype::Vec3d* _f;
+    bool m_bValid;
 };
 
 class BilateralConstraintResolutionNDof : public ConstraintResolution

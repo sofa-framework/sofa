@@ -29,6 +29,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 namespace // anonymous
 {

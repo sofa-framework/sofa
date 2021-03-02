@@ -82,8 +82,15 @@ int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVe
         M[i][2] = -PQ[i];
         right[i] = P[i]-A[i];
     }
-    if (!Minv.invert(M))
+    try
+    {
+        Minv.invert(M);
+    }
+    catch (std::logic_error e)
+    {
+        msg_error("RayDiscreteIntersection") << e.what() << " ; aborting computeIntersection";
         return 0;
+    }
     Vector3 baryCoords = Minv * right;
     if (baryCoords[0] < 0 || baryCoords[1] < 0 || baryCoords[0]+baryCoords[1] > 1)
         return 0; // out of the triangle

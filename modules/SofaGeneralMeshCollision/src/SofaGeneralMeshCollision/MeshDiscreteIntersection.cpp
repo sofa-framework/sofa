@@ -75,8 +75,17 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
         M[i][2] = -PQ[i];
         right[i] = P[i]-A[i];
     }
-    if (!Minv.invert(M))
+
+    try
+    {
+        Minv.invert(M);
+    }
+    catch (std::logic_error e)
+    {
+        msg_error("MeshDiscreteIntersection") << e.what() << " ; aborting computeIntersection";
         return 0;
+    }
+
     Vector3 baryCoords = Minv * right;
     if (baryCoords[0] < 0 || baryCoords[1] < 0 || baryCoords[0]+baryCoords[1] > 1)
         return 0; // out of the triangle
