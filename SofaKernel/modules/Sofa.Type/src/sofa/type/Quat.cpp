@@ -28,12 +28,12 @@ namespace sofa::type
 
 /// Explicit instanciation of the quaternions for double precision
 template class SOFA_TYPE_API Quat<double>;
-template std::ostream& operator << ( std::ostream& out, const Quat<double>& v );
-template std::istream& operator >> ( std::istream& in, Quat<double>& v );
+template SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const Quat<double>& v );
+template SOFA_TYPE_API std::istream& operator >> ( std::istream& in, Quat<double>& v );
 
 /// Explicit instanciation of the quaternions for single precision
 template class SOFA_TYPE_API Quat<float>;
-template std::ostream& operator << ( std::ostream& out, const Quat<float>& v );
-template std::istream& operator >> ( std::istream& in, Quat<float>& v );
+template SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const Quat<float>& v );
+template SOFA_TYPE_API std::istream& operator >> ( std::istream& in, Quat<float>& v );
 
 } /// namespace sofa::type
