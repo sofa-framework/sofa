@@ -169,11 +169,11 @@ public:
     void updateLameCoefficients();
 
 
-    class TRQSTriangleHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<TriangleRestInformation> >
+    class TRQSTriangleHandler : public sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Triangle,helper::vector<TriangleRestInformation> >
     {
     public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
-        TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
+        TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(Index triangleIndex, TriangleRestInformation& ,
                 const core::topology::BaseMeshTopology::Triangle & t,
@@ -186,11 +186,11 @@ public:
         TriangularQuadraticSpringsForceField<DataTypes>* ff;
     };
 
-    class TRQSEdgeHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
+    class TRQSEdgeHandler : public sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
-        TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
+        TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(Index edgeIndex, EdgeRestInformation& ,
                 const core::topology::BaseMeshTopology::Edge & t,

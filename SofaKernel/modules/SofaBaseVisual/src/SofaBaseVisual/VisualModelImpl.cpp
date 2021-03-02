@@ -776,13 +776,13 @@ void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
 
 
 template<class VecCoord>
-class VisualModelPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
+class VisualModelPointHandler : public sofa::component::topology::TopologyDataEngine<sofa::core::topology::Point,VecCoord >
 {
 public:
     typedef typename VecCoord::value_type Coord;
     typedef typename Coord::value_type Real;
     VisualModelPointHandler(VisualModelImpl* obj, sofa::component::topology::PointData<VecCoord>* data, int algo)
-        : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
+        : sofa::component::topology::TopologyDataEngine<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
 
     void applyCreateFunction(Index /*pointIndex*/, Coord& dest, const sofa::core::topology::Point &,
                              const sofa::helper::vector< Index > &ancestors,
@@ -826,7 +826,7 @@ protected:
 template<class VecType>
 void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int algo)
 {
-    data->createTopologicalEngine(m_topology, new VisualModelPointHandler<VecType>(this, data, algo), true);
+    data->createTopologicalEngine(m_topology, new VisualModelPointHandler<VecType>(this, data, algo));
     data->registerTopologicalData();
 }
 

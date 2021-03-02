@@ -39,7 +39,7 @@ namespace  sofa::component::forcefield
 namespace _beamfemforcefield_
 {
 
-using topology::TopologyDataHandler;
+using topology::TopologyDataEngine;
 using core::MechanicalParams;
 using core::behavior::MultiMatrixAccessor;
 using core::behavior::ForceField;
@@ -142,12 +142,12 @@ protected:
         }
     };
 
-    class BeamFFEdgeHandler : public TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >
+    class BeamFFEdgeHandler : public TopologyDataEngine<BaseMeshTopology::Edge, helper::vector<BeamInfo> >
     {
     public:
         typedef typename BeamFEMForceField<DataTypes>::BeamInfo BeamInfo;
         BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, EdgeData<helper::vector<BeamInfo> >* data)
-            :TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >(data),ff(ff) {}
+            :TopologyDataEngine<BaseMeshTopology::Edge, helper::vector<BeamInfo> >(data),ff(ff) {}
 
         void applyCreateFunction(Index edgeIndex, BeamInfo&,
                                  const BaseMeshTopology::Edge& e,

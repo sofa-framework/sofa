@@ -49,7 +49,7 @@ using namespace sofa::core::topology;
 // --------------------------------------------------------------------------------------
 
 template< class DataTypes>
-void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(Index triangleIndex, TriangleInformation &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
+void TriangularFEMForceField<DataTypes>::TRQSTriangleEngine::applyCreateFunction(Index triangleIndex, TriangleInformation &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -108,7 +108,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , p_computeDrawInfo(false)
 {
     _anisotropicMaterial = false;
-    triangleHandler = new TRQSTriangleHandler(this, &triangleInfo);
+    triangleEngine = new TRQSTriangleEngine(this, &triangleInfo);
 #ifdef PLOT_CURVE
     f_graphStress.setWidget("graph");
     f_graphCriteria.setWidget("graph");
@@ -124,7 +124,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
 template <class DataTypes>
 TriangularFEMForceField<DataTypes>::~TriangularFEMForceField()
 {
-    if(triangleHandler) delete triangleHandler;
+    if(triangleEngine) delete triangleEngine;
     if (p_drawColorMap) delete p_drawColorMap;
 }
 
@@ -171,8 +171,8 @@ void TriangularFEMForceField<DataTypes>::init()
         msg_warning() << "No triangles found in linked Topology.";
     }
 
-    // Create specific handler for TriangleData
-    triangleInfo.createTopologicalEngine(m_topology, triangleHandler);
+    // Create specific Engine for TriangleData
+    triangleInfo.createTopologicalEngine(m_topology, triangleEngine);
     triangleInfo.registerTopologicalData();
 
     edgeInfo.createTopologicalEngine(m_topology);
@@ -311,7 +311,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 
     for (Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
-        triangleHandler->applyCreateFunction(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::helper::vector< Index > )0, (const sofa::helper::vector< double >)0);
+        triangleEngine->applyCreateFunction(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::helper::vector< Index > )0, (const sofa::helper::vector< double >)0);
     }
 
     edgeInfo.endEdit();

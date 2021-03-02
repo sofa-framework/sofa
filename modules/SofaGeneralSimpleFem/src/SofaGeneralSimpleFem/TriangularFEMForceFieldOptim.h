@@ -230,10 +230,10 @@ public:
     topology::EdgeData<VecEdgeInfo> d_edgeInfo; ///< Internal edge data
 
 
-    class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,VecTriangleInfo >
+    class TFEMFFOTriangleInfoHandler : public topology::TopologyDataEngine<Triangle,VecTriangleInfo >
     {
     public:
-        TFEMFFOTriangleInfoHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleInfo >* _data) : topology::TopologyDataHandler<Triangle, VecTriangleInfo >(_data), ff(_ff) {}
+        TFEMFFOTriangleInfoHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleInfo >* _data) : topology::TopologyDataEngine<Triangle, VecTriangleInfo >(_data), ff(_ff) {}
 
         void applyCreateFunction(Index triangleIndex, TriangleInfo& ,
                 const Triangle & t,
@@ -256,10 +256,10 @@ public:
         computeTriangleRotation(result,x0[t[0]], x0[t[1]], x0[t[2]]);
     }
 
-    class TFEMFFOTriangleStateHandler : public topology::TopologyDataHandler<Triangle,VecTriangleState >
+    class TFEMFFOTriangleStateHandler : public topology::TopologyDataEngine<Triangle,VecTriangleState >
     {
     public:
-        TFEMFFOTriangleStateHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleState >* _data) : topology::TopologyDataHandler<Triangle, VecTriangleState >(_data), ff(_ff) {}
+        TFEMFFOTriangleStateHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleState >* _data) : topology::TopologyDataEngine<Triangle, VecTriangleState >(_data), ff(_ff) {}
 
         void applyCreateFunction(Index triangleIndex, TriangleState& ,
                 const Triangle & t,

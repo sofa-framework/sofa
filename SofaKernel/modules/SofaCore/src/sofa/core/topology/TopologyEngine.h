@@ -54,7 +54,6 @@ public:
 
 protected:
     TopologyEngine() {}
-    ~TopologyEngine() override {}
 
 public:
     void init() override ;
@@ -178,6 +177,7 @@ public:
     void setNamePrefix(const std::string& s) { m_prefix = s; }
 
     virtual void registerTopology();
+    virtual void registerTopology(sofa::core::topology::BaseMeshTopology* _topology) {}
 protected:
     /// to handle PointSubsetData
     void setDataSetArraySize(const Index s) { lastElementIndex = s - 1; }

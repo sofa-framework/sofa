@@ -168,13 +168,13 @@ public:
         d_anisotropySet.setValue(direction);
     }
 
-    class SOFA_SOFAMISCFEM_API TetrahedronHandler : public TopologyDataHandler<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >
+    class SOFA_SOFAMISCFEM_API TetrahedronHandler : public TopologyDataEngine<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >
     {
     public:
       typedef typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
       TetrahedronHandler(TetrahedronHyperelasticityFEMForceField<DataTypes>* ff,
                          TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> >* data )
-        :TopologyDataHandler<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >(data)
+        :TopologyDataEngine<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >(data)
         ,ff(ff)
       {
 

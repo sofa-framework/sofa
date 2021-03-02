@@ -106,7 +106,7 @@ protected:
         }
     };
 
-    class FTCFTetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >
+    class FTCFTetrahedronHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >
     {
     public:
         typedef typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
@@ -115,7 +115,7 @@ protected:
 
         FTCFTetrahedronHandler(FastTetrahedralCorotationalForceField<DataTypes>* ff,
                 topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> >* data )
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >(data)
+            :topology::TopologyDataEngine<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >(data)
             ,ff(ff)
         {
 

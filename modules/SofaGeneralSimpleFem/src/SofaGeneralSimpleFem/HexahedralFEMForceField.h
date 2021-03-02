@@ -189,13 +189,13 @@ public:
     /// container that stotes all requires information for each hexahedron
     topology::HexahedronData<sofa::helper::vector<HexahedronInformation> > hexahedronInfo;
 
-    class HFFHexahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Hexahedron,sofa::helper::vector<HexahedronInformation> >
+    class HFFHexahedronHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Hexahedron,sofa::helper::vector<HexahedronInformation> >
     {
     public:
         typedef typename HexahedralFEMForceField<DataTypes>::HexahedronInformation HexahedronInformation;
 
         HFFHexahedronHandler(HexahedralFEMForceField<DataTypes>* ff, topology::HexahedronData<sofa::helper::vector<HexahedronInformation> >* data )
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Hexahedron,sofa::helper::vector<HexahedronInformation> >(data)
+            :topology::TopologyDataEngine<core::topology::BaseMeshTopology::Hexahedron,sofa::helper::vector<HexahedronInformation> >(data)
             ,ff(ff)
         {
         }

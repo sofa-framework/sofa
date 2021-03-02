@@ -191,14 +191,14 @@ public:
 
   //  defaulttype::Mat<3,3,double> getPhi( int );
 
-    class GHTetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >
+    class GHTetrahedronHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >
         {
         public:
           typedef typename StandardTetrahedralFEMForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
 
           GHTetrahedronHandler(StandardTetrahedralFEMForceField<DataTypes>* ff,
                                topology::TetrahedronData<tetrahedronRestInfoVector>* data )
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >(data)
+            :topology::TopologyDataEngine<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >(data)
             ,ff(ff)
           {
           }

@@ -92,7 +92,7 @@ protected:
 
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
-    class TriangularTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
+    class TriangularTMEdgeHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
@@ -101,7 +101,7 @@ protected:
             TriangularTensorMassForceField<DataTypes>* ff,
             sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* data
         )
-            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<EdgeRestInformation> >(data),ff(ff)
+            :sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<EdgeRestInformation> >(data),ff(ff)
         {
         }
 
@@ -117,7 +117,7 @@ protected:
 
         void applyTriangleDestruction(const sofa::helper::vector<Index> &triangleRemoved);
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >::ApplyTopologyChange;
+        using topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.

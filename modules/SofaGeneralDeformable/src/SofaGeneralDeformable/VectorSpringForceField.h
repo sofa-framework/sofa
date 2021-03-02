@@ -100,12 +100,12 @@ public:
     /// where the springs information are stored
     sofa::component::topology::EdgeData<sofa::helper::vector<Spring> > springArray;
 
-    class EdgeDataHandler : public sofa::component::topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge, sofa::helper::vector<Spring> >
+    class EdgeDataHandler : public sofa::component::topology::TopologyDataEngine< core::topology::BaseMeshTopology::Edge, sofa::helper::vector<Spring> >
     {
     public:
         typedef typename VectorSpringForceField<DataTypes>::Spring Spring;
         EdgeDataHandler(VectorSpringForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<Spring> >* data)
-            :topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge,sofa::helper::vector<Spring> >(data)
+            :topology::TopologyDataEngine< core::topology::BaseMeshTopology::Edge,sofa::helper::vector<Spring> >(data)
             ,ff(ff)
         {
 

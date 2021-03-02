@@ -87,14 +87,14 @@ public:
     /// Link to be set to the topology container in the component graph.
     using Inherit1::l_topology;
 
-    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >
+    class TRQSTriangleHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >
     {
     public:
         typedef typename TriangularAnisotropicFEMForceField::Deriv triangleInfo;
 
-        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<helper::vector<triangleInfo> >*  _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
+        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<helper::vector<triangleInfo> >*  _data) : topology::TopologyDataEngine<core::topology::BaseMeshTopology::Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >::applyCreateFunction;
+        using topology::TopologyDataEngine<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >::applyCreateFunction;
         void applyCreateFunction(unsigned int triangleIndex,
                                  helper::vector<triangleInfo> & ,
                                  const core::topology::BaseMeshTopology::Triangle & t,
