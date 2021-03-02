@@ -69,13 +69,12 @@ public:
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
     TopologyDataEngine(t_topologicalData* _topologicalData,
-            sofa::core::topology::BaseMeshTopology* _topology);
+        sofa::core::topology::BaseMeshTopology* _topology, 
+        value_type defaultValue = value_type());
 
 
     TopologyDataEngine(t_topologicalData* _topologicalData,
-        value_type defaultValue = value_type())
-        : TopologyEngine()
-        , m_topologyData(_topologicalData), m_defaultValue(defaultValue) {}
+        value_type defaultValue = value_type());
 
 public:
 
@@ -132,7 +131,8 @@ public:
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(Index, value_type& t,
         const sofa::helper::vector< Index >&,
-        const sofa::helper::vector< double >&) {
+        const sofa::helper::vector< double >&) 
+    {
         t = m_defaultValue;
     }
 

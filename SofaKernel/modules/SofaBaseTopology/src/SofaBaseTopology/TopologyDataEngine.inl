@@ -31,17 +31,33 @@ namespace sofa::component::topology
 
 template <typename TopologyElementType, typename VecT>
 TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topologicalData *_topologicalData,
-        sofa::core::topology::BaseMeshTopology *_topology) :
-    m_topologyData(_topologicalData),
-    m_topology(nullptr),
-    m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false),
-    m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
+        sofa::core::topology::BaseMeshTopology *_topology, value_type defaultValue)
+    : TopologyEngine()
+    , m_topologyData(_topologicalData)
+    , m_topology(nullptr)
+    , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
+    , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
     if (m_topology == nullptr)
         msg_error() << "Topology is not dynamic";
 }
+
+
+template <typename TopologyElementType, typename VecT>
+TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topologicalData* _topologicalData,
+    value_type defaultValue)
+    : TopologyEngine()
+    , m_topologyData(_topologicalData)
+    , m_defaultValue(defaultValue) 
+    , m_topology(nullptr)
+    , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
+    , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
+{
+
+}
+
 
 template <typename TopologyElementType, typename VecT>
 void TopologyDataEngine<TopologyElementType,  VecT>::init()
@@ -122,8 +138,13 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToPointDataArray()
     if (m_pointsLinked) // avoid second registration
         return;
 
-    sofa::component::topology::PointSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::PointSetTopologyContainer*>(m_topology);
+    if (m_topology == nullptr)
+    {
+        msg_error() << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Point Data Array.";
+        return;
+    }
 
+    sofa::component::topology::PointSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::PointSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
         msg_error() << "Owner topology can't be cast as PointSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Point Data Array.";
@@ -141,8 +162,13 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToEdgeDataArray()
     if (m_edgesLinked) // avoid second registration
         return;
 
-    sofa::component::topology::EdgeSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::EdgeSetTopologyContainer*>(m_topology);
+    if (m_topology == nullptr)
+    {
+        msg_error() << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Edge Data Array.";
+        return;
+    }
 
+    sofa::component::topology::EdgeSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::EdgeSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
         msg_error() << "Owner topology can't be cast as EdgeSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Edge Data Array.";
@@ -160,8 +186,13 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToTriangleDataArray()
     if (m_trianglesLinked) // avoid second registration
         return;
 
-    sofa::component::topology::TriangleSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer*>(m_topology);
+    if (m_topology == nullptr)
+    {
+        msg_error() << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
+        return;
+    }
 
+    sofa::component::topology::TriangleSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
         msg_error() << "Owner topology can't be cast as TriangleSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
@@ -179,8 +210,13 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToQuadDataArray()
     if (m_quadsLinked) // avoid second registration
         return;
 
-    sofa::component::topology::QuadSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::QuadSetTopologyContainer*>(m_topology);
+    if (m_topology == nullptr)
+    {
+        msg_error() << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Quad Data Array.";
+        return;
+    }
 
+    sofa::component::topology::QuadSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::QuadSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
         msg_error() << "Owner topology can't be cast as QuadSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Quad Data Array.";
@@ -198,8 +234,13 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToTetrahedronDataArray(
     if (m_tetrahedraLinked) // avoid second registration
         return;
 
-    sofa::component::topology::TetrahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TetrahedronSetTopologyContainer*>(m_topology);
+    if (m_topology == nullptr)
+    {
+        msg_error() << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
+        return;
+    }
 
+    sofa::component::topology::TetrahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TetrahedronSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
         msg_error() << "Owner topology can't be cast as TetrahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
@@ -217,8 +258,13 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToHexahedronDataArray()
     if (m_hexahedraLinked) // avoid second registration
         return;
 
+    if (m_topology == nullptr)
+    {
+        msg_error() << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
+        return;
+    }
+    
     sofa::component::topology::HexahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::HexahedronSetTopologyContainer*>(m_topology);
-
     if (_container == nullptr)
     {
         msg_error() << "Owner topology can't be cast as HexahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";

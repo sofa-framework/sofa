@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYDATA_H
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -91,39 +92,6 @@ public:
     }
 
 
-    // Generic methods to apply changes on the Data
-    //{
-    /// Apply adding points elements.
-    virtual void applyCreatePointFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing points elements.
-    virtual void applyDestroyPointFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding edges elements.
-    virtual void applyCreateEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing edges elements.
-    virtual void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding triangles elements.
-    virtual void applyCreateTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing triangles elements.
-    virtual void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding quads elements.
-    virtual void applyCreateQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing quads elements.
-    virtual void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding tetrahedra elements.
-    virtual void applyCreateTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing tetrahedra elements.
-    virtual void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding hexahedra elements.
-    virtual void applyCreateHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing hexahedra elements.
-    virtual void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-    //}
-
     /// Add some values. Values are added at the end of the vector.
     virtual void add(unsigned int ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
@@ -168,8 +136,13 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
             const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
 
+    sofa::core::topology::BaseMeshTopology* getTopology()
+    {
+        return m_topology;
+    }
 
-
+protected:
+    sofa::core::topology::BaseMeshTopology* m_topology = nullptr;
 };
 
 

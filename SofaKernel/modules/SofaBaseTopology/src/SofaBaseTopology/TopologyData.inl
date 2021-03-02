@@ -31,41 +31,14 @@ namespace sofa::component::topology
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+template <typename TopologyElementType, typename VecT>
+TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+    : sofa::core::topology::BaseTopologyData< VecT >(data)
+    , m_topologicalEngine(nullptr)
+{
 
+}
 
-//template <typename TopologyElementType, typename VecT>
-//void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::component::topology::TopologyDataEngine<TopologyElementType,VecT>* _topologyHandler, bool deleteHandler)
-//{
-    //this->m_topology = _topology;
-    //if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
-    //{
-    //    this->m_topologicalEngine = sofa::core::objectmodel::New<TopologyDataEngine<TopologyElementType, VecT> >((sofa::component::topology::TopologyData<TopologyElementType, VecT>*)this, _topology);
-    //    this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("Engine_"));
-    //    if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
-    //    this->m_topologicalEngine->init();
-    //    this->linkToElementDataArray((TopologyElementType*)nullptr);
-    //    msg_info(this->getOwner())<<"TopologyData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology." ;
-    //    if (deleteHandler && _topologyHandler) m_topologyHandler = _topologyHandler;
-    //}
-    //else if (_topology)
-    //{
-    //    msg_info(this->getOwner())<<"TopologyData: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology." ;
-    //    if (deleteHandler && _topologyHandler) delete _topologyHandler;
-    //}
-    //else
-    //{
-    //    msg_info(this->getOwner())<<"TopologyData: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled." ;
-    //    if (deleteHandler && _topologyHandler) delete _topologyHandler;
-    //}
-//}
-
-
-//template <typename TopologyElementType, typename VecT>
-//void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology)
-//{
-    //this->m_topologyHandler = new TopologyDataHandler<TopologyElementType, VecT>(this);
-    //createTopologicalEngine(_topology, this->m_topologyHandler);
-//}
 
 
 template <typename TopologyElementType, typename VecT>
@@ -88,6 +61,9 @@ void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::cor
 {
     this->m_topology = _topology;
     this->m_topologicalEngine = topoEngine;
+
+    this->m_topologicalEngine->registerTopology(_topology);
+
     this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("Engine_"));
     if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) 
         dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine);
