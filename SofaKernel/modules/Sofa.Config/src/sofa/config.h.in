@@ -141,10 +141,10 @@ typedef unsigned __int64	uint64_t;
     "after being deprecated on " deprecateDate ". " toFixMsg)]]
 
 
-#define SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION(msg) \
+#define SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION() \
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v20.06 (PR#1283)", "v21.06", \
-        "Information on how to update your code is provided in the PR description. " msg)
+        "Information on how to update your code is provided in the PR description. ")
 
 
 #define SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE(msg) \
@@ -152,11 +152,11 @@ typedef unsigned __int64	uint64_t;
         "v20.12 (PR#1358)", "v20.12", msg)
 
 
-#define SOFA_ATTRIBUTE_DISABLED__DATALINK(msg) \
+#define SOFA_ATTRIBUTE_DISABLED__DATALINK() \
     SOFA_ATTRIBUTE_DISABLED( \
         "v20.12 (PR#1503)", "v21.06 (PR#1793)", \
         "Link<> cannot hold BaseData anymore. " \
-        "To make a link between Datas use DataLink instead. " msg)
+        "To make a link between Datas use DataLink instead. ")
 
 
 #define SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR(msg) \
@@ -186,15 +186,15 @@ typedef unsigned __int64	uint64_t;
         "v20.06 (PR#1269)", "v21.06 (PR#1793)", \
         "Aspects have been removed. " msg)
 
-#define SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS(msg) \
+#define SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS() \
     SOFA_ATTRIBUTE_DEPRECATED__ASPECT( \
         "ExecParams are not needed anymore. " \
-        "Remove the ExecParams argument from your call. " msg)
+        "Remove the ExecParams argument from your call. ")
 
-#define SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS(msg) \
+#define SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS() \
     SOFA_ATTRIBUTE_DISABLED__ASPECT( \
         "ExecParams are not needed anymore. " \
-        "Remove the ExecParams argument from your call. " msg)
+        "Remove the ExecParams argument from your call. ")
 
 /**********************************************/
 
