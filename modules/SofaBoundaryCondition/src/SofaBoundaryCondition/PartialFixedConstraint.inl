@@ -47,6 +47,13 @@ PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     for( unsigned i=0; i<NumDimensions; i++)
         blockedDirection[i] = true;
     d_fixedDirections.setValue(blockedDirection);
+
+    this->addUpdateCallback("updateIndices", { &this->d_indices}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        this->checkIndices();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 

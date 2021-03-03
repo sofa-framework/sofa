@@ -131,7 +131,7 @@ public:
     Index addPointInCube(const Index cubeIndex, const SReal* baryCoords);
 
     bool isEmpty() { return map.size() == 0; }
-    void setTopology(topology::RegularGridTopology* _topology) { topology = _topology; }
+    void setTopology(topology::SparseGridTopology* _topology) { topology = _topology; }
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );

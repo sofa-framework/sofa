@@ -23,7 +23,6 @@
 #define SOFA_CORE_BEHAVIOR_ODESOLVER_H
 
 #include <sofa/core/behavior/MultiVec.h>
-#include <sofa/core/behavior/MultiMatrix.h>
 
 namespace sofa
 {

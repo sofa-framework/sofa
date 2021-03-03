@@ -179,8 +179,8 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
-# This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (SofaExporter, SofaTest, Compliant, image, ...)
-# it simplifies binaries generation and future cohabitation between SofaPython and SofaPython3
+# This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (Compliant, image, ...)
+# it simplifies binaries generation and cohabitation between SofaPython and SofaPython3
 option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
 
 ### Extlibs
@@ -203,15 +203,8 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
 add_subdirectory(modules)
 
 # This is all the applications GUI stuff. As there is a dependency to this one
-# In scene creator and SofaPython...it is located here.
+# In scene creator ...it is located here.
 add_subdirectory(SofaGui)
-
-if(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
-    # SofaTest depend on SofaPython, so we add SofaPython before.
-    # and SofaPython needs SofaGui...
-    sofa_add_plugin(applications/plugins/SofaPython SofaPython)
-    sofa_add_module(modules/SofaExporter SofaExporter ON)
-endif()
 
 ## Collections
 ## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
@@ -256,12 +249,6 @@ add_subdirectory(applications/plugins)
 if(SOFA_BUILD_TESTS)
     # Tests for all the modules, written using SofaTest.
     add_subdirectory(tests)
-endif()
-
-if(SOFA_BUILD_TESTS AND PLUGIN_SOFAPYTHON AND SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
-    # SofaPython_test is a special case, because it depends on
-    # SofaTest, which may depend on SofaPython...
-    add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
 endif()
 
 ## Applications

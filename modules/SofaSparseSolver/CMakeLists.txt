@@ -29,6 +29,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/SparseLDLSolverImpl.h
     ${SRC_ROOT}/SparseCholeskySolver.h
     ${SRC_ROOT}/SparseLUSolver.h
+    ${SRC_ROOT}/SparseLUSolver.inl
     )
 set(SOURCE_FILES
     ${SRC_ROOT}/initSparseSolver.cpp

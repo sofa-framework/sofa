@@ -188,57 +188,36 @@ public:
         return m_value.getValue();
     }
 
-    SOFA_BEGIN_DEPRECATION_AS_ERROR
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using copyValueFrom() or setParent() depending on the expected behavior.")
+    void virtualSetLink(const BaseData& bd) = delete;
 
-    [[deprecated("2021-01-21: virtualSetLink has been deprecated. You can update your code by using copyValueFrom() or setParent() depending on the expected behavior.")]]
-    void virtualSetLink(const BaseData& bd) { BaseData::copyValueFrom(&bd); }
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using setValue().")
+    void virtualSetValue(const T& v) = delete;
 
-    [[deprecated("2021-01-21: virtualGetValue has been deprecated. You can update your code by using .")]]
-    void virtualSetValue(const T& v){ setValue(v); }
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using getValue().")
+    const T& virtualGetValue() = delete;
 
-    [[deprecated("2021-01-21: virtualGetValue has been deprecated. You can update your code by using .")]]
-    const T& virtualGetValue() { return getValue(); }
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using beginEdit().")
+    T* virtualBeginEdit() = delete;
 
-    [[deprecated("2021-01-21: virtualBeginEdit has been deprecated. You can update your code by using .")]]
-    T* virtualBeginEdit() { return beginEdit(); }
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using endEdit().")
+    void virtualEndEdit() = delete;
 
-    [[deprecated("2021-01-21: virtualEndEdit has been deprecated. You can update your code by using .")]]
-    void virtualEndEdit() { return endEdit(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    void endEdit(const core::ExecParams*) = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    void endEdit(const core::ExecParams*)
-    {
-        endEdit();
-    }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    T* beginWriteOnly(const core::ExecParams*) = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    T* beginWriteOnly(const core::ExecParams*)
-    {
-        return beginWriteOnly();
-    }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    T* beginEdit(const core::ExecParams*) = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    T* beginEdit(const core::ExecParams*)
-    {
-        return beginEdit();
-    }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    void setValue(const core::ExecParams*, const T& value) = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    void setValue(const core::ExecParams*, const T& value)
-    {
-        setValue(value);
-    }
-
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const T& getValue(const core::ExecParams*) const
-    {
-        return getValue();
-    }
-    SOFA_END_DEPRECATION_AS_ERROR
-
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const T& getValue(const core::ExecParams*) const = delete;
     /// @}
-
-
 
     /// Get info about the value type of the associated variable
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
@@ -260,17 +239,15 @@ public:
         return out;
     }
 
-    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")]]
-    bool operator ==( const T& value ) const
-    {
-        return getValue()==value;
-    }
+    SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR("Update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")
+    bool operator ==( const T& value ) const = delete;
 
-    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")]]
-    bool operator!=( const T& value ) const {return getValue()!=value;}
-            void operator =( const T& value )
+    SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR("Update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")
+    bool operator!=( const T& value ) const = delete;
+
+    void operator =( const T& value )
     {
-            this->setValue(value);
+        this->setValue(value);
     }
 
     bool copyValueFrom(const BaseData* data){ return doCopyValueFrom(data); }
@@ -415,10 +392,10 @@ public:
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     ReadAccessor(const core::ExecParams*, const data_container_type& d) : Inherit(d.getValue()) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     ReadAccessor(const core::ExecParams*, const data_container_type* d) : Inherit(d->getValue()) {}
 };
 
@@ -451,10 +428,10 @@ public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     WriteAccessor(const core::ExecParams*, data_container_type& d) : WriteAccessor(d) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     WriteAccessor(const core::ExecParams*, data_container_type* d) : WriteAccessor(d) {}
     ~WriteAccessor() { data.endEdit(); }
 };
@@ -482,42 +459,51 @@ public:
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 
 /// Easy syntax for getting read/write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
 template<class T>
-WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data)
+WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::Data<T>& data)
 { 
     return WriteAccessor<core::objectmodel::Data<T> >(data);
 }
 
 template<class T>
-WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*)
+[[deprecated("2021-02-01: this function has been replaced with getWriteAccessor in PR #1807. You can probably update your code by removing aspect related calls. To update your code, use the new function.")]]
+WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data)
 {
-    return write(data);
+    return getWriteAccessor(data);
 }
 
 template<class T>
-ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data)
+[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
+
+template<class T>
+ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmodel::Data<T>& data)
 {
     return ReadAccessor<core::objectmodel::Data<T> >(data);
 }
 
 template<class T>
-ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*)
+[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1807. You can probably update your code by removing aspect related calls. To update your code, use the new function.")]]
+ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data)
 {
-    return read(data);
+    return getReadAccessor(data);
 }
 
+template<class T>
+[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
 /// Easy syntax for getting write only access to a Data using operator ->. Example: writeOnly(someFlagData)->setFlagValue(true);
 template<class T>
-WriteOnlyAccessor<core::objectmodel::Data<T> > writeOnly(core::objectmodel::Data<T>& data)
+WriteOnlyAccessor<core::objectmodel::Data<T> > getWriteOnlyAccessor(core::objectmodel::Data<T>& data)
 {
     return WriteOnlyAccessor<core::objectmodel::Data<T> >(data);
 }

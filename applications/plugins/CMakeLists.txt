@@ -12,11 +12,17 @@ sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollisio
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
 sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
+
+if(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
+    # Add SofaPython BEFORE image and Compliant to enable their soft dependency
+    sofa_add_plugin(SofaPython SofaPython)
+endif()
+
 sofa_add_plugin(image image)           # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
 sofa_add_plugin(Compliant Compliant)
 
 if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
-    # Added here because all plugins above may have a soft dependency on SofaPython
+    # Add SofaPython AFTER image and Compliant to disable their soft dependency
     sofa_add_plugin(SofaPython SofaPython)
 endif()
 
