@@ -59,11 +59,14 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/stdtype/SVector.cpp
 )
 
+sofa_find_package(Boost REQUIRED)
+
 find_package(Sofa.Config REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
+target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost)
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework

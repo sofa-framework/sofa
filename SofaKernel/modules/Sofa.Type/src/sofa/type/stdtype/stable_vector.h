@@ -19,23 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STABLE_VECTOR_H
-#define SOFA_HELPER_STABLE_VECTOR_H
-
+#pragma once
 
 #include <boost/container/stable_vector.hpp>
 
 
-namespace sofa
-{
-namespace helper
+namespace sofa::type::stdtype
 {
 
     template<class T, class A = std::allocator<T>>
     using stable_vector = boost::container::stable_vector<T,A>;
 
-
-} // namespace helper
-} // namespace sofa
-
-#endif
+} // namespace sofa::type::stdtype
