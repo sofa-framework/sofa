@@ -3,56 +3,69 @@ project(SofaComponentAll VERSION 1.0)
 
 set(SOFACOMPONENTALL_MODULES
     # SofaBase
-    SofaBaseLinearSolver
-    SofaEigen2Solver
-    SofaBaseTopology
     SofaBaseCollision
+    SofaBaseLinearSolver
     SofaBaseMechanics
-    SofaBaseVisual
+    SofaBaseTopology
     SofaBaseUtils
+    SofaBaseVisual
+    SofaEigen2Solver
+
+    # SofaSimulation
+    SofaSimulationCommon
+    SofaSimulationGraph
 
     # SofaCommon
-    SofaSimpleFem
-    SofaRigid
     SofaDeformable
-    SofaObjectInteraction
-    SofaMeshCollision
     SofaEngine
     SofaExplicitOdeSolver
     SofaImplicitOdeSolver
     SofaLoader
+    SofaMeshCollision
+    SofaObjectInteraction
+    SofaRigid
+    SofaSimpleFem
 
     # SofaGeneral
     SofaBoundaryCondition
-    SofaGeneralMeshCollision
-    SofaGeneralVisual
-    SofaGraphComponent
+    SofaConstraint
     SofaGeneralAnimationLoop
     SofaGeneralDeformable
     SofaGeneralEngine
     SofaGeneralExplicitOdeSolver
     SofaGeneralImplicitOdeSolver
     SofaGeneralLinearSolver
-    SofaGeneralRigid
+    SofaGeneralLoader
+    SofaGeneralMeshCollision
     SofaGeneralObjectInteraction
+    SofaGeneralRigid
     SofaGeneralSimpleFem
     SofaGeneralTopology
+    SofaGeneralVisual
+    SofaGraphComponent
     SofaTopologyMapping
     SofaUserInteraction
-    SofaConstraint
-    SofaGeneralLoader
 
     # SofaAdvanced
     SofaNonUniformFem
 
     # SofaMisc
-    SofaMiscExtra
     SofaMiscEngine
+    SofaMiscExtra
     SofaMiscFem
     SofaMiscForceField
     SofaMiscMapping
     SofaMiscSolver
     SofaMiscTopology
+
+    # Other (pluginized from SofaGeneral)
+    SofaDenseSolver
+    SofaExporter
+    SofaHaptics
+    SofaOpenglVisual
+    SofaPreconditioner
+    SofaSparseSolver
+    SofaValidation
     )
 
 set(SOFACOMPONENTALL_MODULES_INCLUDES "")
