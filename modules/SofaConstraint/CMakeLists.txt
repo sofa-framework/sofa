@@ -76,11 +76,11 @@ list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/UnilateralInteractionConstraint.cpp
     )
 
-find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
-find_package(SofaImplicitOdeSolver REQUIRED)  
-find_package(SofaMeshCollision REQUIRED)
-find_package(SofaSimpleFem REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
+sofa_find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
+sofa_find_package(SofaImplicitOdeSolver REQUIRED)  
+sofa_find_package(SofaMeshCollision REQUIRED)
+sofa_find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(SofaUserInteraction REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)

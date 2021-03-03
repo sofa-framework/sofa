@@ -20,42 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/helper/vector_T.h>
 
-#include <sofa/helper/config.h>
-#include <sofa/helper/types/RGBAColor.h>
+/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
+template<> SOFA_HELPER_API std::istream& sofa::helper::vector<int>::read( std::istream& in );
+template<> SOFA_HELPER_API std::istream& sofa::helper::vector<unsigned int>::read( std::istream& in );
 
-namespace sofa::helper::types
-{
-
-class SOFA_HELPER_API Material
-{
-public:
-    std::string 	name;		        /* name of material */
-    RGBAColor  diffuse ;	/* diffuse component */
-    RGBAColor  ambient ;	/* ambient component */
-    RGBAColor  specular;	/* specular component */
-    RGBAColor  emissive;	/* emmissive component */
-    float  shininess;	                /* specular exponent */
-    bool   useDiffuse;
-    bool   useSpecular;
-    bool   useAmbient;
-    bool   useEmissive;
-    bool   useShininess;
-    bool   useTexture;
-    bool   useBumpMapping;
-    bool   activated;
-    std::string   textureFilename; // path to the texture linked to the material
-    std::string   bumpTextureFilename; // path to the bump texture linked to the material
-
-    friend SOFA_HELPER_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
-    friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
-
-    void setColor(float r, float g, float b, float a) ;
-
-    Material() ;
-    Material(const Material& mat) ;
-    Material & operator= (const Material& other);
-};
-
-} /// namespace sofa::helper::types
+/// Specialization for writing vectors of unsigned char
+template<> SOFA_HELPER_API std::ostream& sofa::helper::vector<unsigned char>::write(std::ostream& os) const;
+template<> SOFA_HELPER_API std::istream& sofa::helper::vector<unsigned char>::read(std::istream& in);
 

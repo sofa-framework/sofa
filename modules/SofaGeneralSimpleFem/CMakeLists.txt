@@ -40,9 +40,9 @@ list(APPEND SOURCE_FILES
 
     )
 
-find_package(SofaBase REQUIRED) # SofaBaseTopology SofaBaseMechanics
-find_package(SofaSimpleFem REQUIRED)
-find_package(SofaBaseLinearSolver REQUIRED)
+sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology SofaBaseMechanics
+sofa_find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(SofaBaseLinearSolver REQUIRED)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

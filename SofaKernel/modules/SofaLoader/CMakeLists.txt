@@ -22,7 +22,7 @@ set(SOURCE_FILES
     ${SOFALOADER_SRC}/MeshVTKLoader.cpp
 )
 
-find_package(SofaFramework REQUIRED) # SofaCore
+sofa_find_package(SofaFramework REQUIRED) # SofaCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)

@@ -19,19 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_FRAME_H
-#define SOFA_DEFAULTTYPE_FRAME_H
+#pragma once
 
 #include <sofa/defaulttype/config.h>
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::type
 {
 
 /** The affine transformation of points and vectors from a coordinate system (the local frame) to another (the reference frame). The transformation is not necessarily rigid.
@@ -46,7 +42,7 @@ class SOFA_DEFAULTTYPE_API Frame
 {
 public:
     typedef Vec<3,SReal> Vec3;
-    typedef helper::Quater<SReal> Quat;
+    typedef type::Quat<SReal> Quat;
     typedef Mat<3,3,SReal> Mat33;
 private:
     Vec3 origin_;
@@ -126,7 +122,5 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const Frame& c );
 };
-} // namespace defaulttype
 
-} // namespace sofa
-#endif
+} // namespace sofa::type

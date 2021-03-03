@@ -18,7 +18,7 @@ if(SOFA_WITH_DEPRECATED_COMPONENTS)
         )
 endif()
 
-find_package(SofaGeneralImplicitOdeSolver REQUIRED)
+sofa_find_package(SofaGeneralImplicitOdeSolver REQUIRED)
 
 add_definitions("-DSOFAGENERALIMPLICITODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

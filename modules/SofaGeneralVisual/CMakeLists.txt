@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralVisual LANGUAGES CXX)
 
-find_package(SofaBase REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
 
 set(SOFAGENERALVISUAL_SRC "src/${PROJECT_NAME}")
 

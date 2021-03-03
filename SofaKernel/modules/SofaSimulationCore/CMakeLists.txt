@@ -75,6 +75,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/VisitorAsync.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
     ${SRC_ROOT}/events/SimulationInitStartEvent.h
+    ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.h
     ${SRC_ROOT}/events/SimulationStartEvent.h
     ${SRC_ROOT}/events/SimulationStopEvent.h
 )
@@ -141,6 +142,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/InitTasks.cpp
     ${SRC_ROOT}/events/SimulationInitDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationInitStartEvent.cpp
+    ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
 )
