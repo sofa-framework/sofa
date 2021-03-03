@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/type/stdtype/vector.h>
 
 // maximum number of bytes we allow to increase the size when of a vector in a single step when we reserve on the host or device
@@ -47,7 +46,7 @@
 namespace sofa::type::stdtype
 {
 
-template <class T, class MemoryManager>
+template <class T, class MemoryManager, class DataTypeInfo>
 class vector_device
 {
 public:
@@ -387,7 +386,7 @@ public:
         DEBUG_OUT_V(SPACEP << "resize " << vectorSize << "->" << s << " (alloc=" << allocSize << ")" << std::endl);
         if (s > vectorSize)
         {
-            if (sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor)   // can use memset instead of constructors
+            if (DataTypeInfo::ZeroConstructor)   // can use memset instead of constructors
             {
                 if (hostIsValid)
                 {
@@ -448,7 +447,7 @@ public:
                 }
             }
         }
-        else if (s < vectorSize && !(defaulttype::DataTypeInfo<T>::SimpleCopy))     // need to call destructors
+        else if (s < vectorSize && !(DataTypeInfo::SimpleCopy))     // need to call destructors
         {
             DEBUG_OUT_V(SPACEN << "SIMPLECOPY " << std::endl);
             copyToHost();
