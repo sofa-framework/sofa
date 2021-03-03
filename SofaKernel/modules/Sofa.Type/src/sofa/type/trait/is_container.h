@@ -19,69 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaImplicitField/config.h>
+#pragma once
+#include <type_traits>
 
-#include "initSofaImplicitField.h"
-#include "components/geometry/ScalarField.h"
-#include "components/geometry/SphericalField.h"
-#include "components/geometry/DiscreteGridField.h"
-
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
-
-namespace sofa
+namespace sofa::type::trait
 {
 
-namespace component
+/// Detect if a type T has iterator/const iterator function.
+template<typename T>
+struct is_container
 {
-extern "C" {
-SOFA_SOFAIMPLICITFIELD_API void initExternalModule();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleName();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleVersion();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleLicense();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleDescription();
-SOFA_SOFAIMPLICITFIELD_API const char* getModuleComponentList();
-}
+    typedef typename std::remove_const<T>::type test_type;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+    template<typename A>
+    static constexpr bool test(
+        A * pt,
+        A const * cpt = nullptr,
+        decltype(pt->begin()) * = nullptr,
+        decltype(pt->end()) * = nullptr,
+        decltype(cpt->begin()) * = nullptr,
+        decltype(cpt->end()) * = nullptr,
+        typename A::iterator * = nullptr,
+        typename A::const_iterator * = nullptr,
+        typename A::value_type * = nullptr) {
+
+        typedef typename A::iterator iterator;
+        typedef typename A::const_iterator const_iterator;
+        //typedef typename A::value_type value_type;
+        return  std::is_same<decltype(pt->begin()),iterator>::value &&
+                std::is_same<decltype(pt->end()),iterator>::value &&
+                std::is_same<decltype(cpt->begin()),const_iterator>::value &&
+                std::is_same<decltype(cpt->end()),const_iterator>::value /*&&
+                std::is_same<decltype(**pi),value_type &>::value &&
+                std::is_same<decltype(*pci),value_type const &>::value;*/;
     }
+
+    template<typename A>
+    static constexpr bool test(...) {
+        return false;
+    }
+
+    static const bool value = test<test_type>(nullptr);
+};
+
 }
-
-const char* getModuleName()
-{
-    return "SofaImplicitField";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-
-const char* getModuleDescription()
-{
-    return "ImplicitField describe shapes of objects using implicit equation.  \n"
-           "In general of function of a n-dimentional space f(X) returns a scalar value  \n"
-           "The surface is then defined as f(x) = aConstant.";
-}
-
-const char* getModuleComponentList()
-{
-    return "SphereSurface ImplicitSurfaceMapping InterpolatedImplicitSurface "
-           "SphericalField DiscreteGridField";
-}
-
-} /// component
-
-} /// sofa
-

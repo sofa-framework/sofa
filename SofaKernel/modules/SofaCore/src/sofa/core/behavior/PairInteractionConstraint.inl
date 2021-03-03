@@ -102,8 +102,8 @@ template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result1, Data<VecDeriv>& result2,
     const Data<MatrixDeriv>& jacobian1, const Data<MatrixDeriv>& jacobian2, const sofa::defaulttype::BaseVector* lambda)
 {
-    auto res1 = sofa::helper::write(result1);
-    auto res2 = sofa::helper::write(result2);
+    auto res1 = sofa::helper::getWriteAccessor(result1);
+    auto res2 = sofa::helper::getWriteAccessor(result2);
     const MatrixDeriv& j1 = jacobian1.getValue();
     const MatrixDeriv& j2 = jacobian2.getValue();
 

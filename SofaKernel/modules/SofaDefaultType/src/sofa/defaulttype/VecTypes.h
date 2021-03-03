@@ -23,8 +23,6 @@
 #define SOFA_DEFAULTTYPE_VECTYPES_H
 
 #include <sofa/defaulttype/Vec.h>
-
-#include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/random.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
