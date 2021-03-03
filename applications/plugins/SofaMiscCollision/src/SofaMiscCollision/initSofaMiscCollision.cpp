@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscCollision/initMiscCollision.h>
+#include <SofaMiscCollision/initSofaMiscCollision.h>
 
 #if SOFAMISCCOLLISION_HAVE_SOFASPHFLUID
 #include "SpatialGridPointModel.h"
@@ -30,6 +30,15 @@ namespace sofa
 
 namespace component
 {
+
+void initSofaMiscCollision()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
 extern "C" {
 SOFA_MISC_COLLISION_API void initExternalModule();
@@ -42,11 +51,7 @@ SOFA_MISC_COLLISION_API const char* getModuleComponentList();
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    initSofaMiscCollision();
 }
 
 const char* getModuleName()
@@ -75,6 +80,6 @@ const char* getModuleComponentList()
            "RigidDistanceGridDiscreteIntersection DistanceGridForceField";
 }
 
-} /// component
+} // component
 
-} /// sofa
+} // sofa

@@ -28,6 +28,8 @@ namespace sofa
 
 namespace component
 {
+    
+SOFA_MISC_COLLISION_API void initSofaMiscCollision();
 
 } // namespace component
 

@@ -8,11 +8,11 @@ set(SRC_ROOT src/SofaMiscCollision)
 
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/initMiscCollision.h
+    ${SRC_ROOT}/initSofaMiscCollision.h
     )
 
 set(SOURCE_FILES
-    ${SRC_ROOT}/initMiscCollision.cpp
+    ${SRC_ROOT}/initSofaMiscCollision.cpp
     )
 
 set(EXTRA_FILES
