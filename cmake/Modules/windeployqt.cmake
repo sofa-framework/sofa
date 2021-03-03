@@ -20,11 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-find_package(Qt5Core REQUIRED)
+if(NOT EXISTS "${_qmake_executable}")
+    if(TARGET Qt5::Core)
+        get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
+    elseif(TARGET Qt6::Core)
+        get_target_property(_qmake_executable Qt6::qmake IMPORTED_LOCATION)
+    endif()
+endif()
+if(NOT EXISTS "${_qmake_executable}")
+    message(SEND_ERROR "Cannot find qmake executable. Find the Qt you need first, or include windeployqt{5,6}.cmake")
+endif()
 
 # Retrieve the absolute path to qmake and then use that path to find
 # the windeployqt binary
-get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
 get_filename_component(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
 find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
 
