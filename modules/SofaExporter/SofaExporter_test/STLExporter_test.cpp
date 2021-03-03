@@ -61,7 +61,7 @@ public:
 
     void SetUp()
     {
-        sofa::component::initSofaBaseUtils();
+        sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
         sofa::simpleapi::importPlugin("SofaOpenglVisual");
     }
 

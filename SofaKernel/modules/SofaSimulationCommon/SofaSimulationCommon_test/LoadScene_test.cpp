@@ -21,8 +21,6 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 
-#include <SofaComponentAll/initSofaComponentAll.h>
-
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
@@ -41,9 +39,6 @@ struct LoadScene_test: public Sofa_test<>
 
    bool LoadScene(std::string sceneName)
    {
-       // Init Sofa
-       sofa::component::initSofaComponentAll();
-
        simulation::Simulation* simulation;
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 

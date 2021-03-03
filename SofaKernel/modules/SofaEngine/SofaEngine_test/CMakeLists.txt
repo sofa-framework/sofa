@@ -12,8 +12,10 @@ set(SOURCE_FILES
     
 find_package(SofaEngine REQUIRED)
 find_package(SofaBaseUtils REQUIRED)
+find_package(SofaBaseMechanics REQUIRED)
+find_package(SofaBaseTopology REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaEngine SofaBaseUtils)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaEngine SofaBaseUtils SofaBaseMechanics SofaBaseTopology)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
