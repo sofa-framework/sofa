@@ -10,7 +10,8 @@ set(SOURCE_FILES
         AddResourceRepository_test.cpp
 )
 
-find_package(SofaTest REQUIRED)
+# Do not find dependencies explicitely, let CMake decide the appropriate time to do it
+#find_package(SofaTest REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)

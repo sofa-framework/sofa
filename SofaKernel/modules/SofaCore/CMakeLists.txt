@@ -291,4 +291,5 @@ sofa_add_targets_to_package(
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaCore_test)
+    add_subdirectory(SofaCore_simutest)
 endif()

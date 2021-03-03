@@ -6,9 +6,9 @@ set(SOURCE_FILES
     LoadScene_test.cpp
 )
 
+add_definitions("-DSOFASIMULATION_TEST_SCENES_DIR=\"${CMAKE_SOURCE_DIR}/examples/Components/constraint\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaHelper)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../../SofaSimulationCore/SofaSimulationCore_test>")
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaHelper SofaComponentAll)
 
-add_test(NAME SofaSimulationCore_test COMMAND SofaSimulationCore_test)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
