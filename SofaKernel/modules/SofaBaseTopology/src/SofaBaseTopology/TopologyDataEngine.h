@@ -152,43 +152,19 @@ public:
     {
         applyCreateFunction(i, t, e, ancestors, coefs);
     }
+
+    virtual bool applyTestCreateFunction(Index /*index*/,
+        const sofa::helper::vector< Index >& /*ancestors*/,
+        const sofa::helper::vector< double >& /*coefs*/) {
+        return false;
+    }
+
     // update the default value used during creation
     void setDefaultValue(const value_type& v) {
         m_defaultValue = v;
     }
 
 protected:
-    /// Swaps values at indices i1 and i2.
-    virtual void swap(Index i1, Index i2);
-
-    /// Add some values. Values are added at the end of the vector.
-    /// This (new) version gives more information for element indices and ancestry
-    virtual void add(const sofa::helper::vector<Index>& index,
-        const sofa::helper::vector< TopologyElementType >& elems,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
-        const sofa::helper::vector< AncestorElem >& ancestorElems);
-
-    /// Remove the values corresponding to the elements removed.
-    virtual void remove(const sofa::helper::vector<Index>& index);
-
-    /// Reorder the values.
-    virtual void renumber(const sofa::helper::vector<Index>& index);
-
-    /// Move a list of points
-    virtual void move(const sofa::helper::vector<Index>& indexList,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-
-    /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
-    virtual void addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
-        const sofa::helper::vector< TopologyElementType >& elems);
-
-    /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
-    virtual void removeOnMovedPosition(const sofa::helper::vector<Index>& indices);
-
-
-
     t_topologicalData* m_topologyData;
     sofa::core::topology::TopologyContainer* m_topology;
     value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)

@@ -24,6 +24,7 @@
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 namespace sofa
 {
@@ -93,34 +94,47 @@ public:
 
 
     /// Add some values. Values are added at the end of the vector.
-    virtual void add(unsigned int ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::helper::vector< Topology::PointID >& ,
+        const sofa::helper::vector< Topology::Point >& ,
+        const sofa::helper::vector< sofa::helper::vector< Topology::PointID > >&,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
+        const sofa::helper::vector< PointAncestorElem >& ancestorElems) {}
 
     /// Temporary Hack: find a way to have a generic description of topological element:
     /// add Edge
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,2> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::helper::vector< Topology::EdgeID >&,
+        const sofa::helper::vector< Topology::Edge >& ,
+        const sofa::helper::vector< sofa::helper::vector< Topology::EdgeID > >&,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
+        const sofa::helper::vector< EdgeAncestorElem >& ancestorElems) {}
 
     /// add Triangle
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,3> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::helper::vector< Topology::TriangleID >&,
+        const sofa::helper::vector< Topology::Triangle >& ,
+        const sofa::helper::vector< sofa::helper::vector< Topology::TriangleID > > &,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
+        const sofa::helper::vector< TriangleAncestorElem >& ancestorElems) {}
 
     /// add Quad & Tetrahedron
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,4> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::helper::vector< Topology::TetrahedronID >&,
+        const sofa::helper::vector< Topology::Tetrahedron >& ,
+        const sofa::helper::vector< sofa::helper::vector< Topology::TetrahedronID > > &,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
+        const sofa::helper::vector< TetrahedronAncestorElem >& ancestorElems) {}
+
+    virtual void add(const sofa::helper::vector< Topology::QuadID >&,
+        const sofa::helper::vector< Topology::Quad >&,
+        const sofa::helper::vector< sofa::helper::vector< Topology::QuadID > >&,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >&,
+        const sofa::helper::vector< QuadAncestorElem >& ancestorElems) {}
 
     /// add Hexahedron
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,8> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::helper::vector< Topology::HexahedronID >&,
+        const sofa::helper::vector< Topology::Hexahedron >& ,
+        const sofa::helper::vector< sofa::helper::vector< Topology::HexahedronID > > &,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
+        const sofa::helper::vector< HexahedronAncestorElem >& ancestorElems) {}
+
 
     /// Remove the values corresponding to the points removed.
     virtual void remove( const sofa::helper::vector<unsigned int>& ) {}

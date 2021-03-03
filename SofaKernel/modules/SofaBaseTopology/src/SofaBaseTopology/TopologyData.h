@@ -26,9 +26,6 @@
 
 #include <sofa/core/topology/BaseTopologyData.h>
 #include <SofaBaseTopology/TopologyDataEngine.h>
-#include <sofa/core/topology/TopologyEngine.h>
-#include <SofaBaseTopology/TopologyDataHandler.h>
-
 
 
 namespace sofa::component::topology
@@ -59,30 +56,23 @@ public:
     typedef typename container_type::const_reference const_reference;
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
+    typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
+    typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
+    typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
 
     /// Constructor
-    TopologyData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : sofa::core::topology::BaseTopologyData< VecT >(data)
-        , m_topologicalEngine(nullptr)
-        , m_topology(nullptr)
-    {}
+    TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
-    virtual ~TopologyData(){
-        // if engine owner, delete it
-    }
 
+    virtual ~TopologyData();
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    //virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataEngine<TopologyElementType,VecT>* _topologyHandler, bool deleteHandler = false);
-
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    //virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
-
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
 
+    /** Public functions to handle topological engine creation */
+    /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyEngine* topoEngine);
 
     /// Allow to add additionnal dependencies to others Data.
@@ -122,17 +112,39 @@ public:
         return m_topologicalEngine.get();
     }*/
 
-    sofa::core::topology::BaseMeshTopology* getTopology()
-    {
-        return m_topology;
-    }
+
+    /// Swaps values at indices i1 and i2.
+    void swap(Index i1, Index i2) override;
+
+    /// Remove the values corresponding to the elements removed.
+    void remove(const sofa::helper::vector<Index>& index) override;
+
+    /// Add some values. Values are added at the end of the vector.
+    /// This (new) version gives more information for element indices and ancestry
+    virtual void add(const sofa::helper::vector<Index>& index,
+        const sofa::helper::vector< TopologyElementType >& elems,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+        const sofa::helper::vector< AncestorElem >& ancestorElems);
+
+    /// Reorder the values.
+    void renumber(const sofa::helper::vector<Index>& index) override;
+
+    /// Move a list of points
+    void move(const sofa::helper::vector<Index>& indexList,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs) override;
+
+    /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    virtual void addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
+        const sofa::helper::vector< TopologyElementType >& elems);
+
+    /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    virtual void removeOnMovedPosition(const sofa::helper::vector<Index>& indices);
+
 
 protected:
-
-    //typename sofa::component::topology::TopologyDataEngine<TopologyElementType,VecT>::SPtr m_topologicalEngine;
-    
     sofa::core::topology::TopologyEngine* m_topologicalEngine;
-    sofa::core::topology::BaseMeshTopology* m_topology;
 
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*      ) { linkToPointDataArray();       }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*       ) { linkToEdgeDataArray();        }
@@ -140,7 +152,6 @@ protected:
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*       ) { linkToQuadDataArray();        }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*) { linkToTetrahedronDataArray(); }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron* ) { linkToHexahedronDataArray();  }
-
 };
 
 
