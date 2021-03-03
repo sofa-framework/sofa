@@ -179,12 +179,6 @@ public:
     virtual void registerTopology();
     virtual void registerTopology(sofa::core::topology::BaseMeshTopology* _topology) {}
 protected:
-    /// to handle PointSubsetData
-    void setDataSetArraySize(const Index s) { lastElementIndex = s - 1; }
-
-    /// to handle properly the removal of items, the container must know the index of the last element
-    Index lastElementIndex;
-
     /// use to define engine name.
     std::string m_prefix;
     /// use to define data handled name.

@@ -72,8 +72,6 @@ void TopologyEngine::ApplyTopologyChanges(const std::list<const core::topology::
     std::list<const core::topology::TopologyChange*>::iterator changeIt;
     std::list<const core::topology::TopologyChange*> _changeList = _topologyChangeEvents;
 
-    this->setDataSetArraySize(_dataSize);
-
     for (changeIt = _changeList.begin(); changeIt != _changeList.end(); ++changeIt)
     {
         core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();

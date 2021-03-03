@@ -141,8 +141,14 @@ public:
         return m_topology;
     }
 
+    /// to handle PointSubsetData
+    void setDataSetArraySize(const Index s) { lastElementIndex = s - 1; }
+
 protected:
     sofa::core::topology::BaseMeshTopology* m_topology = nullptr;
+
+    /// to handle properly the removal of items, the container must know the index of the last element
+    Index lastElementIndex = 0;
 };
 
 
