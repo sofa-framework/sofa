@@ -21,9 +21,56 @@
 ******************************************************************************/
 #pragma once
 
-#include "vector_T.h"              ///< Declaration of the class vector       (the interface)
-#include "vector_T.inl"            ///< Definition of the default vector      (the default implementation)
-#include "vector_Integral.h"       ///< Extern declaration for integral types (the specialization)
-#include "vector_String.h"         ///< Extern declaration for string types   (the specialization)
-#include "vector_Real.h"           ///< Extern declaration for real types     (the specialization)
+#include <algorithm>
+#include <sofa/helper/vector_T.h>
 
+namespace sofa::helper
+{
+/** Remove the first occurence of a given value.
+    The remaining values are shifted.
+*/
+template<class T1, class T2>
+void remove( T1& v, const T2& elem )
+{
+    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
+    if( e != v.end() )
+    {
+        typename T1::iterator next = e;
+        next++;
+        for( ; next != v.end(); ++e, ++next )
+            *e = *next;
+    }
+    v.pop_back();
+}
+
+/** Remove the first occurence of a given value.
+
+The last value is moved to where the value was found, and the other values are not shifted.
+*/
+template<class T1, class T2>
+void removeValue( T1& v, const T2& elem )
+{
+    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
+    if( e != v.end() )
+    {
+        if (e != v.end()-1)
+            *e = v.back();
+        v.pop_back();
+    }
+}
+
+/// Remove value at given index, replace it by the value at the last index, other values are not changed
+template<class T, class TT>
+void removeIndex( std::vector<T,TT>& v, size_t index )
+{
+    if constexpr(sofa::helper::isEnabledVectorAccessChecking)
+    {
+        if (index>=v.size())
+            vector_access_failure(&v, v.size(), index, typeid(T));
+    }
+    if (index != v.size()-1)
+        v[index] = v.back();
+    v.pop_back();
+}
+
+}
