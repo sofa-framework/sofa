@@ -24,13 +24,53 @@ set(SOURCE_FILES
 )
 
 find_package(SofaGui REQUIRED)
-find_package(SofaGeneral REQUIRED)
+
+# Are all these modules (formerly SofaGeneral) necessary?
+find_package(SofaBoundaryCondition REQUIRED)
+find_package(SofaConstraint REQUIRED)
+find_package(SofaGeneralAnimationLoop REQUIRED)
+find_package(SofaGeneralDeformable REQUIRED)
+find_package(SofaGeneralEngine REQUIRED)
+find_package(SofaGeneralExplicitOdeSolver REQUIRED)
+find_package(SofaGeneralImplicitOdeSolver REQUIRED)
+find_package(SofaGeneralLinearSolver REQUIRED)
+find_package(SofaGeneralLoader REQUIRED)
+find_package(SofaGeneralMeshCollision REQUIRED)
+find_package(SofaGeneralObjectInteraction REQUIRED)
+find_package(SofaGeneralRigid REQUIRED)
+find_package(SofaGeneralSimpleFem REQUIRED)
+find_package(SofaGeneralTopology REQUIRED)
+find_package(SofaGeneralVisual REQUIRED)
+find_package(SofaGraphComponent REQUIRED)
+find_package(SofaTopologyMapping REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
+
 find_package(SceneCreator REQUIRED)
 find_package(SofaValidation REQUIRED)
 sofa_find_package(SofaSimulationCommon REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGui SofaGeneral SceneCreator SofaValidation SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaGui SceneCreator SofaValidation SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+    SofaBoundaryCondition
+    SofaConstraint
+    SofaGeneralAnimationLoop
+    SofaGeneralDeformable
+    SofaGeneralEngine
+    SofaGeneralExplicitOdeSolver
+    SofaGeneralImplicitOdeSolver
+    SofaGeneralLinearSolver
+    SofaGeneralLoader
+    SofaGeneralMeshCollision
+    SofaGeneralObjectInteraction
+    SofaGeneralRigid
+    SofaGeneralSimpleFem
+    SofaGeneralTopology
+    SofaGeneralVisual
+    SofaGraphComponent
+    SofaTopologyMapping
+    SofaUserInteraction
+    )
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPHYSICSAPI_VERSION})
 
 ## Install rules and CMake package configurations files

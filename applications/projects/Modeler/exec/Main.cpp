@@ -30,9 +30,7 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
 
 #include <QApplication>
 
@@ -48,9 +46,7 @@ using sofa::helper::Utils;
 
 int main(int argc, char** argv)
 {
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
+    sofa::component::initSofaComponentAll();
 
     // TODO: create additionnal handlers depending on command-line parameters
 
