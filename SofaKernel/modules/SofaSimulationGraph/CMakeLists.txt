@@ -28,7 +28,7 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     list(APPEND SOURCE_FILES ${SOFASIMULATIONGRAPH_SRC}/testing/BaseSimulationTest.cpp)
 endif()
 
-find_package(SofaSimulationCommon REQUIRED)
+sofa_find_package(SofaSimulationCommon REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)

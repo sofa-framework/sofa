@@ -25,7 +25,7 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(TinyXML REQUIRED)
-find_package(SofaBaseTopology REQUIRED)
+sofa_find_package(SofaBaseTopology REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaDefaultType)

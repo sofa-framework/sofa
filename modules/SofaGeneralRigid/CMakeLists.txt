@@ -37,7 +37,7 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALRIGID_SRC}/bvh/BVHMotion.cpp
     )
 
-find_package(SofaBase REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseMechanics)

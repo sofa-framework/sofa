@@ -3,7 +3,7 @@ project(SofaExplicitOdeSolver LANGUAGES CXX)
 
 set(SOFAEXPLICITEODESOLVER_SRC "src/${PROJECT_NAME}")
 
-find_package(SofaFramework REQUIRED)
+sofa_find_package(SofaFramework REQUIRED)
 
 set(HEADER_FILES
     ${SOFAEXPLICITEODESOLVER_SRC}/config.h.in
@@ -16,7 +16,7 @@ set(SOURCE_FILES
     ${SOFAEXPLICITEODESOLVER_SRC}/EulerSolver.cpp
 )
 
-find_package(SofaFramework REQUIRED) # SofaCore SofaSimulationCore
+sofa_find_package(SofaFramework REQUIRED) # SofaCore SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)

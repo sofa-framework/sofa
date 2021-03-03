@@ -19,9 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_HELPER_VECTOR_STRING_DEFINITION
+#include <sofa/helper/vector_String.h>
+#include <sofa/helper/vector_T.inl>
 
-namespace sofa::helper::types
+#include <iostream>
+#include <sstream>
+
+
+/// All integral types are considered as extern templates.
+namespace sofa::helper
 {
-    class RGBAColor;
+
+/// Output stream
+/// Specialization for writing vectors of unsigned char
+template<>
+SOFA_HELPER_API std::ostream& vector<std::string>::write(std::ostream& os) const
+{
+    std::string separator = "";
+    os << "[";
+    for(auto& v : (*this))
+    {
+        os << separator << '"' << v << '"';
+        separator = ", ";
+    }
+    os << "]";
+    return os;
 }
+
+} // namespace sofa::helper
+
+template class SOFA_HELPER_API sofa::helper::vector<std::string>;

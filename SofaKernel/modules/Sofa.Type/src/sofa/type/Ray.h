@@ -19,21 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_COLOR_H
-#define SOFA_DEFAULTTYPE_COLOR_H
-#include <string>
+#pragma once
 
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/config.h>
+#include <sofa/type/Vec.h>
 
-namespace sofa
+namespace sofa::type
 {
-namespace defaulttype
+
+/// Representation of rays.
+/// A ray is an infinite line starting at origin and going in some direction.
+class Ray
 {
-    [[deprecated("sofa::helper::types::RGBAColor is now part in sofa::helper::types::RGBAColor. Please update your code.")]]
-    typedef sofa::helper::types::RGBAColor RGBAColor;
-} // namespace defaulttype
-} // namespace sofa
+public:
+    Ray(const Vec3& origin = Vec3(0,0,0), const Vec3& direction = Vec3(0,0,0))
+    {
+        m_origin = origin;
+        m_direction = direction.normalized();
+    }
 
+    const Vec3& origin() const { return m_origin; }
+    const Vec3& direction() const { return m_direction; }
 
-#endif
+    Vec3 getPoint(double z) const //< Returns a point at distance units along the ray.
+    {
+        return m_origin + (m_direction * z);
+    }
 
+    void setOrigin(const Vec3& origin) { m_origin = origin; }
+    void setDirection(const Vec3& direction) { m_direction = direction.normalized(); }
+
+private:
+    Vec3 m_origin;
+    Vec3 m_direction;
+};
+
+} /// namespace sofa::type

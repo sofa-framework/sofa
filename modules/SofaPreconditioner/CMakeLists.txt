@@ -36,9 +36,9 @@ list(APPEND SOURCE_FILES
     )
 
 # Dependencies
-find_package(SofaImplicitOdeSolver REQUIRED)
-find_package(SofaSimpleFem REQUIRED)
-find_package(SofaGeneralLinearSolver REQUIRED)
+sofa_find_package(SofaImplicitOdeSolver REQUIRED)
+sofa_find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(SofaGeneralLinearSolver REQUIRED)
 sofa_find_package(SofaSparseSolver QUIET) # Soft dependency of PrecomputedWarpPreconditioner
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

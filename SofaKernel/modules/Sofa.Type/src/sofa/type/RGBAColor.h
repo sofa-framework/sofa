@@ -19,25 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_RGBAHELPER_COLOR_H
-#define SOFA_RGBAHELPER_COLOR_H
-#include <iostream>
+#pragma once
+#include <sofa/type/config.h>
 
+#include <sofa/type/stdtype/fixed_array.h>
+
+#include <ostream>
+#include <istream>
 #include <string>
 
-#include <sofa/helper/config.h>
-#include <sofa/helper/fixed_array.h>
 
-namespace sofa
+namespace sofa::type
 {
 
-namespace helper
-{
-
-namespace types
-{
-
-using sofa::helper::fixed_array ;
+using sofa::type::stdtype::fixed_array ;
 
 
 #define RGBACOLOR_EQUALITY_THRESHOLD 1e-6
@@ -45,7 +40,7 @@ using sofa::helper::fixed_array ;
 /**
  *  \brief encode a 4 RGBA component color
  */
-class SOFA_HELPER_API RGBAColor : public fixed_array<float, 4>
+class SOFA_TYPE_API RGBAColor : public fixed_array<float, 4>
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
@@ -102,8 +97,8 @@ public:
         return false;
     }
 
-    friend SOFA_HELPER_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
-    friend SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
+    friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
+    friend SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
 public:
     RGBAColor() ;
@@ -112,12 +107,4 @@ public:
 
 };
 
-} // namespace types
-
-} // namespace helper
-
-} // namespace sofa
-
-
-#endif
-
+} // namespace sofa::type

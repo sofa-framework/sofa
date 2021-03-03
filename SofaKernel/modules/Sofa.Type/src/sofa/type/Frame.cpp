@@ -19,14 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/Frame.h>
+#include <sofa/type/Frame.h>
+
 #include <iostream>
+
 using std::endl;
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::type
 {
 
 Frame::Frame (const Vec3 &origin, const Mat33& matrix )
@@ -174,7 +173,7 @@ Frame Frame::inversed() const
     return Frame( -(inv*origin_) , inv );
 }
 
-std::ostream& operator << (std::ostream& out, const sofa::defaulttype::Frame& c )
+std::ostream& operator << (std::ostream& out, const sofa::type::Frame& c )
 {
     out<<"origin = "<<c.getOrigin()<<", basis matrix="<<endl;
     for( int i=0; i<3; i++ )
@@ -186,9 +185,4 @@ std::ostream& operator << (std::ostream& out, const sofa::defaulttype::Frame& c 
     return out;
 }
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-
-
+} // namespace sofa::type

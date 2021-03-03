@@ -33,11 +33,11 @@ if(SOFA_WITH_DEPRECATED_COMPONENTS)
         )
 endif()
 
-find_package(SofaFramework REQUIRED) # SofaHelper
-find_package(SofaDeformable REQUIRED)
-find_package(SofaBoundaryCondition REQUIRED)
-find_package(SofaGeneralTopology REQUIRED) 
-find_package(SofaMiscTopology REQUIRED)
+sofa_find_package(SofaFramework REQUIRED) # SofaHelper
+sofa_find_package(SofaDeformable REQUIRED)
+sofa_find_package(SofaBoundaryCondition REQUIRED)
+sofa_find_package(SofaGeneralTopology REQUIRED) 
+sofa_find_package(SofaMiscTopology REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDeformable SofaBoundaryCondition SofaMiscTopology SofaGeneralTopology)

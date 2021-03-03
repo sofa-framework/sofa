@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaExporter_test)
 
-find_package(SofaGTestMain REQUIRED)
-find_package(SofaExporter REQUIRED)
-find_package(SofaGeneralImplicitOdeSolver REQUIRED)
-find_package(SofaBaseMechanics REQUIRED)
-find_package(SofaBaseLinearSolver REQUIRED)
-find_package(SofaImplicitOdeSolver REQUIRED)
-find_package(SofaBaseUtils REQUIRED)
+sofa_find_package(SofaGTestMain REQUIRED)
+sofa_find_package(SofaExporter REQUIRED)
+sofa_find_package(SofaGeneralImplicitOdeSolver REQUIRED)
+sofa_find_package(SofaBaseMechanics REQUIRED)
+sofa_find_package(SofaBaseLinearSolver REQUIRED)
+sofa_find_package(SofaImplicitOdeSolver REQUIRED)
+sofa_find_package(SofaBaseUtils REQUIRED)
 
 set(SOURCE_FILES
     OBJExporter_test.cpp

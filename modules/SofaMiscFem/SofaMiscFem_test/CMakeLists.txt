@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscFem_test)
 
-find_package(SofaMiscFem REQUIRED)
+sofa_find_package(SofaMiscFem REQUIRED)
 
 set(HEADER_FILES
     )
