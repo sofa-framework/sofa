@@ -27,8 +27,6 @@ using sofa::helper::BackTrace ;
 #include <SofaOpenglVisual/OglModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-
 #include <SofaSimulationGraph/SimpleApi.h>
 
 namespace light_test
@@ -55,7 +53,6 @@ public:
 
     void SetUp() override
     {
-        sofa::component::initSofaBaseMechanics();
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 

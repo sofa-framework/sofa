@@ -47,6 +47,8 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
+#include <SofaBaseUtils/initSofaBaseUtils.h>
+
 #include <boost/filesystem.hpp>
 namespace {
 std::string tempdir = boost::filesystem::temp_directory_path().string() ;
@@ -59,6 +61,7 @@ public:
 
     void SetUp()
     {
+        sofa::component::initSofaBaseUtils();
         sofa::simpleapi::importPlugin("SofaOpenglVisual");
     }
 
