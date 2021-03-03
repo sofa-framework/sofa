@@ -6,12 +6,10 @@ project(SofaHelper)
 
 # Boost
 sofa_find_package(Boost REQUIRED
-    COMPONENTS system filesystem program_options
+    COMPONENTS filesystem
     OPTIONAL_COMPONENTS thread
     BOTH_SCOPES)
-if(SOFAHELPER_HAVE_BOOST_SYSTEM
-   AND SOFAHELPER_HAVE_BOOST_FILESYSTEM
-   AND SOFAHELPER_HAVE_BOOST_PROGRAM_OPTIONS
+if(SOFAHELPER_HAVE_BOOST_FILESYSTEM
    AND SOFAHELPER_HAVE_BOOST_THREAD)
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
 else()
@@ -33,7 +31,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/helper.h
     ${SRC_ROOT}/AdvancedTimer.h
-    ${SRC_ROOT}/ArgumentParser.h
     ${SRC_ROOT}/BackTrace.h
     ${SRC_ROOT}/cast.h
     ${SRC_ROOT}/ColorMap.h
@@ -150,7 +147,6 @@ set(HEADER_FILES
 )
 set(SOURCE_FILES
     ${SRC_ROOT}/AdvancedTimer.cpp
-    ${SRC_ROOT}/ArgumentParser.cpp
     ${SRC_ROOT}/BackTrace.cpp
     ${SRC_ROOT}/ColorMap.cpp
     ${SRC_ROOT}/ComponentChange.cpp
@@ -328,7 +324,7 @@ endif()
 
 # Boost
 if(Boost_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::system Boost::filesystem Boost::program_options)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::filesystem)
     if(Boost_THREAD_FOUND)
         target_link_libraries(${PROJECT_NAME} PUBLIC Boost::thread)
     endif()
