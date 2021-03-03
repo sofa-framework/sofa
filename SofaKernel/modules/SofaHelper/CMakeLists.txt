@@ -58,7 +58,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/Polynomial_LD.h
     ${SRC_ROOT}/Polynomial_LD.inl
     ${SRC_ROOT}/RandomGenerator.h
-    ${SRC_ROOT}/SVector.h
     ${SRC_ROOT}/SimpleTimer.h
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
@@ -96,7 +95,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/rmath.h
     ${SRC_ROOT}/set.h
     ${SRC_ROOT}/fwd.h
-    ${SRC_ROOT}/stable_vector.h
     ${SRC_ROOT}/system/DynamicLibrary.h
     ${SRC_ROOT}/system/FileSystem.h
     ${SRC_ROOT}/system/Locale.h
@@ -115,15 +113,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/thread/thread_specific_ptr.h
     ${SRC_ROOT}/system/FileMonitor.h
     ${SRC_ROOT}/system/FileRepository.h
-    ${SRC_ROOT}/vector.h
-    ${SRC_ROOT}/vector_T.h
-    ${SRC_ROOT}/vector_T.inl
-    ${SRC_ROOT}/vector_Real.h
-    ${SRC_ROOT}/vector_Integral.h
-    ${SRC_ROOT}/vector_String.h
-    ${SRC_ROOT}/vector_algebra.h
-    ${SRC_ROOT}/vector_algorithm.h
-    ${SRC_ROOT}/vector_device.h
     ${SRC_ROOT}/logging/Messaging.h
     ${SRC_ROOT}/logging/Message.h
     ${SRC_ROOT}/logging/ComponentInfo.h
@@ -160,7 +149,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/NameDecoder.cpp
     ${SRC_ROOT}/OptionsGroup.cpp
     ${SRC_ROOT}/StateMask.cpp
-    ${SRC_ROOT}/SVector.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
@@ -196,10 +184,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/thread/CircularQueue.cpp
     ${SRC_ROOT}/system/thread/debug.cpp
     ${SRC_ROOT}/system/FileRepository.cpp
-    ${SRC_ROOT}/vector.cpp
-    ${SRC_ROOT}/vector_Real.cpp
-    ${SRC_ROOT}/vector_Integral.cpp
-    ${SRC_ROOT}/vector_String.cpp
     ${SRC_ROOT}/logging/Message.cpp
     ${SRC_ROOT}/logging/MessageDispatcher.cpp
     ${SRC_ROOT}/logging/MessageFormatter.cpp

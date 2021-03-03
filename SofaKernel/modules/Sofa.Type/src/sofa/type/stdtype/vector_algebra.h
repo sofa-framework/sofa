@@ -19,15 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_VECTOR_ALGEBRA_H
-#define SOFA_HELPER_VECTOR_ALGEBRA_H
+#pragma once
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/stdtype/vector.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::type::stdtype
 {
 
 // -----------------------------------------------------------
@@ -68,8 +64,4 @@ void axpy( V1& result, Scalar a, const V2& x, const V3& y )
         result[i] = x[i]*a + y[i];
 }
 
-} // namespace helper
-
-} // namespace sofa
-
-#endif //SOFA_HELPER_VECTOR_H
+} // namespace sofa::type::stdtype

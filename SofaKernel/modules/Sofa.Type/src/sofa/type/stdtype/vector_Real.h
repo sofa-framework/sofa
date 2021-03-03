@@ -20,5 +20,5 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/helper/vector_T.h>
+#include <sofa/type/stdtype/vector_T.h>
 

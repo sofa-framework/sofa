@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/helper/vector_T.h>
+#include <sofa/type/stdtype/vector_T.h>
 
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
-template<> SOFA_HELPER_API std::istream& sofa::helper::vector<int>::read( std::istream& in );
-template<> SOFA_HELPER_API std::istream& sofa::helper::vector<unsigned int>::read( std::istream& in );
+template<> SOFA_TYPE_API std::istream& sofa::type::stdtype::vector<int>::read( std::istream& in );
+template<> SOFA_TYPE_API std::istream& sofa::type::stdtype::vector<unsigned int>::read( std::istream& in );
 
 /// Specialization for writing vectors of unsigned char
-template<> SOFA_HELPER_API std::ostream& sofa::helper::vector<unsigned char>::write(std::ostream& os) const;
-template<> SOFA_HELPER_API std::istream& sofa::helper::vector<unsigned char>::read(std::istream& in);
+template<> SOFA_TYPE_API std::ostream& sofa::type::stdtype::vector<unsigned char>::write(std::ostream& os) const;
+template<> SOFA_TYPE_API std::istream& sofa::type::stdtype::vector<unsigned char>::read(std::istream& in);
 

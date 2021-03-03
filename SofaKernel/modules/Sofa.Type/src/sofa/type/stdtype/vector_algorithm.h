@@ -22,9 +22,9 @@
 #pragma once
 
 #include <algorithm>
-#include <sofa/helper/vector_T.h>
+#include <sofa/type/stdtype/vector_T.h>
 
-namespace sofa::helper
+namespace sofa::type::stdtype
 {
 /** Remove the first occurence of a given value.
     The remaining values are shifted.
@@ -73,4 +73,4 @@ void removeIndex( std::vector<T,TT>& v, size_t index )
     v.pop_back();
 }
 
-}
+} // namespace sofa::type::stdtype
