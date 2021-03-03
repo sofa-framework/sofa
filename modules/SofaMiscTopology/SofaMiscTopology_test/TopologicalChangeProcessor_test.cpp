@@ -22,7 +22,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
 
-#include <SofaBase/initSofaBase.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -45,7 +45,7 @@ struct TopologicalChangeProcessor_test: public Sofa_test<>
    void SetUp()
    {
        // Init Sofa
-       sofa::component::initSofaBase();
+       sofa::component::initSofaBaseMechanics();
 
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
        root = simulation::getSimulation()->createNewGraph("root");

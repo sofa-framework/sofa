@@ -36,7 +36,7 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaBase/initSofaBase.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 #include <SofaBaseUtils/MakeDataAliasComponent.h>
 using sofa::component::MakeDataAliasComponent ;
@@ -65,7 +65,7 @@ MessageHandler* defaultHandler=nullptr ;
 Simulation* theSimulation = nullptr ;
 
 bool doInit(){
-    sofa::component::initSofaBase();
+    sofa::component::initSofaBaseMechanics();
     return true;
 }
 

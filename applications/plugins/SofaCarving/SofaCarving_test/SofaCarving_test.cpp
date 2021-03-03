@@ -24,9 +24,7 @@
 #include <SofaCarving/CarvingManager.h>
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
 
 using namespace sofa::helper::testing;
 using namespace sofa::component::collision;
@@ -60,9 +58,7 @@ private:
 
 bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
+    sofa::component::initSofaComponentAll();
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
