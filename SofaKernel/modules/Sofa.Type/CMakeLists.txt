@@ -43,7 +43,7 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/stdtype/fixed_array.cpp
 )
 
-find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Config REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 

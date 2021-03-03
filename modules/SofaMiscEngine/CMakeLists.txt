@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscEngine LANGUAGES CXX)
 
-find_package(SofaNonUniformFem REQUIRED)
+sofa_find_package(SofaNonUniformFem REQUIRED)
 
 set(SOFAMISCENGINE_SRC "src/${PROJECT_NAME}")
 

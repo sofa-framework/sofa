@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaHelper)
 
 # DEPENDENCIES
-# find_package(Sofa.Type REQUIRED)
+# sofa_find_package(Sofa.Type REQUIRED)
 
 # Boost
 sofa_find_package(Boost REQUIRED
@@ -22,7 +22,7 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     sofa_find_package(GTest CONFIG BOTH_SCOPES)
 endif()
 # Eigen (header only)
-find_package(Eigen3 REQUIRED)
+sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
 sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
 
@@ -281,7 +281,7 @@ set (COMPAT_HEADER_FILES
     )
 
 
-find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Config REQUIRED)
 
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})

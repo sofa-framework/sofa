@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaComponentAll VERSION 1.0)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaCommon REQUIRED)
-find_package(SofaGeneral REQUIRED)
-find_package(SofaMisc REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaCommon REQUIRED)
+sofa_find_package(SofaGeneral REQUIRED)
+sofa_find_package(SofaMisc REQUIRED)
 
 set(HEADER_FILES
     config.h
