@@ -545,7 +545,7 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<Index>* old2new, help
 template<class DataTypes>
 void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
 {
-#ifndef SOFA_NO_OPENGL
+#ifdef SOFASPHFLUID_HAVE_SOFA_GL
     const float cscale = (float)(cellWidth);
     const float gscale = (float)(cellWidth*GRIDDIM);
     glBegin(GL_LINES);
@@ -657,7 +657,7 @@ void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
         }
     }
     glEnd();
-#endif /* SOFA_NO_OPENGL */
+#endif // SOFASPHFLUID_HAVE_SOFA_GL
 }
 
 template<class DataTypes>
