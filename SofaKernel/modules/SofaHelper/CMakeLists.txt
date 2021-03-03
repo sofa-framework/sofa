@@ -200,9 +200,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/vector_Real.cpp
     ${SRC_ROOT}/vector_Integral.cpp
     ${SRC_ROOT}/vector_String.cpp
-    ${SRC_ROOT}/types/RGBAColor.cpp
-    ${SRC_ROOT}/types/Material.cpp
-    ${SRC_ROOT}/types/PrimitiveGroup.cpp
     ${SRC_ROOT}/logging/Message.cpp
     ${SRC_ROOT}/logging/MessageDispatcher.cpp
     ${SRC_ROOT}/logging/MessageFormatter.cpp
