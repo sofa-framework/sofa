@@ -19,22 +19,62 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseConstraintSet.h"
-#include "BaseConstraint.h"
-#include "BaseInteractionConstraint.h"
+#pragma once
 
-namespace sofa
+#include <sofa/core/config.h>
+
+namespace sofa::core::behavior
 {
 
-namespace core
+/**
+ *  \brief Object computing a constraint resolution within a Gauss-Seidel algorithm
+ */
+class SOFA_CORE_API ConstraintResolution
 {
+public:
+    ConstraintResolution(unsigned int nbLines, double tolerance = 0.0);
 
-namespace behavior
-{
+    virtual ~ConstraintResolution();
 
+    /// The resolution object can do precomputation with the compliance matrix, and give an initial guess.
+    virtual void init(int /*line*/, double** /*w*/, double* /*force*/);
 
-} // namespace behavior
+    /// The resolution object can provide an initial guess
+    virtual void initForce(int /*line*/, double* /*force*/);
 
-} // namespace core
+    /// Resolution of the constraint for one Gauss-Seidel iteration
+    virtual void resolution(int line, double** w, double* d, double* force, double * dFree);
+
+    /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the inital guess
+    virtual void store(int /*line*/, double* /*force*/, bool /*convergence*/);
+
+    void setNbLines(unsigned int nbLines)
+    {
+        m_nbLines = nbLines;
+    }
+
+    unsigned int getNbLines() const
+    {
+        return m_nbLines;
+    }
+
+    void setTolerance(double tolerance)
+    {
+        m_tolerance = tolerance;
+    }
+
+    double getTolerance() const
+    {
+        return m_tolerance;
+    }
+
+private:
+    /// Number of dof used by this particular constraint. To be modified in the object's constructor.
+    unsigned int m_nbLines;
+
+    /// Custom tolerance, used for the convergence of this particular constraint instead of the global tolerance
+    double m_tolerance;
+};
 
 } // namespace sofa
+

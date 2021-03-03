@@ -24,7 +24,7 @@
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/behavior/BaseConstraint.h>
-
+#include <sofa/core/behavior/ConstraintResolution.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 
