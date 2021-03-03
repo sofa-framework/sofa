@@ -31,8 +31,6 @@
 using namespace sofa::helper::testing;
 using namespace sofa::component::collision;
 using namespace sofa::simpleapi;
-using namespace sofa::simpleapi::components;
-
 
 class SofaCarving_test : public BaseSimulationTest
 {
