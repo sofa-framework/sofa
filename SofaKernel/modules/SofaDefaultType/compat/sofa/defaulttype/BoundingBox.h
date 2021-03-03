@@ -19,26 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_COLOR_H
-#define SOFA_DEFAULTTYPE_COLOR_H
+#pragma once
 
-#include <functional>
-#include <limits>
+#include <sofa/type/BoundingBox.h>
 
-#include <sofa/helper/rmath.h>
-#include <sofa/helper/types/RGBAColor.h>
+// SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/BoundingBox.h")
 
-#include <sofa/defaulttype/DataTypeInfo.h>
-
-
-namespace sofa
+namespace sofa::defaulttype
 {
+    using BoundingBox = sofa::type::BoundingBox;
+    using BoundingBox1D = sofa::type::BoundingBox1D;
+    using BoundingBox2D = sofa::type::BoundingBox2D;
 
-namespace defaulttype
-{
-    using sofa::helper::types::RGBAColor ;
-}
-}
+    template <typename TReal>
+    using TBoundingBox = sofa::type::TBoundingBox<TReal>;
 
-#endif
-
+} // namespace sofa::defaulttype

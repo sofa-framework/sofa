@@ -184,9 +184,6 @@ public:
     template<typename real2>
     void operator =(const DualQuatCoord3<real2>& c) { dual = c.getDual(); orientation = c.getOrientation(); }
 
-    //template<typename real2>
-    //void operator =(const sofa::defaulttype::RigidCoord<3,real2>& c)        { for(unsigned int i=0; i<4; i++) orientation[i] =  (real)c.getOrientation()[i]; setTranslation(c.getCenter()); }
-
     void operator =(const Vec3& p)     { setTranslation(p); }
 
     void operator +=(const DualQuatCoord3<real>& a)         { dual += a.getDual(); orientation += a.getOrientation(); }

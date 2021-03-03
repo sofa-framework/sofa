@@ -19,25 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
+
 #include <limits>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::type
 {
 
-
-namespace
-{
 BoundingBox::bbox_t make_neutralBBox()
 {
-    typedef sofa::defaulttype::Vector3::value_type Real;
+    typedef sofa::type::Vector3::value_type Real;
     const Real max_real = std::numeric_limits<Real>::max();
-    sofa::defaulttype::Vector3 minBBox(max_real,max_real,max_real);
-    sofa::defaulttype::Vector3 maxBBox(-max_real,-max_real,-max_real);
+    sofa::type::Vector3 minBBox(max_real,max_real,max_real);
+    sofa::type::Vector3 maxBBox(-max_real,-max_real,-max_real);
     return std::make_pair(minBBox,maxBBox);
-}
 }
 
 BoundingBox::BoundingBox()
@@ -156,7 +151,7 @@ Vector3& BoundingBox::maxBBox()
     return bbox.second;
 }
 
-bool BoundingBox::contains(const sofa::defaulttype::Vector3& point) const
+bool BoundingBox::contains(const sofa::type::Vector3& point) const
 {
     return  point.x() >= minBBox().x() && point.x() <= maxBBox().x() &&
             point.y() >= minBBox().y() && point.y() <= maxBBox().y() &&
@@ -187,7 +182,7 @@ void BoundingBox::intersection(const BoundingBox& other)
     maxBBox().z() = std::min(maxBBox().z(), other.maxBBox().z());
 }
 
-void BoundingBox::include(const sofa::defaulttype::Vector3& point)
+void BoundingBox::include(const sofa::type::Vector3& point)
 {
     minBBox().x() = std::min( minBBox().x(), point.x());
     minBBox().y() = std::min( minBBox().y(), point.y());
@@ -232,7 +227,7 @@ BoundingBox BoundingBox::getIntersection( const BoundingBox& other ) const
     return result;
 }
 
-BoundingBox BoundingBox::getInclude( const sofa::defaulttype::Vector3& point ) const
+BoundingBox BoundingBox::getInclude( const sofa::type::Vector3& point ) const
 {
     BoundingBox result;
 
@@ -282,10 +277,10 @@ namespace
 {
 BoundingBox2D::bbox_t make_neutralBBox2D()
 {
-    typedef sofa::defaulttype::Vector2::value_type Real;
+    typedef sofa::type::Vector2::value_type Real;
     const Real max_real = std::numeric_limits<Real>::max();
-    sofa::defaulttype::Vector2 minBBox(max_real,max_real);
-    sofa::defaulttype::Vector2 maxBBox(-max_real,-max_real);
+    sofa::type::Vector2 minBBox(max_real,max_real);
+    sofa::type::Vector2 maxBBox(-max_real,-max_real);
     return std::make_pair(minBBox,maxBBox);
 }
 }
@@ -402,7 +397,7 @@ Vector2& BoundingBox2D::maxBBox()
     return bbox.second;
 }
 
-bool BoundingBox2D::contains(const sofa::defaulttype::Vector2& point) const
+bool BoundingBox2D::contains(const sofa::type::Vector2& point) const
 {
     return  point.x() >= minBBox().x() && point.x() <= maxBBox().x() &&
             point.y() >= minBBox().y() && point.y() <= maxBBox().y();
@@ -429,7 +424,7 @@ void BoundingBox2D::intersection(const BoundingBox2D& other)
     maxBBox().y() = std::min(maxBBox().y(), other.maxBBox().y());
 }
 
-void BoundingBox2D::include(const sofa::defaulttype::Vector2& point)
+void BoundingBox2D::include(const sofa::type::Vector2& point)
 {
     minBBox().x() = std::min( minBBox().x(), point.x());
     minBBox().y() = std::min( minBBox().y(), point.y());
@@ -467,7 +462,7 @@ BoundingBox2D BoundingBox2D::getIntersection( const BoundingBox2D& other ) const
     return result;
 }
 
-BoundingBox2D BoundingBox2D::getInclude( const sofa::defaulttype::Vector2& point ) const
+BoundingBox2D BoundingBox2D::getInclude( const sofa::type::Vector2& point ) const
 {
     BoundingBox2D result;
 
@@ -680,6 +675,4 @@ BoundingBox1D BoundingBox1D::getInflate( SReal amount ) const
 }
 
 
-} // namespace defaulttype
-
-} // namespace sofa
+} // namespace sofa::defaulttype

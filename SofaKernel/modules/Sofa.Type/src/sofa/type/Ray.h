@@ -19,31 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <iostream>
-#include <sofa/helper/types/PrimitiveGroup.h>
+#pragma once
 
-namespace sofa::helper::types
+#include <sofa/type/config.h>
+#include <sofa/type/Vec.h>
+
+namespace sofa::type
 {
 
-std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
+/// Representation of rays.
+/// A ray is an infinite line starting at origin and going in some direction.
+class Ray
 {
-    out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
-    return out;
-}
+public:
+    Ray(const Vec3& origin = Vec3(0,0,0), const Vec3& direction = Vec3(0,0,0))
+    {
+        m_origin = origin;
+        m_direction = direction.normalized();
+    }
 
-std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
-{
-    in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
-    return in;
-}
+    const Vec3& origin() const { return m_origin; }
+    const Vec3& direction() const { return m_direction; }
 
-bool PrimitiveGroup::operator <(const PrimitiveGroup& p) const
-{
-    return p0 < p.p0;
-}
+    Vec3 getPoint(double z) const //< Returns a point at distance units along the ray.
+    {
+        return m_origin + (m_direction * z);
+    }
 
-PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
+    void setOrigin(const Vec3& origin) { m_origin = origin; }
+    void setDirection(const Vec3& direction) { m_direction = direction.normalized(); }
 
-PrimitiveGroup::PrimitiveGroup(int p0, int nbp, std::string materialName, std::string groupName, int materialId) : p0(p0), nbp(nbp), materialName(materialName), groupName(groupName), materialId(materialId) {}
+private:
+    Vec3 m_origin;
+    Vec3 m_direction;
+};
 
-} /// namespace sofa::helper::types
+} /// namespace sofa::type

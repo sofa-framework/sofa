@@ -20,38 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_DEFAULTTYPE_COLOR_CPP
-#include <sofa/defaulttype/Color.h>
+#include <sofa/type/Color.h>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::type
 {
 
-int hexval(char c)
-{
-    if (c>='0' && c<='9') return c-'0';
-    else if (c>='a' && c<='f') return (c-'a')+10;
-    else if (c>='A' && c<='F') return (c-'A')+10;
-    else return 0;
-}
-
-bool isValidEncoding(const std::string& s)
-{
-    auto c = s.begin();
-    if( *c != '#' )
-        return false;
-
-    for( c++ ; c != s.end() ; ++c ){
-        if (*c>='0' && *c<='9') {}
-        else if (*c>='a' && *c<='f') {}
-        else if (*c>='A' && *c<='F') {}
-        else return false;
-    }
-    return true;
-}
-
-
-SOFA_DEFAULTTYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
+SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
 {
     std::string s;
     std::getline(i, s);
@@ -62,6 +36,4 @@ SOFA_DEFAULTTYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
     return i;
 }
 
-} // namespace defaulttype
-} // namespace sofa
-
+} // namespace sofa::type

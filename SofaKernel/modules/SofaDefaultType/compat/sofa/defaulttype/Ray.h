@@ -21,41 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/config.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Ray.h>
 
-namespace sofa::helper::types
+// SOFA_DEPRECATED_HEADER(v21.12, "sofa/defaulttype/Ray.h")
+
+namespace sofa::defaulttype
 {
+    using Ray = sofa::type::Ray;
 
-class SOFA_HELPER_API Material
-{
-public:
-    std::string 	name;		        /* name of material */
-    RGBAColor  diffuse ;	/* diffuse component */
-    RGBAColor  ambient ;	/* ambient component */
-    RGBAColor  specular;	/* specular component */
-    RGBAColor  emissive;	/* emmissive component */
-    float  shininess;	                /* specular exponent */
-    bool   useDiffuse;
-    bool   useSpecular;
-    bool   useAmbient;
-    bool   useEmissive;
-    bool   useShininess;
-    bool   useTexture;
-    bool   useBumpMapping;
-    bool   activated;
-    std::string   textureFilename; // path to the texture linked to the material
-    std::string   bumpTextureFilename; // path to the bump texture linked to the material
-
-    friend SOFA_HELPER_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
-    friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
-
-    void setColor(float r, float g, float b, float a) ;
-
-    Material() ;
-    Material(const Material& mat) ;
-    Material & operator= (const Material& other);
-};
-
-} /// namespace sofa::helper::types
-
+} // namespace sofa::helper::types

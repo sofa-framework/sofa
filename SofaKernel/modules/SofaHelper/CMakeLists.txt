@@ -124,10 +124,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/vector_algebra.h
     ${SRC_ROOT}/vector_algorithm.h
     ${SRC_ROOT}/vector_device.h
-    ${SRC_ROOT}/types/RGBAColor.h
-    ${SRC_ROOT}/types/RGBAColor_fwd.h
-    ${SRC_ROOT}/types/Material.h
-    ${SRC_ROOT}/types/PrimitiveGroup.h
     ${SRC_ROOT}/logging/Messaging.h
     ${SRC_ROOT}/logging/Message.h
     ${SRC_ROOT}/logging/ComponentInfo.h
@@ -204,9 +200,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/vector_Real.cpp
     ${SRC_ROOT}/vector_Integral.cpp
     ${SRC_ROOT}/vector_String.cpp
-    ${SRC_ROOT}/types/RGBAColor.cpp
-    ${SRC_ROOT}/types/Material.cpp
-    ${SRC_ROOT}/types/PrimitiveGroup.cpp
     ${SRC_ROOT}/logging/Message.cpp
     ${SRC_ROOT}/logging/MessageDispatcher.cpp
     ${SRC_ROOT}/logging/MessageFormatter.cpp
@@ -281,6 +274,10 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/Quater.inl
     ${COMPATSRC_ROOT}/sofa/helper/DualQuat.h
     ${COMPATSRC_ROOT}/sofa/helper/DualQuat.inl
+    ${COMPATSRC_ROOT}/sofa/helper/types/RGBAColor.h
+    ${COMPATSRC_ROOT}/sofa/helper/types/RGBAColor_fwd.h
+    ${COMPATSRC_ROOT}/sofa/helper/types/Material.h
+    ${COMPATSRC_ROOT}/sofa/helper/types/PrimitiveGroup.h
     )
 
 

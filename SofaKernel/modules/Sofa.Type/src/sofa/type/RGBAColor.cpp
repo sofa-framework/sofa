@@ -19,22 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/types/RGBAColor.h>
-#include <sofa/helper/logging/Messaging.h>
+#include <sofa/type/RGBAColor.h>
+
 #include <sstream>
-#include <locale>         // std::locale, std::isalnum
+#include <locale>
 
+#include <sofa/type/stdtype/fixed_array_algorithms.h>
+using namespace sofa::type::stdtype::pairwise;
 
-#include <sofa/helper/rmath.h>
-
-#include <sofa/helper/fixed_array_algorithms.h>
-using namespace sofa::helper::pairwise;
-
-namespace sofa
+namespace // anonymous
 {
-namespace helper
-{
-namespace types
+    template<class T>
+    inline T rclamp(const T& value, const T& low, const T& high)
+    {
+        return value < low ? low : (value > high ? high : value);
+    }
+
+} // anonymous namespace
+
+namespace sofa::type
 {
 
 static bool ishexsymbol(char c)
@@ -120,8 +123,9 @@ void RGBAColor::set(float r, float g, float b, float a)
 RGBAColor RGBAColor::fromString(const std::string& c)
 {
     RGBAColor color(1.0,1.0,1.0,1.0) ;
-    if( !RGBAColor::read(c, color) ){
-        msg_info("RGBAColor") << "Unable to scan color from string '" << c << "'" ;
+    if( !RGBAColor::read(c, color) )
+    {
+        throw std::invalid_argument("Unable to scan color from string '" + c + "'");
     }
     return color;
 }
@@ -189,7 +193,7 @@ static std::istream& trimInitialSpaces(std::istream& in)
 }
 
 
-SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
+SOFA_TYPE_API std::istream& operator>>(std::istream& in, RGBAColor& t)
 {
     float r=0.0,g=0.0, b=0.0, a=1.0;
 
@@ -267,7 +271,7 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
 
 
 /// Write to an output stream
-SOFA_HELPER_API std::ostream& operator << ( std::ostream& out, const RGBAColor& v )
+SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const RGBAColor& v )
 {
     for( int i=0; i<3; ++i )
         out<<v[i]<<" ";
@@ -285,7 +289,5 @@ RGBAColor RGBAColor::lighten(const RGBAColor& in, const SReal factor)
 }
 
 
-} // namespace types
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::type
 

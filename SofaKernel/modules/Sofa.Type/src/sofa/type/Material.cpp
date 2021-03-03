@@ -19,15 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/types/Material.h>
+#include <sofa/type/Material.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace types
+namespace sofa::type
 {
 
 void Material::setColor(float r, float g, float b, float a)
@@ -134,9 +128,4 @@ Material & Material::operator= (const Material& mat) {
     return *this;
 }
 
-} // namespace loader
-
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::type
