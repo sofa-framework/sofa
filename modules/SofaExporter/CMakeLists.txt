@@ -9,11 +9,11 @@ set(SRC_ROOT src/SofaExporter)
 
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/initExporter.h
+    ${SRC_ROOT}/initSofaExporter.h
     )
 
 set(SOURCE_FILES
-    ${SRC_ROOT}/initExporter.cpp
+    ${SRC_ROOT}/initSofaExporter.cpp
     )
 
 set(EXTRA_FILES

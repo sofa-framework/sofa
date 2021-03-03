@@ -19,5 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaValidation/config.h>
+#include <SofaSimulationCommon/initSofaSimulationCommon.h>
+
+namespace sofa::component
+{
+
+void initSofaSimulationCommon()
+{
+    sofa::simulation::common::init();
+}
+
+} // namespace sofa::component

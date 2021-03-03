@@ -19,9 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSparseSolver/config.h>
-#include <sofa/core/ObjectFactory.h>
 #include <string>
+#include <SofaExporter/initSofaExporter.h>
+
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/Node.h>
+
+#if SOFAEXPORTER_HAVE_SOFAPYTHON
+#include <SofaPython/PythonEnvironment.h>
+#include <SofaPython/PythonFactory.h>
+
+using sofa::simulation::PythonEnvironment ;
+using sofa::PythonFactory ;
+
+#include <SofaExporter/bindings/Binding_OBJExporter.h>
+#include <SofaExporter/bindings/Binding_STLExporter.h>
+
+#endif // SOFAEXPORTER_HAVE_SOFAPYTHON
+
+
+using sofa::core::ObjectFactory;
 
 namespace sofa
 {
@@ -29,27 +46,36 @@ namespace sofa
 namespace component
 {
 
-extern "C" {
-SOFA_SOFASPARSESOLVER_API void initExternalModule();
-SOFA_SOFASPARSESOLVER_API const char* getModuleName();
-SOFA_SOFASPARSESOLVER_API const char* getModuleVersion();
-SOFA_SOFASPARSESOLVER_API const char* getModuleLicense();
-SOFA_SOFASPARSESOLVER_API const char* getModuleDescription();
-SOFA_SOFASPARSESOLVER_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+void initSofaExporter()
 {
     static bool first = true;
     if (first)
     {
         first = false;
+#if SOFAEXPORTER_HAVE_SOFAPYTHON
+        SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
+        SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)
+#endif // SOFAEXPORTER_HAVE_SOFAPYTHON
     }
+}
+
+extern "C" {
+SOFA_SOFAEXPORTER_API void initExternalModule();
+SOFA_SOFAEXPORTER_API const char* getModuleName();
+SOFA_SOFAEXPORTER_API const char* getModuleVersion();
+SOFA_SOFAEXPORTER_API const char* getModuleLicense();
+SOFA_SOFAEXPORTER_API const char* getModuleDescription();
+SOFA_SOFAEXPORTER_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    initSofaExporter();
 }
 
 const char* getModuleName()
 {
-    return "SofaSparseSolver";
+    return "SofaExporter";
 }
 
 const char* getModuleVersion()
@@ -64,18 +90,17 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains sparse solver for direct solving of linear systems.";
+    return "This plugin contains some exporter to save simulation scenes to various formats. "
+            "Supported format are: Sofa internal state format, VTK, STL, Mesh, Blender.";
 }
 
 const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
-    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
     return classes.c_str();
 }
 
-} /// component
+} // namespace component
 
-} /// sofa
-
-
+} // namespace sofa

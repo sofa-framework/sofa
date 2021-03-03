@@ -22,6 +22,7 @@ set(SRC_ROOT src/SofaSparseSolver)
 # Sources
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/initSofaSparseSolver.h
     ${SRC_ROOT}/PrecomputedLinearSolver.h
     ${SRC_ROOT}/PrecomputedLinearSolver.inl
     ${SRC_ROOT}/SparseLDLSolver.h
@@ -32,7 +33,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/SparseLUSolver.inl
     )
 set(SOURCE_FILES
-    ${SRC_ROOT}/initSparseSolver.cpp
+    ${SRC_ROOT}/initSofaSparseSolver.cpp
     ${SRC_ROOT}/PrecomputedLinearSolver.cpp
     ${SRC_ROOT}/SparseLDLSolver.cpp
     ${SRC_ROOT}/SparseCholeskySolver.cpp

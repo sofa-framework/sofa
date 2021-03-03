@@ -19,58 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaHaptics/initHaptics.h>
+#include <SofaSimulationGraph/initSofaSimulationGraph.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+void initSofaSimulationGraph()
 {
-
-
-extern "C" {
-SOFA_SOFAHAPTICS_API void initExternalModule();
-SOFA_SOFAHAPTICS_API const char* getModuleName();
-SOFA_SOFAHAPTICS_API const char* getModuleVersion();
-SOFA_SOFAHAPTICS_API const char* getModuleLicense();
-SOFA_SOFAHAPTICS_API const char* getModuleDescription();
-SOFA_SOFAHAPTICS_API const char* getModuleComponentList();
+    sofa::simulation::graph::init();
 }
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "SofaHaptics";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This module contains the base infrastructure for haptics rendering in Sofa.";
-}
-
-const char* getModuleComponentList()
-{
-    return "NullForceFeedback LCPForceFeedback";
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component

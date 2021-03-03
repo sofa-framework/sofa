@@ -19,26 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <string>
-#include <SofaExporter/config.h>
-
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/Node.h>
-
-#if SOFAEXPORTER_HAVE_SOFAPYTHON
-#include <SofaPython/PythonEnvironment.h>
-#include <SofaPython/PythonFactory.h>
-
-using sofa::simulation::PythonEnvironment ;
-using sofa::PythonFactory ;
-
-#include <SofaExporter/bindings/Binding_OBJExporter.h>
-#include <SofaExporter/bindings/Binding_STLExporter.h>
-
-#endif // SOFAEXPORTER_HAVE_SOFAPYTHON
-
-
-using sofa::core::ObjectFactory;
+#include <SofaHaptics/initSofaHaptics.h>
 
 namespace sofa
 {
@@ -46,31 +27,33 @@ namespace sofa
 namespace component
 {
 
-extern "C" {
-SOFA_SOFAEXPORTER_API void initExternalModule();
-SOFA_SOFAEXPORTER_API const char* getModuleName();
-SOFA_SOFAEXPORTER_API const char* getModuleVersion();
-SOFA_SOFAEXPORTER_API const char* getModuleLicense();
-SOFA_SOFAEXPORTER_API const char* getModuleDescription();
-SOFA_SOFAEXPORTER_API const char* getModuleComponentList();
-}
 
-void initExternalModule()
+void initSofaHaptics()
 {
     static bool first = true;
     if (first)
     {
         first = false;
-#if SOFAEXPORTER_HAVE_SOFAPYTHON
-        SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
-        SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)
-#endif // SOFAEXPORTER_HAVE_SOFAPYTHON
     }
+}
+
+extern "C" {
+SOFA_SOFAHAPTICS_API void initExternalModule();
+SOFA_SOFAHAPTICS_API const char* getModuleName();
+SOFA_SOFAHAPTICS_API const char* getModuleVersion();
+SOFA_SOFAHAPTICS_API const char* getModuleLicense();
+SOFA_SOFAHAPTICS_API const char* getModuleDescription();
+SOFA_SOFAHAPTICS_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    initSofaHaptics();
 }
 
 const char* getModuleName()
 {
-    return "SofaExporter";
+    return "SofaHaptics";
 }
 
 const char* getModuleVersion()
@@ -85,15 +68,12 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains some exporter to save simulation scenes to various formats. "
-            "Supported format are: Sofa internal state format, VTK, STL, Mesh, Blender.";
+    return "This module contains the base infrastructure for haptics rendering in Sofa.";
 }
 
 const char* getModuleComponentList()
 {
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
+    return "NullForceFeedback LCPForceFeedback";
 }
 
 } // namespace component

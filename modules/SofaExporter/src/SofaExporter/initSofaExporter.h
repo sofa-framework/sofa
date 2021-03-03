@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICS_INIT_H
-#define SOFA_COMPONENT_HAPTICS_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaExporter/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+SOFA_SOFAEXPORTER_API void initSofaExporter();
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component

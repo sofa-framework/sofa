@@ -5,7 +5,7 @@ set(SOFAVALIDATION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAVALIDATION_SRC}/config.h.in
-    ${SOFAVALIDATION_SRC}/initValidation.h
+    ${SOFAVALIDATION_SRC}/initSofaValidation.h
     ${SOFAVALIDATION_SRC}/CompareState.h
     ${SOFAVALIDATION_SRC}/CompareTopology.h
     ${SOFAVALIDATION_SRC}/DataController.h
@@ -27,7 +27,7 @@ set(HEADER_FILES
     )
 
 set(SOURCE_FILES
-    ${SOFAVALIDATION_SRC}/initValidation.cpp
+    ${SOFAVALIDATION_SRC}/initSofaValidation.cpp
     ${SOFAVALIDATION_SRC}/CompareState.cpp
     ${SOFAVALIDATION_SRC}/CompareTopology.cpp
     ${SOFAVALIDATION_SRC}/DataController.cpp

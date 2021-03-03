@@ -7,7 +7,7 @@ find_package(Sofa.GL REQUIRED)
 
 set(HEADER_FILES
     src/SofaOpenglVisual/config.h
-    src/SofaOpenglVisual/initOpenGLVisual.h
+    src/SofaOpenglVisual/initSofaOpenglVisual.h
     src/SofaOpenglVisual/ClipPlane.h
     src/SofaOpenglVisual/OglColorMap.h
     src/SofaOpenglVisual/CompositingVisualLoop.h
@@ -42,7 +42,7 @@ set(HEADER_FILES
     src/SofaOpenglVisual/VisualManagerSecondaryPass.h
     )
 set(SOURCE_FILES
-    src/SofaOpenglVisual/initOpenGLVisual.cpp
+    src/SofaOpenglVisual/initSofaOpenglVisual.cpp
     src/SofaOpenglVisual/ClipPlane.cpp
     src/SofaOpenglVisual/OglColorMap.cpp
     src/SofaOpenglVisual/CompositingVisualLoop.cpp
