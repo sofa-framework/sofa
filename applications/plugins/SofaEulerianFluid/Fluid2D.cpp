@@ -101,7 +101,7 @@ void Fluid2D::updatePosition(SReal dt)
 void Fluid2D::draw(const core::visual::VisualParams* vparams)
 {
     using namespace sofa::helper;
-#ifdef SOFAEULERIANFLUID_HAVE_SOFA_GL
+
     updateVisual();
     glPushMatrix();
     const int& nx = f_nx.getValue();
@@ -209,7 +209,6 @@ void Fluid2D::draw(const core::visual::VisualParams* vparams)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     glPopMatrix();
-#endif // SOFAEULERIANFLUID_HAVE_SOFA_GL
 }
 
 void Fluid2D::updateVisual()

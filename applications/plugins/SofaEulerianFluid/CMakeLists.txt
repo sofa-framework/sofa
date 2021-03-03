@@ -9,7 +9,7 @@ set(HEADER_FILES
     Fluid3D.h
     Grid2D.h
     Grid3D.h
-    config.h.in
+    config.h
     initEulerianFluid.h
 )
 
