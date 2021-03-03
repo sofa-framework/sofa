@@ -146,7 +146,7 @@ component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3Types>
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(TetrahedronFEMForceField_test, TestTypes);
+TYPED_TEST_SUITE(TetrahedronFEMForceField_test, TestTypes);
 
 
 

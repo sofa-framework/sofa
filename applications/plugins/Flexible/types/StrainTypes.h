@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/random.h>

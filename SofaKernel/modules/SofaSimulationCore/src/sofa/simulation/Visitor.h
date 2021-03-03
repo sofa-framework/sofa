@@ -23,18 +23,16 @@
 #define SOFA_SIMULATION_VISITOR_H
 
 #include <sofa/simulation/config.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/LocalStorage.h>
+#include <sofa/simulation/fwd.h>
+#include <sofa/core/fwd.h>
+#include <sofa/core/objectmodel/Tag.h>
+#include <sofa/helper/system/thread/CTime.h>
 
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/ExecParams.h>
-
-#include <sofa/helper/set.h>
-#include <iostream>
-
+#include <string>
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/helper/system/thread/CTime.h>
 #endif
+
 
 namespace sofa
 {
@@ -61,7 +59,7 @@ public:
     typedef sofa::helper::system::thread::CTime CTime;
 #endif
 
-    Visitor(const core::ExecParams* params);
+    Visitor(const sofa::core::ExecParams* params);
     virtual ~Visitor();
 
     const core::ExecParams* execParams() const { return params; }
@@ -147,14 +145,7 @@ public:
     //method to compare the tags of the objet with the ones of the visitor
     // return true if the object has all the tags of the visitor
     // or if no tag is set to the visitor
-    bool testTags(core::objectmodel::BaseObject* obj)
-    {
-        if(subsetsToManage.empty())
-            return true;
-        if (obj->getTags().includes(subsetsToManage)) // all tags in subsetsToManage must be included in the list of tags of the object
-            return true;
-        return false;
-    }
+    bool testTags(core::objectmodel::BaseObject* obj);
 
     /// Alias for context->executeVisitor(this)
     virtual void execute(core::objectmodel::BaseContext* node, bool precomputedOrder=false);

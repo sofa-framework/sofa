@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaHaptics/ForceFeedback.h>
-
+#include <sofa/simulation/Node.h>
 namespace sofa
 {
 
@@ -38,7 +38,7 @@ ForceFeedback::ForceFeedback():
 
 void ForceFeedback::init()
 {
-    context = dynamic_cast<simulation::Node *>(this->getContext());
+    context = sofa::simulation::node::getNodeFrom(getContext());
 }
 
 void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)

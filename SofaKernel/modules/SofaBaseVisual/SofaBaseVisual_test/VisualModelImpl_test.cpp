@@ -47,7 +47,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(VisualModelImpl_test, DataTypes);
+TYPED_TEST_SUITE(VisualModelImpl_test, DataTypes);
 
 template <class T>
 bool Vector_Comparison(helper::vector< T > expected, helper::vector< T > actual)
@@ -95,7 +95,7 @@ TEST( VisualModelImpl_test , checkThatMembersAreCorrectlyConstructed )
     ASSERT_EQ(component::visualmodel::VisualModelImpl::TexCoord(1.0,1.0), visualModel.m_scaleTex.getValue());
     ASSERT_EQ(component::visualmodel::VisualModelImpl::TexCoord(0.0,0.0), visualModel.m_translationTex.getValue());
 
-    ASSERT_EQ(core::loader::Material().name, visualModel.material.getValue().name);
+    ASSERT_EQ(sofa::helper::types::Material().name, visualModel.material.getValue().name);
     ASSERT_EQ(false_var, visualModel.putOnlyTexCoords.getValue());
     ASSERT_EQ(false_var, visualModel.srgbTexturing.getValue());
     ASSERT_EQ(false_var, visualModel.xformsModified);

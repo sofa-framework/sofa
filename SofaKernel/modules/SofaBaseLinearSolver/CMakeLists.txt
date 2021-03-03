@@ -14,7 +14,9 @@ set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/DefaultMultiMatrixAccessor.h
     ${SOFABASELINEARSOLVER_SRC}/DiagonalMatrix.h
     ${SOFABASELINEARSOLVER_SRC}/FullMatrix.h
+    ${SOFABASELINEARSOLVER_SRC}/FullMatrix.inl
     ${SOFABASELINEARSOLVER_SRC}/FullVector.h
+    ${SOFABASELINEARSOLVER_SRC}/FullVector.inl
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixExpr.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.h
@@ -28,13 +30,14 @@ set(SOURCE_FILES
     ${SOFABASELINEARSOLVER_SRC}/initSofaBaseLinearSolver.cpp
     ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.cpp
     ${SOFABASELINEARSOLVER_SRC}/DefaultMultiMatrixAccessor.cpp
+    ${SOFABASELINEARSOLVER_SRC}/FullMatrix.cpp
     ${SOFABASELINEARSOLVER_SRC}/FullVector.cpp
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.cpp
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.cpp
     ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.cpp
 )
 
-find_package(SofaFramework REQUIRED) # SofaSimulationCore
+sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)

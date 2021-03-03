@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGuiCommon)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
-find_package(SofaGraphComponent REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaUserInteraction REQUIRED)
+sofa_find_package(SofaGraphComponent REQUIRED)
+sofa_find_package(SofaSimulationCommon REQUIRED)
 sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
 if(Sofa.GL_FOUND)
     message("-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
@@ -43,7 +44,8 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction SofaSimulationCommon)
+
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
 endif()
@@ -53,9 +55,10 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
 endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaGui
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaGui"
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     )

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
-
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
@@ -1201,7 +1201,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
 
     defaulttype::Mat<3,3,Real> F = A * _initialTransformation[elementIndex];
 
-    if( determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
+    if(defaulttype::determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
     {
         helper::Decompose<Real>::polarDecomposition_stable( F, R_0_2 );
         R_0_2 = R_0_2.multTransposed( _initialRotations[elementIndex] );
@@ -1593,7 +1593,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
                     matVert[k][l] = X0[ix][l-1];
             }
 
-            invertMatrix(elemShapeFun[i], matVert);
+            defaulttype::invertMatrix(elemShapeFun[i], matVert);
         }
         computeVonMisesStress();
     }

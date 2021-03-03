@@ -1,11 +1,18 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.05">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaGeneralEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="default1" response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <TreeCollisionGroupManager name="default2" />
+    <DefaultCollisionGroupManager name="default2" />
     <Node name="SquareGravity">
         <EulerImplicitSolver name="cg_odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
@@ -16,7 +23,7 @@
             <TriangleSetTopologyContainer name="Container" position="@mecaObj2.position" triangles="@../Subset.trianglesInROI" />
             <TriangleSetTopologyModifier name="Modifier" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-            <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
+            <DiagonalMass name="default5" massDensity="1.15" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
             <TriangleCollisionModel template="Vec3d" name="default7" />
@@ -30,7 +37,7 @@
             <TriangleSetTopologyContainer name="Container" position="@mecaObj2.position" triangles="@../Subset.trianglesOutROI" />
             <TriangleSetTopologyModifier name="Modifier" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-            <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
+            <DiagonalMass name="default5" massDensity="1.15" />
             <TriangleCollisionModel template="Vec3d" name="default7" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />

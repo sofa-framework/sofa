@@ -28,8 +28,8 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 
+#include <SofaGui/initSofaGui.h>
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -470,7 +470,7 @@ void SofaModeler::updateViewerList()
     listActionGUI.clear();
 
     //Register all GUIs
-    sofa::gui::initMain();
+    sofa::gui::initSofaGui();
 
     //Set the different available GUI
     std::vector<std::string> listGUI = sofa::gui::GUIManager::ListSupportedGUI();

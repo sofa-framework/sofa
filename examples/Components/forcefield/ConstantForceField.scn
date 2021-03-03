@@ -1,5 +1,10 @@
 <Node name="root" dt="0.05" gravity="0 0 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
+    <RequiredPlugin pluginName='SofaRigid'/>
     <!-- Constant force for a deformable -->
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="BasicDeformableObject">

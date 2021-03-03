@@ -19,11 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_SOFAGUIQT_H
-#define SOFA_GUI_QT_SOFAGUIQT_H
-
-// Backward compatibility header
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 SOFA_DEPRECATED_HEADER(v21.06, "sofa/gui/qt/config.h")

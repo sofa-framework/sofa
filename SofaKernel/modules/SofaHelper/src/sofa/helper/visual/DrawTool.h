@@ -21,10 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/config.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/config.h>
 #include <sofa/helper/types/RGBAColor.h>
-
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Quat.h>
+#include <vector>
 
 namespace sofa::helper::visual
 {
@@ -35,7 +36,7 @@ namespace sofa::helper::visual
  *  Class which contains a set of methods to perform minimal debug drawing regardless of the graphics API used.
  *  Components receive a pointer to the DrawTool through the VisualParams parameter of their draw method.
  *  Sofa provides a default concrete implementation of this class for the OpenGL API with the DrawToolGL class.
- *
+ *k
  */
 
 class DrawTool

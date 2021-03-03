@@ -22,13 +22,7 @@
 #include <limits>
 #include "QRGBAColorPicker.h"
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
-namespace qrgbacolorpicker_h
+namespace sofa::gui::qt::qrgbacolorpicker_h
 {
 
 QRGBAColorPicker::QRGBAColorPicker(QWidget* parent) : QWidget(parent)
@@ -166,7 +160,4 @@ void QRGBAColorPicker::raiseQColorDialog()
     }
 }
 
-} // namespace q
-} // qt
-} // gui
-} // sofa
+} // namespace sofa::gui::qt::qrgbacolorpicker_h

@@ -194,14 +194,6 @@ public:
     void removePointsProcess(const sofa::helper::vector<PointID> &indices,
             const bool removeDOF = true) override;
 
-    /** \brief Reorder this topology.
-    *
-    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
-    * \see MechanicalObject::renumberValues
-    */
-    void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
-            const sofa::helper::vector<PointID> &/*inv_index*/,
-            const bool renumberDOF = true) override;
 
     /** \brief Remove a set of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
@@ -214,10 +206,6 @@ public:
     */
     void removeItems(const sofa::helper::vector<EdgeID> &items) override;
 
-    /** \brief Generic method for points renumbering
-    */
-    void renumberPoints( const sofa::helper::vector<PointID> & index,
-            const sofa::helper::vector<PointID> & inv_index) override;
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
     *
@@ -295,6 +283,16 @@ public:
     * @return false if something goes wrong during the process.
     */
     virtual bool removeIsolatedElements(sofa::Size scaleElem);
+
+protected:
+    /** \brief Reorder this topology.
+    *
+    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
+    * \see MechanicalObject::renumberValues
+    */
+    void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
+        const sofa::helper::vector<PointID>&/*inv_index*/,
+        const bool renumberDOF = true) override;
 
 private:
     EdgeSetTopologyContainer* 	m_container;

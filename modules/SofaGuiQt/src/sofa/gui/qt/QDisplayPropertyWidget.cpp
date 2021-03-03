@@ -32,13 +32,7 @@
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 QDisplayTreeItemWidget::QDisplayTreeItemWidget(QWidget* parent, QTreeWidgetItem* item) : QWidget(parent)
@@ -583,7 +577,7 @@ void QDisplayPropertyWidget::updateListViewItem()
         core::objectmodel::Base* object = objectIterator->second.first;
         QTreeWidgetItem* item = objectIterator->second.second;
 
-        if (/*simulation::Node *node=*/dynamic_cast< simulation::Node *>(object))
+        if (sofa::simulation::node::getNodeFrom(object))
         {
             item->setText(0, QString::fromStdString(object->getName()));
             //emit nodeNameModification(node);
@@ -703,8 +697,4 @@ Qt::DropActions QDisplayPropertyWidget::supportedDropActions() const
     return Qt::CopyAction | Qt::MoveAction;
 }*/
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

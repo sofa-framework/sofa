@@ -26,8 +26,8 @@
 #include <sstream>
 #include <map>
 
-#include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/fwd.h>
 
 namespace sofa::simpleapi
 {
@@ -37,34 +37,35 @@ using sofa::core::objectmodel::BaseObjectDescription;
 
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 bool SOFA_SOFASIMULATIONGRAPH_API importPlugin(const std::string& name) ;
 
 Simulation::SPtr SOFA_SOFASIMULATIONGRAPH_API createSimulation(const std::string& type="DAG") ;
 
-Node::SPtr SOFA_SOFASIMULATIONGRAPH_API createRootNode( Simulation::SPtr, const std::string& name,
+NodeSPtr SOFA_SOFASIMULATIONGRAPH_API createRootNode( Simulation::SPtr, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief Create a sofa object in the provided node.
 ///The parameter "params" is for passing specific data argument to the created object including the
 ///object's type.
-BaseObject::SPtr SOFA_SOFASIMULATIONGRAPH_API createObject(Node::SPtr node, BaseObjectDescription& params);
+sofa::core::sptr<BaseObject> SOFA_SOFASIMULATIONGRAPH_API createObject(NodeSPtr node, BaseObjectDescription& params);
 
 ///@brief create a sofa object in the provided node of the given type.
 ///The parameter "params" is for passing specific data argument to the created object.
-BaseObject::SPtr SOFA_SOFASIMULATIONGRAPH_API createObject( Node::SPtr node, const std::string& type,
+sofa::core::sptr<BaseObject> SOFA_SOFASIMULATIONGRAPH_API createObject( NodeSPtr node, const std::string& type,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief create a child to the provided nodeof given name.
 ///The parameter "params" is for passing specific data argument to the created object.
-Node::SPtr SOFA_SOFASIMULATIONGRAPH_API createChild( Node::SPtr& node, const std::string& name,
+NodeSPtr SOFA_SOFASIMULATIONGRAPH_API createChild( NodeSPtr& node, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief create a child to the provided node.
 ///The parameter "params" is for passing specific data argument to the created object (including the node name).
-Node::SPtr SOFA_SOFASIMULATIONGRAPH_API createChild(Node::SPtr node, BaseObjectDescription& desc);
+NodeSPtr SOFA_SOFASIMULATIONGRAPH_API createChild(NodeSPtr node, BaseObjectDescription& desc);
 
-void SOFA_SOFASIMULATIONGRAPH_API dumpScene(Node::SPtr root) ;
+void SOFA_SOFASIMULATIONGRAPH_API dumpScene(NodeSPtr root) ;
 
 template<class T>
 std::string str(const T& t)
@@ -74,39 +75,3 @@ std::string str(const T& t)
     return s.str() ;
 }
 } // namespace sofa::simpleapi
-
-
-namespace sofa::simpleapi::components 
-{
-
-namespace BaseObject
-{
-    static const std::string aobjectname {"BaseObject"} ;
-    namespace data{
-        static const std::string name {"name"} ;
-    }
-}
-
-namespace MechanicalObject
-{
-    static const std::string objectname {"MechanicalObject"} ;
-    namespace data{
-        using namespace BaseObject::data ;
-        static const std::string position {"position"} ;
-    }
-}
-
-namespace VisualModel
-{
-    static const std::string objectname {"VisualModel"} ;
-
-    namespace data {
-        using namespace BaseObject::data ;
-        static const std::string filename {"filename"} ;
-    }
-}
-
-} // namespace sofa::simpleapi::components
-
-namespace sofa::meca   { using namespace sofa::simpleapi::components::MechanicalObject ; }
-namespace sofa::visual { using namespace sofa::simpleapi::components::VisualModel ; }

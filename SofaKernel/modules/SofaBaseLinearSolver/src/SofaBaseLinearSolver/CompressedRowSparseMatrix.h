@@ -26,6 +26,9 @@
 #include <SofaBaseLinearSolver/MatrixExpr.h>
 #include <SofaBaseLinearSolver/matrix_bloc_traits.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/rmath.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 
 namespace sofa::component::linearsolver
 {
@@ -41,7 +44,7 @@ namespace sofa::component::linearsolver
 #define EMIT_EXTRA_MESSAGE false
 #endif // defined(SPARSEMATRIX_VERBOSE) && (SPARSEMATRIX_VERBOSE == true)
 
-template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<defaulttype::BaseMatrix::Index> >
+template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<sofa::Index> >
 class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
 {
 public:
@@ -1727,7 +1730,7 @@ public:
 
     static const char* Name()
     {
-        static std::string name = std::string("CompressedRowSparseMatrix") + std::string(traits::Name());
+        static std::string name = std::string("CompressedRowSparseMatrix") + sofa::defaulttype::DataTypeInfo<Bloc>::name() ;
         return name.c_str();
     }
 

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDistanceGrid/RegisterModelToCollisionFactory.cpp>
+#include <SofaDistanceGrid/components/collision/DistanceGridCollisionModel.h>
 
 #include <LMConstraint/BarycentricDistanceLMConstraintContact.inl>
 

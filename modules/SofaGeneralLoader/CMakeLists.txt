@@ -49,7 +49,7 @@ list(APPEND SOURCE_FILES
 
 sofa_find_package(ZLIB REQUIRED BOTH_SCOPES)
 
-find_package(SofaFramework REQUIRED) # SofaCore SofaHelper SofaSimulationCore
+sofa_find_package(SofaFramework REQUIRED) # SofaCore SofaHelper SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaHelper SofaSimulationCore)

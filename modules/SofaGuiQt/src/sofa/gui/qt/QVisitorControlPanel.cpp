@@ -33,11 +33,7 @@
 #endif
 
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 QVisitorControlPanel::QVisitorControlPanel(QWidget* parent): QWidget(parent)
@@ -143,8 +139,4 @@ void QVisitorControlPanel::filterResults()
 
 
 
-} // qt
-} // gui
-} //sofa
-
-
+} //namespace sofa::gui::qt

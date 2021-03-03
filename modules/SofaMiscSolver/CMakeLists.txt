@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscSolver LANGUAGES CXX)
 
-find_package(SofaFramework REQUIRED) # SofaCore SofaSimulationCore
+sofa_find_package(SofaFramework REQUIRED) # SofaCore SofaSimulationCore
 
 set(SOFAMISCSOLVER_SRC "src/${PROJECT_NAME}")
 

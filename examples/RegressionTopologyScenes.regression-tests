@@ -1,3 +1,7 @@
+# WARNING: 
+# REGRESSION_TEST DOES NOT SUPPORT DASHES ("-") IN SCENE NAMES.
+# USE UNDERSCORES ("_") INSTEAD.
+
 ### Topology scenes ###
 Components/topology/Tetra2TriangleTopologicalMapping.scn 30 1e-4 1
 

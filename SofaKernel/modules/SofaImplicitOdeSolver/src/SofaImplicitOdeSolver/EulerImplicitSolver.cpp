@@ -26,6 +26,7 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/MultiMatrix.h>
 
 
 namespace sofa::component::odesolver

@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
 
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/VecId.h>

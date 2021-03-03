@@ -119,6 +119,10 @@ void Color_Test::checkCreateFromString()
     EXPECT_FALSE( RGBAColor::read("##fpaapddda", color2) ) ;
     EXPECT_FALSE( RGBAColor::read("#fasdqdpa", color2) ) ;
 
+    ///# test exception thrown by fromString
+    EXPECT_THROW(RGBAColor::fromString("invalidcolor"), std::invalid_argument);
+    EXPECT_NO_THROW(RGBAColor::fromString("red"));
+
 }
 
 void Color_Test::checkCreateFromDouble()
@@ -312,7 +316,7 @@ TEST_P(Color_Test, checkStreamingOperator)
         FAIL() << "There is a problem with this test.";
 }
 
-INSTANTIATE_TEST_CASE_P(checkStreamingOperator,
+INSTANTIATE_TEST_SUITE_P(checkStreamingOperator,
                         Color_Test,
                         ::testing::ValuesIn(testvalues));
 

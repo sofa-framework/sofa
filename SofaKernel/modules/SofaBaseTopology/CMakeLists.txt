@@ -5,6 +5,7 @@ set(SOFABASETOPOLOGY_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFABASETOPOLOGY_SRC}/config.h.in
+    ${SOFABASETOPOLOGY_SRC}/fwd.h
     ${SOFABASETOPOLOGY_SRC}/initSofaBaseTopology.h
     ${SOFABASETOPOLOGY_SRC}/CommonAlgorithms.h
     ${SOFABASETOPOLOGY_SRC}/EdgeSetGeometryAlgorithms.h
@@ -57,6 +58,8 @@ set(HEADER_FILES
     ${SOFABASETOPOLOGY_SRC}/TriangleSetTopologyAlgorithms.h
     ${SOFABASETOPOLOGY_SRC}/TriangleSetTopologyContainer.h
     ${SOFABASETOPOLOGY_SRC}/TriangleSetTopologyModifier.h
+    ${SOFABASETOPOLOGY_SRC}/polygon_cube_intersection/polygon_cube_intersection.h
+    ${SOFABASETOPOLOGY_SRC}/polygon_cube_intersection/vec.h
 )
 
 set(SOURCE_FILES
@@ -84,10 +87,12 @@ set(SOURCE_FILES
     ${SOFABASETOPOLOGY_SRC}/TriangleSetGeometryAlgorithms.cpp
     ${SOFABASETOPOLOGY_SRC}/TriangleSetTopologyContainer.cpp
     ${SOFABASETOPOLOGY_SRC}/TriangleSetTopologyModifier.cpp
+    ${SOFABASETOPOLOGY_SRC}/polygon_cube_intersection/fast_polygon_cube_intersection.cpp
+    ${SOFABASETOPOLOGY_SRC}/polygon_cube_intersection/polygon_cube_intersection.cpp
 )
 
-find_package(SofaFramework REQUIRED)
-find_package(Eigen3 REQUIRED)
+sofa_find_package(SofaFramework REQUIRED)
+sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)

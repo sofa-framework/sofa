@@ -20,14 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_HELPER_ADVANCEDTIMER_CPP
+
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/AdvancedTimer.h>
-
-#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/map.h>
-#include <iomanip>
-#include "../../extlibs/json/json.h"
-
+#include <json.h>
 
 #include <iomanip>
 #include <cmath>
@@ -35,6 +32,8 @@
 #include <stack>
 #include <algorithm>
 #include <cctype>
+#include <iostream>
+#include <atomic>
 
 #define DEFAULT_INTERVAL 100
 
@@ -331,7 +330,7 @@ void AdvancedTimer::end(IdTimer id)
     }
 }
 
-std::string AdvancedTimer::end(IdTimer id, simulation::Node* node)
+std::string AdvancedTimer::end(IdTimer id, double time, double dt)
 {
     TimerData& data = timers[id];
     if(!data.id)
@@ -341,8 +340,8 @@ std::string AdvancedTimer::end(IdTimer id, simulation::Node* node)
 
     switch(data.timerOutputType)
     {
-        case JSON   : return getTimeAnalysis(id, node);
-        case LJSON  : return getTimeAnalysis(id, node);
+        case JSON   : return getTimeAnalysis(id, time, dt);
+        case LJSON  : return getTimeAnalysis(id, time, dt);
         case GUI    : return std::string("");
         case STDOUT : end(id);
                       return std::string("");
@@ -1443,11 +1442,9 @@ void AdvancedTimer::clearData(IdTimer id)
     data.clear();
 }
 
-std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
+std::string AdvancedTimer::getTimeAnalysis(IdTimer id, double time, double deltaTime)
 {
     // Get simulation context and find the actual simulation step
-    double time = node->getContext()->getTime();
-    double deltaTime = node->getContext()->getDt();
     std::stringstream tempStepNumber;
     std::string stepNumber;
     json outputJson;

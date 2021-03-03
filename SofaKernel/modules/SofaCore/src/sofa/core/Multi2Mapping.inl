@@ -23,7 +23,7 @@
 #define SOFA_CORE_MULTI2MAPPING_INL
 
 #include <sofa/core/Multi2Mapping.h>
-
+#include <sofa/core/behavior/BaseMechanicalState.h>
 namespace sofa
 {
 

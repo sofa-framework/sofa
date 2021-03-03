@@ -41,10 +41,7 @@ using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
 using namespace sofa::simulation;
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 const char* BaseGUI::mProgramName = nullptr;
@@ -163,7 +160,7 @@ static void setDirectoryPath(std::string& outputVariable, const std::string& pat
         if (!pathExists)
         {
             FileSystem::createDirectory(path);
-            msg_error("BaseGUI") << "Created directory: " << path;
+            msg_info("BaseGUI") << "Created directory: " << path;
         }
         outputVariable = path;
     }
@@ -180,6 +177,4 @@ void BaseGUI::setScreenshotDirectoryPath(const std::string& path, bool createIfN
 }
 
 
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui

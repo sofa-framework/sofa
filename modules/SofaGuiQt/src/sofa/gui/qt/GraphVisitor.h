@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GRAPHVISITOR_H
-#define SOFA_GRAPHVISITOR_H
-
+#pragma once
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QDrag>
@@ -39,13 +37,7 @@
 #include <iostream>
 #include <set>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 class GraphVisitor

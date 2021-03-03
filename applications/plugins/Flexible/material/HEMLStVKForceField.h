@@ -152,10 +152,10 @@ public:
 
             for( int i=0 ; i<6 ; ++i )
             {
-                vtr[i] = trace(C[i]);
-                Mtr[i][i] = trace( C[i]*C[i] ); // TODO no need for computing the entire matrice product
+                vtr[i] = defaulttype::trace(C[i]);
+                Mtr[i][i] = defaulttype::trace( C[i]*C[i] ); // TODO no need for computing the entire matrice product
                 for( int j=i+1 ; j<6 ; ++j )
-                    Mtr[i][j] = Mtr[j][i] = trace( C[i]*C[j] ); // TODO no need for computing the entire matrice product
+                    Mtr[i][j] = Mtr[j][i] = defaulttype::trace( C[i]*C[j] ); // TODO no need for computing the entire matrice product
             }
 
             Mat66 M = lambda/8.0*( defaulttype::tensorProduct( vtr, vtr ) ) + mu/4.0*Mtr;

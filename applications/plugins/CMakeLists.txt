@@ -12,11 +12,17 @@ sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollisio
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
 sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
+
+if(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
+    # Add SofaPython BEFORE image and Compliant to enable their soft dependency
+    sofa_add_plugin(SofaPython SofaPython)
+endif()
+
 sofa_add_plugin(image image)           # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
 sofa_add_plugin(Compliant Compliant)
 
 if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
-    # Added here because all plugins above may have a soft dependency on SofaPython
+    # Add SofaPython AFTER image and Compliant to disable their soft dependency
     sofa_add_plugin(SofaPython SofaPython)
 endif()
 
@@ -57,10 +63,11 @@ if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "
     sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
 endif()
 
-if(${SOFA_NO_OPENGL})
-    message("SOFA_NO_OPENGL flag prevents from using the SofaCUDA, SofaSimpleGUI and VolumetricRendering plugins")
-else()
+find_package(Sofa.GL QUIET)
+if(Sofa.GL_FOUND)
     sofa_add_plugin(SofaCUDA SofaCUDA)           # SofaCUDA plugin can't work without OPENGL
     sofa_add_plugin(SofaSimpleGUI SofaSimpleGUI) # SofaSimpleGUI plugin can't work without OPENGL
     sofa_add_plugin(VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
+else()
+    message("Sofa.GL not found; disabling SofaCUDA, SofaSimpleGUI and VolumetricRendering plugins")
 endif()

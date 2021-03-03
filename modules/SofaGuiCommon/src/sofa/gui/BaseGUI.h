@@ -19,24 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_BASEGUI_H
-#define SOFA_GUI_BASEGUI_H
+#pragma once
 
 #include <sofa/gui/config.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/Vec.h>
 #include <SofaGraphComponent/ViewerSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/fwd.h>
 using sofa::helper::ArgumentParser;
 
 #include <list>
 
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 class BaseViewer;
@@ -55,13 +51,13 @@ public:
     /// Close the GUI
     virtual int closeGUI()=0;
     /// Register the scene in our GUI
-    virtual void setScene(sofa::simulation::Node::SPtr groot, const char* filename=nullptr, bool temporaryFile=false)=0;
+    virtual void setScene(sofa::simulation::NodeSPtr groot, const char* filename=nullptr, bool temporaryFile=false)=0;
     /// Get the rootNode of the sofa scene
     virtual sofa::simulation::Node* currentSimulation() = 0;
     /// @}
 
     /// Use a component setting to configure our GUI
-    virtual void configureGUI(sofa::simulation::Node::SPtr groot);
+    virtual void configureGUI(sofa::simulation::NodeSPtr groot);
 
     /// @name methods to configure the GUI
     /// @{
@@ -123,16 +119,4 @@ protected:
     static ArgumentParser* mArgumentParser;
 };
 
-////// TO declare into BaseViewer
-///setScene();
-///resetView();
-///setBackgroundColour(...)
-///setBackgroundImage(...)
-///setScene()
-///getSceneFileName()
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gui

@@ -23,9 +23,8 @@
 #include <SofaUserInteraction/AttachBodyPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaUserInteraction/MouseInteractor.h>
-
-
-
+#include <sofa/core/BaseMapping.h>
+#include <sofa/simulation/Node.h>
 namespace sofa::component::collision
 {
 

@@ -52,7 +52,7 @@ public:
         m_behaviorModel->d_regularUnsignedData.setValue(param);
         auto regularUnsignedDataFromBehaviorModel = sofa::helper::getReadAccessor(m_behaviorModel->d_regularUnsignedData);
 
-        EXPECT_EQ(regularUnsignedDataFromBehaviorModel, param);
+        EXPECT_EQ(regularUnsignedDataFromBehaviorModel.ref(), param);
     }
 
 private:

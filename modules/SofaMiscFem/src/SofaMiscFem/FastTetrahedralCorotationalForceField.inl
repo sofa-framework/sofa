@@ -27,6 +27,7 @@
 #include <iostream> //for debugging
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::forcefield
 {

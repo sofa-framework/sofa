@@ -20,10 +20,8 @@ sofa_add_module(SofaTopologyMapping SofaTopologyMapping ON)
 sofa_add_module(SofaUserInteraction SofaUserInteraction ON)
 sofa_add_module(SofaConstraint SofaConstraint ON)
 sofa_add_module(SofaGeneralLoader SofaGeneralLoader ON)
+sofa_add_module(SofaExporter SofaExporter ON)
 
-if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
-    sofa_add_module(SofaExporter SofaExporter ON)
-endif()
 sofa_add_module(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_module(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
 sofa_add_module(SofaHaptics SofaHaptics ON)
@@ -34,10 +32,12 @@ sofa_add_module(SofaDenseSolver SofaDenseSolver ${Newmat_FOUND})
 
 sofa_add_module(SofaNonUniformFem SofaNonUniformFem ON)
 
-if(SOFA_NO_OPENGL)
-    sofa_add_module(SofaOpenglVisual SofaOpenglVisual OFF)
-else()
+find_package(Sofa.GL QUIET)
+if(Sofa.GL_FOUND)
     sofa_add_module(SofaOpenglVisual SofaOpenglVisual ON)
+else()
+    sofa_add_module(SofaOpenglVisual SofaOpenglVisual OFF)
+    message("-- SofaOpenGLVisual: Sofa.GL not found; disabled")
 endif()
 
 # Misc
@@ -48,6 +48,3 @@ sofa_add_module(SofaMiscEngine SofaMiscEngine ON)
 sofa_add_module(SofaMiscSolver SofaMiscSolver ON)
 sofa_add_module(SofaMiscFem SofaMiscFem ON)
 sofa_add_module(SofaMiscMapping SofaMiscMapping ON)
-
-# All the other targets visible in "modules" are not real module
-# and are contained in packages (SofaGeneral, SofaAdvanced, SofaGui).

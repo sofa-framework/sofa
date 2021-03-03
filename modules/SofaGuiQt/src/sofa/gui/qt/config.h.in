@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_CONFIG_H
-#define SOFA_GUI_QT_CONFIG_H
+#pragma once
 
-#include <SofaGui/config.h>
+#include <sofa/config.h>
 
 #cmakedefine01 SOFAGUIQT_HAVE_QTVIEWER
 #cmakedefine01 SOFAGUIQT_HAVE_QGLVIEWER
@@ -38,6 +37,4 @@
 #  define SOFA_SOFAGUIQT_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_SOFAGUIQT_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 #endif

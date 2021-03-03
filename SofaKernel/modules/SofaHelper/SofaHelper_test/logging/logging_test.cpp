@@ -248,9 +248,6 @@ TEST(LoggingTest, emptyMessage)
 }
 #include <string>
 #include <sofa/core/objectmodel/Data.h>
-using sofa::core::objectmodel::TData ;
-
-
 
 class MyComponent : public sofa::core::objectmodel::BaseObject
 {

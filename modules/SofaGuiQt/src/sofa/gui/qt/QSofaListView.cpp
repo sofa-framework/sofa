@@ -26,12 +26,13 @@
 #include "ModifyObject.h"
 #include "GenGraphForm.h"
 #include "RealGUI.h"
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <SofaSimulationCommon/TransformationVisitor.h>
 #include <SofaSimulationCommon/xml/BaseElement.h>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/cast.h>
-
+#include <sofa/simulation/Simulation.h>
 #include <QMenu>
 #include <QtGlobal> // version macro
 #include <QMessageBox>
@@ -44,13 +45,9 @@
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
 
+namespace sofa::gui::qt
+{
 
 QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
         QWidget* parent,
@@ -683,7 +680,7 @@ void openInExternalEditor(const std::string filename, const int fileloc)
 
     params.replace("${filename}", f.absoluteFilePath());
     params.replace("${fileno}", QString::number(fileloc));
-    QStringList paramsAsList = params.split(QRegExp("(\\ )"));
+    QStringList paramsAsList = params.split(QRegularExpression("(\\ )"));
     if ( QProcess::execute(editor, paramsAsList) != 0 )
     {
         msg_warning("QSofaListView") << "Unable to execute \"" << editor.toStdString() << " "
@@ -774,7 +771,7 @@ void QSofaListView::Export()
     Node* root = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
     GenGraphForm* form = new sofa::gui::qt::GenGraphForm(this);
     form->setScene ( root );
-    std::string gname(dynamic_cast<RealGUI*> (QApplication::topLevelWidgets()[0])->windowFilePath().toStdString());
+    std::string gname(((RealGUI*) (QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
     std::size_t gpath = gname.find_last_of("/\\");
     std::size_t gext = gname.rfind('.');
     if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))
@@ -870,9 +867,4 @@ void QSofaListView::transformObject ( Node *node, double dx, double dy, double d
 
 
 
-} //sofa
-} // gui
-} //qt
-
-
-
+} //namespace sofa::gui::qt

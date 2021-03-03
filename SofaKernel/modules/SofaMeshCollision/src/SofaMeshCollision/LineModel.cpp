@@ -28,18 +28,15 @@ namespace sofa::component::collision
 
 int LineCollisionModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
         .add< LineCollisionModel<sofa::defaulttype::Vec3Types> >()
-
         .addAlias("TLineModel")
         .addAlias("Line")
         .addAlias("LineMeshModel")
         .addAlias("LineSetModel")
         .addAlias("LineMesh")
         .addAlias("LineSet")
-        .addAlias("LineModel")
-        ;
+        .addAlias("LineModel");
 
-
+template class SOFA_SOFAMESHCOLLISION_API TLine<sofa::defaulttype::Vec3dTypes>;
 template class SOFA_SOFAMESHCOLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
 
-
-} //namespace sofa::component::collision
+} ///namespace sofa::component::collision

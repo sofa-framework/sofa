@@ -21,12 +21,15 @@
 ******************************************************************************/
 
 #include <SofaConstraint/GenericConstraintSolver.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
 #include <algorithm>
+#include <sofa/core/behavior/MultiVec.h>
 
 namespace sofa::component::constraintset
 {
@@ -121,8 +124,7 @@ void GenericConstraintSolver::init()
     constraintCorrectionIsActive.resize(constraintCorrections.size());
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         constraintCorrections[i]->addConstraintSolver(this);
-    context = (simulation::Node*) getContext();
-
+    context = getContext();
     simulation::common::VectorOperations vop(sofa::core::ExecParams::defaultInstance(), this->getContext());
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);

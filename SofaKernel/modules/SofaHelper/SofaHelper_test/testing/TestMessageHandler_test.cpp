@@ -1,5 +1,5 @@
 #include <gtest/gtest-spi.h>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 

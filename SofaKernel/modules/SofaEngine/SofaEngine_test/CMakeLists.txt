@@ -4,17 +4,14 @@ project(SofaEngine_test)
 
 
 set(HEADER_FILES
-    TestEngine.h
         )
 
 set(SOURCE_FILES
-    Engine_test.cpp
-    TestEngine.cpp
     BoxROI_test.cpp
     )
     
-find_package(SofaEngine REQUIRED)
-find_package(SofaBaseMechanics REQUIRED)
+sofa_find_package(SofaEngine REQUIRED)
+sofa_find_package(SofaBaseMechanics REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaEngine SofaBaseMechanics)

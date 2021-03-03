@@ -23,6 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -41,6 +42,8 @@
 
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/ObjectFactory.h>
+
+#include <sofa/core/behavior/BaseConstraint.h> ///< ConstraintResolution.
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>

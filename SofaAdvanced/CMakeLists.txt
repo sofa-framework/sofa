@@ -10,7 +10,7 @@ set(SOFAADVANCED_MODULES
     )
 
 foreach(module ${SOFAADVANCED_MODULES})
-    find_package(${module} QUIET)
+    sofa_find_package(${module} QUIET)
     if(NOT ${module}_FOUND)
         string(TOUPPER module_${module} MODULE_TO_CHECK)
         list(APPEND LIST_MODULES_TO_CHECK ${MODULE_TO_CHECK})

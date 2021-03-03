@@ -207,7 +207,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(RungeKutta2ExplicitSolverDynamic_test, DataTypes);
+TYPED_TEST_SUITE(RungeKutta2ExplicitSolverDynamic_test, DataTypes);
 
 // Test case: h=0.1 k=100 m =10 rm=0.1 rk=0.1
 TYPED_TEST( RungeKutta2ExplicitSolverDynamic_test , rungeKutta2ExplicitSolverDynamicTest_medium_dt)

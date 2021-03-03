@@ -63,8 +63,8 @@ endif()
 
 # Dependencies
 sofa_find_package(Newmat BOTH_SCOPES)
-find_package(SofaBase REQUIRED) 
-find_package(SofaSimpleFem REQUIRED) 
+sofa_find_package(SofaBase REQUIRED) 
+sofa_find_package(SofaSimpleFem REQUIRED) 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaBaseMechanics)

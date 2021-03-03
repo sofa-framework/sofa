@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/config.h>
-
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::mass

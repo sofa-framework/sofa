@@ -190,9 +190,9 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
             std::cout << "                   vp = " << vp << std::endl;
             std::cout << "                   vc = " << vc << std::endl;
             std::cout << "          expected fp = " << fp << std::endl;
-            std::cout << "            actual fp = " << actualfp << std::endl;
+            std::cout << "            actual fp = " << actualfp.ref() << std::endl;
             std::cout << "          expected fc = " << fc << std::endl;
-            std::cout << "            actual fc = " << actualfc << std::endl;
+            std::cout << "            actual fc = " << actualfc.ref() << std::endl;
         }
         ASSERT_TRUE( this->vectorMaxDiff(fp,actualfp)< this->errorMax*this->epsilon() );
         ASSERT_TRUE( this->vectorMaxDiff(fc,actualfc)< this->errorMax*this->epsilon() );
@@ -213,7 +213,7 @@ component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types> 
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(StiffSpringForceField_test, TestTypes);
+TYPED_TEST_SUITE(StiffSpringForceField_test, TestTypes);
 
 // first test case: extension, no velocity
 TYPED_TEST( StiffSpringForceField_test , extension )

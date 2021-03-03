@@ -1,29 +1,15 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGui)
 
-### Dependencies
-
-## Sofa
-find_package(SofaFramework REQUIRED)
+sofa_find_package(SofaFramework REQUIRED)
 
 set(SOFAGUI_TARGETS "")
 
-## Version
-set(SOFAGUI_VERSION ${SofaFramework_VERSION})
-
-option(SOFAGUI_BUILD_TESTS "Compile the tests that need a GUI (like headlessRecorder_test)." ON)
-if(SOFAGUI_BUILD_TESTS AND NOT SOFA_BUILD_TESTS)
-    message(WARNING "SOFAGUI_BUILD_TESTS can't be enabled without SOFA_BUILD_TESTS.")
-    set(SOFAGUI_BUILD_TESTS OFF CACHE BOOL "Compile the tests that need a GUI (like headlessRecorder_test)." FORCE)
-endif()
-
-### Sub-projects
-
-## SofaGuiCommon
+# SofaGuiCommon
 add_subdirectory(../modules/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
 list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
-## SofaGuiQt
+# SofaGuiQt
 option(SOFAGUI_QT "Compile the Qt GUI" ON)
 if(SOFAGUI_QT)
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
@@ -31,20 +17,17 @@ if(SOFAGUI_QT)
 endif()
 sofa_set_01(SOFAGUI_HAVE_SOFAGUIQT VALUE ${SOFAGUI_QT}) # see config.h.in
 
-## OpenGL-based GUIs
-if(NOT SOFA_NO_OPENGL)
-    ## SofaHeadlessRecorder
-    option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
-    if(SOFAGUI_HEADLESS_RECORDER)
-        list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
-        add_subdirectory(../modules/SofaHeadlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
-    endif()
-    sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
+# SofaHeadlessRecorder
+option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
+if(SOFAGUI_HEADLESS_RECORDER)
+    list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
+    add_subdirectory(../modules/SofaHeadlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
 endif()
+sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
 
-## SofaGuiMain
-list(APPEND SOFAGUI_TARGETS SofaGuiMain)
-add_subdirectory(../modules/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
+foreach(target ${SOFAGUI_TARGETS})
+    set_target_properties(${target} PROPERTIES FOLDER SofaGui)
+endforeach()
 
 set(SOFAGUI_SRC src/${PROJECT_NAME})
 set(HEADER_FILES

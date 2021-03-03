@@ -54,9 +54,9 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/MutationListener.h>
 #include <sofa/simulation/VisitorScheduler.h>
 
+#include <sofa/simulation/fwd.h>
 #include <type_traits>
 
 namespace sofa
@@ -67,7 +67,6 @@ class Visitor;
 }
 }
 
-#include <sofa/helper/system/thread/CTime.h>
 #include <string>
 #include <stack>
 
@@ -159,7 +158,7 @@ public:
 
     /// Execute a recursive action starting from this node
     template<class Act>
-    void execute(core::visual::VisualParams* vparams, bool precomputedOrder=false)
+    void execute(sofa::core::visual::VisualParams* vparams, bool precomputedOrder=false)
     {
         Act action(vparams);
         simulation::Visitor* p = &action;
@@ -540,9 +539,7 @@ public:
     virtual void setDefaultVisualContextValue();
 
     template <class RealObject>
-    static Node::SPtr create(RealObject*, core::objectmodel::BaseObjectDescription* arg);
-
-
+    static Node::SPtr create(RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg);
     static Node::SPtr create( const std::string& name );
 
     /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
@@ -550,7 +547,6 @@ public:
 
     /// override context setSleeping to add notification.
     void setSleeping(bool /*val*/) override;
-
 
 protected:
     bool debug_;
@@ -592,15 +588,6 @@ protected:
 public:
     virtual void addListener(MutationListener* obj);
     virtual void removeListener(MutationListener* obj);
-
-    // Added by FF to model component dependencies
-    /// Pairs representing component dependencies. First must be initialized before second.
-    Data < sofa::helper::vector < std::string > > depend;
-
-    /// Sort the components according to the dependencies expressed in Data depend.
-    void sortComponents();
-
-
 
     /// @name virtual functions to add/remove some special components direclty in the right Sequence
     /// @{

@@ -7,19 +7,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/AbstractTypeInfo.h
     ${SRC_ROOT}/BaseMatrix.h
     ${SRC_ROOT}/BaseVector.h
-    ${SRC_ROOT}/BoundingBox.h
     ${SRC_ROOT}/DataTypeInfo.h
-    ${SRC_ROOT}/Frame.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
-    ${SRC_ROOT}/Mat.h
-    ${SRC_ROOT}/MatSym.h
-    ${SRC_ROOT}/Mat_solve_Cholesky.h
-    ${SRC_ROOT}/Mat_solve_LU.h
-    ${SRC_ROOT}/Mat_solve_SVD.h
-    ${SRC_ROOT}/Quat.h
-    ${SRC_ROOT}/Quat.inl
-    ${SRC_ROOT}/RGBAColor.h
     ${SRC_ROOT}/RigidTypes.h
     ${SRC_ROOT}/RigidVec6Types.h
     ${SRC_ROOT}/SolidTypes.h
@@ -30,14 +20,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/TypeInfoRegistry.h
     ${SRC_ROOT}/TypeInfoRegistryTools.h
     ${SRC_ROOT}/TopologyTypes.h
-    ${SRC_ROOT}/Vec.h
-    ${SRC_ROOT}/Ray.h
     ${SRC_ROOT}/VecTypes.h
     ${SRC_ROOT}/defaulttype.h
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
-    ${SRC_ROOT}/Color.h
-
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/typeinfo/DataTypeInfoDynamicWrapper.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo.h
     ${SRC_ROOT}/typeinfo/NoTypeInfo.h
@@ -70,8 +57,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SRC_ROOT}/AbstractTypeInfo.cpp
     ${SRC_ROOT}/BaseMatrix.cpp
-    ${SRC_ROOT}/BoundingBox.cpp
-    ${SRC_ROOT}/Frame.cpp
+    ${SRC_ROOT}/BaseVector.cpp
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
     ${SRC_ROOT}/TypeInfoID.cpp
@@ -94,12 +80,35 @@ set(SOURCE_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.cpp
 )
 
-find_package(Eigen3 REQUIRED)
+# Compatibility files
+set (COMPATSRC_ROOT "compat/")
+set(COMPAT_HEADER_FILES
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Vec.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/MatSym.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_Cholesky.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_LU.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.inl
+    ${COMPATSRC_ROOT}/sofa/defaulttype/BoundingBox.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Color.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Frame.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Ray.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/RGBAColor.h
+)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+sofa_find_package(Eigen3 REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
+                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
+source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework

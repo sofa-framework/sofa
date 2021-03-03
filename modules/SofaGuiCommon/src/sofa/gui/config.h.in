@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGui/config.h>
+#include <sofa/config.h>
 
 #define SOFAGUICOMMON_HAVE_SOFA_GL @SOFAGUICOMMON_HAVE_SOFA.GL@
 
