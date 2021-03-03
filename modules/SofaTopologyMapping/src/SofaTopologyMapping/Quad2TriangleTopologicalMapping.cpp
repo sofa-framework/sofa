@@ -411,10 +411,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             Topology::SetIndices& tab_indices = indices;
             Topology::SetIndices& inv_tab_indices = inv_indices;
 
-            to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
-
+            to_tstm->renumberPoints(tab_indices, inv_tab_indices, false);
             break;
         }
 

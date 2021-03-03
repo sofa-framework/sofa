@@ -160,9 +160,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const auto &tab = pRenumber->getIndexArray();
             const auto &inv_tab = pRenumber->getinv_IndexArray();
             dmsg_info() << "POINTSRENUMBERING : " << tab.size() ;
-            toPointMod->renumberPointsWarning(tab, inv_tab, true);
-            toPointMod->propagateTopologicalChanges();
-            toPointMod->renumberPointsProcess(tab, inv_tab, true);
+            toPointMod->renumberPoints(tab, inv_tab, true);
             break;
         }
 
