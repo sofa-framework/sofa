@@ -24,7 +24,6 @@
 
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseTopology/TopologyDataEngine.h>
-#include <SofaBaseTopology/TopologySparseDataHandler.h>
 
 namespace sofa::component::topology
 {
@@ -56,20 +55,8 @@ public:
     /// Constructor
     TopologySparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
-        , m_topologyHandler(nullptr)
         , m_isConcerned(false)
     {}
-
-    virtual ~TopologySparseData();
-
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topologyHandler);
-
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
-
 
 
     void setMap2Elements(const sofa::helper::vector<Index> _map2Elements)
@@ -96,16 +83,47 @@ public:
     }
 
 
+    /// Swaps values at indices i1 and i2.
+    virtual void swap(Index i1, Index i2);
+
+    //using core::topology::TopologyElementHandler< TopologyElementType >::add;
+    /// Add some values. Values are added at the end of the vector.
+    virtual void add(sofa::Size nbElements,
+        const sofa::helper::vector< TopologyElementType >&,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+    virtual void add(sofa::Size nbElements,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+    /// Remove the values corresponding to the Edges removed.
+    virtual void remove(const sofa::helper::vector<Index>& index);
+
+    /// Reorder the values.
+    virtual void renumber(const sofa::helper::vector<Index>& index);
+
+    /// Move a list of points
+    virtual void move(const sofa::helper::vector<Index>& indexList,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+    /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    virtual void addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
+        const sofa::helper::vector< TopologyElementType >& elems);
+
+    /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    virtual void removeOnMovedPosition(const sofa::helper::vector<Index>& indices);
+
+
+
+
+
 protected:
-
-    virtual void createTopologyHandler() {}
-
     // same size as SparseData but contain id of element link to each data[]
     sofa::helper::vector<Index> m_map2Elements;
-    sofa::component::topology::TopologySparseDataHandler<TopologyElementType,VecT>* m_topologyHandler;
 
     bool m_isConcerned;
-
 };
 
 

@@ -23,7 +23,6 @@
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/TopologyDataEngine.inl>
-#include <SofaBaseTopology/TopologySubsetDataHandler.inl>
 
 namespace sofa::component::topology
 {
@@ -32,36 +31,176 @@ namespace sofa::component::topology
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
+TopologySubsetData <TopologyElementType, VecT>::TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+    : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
 {
-    //this->m_topology = _topology;
-    //if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
-    //{
-    //    this->m_topologicalEngine = sofa::core::objectmodel::New< TopologyDataEngine<TopologyElementType, VecT> >((sofa::component::topology::TopologySubsetData<TopologyElementType, VecT>*)this, _topology);
-    //    this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("SubsetEngine_"));
-    //    if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
-    //    this->m_topologicalEngine->init();
-    //    this->linkToElementDataArray((TopologyElementType*)nullptr);
-    //    msg_info(this->getOwner())<<"TopologySubsetData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << " Topology.";
-    //}
-    //else if (_topology)
-    //{
-    //    msg_info(this->getOwner())<<"TopologySubsetData: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology.";
-    //}
-    //else
-    //{
-    //    msg_info(this->getOwner())<<"TopologySubsetData: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled.";
-    //}
-}
 
-
-template <typename TopologyElementType, typename VecT>
-void TopologySubsetData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
-{
-    //this->m_topologyHandler = new TopologySubsetDataHandler<TopologyElementType, VecT>(this);
-    //createTopologicalEngine(_topology, this->m_topologyHandler);
 }
+//
+/////////////////////// Private functions on TopologySubsetData changes /////////////////////////////
+//template <typename TopologyElementType, typename VecT>
+//void TopologySubsetData <TopologyElementType, VecT>::swap(Index i1, Index i2)
+//{
+//    container_type& data = *(this->beginEdit());
+//
+//    iterator it = std::find(data.begin(), data.end(), i1);
+//    if (it != data.end())
+//        (*it) = i2;
+//    this->endEdit();
+//}
+//
+//
+//template <typename TopologyElementType, typename VecT>
+//void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
+//    const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
+//    const sofa::helper::vector<sofa::helper::vector<double> >& coefs)
+//{
+//    // Using default values
+//    container_type& data = *(this->beginEdit());
+//
+//    size_t size = data.size();
+//    
+//    if (m_topologicalEngine)
+//    {
+//        bool test = false;
+//        for (std::size_t i = 0; i < nbElements; ++i)
+//        {
+//            if (ancestors.empty() || coefs.empty())
+//            {
+//                const sofa::helper::vector< Index > empty_vecint;
+//                const sofa::helper::vector< double > empty_vecdouble;
+//
+//                test = m_topologicalEngine->applyTestCreateFunction(Index(size + i), empty_vecint, empty_vecdouble);
+//            }
+//            else {
+//                test = m_topologicalEngine->applyTestCreateFunction(Index(size + i), ancestors[i], coefs[i]);
+//            }
+//
+//            if (test)
+//                data.push_back((size + i));
+//        }
+//    }
+//   
+//    this->lastElementIndex += nbElements;
+//}
+//
+//
+//template <typename TopologyElementType, typename VecT>
+//void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
+//    const sofa::helper::vector< TopologyElementType >&,
+//    const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
+//    const sofa::helper::vector<sofa::helper::vector<double> >& coefs)
+//{
+//    this->add(nbElements, ancestors, coefs);
+//}
+//
+//
+//template <typename TopologyElementType, typename VecT>
+//void TopologySubsetData <TopologyElementType, VecT>::move(const sofa::helper::vector<Index>&,
+//    const sofa::helper::vector< sofa::helper::vector< Index > >&,
+//    const sofa::helper::vector< sofa::helper::vector< double > >&)
+//{
+//
+//}
+//
+//
+//template <typename TopologyElementType, typename VecT>
+//void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::vector<Index>& index)
+//{
+//    container_type& data = *(this->beginEdit());
+//    std::size_t it1;
+//    std::size_t it2;
+//
+//    for (std::size_t i = 0; i < index.size(); ++i)
+//    {
+//        it1 = 0;
+//        while (it1 < data.size())
+//        {
+//            if (data[it1] == index[i])
+//                break;
+//            else
+//                it1 += 1;
+//        }
+//
+//
+//        if (it1 < data.size())
+//        {
+//            it2 = 0;
+//            while (it2 < data.size())
+//            {
+//                if (data[it2] == this->lastElementIndex)
+//                    break;
+//                else
+//                    it2 += 1;
+//            }
+//
+//            if (it2 < data.size())
+//                data[it2] = index[i];
+//
+//            data[it1] = data[data.size() - 1];
+//            size_t size_before = data.size();
+//
+//            // Call destroy function implemented in specific component
+//            if (m_topologicalEngine)
+//            {
+//                m_topologicalEngine->applyDestroyFunction(index[i], data[data.size() - 1]);
+//            }
+//
+//            // As applyDestroyFunction could already perfom the suppression, if implemented. Size is checked again. If no change this handler really perform the suppresion
+//            if (size_before == data.size())
+//                data.resize(data.size() - 1);
+//        }
+//        else
+//        {
+//            it2 = 0;
+//            while (it2 < data.size())
+//            {
+//                if (data[it2] == this->lastElementIndex)
+//                    break;
+//                else
+//                    it2 += 1;
+//            }
+//
+//            if (it2 < data.size())
+//            {
+//                data[it2] = index[i];
+//            }
+//        }
+//        --this->lastElementIndex;
+//    }
+//
+//    this->endEdit();
+//}
+//
+//
+//template <typename TopologyElementType, typename VecT>
+//void TopologySubsetData <TopologyElementType, VecT>::renumber(const sofa::helper::vector<Index>& index)
+//{
+//    container_type& data = *(this->beginEdit());
+//    container_type copy = this->getValue(); // not very efficient memory-wise, but I can see no better solution...
+//
+//    for (std::size_t i = 0; i < data.size(); ++i)
+//    {
+//        data[i] = copy[index[i]];
+//    }
+//    this->endEdit();
+//}
+//
+//
+//template <typename TopologyElementType, typename VecT>
+//void TopologySubsetData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index>&,
+//    const sofa::helper::vector<TopologyElementType>&)
+//{
+//    dmsg_error("TopologySubsetData") << "addOnMovedPosition event on topology subsetData is not yet handled.";
+//}
+//
+//
+//template <typename TopologyElementType, typename VecT>
+//void TopologySubsetData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index>&)
+//{
+//    dmsg_error("TopologySubsetData") << "removeOnMovedPosition event on topology subsetData is not yet handled";
+//}
+
 
 } //namespace sofa::component::topology

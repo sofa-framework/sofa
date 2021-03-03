@@ -24,7 +24,6 @@
 
 #include <SofaBaseTopology/TopologyDataEngine.h>
 #include <SofaBaseTopology/TopologyData.h>
-#include <SofaBaseTopology/TopologySubsetDataHandler.h>
 
 namespace sofa::component::topology
 {
@@ -54,26 +53,43 @@ public:
     typedef typename container_type::const_reference const_reference;
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
+    /// iterator
+    typedef typename container_type::iterator iterator;
 
 
     /// Constructor
-    TopologySubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
-        , m_topologyHandler(nullptr)
-    {}
+    TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
+    ///// Swaps values at indices i1 and i2.
+    //virtual void swap(Index i1, Index i2);
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topologyHandler);
+    ///// Add some values. Values are added at the end of the vector.
+    //virtual void add(sofa::Size nbElements,
+    //    const sofa::helper::vector< TopologyElementType >&,
+    //    const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+    //    const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+    //virtual void add(sofa::Size nbElements,
+    //    const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+    //    const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
+    ///// Remove the values corresponding to the Edges removed.
+    //virtual void remove(const sofa::helper::vector<Index>& index);
 
-protected:
-    sofa::component::topology::TopologySubsetDataHandler<TopologyElementType,VecT>* m_topologyHandler;
+    ///// Reorder the values.
+    //virtual void renumber(const sofa::helper::vector<Index>& index);
+
+    ///// Move a list of points
+    //virtual void move(const sofa::helper::vector<Index>& indexList,
+    //    const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+    //    const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+    ///// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    //virtual void addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
+    //    const sofa::helper::vector< TopologyElementType >& elems);
+
+    ///// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    //virtual void removeOnMovedPosition(const sofa::helper::vector<Index>& indices);
 
 };
 

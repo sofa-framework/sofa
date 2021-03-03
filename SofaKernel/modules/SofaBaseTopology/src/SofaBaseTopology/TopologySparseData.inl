@@ -23,7 +23,6 @@
 #include <SofaBaseTopology/TopologySparseData.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/TopologyDataEngine.inl>
-#include <SofaBaseTopology/TopologySparseDataHandler.inl>
 
 namespace sofa::component::topology
 {
@@ -32,43 +31,135 @@ namespace sofa::component::topology
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+///////////////////// Private functions on TopologySparseData changes /////////////////////////////
 template <typename TopologyElementType, typename VecT>
-TopologySparseData <TopologyElementType, VecT>::~TopologySparseData()
+void TopologySparseData <TopologyElementType, VecT>::swap(Index i1, Index i2)
 {
-    if (this->m_topologyHandler)
-        delete m_topologyHandler;
+    // get access to data and its map
+    container_type& data = *(this->beginEdit());
+    sofa::helper::vector <Index>& keys = this->getMap2Elements();
+
+    value_type tmp = data[i1];
+    data[i1] = data[i2];
+    data[i2] = tmp;
+
+    //apply same change to map:
+    Index tmp2 = keys[i1];
+    keys[i1] = keys[i2];
+    keys[i2] = tmp2;
+
+    this->endEdit();
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
+void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
+    const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
+    const sofa::helper::vector<sofa::helper::vector<double> >& coefs)
 {
-    //this->m_topology = _topology;
-    //if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
-    //{
-    //    this->m_topologicalEngine = sofa::core::objectmodel::New< TopologyDataEngine<TopologyElementType, VecT> >((sofa::component::topology::TopologySparseData<TopologyElementType, VecT>*)this, _topology);
-    //    this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("SparseEngine_"));
-    //    if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
-    //    this->m_topologicalEngine->init();
-    //    this->linkToElementDataArray((TopologyElementType*)nullptr);
-    //    msg_info(this->getOwner())<<"TopologySparseData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << " Topology.";
-    //}
-    //else if (_topology)
-    //{
-    //    msg_info(this->getOwner())<<"TopologySparseData: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology.";
-    //}
-    //else
-    //{
-    //    msg_info(this->getOwner())<<"TopologySparseData: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled.";
-    //}
+    // get access to data and its map
+    if (!this->getSparseDataStatus())
+        return;
+
+    container_type& data = *(this->beginEdit());
+    sofa::helper::vector <Index>& keys = this->getMap2Elements();
+
+    Size size = data.size();
+    data.resize(size + nbElements);
+
+    for (unsigned int i = 0; i < nbElements; ++i)
+    {
+        //value_type t;
+        //if (ancestors.empty() || coefs.empty())
+        //{
+        //    const sofa::helper::vector< Index > empty_vecint;
+        //    const sofa::helper::vector< double > empty_vecdouble;
+        //    this->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
+        //}
+        //else
+        //    this->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
+
+        // Incremente the total number of edges in topology
+        this->lastElementIndex++;
+        keys.push_back(this->lastElementIndex);
+    }
+
+    this->endEdit();
+    return;
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
+void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
+    const sofa::helper::vector< TopologyElementType >&,
+    const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
+    const sofa::helper::vector<sofa::helper::vector<double> >& coefs)
 {
-    //this->m_topologyHandler = new TopologySparseDataHandler<TopologyElementType, VecT>(this);
-    //createTopologicalEngine(_topology, this->m_topologyHandler);
+    this->add(nbElements, ancestors, coefs);
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::move(const sofa::helper::vector<Index>&,
+    const sofa::helper::vector< sofa::helper::vector< Index > >&,
+    const sofa::helper::vector< sofa::helper::vector< double > >&)
+{
+    msg_warning("TopologySparseData") << "Move event on topology SparseData is not yet handled.";
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::remove(const sofa::helper::vector<Index>& index)
+{
+    // get the sparseData map
+    sofa::helper::vector <Index>& keys = this->getMap2Elements();
+    container_type& data = *(this->beginEdit());
+    Size last = data.size() - 1;
+
+    // check for each element remove if it concern this sparseData
+    unsigned int cptDone = 0;
+    for (Size i = 0; i < index.size(); ++i)
+    {
+        unsigned int elemId = index[i];
+        unsigned int id = this->indexOfElement(elemId);
+
+        if (id == sofa::core::topology::Topology::InvalidID)
+            continue;
+
+        cptDone++;
+        //this->applyDestroyFunction(id, data[id]);
+        this->swap(id, last);
+        --last;
+    }
+
+    data.resize(data.size() - cptDone);
+    keys.resize(keys.size() - cptDone);
+    this->lastElementIndex = last;
+
+    this->endEdit();
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::renumber(const sofa::helper::vector<Index>&)
+{
+    msg_warning("TopologySparseData") << "renumber event on topology SparseData is not yet handled";
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index>&,
+    const sofa::helper::vector<TopologyElementType>&)
+{
+    msg_warning("TopologySparseData") << "addOnMovedPosition event on topology SparseData is not yet handled";
+}
+
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index>&)
+{
+    msg_warning("TopologySparseData") << "removeOnMovedPosition event on topology SparseData is not yet handled";
 }
 
 
