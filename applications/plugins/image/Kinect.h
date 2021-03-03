@@ -509,7 +509,7 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams)
     {
-#ifndef SOFA_NO_OPENGL
+#ifdef IMAGE_HAVE_SOFA_GL
         // draw bounding box
 
         if (!vparams->displayFlags().getShowVisualModels()) return;
@@ -548,7 +548,7 @@ protected:
 
         glPopMatrix ();
         glPopAttrib();
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL
     }
 
 

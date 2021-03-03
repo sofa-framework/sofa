@@ -3,8 +3,8 @@ project(image VERSION 0.1)
 
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneralVisual REQUIRED)
-find_package(Sofa.GL REQUIRED)
 
+sofa_find_package(Sofa.GL REQUIRED)
 sofa_find_package(SofaGuiQt QUIET)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(Newmat REQUIRED)

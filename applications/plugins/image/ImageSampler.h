@@ -627,10 +627,9 @@ protected:
         }
     }
 
-#ifndef SOFA_NO_OPENGL
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
+#ifdef IMAGE_HAVE_SOFA_GL
         if (!vparams->displayFlags().getShowVisualModels()) return;
 
         raPositions pos(this->position);
@@ -737,9 +736,8 @@ protected:
             vparams->drawTool()->drawTriangles(points,defaulttype::Vec4f(1,1,1,1));
         }
 
-#endif /* SOFA_NO_OPENGL */
+#endif // IMAGE_HAVE_SOFA_GL
     }
-#endif
 
     /**
     * put regularly spaced samples at each non empty voxel center or corners
