@@ -37,19 +37,19 @@ namespace sofa::component::projectiveconstraintset
 using sofa::helper::WriteAccessor;
 using sofa::defaulttype::Vec;
 using sofa::component::topology::PointSubsetData;
-using sofa::component::topology::TopologySubsetDataHandler;
+using sofa::component::topology::TopologyDataEngine;
 
 
 /////////////////////////// DEFINITION OF FCPointHandler (INNER CLASS) /////////////////////////////
 template <class DataTypes>
 class FixedPlaneConstraint<DataTypes>::FCPointHandler :
-        public TopologySubsetDataHandler<BaseMeshTopology::Point, SetIndexArray >
+        public TopologyDataEngine<BaseMeshTopology::Point, SetIndexArray >
 {
 public:
     typedef typename FixedPlaneConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
     FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
-        : TopologySubsetDataHandler<BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
+        : TopologyDataEngine<BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
     void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
