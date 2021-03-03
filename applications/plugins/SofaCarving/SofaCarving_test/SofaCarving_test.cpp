@@ -19,11 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaCarving/CarvingManager.h>
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <SofaBaseUtils/initSofaBaseUtils.h>
+#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
 
 using namespace sofa::helper::testing;
 using namespace sofa::component::collision;
@@ -57,6 +58,9 @@ private:
 
 bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
+    sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
+    sofa::component::initSofaBaseLinearSolver(); // needed to instanciate CGLinearSolver
+
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
    
