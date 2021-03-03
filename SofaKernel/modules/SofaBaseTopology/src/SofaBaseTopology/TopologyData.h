@@ -73,7 +73,7 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyEngine* topoEngine);
+    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataEngine< TopologyElementType, VecT>* topoEngine);
 
     /// Allow to add additionnal dependencies to others Data.
     void addInputData(sofa::core::objectmodel::BaseData* _data);
@@ -144,7 +144,7 @@ public:
 
 
 protected:
-    sofa::core::topology::TopologyEngine* m_topologicalEngine;
+    sofa::component::topology::TopologyDataEngine< TopologyElementType, VecT>* m_topologicalEngine;
 
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*      ) { linkToPointDataArray();       }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*       ) { linkToEdgeDataArray();        }

@@ -67,22 +67,35 @@ void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     Size size = data.size();
     data.resize(size + nbElements);
 
-    for (unsigned int i = 0; i < nbElements; ++i)
+    if (m_topologicalEngine)
     {
-        //value_type t;
-        //if (ancestors.empty() || coefs.empty())
-        //{
-        //    const sofa::helper::vector< Index > empty_vecint;
-        //    const sofa::helper::vector< double > empty_vecdouble;
-        //    this->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
-        //}
-        //else
-        //    this->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
+        for (unsigned int i = 0; i < nbElements; ++i)
+        {
+            value_type t;
+            if (ancestors.empty() || coefs.empty())
+            {
+                const sofa::helper::vector< Index > empty_vecint;
+                const sofa::helper::vector< double > empty_vecdouble;
+                m_topologicalEngine->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
+            }
+            else
+                m_topologicalEngine->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
 
-        // Incremente the total number of edges in topology
-        this->lastElementIndex++;
-        keys.push_back(this->lastElementIndex);
+            // Incremente the total number of edges in topology
+            this->lastElementIndex++;
+            keys.push_back(this->lastElementIndex);
+        }
     }
+    else
+    {
+        for (unsigned int i = 0; i < nbElements; ++i)
+        {
+            // Incremente the total number of edges in topology
+            this->lastElementIndex++;
+            keys.push_back(this->lastElementIndex);
+        }
+    }
+    
 
     this->endEdit();
     return;
@@ -127,7 +140,10 @@ void TopologySparseData <TopologyElementType, VecT>::remove(const sofa::helper::
             continue;
 
         cptDone++;
-        //this->applyDestroyFunction(id, data[id]);
+        if (m_topologicalEngine)
+        {
+            m_topologicalEngine->applyDestroyFunction(id, data[id]);
+        }
         this->swap(id, last);
         --last;
     }

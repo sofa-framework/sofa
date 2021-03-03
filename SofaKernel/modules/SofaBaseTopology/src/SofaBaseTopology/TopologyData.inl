@@ -61,7 +61,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::cor
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyEngine* topoEngine)
+void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataEngine< TopologyElementType, VecT>* topoEngine)
 {
     std::cout << "createTopologicalEngine" << std::endl;
     this->getOwner()->f_printLog.setValue(true);
@@ -181,9 +181,9 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::helper::vector
 
         for (std::size_t i = 0; i < index.size(); ++i)
         {
-            //if (m_topologicalEngine) {
-            //    m_topologicalEngine->applyDestroyFunction(index[i], data[index[i]]);
-            //}
+            if (m_topologicalEngine) {
+                m_topologicalEngine->applyDestroyFunction(index[i], data[index[i]]);
+            }
             this->swap(index[i], last);
             --last;
         }
@@ -220,19 +220,19 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
     const sofa::helper::vector< Index > empty_vecint;
     const sofa::helper::vector< double > empty_vecdouble;
 
-    //if (m_topologicalEngine) 
-    //{
-    //    for (Index i = 0; i < nbElements; ++i)
-    //    {
-    //        value_type& t = data[i0 + i];
-    //    
-    //            m_topologicalEngine->applyCreateFunction(Index(i0 + i), t, elems[i],
-    //                (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
-    //                (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
-    //                (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
-    //    
-    //    }
-    //}
+    if (m_topologicalEngine) 
+    {
+        for (Index i = 0; i < nbElements; ++i)
+        {
+            value_type& t = data[i0 + i];
+        
+                m_topologicalEngine->applyCreateFunction(Index(i0 + i), t, elems[i],
+                    (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
+                    (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
+                    (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
+        
+        }
+    }
     this->endEdit();
 }
 
@@ -244,11 +244,14 @@ void TopologyData <TopologyElementType, VecT>::move(const sofa::helper::vector<I
 {
     container_type& data = *(this->beginEdit());
 
-    //for (std::size_t i = 0; i < indexList.size(); i++)
-    //{
-    //    this->applyDestroyFunction(indexList[i], data[indexList[i]]);
-    //    this->applyCreateFunction(indexList[i], data[indexList[i]], ancestors[i], coefs[i]);
-    //}
+    if (m_topologicalEngine)
+    {
+        for (std::size_t i = 0; i < indexList.size(); i++)
+        {
+            m_topologicalEngine->applyDestroyFunction(indexList[i], data[indexList[i]]);
+            m_topologicalEngine->applyCreateFunction(indexList[i], data[indexList[i]], ancestors[i], coefs[i]);
+        }
+    }
 
     this->endEdit();
 }
@@ -280,14 +283,14 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::he
     coefs.push_back(1.0);
     ancestors.resize(1);
 
-    //if (m_topologicalEngine)
-    //{
-    //    for (std::size_t i = 0; i < indexList.size(); i++)
-    //    {
-    //        ancestors[0] = indexList[i];
-    //        m_topologicalEngine->applyCreateFunction(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
-    //    }
-    //}
+    if (m_topologicalEngine)
+    {
+        for (std::size_t i = 0; i < indexList.size(); i++)
+        {
+            ancestors[0] = indexList[i];
+            m_topologicalEngine->applyCreateFunction(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
+        }
+    }
     this->endEdit();
 }
 
@@ -297,12 +300,12 @@ void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa:
 {
     container_type& data = *(this->beginEdit());
 
-    //if (m_topologicalEngine)
-    //{
-    //    for (std::size_t i = 0; i < indices.size(); i++) {
-    //        m_topologicalEngine->applyDestroyFunction(indices[i], data[indices[i]]);
-    //    }
-    //}
+    if (m_topologicalEngine)
+    {
+        for (std::size_t i = 0; i < indices.size(); i++) {
+            m_topologicalEngine->applyDestroyFunction(indices[i], data[indices[i]]);
+        }
+    }
 
     this->endEdit();
 
