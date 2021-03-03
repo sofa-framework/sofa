@@ -150,7 +150,7 @@ public:
     /// Apply renumbering on hexahedron elements.
     virtual void ApplyTopologyChange(const core::topology::HexahedraRenumbering* /*event*/) {}
 
-    // Needed to remove override warnings in TopologyElementHandler
+
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Point>::EMoved_Adding* /*event*/) {}
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Point>::EMoved_Removing* /*event*/) {}
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Edge>::EMoved* /*event*/) {}

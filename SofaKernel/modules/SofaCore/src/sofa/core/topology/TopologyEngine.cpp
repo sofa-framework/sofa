@@ -75,7 +75,7 @@ void TopologyEngine::ApplyTopologyChanges(const std::list<const core::topology::
     for (changeIt = _changeList.begin(); changeIt != _changeList.end(); ++changeIt)
     {
         core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
-        std::string topoChangeType = "DefaultTopologyHandler: " + parseTopologyChangeTypeToString(changeType);
+        std::string topoChangeType = "DefaultTopologyEngine: " + parseTopologyChangeTypeToString(changeType);
         sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
 
         switch (changeType)

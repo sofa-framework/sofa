@@ -86,7 +86,7 @@ public:
     /// Swaps values at indices i1 and i2.
     virtual void swap(Index i1, Index i2);
 
-    //using core::topology::TopologyElementHandler< TopologyElementType >::add;
+    //using core::topology::TopologyDataEngine< TopologyElementType >::add;
     /// Add some values. Values are added at the end of the vector.
     virtual void add(sofa::Size nbElements,
         const sofa::helper::vector< TopologyElementType >&,

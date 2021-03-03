@@ -35,6 +35,12 @@ namespace core
 namespace topology
 {
 
+typedef Topology::Point            Point;
+typedef Topology::Edge             Edge;
+typedef Topology::Triangle         Triangle;
+typedef Topology::Quad             Quad;
+typedef Topology::Tetrahedron      Tetrahedron;
+typedef Topology::Hexahedron       Hexahedron;
 
 //TODO(dmarchal 2017-05-13):
 // When someone want to deprecate something....please help other contributors by providing

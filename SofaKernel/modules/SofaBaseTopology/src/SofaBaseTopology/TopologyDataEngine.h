@@ -23,7 +23,6 @@
 #include <SofaBaseTopology/config.h>
 
 #include <sofa/core/topology/TopologyEngine.h>
-#include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/core/topology/BaseTopologyData.h>
 
 #include <sofa/core/topology/BaseTopology.h>

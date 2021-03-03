@@ -313,7 +313,7 @@ void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const E
 template <typename TopologyElementType, typename VecT>
 void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const EMoved* /*event*/)
 {
-    msg_warning("TopologyElementHandler") << "MOVED topology event not handled on " << ElementInfo::name()
+    msg_warning("TopologyDataEngine") << "MOVED topology event not handled on " << ElementInfo::name()
         << " (it should not even exist!)";
 }
 
