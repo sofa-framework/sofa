@@ -262,6 +262,12 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/types/RGBAColor_fwd.h
     ${COMPATSRC_ROOT}/sofa/helper/types/Material.h
     ${COMPATSRC_ROOT}/sofa/helper/types/PrimitiveGroup.h
+    ${COMPATSRC_ROOT}/sofa/helper/vector.h
+    ${COMPATSRC_ROOT}/sofa/helper/vector_device.h
+    ${COMPATSRC_ROOT}/sofa/helper/SVector.h
+    ${COMPATSRC_ROOT}/sofa/helper/stable_vector.h
+    ${COMPATSRC_ROOT}/sofa/helper/vector_algebra.h
+    ${COMPATSRC_ROOT}/sofa/helper/vector_algorithm.h
     )
 
 
