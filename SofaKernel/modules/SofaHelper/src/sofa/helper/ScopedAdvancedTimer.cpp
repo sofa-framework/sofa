@@ -19,42 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/core/VecId.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
+namespace sofa::helper
 {
 
-namespace simulation
+ScopedAdvancedTimer::ScopedAdvancedTimer(const std::string& message)
+    : ScopedAdvancedTimer(message.c_str())
 {
-
-void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
-{
-    std::string msg = "MappingVisitor - processMapping: " + obj->getName();
-    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
-
-    obj->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-    obj->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
 }
 
-void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
+ScopedAdvancedTimer::ScopedAdvancedTimer( const char* message )
+    : message( message )
 {
-    // mechanical mappings with isMechanical flag not set are now processed by the MechanicalPropagatePositionVisitor visitor
-    std::string msg = "MappingVisitor - processMechanicalMapping: " + obj->getName();
-    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
+    AdvancedTimer::stepBegin( message );
 }
 
-Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)
+ScopedAdvancedTimer::~ScopedAdvancedTimer()
 {
-    for_each(this, node, node->mapping, &UpdateMappingVisitor::processMapping);
-    for_each(this, node, node->mechanicalMapping, &UpdateMappingVisitor::processMechanicalMapping);
-
-    return RESULT_CONTINUE;
+    AdvancedTimer::stepEnd( message );
 }
 
-} // namespace simulation
-
-} // namespace sofa
-
+} /// sofa::helper

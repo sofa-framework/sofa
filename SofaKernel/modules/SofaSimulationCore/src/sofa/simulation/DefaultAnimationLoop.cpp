@@ -35,6 +35,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>

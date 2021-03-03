@@ -60,6 +60,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/RandomGenerator.h
     ${SRC_ROOT}/SVector.h
     ${SRC_ROOT}/SimpleTimer.h
+    ${SRC_ROOT}/ScopedAdvancedTimer.h
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
@@ -159,6 +160,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MarchingCubeUtility.cpp
     ${SRC_ROOT}/NameDecoder.cpp
     ${SRC_ROOT}/OptionsGroup.cpp
+    ${SRC_ROOT}/ScopedAdvancedTimer.cpp
     ${SRC_ROOT}/StateMask.cpp
     ${SRC_ROOT}/SVector.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp

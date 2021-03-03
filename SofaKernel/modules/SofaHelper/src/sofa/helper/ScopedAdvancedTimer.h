@@ -19,42 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/core/VecId.h>
-#include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/Node.h>
+#pragma once
 
-namespace sofa
+#include <sofa/helper/config.h>
+#include<string>
+
+namespace sofa::helper
 {
 
-namespace simulation
+/// Scoped (RAII) AdvancedTimer to simplify a basic usage
+/// Example of use
+/// {   ///< open a scope to start measuring
+///     ScopedAdvancedTimer t("myMeasurement")
+///     ...
+///     ...
+/// }   ///< close the scope... the timer t is destructed and the
+///     measurement recorded.
+struct SOFA_HELPER_API ScopedAdvancedTimer
 {
+    const char* message;
+    ScopedAdvancedTimer(const std::string& message);
+    ScopedAdvancedTimer( const char* message );
+    ~ScopedAdvancedTimer();
+};
 
-void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
-{
-    std::string msg = "MappingVisitor - processMapping: " + obj->getName();
-    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
-
-    obj->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-    obj->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
-}
-
-void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
-{
-    // mechanical mappings with isMechanical flag not set are now processed by the MechanicalPropagatePositionVisitor visitor
-    std::string msg = "MappingVisitor - processMechanicalMapping: " + obj->getName();
-    sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
-}
-
-Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)
-{
-    for_each(this, node, node->mapping, &UpdateMappingVisitor::processMapping);
-    for_each(this, node, node->mechanicalMapping, &UpdateMappingVisitor::processMechanicalMapping);
-
-    return RESULT_CONTINUE;
-}
-
-} // namespace simulation
-
-} // namespace sofa
+} /// sofa::helper
 
