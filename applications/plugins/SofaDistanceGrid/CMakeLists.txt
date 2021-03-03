@@ -57,7 +57,7 @@ sofa_find_package(MiniFlowVR QUIET)
 find_package(SofaMeshCollision REQUIRED)
 find_package(SofaUserInteraction REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
-find_package(Sofa.GL REQUIRED)
+sofa_find_package(Sofa.GL REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision)
