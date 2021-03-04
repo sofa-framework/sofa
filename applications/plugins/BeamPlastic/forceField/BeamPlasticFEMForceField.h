@@ -90,6 +90,7 @@ public:
     typedef sofa::helper::vector<core::topology::BaseMeshTopology::Edge> VecElement;
     typedef helper::vector<unsigned int> VecIndex;
     typedef defaulttype::Vec<3, Real> Vec3;
+    typedef sofa::helper::types::RGBAColor RGBAColor;
 
     /** \enum MechanicalState
      *  \brief Types of mechanical state associated with the (Gauss) integration
@@ -525,7 +526,7 @@ protected:
 
     void drawElement(int i, std::vector< defaulttype::Vector3 >* gaussPoints,
                      std::vector< defaulttype::Vector3 >* centrelinePoints,
-                     std::vector<defaulttype::Vec<4, float>>* colours, const VecCoord& x);
+                     std::vector<RGBAColor>* colours, const VecCoord& x);
 
     void computeStiffness(int i, Index a, Index b);
 

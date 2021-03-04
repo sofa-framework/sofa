@@ -904,7 +904,7 @@ void BeamPlasticFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     std::vector<defaulttype::Vector3> centrelinePoints[1];
     std::vector<defaulttype::Vector3> gaussPoints[1];
-    std::vector<defaulttype::Vec<4, float>> colours[1];
+    std::vector<RGBAColor> colours[1];
 
     for (unsigned int i=0; i<m_indexedElements->size(); ++i)
         drawElement(i, gaussPoints, centrelinePoints, colours, x);
@@ -912,7 +912,7 @@ void BeamPlasticFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     vparams->drawTool()->setPolygonMode(2, true);
     vparams->drawTool()->setLightingEnabled(true);
     vparams->drawTool()->drawPoints(gaussPoints[0], 3, colours[0]);
-    vparams->drawTool()->drawLines(centrelinePoints[0], 1.0, defaulttype::Vec<4, float>(0.24f, 0.72f, 0.96f, 1.0f));
+    vparams->drawTool()->drawLines(centrelinePoints[0], 1.0, RGBAColor(0.24f, 0.72f, 0.96f, 1.0f));
     vparams->drawTool()->setLightingEnabled(false);
     vparams->drawTool()->setPolygonMode(0, false);
 }
@@ -920,7 +920,7 @@ void BeamPlasticFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* gaussPoints,
                                                  std::vector< defaulttype::Vector3 >* centrelinePoints,
-                                                 std::vector<defaulttype::Vec<4, float>>* colours,
+                                                 std::vector<RGBAColor>* colours,
                                                  const VecCoord& x)
 {
     Index a = (*m_indexedElements)[i][0];
