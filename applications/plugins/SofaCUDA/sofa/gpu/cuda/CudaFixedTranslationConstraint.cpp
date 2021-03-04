@@ -49,7 +49,7 @@ void FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::vis
 template <>
 void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifdef SOFACUDA_HAVE_SOFA_GL
+#if SOFACUDA_HAVE_SOFA_GL == 1
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
@@ -73,7 +73,7 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
         }
     }
     glEnd();
-#endif // SOFACUDA_HAVE_SOFA_GL
+#endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE

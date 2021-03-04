@@ -255,7 +255,7 @@ void RigidDistanceGridCollisionModel::updateGrid()
 
 void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
-#ifdef SOFADISTANCEGRID_HAVE_SOFA_GL
+#if SOFADISTANCEGRID_HAVE_SOFA_GL == 1
     if (!isActive()) return;
     if (vparams->displayFlags().getShowCollisionModels())
     {
@@ -274,12 +274,12 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpa
     }
     if (getPrevious()!=NULL)
         getPrevious()->draw(vparams);
-#endif // SOFADISTANCEGRID_HAVE_SOFA_GL
+#endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }
 
 void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,Index index)
 {
-#ifdef SOFADISTANCEGRID_HAVE_SOFA_GL
+#if SOFADISTANCEGRID_HAVE_SOFA_GL == 1
     const bool flipped = isFlipped();
 
     if (elems[index].isTransformed)
@@ -429,7 +429,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,In
     {
         glPopMatrix();
     }
-#endif // SOFADISTANCEGRID_HAVE_SOFA_GL
+#endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -707,7 +707,7 @@ FFDDistanceGridCollisionModel::DeformedCube::Plane FFDDistanceGridCollisionModel
 
 void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
-#ifdef SOFADISTANCEGRID_HAVE_SOFA_GL
+#if SOFADISTANCEGRID_HAVE_SOFA_GL == 1
     if (!isActive()) return;
     if (vparams->displayFlags().getShowCollisionModels())
     {
@@ -724,12 +724,12 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
     }
     if (getPrevious()!=NULL)
         getPrevious()->draw(vparams);
-#endif // SOFADISTANCEGRID_HAVE_SOFA_GL
+#endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }
 
 void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams, Index index)
 {
-#ifdef SOFADISTANCEGRID_HAVE_SOFA_GL
+#if SOFADISTANCEGRID_HAVE_SOFA_GL == 1
     //DistanceGrid* grid = getGrid(index);
     DeformedCube& cube = getDeformCube( index );
     //glEnable(GL_BLEND);
@@ -810,7 +810,7 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
         }
     }
     glPointSize(1);
-#endif // SOFADISTANCEGRID_HAVE_SOFA_GL
+#endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }
 
 //template <class DataTypes>

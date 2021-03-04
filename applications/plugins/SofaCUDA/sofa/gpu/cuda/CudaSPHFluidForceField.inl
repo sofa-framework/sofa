@@ -236,7 +236,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::Mechan
 template <>
 void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifdef SOFACUDA_HAVE_SOFA_GL
+#if SOFACUDA_HAVE_SOFA_GL == 1
     if (!vparams->displayFlags().getShowForceFields()) return;
     //if (m_grid != NULL)
     //	grid->draw(vparams);
@@ -268,7 +268,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::Vis
     glPointSize(1);
 #else
     SOFA_UNUSED(vparams);
-#endif // SOFACUDA_HAVE_SOFA_GL
+#endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
 } // namespace forcefield

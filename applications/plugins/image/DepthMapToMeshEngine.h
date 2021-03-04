@@ -108,9 +108,9 @@ public:
         , texOffset(initData(&texOffset,TexCoord(0.0,0.0),"texOffset","texture offsets (in [0,1])"))
         , triangles(initData(&triangles,SeqTriangles(),"triangles","output triangles"))
         , time((unsigned int)0)
-#ifdef IMAGE_HAVE_SOFA_GL
+#if IMAGE_HAVE_SOFA_GL == 1
         , texture(NULL)
-#endif // IMAGE_HAVE_SOFA_GL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     {
         image.setReadOnly(true);
         transform.setReadOnly(true);
@@ -119,9 +119,9 @@ public:
 
     ~DepthMapToMeshEngine() override
     {
-#ifdef IMAGE_HAVE_SOFA_GL
+#if IMAGE_HAVE_SOFA_GL == 1
         if(texture) delete texture;
-#endif // IMAGE_HAVE_SOFA_GL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
     void init() override
@@ -139,10 +139,10 @@ public:
 protected:
 
     unsigned int time;
-#ifdef IMAGE_HAVE_SOFA_GL
+#if IMAGE_HAVE_SOFA_GL == 1
     helper::gl::Texture* texture;
     static const unsigned texture_res=256;
-#endif // IMAGE_HAVE_SOFA_GL
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
     void doUpdate() override
     {
@@ -159,7 +159,7 @@ protected:
         const cimg_library::CImg<T>& img = in->getCImg(this->time);
         Real f = this->depthFactor.getValue();
 
-#ifdef IMAGE_HAVE_SOFA_GL
+#if IMAGE_HAVE_SOFA_GL == 1
         // update texture
         if(texture && !inTex->isEmpty())
         {
@@ -174,7 +174,7 @@ protected:
             }
             texture->update();
         }
-#endif // IMAGE_HAVE_SOFA_GL
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
         // update points
         unsigned int count=0,p1,p2,p3;

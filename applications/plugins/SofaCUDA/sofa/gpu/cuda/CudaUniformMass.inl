@@ -219,7 +219,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,flo
 template <>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >::draw(const core::visual::VisualParams* vparams)
 {
-#ifdef SOFACUDA_HAVE_SOFA_GL
+#if SOFACUDA_HAVE_SOFA_GL == 1
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -243,7 +243,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >:
     {
         helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
     }
-#endif // SOFACUDA_HAVE_SOFA_GL
+#endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
 

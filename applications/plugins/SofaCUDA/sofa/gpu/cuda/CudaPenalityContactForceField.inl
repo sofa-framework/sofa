@@ -217,7 +217,7 @@ SReal PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const core::
 //template<>
 void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifdef SOFACUDA_HAVE_SOFA_GL
+#if SOFACUDA_HAVE_SOFA_GL == 1
     if (!((this->mstate1 == this->mstate2)?  vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
@@ -263,7 +263,7 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
         }
         glEnd();
     }
-#endif // SOFACUDA_HAVE_SOFA_GL
+#endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
 } // namespace interactionforcefield
