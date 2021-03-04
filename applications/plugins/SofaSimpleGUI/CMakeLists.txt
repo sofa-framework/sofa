@@ -11,7 +11,7 @@ set(HEADER_FILES
     SofaScene.h
     SpringInteractor.h
     VisualPickVisitor.h
-    config.h
+    config.h.in
 )
 
 set(SOURCE_FILES
