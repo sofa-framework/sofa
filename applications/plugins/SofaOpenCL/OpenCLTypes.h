@@ -42,20 +42,22 @@ namespace opencl
 {
 
 template<typename T>
-struct DataTypeInfoRebound
+struct DataTypeInfoManager
 {
-    using RealDataTypeInfo = sofa::defaulttype::DataTypeInfo<T>;
     template<class T2> struct rebind
     {
-        typedef DataTypeInfoRebound<T2> other;
+        typedef DataTypeInfoManager<T2> other;
     };
+
+    static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
+    static const bool SimpleCopy = sofa::defaulttype::DataTypeInfo<T>::SimpleCopy;
 };
 
 template<class T>
-class OpenCLVector : public helper::vector_device<T,OpenCLMemoryManager<T>, DataTypeInfoRebound<T> >
+class OpenCLVector : public helper::vector_device<T,OpenCLMemoryManager<T>, DataTypeInfoManager<T> >
 {
 public :
-    using Inherit = helper::vector_device<T, OpenCLMemoryManager<T>, DataTypeInfoRebound<T> >;
+    using Inherit = helper::vector_device<T, OpenCLMemoryManager<T>, DataTypeInfoManager<T> >;
     typedef size_t size_type;
 
     OpenCLVector() : Inherit() {}

@@ -390,7 +390,7 @@ public:
         DEBUG_OUT_V(SPACEP << "resize " << vectorSize << "->" << s << " (alloc=" << allocSize << ")" << std::endl);
         if (s > vectorSize)
         {
-            if (datatypeinfo_manager::RealDataTypeInfo::ZeroConstructor)   // can use memset instead of constructors
+            if (datatypeinfo_manager::ZeroConstructor)   // can use memset instead of constructors
             {
                 if (hostIsValid)
                 {
@@ -451,7 +451,7 @@ public:
                 }
             }
         }
-        else if (s < vectorSize && !(datatypeinfo_manager::RealDataTypeInfo::SimpleCopy))     // need to call destructors
+        else if (s < vectorSize && !(datatypeinfo_manager::SimpleCopy))     // need to call destructors
         {
             DEBUG_OUT_V(SPACEN << "SIMPLECOPY " << std::endl);
             copyToHost();
