@@ -57,8 +57,8 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEAD
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction SofaSimulationCommon)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::program_options)
 
-
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/SofaGuiCommon/SofaGuiCommon/compat>")
 source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
 if(Sofa.GL_FOUND)
