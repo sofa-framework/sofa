@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/stdtype/vector.h>
+#include <sofa/type/config.h>
 
 // maximum number of bytes we allow to increase the size when of a vector in a single step when we reserve on the host or device
 #define SOFA_VECTOR_HOST_STEP_SIZE 32768
@@ -46,7 +46,7 @@
 namespace sofa::type::stdtype
 {
 
-template <class T, class MemoryManager, class DataTypeInfo>
+template <class T, class MemoryManager, class DataTypeInfoManager>
 class vector_device
 {
 public:
@@ -60,9 +60,13 @@ public:
     typedef typename MemoryManager::buffer_id_type buffer_id_type;
 
     typedef MemoryManager memory_manager;
+    typedef DataTypeInfoManager datatypeinfo_manager;
+
     template<class T2> struct rebind
     {
-        typedef vector_device<T2, typename memory_manager::template rebind<T2>::other > other;
+        typedef vector_device<T2, 
+            typename memory_manager::template rebind<T2>::other, 
+            typename datatypeinfo_manager::template rebind<T2>::other > other;
     };
 
 protected:
@@ -127,7 +131,7 @@ public:
         clearSize = 0;
         resize(n);
     }
-    vector_device(const vector_device<T, MemoryManager >& v)
+    vector_device(const vector_device<T, MemoryManager, DataTypeInfoManager>& v)
         : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -168,7 +172,7 @@ public:
         DEBUG_OUT_V(SPACEM << "clear vector " << std::endl);
     }
 
-    void operator= (const vector_device<T, MemoryManager >& v)
+    void operator= (const vector_device<T, MemoryManager, DataTypeInfoManager >& v)
     {
         if (&v == this)
         {
@@ -386,7 +390,7 @@ public:
         DEBUG_OUT_V(SPACEP << "resize " << vectorSize << "->" << s << " (alloc=" << allocSize << ")" << std::endl);
         if (s > vectorSize)
         {
-            if (DataTypeInfo::ZeroConstructor)   // can use memset instead of constructors
+            if (datatypeinfo_manager::RealDataTypeInfo::ZeroConstructor)   // can use memset instead of constructors
             {
                 if (hostIsValid)
                 {
@@ -447,7 +451,7 @@ public:
                 }
             }
         }
-        else if (s < vectorSize && !(DataTypeInfo::SimpleCopy))     // need to call destructors
+        else if (s < vectorSize && !(datatypeinfo_manager::RealDataTypeInfo::SimpleCopy))     // need to call destructors
         {
             DEBUG_OUT_V(SPACEN << "SIMPLECOPY " << std::endl);
             copyToHost();
@@ -472,7 +476,7 @@ public:
         DEBUG_OUT_V(SPACEM << "resize " << std::endl);
     }
 
-    void swap(vector_device<T, MemoryManager>& v)
+    void swap(vector_device<T, MemoryManager, DataTypeInfoManager>& v)
     {
         DEBUG_OUT_V(SPACEP << "swap " << std::endl);
 #define VSWAP(type, var) { type t = var; var = v.var; v.var = t; }
@@ -670,7 +674,7 @@ public:
     }
 
     /// Output stream
-    inline friend std::ostream& operator<< (std::ostream& os, const vector_device<T, MemoryManager>& vec)
+    inline friend std::ostream& operator<< (std::ostream& os, const vector_device<T, MemoryManager, DataTypeInfoManager>& vec)
     {
         if (vec.size() > 0)
         {
@@ -681,7 +685,7 @@ public:
     }
 
     /// Input stream
-    inline friend std::istream& operator>> (std::istream& in, vector_device<T, MemoryManager>& vec)
+    inline friend std::istream& operator>> (std::istream& in, vector_device<T, MemoryManager, DataTypeInfoManager>& vec)
     {
         T t;
         vec.clear();

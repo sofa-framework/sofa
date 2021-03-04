@@ -29,5 +29,6 @@
 
 namespace sofa::helper
 {
-
+    template <class T, class MemoryManager, class DataTypeInfo >
+    using vector_device = sofa::type::stdtype::vector_device<T, MemoryManager, DataTypeInfo>;
 } // namespace sofa::helper

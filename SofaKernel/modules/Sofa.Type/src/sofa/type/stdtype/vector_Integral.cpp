@@ -32,7 +32,7 @@ namespace sofa::type::stdtype
 
 /// Convert the string 's' into an unsigned int. The error are reported in msg & numErrors
 /// is incremented.
-int getInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors)
+SOFA_TYPE_API int getInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors)
 {
     const char* attrstr = s.c_str();
     char* end = nullptr;
@@ -53,7 +53,7 @@ int getInteger(const std::string& s, std::stringstream& msg, unsigned int& numEr
 
 /// Convert the string 's' into an unsigned int. The error are reported in msg & numErrors
 /// is incremented.
-unsigned int getUnsignedInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors)
+SOFA_TYPE_API unsigned int getUnsignedInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors)
 {
     const char* attrstr = s.c_str();
     char* end = nullptr;
