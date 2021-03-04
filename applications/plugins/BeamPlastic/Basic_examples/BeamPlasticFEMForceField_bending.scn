@@ -3,7 +3,13 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscMapping'/>
     <RequiredPlugin name='SofaSparseSolver'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralTopology'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+
     <RequiredPlugin name='BeamPlastic'/>
+
     
     <VisualStyle displayFlags="showBehaviorModels showForceFields" /> <!-- showCollisionModels -->
     <DefaultPipeline depth="6" verbose="0" draw="0" />
