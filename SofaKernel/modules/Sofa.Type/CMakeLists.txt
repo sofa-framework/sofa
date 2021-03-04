@@ -61,7 +61,7 @@ set(SOURCE_FILES
 
 sofa_find_package(Boost REQUIRED)
 
-find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Config REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 

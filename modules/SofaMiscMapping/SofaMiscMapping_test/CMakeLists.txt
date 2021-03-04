@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaMiscMapping_test)
 
-find_package(SofaMiscMapping REQUIRED)
+sofa_find_package(SofaMiscMapping REQUIRED)
 
 set(HEADER_FILES)
 

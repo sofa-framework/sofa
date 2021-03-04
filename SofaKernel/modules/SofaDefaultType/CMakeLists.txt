@@ -98,7 +98,7 @@ set(COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/defaulttype/RGBAColor.h
 )
 
-find_package(Eigen3 REQUIRED)
+sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)

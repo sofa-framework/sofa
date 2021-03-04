@@ -621,9 +621,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             if (samePoints.getValue())
             {
                 msg_info() << "[" << count << "]POINTSRENUMBERING : " << tab.size() << " : " << tab;
-                toPointMod->renumberPointsWarning(tab, inv_tab, true);
-                toPointMod->propagateTopologicalChanges();
-                toPointMod->renumberPointsProcess(tab, inv_tab, true);
+                toPointMod->renumberPoints(tab, inv_tab, true);
             }
             else
             {
@@ -641,9 +639,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                     inv_tab2[pd2] = pd;
                 }
                 msg_info() << "[" << count << "]POINTSRENUMBERING : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2;
-                toPointMod->renumberPointsWarning(tab2, inv_tab2, true);
-                toPointMod->propagateTopologicalChanges();
-                toPointMod->renumberPointsProcess(tab2, inv_tab2, true);
+                toPointMod->renumberPoints(tab2, inv_tab2, true);
                 SetIndex pS2D0 = pS2D.ref();
                 for (Index ps = 0; ps < pS2D.size(); ++ps)
                 {

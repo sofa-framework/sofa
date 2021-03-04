@@ -3,7 +3,7 @@ project(SofaImplicitOdeSolver LANGUAGES CXX)
 
 set(SOFAIMPLICITEODESOLVER_SRC "src/${PROJECT_NAME}")
 
-find_package(SofaFramework REQUIRED)
+sofa_find_package(SofaFramework REQUIRED)
 
 set(HEADER_FILES
     ${SOFAIMPLICITEODESOLVER_SRC}/config.h.in
@@ -18,7 +18,7 @@ set(SOURCE_FILES
     ${SOFAIMPLICITEODESOLVER_SRC}/StaticSolver.cpp
 )
 
-find_package(SofaFramework REQUIRED) # SofaCore SofaSimulationCore
+sofa_find_package(SofaFramework REQUIRED) # SofaCore SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)

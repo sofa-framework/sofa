@@ -2,16 +2,14 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaHelper)
 
 # DEPENDENCIES
-# find_package(Sofa.Type REQUIRED)
+# sofa_find_package(Sofa.Type REQUIRED)
 
 # Boost
 sofa_find_package(Boost REQUIRED
-    COMPONENTS system filesystem program_options
+    COMPONENTS filesystem
     OPTIONAL_COMPONENTS thread
     BOTH_SCOPES)
-if(SOFAHELPER_HAVE_BOOST_SYSTEM
-   AND SOFAHELPER_HAVE_BOOST_FILESYSTEM
-   AND SOFAHELPER_HAVE_BOOST_PROGRAM_OPTIONS
+if(SOFAHELPER_HAVE_BOOST_FILESYSTEM
    AND SOFAHELPER_HAVE_BOOST_THREAD)
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
 else()
@@ -22,7 +20,7 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     sofa_find_package(GTest CONFIG BOTH_SCOPES)
 endif()
 # Eigen (header only)
-find_package(Eigen3 REQUIRED)
+sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
 sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
 
@@ -33,7 +31,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/helper.h
     ${SRC_ROOT}/AdvancedTimer.h
-    ${SRC_ROOT}/ArgumentParser.h
     ${SRC_ROOT}/BackTrace.h
     ${SRC_ROOT}/cast.h
     ${SRC_ROOT}/ColorMap.h
@@ -59,6 +56,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/Polynomial_LD.inl
     ${SRC_ROOT}/RandomGenerator.h
     ${SRC_ROOT}/SimpleTimer.h
+    ${SRC_ROOT}/ScopedAdvancedTimer.h
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
@@ -138,7 +136,6 @@ set(HEADER_FILES
 )
 set(SOURCE_FILES
     ${SRC_ROOT}/AdvancedTimer.cpp
-    ${SRC_ROOT}/ArgumentParser.cpp
     ${SRC_ROOT}/BackTrace.cpp
     ${SRC_ROOT}/ColorMap.cpp
     ${SRC_ROOT}/ComponentChange.cpp
@@ -148,6 +145,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MarchingCubeUtility.cpp
     ${SRC_ROOT}/NameDecoder.cpp
     ${SRC_ROOT}/OptionsGroup.cpp
+    ${SRC_ROOT}/ScopedAdvancedTimer.cpp
     ${SRC_ROOT}/StateMask.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp
     ${SRC_ROOT}/RandomGenerator.cpp
@@ -271,7 +269,7 @@ set (COMPAT_HEADER_FILES
     )
 
 
-find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Config REQUIRED)
 
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
@@ -316,7 +314,7 @@ endif()
 
 # Boost
 if(Boost_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::system Boost::filesystem Boost::program_options)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::filesystem)
     if(Boost_THREAD_FOUND)
         target_link_libraries(${PROJECT_NAME} PUBLIC Boost::thread)
     endif()
