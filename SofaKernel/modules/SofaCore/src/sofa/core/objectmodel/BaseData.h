@@ -153,9 +153,11 @@ public:
     void setHelp(const std::string& val) { help = val; }
 
     /// Get owner class
+    SOFA_ATTRIBUTE_REMOVAL_OF_BASEDATA_OWNERCLASS_ACCESSOR("Replace getOwnerClass() by getOwner()->className")
     const std::string& getOwnerClass() const { return ownerClass; }
 
     /// Set owner class
+    SOFA_ATTRIBUTE_REMOVAL_OF_BASEDATA_OWNERCLASS_ACCESSOR("The function will be totally removed. The owner's class name being using getOwner()->className")
     void setOwnerClass(const char* val) { ownerClass = val; }
 
     /// Get group
