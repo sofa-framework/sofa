@@ -26,7 +26,7 @@
 #include <iostream>
 
 #include <sofa/helper/vector.h>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <QHeaderView>
 #include <QImage>
 
@@ -49,10 +49,6 @@ TutorialSelector::TutorialSelector(QWidget* parent):QTreeWidget(parent)
 
     this->header()->hide();
     this->setSortingEnabled(false);
-
-    //this->addColumn("Tutorials");
-    //this->setColumnWidthMode(0,QTreeWidget::Maximum);
-
     itemToCategory.insert(std::make_pair((QTreeWidgetItem*)0, Category("All Sofa Tutorials", sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.xml"), sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.html"))));
 }
 

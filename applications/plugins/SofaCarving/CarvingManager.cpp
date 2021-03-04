@@ -32,7 +32,7 @@
 
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <SofaUserInteraction/TopologicalChangeManager.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa
 {

@@ -21,19 +21,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_INL
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
+
 #include <SofaSparseSolver/SparseLUSolver.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
-#include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <cmath>
-#include <sofa/helper/system/thread/CTime.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 namespace sofa
 {

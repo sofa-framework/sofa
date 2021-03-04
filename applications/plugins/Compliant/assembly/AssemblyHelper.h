@@ -1,5 +1,5 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/Node.h>
 #include "../utils/sparse.h"

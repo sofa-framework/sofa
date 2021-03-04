@@ -52,8 +52,8 @@ list(APPEND SOURCE_FILES
     )
 
 
-find_package(SofaBase REQUIRED) # SofaBaseTopology
-find_package(SofaDeformable REQUIRED)
+sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
+sofa_find_package(SofaDeformable REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaDeformable)

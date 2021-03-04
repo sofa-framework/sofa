@@ -307,14 +307,6 @@ bool BaseData::genericCopyValueFrom(const BaseData* parent)
     return true;
 }
 
-/// Copy the value of another Data.
-/// Note that this is a one-time copy and not a permanent link (otherwise see setParent)
-/// @return true if copy was successfull
-bool BaseData::copyValue(const BaseData* data)
-{
-   return copyValueFrom(data);
-}
-
 /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
 const void* BaseData::getValueVoidPtr() const
 {

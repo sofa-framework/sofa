@@ -5,12 +5,14 @@ set(SOFAMESHCOLLISION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAMESHCOLLISION_SRC}/config.h.in
+    ${SOFAMESHCOLLISION_SRC}/fwd.h
     ${SOFAMESHCOLLISION_SRC}/initSofaMeshCollision.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.inl
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.inl
     ${SOFAMESHCOLLISION_SRC}/CollisionPM.h
+    ${SOFAMESHCOLLISION_SRC}/EmptyFilter.h
     ${SOFAMESHCOLLISION_SRC}/EndPoint.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.inl
@@ -63,9 +65,9 @@ set(SOURCE_FILES
     ${SOFAMESHCOLLISION_SRC}/TriangleModel.cpp
 )
 
-find_package(SofaBase REQUIRED) # SofaBaseMechanics SofaBaseCollision SofaBaseTopology
-find_package(SofaObjectInteraction REQUIRED)
-find_package(SofaRigid REQUIRED)
+sofa_find_package(SofaBase REQUIRED) # SofaBaseMechanics SofaBaseCollision SofaBaseTopology
+sofa_find_package(SofaObjectInteraction REQUIRED)
+sofa_find_package(SofaRigid REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaBaseMechanics SofaBaseTopology)

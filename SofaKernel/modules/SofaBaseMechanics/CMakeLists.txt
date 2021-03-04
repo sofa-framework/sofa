@@ -67,9 +67,9 @@ set(SOURCE_FILES
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperHexahedronSetTopology.cpp
 )
 
-find_package(SofaEigen2Solver REQUIRED)
-find_package(SofaBaseTopology REQUIRED)
-find_package(SofaBaseLinearSolver REQUIRED)
+sofa_find_package(SofaEigen2Solver REQUIRED)
+sofa_find_package(SofaBaseTopology REQUIRED)
+sofa_find_package(SofaBaseLinearSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaEigen2Solver SofaBaseLinearSolver)
@@ -89,8 +89,8 @@ sofa_create_package_with_targets(
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFABASETOPOLOGY_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFABASEMECHANICS_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(${PROJECT_NAME}_test)
-endif()
+#cmake_dependent_option(SOFABASEMECHANICS_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+#if(SOFABASEMECHANICS_BUILD_TESTS)
+#    enable_testing()
+#    add_subdirectory(${PROJECT_NAME}_test)
+#endif()

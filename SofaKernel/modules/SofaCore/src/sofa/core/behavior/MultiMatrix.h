@@ -56,33 +56,14 @@ public:
     MechanicalMatrix operator - (const MechanicalMatrix& m2) const { return MechanicalMatrix(factors - m2.factors); }
     MechanicalMatrix operator - () const { return MechanicalMatrix(- factors); }
     MechanicalMatrix operator * (SReal f) const { return MechanicalMatrix(factors * f); }
-    //friend MechanicalMatrix operator * (SReal f, const MechanicalMatrix& m1) { return MechanicalMatrix(m1.factors * f); }
     MechanicalMatrix operator / (SReal f) const { return MechanicalMatrix(factors / f); }
-    friend std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
-    {
-        out << '(';
-        bool first = true;
-        for (unsigned int i=0; i<m.factors.size(); ++i)
-        {
-            SReal f = m.factors[i];
-            if (f!=0.0)
-            {
-                if (!first) out << ' ';
-                if (f == -1.0) out << '-';
-                else if (f < 0) out << f << ' ';
-                else
-                {
-                    if (!first) out << '+';
-                    if (f != 1.0) out << f << ' ';
-                }
-                out << ("MBK")[i];
-                first = false;
-            }
-        }
-        out << ')';
-        return out;
-    }
+
+    /// Declares that the operator<< is our friend so he can access the our private/protected members
+    friend SOFA_CORE_API std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
 };
+
+/// Declares that there is an function operator<< for MechanicalMatrix.
+SOFA_CORE_API std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
 
 /// Helper class providing a high-level view of underlying linear system matrices.
 ///

@@ -5,6 +5,7 @@ set(SOFABASECOLLISION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFABASECOLLISION_SRC}/config.h.in
+    ${SOFABASECOLLISION_SRC}/fwd.h
     ${SOFABASECOLLISION_SRC}/initSofaBaseCollision.h
     ${SOFABASECOLLISION_SRC}/BaseContactMapper.h
     ${SOFABASECOLLISION_SRC}/BaseIntTool.h
@@ -41,7 +42,7 @@ set(HEADER_FILES
     ${SOFABASECOLLISION_SRC}/RigidCapsuleModel.inl
     ${SOFABASECOLLISION_SRC}/Sphere.h
     ${SOFABASECOLLISION_SRC}/SphereModel.h
-    ${SOFABASECOLLISION_SRC}/SphereModel.inl
+    ${SOFABASECOLLISION_SRC}/SphereModel.inl    
 )
 
 set(SOURCE_FILES
@@ -70,7 +71,7 @@ set(SOURCE_FILES
     ${SOFABASECOLLISION_SRC}/SphereModel.cpp
 )
 
-find_package(SofaFramework REQUIRED)
+sofa_find_package(SofaFramework REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)

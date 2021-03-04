@@ -21,10 +21,11 @@
 ******************************************************************************/
 #include "SofaWindowProfiler.h"
 
+#include <stack>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <QGridLayout>
 #include <QDebug>
 

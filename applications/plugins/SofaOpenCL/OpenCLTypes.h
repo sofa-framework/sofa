@@ -22,7 +22,7 @@
 #ifndef SOFAOPENCL_OPENCLTYPES_H
 #define SOFAOPENCL_OPENCLTYPES_H
 
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
@@ -42,16 +42,16 @@ namespace opencl
 {
 
 template<class T>
-class OpenCLVector : public helper::vector<T,OpenCLMemoryManager<T> >
+class OpenCLVector : public helper::vector_device<T,OpenCLMemoryManager<T> >
 {
 public :
     typedef size_t size_type;
 
-    OpenCLVector() : helper::vector<T,OpenCLMemoryManager<T> >() {}
+    OpenCLVector() : helper::vector_device<T,OpenCLMemoryManager<T> >() {}
 
-    OpenCLVector(size_type n) : helper::vector<T,OpenCLMemoryManager<T> >(n) {}
+    OpenCLVector(size_type n) : helper::vector_device<T,OpenCLMemoryManager<T> >(n) {}
 
-    OpenCLVector(const helper::vector<T,OpenCLMemoryManager< T > >& v) : helper::vector<T,OpenCLMemoryManager<T> >(v) {}
+    OpenCLVector(const helper::vector_device<T,OpenCLMemoryManager< T > >& v) : helper::vector_device<T,OpenCLMemoryManager<T> >(v) {}
 
 };
 

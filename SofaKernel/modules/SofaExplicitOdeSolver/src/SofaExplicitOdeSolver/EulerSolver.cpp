@@ -25,6 +25,7 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiVec.h>
+#include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 //#define SOFA_NO_VMULTIOP

@@ -4,7 +4,7 @@
 #include <Compliant/config.h>
 
 #include "AssembledMultiMapping.h"
-
+#include <sofa/helper/StateMask.h>
 namespace sofa
 {
 	

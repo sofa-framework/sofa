@@ -3,6 +3,7 @@
 
 
 #include "AssembledMultiMapping.h"
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include "../utils/map.h"
 
 namespace sofa {

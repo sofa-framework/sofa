@@ -198,35 +198,4 @@ private:
 };
 
 
-/**
- * @brief
- */
-class SOFA_SOFAMESHCOLLISION_API EmptyFilter
-{
-public:
-    /**
-     * @brief Point Collision Primitive validation method.
-     */
-    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-
-    /**
-     * @brief Line Collision Primitive validation method.
-     */
-    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-
-    /**
-     * @brief Triangle Collision Primitive validation method.
-     */
-    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-};
-
 } //namespace sofa::component::collision

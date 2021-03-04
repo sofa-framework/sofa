@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaGeneralRigid/config.h>
 
+#include <sofa/simulation/fwd.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaGeneralRigid/bvh/BVHLoader.h>

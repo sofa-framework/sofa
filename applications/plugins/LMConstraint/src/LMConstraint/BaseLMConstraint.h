@@ -166,7 +166,7 @@ public:
     virtual const helper::vector< ConstraintGroup* > &getConstraintsOrder(ConstraintParams::ConstOrder Order) const
     {
         constraintOrder_t::const_iterator c = constraintOrder.find( Order );
-        if( c == constraintOrder.end());
+        if( c == constraintOrder.end())
         {
             static helper::vector<ConstraintGroup*> emptyVector;
             return emptyVector;

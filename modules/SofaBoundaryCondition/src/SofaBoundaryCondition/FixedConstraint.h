@@ -82,7 +82,7 @@ public:
     Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object
     Data<bool> d_showObject; ///< draw or not the fixed constraints
     Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
-    Data<bool> d_projectVelocity; ///< activate project velocity to set velocity
+    Data<bool> d_projectVelocity; ///< activate project velocity to set velocity to zero
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<FixedConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
