@@ -163,6 +163,7 @@ protected:
     friend class TetrahedronFEMForceFieldInternalData<DataTypes>;
 
     Real m_restVolume;
+    sofa::helper::ColorMap* m_VonMisesColorMap;
 
 public:
     // get the volume of the mesh
@@ -194,7 +195,6 @@ public:
     Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
     Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
     Data< bool > drawHeterogeneousTetra; ///< Draw Heterogeneous Tetra in different color
-    Data< bool > drawAsEdges; ///< Draw as edges instead of tetrahedra
 
     Real minYoung, maxYoung;
 
@@ -212,7 +212,6 @@ public:
     Data<helper::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
     Data<helper::vector<defaulttype::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
     
-    helper::ColorMap m_VonMisesColorMap;
     Data<std::string> _showStressColorMap; ///< Color map used to show stress values
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
     Data<bool> _showVonMisesStressPerNode; ///< draw points  showing vonMises stress interpolated in nodes

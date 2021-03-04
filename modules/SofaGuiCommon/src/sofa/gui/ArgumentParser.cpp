@@ -19,13 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ArgumentParser.h"
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::gui
 {
 
 std::vector<std::string> ArgumentParser::extra = std::vector<std::string>();
@@ -142,6 +139,4 @@ boost::program_options::variables_map ArgumentParser::getVariableMap()
     return vm;
 }
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::gui
