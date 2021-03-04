@@ -127,7 +127,6 @@ if(FREENECT_FOUND)
 endif()
 
 if(ZLIB_FOUND)
-    sofa_set_targets_release_only(ZLIB::ZLIB)
     target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
     if(CMAKE_SYSTEM_NAME STREQUAL Windows)
         sofa_install_libraries(TARGETS ZLIB::ZLIB)
