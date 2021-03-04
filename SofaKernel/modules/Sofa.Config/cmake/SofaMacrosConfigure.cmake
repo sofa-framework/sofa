@@ -337,6 +337,9 @@ macro(sofa_find_package name)
 
     string(TOUPPER ${name} name_upper)
     string(TOUPPER ${PROJECT_NAME} project_upper)
+    string(REPLACE "." "_" name_upper "${name_upper}")
+    string(REPLACE "." "_" project_upper "${project_upper}")
+
     set(scopes "") # nothing = current scope only
     if(ARG_BOTH_SCOPES)
         set(scopes "BOTH_SCOPES")
