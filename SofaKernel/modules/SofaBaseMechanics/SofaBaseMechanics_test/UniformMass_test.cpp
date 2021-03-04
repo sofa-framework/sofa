@@ -55,6 +55,7 @@ using sofa::simulation::SceneLoaderXML ;
 #include <SofaTest/Sofa_test.h>
 using BaseTest = sofa::Sofa_test<SReal>;
 
+#include <sofa/core/ExecParams.h>
 
 template <class TDataTypes, class TMassTypes>
 struct TemplateTypes
@@ -138,7 +139,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -165,7 +166,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         UniformMassRigid* mass = root->getTreeObject<UniformMassRigid>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -195,7 +196,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -220,7 +221,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           (int)scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -245,7 +246,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           (int)scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -270,7 +271,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           (int)scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -295,7 +296,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           (int)scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -322,7 +323,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           (int)scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -347,7 +348,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           (int)scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -372,7 +373,7 @@ struct UniformMassTest :  public BaseTest
                                                           scene.c_str(),
                                                           scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -393,7 +394,7 @@ struct UniformMassTest :  public BaseTest
                 "</Node>                                                     " ;
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
                                                           scene.c_str(), (int)scene.size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         UniformMassRigid* mass = root->getTreeObject<UniformMassRigid>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -413,7 +414,7 @@ struct UniformMassTest :  public BaseTest
                 "</Node>                                                     " ;
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
                                                           scene.c_str(), (int)scene.size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
     void loadFromAnInvalidFile(){
@@ -425,7 +426,7 @@ struct UniformMassTest :  public BaseTest
                 "</Node>                                                     " ;
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAnInValidFile",
                                                           scene.c_str(), (int)scene.size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
     void loadFromAnInvalidPathname(){
@@ -437,7 +438,7 @@ struct UniformMassTest :  public BaseTest
                 "</Node>                                                     " ;
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAnInValidFile",
                                                           scene.c_str(), (int)scene.size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
     void reinitTest(){
