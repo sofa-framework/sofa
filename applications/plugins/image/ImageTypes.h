@@ -291,7 +291,7 @@ public:
 
         for(unsigned int m=0; m<visualModels.size(); m++)
         {
-            sofa::component::visualmodel::VisualStyle::SPtr ptr = visualModels[m]->template searchUp<sofa::component::visualmodel::VisualStyle>();
+            sofa::component::visualmodel::VisualStyle::SPtr ptr = visualModels[m]->getContext()->template get<sofa::component::visualmodel::VisualStyle>();
             if (ptr && !ptr->displayFlags.getValue().getShowVisualModels()) continue;
 
             const sofa::helper::vector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
