@@ -42,6 +42,9 @@ if (Qt5_FOUND)
         sofa_find_package(Qt5 COMPONENTS WebEngine WebEngineWidgets REQUIRED BOTH_SCOPES)
         set(QT_TARGETS ${QT_TARGETS} Qt5::WebEngine Qt5::WebEngineWidgets)
     endif()
+
+    # Previous optional Qt5 find_package() can reset the variable Qt5_FOUND
+    set(Qt5_FOUND 1)
 elseif (Qt6_FOUND)
     # https://doc-snapshots.qt.io/qt6-dev/whatsnew60.html
     # Charts and WebEngine have been removed from Qt6 and may be reintroduced later
