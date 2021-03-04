@@ -169,7 +169,7 @@ template<>
 const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK();
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
-extern template class SOFA_SOFARIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_SOFARIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
 extern template class SOFA_SOFARIGID_API RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
 #endif
 
