@@ -37,7 +37,7 @@ set(SOURCE_FILES
     ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.cpp
 )
 
-find_package(SofaFramework REQUIRED) # SofaSimulationCore
+sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)

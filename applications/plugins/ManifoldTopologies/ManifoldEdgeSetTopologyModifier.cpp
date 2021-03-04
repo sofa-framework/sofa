@@ -86,19 +86,6 @@ void ManifoldEdgeSetTopologyModifier::removeItems(sofa::helper::vector< EdgeID >
     removeEdges(items);
 }
 
-void ManifoldEdgeSetTopologyModifier::renumberPoints( const sofa::helper::vector<Index> &index,
-        const sofa::helper::vector<Index> &inv_index)
-{
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
-}
-
 void ManifoldEdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges)
 {
     const size_t nEdges = m_container->getNumberOfEdges();

@@ -104,7 +104,7 @@ void Constraint<DataTypes>::updateForceMask()
 template<class DataTypes>
 void Constraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda)
 {
-    auto res = sofa::helper::write(result);
+    auto res = sofa::helper::getWriteAccessor(result);
     const MatrixDeriv& j = jacobian.getValue();
     j.multTransposeBaseVector(res, lambda ); // lambda is a vector of scalar value so block size is one.
 }

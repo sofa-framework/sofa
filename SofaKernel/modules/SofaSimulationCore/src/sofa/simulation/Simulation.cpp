@@ -59,6 +59,7 @@
 
 #include <sofa/simulation/events/SimulationInitStartEvent.h>
 #include <sofa/simulation/events/SimulationInitDoneEvent.h>
+#include <sofa/simulation/events/SimulationInitTexturesDoneEvent.h>
 
 
 #include <fstream>
@@ -306,6 +307,10 @@ void Simulation::initTextures ( Node* root )
         msg_error() << "Simulation::initTextures() : VisualLoop expected at the root node";
         return;
     }
+
+    SimulationInitTexturesDoneEvent endInit;
+    PropagateEventVisitor pe {params, &endInit};
+    root->execute(pe);
 }
 
 

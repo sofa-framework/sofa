@@ -489,10 +489,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             Topology::SetIndices & tab_indices = indices;
             Topology::SetIndices & inv_tab_indices = inv_indices;
 
-            m_outTopoModifier->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-            m_outTopoModifier->propagateTopologicalChanges();
-            m_outTopoModifier->renumberPointsProcess(tab_indices, inv_tab_indices, false);
-
+            m_outTopoModifier->renumberPoints(tab_indices, inv_tab_indices, false);
             break;
         }
         default:

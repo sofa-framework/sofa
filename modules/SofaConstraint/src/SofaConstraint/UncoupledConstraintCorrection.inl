@@ -411,7 +411,7 @@ void UncoupledConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f)
 {
-    auto writeDx = sofa::helper::write( *dx[this->getMState()].write(), cparams );
+    auto writeDx = sofa::helper::getWriteAccessor( *dx[this->getMState()].write() );
     const Data<VecDeriv>& f_d = *f[this->getMState()].read();
     computeDx(f_d, writeDx.wref());
 }
@@ -421,8 +421,8 @@ template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data<VecDeriv>& dx_d, const Data< VecDeriv > &correction_d)
 {
 
-    auto dx         = sofa::helper::write(dx_d, cparams);
-    auto correction = sofa::helper::read(correction_d, cparams);
+    auto dx         = sofa::helper::getWriteAccessor(dx_d);
+    auto correction = sofa::helper::getReadAccessor(correction_d);
 
     VecCoord& x = *x_d.beginEdit();
     VecDeriv& v = *v_d.beginEdit();
@@ -452,8 +452,8 @@ void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core:
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyPositionCorrection(const core::ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv >& dx_d, const Data< VecDeriv > &correction_d)
 {
-    auto dx = sofa::helper::write(dx_d, cparams);
-    auto correction = sofa::helper::read(correction_d, cparams);
+    auto dx = sofa::helper::getWriteAccessor(dx_d);
+    auto correction = sofa::helper::getReadAccessor(correction_d);
 
     VecCoord& x = *x_d.beginEdit();
 
@@ -477,8 +477,8 @@ void UncoupledConstraintCorrection<DataTypes>::applyPositionCorrection(const cor
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const core::ConstraintParams *cparams, Data< VecDeriv > &v_d, Data<VecDeriv>& dv_d, const Data< VecDeriv > &correction_d)
 {
-    auto dx = sofa::helper::write(dv_d, cparams);
-    auto correction = sofa::helper::read(correction_d, cparams);
+    auto dx = sofa::helper::getWriteAccessor(dv_d);
+    auto correction = sofa::helper::getReadAccessor(correction_d);
 
     VecDeriv& v = *v_d.beginEdit();
 

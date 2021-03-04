@@ -49,6 +49,8 @@ using sofa::core::objectmodel::BaseData ;
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::component::container::MechanicalObject ;
 
+#include <sofa/simulation/Node.h>
+
 using sofa::defaulttype::Vec3dTypes;
 
 template <class In, class Out>

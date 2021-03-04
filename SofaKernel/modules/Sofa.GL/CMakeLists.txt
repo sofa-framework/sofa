@@ -92,8 +92,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFAGL_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFAGL_BUILD_TESTS)
+cmake_dependent_option(SOFA.GL_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA.GL_BUILD_TESTS)
     enable_testing()
     add_subdirectory(${PROJECT_NAME}_test)
 endif()

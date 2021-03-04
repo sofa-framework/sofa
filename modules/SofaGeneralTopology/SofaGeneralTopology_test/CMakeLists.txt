@@ -10,7 +10,7 @@ list(APPEND SOURCE_FILES
     SphereGridTopology_test.cpp
     )
 
-find_package(SofaGeneralTopology REQUIRED)
+sofa_find_package(SofaGeneralTopology REQUIRED)
 
 add_definitions("-DSOFAGENERALTOPOLOGY_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

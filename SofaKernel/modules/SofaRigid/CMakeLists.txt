@@ -24,8 +24,8 @@ set(SOURCE_FILES
     ${SOFARIGID_SRC}/RigidRigidMapping.cpp
 )
 
-find_package(SofaBase REQUIRED) # SofaBaseMechanics SofaEigen2Solver
-find_package(Eigen3 REQUIRED)
+sofa_find_package(SofaBase REQUIRED) # SofaBaseMechanics SofaEigen2Solver
+sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseMechanics SofaEigen2Solver)

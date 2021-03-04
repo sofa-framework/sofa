@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGui)
 
-find_package(SofaFramework REQUIRED)
+sofa_find_package(SofaFramework REQUIRED)
 
 set(SOFAGUI_TARGETS "")
 

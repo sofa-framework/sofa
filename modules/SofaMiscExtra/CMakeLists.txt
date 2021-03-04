@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscExtra LANGUAGES CXX)
 
-find_package(SofaMiscTopology REQUIRED)
-find_package(SofaGeneralMeshCollision REQUIRED)
-find_package(SofaTopologyMapping REQUIRED)
+sofa_find_package(SofaMiscTopology REQUIRED)
+sofa_find_package(SofaGeneralMeshCollision REQUIRED)
+sofa_find_package(SofaTopologyMapping REQUIRED)
 
 set(SOFAMISCEXTRA_SRC "src/${PROJECT_NAME}")
 

@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaOpenglVisual LANGUAGES CXX)
 
-find_package(SofaFramework REQUIRED) # SofaSimulationCore
-find_package(SofaBaseVisual REQUIRED)
-find_package(Sofa.GL REQUIRED)
+sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
+sofa_find_package(SofaBaseVisual REQUIRED)
+sofa_find_package(Sofa.GL REQUIRED)
 
 set(HEADER_FILES
     src/SofaOpenglVisual/config.h

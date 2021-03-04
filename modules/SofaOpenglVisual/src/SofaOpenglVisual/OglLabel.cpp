@@ -51,7 +51,7 @@ OglLabel::OglLabel():
   ,d_x(initData(&d_x, (unsigned int)10, "x", "The x position of the text on the screen"))
   ,d_y(initData(&d_y, (unsigned int)10, "y", "The y position of the text on the screen"))
   ,d_fontsize(initData(&d_fontsize, (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen"))
-  ,d_color(initData(&d_color, sofa::helper::types::RGBAColor::fromString("gray"), "color", "The color of the text to display. (default='gray')"))
+  ,d_color(initData(&d_color, sofa::helper::types::RGBAColor::gray(), "color", "The color of the text to display. (default='gray')"))
   ,d_selectContrastingColor(initData(&d_selectContrastingColor, false, "selectContrastingColor", "Overide the color value but one that contrast with the background color"))
   ,d_updateLabelEveryNbSteps(initData(&d_updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
   ,d_visible(initData(&d_visible,true,"visible","Is label displayed"))
