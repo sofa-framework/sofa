@@ -6,6 +6,8 @@ sofa_find_package(SofaUserInteraction REQUIRED)
 sofa_find_package(SofaGraphComponent REQUIRED)
 sofa_find_package(SofaSimulationCommon REQUIRED)
 sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
+sofa_find_package(Boost REQUIRED COMPONENTS program_options)
+
 if(Sofa.GL_FOUND)
     message("-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
 else()
@@ -28,6 +30,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/PickHandler.h
     ${SRC_ROOT}/SofaGUI.h
     ${SRC_ROOT}/ViewerFactory.h
+    ${SRC_ROOT}/ArgumentParser.h
 )
 
 set(SOURCE_FILES
@@ -41,10 +44,22 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MouseOperations.cpp
     ${SRC_ROOT}/PickHandler.cpp
     ${SRC_ROOT}/ViewerFactory.cpp
+    ${SRC_ROOT}/ArgumentParser.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# Compatibility files
+set (COMPATSRC_ROOT "compat/")
+set (COMPAT_HEADER_FILES
+    ${COMPATSRC_ROOT}/sofa/helper/ArgumentParser.h
+    )
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC Boost::program_options)
+
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
+source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)

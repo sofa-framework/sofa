@@ -493,10 +493,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     sofa::helper::vector<Index>& tab_indices = indices;
                     sofa::helper::vector<Index>& inv_tab_indices = inv_indices;
 
-                    to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, true);
-                    to_tstm->propagateTopologicalChanges();
-                    to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, true);
-
+                    to_tstm->renumberPoints(tab_indices, inv_tab_indices, true);
                     break;
                 }
 

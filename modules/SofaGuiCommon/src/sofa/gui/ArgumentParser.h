@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_ARGUMENTPARSER_H
-#define SOFA_HELPER_ARGUMENTPARSER_H
+#pragma once
+
+#include <sofa/gui/config.h>
+
+#include <sofa/helper/logging/Messaging.h>
 
 #include <iostream>
 #include <string>
-
-#include <sofa/helper/config.h>
-#include <sofa/helper/logging/Messaging.h>
 
 #include <boost/program_options.hpp>
 using boost::program_options::options_description;
@@ -35,10 +35,7 @@ using boost::program_options::value_semantic;
 using boost::program_options::variables_map;
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::gui
 {
 
 /** Command line parser
@@ -48,10 +45,8 @@ This object parses arguments from a command line or from an input stream.
 */
 
 
-class SOFA_HELPER_API ArgumentParser
+class SOFA_SOFAGUICOMMON_API ArgumentParser
 {
-
-
 public:
 
     /**
@@ -107,16 +102,6 @@ private:
     variables_map vm; ///< Variable map containing the variable name with its value obtained from parse
     options_description desc; ///< desc contains every options you want to parse. Each options has argument name, help, variables ref ...
     positional_options_description positional_option; ///< this is used for parsing input files without any parameters
-
-
-
 };
 
-
-
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gui

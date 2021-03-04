@@ -32,22 +32,6 @@ namespace core
 namespace behavior
 {
 
-ConstraintResolution::ConstraintResolution(unsigned int nbLines, double tolerance)
-:m_nbLines(nbLines)
-,m_tolerance(tolerance)
-{
-}
-
-void ConstraintResolution::init(int /*line*/, double** /*w*/, double* /*force*/)
-{
-
-}
-
-void ConstraintResolution::initForce(int /*line*/, double* /*force*/)
-{
-
-}
-
 
 } // namespace behavior
 

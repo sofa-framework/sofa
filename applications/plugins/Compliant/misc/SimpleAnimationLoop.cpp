@@ -2,7 +2,7 @@
 
 
 #include <sofa/simulation/AnimateVisitor.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

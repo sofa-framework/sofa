@@ -40,6 +40,7 @@ set(PYTHON_FILES
     python/test_BindingSofa.py
     python/test_PythonEnvironment.py
     python/unicodeData.py
+    python/MechanicalObject_test.py
 )
 
 

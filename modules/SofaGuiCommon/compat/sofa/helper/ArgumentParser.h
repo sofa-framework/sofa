@@ -19,35 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Python_test.h>
+#pragma once
 
+#include <sofa/gui/ArgumentParser.h>
 
-namespace sofa {
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/gui/ArgumentParser")
 
-
-// static build of the test list
-static struct Tests : public Python_test_list
+namespace sofa::helper
 {
-    Tests()
-    {
-        static const std::string scenePath = std::string(SOFABASEMECHANICS_TEST_PYTHON_DIR);
-
-        addTest( "MechanicalObject_test.py", scenePath );
-    }
-} tests;
+    using ArgumentParser = sofa::gui::ArgumentParser;
 
 
-// run test list
-INSTANTIATE_TEST_SUITE_P(Batch,
-                        Python_scene_test,
-                        ::testing::ValuesIn(tests.list));
-
-TEST_P(Python_scene_test, sofa_python_scene_tests)
-{
-    run(GetParam());
-}
-
-
-
-
-} // namespace sofa
+} // namespace sofa::helper

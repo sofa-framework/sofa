@@ -3,8 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaBaseMechanics_test)
 
 # Do not find dependencies explicitely, let CMake decide the appropriate time to do it
-#find_package(SofaTest REQUIRED)
-#sofa_find_package(SofaPython QUIET)
+#sofa_find_package(SofaTest REQUIRED)
 
 set(SOURCE_FILES
     UniformMass_test.cpp
@@ -14,15 +13,7 @@ set(SOURCE_FILES
     BarycentricMapping_test.cpp
     )
 
-if(SofaPython_FOUND)
-    add_definitions("-DSOFABASEMECHANICS_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
-    list(APPEND SOURCE_FILES python_test_list.cpp)
-endif()
-
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)
-if(SofaPython_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaPython)
-endif()
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
