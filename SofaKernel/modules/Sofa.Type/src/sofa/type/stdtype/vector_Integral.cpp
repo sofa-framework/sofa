@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 namespace sofa::type::stdtype
 {

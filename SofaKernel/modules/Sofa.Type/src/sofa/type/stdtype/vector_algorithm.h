@@ -63,7 +63,7 @@ void removeValue( T1& v, const T2& elem )
 template<class T, class TT>
 void removeIndex( std::vector<T,TT>& v, size_t index )
 {
-    if constexpr(sofa::helper::isEnabledVectorAccessChecking)
+    if constexpr(sofa::type::stdtype::isEnabledVectorAccessChecking)
     {
         if (index>=v.size())
             vector_access_failure(&v, v.size(), index, typeid(T));
