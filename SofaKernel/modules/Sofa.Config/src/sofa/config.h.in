@@ -160,7 +160,7 @@ typedef unsigned __int64	uint64_t;
 
 #define SOFA_ATTRIBUTE_REMOVAL_OF_BASEDATA_GETOWNERCLASS(msg) \
     SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.06 (PR#18)", "v21.12", \
+        "v21.06 (PR#1890)", "v21.12", \
         "BaseData API has changed. " msg)
 
 #define SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR(msg) \
