@@ -24,6 +24,7 @@
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <ostream>
 #include <istream>
@@ -523,30 +524,6 @@ extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 #endif
-
-
-/// Scoped (RAII) AdvancedTimer to simplify a basic usage
-struct ScopedAdvancedTimer {
-
-    const char* message;
-
-    ScopedAdvancedTimer(const std::string& message)
-        : ScopedAdvancedTimer(message.c_str())
-    {
-
-    }
-
-    ScopedAdvancedTimer( const char* message )
-    : message( message )
-    {
-        AdvancedTimer::stepBegin( message );
-    }
-
-    ~ScopedAdvancedTimer()
-    {
-        AdvancedTimer::stepEnd( message );
-    }
-};
 
 }
 

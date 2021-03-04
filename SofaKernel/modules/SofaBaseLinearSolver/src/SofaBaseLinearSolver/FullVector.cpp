@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP
-#include <SofaBaseLinearSolver/FullVector.h>
-
+#define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
+#include <SofaBaseLinearSolver/FullVector.inl>
 #include <sofa/helper/rmath.h>
 
 namespace sofa::component::linearsolver
 {
+
 template<> void FullVector<bool>::set(Index i, SReal v)
 {
     data[i] = (v!=0);
@@ -52,6 +52,12 @@ template<> double FullVector<bool>::norm() const
     return helper::rsqrt(r);
 }
 
+std::ostream& operator <<(std::ostream& out, const FullVector<float>& v){ return readFromStream(out, v); }
+std::ostream& operator <<(std::ostream& out, const FullVector<double>& v){ return readFromStream(out, v); }
+std::ostream& operator <<(std::ostream& out, const FullVector<bool>& v){ return readFromStream(out, v); }
+
+template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
+template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
 template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
 
-} // namespace sofa::component::linearsolver
+} /// namespace sofa::component::linearsolver

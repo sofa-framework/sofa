@@ -119,6 +119,10 @@ void Color_Test::checkCreateFromString()
     EXPECT_FALSE( RGBAColor::read("##fpaapddda", color2) ) ;
     EXPECT_FALSE( RGBAColor::read("#fasdqdpa", color2) ) ;
 
+    ///# test exception thrown by fromString
+    EXPECT_THROW(RGBAColor::fromString("invalidcolor"), std::invalid_argument);
+    EXPECT_NO_THROW(RGBAColor::fromString("red"));
+
 }
 
 void Color_Test::checkCreateFromDouble()

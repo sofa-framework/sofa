@@ -1,5 +1,6 @@
 #include "AssemblyVisitor.h"
 
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>

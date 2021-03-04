@@ -202,7 +202,7 @@ macro(sofa_create_package)
         "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake"
         INSTALL_DESTINATION "lib/cmake/${package_install_dir}"
         )
-    install(FILES "${CMAKE_BINARY_DIR}/cmake/${ARG_PACKAGE_NAME}Config.cmake" DESTINATION "lib/cmake/${package_install_dir}" COMPONENT headers)
+    install(FILES "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake" DESTINATION "lib/cmake/${package_install_dir}" COMPONENT headers)
 
     if(ARG_RELOCATABLE)
         sofa_set_project_install_relocatable(${package_install_dir} ${CMAKE_CURRENT_BINARY_DIR} ${ARG_RELOCATABLE})
@@ -602,7 +602,8 @@ macro(sofa_install_targets_in_package)
                     if("${header_relative_dir_for_build}" STREQUAL "") # Headers are not in a subdirectory
                         set(header_relative_dir_for_build "${target}")
                     endif()
-                    if(NOT "${target}" STREQUAL "SofaFramework" AND
+                    if(NOT "${header_relative_dir_for_build}" MATCHES "^sofa$" AND
+                       NOT "${header_relative_dir_for_build}" MATCHES "^sofa/" AND
                        NOT "${ARG_INCLUDE_INSTALL_DIR}/${header_relative_dir_for_build}" MATCHES "${target}/${target}")
                         # Force include/PackageName/PackageName/... layout for package headers in build directory
                         set(header_relative_dir_for_build "${target}/${header_relative_dir_for_build}")
@@ -807,13 +808,13 @@ function(sofa_install_libraries)
             # <lib_path> <slash> <library_name> <dot> <dll/so/dylib/...>
             # or:
             # <lib_path> <slash> <library_name> <dot> <anything> <dot> <dll/so/dylib/...>
-            file(GLOB_RECURSE SHARED_LIBS
+            file(GLOB SHARED_LIBS
                 "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libtiff.dll
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng16.dll
                 "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng.16.dylib
                 )
-            file(GLOB_RECURSE STATIC_LIBS
+            file(GLOB STATIC_LIBS
                 "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"

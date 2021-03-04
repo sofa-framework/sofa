@@ -15,7 +15,7 @@ set(SOURCE_FILES
 
 add_subdirectory(extlibs/CImg)
 
-find_package(SofaFramework REQUIRED)
+sofa_find_package(SofaFramework REQUIRED)
 sofa_find_package(CImg REQUIRED)
 
 # OS X only: if the user installed its own JPEG/PNG lib (typically with homebrew/port),

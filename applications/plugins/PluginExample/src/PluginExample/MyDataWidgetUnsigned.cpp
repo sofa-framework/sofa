@@ -89,7 +89,7 @@ void MyDataWidgetUnsigned::readFromData()
 void MyDataWidgetUnsigned::writeToData()
 {
     unsigned widget_value = (unsigned)m_qslider->value();
-    getData()->virtualSetValue(widget_value);
+    getData()->setValue(widget_value);
 
     QString label1_text("myData current value = ");
     label1_text.append(getData()->getValueString().c_str());

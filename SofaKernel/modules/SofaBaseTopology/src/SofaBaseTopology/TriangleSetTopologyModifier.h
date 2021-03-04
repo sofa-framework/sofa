@@ -257,6 +257,7 @@ protected:
         const sofa::helper::vector<PointID>& inv_index,
         const bool renumberDOF = true) override;
 
+
     /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
      *
      */

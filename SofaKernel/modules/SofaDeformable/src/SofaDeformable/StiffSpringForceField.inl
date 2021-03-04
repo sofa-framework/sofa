@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 

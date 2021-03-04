@@ -21,7 +21,7 @@ find_package(OpenMP REQUIRED)
 set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} SofaBase SofaGeneral)
 set(COMPILATION_FLAGS -DSOFA_BUILD_SOFAPARDISOSOLVER )
 
-set ( PARDISO_LIB "" CACHE PATH "set to Pardiso library downloaded from the web" )
+set ( PARDISO_LIB "" CACHE FILE "set to Pardiso library downloaded from the web" )
 
 
 set(HEADER_FILES
@@ -35,7 +35,7 @@ set(SOURCE_FILES
 )
 
 
-set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} SofaSimulationTree SofaMeshCollision SofaBaseVisual SofaBaseLinearSolver SofaCore)
+set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} SofaMeshCollision SofaBaseVisual SofaBaseLinearSolver SofaCore)
 set(LINKER_DEPENDENCIES ${LINKER_DEPENDENCIES} ${PARDISO_LIB} gfortran blas lapack gomp)
 
 
