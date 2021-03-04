@@ -58,9 +58,9 @@ list(APPEND SOURCE_FILES
     ${SOFAMISCMAPPING_SRC}/VoidMapping.cpp
     )
 
-find_package(SofaSimpleFem REQUIRED)
-find_package(SofaRigid REQUIRED) 
-find_package(SofaGeneralSimpleFem REQUIRED)
+sofa_find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(SofaRigid REQUIRED) 
+sofa_find_package(SofaGeneralSimpleFem REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid SofaGeneralSimpleFem)

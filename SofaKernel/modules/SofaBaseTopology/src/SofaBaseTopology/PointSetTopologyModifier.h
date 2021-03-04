@@ -56,6 +56,15 @@ public:
     */
     virtual void swapPoints(const Index i1,const Index i2);
 
+    /** \brief Generic method for points renumbering
+    *
+    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
+    * \see MechanicalObject::renumberValues
+    */
+    virtual void renumberPoints(const sofa::helper::vector< PointID >& index,
+        const sofa::helper::vector< PointID >& inv_index,
+        const bool renumberDOF = true);
+
     /** \brief Sends a message to warn that some points were added in this topology.
     *
     * \sa addPointsProcess
@@ -144,22 +153,7 @@ public:
             const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
             const bool moveDOF = true);
 
-    /** \brief Sends a message to warn that points are about to be reordered.
-    *
-    * \sa renumberPointsProcess
-    */
-    void renumberPointsWarning( const sofa::helper::vector< PointID > &index,
-            const sofa::helper::vector< PointID > &inv_index,
-            const bool renumberDOF = true);
 
-    /** \brief Reorder this topology.
-    *
-    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
-    * \see MechanicalObject::renumberValues
-    */
-    virtual void renumberPointsProcess( const sofa::helper::vector< PointID > &index,
-            const sofa::helper::vector< PointID > &/*inv_index*/,
-            const bool renumberDOF = true);
 
     /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
     *
@@ -201,11 +195,24 @@ public:
     void removeItems(const sofa::helper::vector<  PointID  >& /*items*/) override
     { }
 
-    /** \brief Generic method for points renumbering
+protected:
+    /** \brief Sends a message to warn that points are about to be reordered.
+    *
+    * \sa renumberPointsProcess
     */
-    virtual void renumberPoints( const sofa::helper::vector< PointID > &/*index*/,
-            const sofa::helper::vector< PointID > &/*inv_index*/)
-    { }
+    void renumberPointsWarning(const sofa::helper::vector< PointID >& index,
+        const sofa::helper::vector< PointID >& inv_index,
+        const bool renumberDOF = true);
+
+    /** \brief Reorder this topology.
+    *
+    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
+    * \see MechanicalObject::renumberValues
+    */
+    virtual void renumberPointsProcess(const sofa::helper::vector< PointID >& index,
+        const sofa::helper::vector< PointID >&/*inv_index*/,
+        const bool renumberDOF = true);
+
 
 private:
     PointSetTopologyContainer* 	m_container;

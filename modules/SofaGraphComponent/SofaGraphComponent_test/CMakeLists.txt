@@ -8,7 +8,7 @@ list(APPEND SOURCE_FILES
 SceneChecker_test.cpp
 )
 
-find_package(SofaGraphComponent REQUIRED)
+sofa_find_package(SofaGraphComponent REQUIRED)
 
 #add_definitions("-DSOFAGENERALTOPOLOGY_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

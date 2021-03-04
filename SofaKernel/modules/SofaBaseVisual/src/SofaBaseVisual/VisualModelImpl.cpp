@@ -41,6 +41,8 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/types/Material.h>
 
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 #include <sstream>
 #include <map>
 #include <memory>

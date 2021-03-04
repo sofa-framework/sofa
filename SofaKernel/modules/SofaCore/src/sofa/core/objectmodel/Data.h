@@ -468,33 +468,42 @@ public:
 
 /// Easy syntax for getting read/write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
 template<class T>
-WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data)
+WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::Data<T>& data)
 { 
     return WriteAccessor<core::objectmodel::Data<T> >(data);
 }
 
 template<class T>
-WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*)
+[[deprecated("2021-02-01: this function has been replaced with getWriteAccessor in PR #1807. You can probably update your code by removing aspect related calls. To update your code, use the new function.")]]
+WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data)
 {
-    return write(data);
+    return getWriteAccessor(data);
 }
 
 template<class T>
-ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data)
+[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
+
+template<class T>
+ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmodel::Data<T>& data)
 {
     return ReadAccessor<core::objectmodel::Data<T> >(data);
 }
 
 template<class T>
-ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*)
+[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1807. You can probably update your code by removing aspect related calls. To update your code, use the new function.")]]
+ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data)
 {
-    return read(data);
+    return getReadAccessor(data);
 }
 
+template<class T>
+[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
 /// Easy syntax for getting write only access to a Data using operator ->. Example: writeOnly(someFlagData)->setFlagValue(true);
 template<class T>
-WriteOnlyAccessor<core::objectmodel::Data<T> > writeOnly(core::objectmodel::Data<T>& data)
+WriteOnlyAccessor<core::objectmodel::Data<T> > getWriteOnlyAccessor(core::objectmodel::Data<T>& data)
 {
     return WriteOnlyAccessor<core::objectmodel::Data<T> >(data);
 }

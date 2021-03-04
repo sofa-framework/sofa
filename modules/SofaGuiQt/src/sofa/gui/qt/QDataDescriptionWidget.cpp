@@ -53,7 +53,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
 {
 
     QVBoxLayout* tabLayout = new QVBoxLayout(this);
-    tabLayout->setMargin(0);
+    tabLayout->setContentsMargins(0,0,0,0);
     tabLayout->setSpacing(1);
     tabLayout->setObjectName("tabInfoLayout");
 

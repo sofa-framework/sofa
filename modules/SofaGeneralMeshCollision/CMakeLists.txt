@@ -39,10 +39,10 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctreeModel.cpp
     )
 
-find_package(SofaBase REQUIRED) # SofaBaseCollision
-find_package(SofaMeshCollision REQUIRED)
-find_package(SofaObjectInteraction REQUIRED)
-find_package(SofaRigid REQUIRED)
+sofa_find_package(SofaBase REQUIRED) # SofaBaseCollision
+sofa_find_package(SofaMeshCollision REQUIRED)
+sofa_find_package(SofaObjectInteraction REQUIRED)
+sofa_find_package(SofaRigid REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaMeshCollision)

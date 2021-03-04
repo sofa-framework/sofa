@@ -23,7 +23,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa
 {
@@ -49,7 +49,7 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
         nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
-        sofa::helper::AdvancedTimer::stepBegin("ComputeBBox: " + (*object)->getName());
+        sofa::helper::ScopedAdvancedTimer("ComputeBBox: " + (*object)->getName());
         // warning the second parameter should NOT be false
         // otherwise every object will participate to the bounding box
         // when it makes no sense for some of them
@@ -60,8 +60,6 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
         (*object)->computeBBox(params, true);
 
         nodeBBox->include((*object)->f_bbox.getValue());
-
-        sofa::helper::AdvancedTimer::stepEnd("ComputeBBox: " + (*object)->getName());
     }
     node->f_bbox.endEdit();
     return RESULT_CONTINUE;

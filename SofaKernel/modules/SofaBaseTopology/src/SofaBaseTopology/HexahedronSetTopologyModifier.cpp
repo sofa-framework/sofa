@@ -608,19 +608,6 @@ void HexahedronSetTopologyModifier::removeItems(const sofa::helper::vector< Hexa
     removeHexahedra(items);
 }
 
-void HexahedronSetTopologyModifier::renumberPoints(const sofa::helper::vector<PointID> &index,
-        const sofa::helper::vector<PointID> &inv_index)
-{
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
-}
-
 void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored

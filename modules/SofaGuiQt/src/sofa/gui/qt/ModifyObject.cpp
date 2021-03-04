@@ -46,8 +46,7 @@ using sofa::helper::logging::Message;
 #include <QTreeWidget>
 #include <QScrollArea>
 #include <QApplication>
-#include <QDesktopWidget>
-
+#include <QScreen>
 
 // uncomment to show traces of GUI operations in this file
 // #define DEBUG_GUI
@@ -102,7 +101,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     //Layout to organize the whole window
     QVBoxLayout *generalLayout = new QVBoxLayout(this);
     generalLayout->setObjectName("generalLayout");
-    generalLayout->setMargin(0);
+    generalLayout->setContentsMargins(0,0,0,0);
     generalLayout->setSpacing(1);
 
     //Tabulation widget
@@ -112,7 +111,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     QScrollArea* m_scrollArea = new QScrollArea();
 
     //    const int screenHeight = QApplication::desktop()->height();
-    QRect geometry = QApplication::desktop()->screenGeometry(this);
+    QRect geometry = QGuiApplication::primaryScreen()->availableGeometry();
 
     m_scrollArea->setMinimumSize(600, geometry.height() * 0.75);
     m_scrollArea->setWidgetResizable(true);
@@ -312,7 +311,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
         //Adding buttons at the bottom of the dialog
         QHBoxLayout *lineLayout = new QHBoxLayout( nullptr);
-        lineLayout->setMargin(0);
+        lineLayout->setContentsMargins(0,0,0,0);
         lineLayout->setSpacing(6);
         lineLayout->setObjectName("Button Layout");
         lineLayout->addWidget(buttonUpdate);
@@ -367,11 +366,11 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
 #endif
 
     QVBoxLayout *generalLayout = new QVBoxLayout(this);
-    generalLayout->setMargin(0);
+    generalLayout->setContentsMargins(0, 0, 0, 0);
     generalLayout->setSpacing(1);
     generalLayout->setObjectName("generalLayout");
     QHBoxLayout *lineLayout = new QHBoxLayout( nullptr);
-    lineLayout->setMargin(0);
+    lineLayout->setContentsMargins(0, 0, 0, 0);
     lineLayout->setSpacing(6);
     lineLayout->setObjectName("Button Layout");
     buttonUpdate = new QPushButton( this );
@@ -448,7 +447,7 @@ void ModifyObject::updateConsole()
     {
         messageTab = new QWidget();
         QVBoxLayout* tabLayout = new QVBoxLayout( messageTab);
-        tabLayout->setMargin(0);
+        tabLayout->setContentsMargins(0, 0, 0, 0);
         tabLayout->setSpacing(1);
         tabLayout->setObjectName("tabWarningLayout");
         QPushButton *buttonClearWarnings = new QPushButton(messageTab);
