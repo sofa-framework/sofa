@@ -47,6 +47,8 @@ list(APPEND SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual)
+
+sofa_set_targets_release_only(ZLIB::ZLIB)
 target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     sofa_install_libraries(TARGETS ZLIB::ZLIB)
