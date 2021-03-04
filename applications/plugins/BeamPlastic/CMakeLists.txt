@@ -26,7 +26,7 @@ set(SOURCE_FILES
 find_package(SofaFramework REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaCore SofaBaseTopology SofaSimpleFem)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaBaseTopology SofaSimpleFem SofaEigen2Solver Sofa.GL)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BEAMPLASTIC"
 	                                             DEBUG_POSTFIX "_d")
 
