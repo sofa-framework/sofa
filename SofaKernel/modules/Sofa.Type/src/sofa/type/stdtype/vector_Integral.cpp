@@ -158,8 +158,7 @@ SOFA_TYPE_API std::istream& vector<int>::read( std::istream& in )
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
     if(numErrors!=0)
     {
-        std::cerr << "Warning (vector<int>) "
-                  << "Unable to parse values" << "\n"
+        std::cerr << "Unable to parse values" << "\n"
                   << msg.str();
         in.setstate(std::ios::failbit);
     }
@@ -232,8 +231,7 @@ SOFA_TYPE_API std::istream& vector<unsigned int>::read( std::istream& in )
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
     if(errcnt!=0)
     {
-        std::cerr << "Warning (vector<unsigned int>) " 
-                  << "Unable to parse values" << "\n"
+        std::cerr << "Unable to parse values" << "\n"
                   << errmsg.str() ;
         in.setstate(std::ios::failbit);
     }

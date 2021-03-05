@@ -316,12 +316,25 @@ bool Data<T>::read(const std::string& s)
         return resized;
     }
     std::istringstream istr( s.c_str() );
+
+    // capture std::cerr output (if any)
+    std::stringstream cerrbuffer;
+    std::streambuf* old = std::cerr.rdbuf(cerrbuffer.rdbuf());
+
     istr >> *beginEdit();
     endEdit();
+
+    // restore the previous cerr
+    std::cerr.rdbuf(old);
+
     if( istr.fail() )
     {
+        // transcript the std::cerr buffer into the Messaging system
+        msg_warning(this->getName()) << cerrbuffer.str();
+
         return false;
     }
+
     return true;
 }
 
