@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <SofaUserInteraction/config.h>
-
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaUserInteraction/RayModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/BehaviorModel.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 namespace sofa::component::collision
 {
 

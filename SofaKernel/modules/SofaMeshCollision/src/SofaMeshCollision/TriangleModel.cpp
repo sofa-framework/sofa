@@ -38,6 +38,7 @@ int TriangleCollisionModelClass = core::RegisterObject("collision model using a 
         .addAlias("Triangle")
         ;
 
+template class SOFA_SOFAMESHCOLLISION_API TTriangle<defaulttype::Vec3Types>;
 template class SOFA_SOFAMESHCOLLISION_API TriangleCollisionModel<defaulttype::Vec3Types>;
 
 

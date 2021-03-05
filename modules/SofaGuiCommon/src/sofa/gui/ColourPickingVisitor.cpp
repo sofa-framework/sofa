@@ -21,13 +21,13 @@
 ******************************************************************************/
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/simulation/Node.h>
 #if SOFAGUICOMMON_HAVE_SOFA_GL
 #include <sofa/gl/gl.h>
 #include <sofa/gl/BasicShapes.h>
 #endif // SOFAGUICOMMON_HAVE_SOFA_GL
-
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 namespace sofa::gui
 {
 
@@ -46,9 +46,7 @@ void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::compon
 
     if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  ) // make sure we are not picking the background...
     {
-
         helper::vector<core::CollisionModel*> listCollisionModel;
-        //sofa::simulation::getSimulation()->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         if (body.body) body.body->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         const std::size_t totalCollisionModel = listCollisionModel.size();
         const int indexListCollisionModel = (int) ( colour[0] * (float)totalCollisionModel + 0.5) - 1;

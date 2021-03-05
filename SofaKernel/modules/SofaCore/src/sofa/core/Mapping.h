@@ -23,7 +23,8 @@
 #define SOFA_CORE_MAPPING_H
 
 #include <sofa/core/BaseMapping.h>
-
+#include <sofa/core/State.h>
+#include <sofa/helper/StateMask.h>
 
 namespace sofa
 {
@@ -282,7 +283,7 @@ public:
 
 protected:
 
-    typedef BaseMapping::ForceMask ForceMask;
+    typedef sofa::helper::StateMask ForceMask;
     /// keep an eye on the dof masks (if the dofs are Mechanical)
     ForceMask *maskFrom, *maskTo;
 

@@ -21,47 +21,21 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/stdtype/fixed_array_algorithms.h>
+#include <sofa/config.h>
 
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/fixed_array_algorithms.h")
-
-namespace sofa::helper::pairwise
+namespace sofa::component::collision
 {
 
-template<class T>
-const T& stdclamp(const T& v, const T& lo, const T& hi)
-{
-    return sofa::type::stdtype::pairwise::stdclamp(v, lo, hi);
+class TriangleLocalMinDistanceFilter;
+
+template<class DataTypes>
+class TriangleCollisionModel;
+
+template<class TDataTypes>
+class TTriangle;
+
+template<class DataTypes>
+class PointCollisionModel;
+
+class LocalMinDistanceFilter;
 }
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T clamp(const T& in, const TT& minValue, const TT& maxValue)
-{
-    return sofa::type::stdtype::pairwise::clamp(in,minValue,maxValue);
-}
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T operator+(const T& l, const T& r)
-{
-    return sofa::type::stdtype::pairwise::operator+(l, r);
-}
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T operator-(const T& l, const T& r)
-{
-    return sofa::type::stdtype::pairwise::operator-(l, r);
-}
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T operator*(const T& r, const typename T::value_type& f)
-{
-    return sofa::type::stdtype::pairwise::operator*(r, f);
-}
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T operator/(const T& r, const typename T::value_type& f)
-{
-    return sofa::type::stdtype::pairwise::operator/(r, f);
-}
-
-} // namespace sofa::helper::pairwise

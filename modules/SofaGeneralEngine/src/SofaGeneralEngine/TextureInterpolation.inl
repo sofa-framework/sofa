@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/TextureInterpolation.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/gl/gl.h>
 
@@ -44,7 +44,6 @@ TextureInterpolation<DataTypes>::TextureInterpolation()
     ,f_graph( initData(&f_graph,"graph","Vertex state value per iteration") )
 {
     f_graph.setWidget("graph");
-//     f_graph.setReadOnly(true);
 }
 
 
@@ -286,7 +285,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
         unsigned int nbr = potentiels.size();
 
 
-        sofa::simulation::Node* context = static_cast<sofa::simulation::Node*>(this->getContext());
+        sofa::simulation::Node* context = sofa::simulation::node::getNodeFrom(this->getContext());
         sofa::simulation::getSimulation()->computeBBox(context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         if (sceneMinBBox[0] > 10000000) // hack when BB is not found

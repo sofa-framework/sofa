@@ -80,6 +80,7 @@ endif()
 set(SRC_ROOT src/sofa/gui/qt)
 
 set(MOC_HEADER_FILES
+    ${SRC_ROOT}/AboutSOFADialog.h    
     ${SRC_ROOT}/AddObject.h
     ${SRC_ROOT}/DataFilenameWidget.h
     ${SRC_ROOT}/DataWidget.h
@@ -111,6 +112,7 @@ set(MOC_HEADER_FILES
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/SofaGuiQt.h
+    ${SRC_ROOT}/qt.conf.h
     ${SRC_ROOT}/FileManagement.h
     ${SRC_ROOT}/GraphListenerQListView.h
     ${SRC_ROOT}/PickHandlerCallBacks.h
@@ -124,6 +126,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/GenericWidget.h
     )
 set(SOURCE_FILES
+    ${SRC_ROOT}/AboutSOFADialog.cpp
     ${SRC_ROOT}/AddObject.cpp
     ${SRC_ROOT}/DataFilenameWidget.cpp
     ${SRC_ROOT}/DataWidget.cpp
@@ -161,6 +164,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/viewer/VisualModelPolicy.cpp    
 )
 set(UI_FILES
+    ${SRC_ROOT}/AboutDialog.ui
     ${SRC_ROOT}/BaseGenGraphForm.ui
     ${SRC_ROOT}/DialogAddObject.ui
     ${SRC_ROOT}/GUI.ui

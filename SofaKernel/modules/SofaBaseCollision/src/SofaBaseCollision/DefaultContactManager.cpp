@@ -52,7 +52,7 @@ sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa
 {
     std::set<std::string> listResponse;
 
-    sofa::simulation::Node* node = sofa::simulation::getNodeFromContext(context);
+    sofa::simulation::Node* node = sofa::simulation::node::getNodeFrom(context);
     sofa::core::collision::Pipeline* pipeline = node->collisionPipeline;
     if (pipeline) listResponse=pipeline->getResponseList();
     else

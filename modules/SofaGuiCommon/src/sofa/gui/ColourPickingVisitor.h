@@ -22,10 +22,8 @@
 #pragma once
 #include <sofa/gui/config.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/ExecParams.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/fwd.h>
+#include <SofaBaseCollision/fwd.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 
 namespace sofa::gui

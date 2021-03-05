@@ -23,8 +23,10 @@
 #define SOFA_CORE_MULTI2MAPPING_H
 
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/PathResolver.h>
 #include <sofa/core/config.h>
-
+#include <sofa/core/State.h>
+#include <sofa/helper/StateMask.h>
 
 namespace sofa
 {
@@ -225,11 +227,11 @@ public:
         std::string input1 = arg->getAttribute("input1","");
         std::string input2 = arg->getAttribute("input2","");
         std::string output = arg->getAttribute("output","");
-        if (!input1.empty() && !LinkFromModels1::CheckPaths(input1, context))
+        if (!input1.empty() && !PathResolver::CheckPaths(context, LinkFromModels1::DestType::GetClass(), input1))
             return false;
-        if (!input2.empty() && !LinkFromModels2::CheckPaths(input2, context))
+        if (!input2.empty() && !PathResolver::CheckPaths(context, LinkFromModels2::DestType::GetClass(), input2))
             return false;
-        if (output.empty() || !LinkToModels::CheckPaths(output, context))
+        if (output.empty() || !PathResolver::CheckPaths(context, LinkToModels::DestType::GetClass(), output))
             return false;
 
         return BaseMapping::canCreate(obj, context, arg);

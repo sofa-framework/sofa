@@ -19,22 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_DUALQUAT_CPP
-#include "DualQuat.inl"
+#pragma once
 
-#include "Quater.inl"
+#include <sofa/type/DualQuat.inl>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-// instanciate the classes
-template class SOFA_HELPER_API DualQuatCoord3<double>;
-template class SOFA_HELPER_API DualQuatCoord3<float>;
-
-} // namespace helper
-
-} // namespace sofa
-
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+// (PR #1790)
+// SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/DualQuat.inl")

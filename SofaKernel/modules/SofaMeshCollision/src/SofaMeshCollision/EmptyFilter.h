@@ -19,24 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_QUATER_CPP
-#include "Quater.inl"
+#pragma once
+#include <SofaMeshCollision/config.h>
+#include <sofa/defaulttype/Vec.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace helper
+
+/**
+ * @brief
+ */
+class EmptyFilter
 {
+public:
+    /**
+     * @brief Point Collision Primitive validation method.
+     */
+    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    {
+        return true;
+    }
 
-// instanciate the classes
-template class SOFA_HELPER_API Quater<double>;
-template class SOFA_HELPER_API Quater<float>;
+    /**
+     * @brief Line Collision Primitive validation method.
+     */
+    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    {
+        return true;
+    }
 
-// instanciate the friend methods
-//template std::ostream& operator<<(std::ostream& out, Quater<float> Q);
-//template std::ostream& operator<<(std::ostream& out, Quater<double> Q);
+    /**
+     * @brief Triangle Collision Primitive validation method.
+     */
+    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    {
+        return true;
+    }
+};
 
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

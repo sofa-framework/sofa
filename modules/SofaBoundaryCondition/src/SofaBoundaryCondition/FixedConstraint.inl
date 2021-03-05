@@ -76,6 +76,13 @@ FixedConstraint<DataTypes>::FixedConstraint()
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
+
+    this->addUpdateCallback("updateIndices", { &d_indices}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        checkIndices();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 
@@ -145,7 +152,7 @@ void FixedConstraint<DataTypes>::init()
     {
         msg_info() << "Can not find the topology, won't be able to handle topological changes";
     }
-   
+
     this->checkIndices();
     this->d_componentState.setValue(ComponentState::Valid);
 }
@@ -272,26 +279,28 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
 // Each fixed point received a null velocity vector.
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
-// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
+// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null or 
+// to set the projectVelocity option to True. If not, the fixed point is going to drift.
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
     SOFA_UNUSED(mparams);
 
     if(!d_projectVelocity.getValue()) return;
-    const SetIndexArray & indices = this->d_indices.getValue();
+
     helper::WriteAccessor<DataVecDeriv> res (vData );
 
-    if( d_fixAll.getValue() )    // fix everyting
+    if ( d_fixAll.getValue() )    // fix everyting
     {
-        for( unsigned i=0; i<res.size(); i++ )
+        for(Size i=0; i<res.size(); i++)
             res[i] = Deriv();
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        const SetIndexArray & indices = this->d_indices.getValue();
+        for(Index ind : indices)
         {
-            res[*it] = Deriv();
+            res[ind] = Deriv();
         }
     }
 }
