@@ -27,6 +27,9 @@
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 
+#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/InitTasks.h>
+
 namespace sofa::component::constraintset
 {
 
@@ -145,6 +148,32 @@ protected:
     double time;
     double timeTotal;
     double timeScale;
+
+private:
+
+    class ComputeComplianceTask : public simulation::CpuTask
+    {
+    public:
+        ComputeComplianceTask(simulation::CpuTask::Status* status): CpuTask(status) {}
+        ~ComputeComplianceTask() override {}
+
+        MemoryAlloc run() final {
+            cc->addComplianceInConstraintSpace(&cparams, &W);
+            return MemoryAlloc::Stack;
+        }
+
+        void set(core::behavior::BaseConstraintCorrection* _cc, core::ConstraintParams _cparams, int dim){
+            cc = _cc;
+            cparams = _cparams;
+            W.resize(dim,dim);
+        }
+
+    private:
+        core::behavior::BaseConstraintCorrection* cc;
+        sofa::component::linearsolver::LPtrFullMatrix<double> W;
+        core::ConstraintParams cparams;
+        friend class GenericConstraintSolver;
+    };
 };
 
 

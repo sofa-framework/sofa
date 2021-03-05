@@ -29,6 +29,7 @@
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
 #include <algorithm>
 #include <sofa/core/behavior/MultiVec.h>
+#include <sofa/simulation/DefaultTaskScheduler.h>
 
 #include <thread>
 #include <functional>
@@ -295,45 +296,41 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         msg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
 
         if(d_multithreading.getValue()){
-            helper::vector<std::thread> threads(constraintCorrections.size());
-            helper::vector<sofa::component::linearsolver::LPtrFullMatrix<double>> Ws;
-            Ws.resize(constraintCorrections.size());
-            helper::vector<core::ConstraintParams> Ps;
-            Ps.resize(constraintCorrections.size());
 
-            for (unsigned int i=0; i<constraintCorrections.size(); i++)
+            simulation::CpuTask::Status status;
+            simulation::DefaultTaskScheduler* scheduler = simulation::DefaultTaskScheduler::create();
+
+            helper::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
+            sofa::Index nbTasks = constraintCorrections.size();
+            tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
+            scheduler->init(nbTasks);
+            sofa::Index dim = current_cp->W.rowSize();
+
+            for (sofa::Index i=0; i<nbTasks; i++)
             {
                 core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
                 if (!cc->isActive())
                     continue;
 
-                Ws[i].resize(current_cp->W.rowSize(),current_cp->W.colSize());
-                Ps[i] = *cParams;
-                auto Wi = &Ws[i];
-                auto Pi = Ps[i];
-                threads[i] = std::thread([Pi, Wi, cc] {
-                    cc->addComplianceInConstraintSpace(&Pi, Wi);
-                });
+                tasks[i].set(cc, *cParams, dim);
+                scheduler->addTask(&tasks[i]);
             }
-            for (auto& t : threads)
-                t.join();
+            scheduler->workUntilDone(&status);
+            scheduler->stop();
 
             auto & W = current_cp->W;
-            const sofa::Index rows = W.rowSize();
-            const sofa::Index cols = W.colSize();
-            const auto n_constraintCorrections = constraintCorrections.size();
 
             // Accumulate the contribution of each constraints
             // into the system's compliant matrix W
-            for (sofa::Index i = 0; i < n_constraintCorrections; i++) {
-                auto * cc = constraintCorrections[i];
-                const auto & Wi = Ws[i];
-
+            for (sofa::Index i = 0; i < nbTasks; i++) {
+                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
                 if (!cc->isActive())
                     continue;
 
-                for (sofa::Index j = 0; j < rows; ++j)
-                    for (sofa::Index l = 0; l < cols; ++l)
+                const auto & Wi = tasks[i].W;
+
+                for (sofa::Index j = 0; j < dim; ++j)
+                    for (sofa::Index l = 0; l < dim; ++l)
                         W.add(j, l, Wi.element(j,l));
             }
 
