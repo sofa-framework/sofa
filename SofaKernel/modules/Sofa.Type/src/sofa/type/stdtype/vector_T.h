@@ -45,7 +45,7 @@ template <typename T>
 class CPUMemoryManager;
 
 /// Regular vector
-/// Using CPUMemoryManager, it has the same behavior as std::helper with extra conveniences:
+/// Using CPUMemoryManager, it has the same behavior as std::vector with extra conveniences:
 ///  - string serialization (making it usable in Data)
 ///  - operator[] is checking if the index is within the bounds in debug
 template <class T, class MemoryManager = CPUMemoryManager<T>>
