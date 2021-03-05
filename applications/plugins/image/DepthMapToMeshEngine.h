@@ -232,6 +232,7 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams) override
     {
+#if IMAGE_HAVE_SOFA_GL == 1
         // need a valid opengl context to initialize an opengl texture, a context is not always bound during the init phase so we init the texture here
         if(!texture)
         {
@@ -281,6 +282,7 @@ protected:
         }
 
         vparams->drawTool()->restoreLastState();
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 };
 
