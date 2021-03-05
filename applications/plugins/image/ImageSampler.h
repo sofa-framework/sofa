@@ -29,13 +29,16 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
+
+#if IMAGE_HAVE_SOFA_GL == 1
+#include <sofa/gl/gl.h>
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
 #define REGULAR 0
 #define LLOYD 1

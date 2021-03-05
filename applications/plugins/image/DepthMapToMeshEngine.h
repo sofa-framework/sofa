@@ -33,7 +33,10 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/Texture.h>
+
+#if IMAGE_HAVE_SOFA_GL == 1
+#include <sofa/gl/Texture.h>
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
 namespace sofa
 {

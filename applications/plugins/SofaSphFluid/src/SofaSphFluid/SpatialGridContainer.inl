@@ -30,9 +30,12 @@
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/helper/system/gl.h>
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+#if SOFASPHFLUID_HAVE_SOFA_GL == 1
+#include <sofa/gl/gl.h>
+#endif // SOFASPHFLUID_HAVE_SOFA_GL == 1
 
 namespace sofa
 {

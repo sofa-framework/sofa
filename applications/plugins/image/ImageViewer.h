@@ -28,7 +28,6 @@
 #include "VectorVis.h"
 
 #include <sofa/helper/io/Image.h>
-#include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -40,8 +39,12 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/helper/system/glu.h>
 #include <sofa/helper/vector.h>
+
+#if IMAGE_HAVE_SOFA_GL == 1
+#include <sofa/gl/Texture.h>
+#include <sofa/gl/glu.h>
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
 namespace sofa
 {

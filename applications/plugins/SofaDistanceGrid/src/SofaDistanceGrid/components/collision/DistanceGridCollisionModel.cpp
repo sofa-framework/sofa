@@ -26,7 +26,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/Factory.inl>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
@@ -34,6 +33,9 @@
 
 #include "DistanceGridCollisionModel.h"
 
+#if SOFADISTANCEGRID_HAVE_SOFA_GL == 1
+#include <sofa/gl/gl.h>
+#endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 
 namespace sofa
 {
