@@ -221,7 +221,7 @@ public:
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    bool isDiagonal() override { return false; }
+    bool isDiagonal() const override { return false; }
 
 
 
