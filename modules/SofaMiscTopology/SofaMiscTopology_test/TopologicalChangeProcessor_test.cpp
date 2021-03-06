@@ -19,41 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest;
 
-#include <SofaBase/initSofaBase.h>
-
-#include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 
-namespace sofa {
+namespace sofa::helper::testing
+{
 
 /**  Test TopologicalChangeProcessor incise process
   */
 
-struct TopologicalChangeProcessor_test: public Sofa_test<>
+struct TopologicalChangeProcessor_test: public BaseSimulationTest
 {
     // root
-   simulation::Node::SPtr root;
+   Node::SPtr root;
    /// Simulation
    simulation::Simulation* simulation;
 
    void SetUp()
    {
-       // Init Sofa
-       sofa::component::initSofaBase();
-
-       sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-       root = simulation::getSimulation()->createNewGraph("root");
-
        // Load the scene from the xml file
        std::string fileName = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + "IncisionTrianglesProcess.scn";
        std::cout << fileName.c_str() << std::endl;
-       root = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
+
+       root = BaseSimulationTest::SceneInstance(fileName).root;
 
        // Test if root is not null
        if(!root)
@@ -98,4 +89,4 @@ TEST_F( TopologicalChangeProcessor_test,Incise)
     ASSERT_TRUE(this->TestInciseProcess());
 }
 
-}// sofa
+}// namespace sofa::helper::testing
