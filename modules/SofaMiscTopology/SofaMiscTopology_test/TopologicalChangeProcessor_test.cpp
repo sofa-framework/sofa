@@ -20,10 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest;
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
-#include <sofa/helper/system/SetDirectory.h>
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+
+#include <SofaSimulationGraph/SimpleApi.h>
+using sofa::helper::testing::BaseSimulationTest;
+using namespace sofa::component::topology;
 
 namespace sofa::helper::testing
 {
@@ -40,12 +42,17 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
 
    void SetUp()
    {
+       sofa::simpleapi::importPlugin("SofaComponentAll");
        // Load the scene from the xml file
        std::string fileName = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + "IncisionTrianglesProcess.scn";
        std::cout << fileName.c_str() << std::endl;
 
-       root = BaseSimulationTest::SceneInstance(fileName).root;
+       BaseSimulationTest::SceneInstance instance = BaseSimulationTest::SceneInstance::LoadFromFile(fileName);
+       instance.initScene();
 
+       root = instance.root;
+       std::cout << instance.root.get()->getName() << std::endl;
+       
        // Test if root is not null
        if(!root)
        {
@@ -66,6 +73,18 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
 
    bool TestInciseProcess()
    {
+       std::cout << root.get()->getChildren().size() << std::endl;
+       auto solver = root->getObject("Triangle_topo");
+       //sofa::simulation::Node* node = root.get()->getChild("SquareGravity");
+       //TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(root.get()->getMeshTopology());
+
+       if (solver == nullptr)
+       {
+           ADD_FAILURE() << "Error: node 'SquareGravity' not found in the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+           return false;
+       }
+
+
        // To test incise animates the scene at least 1.2s
        for(int i=0;i<50;i++)
        {
