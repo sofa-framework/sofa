@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/core/config.h>
 #include <sofa/core/reflection/fwd.h>
-#include <sofa/core/reflection/Class.h>
 #include <type_traits>
 #include <string>
 
