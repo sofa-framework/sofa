@@ -84,8 +84,6 @@ sofa_create_package_with_targets(
     RELOCATABLE "plugins"
     )
 
-debug_print_target_properties(${PROJECT_NAME})
-
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
 cmake_dependent_option(CIMGPLUGIN_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
