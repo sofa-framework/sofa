@@ -166,7 +166,7 @@ namespace sofa::core::objectmodel
     friend class sofa::helper::NameDecoder;                             \
     static std::string GetDefaultTemplateName(){ return sofa::helper::NameDecoder::DefaultTypeTemplateName<MyType>::Get(); } \
     static const ::sofa::core::objectmodel::BaseClass* GetClass() { return sofa::core::reflection::Class::GetClassInfo<MyType>(); }   \
-    virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override { return sofa::core::reflection::Class::GetClassInfo<MyType>(); }  \
+    const ::sofa::core::objectmodel::BaseClass* getClass() const override { return sofa::core::reflection::Class::GetClassInfo<MyType>(); }  \
     static const char* HeaderFileLocation() { return __FILE__; }        \
     template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
     initData(::sofa::core::objectmodel::Data<SOFA_T>* field, const char* name, const char* help,   \
