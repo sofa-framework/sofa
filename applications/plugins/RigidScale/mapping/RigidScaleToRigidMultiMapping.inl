@@ -147,7 +147,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::applyJT(const helper::vector< InMat
     std::cout<<"applyJT(const helper::vector< In1MatrixDeriv*>& /*outConstraint1*/ ,\
             const helper::vector< In2MatrixDeriv*>& /*outConstraint2*/ ,\
             const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/)\
-            NOT IMPLEMENTED BY " << core::objectmodel::BaseClass::decodeClassName(typeid(*this)) << std::endl;
+            NOT IMPLEMENTED BY " << sofa::helper::NameDecoder::decodeClassName(typeid(*this)) << std::endl;
 }
 
 template <class I1, class I2, class O>
