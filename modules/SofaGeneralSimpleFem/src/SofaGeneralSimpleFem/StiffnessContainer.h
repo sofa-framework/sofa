@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralSimpleFem/config.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa::component::container
 {
