@@ -333,7 +333,7 @@ public:
         {
             for(unsigned int i=0;i<3;i++)
             {
-                cutplane_tex[i]= new helper::gl::Texture(new helper::io::Image,false);
+                cutplane_tex[i]= new sofa::gl::Texture(new helper::io::Image,false);
                 cutplane_tex[i]->getImage()->init(cutplane_res,cutplane_res,32);
             }
             updateTextures();
@@ -448,7 +448,7 @@ protected:
     static const unsigned cutplane_res=1024;
 
 #if IMAGE_HAVE_SOFA_GL == 1
-    helper::gl::Texture* cutplane_tex[3];
+    sofa::gl::Texture* cutplane_tex[3];
 #endif // IMAGE_HAVE_SOFA_GL == 1
 
     //Draw vectors as arrows

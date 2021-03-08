@@ -143,7 +143,7 @@ protected:
 
     unsigned int time;
 #if IMAGE_HAVE_SOFA_GL == 1
-    helper::gl::Texture* texture;
+    sofa::gl::Texture* texture;
     static const unsigned texture_res=256;
 #endif // IMAGE_HAVE_SOFA_GL == 1
 
@@ -239,7 +239,7 @@ protected:
         // need a valid opengl context to initialize an opengl texture, a context is not always bound during the init phase so we init the texture here
         if(!texture)
         {
-            texture = new helper::gl::Texture(new helper::io::Image,false);
+            texture = new sofa::gl::Texture(new helper::io::Image,false);
             texture->getImage()->init(texture_res,texture_res,32);
             texture->init();
 

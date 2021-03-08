@@ -35,6 +35,7 @@
 
 #if SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 #include <sofa/gl/gl.h>
+#include <sofa/gl/template.h>
 #endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 
 namespace sofa
@@ -296,7 +297,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,In
         m.transpose();
         m[3] = Vector4(elems[index].translation,1.0);
 
-        helper::gl::glMultMatrix(m.ptr());
+        sofa::gl::glMultMatrix(m.ptr());
     }
 
     DistanceGrid* grid = getGrid(index);
@@ -311,18 +312,18 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,In
         glColor4f(0.5f, 0.5f, 0.5f, 0.1f);
     glBegin(GL_LINES);
     {
-        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[4]);
-        helper::gl::glVertexT(corners[1]); helper::gl::glVertexT(corners[5]);
-        helper::gl::glVertexT(corners[2]); helper::gl::glVertexT(corners[6]);
-        helper::gl::glVertexT(corners[3]); helper::gl::glVertexT(corners[7]);
-        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[2]);
-        helper::gl::glVertexT(corners[1]); helper::gl::glVertexT(corners[3]);
-        helper::gl::glVertexT(corners[4]); helper::gl::glVertexT(corners[6]);
-        helper::gl::glVertexT(corners[5]); helper::gl::glVertexT(corners[7]);
-        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[1]);
-        helper::gl::glVertexT(corners[2]); helper::gl::glVertexT(corners[3]);
-        helper::gl::glVertexT(corners[4]); helper::gl::glVertexT(corners[5]);
-        helper::gl::glVertexT(corners[6]); helper::gl::glVertexT(corners[7]);
+        sofa::gl::glVertexT(corners[0]); sofa::gl::glVertexT(corners[4]);
+        sofa::gl::glVertexT(corners[1]); sofa::gl::glVertexT(corners[5]);
+        sofa::gl::glVertexT(corners[2]); sofa::gl::glVertexT(corners[6]);
+        sofa::gl::glVertexT(corners[3]); sofa::gl::glVertexT(corners[7]);
+        sofa::gl::glVertexT(corners[0]); sofa::gl::glVertexT(corners[2]);
+        sofa::gl::glVertexT(corners[1]); sofa::gl::glVertexT(corners[3]);
+        sofa::gl::glVertexT(corners[4]); sofa::gl::glVertexT(corners[6]);
+        sofa::gl::glVertexT(corners[5]); sofa::gl::glVertexT(corners[7]);
+        sofa::gl::glVertexT(corners[0]); sofa::gl::glVertexT(corners[1]);
+        sofa::gl::glVertexT(corners[2]); sofa::gl::glVertexT(corners[3]);
+        sofa::gl::glVertexT(corners[4]); sofa::gl::glVertexT(corners[5]);
+        sofa::gl::glVertexT(corners[6]); sofa::gl::glVertexT(corners[7]);
     }
     glEnd();
     glDisable(GL_BLEND);
@@ -338,18 +339,18 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,In
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     glBegin(GL_LINES);
     {
-        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[4]);
-        helper::gl::glVertexT(corners[1]); helper::gl::glVertexT(corners[5]);
-        helper::gl::glVertexT(corners[2]); helper::gl::glVertexT(corners[6]);
-        helper::gl::glVertexT(corners[3]); helper::gl::glVertexT(corners[7]);
-        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[2]);
-        helper::gl::glVertexT(corners[1]); helper::gl::glVertexT(corners[3]);
-        helper::gl::glVertexT(corners[4]); helper::gl::glVertexT(corners[6]);
-        helper::gl::glVertexT(corners[5]); helper::gl::glVertexT(corners[7]);
-        helper::gl::glVertexT(corners[0]); helper::gl::glVertexT(corners[1]);
-        helper::gl::glVertexT(corners[2]); helper::gl::glVertexT(corners[3]);
-        helper::gl::glVertexT(corners[4]); helper::gl::glVertexT(corners[5]);
-        helper::gl::glVertexT(corners[6]); helper::gl::glVertexT(corners[7]);
+        sofa::gl::glVertexT(corners[0]); sofa::gl::glVertexT(corners[4]);
+        sofa::gl::glVertexT(corners[1]); sofa::gl::glVertexT(corners[5]);
+        sofa::gl::glVertexT(corners[2]); sofa::gl::glVertexT(corners[6]);
+        sofa::gl::glVertexT(corners[3]); sofa::gl::glVertexT(corners[7]);
+        sofa::gl::glVertexT(corners[0]); sofa::gl::glVertexT(corners[2]);
+        sofa::gl::glVertexT(corners[1]); sofa::gl::glVertexT(corners[3]);
+        sofa::gl::glVertexT(corners[4]); sofa::gl::glVertexT(corners[6]);
+        sofa::gl::glVertexT(corners[5]); sofa::gl::glVertexT(corners[7]);
+        sofa::gl::glVertexT(corners[0]); sofa::gl::glVertexT(corners[1]);
+        sofa::gl::glVertexT(corners[2]); sofa::gl::glVertexT(corners[3]);
+        sofa::gl::glVertexT(corners[4]); sofa::gl::glVertexT(corners[5]);
+        sofa::gl::glVertexT(corners[6]); sofa::gl::glVertexT(corners[7]);
     }
     glEnd();
 
@@ -384,7 +385,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,In
                             glColor3d(1+d*0.25, 0, 1+d);
                         else
                             continue; //glColor3d(0, 1-d*0.25, 1-d);
-                        helper::gl::glVertexT(p);
+                        sofa::gl::glVertexT(p);
                     }
                 }
             }
@@ -398,7 +399,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,In
         for (unsigned int i=0; i<grid->meshPts.size(); i++)
         {
             DistanceGrid::Coord p = grid->meshPts[i];
-            helper::gl::glVertexT(p);
+            sofa::gl::glVertexT(p);
         }
         glEnd();
         glBegin(GL_LINES);
@@ -420,9 +421,9 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,In
                     glColor3d(1+d*0.25, 0, 1+d);
                 else
                     glColor3d(0, 1-d*0.25, 1-d);
-                helper::gl::glVertexT(p2);
+                sofa::gl::glVertexT(p2);
                 if (j>-2 && j < 2)
-                    helper::gl::glVertexT(p2);
+                    sofa::gl::glVertexT(p2);
             }
         }
         glEnd();
@@ -751,18 +752,18 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
         glColor4f(0.0f*cscale, 1.0f*cscale, 0.5f*cscale, 1.0f);
     glBegin(GL_LINES);
     {
-        helper::gl::glVertexT(cube.corners[0]); helper::gl::glVertexT(cube.corners[4]);
-        helper::gl::glVertexT(cube.corners[1]); helper::gl::glVertexT(cube.corners[5]);
-        helper::gl::glVertexT(cube.corners[2]); helper::gl::glVertexT(cube.corners[6]);
-        helper::gl::glVertexT(cube.corners[3]); helper::gl::glVertexT(cube.corners[7]);
-        helper::gl::glVertexT(cube.corners[0]); helper::gl::glVertexT(cube.corners[2]);
-        helper::gl::glVertexT(cube.corners[1]); helper::gl::glVertexT(cube.corners[3]);
-        helper::gl::glVertexT(cube.corners[4]); helper::gl::glVertexT(cube.corners[6]);
-        helper::gl::glVertexT(cube.corners[5]); helper::gl::glVertexT(cube.corners[7]);
-        helper::gl::glVertexT(cube.corners[0]); helper::gl::glVertexT(cube.corners[1]);
-        helper::gl::glVertexT(cube.corners[2]); helper::gl::glVertexT(cube.corners[3]);
-        helper::gl::glVertexT(cube.corners[4]); helper::gl::glVertexT(cube.corners[5]);
-        helper::gl::glVertexT(cube.corners[6]); helper::gl::glVertexT(cube.corners[7]);
+        sofa::gl::glVertexT(cube.corners[0]); sofa::gl::glVertexT(cube.corners[4]);
+        sofa::gl::glVertexT(cube.corners[1]); sofa::gl::glVertexT(cube.corners[5]);
+        sofa::gl::glVertexT(cube.corners[2]); sofa::gl::glVertexT(cube.corners[6]);
+        sofa::gl::glVertexT(cube.corners[3]); sofa::gl::glVertexT(cube.corners[7]);
+        sofa::gl::glVertexT(cube.corners[0]); sofa::gl::glVertexT(cube.corners[2]);
+        sofa::gl::glVertexT(cube.corners[1]); sofa::gl::glVertexT(cube.corners[3]);
+        sofa::gl::glVertexT(cube.corners[4]); sofa::gl::glVertexT(cube.corners[6]);
+        sofa::gl::glVertexT(cube.corners[5]); sofa::gl::glVertexT(cube.corners[7]);
+        sofa::gl::glVertexT(cube.corners[0]); sofa::gl::glVertexT(cube.corners[1]);
+        sofa::gl::glVertexT(cube.corners[2]); sofa::gl::glVertexT(cube.corners[3]);
+        sofa::gl::glVertexT(cube.corners[4]); sofa::gl::glVertexT(cube.corners[5]);
+        sofa::gl::glVertexT(cube.corners[6]); sofa::gl::glVertexT(cube.corners[7]);
     }
     glEnd();
     glLineWidth(2);
@@ -779,14 +780,14 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
                     sofa::defaulttype::Vec<3, SReal> p = cube.center;
                     p[j] += c;
                     p[(j+1)%3] += s;
-                    helper::gl::glVertexT(p);
+                    sofa::gl::glVertexT(p);
                 }
                 glEnd();
             }
         */
         glBegin(GL_POINTS);
         {
-            helper::gl::glVertexT(cube.center);
+            sofa::gl::glVertexT(cube.center);
 
         }
         glEnd();
@@ -798,15 +799,15 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
         glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
         glBegin(GL_POINTS);
         for (unsigned int j=0; j<cube.deformedPoints.size(); j++)
-            helper::gl::glVertexT(cube.deformedPoints[j]);
+            sofa::gl::glVertexT(cube.deformedPoints[j]);
         glEnd();
         if (vparams->displayFlags().getShowNormals())
         {
             glBegin(GL_LINES);
             for (unsigned int j=0; j<cube.deformedNormals.size(); j++)
             {
-                helper::gl::glVertexT(cube.deformedPoints[j]);
-                helper::gl::glVertexT(cube.deformedPoints[j] + cube.deformedNormals[j]);
+                sofa::gl::glVertexT(cube.deformedPoints[j]);
+                sofa::gl::glVertexT(cube.deformedPoints[j] + cube.deformedNormals[j]);
             }
             glEnd();
         }
