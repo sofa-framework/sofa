@@ -25,19 +25,15 @@
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/core/CollisionElement.h>
-#include <sofa/core/CollisionModel.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/EndPoint.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
-#include <map>
-#include <deque>
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::component::collision
 {
 
+class CollisionModel;
 class EndPoint;
 
 /**

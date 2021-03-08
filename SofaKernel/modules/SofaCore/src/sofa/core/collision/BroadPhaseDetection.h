@@ -23,8 +23,7 @@
 #define SOFA_CORE_COLLISION_BROADPHASEDETECTION_H
 
 #include <sofa/core/collision/Detection.h>
-#include <vector>
-#include <algorithm>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

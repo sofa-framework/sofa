@@ -23,10 +23,10 @@
 #define SOFA_COMPONENT_COLLISION_NARROWPHASEDETECTION_H
 
 #include <sofa/core/collision/Detection.h>
+#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
 #include <vector>
 #include <map>
-#include <algorithm>
 
 namespace sofa
 {

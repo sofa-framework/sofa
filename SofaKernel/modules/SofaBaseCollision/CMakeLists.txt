@@ -33,6 +33,7 @@ set(HEADER_FILES
     ${SOFABASECOLLISION_SRC}/IntrUtility3.h
     ${SOFABASECOLLISION_SRC}/IntrUtility3.inl
     ${SOFABASECOLLISION_SRC}/MinProximityIntersection.h
+	${SOFABASECOLLISION_SRC}/MirrorIntersector.h
     ${SOFABASECOLLISION_SRC}/NewProximityIntersection.h
     ${SOFABASECOLLISION_SRC}/NewProximityIntersection.inl
     ${SOFABASECOLLISION_SRC}/OBBIntTool.h

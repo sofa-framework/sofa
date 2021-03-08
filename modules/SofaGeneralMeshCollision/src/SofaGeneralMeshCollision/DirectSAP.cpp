@@ -23,9 +23,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <sofa/helper/FnDispatcher.h>
+#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/collision/Intersection.h>
 #include <queue>
-#include <stack>
 
 
 namespace sofa::component::collision
