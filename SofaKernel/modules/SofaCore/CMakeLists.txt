@@ -108,7 +108,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/BaseNode.h
     ${SRC_ROOT}/objectmodel/BaseObject.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
-    ${SRC_ROOT}/objectmodel/ClassInfo.h
     ${SRC_ROOT}/objectmodel/ComponentState.h
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.h
     ${SRC_ROOT}/objectmodel/Context.h
@@ -134,6 +133,13 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/DataCallback.h
     ${SRC_ROOT}/objectmodel/vectorData.h
     ${SRC_ROOT}/objectmodel/vectorLinks.h
+    ${SRC_ROOT}/reflection/fwd.h
+    ${SRC_ROOT}/reflection/Class.h
+    ${SRC_ROOT}/reflection/ClassId.h
+    ${SRC_ROOT}/reflection/ClassInfo.h
+    ${SRC_ROOT}/reflection/ClassInfoBaseImpl.h
+    ${SRC_ROOT}/reflection/ClassInfoBuilder.h
+    ${SRC_ROOT}/reflection/ClassInfoRepository.h
     ${SRC_ROOT}/topology/BaseMeshTopology.h
     ${SRC_ROOT}/topology/BaseTopology.h
     ${SRC_ROOT}/topology/BaseTopologyData.h
@@ -219,7 +225,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/BaseNode.cpp
     ${SRC_ROOT}/objectmodel/BaseObject.cpp
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.cpp
-    ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.cpp
     ${SRC_ROOT}/objectmodel/ContextObject.cpp
@@ -241,6 +246,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
     ${SRC_ROOT}/objectmodel/IdleEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
+    ${SRC_ROOT}/reflection/ClassId.cpp
+    ${SRC_ROOT}/reflection/ClassInfo.cpp
+    ${SRC_ROOT}/reflection/ClassInfoRepository.cpp
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
