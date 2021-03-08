@@ -29,6 +29,7 @@
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/visual/VisualManager.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 

@@ -31,6 +31,10 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualManager.h>
+#include <sofa/core/visual/Shader.h>
+
 #include <sofa/simulation/MutationListener.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
