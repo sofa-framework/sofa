@@ -26,8 +26,8 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALLINEARSOLVER_SRC}/MinResLinearSolver.cpp
     )
 
-find_package(SofaBase REQUIRED)
-find_package(SofaFramework REQUIRED) # SofaSimulationCore
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore SofaBaseLinearSolver)

@@ -97,7 +97,6 @@ using sofa::simulation::SceneLoaderFactory;
 #include <QAction>
 #include <QMessageBox>
 #include <QDockWidget>
-#include <QDesktopWidget>
 #include <QStatusBar>
 #include <QDockWidget>
 #include <QSettings>
@@ -763,8 +762,9 @@ int RealGUI::mainLoop()
 int RealGUI::closeGUI()
 {
     QSettings settings;
-    settings.beginGroup("viewer");
-    settings.setValue("screenNumber", QApplication::desktop()->screenNumber(this));
+    QScreen* screen = widget->window()->windowHandle()->screen();
+    settings.beginGroup("viewer"); ;
+    settings.setValue("screenNumber", QGuiApplication::screens().indexOf(screen));
     settings.endGroup();
     delete this;
     return 0;
@@ -1247,7 +1247,7 @@ void RealGUI::setViewerResolution ( int w, int h )
 #if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
         const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
 #else
-        const QRect screen = QGuiApplication::screens().at(QApplication::desktop()->screenNumber(this))->availableGeometry();
+        const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();// QGuiApplication::screens().at(QApplication::desktop()->screenNumber(this))->availableGeometry();
 #endif
         QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
         if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);

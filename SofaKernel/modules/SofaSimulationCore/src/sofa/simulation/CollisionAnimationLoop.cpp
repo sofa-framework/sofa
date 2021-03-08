@@ -36,7 +36,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <cstdlib>
 #include <cmath>

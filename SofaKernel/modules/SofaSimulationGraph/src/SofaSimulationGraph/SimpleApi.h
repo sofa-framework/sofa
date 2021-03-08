@@ -75,39 +75,3 @@ std::string str(const T& t)
     return s.str() ;
 }
 } // namespace sofa::simpleapi
-
-
-namespace sofa::simpleapi::components 
-{
-
-namespace BaseObject
-{
-    static const std::string aobjectname {"BaseObject"} ;
-    namespace data{
-        static const std::string name {"name"} ;
-    }
-}
-
-namespace MechanicalObject
-{
-    static const std::string objectname {"MechanicalObject"} ;
-    namespace data{
-        using namespace BaseObject::data ;
-        static const std::string position {"position"} ;
-    }
-}
-
-namespace VisualModel
-{
-    static const std::string objectname {"VisualModel"} ;
-
-    namespace data {
-        using namespace BaseObject::data ;
-        static const std::string filename {"filename"} ;
-    }
-}
-
-} // namespace sofa::simpleapi::components
-
-namespace sofa::meca   { using namespace sofa::simpleapi::components::MechanicalObject ; }
-namespace sofa::visual { using namespace sofa::simpleapi::components::VisualModel ; }

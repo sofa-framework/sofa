@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject;
 
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer;
 
 using sofa::core::visual::VisualParams;

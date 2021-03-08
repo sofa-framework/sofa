@@ -27,6 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
+#include <sofa/helper/vector_algorithm.h>
 
 #include <SofaBaseTopology/TopologySubsetData.inl>
 

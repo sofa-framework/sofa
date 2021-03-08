@@ -46,16 +46,16 @@ namespace cuda
 {
 
 template<class T>
-class CudaVector : public helper::vector<T,CudaMemoryManager<T> >
+class CudaVector : public helper::vector_device<T,CudaMemoryManager<T> >
 {
 public :
     typedef size_t Size;
 
-    CudaVector() : helper::vector<T,CudaMemoryManager<T> >() {}
+    CudaVector() : helper::vector_device<T,CudaMemoryManager<T> >() {}
 
-    CudaVector(Size n) : helper::vector<T,CudaMemoryManager<T> >(n) {}
+    CudaVector(Size n) : helper::vector_device<T,CudaMemoryManager<T> >(n) {}
 
-    CudaVector(const helper::vector<T,CudaMemoryManager< T > >& v) : helper::vector<T,CudaMemoryManager<T> >(v) {}
+    CudaVector(const helper::vector_device<T,CudaMemoryManager< T > >& v) : helper::vector_device<T,CudaMemoryManager<T> >(v) {}
 
 };
 

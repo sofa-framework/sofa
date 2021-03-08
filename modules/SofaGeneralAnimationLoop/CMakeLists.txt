@@ -23,7 +23,7 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALANIMATIONLOOP_SRC}/MultiTagAnimationLoop.cpp
     ${SOFAGENERALANIMATIONLOOP_SRC}/MechanicalMatrixMapper.cpp)
 
-find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
+sofa_find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaBaseLinearSolver)
