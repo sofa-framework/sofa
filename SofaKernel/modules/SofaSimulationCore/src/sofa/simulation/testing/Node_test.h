@@ -23,6 +23,7 @@
 #include <gtest/gtest.h>
 
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/ObjectFactory.h>
 
 class Dummy: public sofa::core::objectmodel::BaseObject
 {
@@ -30,10 +31,13 @@ class Dummy: public sofa::core::objectmodel::BaseObject
 public:
     SOFA_CLASS(Dummy, sofa::core::objectmodel::BaseObject);
 
+    Dummy() : m_destroyed{nullptr}{}
     Dummy(const std::string& name): m_destroyed(nullptr) {this->setName(name);}
     Dummy(bool *destroyed): m_destroyed(destroyed) {}
     ~Dummy() override { if(m_destroyed) *m_destroyed = true; }
 };
+
+static int registerDummyId = sofa::core::RegisterObject("A dummy object").add<Dummy>();
 
 template<class Node>
 void Node_test_objectDestruction_singleObject()

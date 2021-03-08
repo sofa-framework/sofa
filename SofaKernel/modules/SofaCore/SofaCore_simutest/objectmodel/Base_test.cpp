@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
+#include <sofa/core/reflection/ClassInfo.h>
 #include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::Base ;
 using sofa::core::objectmodel::ComponentState;
@@ -26,6 +28,8 @@ using sofa::core::objectmodel::ComponentState;
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
+
+#include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject;
@@ -54,6 +58,10 @@ public:
 
 using customns::CustomBaseObject;
 using customns::CustomBaseObjectT;
+
+static int registerCustom1 = sofa::core::RegisterObject("CustomBaseObject").add<CustomBaseObject>();
+static int registerCustomTRigid = sofa::core::RegisterObject("CustomBaseObject").add<CustomBaseObjectT<Rigid3Types>>();
+static int registerCustomTVec = sofa::core::RegisterObject("CustomBaseObject").add<CustomBaseObjectT<Vec3Types>>();
 
 class Base_test: public BaseSimulationTest
 {
