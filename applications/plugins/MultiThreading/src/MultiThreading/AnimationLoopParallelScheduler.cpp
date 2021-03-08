@@ -103,9 +103,9 @@ namespace simulation
         }        
         _taskScheduler->init( mNbThread );
 
-		sofa::core::objectmodel::classidT<sofa::core::behavior::ConstraintSolver>();
-		sofa::core::objectmodel::classidT<sofa::core::behavior::LinearSolver>();
-		sofa::core::objectmodel::classidT<sofa::core::CollisionModel>();
+        classid(sofa::core::behavior::ConstraintSolver);
+        classid(sofa::core::behavior::LinearSolver);
+        classid(sofa::core::CollisionModel);
 	}
 
 

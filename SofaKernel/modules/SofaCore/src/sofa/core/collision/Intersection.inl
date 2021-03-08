@@ -23,6 +23,7 @@
 #define SOFA_CORE_COLLISION_INTERSECTION_INL
 
 #include <sofa/core/collision/Intersection.h>
+#include <sofa/core/reflection/ClassInfo.h>
 #include <sofa/helper/Factory.h>
 
 namespace sofa

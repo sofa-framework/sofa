@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/collision/DetectionOutput.h>
+#include <sofa/core/reflection/ClassInfo.h>
 #include <sofa/helper/FnDispatcher.h>
 
 namespace sofa
@@ -49,11 +50,11 @@ helper::TypeInfo IntersectorMap::getType(core::CollisionModel* model)
     if (it == castMap.end())
     {
         helper::TypeInfo t2 = t;
-        for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+        for (auto it : classes)
         {
-            if ((*it)->isInstance(model))
+            if (it->isInstance(model))
             {
-                t2 = (*it)->type();
+                t2 = it->type();
                 break;
             }
         }
@@ -115,9 +116,9 @@ void IntersectorMap::add_impl(const objectmodel::ClassInfo& c1,
     classes.insert(&c2);
     castMap.clear();
     // rebuild castMap
-    for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+    for (auto it : classes)
     {
-        castMap.insert(std::make_pair((*it)->type(),(*it)->type()));
+        castMap.insert(std::make_pair(it->type(),it->type()));
     }
 
     insert(c1.type(), c2.type(), intersector);

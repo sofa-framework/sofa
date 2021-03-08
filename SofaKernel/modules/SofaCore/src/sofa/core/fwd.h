@@ -1,5 +1,6 @@
 #pragma once
 #include <sofa/core/config.h>
+#include <sofa/core/reflection/fwd.h>
 #include <iosfwd>
 
 namespace sofa::core
@@ -23,10 +24,14 @@ class BaseData;
 class BaseLink;
 class BaseNode;
 class Event;
+class AbstractDataLink;
+typedef sofa::core::reflection::ClassInfo ClassInfo;
+typedef sofa::core::reflection::ClassInfo BaseClass;
 
 class Tag;
 SOFA_CORE_API std::ostream& operator<<(std::ostream& o, const Tag& t);
 SOFA_CORE_API std::istream& operator>>(std::istream& i, Tag& t);
+
 }
 
 namespace sofa::core::behavior

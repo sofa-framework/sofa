@@ -25,9 +25,6 @@
 #include <sofa/core/fwd.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/ClassInfo.h>
-
-
 
 namespace sofa
 {
