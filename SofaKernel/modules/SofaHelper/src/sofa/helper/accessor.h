@@ -19,17 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_ACCESSOR_H
-#define SOFA_HELPER_ACCESSOR_H
+#pragma once
 
 #include <sofa/helper/config.h>
-#include <sofa/helper/vector.h>
-#include <iosfwd>
+#include <sofa/type/trait/is_container.h>
 
-namespace sofa
-{
+#include <iosfwd>        ///< Needed to declare the operator<< and >> as deleted.
+                         /// Remove it when the operator are completely removed
 
-namespace helper
+namespace sofa::helper
 {
 
 /** A ReadAccessor is a proxy class, holding a reference to a given container
@@ -51,7 +49,7 @@ namespace helper
  *  more complex types.
  *  Various template specializations are typically used, especially for core::objectmodel::Data<T>
  */
-template<class T>
+template<class T, class Enable = void>
 class ReadAccessor
 {
 public:
@@ -73,10 +71,6 @@ public:
     operator  const_reference () const { return  *vref; }
     const_pointer   operator->() const { return vref; }
     const_reference operator* () const { return  *vref; }
-
-    /// To depreciate...
-    template<class U>
-    friend std::ostream& operator<<( std::ostream& os, const ReadAccessor<U>& vec );
 };
 
 template<class U>
@@ -101,7 +95,7 @@ std::ostream& operator<<( std::ostream& os, const ReadAccessor<U>& vec ) = delet
  *  more complex types.
  *  Various template specializations are typically used, especially for core::objectmodel::Data<T>
  */
-template<class T>
+template<class T, class Enable = void>
 class WriteAccessor
 {
 public:
@@ -134,14 +128,6 @@ public:
     {
         vref = &v;
     }
-
-    /// To depreciate...
-    template<class U>
-    friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<U>& vec );
-
-    /// To depreciate...
-    template<class U>
-    friend std::istream& operator>> ( std::istream& in, WriteAccessor<U>& vec );
 };
 
 template<class U>
@@ -154,30 +140,27 @@ std::istream& operator>> ( std::istream& in, WriteAccessor<U>& vec ) = delete;
 
 /** Identical to WriteAccessor for default implementation, but different for some template specializations such as  core::objectmodel::Data<T>
 */
-template<class T>
-class WriteOnlyAccessor : public WriteAccessor<T>
+template<class T, class Enable = void>
+class WriteOnlyAccessor : public WriteAccessor<T, Enable>
 {
 protected:
     typedef WriteAccessor<T> Inherit;
     typedef typename Inherit::container_type container_type;
 
 public:
-    explicit WriteOnlyAccessor(container_type& container) : WriteAccessor<T>(container) {}
+    explicit WriteOnlyAccessor(container_type& container) : WriteAccessor<T, Enable>(container) {}
 };
 
 
 
-//////////////////////////
-
-
-
-
+////////////////////////// ReadAccessor for wrapping around vector like object //////////////////////
 /// ReadAccessor implementation class for vector types
 template<class T>
 class ReadAccessorVector
 {
 public:
     typedef T container_type;
+    typedef const T const_container_type;
     typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
@@ -191,8 +174,6 @@ protected:
 public:
     ReadAccessorVector(const container_type& container) : vref(&container) {}
 
-    const container_type& ref() const { return *vref; }
-
     bool empty() const { return vref->empty(); }
     Size size() const { return vref->size(); }
 	const_reference operator[](Size i) const { return (*vref)[i]; }
@@ -200,9 +181,12 @@ public:
     const_iterator begin() const { return vref->begin(); }
     const_iterator end() const { return vref->end(); }
 
-    /// To depreciate.
-    template<class U>
-    friend std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<U>& vec );
+    ///////// Access the container for reading ////////////////
+    operator  const_container_type () const { return  *vref; }
+    const_container_type* operator->() const { return vref; }
+    const_container_type& operator* () const { return  *vref; }
+    const_container_type& ref() const { return *vref; }          ///< this duplicate operator* (remove ?)
+    ///////////////////////////////////////////////////////////
 };
 
 template<class U>
@@ -216,6 +200,7 @@ class WriteAccessorVector
 {
 public:
     typedef T container_type;
+    typedef const T const_container_type;
     typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
@@ -229,9 +214,6 @@ protected:
 public:
     WriteAccessorVector(container_type& container) : vref(&container) {}
     
-    const container_type& ref() const { return *vref; }
-    container_type& wref() { return *vref; }
-
     bool empty() const { return vref->empty(); }
     Size size() const { return vref->size(); }
 
@@ -248,46 +230,54 @@ public:
     void reserve(Size s) { vref->reserve(s); }
     void push_back(const value_type& v) { vref->push_back(v); }
 
+    ////// Access the container in reading & writing //////
+    operator  container_type () { return  *vref; }
+    container_type* operator->() { return vref; }
+    container_type& operator* () { return  *vref; }
+    container_type& wref() { return *vref; }
+    ///////////////////////////////////////////////////////
+
+    ///////// Access the container for reading ////////////////
+    operator  const_container_type () const { return  *vref; }
+    const_container_type* operator->() const { return vref; }
+    const_container_type& operator* () const { return  *vref; }
+
+    /// this one duplicate operator*
+    const container_type& ref() const { return *vref; }
+    ///////////////////////////////////////////////////////////
 };
+///////////////////////////////////////////////////////////////////////////////////////////////
 
-// Support for std::vector
-
-template<class T, class Alloc>
-class ReadAccessor< std::vector<T,Alloc> > : public ReadAccessorVector< std::vector<T,Alloc> >
+/// Support for std::vector
+template<class VectorLikeType>
+class ReadAccessor<VectorLikeType,
+        typename std::enable_if<sofa::type::trait::is_container<VectorLikeType>::value>::type> : public ReadAccessorVector< VectorLikeType >
 {
 public:
-    typedef ReadAccessorVector< std::vector<T,Alloc> > Inherit;
+    typedef ReadAccessorVector< VectorLikeType > Inherit;
     typedef typename Inherit::container_type container_type;
     ReadAccessor(const container_type& c) : Inherit(c) {}
 };
 
-template<class T, class Alloc>
-class WriteAccessor< std::vector<T,Alloc> > : public WriteAccessorVector< std::vector<T,Alloc> >
+template<class VectorLikeType>
+class WriteAccessor<VectorLikeType,
+        typename std::enable_if<sofa::type::trait::is_container<VectorLikeType>::value>::type> : public WriteAccessorVector< VectorLikeType >
 {
 public:
-    typedef WriteAccessorVector< std::vector<T,Alloc> > Inherit;
+    typedef WriteAccessorVector< VectorLikeType > Inherit;
     typedef typename Inherit::container_type container_type;
     WriteAccessor(container_type& c) : Inherit(c) {}
 };
 
-template<class T, class Alloc>
-class ReadAccessor< helper::vector<T,Alloc> > : public ReadAccessorVector< helper::vector<T,Alloc> >
+template<class VectorLikeType>
+class WriteOnlyAccessor<VectorLikeType,
+        typename std::enable_if<sofa::type::trait::is_container<VectorLikeType>::value>::type> : public WriteAccessorVector< VectorLikeType >
 {
 public:
-    typedef ReadAccessorVector< helper::vector<T,Alloc> > Inherit;
+    typedef WriteAccessorVector< VectorLikeType > Inherit;
     typedef typename Inherit::container_type container_type;
-    ReadAccessor(const container_type& c) : Inherit(c) {}
+    WriteOnlyAccessor(container_type& c) : Inherit(c) {}
 };
-
-template<class T, class Alloc>
-class WriteAccessor< helper::vector<T,Alloc> > : public WriteAccessorVector< helper::vector<T,Alloc> >
-{
-public:
-    typedef WriteAccessorVector< helper::vector<T,Alloc> > Inherit;
-    typedef typename Inherit::container_type container_type;
-    WriteAccessor(container_type& c) : Inherit(c) {}
-};
-
 
 /// Returns a read accessor from the provided Data<>
 /// Example of use:
@@ -319,8 +309,5 @@ sofa::helper::WriteOnlyAccessor<D> getWriteOnlyAccessor(D& c)
     return sofa::helper::WriteOnlyAccessor<D>{ c };
 }
 
-} // namespace helper
+} /// namespace sofa::core
 
-} // namespace sofa
-
-#endif

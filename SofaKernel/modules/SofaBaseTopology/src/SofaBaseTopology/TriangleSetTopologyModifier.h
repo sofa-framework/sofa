@@ -225,22 +225,6 @@ public:
             const bool removeDOF = true) override;
 
 
-    /** \brief Reorder this topology.
-     *
-     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
-     * \see MechanicalObject::renumberValues
-     */
-    void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
-            const sofa::helper::vector<PointID> &inv_index,
-            const bool renumberDOF = true) override;
-
-
-    /** \brief Generic method for points renumbering
-     */
-    void renumberPoints( const sofa::helper::vector<PointID> &index,
-            const sofa::helper::vector<PointID> &inv_index) override;
-
-
     /** \brief Move input points indices to input new coords.
      * Also propagate event and update edgesAroundVertex and trianglesAroundVertex for data handling.
      *
@@ -261,6 +245,14 @@ public:
     virtual int InciseAlongEdge(EdgeID edge, int* createdPoints = nullptr);
 
 protected:
+    /** \brief Reorder this topology.
+    *
+    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
+    * \see MechanicalObject::renumberValues
+    */
+    void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
+        const sofa::helper::vector<PointID>& inv_index,
+        const bool renumberDOF = true) override;
 
     /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
      *

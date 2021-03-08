@@ -54,7 +54,7 @@ BaseObject::BaseObject()
 BaseObject::~BaseObject()
 {
     assert(l_master.get() == nullptr); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
-    for(auto slave : l_slaves)
+    for(auto& slave : l_slaves)
     {
         if (slave.get())
         {
@@ -69,7 +69,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
-    for (auto slave : l_slaves)
+    for (auto& slave : l_slaves)
     {
         if (slave.get())
         {

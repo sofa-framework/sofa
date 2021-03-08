@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseMechanics/DiagonalMass.h>
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 using sofa::core::ExecParams ;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -93,7 +93,7 @@ public:
     {
         sofa::simpleapi::importPlugin("SofaComponentAll") ;
 
-        component::initBaseMechanics();
+        component::initSofaBaseMechanics();
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
     }

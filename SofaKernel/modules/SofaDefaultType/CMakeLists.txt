@@ -7,12 +7,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/AbstractTypeInfo.h
     ${SRC_ROOT}/BaseMatrix.h
     ${SRC_ROOT}/BaseVector.h
-    ${SRC_ROOT}/BoundingBox.h
     ${SRC_ROOT}/DataTypeInfo.h
-    ${SRC_ROOT}/Frame.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
-    ${SRC_ROOT}/RGBAColor.h
     ${SRC_ROOT}/RigidTypes.h
     ${SRC_ROOT}/RigidVec6Types.h
     ${SRC_ROOT}/SolidTypes.h
@@ -23,13 +20,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/TypeInfoRegistry.h
     ${SRC_ROOT}/TypeInfoRegistryTools.h
     ${SRC_ROOT}/TopologyTypes.h
-    ${SRC_ROOT}/Ray.h
     ${SRC_ROOT}/VecTypes.h
     ${SRC_ROOT}/defaulttype.h
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/fwd.h
-    ${SRC_ROOT}/Color.h
     ${SRC_ROOT}/typeinfo/DataTypeInfoDynamicWrapper.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo.h
     ${SRC_ROOT}/typeinfo/NoTypeInfo.h
@@ -64,8 +59,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/AbstractTypeInfo.cpp
     ${SRC_ROOT}/BaseMatrix.cpp
     ${SRC_ROOT}/BaseVector.cpp
-    ${SRC_ROOT}/BoundingBox.cpp
-    ${SRC_ROOT}/Frame.cpp
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
     ${SRC_ROOT}/TypeInfoID.cpp
@@ -100,9 +93,14 @@ set(COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
     ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.h
     ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.inl
+    ${COMPATSRC_ROOT}/sofa/defaulttype/BoundingBox.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Color.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Frame.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Ray.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/RGBAColor.h
 )
 
-find_package(Eigen3 REQUIRED)
+sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)

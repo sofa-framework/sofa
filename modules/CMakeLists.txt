@@ -20,10 +20,8 @@ sofa_add_module(SofaTopologyMapping SofaTopologyMapping ON)
 sofa_add_module(SofaUserInteraction SofaUserInteraction ON)
 sofa_add_module(SofaConstraint SofaConstraint ON)
 sofa_add_module(SofaGeneralLoader SofaGeneralLoader ON)
+sofa_add_module(SofaExporter SofaExporter ON)
 
-if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
-    sofa_add_module(SofaExporter SofaExporter ON)
-endif()
 sofa_add_module(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_module(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
 sofa_add_module(SofaHaptics SofaHaptics ON)
