@@ -29,7 +29,6 @@ using sofa::helper::system::FileSystem;
 #include <sofa/helper/logging/Messaging.h>
 
 using sofa::helper::system::PluginManager;
-using sofa::helper::system::Plugin;
 
 namespace sofa::component::misc
 {
