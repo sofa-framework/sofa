@@ -57,7 +57,7 @@ void PreassembledMass< DataTypes >::bwdInit()
     if( massMatrix.rows() != massMatrix.cols() || massMatrix.rows()!=(typename MassMatrix::Index)this->mstate->getMatrixSize() )
     {
         // perform assembly
-        core::MechanicalParams mparams = *core::GetDefaultMechanicalParamsInstance();
+        core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();
         mparams.setKFactor(0);
         mparams.setBFactor(0);
         mparams.setMFactor(1);
@@ -77,8 +77,6 @@ void PreassembledMass< DataTypes >::bwdInit()
 
         if( _instanciationNumber == 0 ) // only the first one (last bwdInit called) will call the mass removal
         {
-    //        std::cerr<<SOFA_CLASS_METHOD<<"removing child masses"<<std::endl;
-
             // visitor to delete child mass
             RemoveChildMassVisitor removeChildMassVisitor( core::execparams::defaultInstance() );
             this->getContext()->executeVisitor( &removeChildMassVisitor );
