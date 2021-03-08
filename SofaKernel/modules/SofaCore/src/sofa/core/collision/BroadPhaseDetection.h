@@ -40,9 +40,11 @@ class BroadPhaseDetection : virtual public Detection
 {
 public:
     SOFA_ABSTRACT_CLASS(BroadPhaseDetection, Detection);
+
+    using CollisionModelPair = std::pair<core::CollisionModel*, core::CollisionModel*>;
 protected:
     /// Destructor
-    ~BroadPhaseDetection() override { }
+    ~BroadPhaseDetection() override = default;
 public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginBroadPhase()
@@ -54,10 +56,12 @@ public:
     virtual void addCollisionModel(core::CollisionModel *cm) = 0;
 
     /// Add a list of collision models to the set of root collision models managed by this class
-    virtual void addCollisionModels(const sofa::helper::vector<core::CollisionModel *> v)
+    virtual void addCollisionModels(const sofa::helper::vector<core::CollisionModel *>& v)
     {
-        for (sofa::helper::vector<core::CollisionModel *>::const_iterator it = v.begin(); it<v.end(); it++)
-            addCollisionModel(*it);
+        for (auto* collisionModel : v)
+        {
+            addCollisionModel(collisionModel);
+        }
     }
 
     /// Actions to accomplish when the broadPhase is finished. By default do nothing.
@@ -66,15 +70,15 @@ public:
     }
 
     /// Get the potentially colliding pairs detected
-    sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
+    sofa::helper::vector<CollisionModelPair>& getCollisionModelPairs() { return cmPairs; }
 
     /// Returns true because it needs a deep bounding tree i.e. a depth that can be superior to 1.
     inline virtual bool needsDeepBoundingTree()const{return true;}
 protected:
 
     /// Potentially colliding pairs
-    sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
-    std::map<Instance,sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > > storedCmPairs;
+    sofa::helper::vector< CollisionModelPair > cmPairs;
+    std::map<Instance,sofa::helper::vector< CollisionModelPair > > storedCmPairs;
 
     void changeInstanceBP(Instance inst) override
     {
