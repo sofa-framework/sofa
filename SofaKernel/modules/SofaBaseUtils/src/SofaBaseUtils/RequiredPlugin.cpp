@@ -76,7 +76,8 @@ bool RequiredPlugin::loadPlugin()
     auto loadedPlugins = sofa::helper::getWriteOnlyAccessor(d_loadedPlugins);
     loadedPlugins.clear();
 
-    sofa::helper::system::PluginManager* pluginManager = &sofa::helper::system::PluginManager::getInstance();
+    auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+	
     const std::string defaultSuffix = PluginManager::getDefaultSuffix();
     const helper::vector<helper::fixed_array<std::string,2> >& sMap = d_suffixMap.getValue();
     helper::vector<std::string> suffixVec;
@@ -112,8 +113,8 @@ bool RequiredPlugin::loadPlugin()
         bool isNameLoaded = false;
         for (const auto& suffix : suffixVec)
         {
-            if ( pluginManager->pluginIsLoaded(name) || 
-				pluginManager->loadPlugin(name, suffix, true, true, &errmsg) )
+            if ( pluginManager.pluginIsLoaded(name) || 
+				pluginManager.loadPlugin(name, suffix, true, true, &errmsg) )
             {
                 loadedPlugins.push_back(name);
 				isNameLoaded = true;
@@ -145,7 +146,7 @@ bool RequiredPlugin::loadPlugin()
                           << "Unable to load optional: " << failed;
         }
     }
-    pluginManager->init();
+    pluginManager.init();
     return !hasFailed;
 }
 
