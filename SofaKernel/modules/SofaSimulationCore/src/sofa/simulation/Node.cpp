@@ -381,8 +381,8 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         if(DEBUG_LINK)
             dmsg_info() << "  self-reference link." ;
 
-        if (!link || !link->getOwnerBase()) return destType->dynamicCast(this);
-        return destType->dynamicCast(link->getOwnerBase());
+        if (!link || !link->getOwnerBase()) return destType->dynamicCastToBase(this);
+        return destType->dynamicCastToBase(link->getOwnerBase());
     }
     Node* node = this;
     BaseObject* master = nullptr;
@@ -419,7 +419,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         if(DEBUG_LINK)
             dmsg_info() << "  found " << it->get()->getTypeName() << " " << it->get()->getName() << "." ;
 
-        return destType->dynamicCast(it->get());
+        return destType->dynamicCastToBase(it->get());
     }
     else if (ppos < psize && pathStr[ppos] == '/') // absolute path
     {
@@ -519,11 +519,11 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
     {
         if(DEBUG_LINK)
             dmsg_info()  << "  found " << master->getTypeName() << " " << master->getName() << "." ;
-        return destType->dynamicCast(master);
+        return destType->dynamicCastToBase(master);
     }
     else
     {
-        Base* r = destType->dynamicCast(node);
+        Base* r = destType->dynamicCastToBase(node);
         if (r)
         {
             if(DEBUG_LINK)
@@ -533,7 +533,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         for (ObjectIterator it = node->object.begin(), itend = node->object.end(); it != itend; ++it)
         {
             BaseObject* obj = it->get();
-            Base *o = destType->dynamicCast(obj);
+            Base *o = destType->dynamicCastToBase(obj);
             if (!o) continue;
             if(DEBUG_LINK)
                 dmsg_info()  << "  found " << obj->getTypeName() << " " << obj->getName() << "." ;
@@ -543,21 +543,21 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         if (r) return r;
         // no object found, we look in parent nodes if the searched class is one of the known standard single components (state, topology, ...)
         if (destType->hasParent(sofa::core::BaseState::GetClass()))
-            return destType->dynamicCast(node->getState());
+            return destType->dynamicCastToBase(node->getState());
         else if (destType->hasParent(core::topology::BaseMeshTopology::GetClass()))
-            return destType->dynamicCast(node->getMeshTopologyLink());
+            return destType->dynamicCastToBase(node->getMeshTopologyLink());
         else if (destType->hasParent(core::topology::Topology::GetClass()))
-            return destType->dynamicCast(node->getTopology());
+            return destType->dynamicCastToBase(node->getTopology());
         else if (destType->hasParent(core::visual::Shader::GetClass()))
-            return destType->dynamicCast(node->getShader());
+            return destType->dynamicCastToBase(node->getShader());
         else if (destType->hasParent(core::behavior::BaseAnimationLoop::GetClass()))
-            return destType->dynamicCast(node->getAnimationLoop());
+            return destType->dynamicCastToBase(node->getAnimationLoop());
         else if (destType->hasParent(core::behavior::OdeSolver::GetClass()))
-            return destType->dynamicCast(node->getOdeSolver());
+            return destType->dynamicCastToBase(node->getOdeSolver());
         else if (destType->hasParent(core::collision::Pipeline::GetClass()))
-            return destType->dynamicCast(node->getCollisionPipeline());
+            return destType->dynamicCastToBase(node->getCollisionPipeline());
         else if (destType->hasParent(core::visual::VisualLoop::GetClass()))
-            return destType->dynamicCast(node->getVisualLoop());
+            return destType->dynamicCastToBase(node->getVisualLoop());
 
         return nullptr;
     }

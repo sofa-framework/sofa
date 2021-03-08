@@ -21,6 +21,9 @@
 ******************************************************************************/
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
+#include <sofa/core/reflection/ClassInfo.h>
+#include <sofa/core/reflection/ClassInfoBuilder.h>       ///< DAGNode is in-heriting from Base so it should be registered in the type repository.
+#include <sofa/core/reflection/ClassInfoRepository.h>    ///< DAGNode is in-heriting from Base so it should be registered in the type repository.
 #include <sofa/helper/Factory.inl>
 
 namespace sofa::simulation::graph
@@ -860,9 +863,20 @@ void DAGNode::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_i
     }
 }
 
-
-
 //helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeDefaultClass("default");
 static helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeClass("DAGNode");
+
+/// Creates a ClassInfo instance for DAGNode using the ClassInfoBuilder
+/// and register it in the ClassInfoRepository at the specified id. Compared to BaseObject kind of object
+/// it is needed to do an explicit registration for DAGNode because as they are not registered
+/// in the ObjectFactory they does not benefit from the automatic registration that it embeds.
+int registerNode()
+{
+    sofa::core::reflection::ClassInfoRepository::Set(sofa::core::reflection::Class::GetClassId<DAGNode>(),
+                                                      sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<DAGNode>(
+                                                          sofa_tostring(SOFA_TARGET)));
+    return 0;
+}
+static int registerNodeClassInfo = registerNode();
 
 } // namespace sofa::simulation::graph
