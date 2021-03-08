@@ -46,10 +46,6 @@ BruteForceDetection::BruteForceDetection()
 {
 }
 
-BruteForceDetection::~BruteForceDetection()
-{
-}
-
 void BruteForceDetection::init()
 {
     reinit();

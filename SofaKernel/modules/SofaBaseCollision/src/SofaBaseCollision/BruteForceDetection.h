@@ -95,7 +95,7 @@ private:
 protected:
     BruteForceDetection();
 
-    ~BruteForceDetection() override;
+    ~BruteForceDetection() override = default;
 
     virtual bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
 
