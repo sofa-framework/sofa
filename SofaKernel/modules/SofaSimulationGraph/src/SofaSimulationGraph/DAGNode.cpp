@@ -23,7 +23,6 @@
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <sofa/core/reflection/ClassInfo.h>
 #include <sofa/core/reflection/ClassInfoBuilder.h>       ///< DAGNode is in-heriting from Base so it should be registered in the type repository.
-#include <sofa/core/reflection/ClassInfoRepository.h>    ///< DAGNode is in-heriting from Base so it should be registered in the type repository.
 #include <sofa/helper/Factory.inl>
 
 namespace sofa::simulation::graph
@@ -872,9 +871,7 @@ static helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeClass("DAGNode
 /// in the ObjectFactory they does not benefit from the automatic registration that it embeds.
 int registerNode()
 {
-    sofa::core::reflection::ClassInfoRepository::Set(sofa::core::reflection::Class::GetClassId<DAGNode>(),
-                                                      sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<DAGNode>(
-                                                          sofa_tostring(SOFA_TARGET)));
+    sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<DAGNode>(sofa_tostring(SOFA_TARGET));
     return 0;
 }
 static int registerNodeClassInfo = registerNode();
