@@ -22,6 +22,7 @@
 #ifndef SOFA_HELPER_IO_MESH_H
 #define SOFA_HELPER_IO_MESH_H
 
+#include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
