@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseCollision/DefaultContactManager.h>
 
+#include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/Tag.h>

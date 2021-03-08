@@ -29,6 +29,7 @@ using sofa::core::ObjectCreator ;
 #include <sofa/core/collision/CollisionAlgorithm.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/core/collision/Intersection.h>
+#include <sofa/core/collision/Pipeline.h>
 
 #include "Binding_BaseObject.h"
 #include "Binding_Base.h"
