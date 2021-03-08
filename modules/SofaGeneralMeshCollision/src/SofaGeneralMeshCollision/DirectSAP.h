@@ -33,7 +33,6 @@
 namespace sofa::component::collision
 {
 
-class CollisionModel;
 class EndPoint;
 
 /**

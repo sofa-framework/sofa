@@ -60,13 +60,16 @@ inline double DSAPBox::squaredDistance(const DSAPBox & other,int axis)const{
 DirectSAP::DirectSAP()
     : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
     , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
+    , _cur_axis(0)
+    , _alarmDist(0)
+    , _alarmDist_d2(0)
+    , _sq_alarmDist(0)
 {
 }
 
 
 DirectSAP::~DirectSAP()
 {
-
     for(unsigned int i = 0 ; i < _to_del.size() ; ++i)
         delete[] _to_del[i];
 }
@@ -109,7 +112,7 @@ void DirectSAP::endBroadPhase()
 {
     BroadPhaseDetection::endBroadPhase();
 
-    if(_new_cm.size() == 0)
+    if(_new_cm.empty())
         return;
 
     //to gain time, we create at the same time all SAPboxes so as to allocate
@@ -128,7 +131,7 @@ void DirectSAP::endBroadPhase()
     _to_del.push_back(end_pts);
 
     int cur_EndPtID = 0;
-    int cur_boxID = _boxes.size();
+    int cur_boxID = static_cast<int>(_boxes.size());
     for(unsigned int i = 0 ; i < cube_models.size() ; ++i){
         CubeCollisionModel * cm = cube_models[i];
         for(Size j = 0 ; j < cm->getSize() ; ++j){
@@ -159,56 +162,45 @@ void DirectSAP::addCollisionModel(core::CollisionModel *cm){
         add(cm);
 }
 
-int DirectSAP::greatestVarianceAxis()const{
-    double diff;
-    double v[3];//variances for each axis
-    double m[3];//means for each axis
-    for(int i = 0 ; i < 3 ; ++i)
-        v[i] = m[i] = 0;
+int DirectSAP::greatestVarianceAxis() const
+{
+    defaulttype::Vector3 variance;//variances for each axis
+    defaulttype::Vector3 mean;//means for each axis
 
     //computing the mean value of end points on each axis
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        const defaulttype::Vector3 & min = _boxes[i].cube.minVect();
-        const defaulttype::Vector3 & max = _boxes[i].cube.maxVect();
-        m[0] += min[0] + max[0];
-        m[1] += min[1] + max[1];
-        m[2] += min[2] + max[2];
+    for (const auto& dsapBox : _boxes)
+    {
+        mean += dsapBox.cube.minVect();
+        mean += dsapBox.cube.maxVect();
     }
 
-    m[0] /= 2*_boxes.size();
-    m[1] /= 2*_boxes.size();
-    m[2] /= 2*_boxes.size();
+    const auto nbBoxes = _boxes.size();
+    if (nbBoxes > 0)
+    {
+        mean[0] /= 2. * static_cast<double>(nbBoxes);
+        mean[1] /= 2. * static_cast<double>(nbBoxes);
+        mean[2] /= 2. * static_cast<double>(nbBoxes);
+    }
 
     //computing the variance of end points on each axis
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        const defaulttype::Vector3 & min = _boxes[i].cube.minVect();
-        const defaulttype::Vector3 & max = _boxes[i].cube.maxVect();
+    for (const auto& dsapBox : _boxes)
+    {
+        const defaulttype::Vector3 & min = dsapBox.cube.minVect();
+        const defaulttype::Vector3 & max = dsapBox.cube.maxVect();
 
-        diff = min[0] - m[0];
-        v[0] += diff*diff;
-        diff = max[0] - m[0];
-        v[0] += diff*diff;
-
-        diff = min[1] - m[1];
-        v[1] += diff*diff;
-        diff = max[1] - m[1];
-        v[1] += diff*diff;
-
-        diff = min[2] - m[2];
-        v[2] += diff*diff;
-        diff = max[2] - m[2];
-        v[2] += diff*diff;
+        for (unsigned int j = 0 ; j < 3; ++j)
+        {
+            variance[j] += std::pow(min[j] - mean[j], 2);
+            variance[j] += std::pow(max[j] - mean[j], 2);
+        }
     }
 
-    if(v[0] >= v[1] && v[0] >= v[2])
+    if(variance[0] >= variance[1] && variance[0] >= variance[2])
         return 0;
-    else if(v[1] >= v[2])
+    if(variance[1] >= variance[2])
         return 1;
-    else
-        return 2;
+    return 2;
 }
-
-
 
 void DirectSAP::update(){
     _cur_axis = greatestVarianceAxis();
@@ -226,10 +218,8 @@ void DirectSAP::beginNarrowPhase()
 
     update();
 
-    CompPEndPoint comp;
-
     sofa::helper::AdvancedTimer::stepBegin("Direct SAP std::sort");
-    std::sort(_end_points.begin(),_end_points.end(),comp);
+    std::sort(_end_points.begin(),_end_points.end(), CompPEndPoint());
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP std::sort");
 
     sofa::helper::AdvancedTimer::stepBegin("Direct SAP intersection");
@@ -271,7 +261,7 @@ void DirectSAP::beginNarrowPhase()
                         swapModels = true;
 
 
-                    if(finalintersector != 0x0){
+                    if(finalintersector != nullptr){
                         if(swapModels){
                             sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm2, finalcm1);
                             finalintersector->beginIntersect(finalcm2, finalcm1, outputs);//creates outputs if null
