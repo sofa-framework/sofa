@@ -318,15 +318,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = DataTypes::getCPos(xmouse[0]);
         _vm->m_positions.endEdit();
-    //    std::cerr<<"mouse: "<<mstateCollision->getName()<<" "<<mstateCollision->getPX(pickedParticleIndex)<<std::endl;
     }
-
-
-
-
-//    mouseMapping->apply(core::GetDefaultMechanicalParamsInstance());
-//    mouseMapping->applyJ(core::GetDefaultMechanicalParamsInstance());
-
     this->interactor->setMouseAttached(true);
 }
 

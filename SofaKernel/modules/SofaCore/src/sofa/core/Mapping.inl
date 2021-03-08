@@ -224,7 +224,7 @@ void Mapping<In,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivI
 
 
 template <class In, class Out>
-void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams = GetDefaultMechanicalParamsInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ )
+void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams */ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ )
 {
     //applyDJT
 }

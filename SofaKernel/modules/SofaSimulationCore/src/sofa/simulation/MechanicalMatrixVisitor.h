@@ -272,7 +272,7 @@ class SOFA_SIMULATION_CORE_API MechanicalApplyProjectiveConstraint_ToMatrixVisit
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
 
-    MechanicalApplyProjectiveConstraint_ToMatrixVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::GetDefaultMechanicalParamsInstance()*/, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
+    MechanicalApplyProjectiveConstraint_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
         : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
     {
     }
