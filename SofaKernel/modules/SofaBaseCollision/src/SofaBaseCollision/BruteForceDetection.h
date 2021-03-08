@@ -36,11 +36,12 @@ class CubeCollisionModel;
 class SOFA_SOFABASECOLLISION_API MirrorIntersector : public core::collision::ElementIntersector
 {
 public:
-    core::collision::ElementIntersector* intersector;
+    core::collision::ElementIntersector* intersector { nullptr };
 
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
     bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) override
     {
+		assert(intersector != nullptr);
         return intersector->canIntersect(elem2, elem1);
     }
 
@@ -48,23 +49,27 @@ public:
     /// If the given contacts vector is nullptr, then this method should allocate it.
     int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector*& contacts) override
     {
+		assert(intersector != nullptr);
         return intersector->beginIntersect(model2, model1, contacts);
     }
 
     /// Compute the intersection between 2 elements. Return the number of contacts written in the contacts vector.
     int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, core::collision::DetectionOutputVector* contacts) override
     {
+		assert(intersector != nullptr);
         return intersector->intersect(elem2, elem1, contacts);
     }
 
     /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
     int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, core::collision::DetectionOutputVector* contacts) override
     {
+		assert(intersector != nullptr);
         return intersector->endIntersect(model2, model1, contacts);
     }
 
-    virtual std::string name() const override
+    std::string name() const override
     {
+		assert(intersector != nullptr);
         return intersector->name() + std::string("<SWAP>");
     }
 
