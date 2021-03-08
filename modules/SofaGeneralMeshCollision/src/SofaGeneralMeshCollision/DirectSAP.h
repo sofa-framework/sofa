@@ -45,25 +45,20 @@ class EndPoint;
   */
 class SOFA_SOFAGENERALMESHCOLLISION_API DSAPBox{
 public:
-    DSAPBox(Cube c,EndPoint * mi = nullptr,EndPoint * ma = nullptr) : cube(c),min(mi),max(ma){}
+    explicit DSAPBox(const Cube& c,EndPoint * mi = nullptr,EndPoint * ma = nullptr) : cube(c),min(mi),max(ma){}
 
     void update(int axis,double alarmDist);
 
-    bool overlaps(const DSAPBox & other,int axis,double alarmDist)const;
+    double squaredDistance(const DSAPBox & other) const;
 
-    bool overlaps(const DSAPBox &other,double alarmDist)const;
-
-    bool sqOverlaps(const DSAPBox &other,double squaredAlarmDist)const;
-
-    double squaredDistance(const DSAPBox & other)const;
-
-    double squaredDistance(const DSAPBox & other,int axis)const;
+    /// Compute the squared distance from this to other on a specific axis
+    double squaredDistance(const DSAPBox & other, int axis)const;
 
     void show() const;
 
     Cube cube;
-    EndPoint * min;
-    EndPoint * max;
+    EndPoint * min { nullptr };
+    EndPoint * max { nullptr };
 };
 
 /**

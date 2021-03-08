@@ -44,33 +44,18 @@ inline double DSAPBox::squaredDistance(const DSAPBox & other,int axis)const{
     const defaulttype::Vector3 & min1 = other.cube.minVect();
     const defaulttype::Vector3 & max1 = other.cube.maxVect();
 
-    double temp;
-
-    if(min0[axis] > max1[axis]){
-        temp = (min0[axis] - max1[axis]);
-        return temp * temp;
+    if(min0[axis] > max1[axis])
+    {
+        return std::pow(min0[axis] - max1[axis], 2);
     }
-    else if(min1[axis] > max0[axis]){
-        temp = (min1[axis] - max0[axis]);
-        return temp * temp;
+
+    if(min1[axis] > max0[axis])
+    {
+        return std::pow((min1[axis] - max0[axis]), 2);
     }
 
     return 0;
 }
-
-
-inline bool DSAPBox::overlaps(const DSAPBox &other, int axis, double alarmDist) const{
-    const defaulttype::Vector3 & min0 = this->cube.minVect();
-    const defaulttype::Vector3 & max0 = this->cube.maxVect();
-    const defaulttype::Vector3 & min1 = other.cube.minVect();
-    const defaulttype::Vector3 & max1 = other.cube.maxVect();
-
-    if(min0[axis] >= max1[axis] + alarmDist || min1[axis] >= max0[axis] + alarmDist)
-        return false;
-
-    return true;
-}
-
 
 DirectSAP::DirectSAP()
     : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
@@ -315,10 +300,6 @@ inline void DSAPBox::show()const
 {
     msg_info("DSAPBox") <<"MIN "<<cube.minVect()<< msgendl
                         <<"MAX "<<cube.maxVect() ;
-}
-
-bool DSAPBox::overlaps(const DSAPBox &other,double alarmDist) const{
-    return overlaps(other,0,alarmDist) && overlaps(other,0,alarmDist) && overlaps(other,0,alarmDist);
 }
 
 double DSAPBox::squaredDistance(const DSAPBox & other)const{
