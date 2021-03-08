@@ -137,15 +137,8 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 
 bool BruteForceDetection::keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2)
 {
-    if (!cm1->canCollideWith(cm2) || !cm2->canCollideWith(cm1))
-    {
-        return false;
-    }
-
-    return true;
+	return cm1->canCollideWith(cm2) && cm2->canCollideWith(cm1);
 }
-
-
 
 void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
 {    
