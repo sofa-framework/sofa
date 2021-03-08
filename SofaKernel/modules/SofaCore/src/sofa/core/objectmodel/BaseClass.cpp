@@ -30,49 +30,6 @@ namespace core
 namespace objectmodel
 {
 
-BaseClass* DeprecatedBaseClass::GetSingleton()
-{
-    static DeprecatedBaseClass dpc;
-    return &dpc;
-}
-
-
-BaseClass::BaseClass()
-{
-}
-
-BaseClass::~BaseClass()
-{
-}
-
-DeprecatedBaseClass::DeprecatedBaseClass()
-{
-    namespaceName= "DeprecatedBaseClass::namespace";
-    className = "DeprecatedBaseClass::classname";
-    templateName = "DeprecatedBaseClass::templatename";
-    shortName = "DeprecatedBaseClass::shortname";
-}
-
-std::string BaseClass::decodeFullName(const std::type_info& t)
-{
-    return sofa::helper::NameDecoder::decodeFullName(t);
-}
-
-std::string BaseClass::decodeTypeName(const std::type_info& t)
-{
-    return sofa::helper::NameDecoder::decodeTypeName(t);
-}
-
-std::string BaseClass::decodeClassName(const std::type_info& t)
-{
-    return sofa::helper::NameDecoder::decodeClassName(t);
-}
-
-std::string BaseClass::decodeNamespaceName(const std::type_info& t)
-{
-    return sofa::helper::NameDecoder::decodeNamespaceName(t);
-}
-
 
 } // namespace objectmodel
 
