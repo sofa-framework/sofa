@@ -77,7 +77,7 @@ bool RequiredPlugin::loadPlugin()
     loadedPlugins.clear();
 
     auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
-	
+
     const std::string defaultSuffix = PluginManager::getDefaultSuffix();
     const helper::vector<helper::fixed_array<std::string,2> >& sMap = d_suffixMap.getValue();
     helper::vector<std::string> suffixVec;
@@ -114,10 +114,10 @@ bool RequiredPlugin::loadPlugin()
         for (const auto& suffix : suffixVec)
         {
             if ( pluginManager.pluginIsLoaded(name) || 
-				pluginManager.loadPlugin(name, suffix, true, true, &errmsg) )
+                 pluginManager.loadPlugin(name, suffix, true, true, &errmsg) )
             {
                 loadedPlugins.push_back(name);
-				isNameLoaded = true;
+                isNameLoaded = true;
                 if (d_stopAfterFirstSuffixFound.getValue()) break;
             }
         }
