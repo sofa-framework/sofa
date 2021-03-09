@@ -51,37 +51,44 @@ using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
 // Register in the Factory
-int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where EdgeSetTopology is converted to QuadSetTopology")
+int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where EdgeSetTopology is converted to QuadSetTopology.")
         .add< Edge2QuadTopologicalMapping >()
 
         ;
 
 // Implementation
-
 Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
     : TopologicalMapping()
-    , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
-    , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
-    , edgeList(initData(&edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
-    , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
+    , d_nbPointsOnEachCircle( initData(&d_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
+    , d_radius( initData(&d_radius, 1., "radius", "Radius of created circles in yz plan"))
+    , d_radiusFocal( initData(&d_radiusFocal, 0., "radiusFocal", "If greater than 0., radius in focal axis of created ellipses"))
+    , d_focalAxis( initData(&d_focalAxis, Vec(0,0,1), "focalAxis", "In case of ellipses"))
+    , d_edgeList(initData(&d_edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
+    , d_flipNormals(initData(&d_flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
     , m_radiusContainer(nullptr)
 {
 }
 
 void Edge2QuadTopologicalMapping::init()
 {
-
-    if (!m_radius.isSet())
+    double rho = d_radius.getValue();
+    if (!d_radius.isSet())
     {
         this->getContext()->get(m_radiusContainer);
 
         if(!m_radiusContainer)
             msg_info() << "No radius defined";
     }
- 
 
-    unsigned int N = m_nbPointsOnEachCircle.getValue();
-    double rho = m_radius.getValue();
+    bool ellipse = false;
+    double rhoFocal;
+    if (d_radiusFocal.isSet() && d_radiusFocal.getValue()>0.)
+    {
+        ellipse = true;
+        rhoFocal = d_radiusFocal.getValue();
+    }
+
+    unsigned int N = d_nbPointsOnEachCircle.getValue();
 
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
 
@@ -90,13 +97,11 @@ void Edge2QuadTopologicalMapping::init()
 
     if (fromModel)
     {
-
-        msg_info() << "INFO_print : Edge2QuadTopologicalMapping - from = edge";
+        msg_info() << "Edge2QuadTopologicalMapping - from = edge";
 
         if (toModel)
         {
-
-            msg_info() << "INFO_print : Edge2QuadTopologicalMapping - to = quad";
+            msg_info() << "Edge2QuadTopologicalMapping - to = quad";
 
             QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
@@ -113,10 +118,18 @@ void Edge2QuadTopologicalMapping::init()
 
             // CREATION of the points (new DOFs for the output topology) along the circles around each point of the input topology
 
+            Vec X0(1.,0.,0.);
             Vec Y0;
             Vec Z0;
-            Y0[0] = (Real) (0.0); Y0[1] = (Real) (1.0); Y0[2] = (Real) (0.0);
-            Z0[0] = (Real) (0.0); Z0[1] = (Real) (0.0); Z0[2] = (Real) (1.0);
+
+            if (ellipse){
+                Z0 = d_focalAxis.getValue();
+                Z0.normalize();
+                Y0 = cross(Z0,X0);
+            } else {
+                Y0[0] = (Real) (0.0); Y0[1] = (Real) (1.0); Y0[2] = (Real) (0.0);
+                Z0[0] = (Real) (0.0); Z0[1] = (Real) (0.0); Z0[2] = (Real) (1.0);
+            }
 
             if (to_mstate)
             {
@@ -129,7 +142,6 @@ void Edge2QuadTopologicalMapping::init()
 
             if (to_mstate)
             {
-
                 for (unsigned int i=0; i<(unsigned int) fromModel->getNbPoints(); ++i)
                 {
                     unsigned int p0=i;
@@ -152,17 +164,22 @@ void Edge2QuadTopologicalMapping::init()
                     {
                         if(m_radiusContainer) rho = m_radiusContainer->getPointRadius(j);
 
-                        Vec x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
+                        Vec x;
+                        if(ellipse){
+                            x = t + Y*cos((Real) (2.0*j*M_PI/N))*((Real) rho) + Z*sin((Real) (2.0*j*M_PI/N))*((Real) rhoFocal);
+                        } else {
+                            x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
+                        }
                         to_x[p0*N+j] = x;
                     }
                 }
             }
 
 
-            // CREATION of the quads based on the the circles
+            // CREATION of the quads based on the circles
             sofa::helper::vector< Quad > quads_to_create;
             sofa::helper::vector< Index > quadsIndexList;
-            if(edgeList.getValue().size()==0)
+            if(d_edgeList.getValue().size()==0)
             {
 
                 unsigned int nb_elems = (unsigned int)toModel->getNbQuads();
@@ -183,7 +200,7 @@ void Edge2QuadTopologicalMapping::init()
                         unsigned int q2 = p1*N+((j+1)%N);
                         unsigned int q3 = p0*N+((j+1)%N);
 
-                        if (flipNormals.getValue())
+                        if (d_flipNormals.getValue())
                         {
                             Quad q = Quad((unsigned int) q3, (unsigned int) q2, (unsigned int) q1, (unsigned int) q0);
                             quads_to_create.push_back(q);
@@ -209,9 +226,9 @@ void Edge2QuadTopologicalMapping::init()
             }
             else
             {
-                for (unsigned int j=0; j<edgeList.getValue().size(); ++j)
+                for (unsigned int j=0; j<d_edgeList.getValue().size(); ++j)
                 {
-                    unsigned int i=edgeList.getValue()[j];
+                    unsigned int i=d_edgeList.getValue()[j];
 
                     unsigned int p0 = edgeArray[i][0];
                     unsigned int p1 = edgeArray[i][1];
@@ -226,7 +243,7 @@ void Edge2QuadTopologicalMapping::init()
                         unsigned int q2 = p1*N+((j+1)%N);
                         unsigned int q3 = p0*N+((j+1)%N);
 
-                        if(flipNormals.getValue())
+                        if(d_flipNormals.getValue())
                             to_tstm->addQuadProcess(Quad((unsigned int) q0, (unsigned int) q3, (unsigned int) q2, (unsigned int) q1));
                         else
                             to_tstm->addQuadProcess(Quad((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
@@ -262,7 +279,7 @@ Index Edge2QuadTopologicalMapping::getFromIndex(Index ind)
 void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 {
 
-    unsigned int N = m_nbPointsOnEachCircle.getValue();
+    unsigned int N = d_nbPointsOnEachCircle.getValue();
 
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
 

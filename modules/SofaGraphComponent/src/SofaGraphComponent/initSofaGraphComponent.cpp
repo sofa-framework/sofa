@@ -27,6 +27,15 @@ using sofa::core::ObjectFactory;
 namespace sofa::component
 {
 
+void initSofaGraphComponent()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
 extern "C" {
     SOFA_SOFAGRAPHCOMPONENT_API void initExternalModule();
     SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleName();
@@ -38,11 +47,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    initSofaGraphComponent();
 }
 
 const char* getModuleName()

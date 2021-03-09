@@ -74,10 +74,10 @@ set(UI_FILES
     VRenderInterface.ui
     )
 
-if (Qt5_FOUND)
+if (Qt5Core_FOUND)
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
-elseif (Qt6_FOUND)
+elseif (Qt6Core_FOUND)
     qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     qt6_wrap_ui(FORM_FILES ${UI_FILES})
 endif()

@@ -21,11 +21,6 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
-
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
@@ -44,12 +39,6 @@ struct LoadScene_test: public Sofa_test<>
 
    bool LoadScene(std::string sceneName)
    {
-       // Init Sofa
-       sofa::component::initSofaBase();
-       sofa::component::initSofaCommon();
-       sofa::component::initSofaGeneral();
-       sofa::component::initSofaMisc();
-
        simulation::Simulation* simulation;
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 

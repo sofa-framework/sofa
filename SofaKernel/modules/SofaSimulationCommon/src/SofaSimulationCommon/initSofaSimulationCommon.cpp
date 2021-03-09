@@ -19,67 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <string>
-#include <SofaExporter/config.h>
+#include <SofaSimulationCommon/initSofaSimulationCommon.h>
 
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/Node.h>
-
-
-using sofa::core::ObjectFactory;
-
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+void initSofaSimulationCommon()
 {
-
-extern "C" {
-SOFA_SOFAEXPORTER_API void initExternalModule();
-SOFA_SOFAEXPORTER_API const char* getModuleName();
-SOFA_SOFAEXPORTER_API const char* getModuleVersion();
-SOFA_SOFAEXPORTER_API const char* getModuleLicense();
-SOFA_SOFAEXPORTER_API const char* getModuleDescription();
-SOFA_SOFAEXPORTER_API const char* getModuleComponentList();
+    sofa::simulation::common::init();
 }
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "SofaExporter";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains some exporter to save simulation scenes to various formats. "
-            "Supported format are: Sofa internal state format, VTK, STL, Mesh, Blender.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component
