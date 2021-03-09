@@ -19,25 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralImplicitOdeSolver/initSofaGeneralImplicitODESolver.h>
+#include <SofaMiscCollision/initSofaMiscCollision.h>
 
+#if SOFAMISCCOLLISION_HAVE_SOFASPHFLUID
+#include "SpatialGridPointModel.h"
+#endif // SOFAMISCCOLLISION_HAVE_SOFASPHFLUID
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa
 {
 
-extern "C" {
-    SOFA_SOFAGENERALIMPLICITODESOLVER_API void initExternalModule();
-    SOFA_SOFAGENERALIMPLICITODESOLVER_API const char* getModuleName();
-    SOFA_SOFAGENERALIMPLICITODESOLVER_API const char* getModuleVersion();
-    SOFA_SOFAGENERALIMPLICITODESOLVER_API const char* getModuleLicense();
-    SOFA_SOFAGENERALIMPLICITODESOLVER_API const char* getModuleDescription();
-    SOFA_SOFAGENERALIMPLICITODESOLVER_API const char* getModuleComponentList();
-}
+namespace component
+{
 
-void initExternalModule()
+void initSofaMiscCollision()
 {
     static bool first = true;
     if (first)
@@ -46,14 +40,28 @@ void initExternalModule()
     }
 }
 
+extern "C" {
+SOFA_MISC_COLLISION_API void initExternalModule();
+SOFA_MISC_COLLISION_API const char* getModuleName();
+SOFA_MISC_COLLISION_API const char* getModuleVersion();
+SOFA_MISC_COLLISION_API const char* getModuleLicense();
+SOFA_MISC_COLLISION_API const char* getModuleDescription();
+SOFA_MISC_COLLISION_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    initSofaMiscCollision();
+}
+
 const char* getModuleName()
 {
-    return sofa_tostring(SOFA_TARGET);
+    return "SofaMiscCollision";
 }
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFAGENERALIMPLICITODESOLVER_VERSION);
+    return "1.0";
 }
 
 const char* getModuleLicense()
@@ -63,14 +71,15 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains contains features about General Implicit Ode Solver.";
+    return "This plugin contains collision components.";
 }
 
 const char* getModuleComponentList()
 {
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
+    return "DistanceGridCollisionModel FFDDistanceGridDiscreteIntersection RayDistanceGridContact "
+           "RigidDistanceGridDiscreteIntersection DistanceGridForceField";
 }
 
-} // namespace sofa::component
+} // component
+
+} // sofa

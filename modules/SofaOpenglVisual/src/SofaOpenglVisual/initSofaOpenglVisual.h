@@ -19,59 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaValidation/initValidation.h>
+#ifndef SOFA_COMPONENT_OPENGL_VISUAL_INIT_H
+#define SOFA_COMPONENT_OPENGL_VISUAL_INIT_H
+#include "config.h"
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa
 {
 
-
-extern "C" {
-    SOFA_SOFAVALIDATION_API void initExternalModule();
-    SOFA_SOFAVALIDATION_API const char* getModuleName();
-    SOFA_SOFAVALIDATION_API const char* getModuleVersion();
-    SOFA_SOFAVALIDATION_API const char* getModuleLicense();
-    SOFA_SOFAVALIDATION_API const char* getModuleDescription();
-    SOFA_SOFAVALIDATION_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace component
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
+SOFA_OPENGL_VISUAL_API void initSofaOpenglVisual();
 
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFAVALIDATION_VERSION);
-}
+} // namespace component
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+} // namespace sofa
 
-const char* getModuleDescription()
-{
-    return "This plugin contains utilities used for validation purpose.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+#endif
 

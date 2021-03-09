@@ -3,10 +3,11 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaBase QUIET REQUIRED)
-find_package(SofaCommon QUIET REQUIRED)
-find_package(SofaGeneral QUIET REQUIRED)
-find_package(SofaMisc QUIET REQUIRED)
+set(SOFACOMPONENTALL_MODULES @SOFACOMPONENTALL_MODULES@)
+
+foreach(module ${SOFACOMPONENTALL_MODULES})
+    find_package(${module} QUIET REQUIRED)
+endforeach()
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

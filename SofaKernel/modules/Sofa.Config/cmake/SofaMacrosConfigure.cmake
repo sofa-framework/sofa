@@ -337,6 +337,9 @@ macro(sofa_find_package name)
 
     string(TOUPPER ${name} name_upper)
     string(TOUPPER ${PROJECT_NAME} project_upper)
+    string(REPLACE "." "_" name_upper "${name_upper}")
+    string(REPLACE "." "_" project_upper "${project_upper}")
+
     set(scopes "") # nothing = current scope only
     if(ARG_BOTH_SCOPES)
         set(scopes "BOTH_SCOPES")
@@ -370,12 +373,14 @@ endmacro()
 # It eases deps management, especially on Windows with the WinDepPack.
 macro(sofa_set_targets_release_only)
     foreach(target ${ARGN})
-        if(TARGET ${target})
-            set_target_properties(${target} PROPERTIES
-                MAP_IMPORTED_CONFIG_MINSIZEREL Release
-                MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
-                MAP_IMPORTED_CONFIG_DEBUG Release
-                )
+        if(NOT TARGET ${target})
+            message("sofa_set_targets_release_only: ${target} is not a target")
+            continue()
         endif()
+        set_target_properties(${target} PROPERTIES
+            MAP_IMPORTED_CONFIG_MINSIZEREL Release
+            MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
+            MAP_IMPORTED_CONFIG_DEBUG Release
+            )
     endforeach()
 endmacro()

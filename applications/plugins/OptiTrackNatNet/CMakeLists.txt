@@ -14,9 +14,10 @@ set(SOURCE_FILES
     initOptiTrackNatNet.cpp
 )
 
-find_package(SofaGeneral REQUIRED)
-find_package(Sofa.GL REQUIRED)
-find_package(Boost QUIET COMPONENTS system regex date_time REQUIRED)
+sofa_find_package(SofaSimulationCommon REQUIRED)
+sofa_find_package(SofaUserInteraction REQUIRED)
+sofa_find_package(Sofa.GL REQUIRED)
+sofa_find_package(Boost QUIET COMPONENTS system regex date_time REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OPTITRACKNATNET")

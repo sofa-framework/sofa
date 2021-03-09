@@ -19,13 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
-#define SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
+#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
+#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
+#include <SofaMiscCollision/config.h>
 
-#ifdef SOFA_BUILD_MISC_COLLISION
-#  define SOFA_SOFACOMPONENTALL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFACOMPONENTALL_API SOFA_IMPORT_DYNAMIC_LIBRARY
+namespace sofa
+{
+
+namespace component
+{
+    
+SOFA_MISC_COLLISION_API void initSofaMiscCollision();
+
+} // namespace component
+
+} // namespace sofa
+
 #endif
 
-#endif

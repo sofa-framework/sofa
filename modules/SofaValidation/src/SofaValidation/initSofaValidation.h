@@ -20,5 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <SofaValidation/config.h>
 
-#include <SofaMiscFem/config.h>
+namespace sofa::component
+{
+
+SOFA_SOFAVALIDATION_API void initSofaValidation();
+
+}
