@@ -2,6 +2,7 @@
 #include "SofaGL.h"
 #include "VisualPickVisitor.h"
 #include <sofa/core/objectmodel/Tag.h>
+#include <sofa/core/visual/VisualLoop.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
 using std::cout;
