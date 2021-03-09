@@ -35,6 +35,8 @@
 #include <sofa/geometry/Pyramid.h>
 #include <sofa/geometry/Hexahedron.h>
 
+#include <type_traits>
+
 namespace sofa::topology
 {
 
@@ -42,9 +44,14 @@ template <typename GeometryElement>
 struct Element : public sofa::type::stdtype::fixed_array<sofa::topology::PointID, GeometryElement::NumberOfNodes>
 {
     Element() = default;
-    template< typename... ArgsT, typename = std::enable_if_t< (GeometryElement::NumberOfNodes == sizeof...(ArgsT)) > >
-    constexpr Element(ArgsT&&... args) noexcept
-        : sofa::type::stdtype::fixed_array< sofa::topology::PointID, GeometryElement::NumberOfNodes >{ std::forward< ArgsT >(args)... } {}
+    template< typename... ArgsT
+        , typename = std::enable_if_t<std::conjunction<std::is_convertible<ArgsT, sofa::topology::PointID>...>::value>
+        , typename = std::enable_if_t< (GeometryElement::NumberOfNodes == sizeof...(ArgsT)) >
+    >
+        constexpr Element(ArgsT&&... args) noexcept
+        : sofa::type::stdtype::fixed_array< sofa::topology::PointID, GeometryElement::NumberOfNodes >
+    { static_cast<sofa::topology::PointID>(std::forward< ArgsT >(args))... }
+    {}
 };
 
 } // namespace sofa::geometry
