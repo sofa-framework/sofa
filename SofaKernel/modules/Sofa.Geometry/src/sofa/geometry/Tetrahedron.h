@@ -25,9 +25,10 @@
 
 namespace sofa::geometry
 {
-    template<typename real, typename dim>
-    class Tetrahedron
+    struct Tetrahedron
     {
+        static const sofa::Size NumberOfNodes = 4;
 
+        Tetrahedron() = default;
     };
 }

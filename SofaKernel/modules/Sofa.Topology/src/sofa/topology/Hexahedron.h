@@ -22,20 +22,16 @@
 #pragma once
 
 #include <sofa/topology/Point.h>
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/topology/Element.h>
+
+#include <sofa/geometry/Hexahedron.h>
 
 namespace sofa::topology
 {
     using HexahedronID = Index;
     using HexaID = Index;
 
-    class SOFA_TOPOLOGY_API Hexahedron : public sofa::type::stdtype::fixed_array<PointID, 8>
-    {
-    public:
-        Hexahedron();
-        Hexahedron(PointID a, PointID b, PointID c, PointID d,
-            PointID e, PointID f, PointID g, PointID h);
-    };
+    using Hexahedron = sofa::topology::Element<sofa::geometry::Hexahedron>;
 
     using Hexa = Hexahedron;
 

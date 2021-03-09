@@ -22,18 +22,15 @@
 #pragma once
 
 #include <sofa/topology/Point.h>
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/topology/Element.h>
+
+#include <sofa/geometry/Triangle.h>
 
 namespace sofa::topology
 {
     using TriangleID = Index;
 
-    class SOFA_TOPOLOGY_API Triangle : public sofa::type::stdtype::fixed_array<PointID, 3>
-    {
-    public:
-        Triangle();
-        Triangle(PointID a, PointID b, PointID c);
-    };
+    using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
 
     inline static const Triangle InvalidTriangle;
 }

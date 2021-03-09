@@ -24,14 +24,4 @@
 namespace sofa::topology
 {
 
-Tetrahedron::Tetrahedron()
-    : sofa::type::stdtype::fixed_array<PointID, 4>(InvalidID, InvalidID, InvalidID, InvalidID)
-{
-}
-
-Tetrahedron::Tetrahedron(PointID a, PointID b, PointID c, PointID d)
-    : sofa::type::stdtype::fixed_array<PointID, 4>(a, b, c, d)
-{
-}
-
 } // namespace sofa::topology

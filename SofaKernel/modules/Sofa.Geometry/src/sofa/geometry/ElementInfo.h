@@ -21,16 +21,46 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Element.h>
+#include <sofa/geometry/config.h>
 
+#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/geometry/ElementType.h>
+#include <sofa/geometry/Point.h>
+#include <sofa/geometry/Edge.h>
+#include <sofa/geometry/Triangle.h>
 #include <sofa/geometry/Quad.h>
+#include <sofa/geometry/Pentahedron.h>
+#include <sofa/geometry/Tetrahedron.h>
+#include <sofa/geometry/Pyramid.h>
+#include <sofa/geometry/Hexahedron.h>
 
-namespace sofa::topology
+namespace sofa::geometry
 {
-    using QuadID = Index;
 
-    using Quad = sofa::topology::Element<sofa::geometry::Quad>;
+template<typename GeometryElement>
+struct ElementInfo
+{
+    static ElementType type()
+    {
+        return ElementType();
+    }
 
-    inline static const Quad InvalidQuad;
-}
+    static const char* name()
+    {
+        return "";
+    }
+};
+
+
+#ifndef SOFA_GEOMETRY_ELEMENTINFO_DEFINITION
+extern template struct SOFA_GEOMETRY_API ElementInfo<Point>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Edge>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Triangle>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Quad>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Pentahedron>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Tetrahedron>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Pyramid>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Hexahedron>;
+#endif
+
+} // namespace sofa::geometry

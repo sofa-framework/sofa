@@ -25,9 +25,10 @@
 
 namespace sofa::geometry
 {
-    template<typename real, typename dim>
-    class Pyramid
+    struct Pyramid
     {
+        static const sofa::Size NumberOfNodes = 5;
 
+        Pyramid() = default;
     };
 }

@@ -22,18 +22,15 @@
 #pragma once
 
 #include <sofa/topology/Point.h>
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/topology/Element.h>
+
+#include <sofa/geometry/Edge.h>
 
 namespace sofa::topology
 {
     using EdgeID = Index;
 
-    class SOFA_TOPOLOGY_API Edge : public sofa::type::stdtype::fixed_array<topology::PointID, 2>
-    {
-    public:
-        Edge();
-        Edge(PointID a, PointID b);
-    };
+    using Edge = sofa::topology::Element<sofa::geometry::Edge>;
 
     inline static const Edge InvalidEdge;
 }

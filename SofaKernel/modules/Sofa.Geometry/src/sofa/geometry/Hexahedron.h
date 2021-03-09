@@ -25,9 +25,10 @@
 
 namespace sofa::geometry
 {
-    template<typename real, typename dim>
-    class Hexahedron
+    struct Hexahedron
     {
+        static const sofa::Size NumberOfNodes = 8;
 
+        Hexahedron() = default;
     };
 }

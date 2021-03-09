@@ -25,9 +25,10 @@
 
 namespace sofa::geometry
 {
-    template<typename real, typename dim>
-    class Quad
+    struct Quad
     {
+        static const sofa::Size NumberOfNodes = 4;
 
+        Quad() = default;
     };
 }

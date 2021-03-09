@@ -25,5 +25,10 @@
 
 namespace sofa::geometry
 {
-    
+    struct Point
+    {
+        static const sofa::Size NumberOfNodes = 1;
+
+        Point() = default;
+    };
 }

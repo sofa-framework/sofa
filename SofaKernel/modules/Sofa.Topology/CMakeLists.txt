@@ -6,9 +6,8 @@ set(SOFATOPOLOGYSRC_ROOT "src/sofa/topology")
 set(HEADER_FILES
     ${SOFATOPOLOGYSRC_ROOT}/config.h.in
     ${SOFATOPOLOGYSRC_ROOT}/init.h
+    ${SOFATOPOLOGYSRC_ROOT}/Element.h
     ${SOFATOPOLOGYSRC_ROOT}/Topology.h
-    ${SOFATOPOLOGYSRC_ROOT}/ElementType.h
-    ${SOFATOPOLOGYSRC_ROOT}/ElementInfo.h
     ${SOFATOPOLOGYSRC_ROOT}/Point.h
     ${SOFATOPOLOGYSRC_ROOT}/Edge.h
     ${SOFATOPOLOGYSRC_ROOT}/Triangle.h
@@ -22,7 +21,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFATOPOLOGYSRC_ROOT}/init.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Topology.cpp
-    ${SOFATOPOLOGYSRC_ROOT}/ElementInfo.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Element.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Point.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Edge.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Triangle.cpp
@@ -43,7 +42,7 @@ find_package(Sofa.Config REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES} )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config Sofa.Type)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config Sofa.Type Sofa.Geometry)
 
 # needs vector(header) from SofaHelper :/
 # to remove once vector has moved to Sofa.Type

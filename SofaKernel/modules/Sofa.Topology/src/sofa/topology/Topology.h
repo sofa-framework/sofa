@@ -23,7 +23,8 @@
 
 #include <sofa/topology/config.h>
 
-#include <sofa/topology/ElementType.h>
+#include <sofa/geometry/ElementType.h>
+
 #include <sofa/topology/Point.h>
 #include <sofa/topology/Edge.h>
 #include <sofa/topology/Triangle.h>
@@ -32,3 +33,10 @@
 #include <sofa/topology/Tetrahedron.h>
 #include <sofa/topology/Pyramid.h>
 #include <sofa/topology/Hexahedron.h>
+
+namespace sofa::topology
+{
+
+    using ElementType [[deprecated("TODO")]] = sofa::geometry::ElementType;
+
+}

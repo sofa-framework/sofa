@@ -22,19 +22,16 @@
 #pragma once
 
 #include <sofa/topology/Point.h>
-#include <sofa/type/stdtype/fixed_array.h>
+
+#include <sofa/topology/Element.h>
+#include <sofa/geometry/Pentahedron.h>
 
 namespace sofa::topology
 {
     using PentahedronID = Index;
     using PentaID = Index;
 
-    class SOFA_TOPOLOGY_API Pentahedron : public sofa::type::stdtype::fixed_array<PointID, 6>
-    {
-    public:
-        Pentahedron();
-        Pentahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f);
-    };
+    using Pentahedron = sofa::topology::Element<sofa::geometry::Pentahedron>;
 
     using Penta = Pentahedron;
 

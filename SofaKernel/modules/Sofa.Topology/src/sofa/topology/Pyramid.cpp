@@ -24,14 +24,4 @@
 namespace sofa::topology
 {
 
-Pyramid::Pyramid()
-    : sofa::type::stdtype::fixed_array<PointID, 5>(InvalidID, InvalidID, InvalidID, InvalidID, InvalidID) 
-{
-}
-    
-Pyramid::Pyramid(PointID a, PointID b, PointID c, PointID d, PointID e)
-    : sofa::type::stdtype::fixed_array<PointID, 5>(a, b, c, d, e) 
-{
-}
-
 } // namespace sofa::topology

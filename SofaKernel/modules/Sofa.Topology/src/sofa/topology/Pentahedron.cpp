@@ -24,13 +24,4 @@
 namespace sofa::topology
 {
 
-Pentahedron::Pentahedron() 
-    : sofa::type::stdtype::fixed_array<PointID, 6>(InvalidID, InvalidID, InvalidID, InvalidID, InvalidID, InvalidID)
-{
-}
-Pentahedron::Pentahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f) 
-    : sofa::type::stdtype::fixed_array<PointID, 6>(a, b, c, d, e, f)
-{
-}
-
 } // namespace sofa::topology

@@ -19,25 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_TOPOLOGY_ELEMENT_DEFINITION
 
-#include <sofa/topology/config.h>
+#include <sofa/topology/Element.h>
 
 namespace sofa::topology
 {
-
-/// The enumeration used to give unique identifiers to Topological objects.
-enum class ElementType
-{
-    UNKNOWN,
-    POINT,
-    EDGE,
-    TRIANGLE,
-    QUAD,
-    TETRAHEDRON,
-    HEXAHEDRON,
-    PENTAHEDRON,
-    PYRAMID    
-};
 
 } // namespace sofa::topology

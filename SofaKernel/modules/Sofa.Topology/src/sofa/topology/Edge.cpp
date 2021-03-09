@@ -24,13 +24,4 @@
 namespace sofa::topology
 {
 
-Edge::Edge()
-    : sofa::type::stdtype::fixed_array<PointID, 2>(InvalidID, InvalidID)
-{
-}
-
-Edge::Edge(PointID a, PointID b) : sofa::type::stdtype::fixed_array<PointID, 2>(a, b)
-{
-}
-
 } // namespace sofa::topology

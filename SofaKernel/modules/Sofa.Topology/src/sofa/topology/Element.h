@@ -21,16 +21,30 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Element.h>
+#include <sofa/topology/config.h>
 
+#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/topology/Point.h>
+
+#include <sofa/geometry/Point.h>
+#include <sofa/geometry/Edge.h>
+#include <sofa/geometry/Triangle.h>
 #include <sofa/geometry/Quad.h>
+#include <sofa/geometry/Pentahedron.h>
+#include <sofa/geometry/Tetrahedron.h>
+#include <sofa/geometry/Pyramid.h>
+#include <sofa/geometry/Hexahedron.h>
 
 namespace sofa::topology
 {
-    using QuadID = Index;
 
-    using Quad = sofa::topology::Element<sofa::geometry::Quad>;
+template <typename GeometryElement>
+struct Element : public sofa::type::stdtype::fixed_array<sofa::topology::PointID, GeometryElement::NumberOfNodes>
+{
+    Element() = default;
+    template< typename... ArgsT, typename = std::enable_if_t< (GeometryElement::NumberOfNodes == sizeof...(ArgsT)) > >
+    constexpr Element(ArgsT&&... args) noexcept
+        : sofa::type::stdtype::fixed_array< sofa::topology::PointID, GeometryElement::NumberOfNodes >{ std::forward< ArgsT >(args)... } {}
+};
 
-    inline static const Quad InvalidQuad;
-}
+} // namespace sofa::geometry

@@ -21,44 +21,23 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/geometry/config.h>
 
-#include <sofa/topology/ElementType.h>
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Edge.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Pentahedron.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Pyramid.h>
-#include <sofa/topology/Hexahedron.h>
-
-namespace sofa::topology
+namespace sofa::geometry
 {
 
-template<typename Element>
-struct ElementInfo
+/// The enumeration used to give unique identifiers to Topological objects.
+enum class ElementType
 {
-    static ElementType type()
-    {
-        return ElementType();
-    }
-
-    static const char* name()
-    {
-        return "";
-    }
+    UNKNOWN,
+    POINT,
+    EDGE,
+    TRIANGLE,
+    QUAD,
+    TETRAHEDRON,
+    HEXAHEDRON,
+    PENTAHEDRON,
+    PYRAMID    
 };
 
-#ifndef SOFA_TOPOLOGY_TOPOLOGYELEMENTINFO_DEFINITION
-extern template struct SOFA_TOPOLOGY_API ElementInfo<Point>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<Edge>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<Triangle>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<Quad>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<Pentahedron>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<Tetrahedron>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<Pyramid>;
-extern template struct SOFA_TOPOLOGY_API ElementInfo<Hexahedron>;
-#endif
-
-} // namespace sofa::topology
+} // namespace sofa::geometry

@@ -21,13 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/geometry/config.h>
 
 namespace sofa::geometry
 {
-    template<typename real, typename dim>
-    class Edge
+    struct Edge
     {
+        static const sofa::Size NumberOfNodes = 2;
 
+        Edge() = default;
     };
 }

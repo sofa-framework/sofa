@@ -24,14 +24,4 @@
 namespace sofa::topology
 {
 
-Triangle::Triangle()
-    : sofa::type::stdtype::fixed_array<PointID, 3>(InvalidID, InvalidID, InvalidID)
-{
-}
-
-Triangle::Triangle(PointID a, PointID b, PointID c)
-    : sofa::type::stdtype::fixed_array<PointID, 3>(a, b, c)
-{
-}
-
 } // namespace sofa::topology

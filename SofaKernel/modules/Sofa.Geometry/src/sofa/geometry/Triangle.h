@@ -25,9 +25,10 @@
 
 namespace sofa::geometry
 {
-    template<typename real, typename dim>
-    class Triangle
+    struct Triangle
     {
+        static const sofa::Size NumberOfNodes = 3;
 
+        Triangle() = default;
     };
 }

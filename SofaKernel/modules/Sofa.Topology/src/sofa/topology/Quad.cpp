@@ -24,14 +24,4 @@
 namespace sofa::topology
 {
 
-Quad::Quad() 
-    : sofa::type::stdtype::fixed_array<PointID, 4>(InvalidID, InvalidID, InvalidID, InvalidID)
-{
-}
-
-Quad::Quad(PointID a, PointID b, PointID c, PointID d) 
-    : sofa::type::stdtype::fixed_array<PointID, 4>(a, b, c, d)
-{
-}
-
 } // namespace sofa::topology

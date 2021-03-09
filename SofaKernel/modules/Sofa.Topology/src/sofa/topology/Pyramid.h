@@ -22,18 +22,15 @@
 #pragma once
 
 #include <sofa/topology/Point.h>
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/topology/Element.h>
+
+#include <sofa/geometry/Pyramid.h>
 
 namespace sofa::topology
 {
     using PyramidID = Index;
 
-    class SOFA_TOPOLOGY_API Pyramid : public sofa::type::stdtype::fixed_array<PointID, 5>
-    {
-    public:
-        Pyramid();
-        Pyramid(PointID a, PointID b, PointID c, PointID d, PointID e);
-    };
+    using Pyramid = sofa::topology::Element<sofa::geometry::Pyramid>;
 
     inline static const Pyramid InvalidPyramid;
 }

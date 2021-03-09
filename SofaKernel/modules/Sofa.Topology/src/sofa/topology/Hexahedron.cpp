@@ -24,15 +24,4 @@
 namespace sofa::topology
 {
 
-Hexahedron::Hexahedron() 
-    : sofa::type::stdtype::fixed_array<PointID, 8>(InvalidID, InvalidID, InvalidID, InvalidID, 
-        InvalidID, InvalidID, InvalidID, InvalidID) 
-{
-}
-
-Hexahedron::Hexahedron(PointID a, PointID b, PointID c, PointID d,
-    PointID e, PointID f, PointID g, PointID h) : sofa::type::stdtype::fixed_array<PointID, 8>(a, b, c, d, e, f, g, h) 
-{
-}
-
 } // namespace sofa::topology
