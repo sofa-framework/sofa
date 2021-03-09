@@ -49,9 +49,9 @@ static std::vector<const ClassInfo*>& getStorage()
 /// Private function returning the index of all the ClassInfo instances.
 /// This one allowed, at initialization to detect in non-constant time which ClassInfo
 /// instances are already registered and if so, at which index.
-static std::map<std::string, int>& getIndex()
+static std::map<std::type_index, int>& getIndex()
 {
-    static std::map<std::string, int> index{};
+    static std::map<std::type_index, int> index{};
     return index;
 }
 
@@ -94,10 +94,12 @@ const ClassInfo* ClassInfoRepository::Get(const ClassId& tid)
     if( id < typeinfos.size() && typeinfos[id] != nullptr)
         return typeinfos[id];
 
-    throw std::runtime_error("Accessing an invalid class info for type " + tid.symbol);
+    std::stringstream tmp;
+    tmp << "Accessing an invalid class info for type " << tid.symbol.name();
+    throw std::runtime_error(tmp.str().c_str());
 }
 
-int ClassInfoRepository::AllocateNewTypeId(const std::string& tindex)
+int ClassInfoRepository::AllocateNewTypeId(const std::type_index& tindex)
 {
     std::scoped_lock autolock(ClassInfoMutex);
 

@@ -23,10 +23,12 @@
 #include <sofa/core/config.h>
 #include <sofa/core/reflection/fwd.h>
 #include <type_traits>
+#include <typeindex>
 #include <string>
 
 namespace sofa::core::reflection
 {
+
 /** ************************************************************************
  * @brief Generates unique id for object inirited from class.
  *
@@ -48,9 +50,9 @@ public:
     const sofa::core::reflection::ClassInfo* getClassInfo() const ;
 
     sofa::Index id;
-    std::string symbol;
+    std::type_index symbol;
 
-    ClassId(const std::string& s);
+    ClassId(const std::type_info& s);
 };
 
 } /// namespace sofa::defaulttype

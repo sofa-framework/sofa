@@ -25,9 +25,9 @@
 namespace sofa::core::reflection
 {
 
-ClassId::ClassId(const std::string& symbol_)
+ClassId::ClassId(const std::type_info& symbol_) :
+    symbol(std::type_index(symbol_))
 {
-    symbol = symbol_;
     id = ClassInfoRepository::AllocateNewTypeId(symbol);
 }
 

@@ -68,7 +68,7 @@ public:
     static std::vector<const ClassInfo*> GetRegisteredTypes(const std::string& target="");
 
     /// Returns a new int to generates the corresponding TypeInfoId.
-    static int AllocateNewTypeId(const std::string& nfo);
+    static int AllocateNewTypeId(const std::type_index& nfo);
 };
 
 }

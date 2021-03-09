@@ -29,20 +29,6 @@
 namespace sofa::core::reflection
 {
 
-namespace
-{
-// https://codereview.stackexchange.com/questions/48594/unique-type-id-no-rtti
-// Waiting c++20 https://en.cppreference.com/w/cpp/utility/source_location/function_name
-template<class T>
-static constexpr const char* UID() { 
-#ifdef _MSC_VER
-    return __FUNCSIG__;
-#else
-    return __PRETTY_FUNCTION__; 
-#endif 
-}
-}
-
 class SOFA_CORE_API Class
 {
 public:
@@ -51,7 +37,7 @@ public:
     static const sofa::core::reflection::ClassId& GetClassId()
     {
         /// Create the unique ID once, and returns it each time.
-        static sofa::core::reflection::ClassId typeId(UID<std::decay_t<T>>());
+        static sofa::core::reflection::ClassId typeId(typeid(std::decay_t<T>));
         return typeId;
     }
 
