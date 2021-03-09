@@ -23,7 +23,7 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 #include <SofaValidation/CompareState.h>
 using sofa::component::misc::CompareStateCreator;

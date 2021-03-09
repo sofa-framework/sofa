@@ -40,7 +40,7 @@ using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 #include <SofaOpenglVisual/OglLabel.h>
 using sofa::component::visualmodel::OglLabel ;

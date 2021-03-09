@@ -31,7 +31,7 @@ using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;

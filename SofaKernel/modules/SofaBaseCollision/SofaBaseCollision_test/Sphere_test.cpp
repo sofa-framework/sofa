@@ -46,7 +46,7 @@ using sofa::component::collision::MeshMinProximityIntersection;
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 using sofa::component::collision::MeshNewProximityIntersection ;
 
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 using sofa::core::objectmodel::New;
 using sofa::component::collision::Sphere;
 using sofa::component::collision::SphereCollisionModel ;

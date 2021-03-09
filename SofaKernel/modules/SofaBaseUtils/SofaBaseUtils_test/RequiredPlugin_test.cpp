@@ -5,7 +5,7 @@
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 namespace sofa
 {

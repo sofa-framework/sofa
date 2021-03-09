@@ -26,7 +26,7 @@ using std::vector;
 using std::string;
 
 #include <sofa/core/fwd.h>
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance;
 
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test;

@@ -30,7 +30,7 @@ using std::string;
 #include <gtest/gtest.h>
 using testing::Types;
 
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>

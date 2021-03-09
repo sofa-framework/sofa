@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaMiscForceField/MeshMatrixMass.h>
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>

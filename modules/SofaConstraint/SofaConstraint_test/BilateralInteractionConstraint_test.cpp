@@ -26,7 +26,7 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/testing/NumericTest.h>

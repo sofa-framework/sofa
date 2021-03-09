@@ -50,7 +50,7 @@ using sofa::component::container::MechanicalObject ;
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
 using sofa::component::forcefield::ConstantForceField ;
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 template <typename TDataType, typename TMassType>
 struct TypeTuple

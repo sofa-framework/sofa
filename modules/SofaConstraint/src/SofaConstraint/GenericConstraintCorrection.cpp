@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 namespace sofa::component::constraintset 
 {

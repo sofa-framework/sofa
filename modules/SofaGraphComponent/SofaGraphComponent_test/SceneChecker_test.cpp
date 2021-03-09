@@ -22,7 +22,7 @@ using sofa::helper::system::PluginManager;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML;
 using sofa::simulation::Node;
-using sofa::core::execparams::defaultInstance; /// From sofa/core/fwd.h
+using sofa::core::execparams::defaultInstance; 
 
 /////////////////////// COMPONENT DEFINITION & DECLARATION /////////////////////////////////////////
 /// This component is only for testing the APIVersion system.
