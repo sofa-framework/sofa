@@ -3,7 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaGeneral REQUIRED)
+find_package(SofaEigen2Solver REQUIRED)
 find_package(Compliant REQUIRED)
 
 set(PREASSEMBLEDMASS_HAVE_FLEXIBLE @Flexible_FOUND@)

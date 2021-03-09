@@ -19,20 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_OPENGL_VISUAL_INIT_H
-#define SOFA_COMPONENT_OPENGL_VISUAL_INIT_H
-#include "config.h"
+#include <SofaSimulationGraph/initSofaSimulationGraph.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+void initSofaSimulationGraph()
 {
+    sofa::simulation::graph::init();
+}
 
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component

@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ALL_INIT_H
-#define SOFA_COMPONENT_ALL_INIT_H
-#include "config.h"
+#include <SofaPreconditioner/initSofaPreconditioner.h>
+#include <sofa/core/ObjectFactory.h>
+#include <string>
 
 namespace sofa
 {
@@ -29,9 +29,60 @@ namespace sofa
 namespace component
 {
 
-} // namespace component
+void initSofaPreconditioner()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-} // namespace sofa
+extern "C" {
+SOFA_PRECONDITIONER_API void initExternalModule();
+SOFA_PRECONDITIONER_API const char* getModuleName();
+SOFA_PRECONDITIONER_API const char* getModuleVersion();
+SOFA_PRECONDITIONER_API const char* getModuleLicense();
+SOFA_PRECONDITIONER_API const char* getModuleDescription();
+SOFA_PRECONDITIONER_API const char* getModuleComponentList();
+}
 
-#endif
+void initExternalModule()
+{
+    initSofaPreconditioner();
+}
+
+const char* getModuleName()
+{
+    return "SofaPreconditioner";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains preconditionners to accelerate the solving of linear systems.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // component
+
+} // sofa
+
+
+
 

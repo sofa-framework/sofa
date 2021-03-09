@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscFem/initSofaMiscFEM.h>
+
+#include <SofaNonUniformFem/initSofaNonUniformFem.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -27,22 +28,27 @@ using sofa::core::ObjectFactory;
 namespace sofa::component
 {
 
-extern "C" {
-    SOFA_SOFAMISCFEM_API void initExternalModule();
-    SOFA_SOFAMISCFEM_API const char* getModuleName();
-    SOFA_SOFAMISCFEM_API const char* getModuleVersion();
-    SOFA_SOFAMISCFEM_API const char* getModuleLicense();
-    SOFA_SOFAMISCFEM_API const char* getModuleDescription();
-    SOFA_SOFAMISCFEM_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+void initSofaNonUniformFem()
 {
     static bool first = true;
     if (first)
     {
         first = false;
     }
+}
+
+extern "C" {
+    SOFA_SOFANONUNIFORMFEM_API void initExternalModule();
+    SOFA_SOFANONUNIFORMFEM_API const char* getModuleName();
+    SOFA_SOFANONUNIFORMFEM_API const char* getModuleVersion();
+    SOFA_SOFANONUNIFORMFEM_API const char* getModuleLicense();
+    SOFA_SOFANONUNIFORMFEM_API const char* getModuleDescription();
+    SOFA_SOFANONUNIFORMFEM_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    initSofaNonUniformFem();
 }
 
 const char* getModuleName()
@@ -52,7 +58,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFAMISCFEM_VERSION);
+    return sofa_tostring(SOFANONUNIFORMFEM_VERSION);
 }
 
 const char* getModuleLicense()
@@ -62,7 +68,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains contains features about Misc FEM.";
+    return "This plugin contains contains features about non uniform FEM.";
 }
 
 const char* getModuleComponentList()

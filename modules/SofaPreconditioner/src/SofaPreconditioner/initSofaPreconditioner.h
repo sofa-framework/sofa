@@ -19,65 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <string>
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::RegisterObject;
+#include <SofaPreconditioner/config.h>
 
-#include <SofaOpenglVisual/initOpenGLVisual.h>
-
-#include <SofaOpenglVisual/OglModel.h>
-
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+SOFA_PRECONDITIONER_API void initSofaPreconditioner();
 
-extern "C" {
-    SOFA_OPENGL_VISUAL_API void initExternalModule();
-    SOFA_OPENGL_VISUAL_API const char* getModuleName();
-    SOFA_OPENGL_VISUAL_API const char* getModuleVersion();
-    SOFA_OPENGL_VISUAL_API const char* getModuleLicense();
-    SOFA_OPENGL_VISUAL_API const char* getModuleDescription();
-    SOFA_OPENGL_VISUAL_API const char* getModuleComponentList();
 }
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "SofaOpenglVisual";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "Visual object rendered using OpenGL 1.x/2.x.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace component
-
-} // namespace sofa

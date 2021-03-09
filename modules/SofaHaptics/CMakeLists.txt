@@ -5,7 +5,7 @@ sofa_find_package(SofaConstraint REQUIRED)
 
 set(HEADER_FILES
     src/SofaHaptics/config.h
-    src/SofaHaptics/initHaptics.h
+    src/SofaHaptics/initSofaHaptics.h
     src/SofaHaptics/ForceFeedback.h
     src/SofaHaptics/LCPForceFeedback.h
     src/SofaHaptics/LCPForceFeedback.inl
@@ -15,7 +15,7 @@ set(HEADER_FILES
     )
 
 set(SOURCE_FILES
-    src/SofaHaptics/initHaptics.cpp
+    src/SofaHaptics/initSofaHaptics.cpp
     src/SofaHaptics/ForceFeedback.cpp
     src/SofaHaptics/LCPForceFeedback.cpp
     src/SofaHaptics/NullForceFeedback.cpp

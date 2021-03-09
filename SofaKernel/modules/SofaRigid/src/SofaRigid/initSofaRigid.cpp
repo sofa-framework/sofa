@@ -21,12 +21,20 @@
 ******************************************************************************/
 #include <SofaRigid/initSofaRigid.h>
 
-
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
 namespace sofa::component
 {
+
+void initSofaRigid()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
 extern "C" {
     SOFA_SOFARIGID_API void initExternalModule();
@@ -39,11 +47,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    initSofaRigid();
 }
 
 const char* getModuleName()
