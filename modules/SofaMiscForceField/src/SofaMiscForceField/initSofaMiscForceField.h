@@ -19,9 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_EXPORTER_INIT_H
-#define SOFA_COMPONENT_EXPORTER_INIT_H
-#include <SofaExporter/config.h>
+#pragma once
 
-#endif
+#include <SofaMiscForceField/config.h>
 
+namespace sofa::component
+{
+
+SOFA_SOFAMISCFORCEFIELD_API void initSofaMiscForceField();
+
+} // namespace sofa::component

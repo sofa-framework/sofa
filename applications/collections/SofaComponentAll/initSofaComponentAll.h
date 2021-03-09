@@ -19,5 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaValidation/config.h>
+#ifndef SOFA_COMPONENT_ALL_INIT_H
+#define SOFA_COMPONENT_ALL_INIT_H
+#include <SofaComponentAll/config.h>
+
+namespace sofa
+{
+
+namespace component
+{
+
+SOFA_SOFACOMPONENTALL_API void initSofaComponentAll();
+
+} // namespace component
+
+} // namespace sofa
+
+#endif
+

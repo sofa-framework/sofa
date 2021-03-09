@@ -19,6 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#ifndef SOFA_COMPONENT_HAPTICS_INIT_H
+#define SOFA_COMPONENT_HAPTICS_INIT_H
+#include "config.h"
 
-#include <SofaMiscForceField/config.h>
+namespace sofa
+{
+
+namespace component
+{
+    
+SOFA_SOFAHAPTICS_API void initSofaHaptics();
+
+} // namespace component
+
+} // namespace sofa
+
+#endif
+

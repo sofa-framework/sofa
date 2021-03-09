@@ -20,9 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralImplicitOdeSolver/config.h>
+#include <SofaSimulationCommon/init.h>
 
 namespace sofa::component
 {
 
-} //namespace sofa::component
+SOFA_SOFASIMULATIONCOMMON_API void initSofaSimulationCommon();
+
+} // namespace sofa::component

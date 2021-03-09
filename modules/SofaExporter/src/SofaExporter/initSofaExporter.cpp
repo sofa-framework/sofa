@@ -19,25 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralExplicitOdeSolver/initSofaGeneralExplicitODESolver.h>
-
+#include <string>
+#include <SofaExporter/initSofaExporter.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/Node.h>
+
+
 using sofa::core::ObjectFactory;
 
-namespace sofa::component
+namespace sofa
 {
 
-extern "C" {
-    SOFA_SOFAGENERALEXPLICITODESOLVER_API void initExternalModule();
-    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleName();
-    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleVersion();
-    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleLicense();
-    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleDescription();
-    SOFA_SOFAGENERALEXPLICITODESOLVER_API const char* getModuleComponentList();
-}
+namespace component
+{
 
-void initExternalModule()
+void initSofaExporter()
 {
     static bool first = true;
     if (first)
@@ -46,14 +43,28 @@ void initExternalModule()
     }
 }
 
+extern "C" {
+SOFA_SOFAEXPORTER_API void initExternalModule();
+SOFA_SOFAEXPORTER_API const char* getModuleName();
+SOFA_SOFAEXPORTER_API const char* getModuleVersion();
+SOFA_SOFAEXPORTER_API const char* getModuleLicense();
+SOFA_SOFAEXPORTER_API const char* getModuleDescription();
+SOFA_SOFAEXPORTER_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    initSofaExporter();
+}
+
 const char* getModuleName()
 {
-    return sofa_tostring(SOFA_TARGET);
+    return "SofaExporter";
 }
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFAGENERALEXPLICITODESOLVER_VERSION);
+    return "1.0";
 }
 
 const char* getModuleLicense()
@@ -63,7 +74,8 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains contains features about General Explicit Ode Solver.";
+    return "This plugin contains some exporter to save simulation scenes to various formats. "
+            "Supported format are: Sofa internal state format, VTK, STL, Mesh, Blender.";
 }
 
 const char* getModuleComponentList()
@@ -73,4 +85,6 @@ const char* getModuleComponentList()
     return classes.c_str();
 }
 
-} // namespace sofa::component
+} // namespace component
+
+} // namespace sofa

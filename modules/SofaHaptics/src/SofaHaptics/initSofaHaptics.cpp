@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaHaptics/initHaptics.h>
+#include <SofaHaptics/initSofaHaptics.h>
 
 namespace sofa
 {
@@ -27,6 +27,15 @@ namespace sofa
 namespace component
 {
 
+
+void initSofaHaptics()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
 extern "C" {
 SOFA_SOFAHAPTICS_API void initExternalModule();
@@ -39,11 +48,7 @@ SOFA_SOFAHAPTICS_API const char* getModuleComponentList();
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    initSofaHaptics();
 }
 
 const char* getModuleName()

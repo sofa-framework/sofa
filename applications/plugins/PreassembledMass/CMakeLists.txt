@@ -13,7 +13,7 @@ set(SOURCE_FILES
     initPlugin.cpp
 )
 
-find_package(SofaGeneral REQUIRED)
+find_package(SofaEigen2Solver REQUIRED)
 find_package(Compliant REQUIRED)
 find_package(Flexible QUIET)
 

@@ -173,13 +173,20 @@ endif()
 
 set(README_FILES SofaCUDA.txt)
 
+find_package(CUDA REQUIRED)
+
+find_package(SofaGeneralEngine REQUIRED)
+find_package(SofaGeneralDeformable REQUIRED)
+find_package(SofaEngine REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
+find_package(SofaNonUniformFem REQUIRED)
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaMiscFem REQUIRED)
+find_package(SofaValidation REQUIRED)
 find_package(SofaMiscForceField REQUIRED)
 find_package(SofaGeneralObjectInteraction REQUIRED)
-find_package(CUDA REQUIRED)
+
 find_package(VolumetricRendering QUIET)
-find_package(SofaValidation REQUIRED)
 
 if(VolumetricRendering_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
@@ -319,7 +326,18 @@ cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_S
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaMiscMapping SofaMiscFem SofaValidation SofaMiscForceField SofaGeneralObjectInteraction)
+target_link_libraries(${PROJECT_NAME}
+    SofaGeneralEngine
+    SofaGeneralDeformable
+    SofaEngine
+    SofaUserInteraction
+    SofaNonUniformFem
+    SofaMiscMapping
+    SofaMiscFem
+    SofaValidation
+    SofaMiscForceField
+    SofaGeneralObjectInteraction
+    )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
