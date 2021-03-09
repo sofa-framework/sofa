@@ -26,15 +26,6 @@
 #include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/topology/Point.h>
 
-#include <sofa/geometry/Point.h>
-#include <sofa/geometry/Edge.h>
-#include <sofa/geometry/Triangle.h>
-#include <sofa/geometry/Quad.h>
-#include <sofa/geometry/Pentahedron.h>
-#include <sofa/geometry/Tetrahedron.h>
-#include <sofa/geometry/Pyramid.h>
-#include <sofa/geometry/Hexahedron.h>
-
 #include <type_traits>
 
 namespace sofa::topology
@@ -43,7 +34,11 @@ namespace sofa::topology
 template <typename GeometryElement>
 struct Element : public sofa::type::stdtype::fixed_array<sofa::topology::PointID, GeometryElement::NumberOfNodes>
 {
-    Element() = default;
+    constexpr Element() noexcept
+    {
+        std::fill(this->begin(), this->end(), sofa::InvalidID);
+    }
+
     template< typename... ArgsT
         , typename = std::enable_if_t<std::conjunction<std::is_convertible<ArgsT, sofa::topology::PointID>...>::value>
         , typename = std::enable_if_t< (GeometryElement::NumberOfNodes == sizeof...(ArgsT)) >
