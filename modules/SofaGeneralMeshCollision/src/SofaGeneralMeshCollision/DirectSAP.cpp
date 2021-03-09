@@ -97,37 +97,47 @@ void DirectSAP::reinit()
 
 inline bool DirectSAP::added(core::CollisionModel *cm) const
 {
+    assert(cm != nullptr);
     return collisionModels.count(cm->getLast()) >= 1;
 }
 
 inline void DirectSAP::add(core::CollisionModel *cm)
 {
+    assert(cm != nullptr);
     collisionModels.insert(cm->getLast());
     _new_cm.push_back(cm->getLast());
 }
-
-
 
 void DirectSAP::endBroadPhase()
 {
     BroadPhaseDetection::endBroadPhase();
 
-    if(_new_cm.empty())
+    if (_new_cm.empty())
         return;
 
+    createBoxesFromCollisionModels();
+    _new_cm.clear(); //createBoxesFromCollisionModels will be called again iff new collision models are added
+}
+
+void DirectSAP::createBoxesFromCollisionModels()
+{
     //to gain time, we create at the same time all SAPboxes so as to allocate
     //memory the less times
     std::vector<CubeCollisionModel*> cube_models;
     cube_models.reserve(_new_cm.size());
 
-    int n = 0;
-    for(unsigned int i = 0 ; i < _new_cm.size() ; ++i){
-        n += _new_cm[i]->getSize();
-        cube_models.push_back(dynamic_cast<CubeCollisionModel*>(_new_cm[i]->getPrevious()));
+    int totalNbElements = 0;
+    for (auto* newCM : _new_cm)
+    {
+        if (newCM != nullptr)
+        {
+            totalNbElements += newCM->getSize();
+            cube_models.push_back(dynamic_cast<CubeCollisionModel*>(newCM->getPrevious()));
+        }
     }
 
-    _boxes.reserve(_boxes.size() + n);
-    EndPoint * end_pts = new EndPoint[2*n];
+    _boxes.reserve(_boxes.size() + totalNbElements);
+    EndPoint * end_pts = new EndPoint[2*totalNbElements];
     _to_del.push_back(end_pts);
 
     int cur_EndPtID = 0;
@@ -151,8 +161,6 @@ void DirectSAP::endBroadPhase()
             ++cur_boxID;
         }
     }
-
-    _new_cm.clear();
 }
 
 
