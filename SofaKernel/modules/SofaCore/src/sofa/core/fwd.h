@@ -97,8 +97,8 @@ namespace sofa::core
 /// CORE::OPAQUE function are a groupe of function that make "opaque" some of the common sofa behaviors.
 ///
 /// Core::Opaque functions are:
-///     - Base* sofa::core::baseFrom(T*) replace dynamic_cast<Base*>(T*);
-///     - T* sofa::core::castBaseTo(Base*) replace dynamic_cast<T*>(Base*);
+///     - Base* sofa::core::dynamicCastBaseFrom(T*) replace dynamic_cast<Base*>(T*);
+///     - T* sofa::core::dynamicCastBaseTo(Base*) replace dynamic_cast<T*>(Base*);
 ///     - sofa:core::objectmodel::base::GetClass<T>() replace T::GetClass();
 ///
 /// These functions are called "opaque" as they work with only forward declaration of the involved
@@ -111,54 +111,93 @@ namespace sofa::core
 /// able to optimize them properly. If you have experience/feedback with LTO please join the discussion
 /// in https://github.com/sofa-framework/sofa/discussions/1822
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-template<class B>
-sofa::core::objectmodel::Base* baseFrom(B*b){ return dynamic_cast<sofa::core::objectmodel::Base*>(b);}
 
+///////////////////////////////////////////////////////////////////////////////////////
+/// Defines the baseline functions for a type all the types in-herit from Base.
+/// These are non-opaque function that needs to be specialized in order to implement
+/// an opaque version for a given type.
+
+/// Dynamic cast from the type parameter B* into Base*
+template<class Source>
+sofa::core::objectmodel::Base* dynamicCastBaseFrom(Source*b){ return dynamic_cast<sofa::core::objectmodel::Base*>(b);}
+
+/// Dynamic cast from Base* into the type parameter Des
 template<class Dest>
-Dest castBaseTo(sofa::core::objectmodel::Base* base){ return dynamic_cast<Dest>(base); }
+Dest dynamicCastBaseTo(sofa::core::objectmodel::Base* base){ return dynamic_cast<Dest>(base); }
 
-/// getClass is in the namespace base as it is an opaque function for Base::GetClass
 namespace objectmodel::base
 {
+/// Returns the BaseClass* from type parameter B, hiding B::GetClass()
 template<class B>
 const sofa::core::objectmodel::BaseClass* GetClass(){return B::GetClass(); }
 }
+///////////////////////////////////////////////////////////////////////////////////////
 
-/// Macro use to simplify the declaration of the core opaque function.
-#define DECLARE_OPAQUE_FUNCTION_FOR(TYPENAME) \
-    template<> SOFA_CORE_API TYPENAME* castBaseTo(sofa::core::objectmodel::Base* base); \
-    SOFA_CORE_API sofa::core::objectmodel::Base* baseFrom(TYPENAME* b); \
+/// Declares the opaque function signature for a type that in-herit from Base.
+///
+/// Example of use:
+/// Doing:
+///     SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(MyType)
+/// Will add the following functions:
+///     MyType* dynamiCastBaseTo(sofa::core::objectmodel::Base*)
+///     sofa::core::objectmodel::Base* dynamiCastBaseFrom(MyType*)
+///     BaseClass* sofa::core::objectmodel::base::GetClass()
+///
+/// Once declare it is mandatory to also define the same functions.
+/// For that you must use SOFA_DEFINE_OPAQUE_FUNCTION_BETWEEN_BASE_AND
+#define SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(TYPENAME) \
+    template<> SOFA_CORE_API TYPENAME* dynamicCastBaseTo(sofa::core::objectmodel::Base* base); \
+    SOFA_CORE_API sofa::core::objectmodel::Base* dynamicCastBaseFrom(TYPENAME* b); \
     namespace objectmodel::base { template<> SOFA_CORE_API const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>(); }
 
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::BaseState);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::BaseMapping);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::BehaviorModel);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::CollisionModel);
+/// Define the opaque function signature for a type that in-herit from Base.
+///
+/// Example of use:
+/// Doing:
+///     SOFA_DEFINE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(MyType)
+/// Will add the following functions:
+///     MyType* dynamiCastBaseTo(sofa::core::objectmodel::Base*) { ... }
+///     sofa::core::objectmodel::Base* dynamiCastBaseFrom(MyType*) {... }
+///     BaseClass* sofa::core::objectmodel::base::GetClass() { ... }
+///
+#define SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(TYPENAME) \
+    template<> \
+    TYPENAME* dynamicCastBaseTo(sofa::core::objectmodel::Base* base) \
+    { return dynamic_cast<TYPENAME*>(base); } \
+    sofa::core::objectmodel::Base* dynamicCastBaseFrom(TYPENAME* b) \
+    { return dynamic_cast<sofa::core::objectmodel::Base*>(b); } \
+    namespace objectmodel::base { template<> const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>() \
+    { return TYPENAME::GetClass(); } }
 
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::objectmodel::BaseObject);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::objectmodel::ContextObject);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::objectmodel::ConfigurationSetting);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::BaseState);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::BaseMapping);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::BehaviorModel);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::CollisionModel);
 
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseAnimationLoop);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseMass);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::OdeSolver);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::ConstraintSolver);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseLinearSolver);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseMechanicalState);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseForceField);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseInteractionForceField);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseProjectiveConstraintSet);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseConstraintSet);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::BaseObject);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::ContextObject);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::ConfigurationSetting);
 
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::topology::Topology);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::topology::BaseMeshTopology);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::topology::BaseTopologyObject);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseAnimationLoop);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseMass);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::OdeSolver);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::ConstraintSolver);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseLinearSolver);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseMechanicalState);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseForceField);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseInteractionForceField);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseProjectiveConstraintSet);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseConstraintSet);
 
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::collision::Pipeline);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::visual::VisualLoop);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::visual::Shader);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::visual::VisualModel);
-DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::visual::VisualManager);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::topology::Topology);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::topology::BaseMeshTopology);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::topology::BaseTopologyObject);
+
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::collision::Pipeline);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::visual::VisualLoop);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::visual::Shader);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::visual::VisualModel);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::visual::VisualManager);
 }
 
 namespace sofa::core::objectmodel::basecontext

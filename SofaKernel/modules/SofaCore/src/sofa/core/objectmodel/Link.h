@@ -503,7 +503,7 @@ protected:
 
         /// Downcast the pointer to a compatible type and
         /// If the types are not compatible with the Link we returns false
-        auto destptr = castBaseTo<DestType*>(baseptr);
+        auto destptr = dynamicCastBaseTo<DestType*>(baseptr);
         if(baseptr && !destptr)
         {
             return false;
@@ -517,7 +517,7 @@ protected:
     bool _doSet_(Base* baseptr, const size_t index) override
     {
         assert(index < m_value.size());
-        auto destptr = castBaseTo<DestType*>(baseptr);
+        auto destptr = dynamicCastBaseTo<DestType*>(baseptr);
 
         if(!destptr)
             return false;
@@ -528,7 +528,7 @@ protected:
 
     Base* _doGet_(const size_t index=0) const override
     {
-        return sofa::core::baseFrom(getIndex(index));
+        return sofa::core::dynamicCastBaseFrom(getIndex(index));
     }
 
     std::string _doGetLinkedPath_(const std::size_t index=0) const override
@@ -541,7 +541,7 @@ protected:
         {
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (ptr)
-                path = BaseLink::CreateString(sofa::core::baseFrom(ptr), m_owner);
+                path = BaseLink::CreateString(sofa::core::dynamicCastBaseFrom(ptr), m_owner);
         }
         return path;
     }

@@ -3,9 +3,6 @@
 #include <sofa/core/BaseState.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/objectmodel/ContextObject.h>
 
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/BehaviorModel.h>
@@ -22,19 +19,20 @@
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 
+#include <sofa/core/collision/Pipeline.h>
+
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopology.h>
-
-#include <sofa/core/collision/Pipeline.h>
 
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/Shader.h>
-
-#include <sofa/core/collision/Pipeline.h>
-#include <sofa/core/collision/Pipeline.h>
 
 namespace sofa::core::topology
 {
@@ -69,44 +67,35 @@ std::istream& operator>> ( std::istream& in, const TopologyChange*& )
 namespace sofa::core
 {
 
-#define DEFINE_OPAQUE_FUNCTION_FOR(TYPENAME) \
-    template<> \
-    TYPENAME* castBaseTo(sofa::core::objectmodel::Base* base) \
-    { return dynamic_cast<TYPENAME*>(base); } \
-    sofa::core::objectmodel::Base* baseFrom(TYPENAME* b) \
-    { return dynamic_cast<sofa::core::objectmodel::Base*>(b); } \
-    namespace objectmodel::base { template<> const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>() \
-    { return TYPENAME::GetClass(); } }
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::BaseState);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::BaseMapping);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::BehaviorModel);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::CollisionModel);
 
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::BaseState);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::BaseMapping);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::BehaviorModel);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::CollisionModel);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::objectmodel::BaseObject);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::objectmodel::ContextObject);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::objectmodel::ConfigurationSetting);
 
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::objectmodel::BaseObject);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::objectmodel::ContextObject);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::objectmodel::ConfigurationSetting);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseAnimationLoop);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseMass);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::OdeSolver);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::ConstraintSolver);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseLinearSolver);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseMechanicalState);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseForceField);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseInteractionForceField);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseProjectiveConstraintSet);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseConstraintSet);
 
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseAnimationLoop);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseMass);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::OdeSolver);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::ConstraintSolver);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseLinearSolver);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseMechanicalState);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseForceField);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseInteractionForceField);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseProjectiveConstraintSet);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::behavior::BaseConstraintSet);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::topology::Topology);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::topology::BaseMeshTopology);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::topology::BaseTopologyObject);
 
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::topology::Topology);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::topology::BaseMeshTopology);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::topology::BaseTopologyObject);
-
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::collision::Pipeline);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::visual::VisualLoop);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::visual::Shader);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::visual::VisualModel);
-DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::visual::VisualManager);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::collision::Pipeline);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::visual::VisualLoop);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::visual::Shader);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::visual::VisualModel);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::visual::VisualManager);
 
 }
 
