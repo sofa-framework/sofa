@@ -24,6 +24,7 @@
 #include "LinkWidget.h"
 #include "ModifyObject.h"
 #include <sofa/helper/Factory.inl>
+#include <sofa/core/reflection/ClassInfo.h>
 
 #include <QToolTip>
 

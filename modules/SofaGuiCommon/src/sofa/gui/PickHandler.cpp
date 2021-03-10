@@ -33,6 +33,7 @@
 #include <SofaBaseCollision/SphereModel.h>
 
 #include <SofaGraphComponent/MouseButtonSetting.h>
+#include <sofa/core/collision/Pipeline.h>
 
 #include <iostream>
 #include <limits>

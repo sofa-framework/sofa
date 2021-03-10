@@ -19,29 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP
-#include <SofaGeneralSimpleFem/BeamFEMForceField.inl>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/reflection/ClassInfoBuilder.h>
+#include "ClassInfo.h"
 
-namespace sofa::component::forcefield::_beamfemforcefield_
+namespace sofa::core::reflection
 {
 
-using namespace sofa::defaulttype;
+/// returns true iff c is a parent class of this
+bool ClassInfo::hasParent(const ClassInfo* c) const
+{
+    if (this == c)
+        return true;
 
-/// Register the container interfaces into the class info registry
-auto a = sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<sofa::component::container::StiffnessContainer>(sofa_tostring(SOFA_TARGET));
+    for (unsigned int i=0; i<parents.size(); ++i)
+    {
+        if (parents[i]->hasParent(c))
+            return true;
+    }
+    return false;
+}
 
-/// Register the container interfaces into the class info registry
-auto b = sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<sofa::component::container::PoissonContainer>(sofa_tostring(SOFA_TARGET));
+/// returns true iff a parent class of this is named parentClassName
+bool ClassInfo::hasParent(const std::string& parentClassName) const
+{
+    if (className==parentClassName)
+        return true;
+    for (unsigned int i=0; i<parents.size(); ++i)
+    {
+        if (parents[i]->hasParent(parentClassName))
+            return true;
+    }
+    return false;
+}
 
-/// Register in the Factory
-int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
-        .add< BeamFEMForceField<Rigid3Types> >()
-        ;
-
-template class SOFA_SOFAGENERALSIMPLEFEM_API BeamFEMForceField<Rigid3Types>;
-
-
-} // namespace sofa::component::forcefield::_beamfemforcefield_
+}

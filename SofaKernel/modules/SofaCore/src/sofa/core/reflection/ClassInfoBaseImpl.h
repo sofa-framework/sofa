@@ -19,29 +19,49 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP
-#include <SofaGeneralSimpleFem/BeamFEMForceField.inl>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/reflection/ClassInfoBuilder.h>
+#pragma once
 
-namespace sofa::component::forcefield::_beamfemforcefield_
+#include <sofa/core/reflection/ClassInfo.h>
+#include <typeinfo>
+namespace sofa::core::reflection
 {
 
-using namespace sofa::defaulttype;
+/**
+ *  \brief Default implementation of a ClassInfo.
+ *
+ *  This class is used by ClassInfoBuilder to create a class info
+ *  instance specific to the type parameter given.
+ **/
+template<class T>
+class ClassInfoBaseImpl : public ClassInfo
+{
+public:
+    ClassInfoBaseImpl() : ClassInfo(&typeid(T)) {}
 
-/// Register the container interfaces into the class info registry
-auto a = sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<sofa::component::container::StiffnessContainer>(sofa_tostring(SOFA_TARGET));
+    /// Returns non null pointer if the provided 'obj' can
+    /// be dynamic casted to the type that the class info is describing.
+    Base* dynamicCastToBase(Base* obj) const override
+    {
+        return dynamic_cast<T*>(obj);
+    };
 
-/// Register the container interfaces into the class info registry
-auto b = sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<sofa::component::container::PoissonContainer>(sofa_tostring(SOFA_TARGET));
+    /// Returns non null pointer if the provided 'obj' can
+    /// be dynamic casted to the type that the class info is describing.
+    /// WARNING: the returned void* poitner may be different than the one
+    /// provided as a parameter because of the re-alignement done during
+    /// the dynamic cast.
+    void* dynamicCast(Base* obj) const override
+    {
+        return dynamic_cast<T*>(obj);
+    };
 
-/// Register in the Factory
-int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
-        .add< BeamFEMForceField<Rigid3Types> >()
-        ;
+    /// Returns true of the parameter 'obj' can be casted to the class
+    /// defined by the current object.
+    bool isInstance(Base* obj) const override
+    {
+        return dynamic_cast<T*>(obj) != nullptr;
+    }
 
-template class SOFA_SOFAGENERALSIMPLEFEM_API BeamFEMForceField<Rigid3Types>;
+};
 
-
-} // namespace sofa::component::forcefield::_beamfemforcefield_
+} /// sofa::core::objectmodel

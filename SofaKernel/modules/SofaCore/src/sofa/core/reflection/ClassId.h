@@ -19,33 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/ClassInfo.h>
+#pragma once
+#include <sofa/core/config.h>
+#include <sofa/core/reflection/fwd.h>
+#include <type_traits>
+#include <typeindex>
+#include <string>
 
-namespace sofa
+namespace sofa::core::reflection
 {
 
-namespace core
+/** ************************************************************************
+ * @brief Generates unique id for object inirited from class.
+ *
+ * Compared to type_info.hash_code() this version is guaranteed to have an amortized
+ * constant time. There is a one to one mapping between std::type_info and ClassId
+ *
+ * The common use case is get the type id to access a full AbstractTypeInfo from
+ * the TypeInfoRegistry.
+ * Example:
+ *      ClassId& shortinfo = ClassId::getClassId<double>();
+ *      ClassInfo* info = ClassInfoRegistry::Get(shortinfo);
+ *      info->getName()
+ *****************************************************************************/
+class SOFA_CORE_API ClassId
 {
 
-namespace objectmodel
-{
+public:
+    /// Returns the ClassInfo associated with this ClassId.
+    const sofa::core::reflection::ClassInfo* getClassInfo() const ;
 
-std::map<sofa::helper::TypeInfo, ClassInfo*> ClassInfo::classes;
+    sofa::Index id;
+    std::type_index symbol;
 
-ClassInfo::ClassInfo(const std::type_info* ti)
-    : pt(ti)
-{
-    classes[sofa::helper::TypeInfo(*ti)] = this;
-}
+    ClassId(const std::type_info& s);
+};
 
-ClassInfo::~ClassInfo()
-{
-}
-
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
+} /// namespace sofa::defaulttype

@@ -22,11 +22,11 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/defaulttype/BoundingBox.h>                    //NOTE-FOR-SELF: Remove
+#include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/Link.h>                      //NOTE-FOR-SELF: Remove
+#include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>     //NOTE-FOR-SELF: Remove
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <list>
 #include <sofa/core/sptr.h>
@@ -125,20 +125,15 @@ namespace objectmodel
 class SOFA_CORE_API Base
 {
 public:
-    typedef Base* Ptr;
+    SOFA_BASE_CLASS(Base)                 ///< Add the function needed by the reflection type system.
 
+    using Ptr = Base*;
     using SPtr = sptr<Base>;
-    
-    using MyClass = TClass< Base, void >;
-    static const BaseClass* GetClass() { return MyClass::get(); }
-    virtual const BaseClass* getClass() const { return GetClass(); }
 
 protected:
     /// Constructor cannot be called directly
     /// Use the New() method instead
     Base();
-
-
 
     /// Direct calls to destructor are forbidden.
     /// Smart pointers must be used to manage creation/destruction of objects
@@ -267,8 +262,6 @@ public:
     /// Find a data field given its name. Return nullptr if not found.
     /// If more than one field is found (due to aliases), only the first is returned.
     BaseData* findData( const std::string &name ) const;
-
-
 
     /// Find data fields given a name: several can be found as we look into the alias map
     std::vector< BaseData* > findGlobalField( const std::string &name ) const;

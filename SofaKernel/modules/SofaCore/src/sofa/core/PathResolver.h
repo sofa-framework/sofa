@@ -23,15 +23,7 @@
 
 #include <string>
 #include <sofa/core/config.h>
-
-namespace sofa::core::objectmodel
-{
-    class Base;
-    class BaseData;
-    class BaseLink;
-    class AbstractDataLink;
-    class BaseClass;
-}
+#include <sofa/core/fwd.h>
 
 namespace sofa::core
 {

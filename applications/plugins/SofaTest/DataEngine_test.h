@@ -28,6 +28,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/reflection/ClassInfoBuilder.h>
 
 namespace sofa {
 
@@ -84,6 +85,7 @@ struct DataEngine_test : public Sofa_test<>
     ///
     DataEngine_test()
     {
+        sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<Engine>("test");
         m_engine = sofa::core::objectmodel::New<Engine>();
         m_engine->name.setValue("engine");
         m_engineInput = sofa::core::objectmodel::New<DataEngineType>();

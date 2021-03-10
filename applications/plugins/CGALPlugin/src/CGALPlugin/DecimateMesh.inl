@@ -30,6 +30,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/collision/Pipeline.h>
 
 using namespace sofa::core::objectmodel;
 
@@ -89,7 +90,7 @@ void DecimateMesh<DataTypes>::doUpdate()
     msg_info() << "Initial mesh has " << m_inVertices.getValue().size() << " vertices and " << m_inTriangles.getValue().size() << " triangles." << msgendl
                << "Processing mesh simplification...";
 
-    if (m_edgesTarget != 0)
+    if (m_edgesTarget.getValue() != 0)
     {
         SMS::Count_stop_predicate<Surface> stop(m_edgesTarget.getValue());
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,5,0)
@@ -106,7 +107,7 @@ void DecimateMesh<DataTypes>::doUpdate()
 #endif // CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,5,0)
 
     }
-    else if (m_edgesRatio != 0)
+    else if (m_edgesRatio.getValue() != 0)
     {
         SMS::Count_ratio_stop_predicate<Surface> stop(m_edgesRatio.getValue());
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,5,0)

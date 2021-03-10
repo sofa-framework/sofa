@@ -19,91 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_CLASSINFO_H
-#define SOFA_CORE_OBJECTMODEL_CLASSINFO_H
-
+#pragma once
 #include <sofa/core/config.h>
-#include <sofa/helper/TypeInfo.h>
-#include <string>
-#include <map>
 
-namespace sofa
-{
+#include <sofa/core/reflection/Class.h>
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/core/reflection.h")
 
-namespace core
-{
-
-namespace objectmodel
-{
-
-class Base;
-
-/**
- *  \brief Meta information class
- *
- *  This class contains reflection-like features to analyse a class deriving from Base
- *
- */
-class SOFA_CORE_API ClassInfo
-{
-protected:
-    const std::type_info* pt;
-    ClassInfo(const std::type_info* ti);
-    virtual ~ClassInfo();
-public:
-
-    std::string name() const { return pt->name(); }
-    operator const std::type_info&() const { return *pt; }
-    helper::TypeInfo type() const { return sofa::helper::TypeInfo(*pt); }
-    bool operator==(const ClassInfo& t) const { return *pt == *t.pt; }
-    bool operator!=(const ClassInfo& t) const { return *pt != *t.pt; }
-#ifdef _MSC_VER
-    bool operator<(const ClassInfo& t) const { return (pt->before(*t.pt)!=0); }
-#else
-    bool operator<(const ClassInfo& t) const { return pt->before(*t.pt); }
-#endif
-
-    virtual void* dynamicCast(Base* obj) const = 0;
-
-    virtual bool isInstance(Base* obj) const
-    {
-        return dynamicCast(obj) != nullptr;
-    }
-protected:
-    static std::map<sofa::helper::TypeInfo, ClassInfo*> classes;
-};
-
-template<class T>
-class TClassInfo : public ClassInfo
-{
-protected:
-    TClassInfo()
-        : ClassInfo(&typeid(T))
-    {
-    }
-
-public:
-    static TClassInfo<T>& get()
-    {
-        static TClassInfo<T> inst;
-        return inst;
-    }
-
-    virtual void* dynamicCast(Base* obj) const
-    {
-        return dynamic_cast<T*>(obj);
-    }
-};
-
-template<class T>
-const ClassInfo& classidT() { return TClassInfo<T>::get(); }
-
-#define classid(T) sofa::core::objectmodel::classidT<T>()
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif

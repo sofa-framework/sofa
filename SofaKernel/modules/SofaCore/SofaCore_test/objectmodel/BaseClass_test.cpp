@@ -141,6 +141,18 @@ public:
     sofa::core::objectmodel::Base* m_baseptr5 {&m_ptr5};
 };
 
+
+static int registerToFactoryA = sofa::core::RegisterObject("").add< sofa::another_namespace::EmptyObject >();
+static int registerToFactoryB = sofa::core::RegisterObject("").add< sofa::numbered_namespace_123::NumberedClass123 >();
+static int registerToFactoryC = sofa::core::RegisterObject("").add< sofa::numbered_namespace_123::NumberedClass456 >();
+static int registerToFactoryD = sofa::core::RegisterObject("").add< sofa::numbered_namespace_123::CustomName123 >();
+static int registerToFactoryE = sofa::core::RegisterObject("").add< sofa::numbered_namespace_123::CustomNameOldWay >();
+static int registerToFactoryF = sofa::core::RegisterObject("").add< sofa::another_namespace::EmptyObject >();
+static int registerToFactoryG = sofa::core::RegisterObject("").add< DefaultTemplate1<DataOne> >();
+static int registerToFactoryH = sofa::core::RegisterObject("").add< DefaultTemplate2<DataOne, DataTwo> >();
+static int registerToFactoryI = sofa::core::RegisterObject("").add< DefaultTemplate3<DataOne, DataTwo, NotAType> >();
+static int registerToFactoryK = sofa::core::RegisterObject("").add< NotDefaultTemplate<DataOne, DataTwo, NotAType> >();
+
 ///
 /// tests that all the BaseClass returned from GetClass function are refering to the same
 /// BaseClass instance.

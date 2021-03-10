@@ -19,29 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP
-#include <SofaGeneralSimpleFem/BeamFEMForceField.inl>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/reflection/ClassInfoBuilder.h>
+#pragma once
+#include <sofa/core/config.h>
+#include <sofa/core/reflection/fwd.h>
+#include <sofa/core/reflection/ClassId.h>
+#include <type_traits>
+#include <string>
 
-namespace sofa::component::forcefield::_beamfemforcefield_
+namespace sofa::core::reflection
 {
 
-using namespace sofa::defaulttype;
+class SOFA_CORE_API Class
+{
+public:
+    /// Returns a ClassId that is unique from each type parameter T.
+    template<class T>
+    static const sofa::core::reflection::ClassId& GetClassId()
+    {
+        /// Create the unique ID once, and returns it each time.
+        static sofa::core::reflection::ClassId typeId(typeid(std::decay_t<T>));
+        return typeId;
+    }
 
-/// Register the container interfaces into the class info registry
-auto a = sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<sofa::component::container::StiffnessContainer>(sofa_tostring(SOFA_TARGET));
+    template<class T>
+    static const sofa::core::reflection::ClassInfo* GetClassInfo()
+    {
+        static const sofa::core::reflection::ClassInfo* cachedInfo = GetClassId<T>().getClassInfo();
+        return cachedInfo;
+    }
+};
 
-/// Register the container interfaces into the class info registry
-auto b = sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<sofa::component::container::PoissonContainer>(sofa_tostring(SOFA_TARGET));
-
-/// Register in the Factory
-int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
-        .add< BeamFEMForceField<Rigid3Types> >()
-        ;
-
-template class SOFA_SOFAGENERALSIMPLEFEM_API BeamFEMForceField<Rigid3Types>;
-
-
-} // namespace sofa::component::forcefield::_beamfemforcefield_
+} /// namespace sofa::defaulttype

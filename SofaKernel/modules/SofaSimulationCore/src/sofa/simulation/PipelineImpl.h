@@ -35,14 +35,10 @@ namespace simulation
 
 class SOFA_SIMULATION_CORE_API PipelineImpl : public sofa::core::collision::Pipeline
 {
-
-protected:
-    PipelineImpl();
-
-    ~PipelineImpl() override;
 public:
-    void init() override;
+    SOFA_CLASS(sofa::simulation::PipelineImpl, sofa::core::collision::Pipeline);
 
+    void init() override;
     void reset() override;
 
     /// Remove collision response from last step
@@ -51,6 +47,10 @@ public:
     void computeCollisionDetection() override;
     /// Add collision response in the simulation graph
     void computeCollisionResponse() override;
+
+protected:
+    PipelineImpl();
+    ~PipelineImpl() override;
 };
 
 

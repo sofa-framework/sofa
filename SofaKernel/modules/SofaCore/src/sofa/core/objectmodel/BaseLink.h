@@ -23,6 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASELINK_H
 
 #include <sofa/core/config.h>
+#include <sofa/core/fwd.h>
 #include <sofa/core/ExecParams.h>
 #include <string>
 
@@ -34,11 +35,6 @@ namespace core
 
 namespace objectmodel
 {
-
-class Base;
-class BaseData;
-class BaseClass;
-class BaseObjectDescription;
 
 /**
  *  \brief Abstract base class for all links in the scene grapn, independently of their type.

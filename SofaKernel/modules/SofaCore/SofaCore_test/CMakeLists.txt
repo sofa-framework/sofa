@@ -5,6 +5,10 @@ project(SofaCore_test)
 set(SOURCE_FILES
     loader/MeshLoader_test.cpp
     objectmodel/AspectPool_test.cpp
+    objectmodel/ClassId_test.cpp
+    objectmodel/ClassInfo_test.cpp
+    objectmodel/ClassInfoBuilder_test.cpp
+    objectmodel/ClassInfoRepository_test.cpp
     objectmodel/BaseClass_test.cpp
     objectmodel/BaseLink_test.cpp
     objectmodel/BaseObjectDescription_test.cpp

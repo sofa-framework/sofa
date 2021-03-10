@@ -22,6 +22,7 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/reflection/ClassInfoBuilder.h>
 
 namespace sofa
 {
@@ -98,8 +99,7 @@ bool ConstraintSolver::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-
-
+auto a = sofa::core::reflection::ClassInfoBuilder::GetOrBuildClassInfo<ConstraintSolver>(sofa_tostring(SOFA_TARGET));
 
 } // namespace behavior
 
