@@ -40,6 +40,11 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
    /// Simulation
    simulation::Simulation* simulation;
 
+   /// Store SceneInstance 
+   BaseSimulationTest::SceneInstance m_instance;
+
+   bool fredDebugMe = false;
+
    void SetUp()
    {
        sofa::simpleapi::importPlugin("SofaComponentAll");
@@ -47,48 +52,68 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
        std::string fileName = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + "IncisionTrianglesProcess.scn";
        std::cout << fileName.c_str() << std::endl;
 
-       BaseSimulationTest::SceneInstance instance = BaseSimulationTest::SceneInstance::LoadFromFile(fileName);
-       instance.initScene();
-
-       root = instance.root;
-       std::cout << instance.root.get()->getName() << std::endl;
+       //m_instance = BaseSimulationTest::SceneInstance::LoadFromFile(fileName);
+       m_instance = BaseSimulationTest::SceneInstance();
+       m_instance.loadSceneFile(fileName);
+       root = m_instance.root;
        
+       if (fredDebugMe)
+       {
+           std::cout << "root: " << root.get() << std::endl;
+           std::cout << "m_instance.root: " << m_instance.root << std::endl;
+           std::cout << root.get()->getName() << std::endl;
+           std::cout << m_instance.root.get()->getChildren().size() << std::endl;
+       }
+       // Init scene
+       m_instance.initScene();
+
+       root = m_instance.root;
+
+       if (fredDebugMe)
+       {
+           std::cout << root.get()->getName() << std::endl;
+           std::cout << m_instance.root.get()->getChildren().size() << std::endl;
+       }
+
        // Test if root is not null
        if(!root)
        {
            ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
            return;
        }
-
-       // Init scene
-       sofa::simulation::getSimulation()->init(root.get());
-
-       // Test if root is not null
-       if(!root)
-       {
-           ADD_FAILURE() << "Error in init for the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
-           return;
-       }
+     
    }
 
    bool TestInciseProcess()
    {
-       std::cout << root.get()->getChildren().size() << std::endl;
-       auto solver = root->getObject("Triangle_topo");
-       //sofa::simulation::Node* node = root.get()->getChild("SquareGravity");
-       //TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(root.get()->getMeshTopology());
+       Node::SPtr root = m_instance.root;
 
-       if (solver == nullptr)
+       if (fredDebugMe)
        {
-           ADD_FAILURE() << "Error: node 'SquareGravity' not found in the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+           std::cout << "root: " << root.get() << std::endl;
+           std::cout << root.get()->getName() << std::endl;
+           std::cout << m_instance.root.get()->getChildren().size() << std::endl;
+       }
+
+       if (!root)
+       {
+           ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
            return false;
        }
 
 
-       // To test incise animates the scene at least 1.2s
+     /*  Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+       if (!nodeTopo)
+       {
+           ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+           return false;
+       }*/
+
+
+       // to test incise animates the scene at least 1.2s
        for(int i=0;i<50;i++)
        {
-          sofa::simulation::getSimulation()->animate(root.get(),0.1);
+           m_instance.simulate(0.1);
        }
 
        return true;
@@ -97,8 +122,8 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
    /// Unload the scene
    void TearDown()
    {
-       if (root!=nullptr)
-           sofa::simulation::getSimulation()->unload(root);
+       if (m_instance.root !=nullptr)
+           sofa::simulation::getSimulation()->unload(m_instance.root);
    }
 
 };
