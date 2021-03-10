@@ -102,7 +102,6 @@ set(SOFACONFIG_BUILD_OPTIONS_SRC
     ${SOFACONFIGSRC_ROOT}/config/sharedlibrary_defines.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_deprecated_components.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_dump_visitor.h.in
-    ${SOFACONFIGSRC_ROOT}/config/build_option_opengl.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_threading.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_bbox.h.in
 )
