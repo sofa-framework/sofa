@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/MechanicalState.inl>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -29,6 +30,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/simulation/Node.h>
+
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/simulation/Visitor.h>
 #endif

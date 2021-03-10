@@ -24,8 +24,24 @@
 using sofa::core::ObjectFactory ;
 using sofa::core::ObjectCreator ;
 
+#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/behavior/BaseController.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/collision/CollisionAlgorithm.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/core/collision/Intersection.h>

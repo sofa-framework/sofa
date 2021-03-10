@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {
