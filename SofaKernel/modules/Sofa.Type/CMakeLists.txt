@@ -48,7 +48,6 @@ sofa_find_package(Sofa.Config REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-D SOFA_BUILD_SOFA_TYPE")
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework
