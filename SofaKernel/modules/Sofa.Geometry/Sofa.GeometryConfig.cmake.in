@@ -3,6 +3,9 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
+find_package(Sofa.Config REQUIRED)
+find_package(Sofa.Type REQUIRED)
+
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 endif()
