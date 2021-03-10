@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(Compliant VERSION 0.1)
 
+sofa_find_package(SofaSimulationGraph REQUIRED)
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
 find_package(SofaGuiQt QUIET)

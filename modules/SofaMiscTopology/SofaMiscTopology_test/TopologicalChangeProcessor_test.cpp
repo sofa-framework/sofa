@@ -22,7 +22,6 @@
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
-
 #include <SofaSimulationGraph/SimpleApi.h>
 using sofa::helper::testing::BaseSimulationTest;
 using namespace sofa::component::topology;
@@ -42,7 +41,6 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
 
    /// Store SceneInstance 
    BaseSimulationTest::SceneInstance m_instance;
-
    bool fredDebugMe = false;
 
    void SetUp()

@@ -52,7 +52,6 @@ class SOFA_SOFATOPOLOGYMAPPING_API Edge2QuadTopologicalMapping : public sofa::co
 public:
     SOFA_CLASS(Edge2QuadTopologicalMapping,sofa::core::topology::TopologicalMapping);
 
-    typedef sofa::core::State<defaulttype::Rigid3Types>::VecCoord VecCoord;
     typedef sofa::core::State<defaulttype::Rigid3Types>::Coord Coord;
     typedef Coord::value_type Real;
     enum { M=Coord::spatial_dimensions };
@@ -62,7 +61,6 @@ public:
 
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
-
 
 protected:
 
@@ -79,7 +77,9 @@ protected:
     */
     ~Edge2QuadTopologicalMapping() override
     {}
+
 public:
+
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
     */
     void init() override;
@@ -96,11 +96,14 @@ public:
     Index getFromIndex(Index ind) override;
 
 protected:
-    Data<unsigned int> m_nbPointsOnEachCircle; ///< number of points to create along the circles around each point of the input topology (10 by default)
-    Data<double> m_radius;	///< radius of the circles around each point of the input topology (1 by default)
 
-    Data<VecIndex> edgeList; ///< list of input edges for the topological mapping: by default, all considered
-    Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating quad)
+    Data<unsigned int> d_nbPointsOnEachCircle; ///< number of points to create along the circles around each point of the input topology (10 by default)
+    Data<double> d_radius; ///< radius of the circles around each point of the input topology (1 by default)
+    Data<double> d_radiusFocal; ///< in case of ellipse, (extra) radius on the focal axis (0 by default)
+    Data<Vec> d_focalAxis; ///< in case of ellipse, focal axis (default [0,0,1])
+
+    Data<VecIndex> d_edgeList; ///< list of input edges for the topological mapping: by default, all considered
+    Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating quad)
 
     
     container::RadiusContainer* m_radiusContainer;
