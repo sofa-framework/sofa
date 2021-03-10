@@ -23,6 +23,7 @@
 #include <LMConstraint/LMConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/BaseMass.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

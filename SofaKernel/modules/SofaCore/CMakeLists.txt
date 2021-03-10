@@ -57,6 +57,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/Mass.inl
     ${SRC_ROOT}/behavior/MechanicalState.h
     ${SRC_ROOT}/behavior/MechanicalState.inl
+    ${SRC_ROOT}/behavior/MechanicalMatrix.h
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.h
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.inl
     ${SRC_ROOT}/behavior/MixedInteractionForceField.h
@@ -189,6 +190,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ForceField.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
     ${SRC_ROOT}/behavior/Mass.cpp
+    ${SRC_ROOT}/behavior/MechanicalMatrix.cpp
     ${SRC_ROOT}/behavior/MechanicalState.cpp
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/MixedInteractionForceField.cpp

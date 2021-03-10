@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>

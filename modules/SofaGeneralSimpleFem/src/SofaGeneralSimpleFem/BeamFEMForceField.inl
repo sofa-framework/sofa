@@ -29,6 +29,7 @@
 #include <iostream>
 #include <set>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/RigidTypes.h>

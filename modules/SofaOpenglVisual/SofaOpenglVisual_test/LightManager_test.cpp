@@ -48,9 +48,9 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-
 #include <SofaSimulationGraph/SimpleApi.h>
+
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 namespace sofa {
 
@@ -58,7 +58,8 @@ struct TestLightManager : public BaseTest
 {
     void SetUp() override
     {
-        sofa::component::initSofaBaseMechanics();
+        sofa::component::initSofaBaseMechanics(); // needed to instanciate MechanicalObject
+
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 };

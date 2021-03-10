@@ -23,11 +23,9 @@
 #include <SofaGeneralEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/helper/vectorData.h>
-
 
 namespace sofa::component::engine
 {
@@ -147,5 +145,11 @@ protected:
 
 };
 
+#ifndef SelectConnectedLabelsROI_CPP_
+extern template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned int>;
+extern template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned char>;
+extern template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned short>;
+extern template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<int>;
+#endif ///
 
 } //namespace sofa::component::engine

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/MechanicalState.inl>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/ConstraintParams.h>

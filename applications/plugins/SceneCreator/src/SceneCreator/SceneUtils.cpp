@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.inl>
 typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
 #include <sofa/helper/system/FileRepository.h>

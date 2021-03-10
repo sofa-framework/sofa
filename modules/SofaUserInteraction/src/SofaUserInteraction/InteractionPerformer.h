@@ -24,7 +24,6 @@
 
 #include <SofaGraphComponent/MouseButtonSetting.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/core/objectmodel/Event.h>
 
 namespace sofa::component::collision
 {

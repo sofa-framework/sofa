@@ -22,3 +22,10 @@
 #pragma once
 
 #include <SofaMiscMapping/config.h>
+
+namespace sofa::component
+{
+
+SOFA_SOFAMISCMAPPING_API void initSofaMiscMapping();
+
+} // namespace sofa::component

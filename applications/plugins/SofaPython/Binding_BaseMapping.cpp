@@ -24,6 +24,7 @@
 #include "Binding_BaseObject.h"
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
+#include <sofa/defaulttype/BaseMatrix.h>
 
 using namespace sofa;
 using namespace sofa::core;

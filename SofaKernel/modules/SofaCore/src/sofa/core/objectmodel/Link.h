@@ -24,8 +24,10 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/helper/stable_vector.h>
-
 #include <sofa/core/PathResolver.h>
+#include <sofa/core/sptr.h>
+#include <sofa/core/fwd.h>
+
 namespace sofa
 {
 
@@ -53,7 +55,7 @@ template<class TDestType>
 class LinkTraitsDestPtr<TDestType, true>
 {
 public:
-    typedef typename TDestType::SPtr T;
+    typedef typename sofa::core::sptr<TDestType> T;
     static TDestType* get(const T& p) { return p.get(); }
 };
 
@@ -436,12 +438,12 @@ public:
 
     const BaseClass* getDestClass() const override
     {
-        return DestType::GetClass();
+        return sofa::core::objectmodel::base::GetClass<DestType>();
     }
 
     const BaseClass* getOwnerClass() const override
     {
-        return OwnerType::GetClass();
+        return sofa::core::objectmodel::base::GetClass<OwnerType>();
     }
 
     size_t getSize() const override
@@ -469,7 +471,7 @@ public:
     [[deprecated("2021-01-01: CheckPath as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPath(Base*, BaseClass*, string).")]]
     static bool CheckPath(const std::string& path, Base* context)
     {
-        return PathResolver::CheckPath(context, DestType::GetClass(), path);
+        return PathResolver::CheckPath(context, sofa::core::objectmodel::base::GetClass<DestType>(), path);
     }
 
 protected:
@@ -501,7 +503,7 @@ protected:
 
         /// Downcast the pointer to a compatible type and
         /// If the types are not compatible with the Link we returns false
-        auto destptr = dynamic_cast<DestType*>(baseptr);
+        auto destptr = dynamicCastBaseTo<DestType*>(baseptr);
         if(baseptr && !destptr)
         {
             return false;
@@ -515,7 +517,7 @@ protected:
     bool _doSet_(Base* baseptr, const size_t index) override
     {
         assert(index < m_value.size());
-        auto destptr = dynamic_cast<DestType*>(baseptr);
+        auto destptr = dynamicCastBaseTo<DestType*>(baseptr);
 
         if(!destptr)
             return false;
@@ -526,7 +528,7 @@ protected:
 
     Base* _doGet_(const size_t index=0) const override
     {
-        return getIndex(index);
+        return sofa::core::dynamicCastBaseFrom(getIndex(index));
     }
 
     std::string _doGetLinkedPath_(const std::size_t index=0) const override
@@ -539,7 +541,7 @@ protected:
         {
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (ptr)
-                path = BaseLink::CreateString(ptr, nullptr, m_owner);
+                path = BaseLink::CreateString(sofa::core::dynamicCastBaseFrom(ptr), m_owner);
         }
         return path;
     }

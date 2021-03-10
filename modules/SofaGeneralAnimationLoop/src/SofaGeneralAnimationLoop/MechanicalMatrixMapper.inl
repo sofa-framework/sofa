@@ -29,6 +29,7 @@
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 
 // verify timing

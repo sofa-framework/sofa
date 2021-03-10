@@ -3,7 +3,6 @@ project(VolumetricRendering VERSION 0.1)
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED)
-find_package(SofaGeneral REQUIRED)
 find_package(SofaOpenglVisual REQUIRED)
 
 set(HEADER_FILES
@@ -21,7 +20,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED  ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual )
+target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual)
 
 # Add the include DIR from OpenHaptics to target
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")

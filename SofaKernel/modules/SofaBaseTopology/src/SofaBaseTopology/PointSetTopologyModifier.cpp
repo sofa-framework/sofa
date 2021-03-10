@@ -27,6 +27,7 @@
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 namespace sofa::component::topology
 {
@@ -345,6 +346,26 @@ void PointSetTopologyModifier::renumberPoints(const sofa::helper::vector< PointI
 
     sofa::helper::AdvancedTimer::stepEnd("Renumber Points");
 }
+
+
+void PointSetTopologyModifier::removePoints(sofa::helper::vector< PointID >& indices, const bool removeDOF)
+{
+    sofa::helper::AdvancedTimer::stepBegin("Remove Points");
+
+    sofa::helper::AdvancedTimer::stepBegin("removePointsWarning");
+    removePointsWarning(indices, removeDOF);
+
+    sofa::helper::AdvancedTimer::stepNext("removePointsWarning", "propagateTopologicalChanges");
+    propagateTopologicalChanges();
+
+    sofa::helper::AdvancedTimer::stepNext("propagateTopologicalChanges", "removePointsProcess");
+    removePointsProcess(indices, removeDOF);
+
+    sofa::helper::AdvancedTimer::stepEnd("removePointsProcess");
+
+    sofa::helper::AdvancedTimer::stepEnd("Remove Points");
+}
+
 
 
 void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID> &indices,

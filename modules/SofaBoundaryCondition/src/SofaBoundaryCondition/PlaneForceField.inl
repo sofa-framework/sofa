@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>
 #include <sofa/helper/accessor.h>

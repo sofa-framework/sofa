@@ -22,6 +22,8 @@
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/Mass.h>
 #include <iostream>
 
 namespace sofa
