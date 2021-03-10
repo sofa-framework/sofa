@@ -790,7 +790,7 @@ void Quat<Real>::toMatrix(Mat<3,3,Real>& m) const
 }
 
 template<class Real>
-void Quat<Real>::toMatrix(Mat<4,4,Real>& m) const
+void Quat<Real>::toHomogeneousMatrix(Mat<4,4,Real>& m) const
 {
     m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
     m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
