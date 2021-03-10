@@ -34,88 +34,77 @@ namespace sofa::helper::testing
 
 struct TopologicalChangeProcessor_test: public BaseSimulationTest
 {
-    // root
-   Node::SPtr root;
-   /// Simulation
-   simulation::Simulation* simulation;
+    /// root
+    Node::SPtr root;
 
-   /// Store SceneInstance 
-   BaseSimulationTest::SceneInstance m_instance;
-   bool fredDebugMe = false;
+    /// Store SceneInstance 
+    BaseSimulationTest::SceneInstance m_instance;
+    void SetUp()
+    {
+        sofa::simpleapi::importPlugin("SofaComponentAll");
+        // Load the scene from the xml file
+        std::string fileName = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + "IncisionTrianglesProcess.scn";
 
-   void SetUp()
-   {
-       sofa::simpleapi::importPlugin("SofaComponentAll");
-       // Load the scene from the xml file
-       std::string fileName = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + "IncisionTrianglesProcess.scn";
-       std::cout << fileName.c_str() << std::endl;
-
-       //m_instance = BaseSimulationTest::SceneInstance::LoadFromFile(fileName);
-       m_instance = BaseSimulationTest::SceneInstance();
-       m_instance.loadSceneFile(fileName);
-       root = m_instance.root;
+        m_instance = BaseSimulationTest::SceneInstance();
+        // Load scene
+        m_instance.loadSceneFile(fileName);
+        // Init scene
+        m_instance.initScene();
        
-       if (fredDebugMe)
-       {
-           std::cout << "root: " << root.get() << std::endl;
-           std::cout << "m_instance.root: " << m_instance.root << std::endl;
-           std::cout << root.get()->getName() << std::endl;
-           std::cout << m_instance.root.get()->getChildren().size() << std::endl;
-       }
-       // Init scene
-       m_instance.initScene();
+        root = m_instance.root;
 
-       root = m_instance.root;
-
-       if (fredDebugMe)
-       {
-           std::cout << root.get()->getName() << std::endl;
-           std::cout << m_instance.root.get()->getChildren().size() << std::endl;
-       }
-
-       // Test if root is not null
-       if(!root)
-       {
-           ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
-           return;
-       }
+        // Test if root is not null
+        if(!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+            return;
+        }
      
-   }
+    }
 
-   bool TestInciseProcess()
-   {
-       Node::SPtr root = m_instance.root;
+    bool TestInciseProcess()
+    {
+        Node::SPtr root = m_instance.root;
 
-       if (fredDebugMe)
-       {
-           std::cout << "root: " << root.get() << std::endl;
-           std::cout << root.get()->getName() << std::endl;
-           std::cout << m_instance.root.get()->getChildren().size() << std::endl;
-       }
-
-       if (!root)
-       {
-           ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
-           return false;
-       }
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+            return false;
+        }
 
 
-     /*  Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
-       if (!nodeTopo)
-       {
-           ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << "IncisionTrianglesProcess.scn" << std::endl;
-           return false;
-       }*/
+        Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+            return false;
+        }
+
+        TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TriangleSetTopologyContainer not found in 'SquareGravity' Node, in scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+            return false;
+        }
 
 
-       // to test incise animates the scene at least 1.2s
-       for(int i=0;i<50;i++)
-       {
-           m_instance.simulate(0.1);
-       }
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTriangles(), 1450);
+        EXPECT_EQ(topoCon->getNbEdges(), 2223);
+        EXPECT_EQ(topoCon->getNbPoints(), 774);
 
-       return true;
-   }
+        // to test incise animates the scene at least 1.2s
+        for(int i=0;i<400;i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+        EXPECT_EQ(topoCon->getNbTriangles(), 1450);
+        EXPECT_EQ(topoCon->getNbEdges(), 2223);
+        EXPECT_EQ(topoCon->getNbPoints(), 774);
+
+        return true;
+    }
 
    /// Unload the scene
    void TearDown()
