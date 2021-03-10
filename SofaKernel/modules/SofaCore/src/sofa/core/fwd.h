@@ -99,7 +99,7 @@ namespace sofa::core
 /// Core::Opaque functions are:
 ///     - Base* sofa::core::baseFrom(T*) replace dynamic_cast<Base*>(T*);
 ///     - T* sofa::core::castBaseTo(Base*) replace dynamic_cast<T*>(Base*);
-///     - sofa:core::base::GetClass<T>() replace T::GetClass();
+///     - sofa:core::objectmodel::base::GetClass<T>() replace T::GetClass();
 ///
 /// These functions are called "opaque" as they work with only forward declaration of the involved
 /// types in comparison to class methods the requires the full class declaration to be used.
@@ -118,7 +118,7 @@ template<class Dest>
 Dest castBaseTo(sofa::core::objectmodel::Base* base){ return dynamic_cast<Dest>(base); }
 
 /// getClass is in the namespace base as it is an opaque function for Base::GetClass
-namespace base
+namespace objectmodel::base
 {
 template<class B>
 const sofa::core::objectmodel::BaseClass* GetClass(){return B::GetClass(); }
@@ -128,7 +128,7 @@ const sofa::core::objectmodel::BaseClass* GetClass(){return B::GetClass(); }
 #define DECLARE_OPAQUE_FUNCTION_FOR(TYPENAME) \
     template<> SOFA_CORE_API TYPENAME* castBaseTo(sofa::core::objectmodel::Base* base); \
     SOFA_CORE_API sofa::core::objectmodel::Base* baseFrom(TYPENAME* b); \
-    namespace base { template<> SOFA_CORE_API const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>(); }
+    namespace objectmodel::base { template<> SOFA_CORE_API const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>(); }
 
 DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::BaseState);
 DECLARE_OPAQUE_FUNCTION_FOR(sofa::core::BaseMapping);

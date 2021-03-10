@@ -60,7 +60,7 @@ public:
     template<class T>
     static bool FindLinkDest(Base* base, T*& ptr, const std::string& path, const BaseLink* link)
     {
-        Base* result = FindLinkDestClass(base,  sofa::core::base::GetClass<T>(), path, link);
+        Base* result = FindLinkDestClass(base,  sofa::core::objectmodel::base::GetClass<T>(), path, link);
         ptr=castBaseTo<T*>(result);
         return (result != nullptr);
     }
@@ -71,7 +71,7 @@ public:
     template<class T>
     static bool CheckPath(Base* base, T*&, const std::string& path, const BaseLink* link)
     {
-        void* result = FindLinkDestClass(base, sofa::core::base::GetClass<T>(), path, link);
+        void* result = FindLinkDestClass(base, sofa::core::objectmodel::base::GetClass<T>(), path, link);
         return result != nullptr;
     }
 
@@ -80,7 +80,7 @@ public:
     {
         if (path.empty())
             return false;
-        return CheckPath(context, sofa::core::base::GetClass<T>(), path);
+        return CheckPath(context, sofa::core::objectmodel::base::GetClass<T>(), path);
     }
 
     /// Check that a given path is valid and that the pointed object exists regardless of its type.

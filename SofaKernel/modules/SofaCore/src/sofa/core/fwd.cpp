@@ -75,7 +75,7 @@ namespace sofa::core
     { return dynamic_cast<TYPENAME*>(base); } \
     sofa::core::objectmodel::Base* baseFrom(TYPENAME* b) \
     { return dynamic_cast<sofa::core::objectmodel::Base*>(b); } \
-    namespace base { template<> const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>() \
+    namespace objectmodel::base { template<> const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>() \
     { return TYPENAME::GetClass(); } }
 
 DEFINE_OPAQUE_FUNCTION_FOR(sofa::core::BaseState);

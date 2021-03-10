@@ -438,12 +438,12 @@ public:
 
     const BaseClass* getDestClass() const override
     {
-        return sofa::core::base::GetClass<DestType>();
+        return sofa::core::objectmodel::base::GetClass<DestType>();
     }
 
     const BaseClass* getOwnerClass() const override
     {
-        return sofa::core::base::GetClass<OwnerType>();
+        return sofa::core::objectmodel::base::GetClass<OwnerType>();
     }
 
     size_t getSize() const override
@@ -471,7 +471,7 @@ public:
     [[deprecated("2021-01-01: CheckPath as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPath(Base*, BaseClass*, string).")]]
     static bool CheckPath(const std::string& path, Base* context)
     {
-        return PathResolver::CheckPath(context, DestType::GetClass(), path);
+        return PathResolver::CheckPath(context, sofa::core::objectmodel::base::GetClass<DestType>(), path);
     }
 
 protected:
