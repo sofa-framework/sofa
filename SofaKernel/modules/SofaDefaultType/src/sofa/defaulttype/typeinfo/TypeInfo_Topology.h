@@ -32,7 +32,7 @@ namespace sofa::defaulttype
 template<>
 struct DataTypeInfo< sofa::topology::Edge > : public FixedArrayTypeInfo< sofa::topology::Edge >
 {
-    static std::string name() { return sofa::geometry::ElementInfo<sofa::topology::Edge>::name(); }
+    static std::string name() { return sofa::geometry::ElementInfo<sofa::geometry::Edge>::name(); }
 };
 
 template<>
@@ -72,4 +72,3 @@ struct DataTypeInfo< sofa::topology::Hexahedron > : public FixedArrayTypeInfo<so
 };
 
 } // namespace sofa::defaulttype
-
