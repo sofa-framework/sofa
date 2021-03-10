@@ -84,6 +84,19 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& rootname)
     root = simulation::getSimulation()->createNewNode(rootname) ;
 }
 
+void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filename)
+{
+    if (simulation::getSimulation() == nullptr)
+        simulation::setSimulation(new simulation::graph::DAGSimulation());
+
+    simulation = simulation::getSimulation();
+
+    root = simulation->load(filename);
+    
+    if (root == nullptr)
+        msg_error("BaseSimulationTest") << "Unable to find a valid loader for: '" << filename << "'";
+}
+
 
 BaseSimulationTest::SceneInstance::~SceneInstance()
 {

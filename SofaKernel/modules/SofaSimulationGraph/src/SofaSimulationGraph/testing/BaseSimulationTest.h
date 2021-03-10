@@ -53,6 +53,7 @@ public:
 
         void initScene() ;
         void simulate(const double timestep) ;
+        void loadSceneFile(const std::string& filename);
     } ;
 };
 
