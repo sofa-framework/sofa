@@ -182,7 +182,7 @@ void Quat<Real>::operator/=(const Real& r)
 
 
 template<class Real>
-auto Quat<Real>::quatVectMult(const Vec3& vect) -> Quat
+auto Quat<Real>::quatVectMult(const Vec3& vect) const -> Quat
 {
     Quat	ret;
     ret._q[3] = -(_q[0] * vect[0] + _q[1] * vect[1] + _q[2] * vect[2]);
@@ -194,7 +194,7 @@ auto Quat<Real>::quatVectMult(const Vec3& vect) -> Quat
 }
 
 template<class Real>
-auto Quat<Real>::vectQuatMult(const Vec3& vect) -> Quat
+auto Quat<Real>::vectQuatMult(const Vec3& vect) const -> Quat
 {
     Quat ret;
     ret[3] = -(vect[0] * _q[0] + vect[1] * _q[1] + vect[2] * _q[2]);
@@ -269,7 +269,7 @@ void Quat<Real>::normalize()
 }
 
 template<class Real>
-void Quat<Real>::fromFrame(Vec3& x, Vec3&y, Vec3&z)
+void Quat<Real>::fromFrame(const Vec3& x, const Vec3&y, const Vec3&z)
 {
 
     Matrix3 R(x,y,z);
@@ -565,7 +565,7 @@ void Quat<Real>::slerp(const Quat& a, const Quat& b, Real t, bool allowFlip)
 }
 
 template<class Real>
-auto Quat<Real>::slerp(Quat &q1, Real t) -> Quat
+auto Quat<Real>::slerp(const Quat &q1, Real t) const -> Quat
 {
     Quat q0_1;
     for (unsigned int i = 0 ; i<3 ; i++)
@@ -591,7 +591,7 @@ auto Quat<Real>::slerp(Quat &q1, Real t) -> Quat
 
 // Given an axis and angle, compute quaternion.
 template<class Real>
-auto Quat<Real>::slerp2(Quat &q1, Real t) -> Quat
+auto Quat<Real>::slerp2(const Quat &q1, Real t) const -> Quat
 {
     // quaternion to return
     Quat qm;
@@ -747,7 +747,7 @@ Quat<Real> Quat<Real>::quatDiff(Quat a, const Quat& b)
 
 /// Return the eulerian vector resulting of the movement between 2 quaternions
 template<class Real>
-auto Quat<Real>::angularDisplacement(Quat a, const Quat& b) -> Vec3
+auto Quat<Real>::angularDisplacement(const Quat& a, const Quat& b) -> Vec3
 {
     // In the following, use of quatToRotationVector instead of toEulerVector:
     // this is done to keep the old behavior (before the correction of the toEulerVector function).
@@ -839,7 +839,7 @@ auto Quat<Real>::createFromRotationVector(const Vec3& a) -> Quat
 
 
 template<class Real>
-auto Quat<Real>::createQuaterFromEuler( Vec3 v, EulerOrder order) -> Quat
+auto Quat<Real>::createQuaterFromEuler(const Vec3& v, EulerOrder order) -> Quat
 {
     Real quat[4];
 

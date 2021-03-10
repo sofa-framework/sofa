@@ -98,7 +98,7 @@ public:
     }
 
     /// Convert the reference frame orientation into an orientation quaternion
-    void fromFrame(Vec3& x, Vec3&y, Vec3&z);
+    void fromFrame(const Vec3& x, const Vec3&y, const Vec3&z);
 
     /// Convert a rotation matrix into an orientation quaternion
     void fromMatrix(const Mat3x3 &m);
@@ -131,8 +131,8 @@ public:
     void operator/=(const Real &r);
 
     /// Given two Quats, multiply them together to get a third quaternion.
-    auto quatVectMult(const Vec3& vect) -> Quat;
-    auto vectQuatMult(const Vec3& vect) -> Quat;
+    auto quatVectMult(const Vec3& vect) const -> Quat;
+    auto vectQuatMult(const Vec3& vect) const -> Quat;
 
     Real& operator[](Size index)
     {
@@ -182,7 +182,7 @@ public:
         XYZ, YXZ, ZXY, ZYX, YZX, XZY
     };
 
-    static auto createQuaterFromEuler( Vec3 v, EulerOrder order = EulerOrder::ZYX) -> Quat;
+    static auto createQuaterFromEuler(const Vec3& v, EulerOrder order = EulerOrder::ZYX) -> Quat;
 
     /// Create a quaternion from Euler angles
     static auto fromEuler( Real alpha, Real beta, Real gamma, EulerOrder order = EulerOrder::ZYX ) -> Quat;
@@ -197,10 +197,10 @@ public:
     static auto set(Real a0, Real a1, Real a2) { return createFromRotationVector(a0,a1,a2); }
 
     /// Return the quaternion resulting of the movement between 2 quaternions
-    auto quatDiff( Quat a, const Quat& b) -> Quat;
+    static auto quatDiff( Quat a, const Quat& b) -> Quat;
 
     /// Return the eulerian vector resulting of the movement between 2 quaternions
-    auto angularDisplacement( Quat a, const Quat& b) -> Vec3;
+    static auto angularDisplacement( const Quat& a, const Quat& b) -> Vec3;
 
     /// Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo. vFrom and vTo are assumed to be normalized.
     void setFromUnitVectors(const Vec3& vFrom, const Vec3& vTo);
@@ -208,8 +208,8 @@ public:
     SOFA_ATTRIBUTE_CLEANING__QUAT_API("This function will be removed. use iostream operators instead.")
     void print();
 
-    auto slerp(Quat &q1, Real t) -> Quat;
-    auto slerp2(Quat &q1, Real t) -> Quat;
+    auto slerp(const Quat &q1, Real t) const -> Quat;
+    auto slerp2(const Quat &q1, Real t) const-> Quat;
 
     void operator+=(const Quat& q2);
     void operator*=(const Quat& q2);
