@@ -201,6 +201,11 @@ typedef unsigned __int64	uint64_t;
         "v21.06 (PR#1878)", "v21.12", \
         "Quat was refactored. " msg)
 
+#define SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH(msg) \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v21.06 (PR#1842)", "v21.06 (PR#1842)", \
+        "This function was removed as it duplicates a function that can be done using getContext(). " msg)
+
 /**********************************************/
 
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
@@ -234,5 +239,4 @@ using Size = uint32_t;
 constexpr Index InvalidID = (std::numeric_limits<Index>::max)(); 
 
 }
-
 

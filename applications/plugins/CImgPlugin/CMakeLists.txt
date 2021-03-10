@@ -68,10 +68,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 target_compile_options(${PROJECT_NAME} PUBLIC ${CIMG_CFLAGS})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
-
-# Always link dependency targets in Release to avoid a Zlib debug/release mix.
-# Because tiff needs zlib and tiff is only in Release in WinDepPack.
-sofa_set_targets_release_only(${DEP_TARGETS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DEP_TARGETS})
 
 if(SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
