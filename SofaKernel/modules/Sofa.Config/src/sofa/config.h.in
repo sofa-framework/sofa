@@ -196,6 +196,11 @@ typedef unsigned __int64	uint64_t;
         "ExecParams are not needed anymore. " \
         "Remove the ExecParams argument from your call. ")
 
+#define SOFA_ATTRIBUTE_CLEANING__QUAT_API(msg) \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v21.06 (PR#1878)", "v21.12", \
+        "Quat was refactored. " msg)
+
 /**********************************************/
 
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
