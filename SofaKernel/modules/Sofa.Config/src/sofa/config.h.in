@@ -198,8 +198,8 @@ typedef unsigned __int64	uint64_t;
 
 #define SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH(msg) \
     SOFA_ATTRIBUTE_DISABLED( \
-        "v20.06 (PR#1842)", "v21.06 (PR#1842)", \
-        "This function was removed as it duplicates a function that can be done using getContext()." msg)
+        "v21.06 (PR#1842)", "v21.06 (PR#1842)", \
+        "This function was removed as it duplicates a function that can be done using getContext(). " msg)
 
 /**********************************************/
 
@@ -234,5 +234,4 @@ using Size = uint32_t;
 constexpr Index InvalidID = (std::numeric_limits<Index>::max)(); 
 
 }
-
 
