@@ -37,6 +37,4 @@
 namespace sofa::topology
 {
 
-    using ElementType [[deprecated("TODO")]] = sofa::geometry::ElementType;
-
 }

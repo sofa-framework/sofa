@@ -38,37 +38,37 @@ struct DataTypeInfo< sofa::topology::Edge > : public FixedArrayTypeInfo< sofa::t
 template<>
 struct DataTypeInfo< sofa::topology::Triangle > : public FixedArrayTypeInfo<sofa::topology::Triangle >
 {
-    static std::string name() { return sofa::geometry::ElementInfo<sofa::topology::Triangle>::name(); }
+    static std::string name() { return sofa::geometry::ElementInfo<sofa::geometry::Triangle>::name(); }
 };
 
 template<>
 struct DataTypeInfo< sofa::topology::Quad > : public FixedArrayTypeInfo<sofa::topology::Element<sofa::geometry::Quad> >
 {
-    static std::string name() { return sofa::geometry::ElementInfo<sofa::topology::Quad>::name(); }
+    static std::string name() { return sofa::geometry::ElementInfo<sofa::geometry::Quad>::name(); }
 };
 
 template<>
 struct DataTypeInfo< sofa::topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::topology::Tetrahedron>
 {
-    static std::string name() { return sofa::geometry::ElementInfo<sofa::topology::Tetrahedron>::name(); }
+    static std::string name() { return sofa::geometry::ElementInfo<sofa::geometry::Tetrahedron>::name(); }
 };
 
 template<>
 struct DataTypeInfo< sofa::topology::Pyramid > : public FixedArrayTypeInfo<sofa::topology::Pyramid >
 {
-    static std::string name() { return sofa::geometry::ElementInfo<sofa::topology::Pyramid>::name(); }
+    static std::string name() { return sofa::geometry::ElementInfo<sofa::geometry::Pyramid>::name(); }
 };
 
 template<>
 struct DataTypeInfo< sofa::topology::Pentahedron > : public FixedArrayTypeInfo<sofa::topology::Pentahedron>
 {
-    static std::string name() { return sofa::geometry::ElementInfo<sofa::topology::Pentahedron>::name(); }
+    static std::string name() { return sofa::geometry::ElementInfo<sofa::geometry::Pentahedron>::name(); }
 };
 
 template<>
 struct DataTypeInfo< sofa::topology::Hexahedron > : public FixedArrayTypeInfo<sofa::topology::Hexahedron>
 {
-    static std::string name() { return sofa::geometry::ElementInfo<sofa::topology::Hexahedron>::name(); }
+    static std::string name() { return sofa::geometry::ElementInfo<sofa::geometry::Hexahedron>::name(); }
 };
 
 } // namespace sofa::defaulttype

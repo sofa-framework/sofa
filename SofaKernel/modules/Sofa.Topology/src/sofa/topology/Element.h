@@ -32,7 +32,7 @@ namespace sofa::topology
 {
 
 template <typename GeometryElement>
-struct Element : public sofa::type::stdtype::fixed_array<sofa::topology::PointID, GeometryElement::NumberOfNodes>
+struct Element : public sofa::type::stdtype::fixed_array<sofa::Index, GeometryElement::NumberOfNodes>
 {
     constexpr Element() noexcept
     {
@@ -40,12 +40,12 @@ struct Element : public sofa::type::stdtype::fixed_array<sofa::topology::PointID
     }
 
     template< typename... ArgsT
-        , typename = std::enable_if_t<std::conjunction<std::is_convertible<ArgsT, sofa::topology::PointID>...>::value>
+        , typename = std::enable_if_t<std::conjunction<std::is_convertible<ArgsT, sofa::Index>...>::value>
         , typename = std::enable_if_t< (GeometryElement::NumberOfNodes == sizeof...(ArgsT)) >
     >
         constexpr Element(ArgsT&&... args) noexcept
-        : sofa::type::stdtype::fixed_array< sofa::topology::PointID, GeometryElement::NumberOfNodes >
-    { static_cast<sofa::topology::PointID>(std::forward< ArgsT >(args))... }
+        : sofa::type::stdtype::fixed_array< sofa::Index, GeometryElement::NumberOfNodes >
+    { static_cast<sofa::Index>(std::forward< ArgsT >(args))... }
     {}
 };
 

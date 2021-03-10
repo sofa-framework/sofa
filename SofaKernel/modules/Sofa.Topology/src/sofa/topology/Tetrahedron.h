@@ -28,12 +28,7 @@
 
 namespace sofa::topology
 {
-    using TetraID = Index;
-    using TetrahedronID = Index;
-
     using Tetrahedron = sofa::topology::Element<sofa::geometry::Tetrahedron>;
-
-    using Tetra = Tetrahedron;
 
     inline static const Tetrahedron InvalidTetrahedron;
 }

@@ -28,8 +28,6 @@
 
 namespace sofa::topology
 {
-    using EdgeID = Index;
-
     using Edge = sofa::topology::Element<sofa::geometry::Edge>;
 
     inline static const Edge InvalidEdge;

@@ -26,17 +26,11 @@
 
 namespace sofa::topology
 {
-    using Index = sofa::Index;
-    static constexpr Index InvalidID = sofa::InvalidID;
 
-    using ElemID = Index;
-    using PointID = Index;
-    using Point = Index;
-
-    using SetIndex = sofa::helper::vector<Index>;
-    using SetIndices = sofa::helper::vector<Index>;
+    typedef sofa::helper::vector<sofa::Index> SetIndex;
+    typedef sofa::helper::vector<sofa::Index> SetIndices;
 
     // inline variable (c++17): https://en.cppreference.com/w/cpp/language/inline
-    inline static const sofa::helper::vector<Index> InvalidSet;
+    inline static const sofa::helper::vector<sofa::Index> InvalidSet;
 
 }

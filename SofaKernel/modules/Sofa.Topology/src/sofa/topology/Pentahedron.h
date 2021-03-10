@@ -28,12 +28,7 @@
 
 namespace sofa::topology
 {
-    using PentahedronID = Index;
-    using PentaID = Index;
-
     using Pentahedron = sofa::topology::Element<sofa::geometry::Pentahedron>;
-
-    using Penta = Pentahedron;
 
     inline static const Pentahedron InvalidPentahedron;
 }

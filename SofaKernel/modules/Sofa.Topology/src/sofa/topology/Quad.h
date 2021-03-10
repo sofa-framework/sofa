@@ -28,8 +28,6 @@
 
 namespace sofa::topology
 {
-    using QuadID = Index;
-
     using Quad = sofa::topology::Element<sofa::geometry::Quad>;
 
     inline static const Quad InvalidQuad;

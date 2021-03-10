@@ -132,6 +132,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/SPtr.h
     ${SRC_ROOT}/objectmodel/Tag.h
     ${SRC_ROOT}/objectmodel/DataCallback.h
+    ${SRC_ROOT}/topology/Topology.h
     ${SRC_ROOT}/topology/BaseMeshTopology.h
     ${SRC_ROOT}/topology/BaseTopology.h
     ${SRC_ROOT}/topology/BaseTopologyData.h

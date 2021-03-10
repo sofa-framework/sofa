@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_CONFIG_H
-#define SOFA_CORE_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
@@ -31,4 +30,13 @@
 #  define SOFA_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif
+#define SOFA_CORE_TOPOLOGY_DEPRECATION__VERSION_PR() "v21.06 (PR#1XXX)"
+#define SOFA_CORE_TOPOLOGY_REMOVAL__VERSION() "v21.12"
+
+#define SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED(msg) \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        SOFA_CORE_TOPOLOGY_DEPRECATION__VERSION_PR(), SOFA_CORE_TOPOLOGY_REMOVAL__VERSION(), \
+        msg)
+
+#define SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX() \
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Index aliases are deprecated, please use sofa::Index.")

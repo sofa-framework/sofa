@@ -28,8 +28,6 @@
 
 namespace sofa::topology
 {
-    using TriangleID = Index;
-
     using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
 
     inline static const Triangle InvalidTriangle;

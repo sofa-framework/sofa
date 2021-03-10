@@ -28,8 +28,6 @@
 
 namespace sofa::topology
 {
-    using PyramidID = Index;
-
     using Pyramid = sofa::topology::Element<sofa::geometry::Pyramid>;
 
     inline static const Pyramid InvalidPyramid;

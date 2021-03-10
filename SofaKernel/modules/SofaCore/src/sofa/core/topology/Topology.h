@@ -31,13 +31,14 @@
 namespace sofa::core::topology
 {
 
-using TopologyElementType 
-[[deprecated("PR1xxx: sofa::core::topology::TopologyElementType has moved to sofa::geometry::ElementType. This compatibility layer will be removed for the v21.12 release.")]] 
-= sofa::geometry::ElementType;
+
+SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("sofa::core::topology::TopologyElementType has moved to sofa::geometry::ElementType.")
+typedef sofa::geometry::ElementType TopologyElementType;
+
 
 template<class TopologyElement>
 using TopologyElementInfo 
-[[deprecated("PR1xxx: sofa::core::topology::TopologyElementInfo has moved to sofa::geometry::ElementInfo. This compatibility layer will be removed for the v21.12 release.")]]
+SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("sofa::core::topology::TopologyElementInfo has moved to sofa::geometry::ElementInfo.")
 = sofa::geometry::ElementInfo<TopologyElement>;
 
 // This class should be deprecated in the near future, and its only use is to be included in the Node topology Sequence.
@@ -48,21 +49,38 @@ public:
     SOFA_CLASS(Topology, core::objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(Topology)
 
-    using Index = sofa::topology::Index;
-    static constexpr Index InvalidID = sofa::topology::InvalidID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index Index;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    static constexpr Index InvalidID = sofa::InvalidID;
 
-    using ElemID = sofa::topology::ElemID;
-    using PointID = sofa::topology::PointID;
-    using EdgeID = sofa::topology::EdgeID;
-    using TriangleID = sofa::topology::TriangleID;
-    using QuadID = sofa::topology::QuadID;
-    using TetraID = sofa::topology::TetraID;
-    using TetrahedronID = sofa::topology::TetrahedronID;
-    using HexaID = sofa::topology::HexaID;
-    using HexahedronID = sofa::topology::HexahedronID;
-    using PentahedronID = sofa::topology::PentahedronID;
-    using PentaID = sofa::topology::PentaID;
-    using PyramidID = sofa::topology::PyramidID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index ElemID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index PointID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index Point;
+
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index EdgeID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index TriangleID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index QuadID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index TetraID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index TetrahedronID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index PyramidID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index PentahedronID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index PentaID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index HexahedronID;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
+    typedef sofa::Index HexaID;
 
     inline static auto InvalidSet = sofa::topology::InvalidSet;
     inline static auto InvalidEdge = sofa::topology::InvalidEdge;
@@ -81,12 +99,16 @@ public:
     using Triangle = sofa::topology::Triangle;
     using Quad = sofa::topology::Quad;
     using Tetrahedron = sofa::topology::Tetrahedron;
-    using Tetra = sofa::topology::Tetra;
     using Pentahedron = sofa::topology::Pentahedron;
-    using Penta = sofa::topology::Penta;
     using Pyramid = sofa::topology::Pyramid;
     using Hexahedron = sofa::topology::Hexahedron;
-    using Hexa = sofa::topology::Hexa;
+
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Tetra alias has been deprecated, please use Tetrahedron instead")
+    typedef Tetrahedron Tetra;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Penta alias has been deprecated, please use Pentahedron instead")
+    typedef Pentahedron Penta;
+    SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED("Hexa alias has been deprecated, please use Hexahedron instead")
+    typedef Hexahedron Hexa;
         
     bool insertInNode(objectmodel::BaseNode* node) override;
     bool removeInNode(objectmodel::BaseNode* node) override;

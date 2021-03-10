@@ -28,12 +28,7 @@
 
 namespace sofa::topology
 {
-    using HexahedronID = Index;
-    using HexaID = Index;
-
     using Hexahedron = sofa::topology::Element<sofa::geometry::Hexahedron>;
-
-    using Hexa = Hexahedron;
 
     inline static const Hexahedron InvalidHexahedron;
 }
