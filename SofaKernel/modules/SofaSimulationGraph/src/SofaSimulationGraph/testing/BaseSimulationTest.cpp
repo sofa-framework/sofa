@@ -106,6 +106,7 @@ BaseSimulationTest::SceneInstance::~SceneInstance()
 void BaseSimulationTest::SceneInstance::initScene()
 {
     root->init(ExecParams::defaultInstance()) ;
+    simulation->init(root.get());
 }
 
 void BaseSimulationTest::SceneInstance::simulate(const double timestep)
