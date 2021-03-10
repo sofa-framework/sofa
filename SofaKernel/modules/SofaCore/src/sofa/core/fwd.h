@@ -23,15 +23,15 @@ namespace sofa::core
     namespace constraintparams
     {
         SOFA_CORE_API const ConstraintParams* defaultInstance();
-        SOFA_CORE_API ExecParams* asExecParams(sofa::core::ConstraintParams*);
-        SOFA_CORE_API const ExecParams* asExecParams(const sofa::core::ConstraintParams*);
+        SOFA_CORE_API ExecParams* dynamicCastToExecParams(sofa::core::ConstraintParams*);
+        SOFA_CORE_API const ExecParams* dynamicCastToExecParams(const sofa::core::ConstraintParams*);
     }
 
     namespace mechanicalparams
     {
         SOFA_CORE_API const MechanicalParams* defaultInstance();
-        SOFA_CORE_API ExecParams* asExecParams(sofa::core::MechanicalParams*);
-        SOFA_CORE_API const ExecParams* asExecParams(const sofa::core::MechanicalParams*);
+        SOFA_CORE_API ExecParams* dynamicCastToExecParams(sofa::core::MechanicalParams*);
+        SOFA_CORE_API const ExecParams* dynamicCastToExecParams(const sofa::core::MechanicalParams*);
 
         SOFA_CORE_API SReal kFactor(const sofa::core::MechanicalParams*);
         SOFA_CORE_API SReal bFactor(const sofa::core::MechanicalParams*);
@@ -107,8 +107,8 @@ namespace visualparams
 {
     SOFA_CORE_API VisualParams* defaultInstance();
 
-    SOFA_CORE_API ExecParams* asExecParams(sofa::core::visual::VisualParams*);
-    SOFA_CORE_API const ExecParams* asExecParams(const sofa::core::visual::VisualParams*);
+    SOFA_CORE_API ExecParams* dynamicCastToExecParams(sofa::core::visual::VisualParams*);
+    SOFA_CORE_API const ExecParams* dynamicCastToExecParams(const sofa::core::visual::VisualParams*);
 
     SOFA_CORE_API sofa::core::visual::DrawTool* getDrawTool(VisualParams* params);
     SOFA_CORE_API sofa::core::visual::DisplayFlags& getDisplayFlags(VisualParams* params);

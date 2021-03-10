@@ -53,7 +53,7 @@ namespace simulation
  class SOFA_SCENECREATOR_API GetAssembledSizeVisitor: public Visitor
 {
 public:
-    GetAssembledSizeVisitor( const sofa::core::ExecParams* params= sofa::core::mechanicalparams::asExecParams(core::mechanicalparams::defaultInstance()));
+    GetAssembledSizeVisitor( const sofa::core::ExecParams* params= sofa::core::mechanicalparams::dynamicCastToExecParams(core::mechanicalparams::defaultInstance()));
     ~GetAssembledSizeVisitor() override;
 
     Result processNodeTopDown( simulation::Node*  ) override;

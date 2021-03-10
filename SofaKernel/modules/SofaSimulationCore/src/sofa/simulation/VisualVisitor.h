@@ -39,7 +39,7 @@ class SOFA_SIMULATION_CORE_API VisualVisitor : public Visitor
 {
 public:
     VisualVisitor(core::visual::VisualParams* params)
-        : Visitor(sofa::core::visual::visualparams::asExecParams(params))
+        : Visitor(sofa::core::visual::visualparams::dynamicCastToExecParams(params))
         ,vparams(params)
     {}
 

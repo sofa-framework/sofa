@@ -23,8 +23,8 @@ const ConstraintParams* defaultInstance()
     return ConstraintParams::defaultInstance();
 }
 
-ExecParams* asExecParams(sofa::core::ConstraintParams* cparams){ return cparams; }
-const ExecParams* asExecParams(const sofa::core::ConstraintParams* cparams){ return cparams; }
+ExecParams* dynamicCastToExecParams(sofa::core::ConstraintParams* cparams){ return cparams; }
+const ExecParams* dynamicCastToExecParams(const sofa::core::ConstraintParams* cparams){ return cparams; }
 
 }
 
@@ -61,8 +61,8 @@ SReal kFactor(const sofa::core::MechanicalParams* mparams)
     return mparams->kFactor();
 }
 
-ExecParams* asExecParams(sofa::core::MechanicalParams* mparams){ return mparams; }
-const ExecParams* asExecParams(const sofa::core::MechanicalParams* mparams){ return mparams; }
+ExecParams* dynamicCastToExecParams(sofa::core::MechanicalParams* mparams){ return mparams; }
+const ExecParams* dynamicCastToExecParams(const sofa::core::MechanicalParams* mparams){ return mparams; }
 }
 }
 
@@ -74,8 +74,8 @@ namespace visualparams
 {
 VisualParams* defaultInstance(){ return VisualParams::defaultInstance(); }
 
-sofa::core::ExecParams* asExecParams(sofa::core::visual::VisualParams* vparams){return vparams;}
-const sofa::core::ExecParams* asExecParams(const sofa::core::visual::VisualParams* vparams){return vparams;}
+sofa::core::ExecParams* dynamicCastToExecParams(sofa::core::visual::VisualParams* vparams){return vparams;}
+const sofa::core::ExecParams* dynamicCastToExecParams(const sofa::core::visual::VisualParams* vparams){return vparams;}
 
 sofa::core::visual::DrawTool* getDrawTool(VisualParams* params){ return params->drawTool(); }
 sofa::core::visual::DisplayFlags& getDisplayFlags(VisualParams* params){ return params->displayFlags(); }
