@@ -269,7 +269,7 @@ protected:
     *
     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
     * \sa removePointsWarning
-    * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
+    * Important : the points are actually deleted from the mechanical object's state vectors if (removeDOF == true)
     */
     void removePointsProcess(const sofa::helper::vector<PointID>& indices,
         const bool removeDOF = true) override;
