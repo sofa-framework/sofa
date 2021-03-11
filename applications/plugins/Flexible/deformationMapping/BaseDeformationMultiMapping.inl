@@ -668,7 +668,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappin
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(const core::visual::VisualParams* vparams)
 {
-#ifdef FLEXIBLE_HAVE_SOFA_GL
+#if FLEXIBLE_HAVE_SOFA_GL
     if (!vparams->displayFlags().getShowMechanicalMappings() && !showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) return;
 
 

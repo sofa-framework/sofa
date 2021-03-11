@@ -203,7 +203,7 @@ using defaulttype::Vec4f;
 template <> SOFA_Flexible_API
 void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifdef FLEXIBLE_HAVE_SOFA_GL
+#if FLEXIBLE_HAVE_SOFA_GL
 
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 

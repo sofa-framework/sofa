@@ -296,7 +296,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override
     {
 
-#ifdef COMPLIANT_HAVE_SOFA_GL
+#if COMPLIANT_HAVE_SOFA_GL
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
         SReal scale = d_showObjectScale.getValue();
@@ -628,7 +628,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override
     {
 
-#ifdef COMPLIANT_HAVE_SOFA_GL
+#if COMPLIANT_HAVE_SOFA_GL
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
         SReal scale = d_showObjectScale.getValue();

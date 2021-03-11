@@ -24,7 +24,7 @@
 
 #include <Flexible/config.h>
 
-#ifdef FLEXIBLE_HAVE_SOFA_GL
+#if FLEXIBLE_HAVE_SOFA_GL
 #include <sofa/gl/gl.h>
 #endif // FLEXIBLE_HAVE_SOFA_GL
 
@@ -45,7 +45,7 @@ namespace mapping
 template<Size matdim,typename Real>
 void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype::Vec<3,Real> &p, const float& scale)
 {
-#ifdef FLEXIBLE_HAVE_SOFA_GL
+#if FLEXIBLE_HAVE_SOFA_GL
     glPushMatrix();
 
     GLdouble transformMatrix[16];
