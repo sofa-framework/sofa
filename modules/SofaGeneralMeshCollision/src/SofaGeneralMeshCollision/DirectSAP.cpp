@@ -71,16 +71,16 @@ inline double DSAPBox::squaredDistance(const DSAPBox & other, int axis) const
 }
 
 DirectSAP::DirectSAP()
-    : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
-    , bShowOnlyInvestigatedBoxes(initData(&bShowOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
-    , nbPairs(initData(&nbPairs, 0, "nbPairs", "number of pairs of elements sent to narrow phase"))
+    : d_draw(initData(&d_draw, false, "draw", "enable/disable display of results"))
+    , d_showOnlyInvestigatedBoxes(initData(&d_showOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
+    , d_nbPairs(initData(&d_nbPairs, 0, "nbPairs", "number of pairs of elements sent to narrow phase"))
     , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
-    , _cur_axis(0)
+    , m_currentAxis(0)
     , _alarmDist(0)
     , _alarmDist_d2(0)
     , _sq_alarmDist(0)
 {
-    nbPairs.setReadOnly(true);
+    d_nbPairs.setReadOnly(true);
 }
 
 void DirectSAP::init()
@@ -105,10 +105,10 @@ void DirectSAP::reinit()
 
 void DirectSAP::reset()
 {
-    endPointContainer.clear();
+    m_endPointContainer.clear();
     _boxes.clear();
     _isBoxInvestigated.clear();
-    _end_points.clear();
+    m_sortedEndPoints.clear();
     collisionModels.clear();
 }
 
@@ -163,18 +163,18 @@ void DirectSAP::createBoxesFromCollisionModels()
         {
             for (Size j = 0; j < cm->getSize(); ++j)
             {
-                endPointContainer.emplace_back();
-                EndPoint* min = &endPointContainer.back();
+                m_endPointContainer.emplace_back();
+                EndPoint* min = &m_endPointContainer.back();
 
-                endPointContainer.emplace_back();
-                EndPoint* max = &endPointContainer.back();
+                m_endPointContainer.emplace_back();
+                EndPoint* max = &m_endPointContainer.back();
 
                 min->setBoxID(cur_boxID);
                 max->setBoxID(cur_boxID);
                 max->setMax();
 
-                _end_points.push_back(min);
-                _end_points.push_back(max);
+                m_sortedEndPoints.push_back(min);
+                m_sortedEndPoints.push_back(max);
 
                 _boxes.emplace_back(Cube(cm, j), min, max);
                 ++cur_boxID;
@@ -234,10 +234,10 @@ int DirectSAP::greatestVarianceAxis() const
 
 void DirectSAP::update()
 {
-    _cur_axis = greatestVarianceAxis();
+    m_currentAxis = greatestVarianceAxis();
     for (auto& dsapBox : _boxes)
     {
-        dsapBox.update(_cur_axis, _alarmDist_d2);
+        dsapBox.update(m_currentAxis, _alarmDist_d2);
     }
 
     _isBoxInvestigated.resize(_boxes.size(), false);
@@ -255,12 +255,10 @@ void DirectSAP::beginNarrowPhase()
     update();
 
     sofa::helper::AdvancedTimer::stepBegin("Direct SAP std::sort");
-    std::sort(_end_points.begin(),_end_points.end(), CompPEndPoint());
+    std::sort(m_sortedEndPoints.begin(),m_sortedEndPoints.end(), CompPEndPoint());
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP std::sort");
 
     sofa::helper::AdvancedTimer::stepBegin("Direct SAP intersection");
-
-    std::map<int, std::set<int> > pairMap;
 
     std::deque<int> active_boxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
                                  //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
@@ -270,7 +268,7 @@ void DirectSAP::beginNarrowPhase()
                                  //                  the active boxes.
                                  //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
                                  //                  so, we delete the owner box, of this max end point from the active boxes
-    for (auto* endPoint : _end_points)
+    for (auto* endPoint : m_sortedEndPoints)
     {
         assert(endPoint != nullptr);
         if (endPoint->max())
@@ -333,14 +331,14 @@ void DirectSAP::beginNarrowPhase()
             active_boxes.push_back(new_box);
         }
     }
-    nbPairs.setValue(nbDetectedPairs);
+    d_nbPairs.setValue(nbDetectedPairs);
     sofa::helper::AdvancedTimer::valSet("Direct SAP pairs", nbDetectedPairs);
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP intersection");
 }
 
 void DirectSAP::draw(const core::visual::VisualParams* vparams)
 {
-    if (!bDraw.getValue())
+    if (!d_draw.getValue())
         return;
 
     vparams->drawTool()->saveLastState();
@@ -355,7 +353,7 @@ void DirectSAP::draw(const core::visual::VisualParams* vparams)
     for (const auto& dsapBox : _boxes)
     {
         const bool isBoxInvestigated = _isBoxInvestigated[boxId++];
-        if (bShowOnlyInvestigatedBoxes.getValue() && !isBoxInvestigated) continue;
+        if (d_showOnlyInvestigatedBoxes.getValue() && !isBoxInvestigated) continue;
 
         const auto& minCorner = dsapBox.cube.minVect();
         const auto& maxCorner = dsapBox.cube.maxVect();

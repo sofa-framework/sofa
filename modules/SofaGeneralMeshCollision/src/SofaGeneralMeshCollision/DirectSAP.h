@@ -100,20 +100,20 @@ private:
       */
     void update();
 
-    Data<bool> bDraw; ///< enable/disable display of results
-    Data<bool> bShowOnlyInvestigatedBoxes;
-    Data<int> nbPairs; ///< number of pairs of elements sent to narrow phase
+    Data<bool> d_draw; ///< enable/disable display of results
+    Data<bool> d_showOnlyInvestigatedBoxes;
+    Data<int> d_nbPairs; ///< number of pairs of elements sent to narrow phase
 
     Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     CubeCollisionModel::SPtr boxModel;
-    std::list<EndPoint> endPointContainer;
+    std::list<EndPoint> m_endPointContainer;
 
 
     sofa::helper::vector<DSAPBox> _boxes;//boxes
     sofa::helper::vector<bool> _isBoxInvestigated;
-    EndPointList _end_points;//end points of _boxes
-    int _cur_axis;//the current greatest variance axis
+    EndPointList m_sortedEndPoints; ///< list of EndPoints dedicated to be sorted. Owner of pointers is m_endPointContainer
+    int m_currentAxis;//the current greatest variance axis
 
     std::set<core::CollisionModel*> collisionModels;//used to check if a collision model is added
     sofa::helper::vector<core::CollisionModel*> _new_cm;//eventual new collision models to  add at a step
@@ -128,7 +128,7 @@ protected:
     ~DirectSAP() override = default;
 
 public:
-    void setDraw(bool val) { bDraw.setValue(val); }
+    void setDraw(bool val) { d_draw.setValue(val); }
 
     void init() override;
     void reinit() override;
