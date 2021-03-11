@@ -92,7 +92,9 @@ endmacro()
 
 
 macro(sofa_add_generic directory name type)
+    set(optionArgs)
     set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN)
+    set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
@@ -107,8 +109,6 @@ macro(sofa_add_generic directory name type)
         endif()
 
         if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
-            message("ARG_WHEN_TO_SHOW = ${ARG_WHEN_TO_SHOW}")
-            message("ARG_VALUE_IF_HIDDEN = ${ARG_VALUE_IF_HIDDEN}")
             cmake_dependent_option(${option} "Build the ${name} ${type_lower}." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
         else()
             option(${option} "Build the ${name} ${type_lower}." ${active})
@@ -191,6 +191,7 @@ endmacro()
 function(sofa_add_generic_external directory name type)
     set(optionArgs FETCH_ONLY)
     set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN)
+    set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # Make directory absolute
