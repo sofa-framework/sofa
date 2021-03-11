@@ -29,6 +29,8 @@ namespace sofa::component::topology
 {
 class PointSetTopologyContainer;
 
+template <class DataTypes>
+class PointSetGeometryAlgorithms;
 
 /**
 * A class that can apply basic topology transformations on a set of points.
@@ -37,6 +39,9 @@ class SOFA_SOFABASETOPOLOGY_API PointSetTopologyModifier : public core::topology
 {
 public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
+
+    template <class DataTypes>
+    friend class PointSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::PointID PointID;
     Data<bool> d_propagateToDOF; ///< propagate changes to Mechanical object DOFs
@@ -65,36 +70,7 @@ public:
         const sofa::helper::vector< PointID >& inv_index,
         const bool renumberDOF = true);
 
-    /** \brief Sends a message to warn that some points were added in this topology.
-    *
-    * \sa addPointsProcess
-    */
-    void addPointsWarning(const sofa::Size nPoints, const bool addDOF = true);
-
-    /** \brief Sends a message to warn that some points were added in this topology.
-    *
-    * \sa addPointsProcess
-    */
-    void addPointsWarning(const sofa::Size nPoints,
-            const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
-            const bool addDOF = true);
-
-    /** \brief Sends a message to warn that some points were added in this topology.
-    *
-    * \sa addPointsProcess
-    */
-    void addPointsWarning(const sofa::Size nPoints,
-            const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
-            const bool addDOF = true);
-
-
-    /** \brief Extend the point container storage by nPoints.
-    *
-    * \sa addPointsWarning
-    */
-    virtual void addPointsProcess(const sofa::Size nPoints);
-
+    
     /** \brief Add a set of points
     * 
     * \sa addPoints
@@ -114,45 +90,16 @@ public:
      *
      * \sa addPoints
      */
-    void addPoints( const sofa::Size nPoints,
+    virtual void addPoints( const sofa::Size nPoints,
                     const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
                     const bool addDOF = true);
 
 
-    /** \brief Sends a message to warn that some points are about to be deleted.
-    *
-    * \sa removePointsProcess
+    /** \brief Generic method to remove a list of point
+    * @param indices: the indices of the point to remove fromt his topology
+    * @param removeDOF: Notify if the DOF from the mechanical container need to be updated as well.
     */
-    // side effect: indices are sorted first
-    void removePointsWarning(/*const*/ sofa::helper::vector< PointID > &indices,
-            const bool removeDOF = true);
-
-
-    /** \brief Remove a subset of points
-    *
-    * Elements corresponding to these points are removed from the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
-    * \sa removePointsWarning
-    *
-    * @param indices is not const because it is actually sorted from the highest index to the lowest one.
-    * @param removeDOF if true the points are actually deleted from the mechanical object's state vectors
-    */
-    virtual void removePointsProcess(const sofa::helper::vector< PointID > &indices,
-            const bool removeDOF = true);
-
-    /** \brief move input points indices to input new coords. Also propagate event
-     *
-     * @param id : list of indices to move
-     * @param : ancestors list of ancestors to define relative new position
-     * @param coefs : barycoef to locate new coord relatively to ancestors.
-     * @moveDOF bool allowing the move (default true)
-     */
-    virtual void movePointsProcess (const sofa::helper::vector < PointID >& id,
-            const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
-            const bool moveDOF = true);
-
+    virtual void removePoints(sofa::helper::vector< PointID >& indices, const bool removeDOF = true);
 
 
     /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
@@ -196,6 +143,72 @@ public:
     { }
 
 protected:
+    /** \brief Sends a message to warn that some points were added in this topology.
+    *
+    * \sa addPointsProcess
+    */
+    void addPointsWarning(const sofa::Size nPoints, const bool addDOF = true);
+
+    /** \brief Sends a message to warn that some points were added in this topology.
+    *
+    * \sa addPointsProcess
+    */
+    void addPointsWarning(const sofa::Size nPoints,
+        const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
+        const bool addDOF = true);
+
+    /** \brief Sends a message to warn that some points were added in this topology.
+    *
+    * \sa addPointsProcess
+    */
+    void addPointsWarning(const sofa::Size nPoints,
+        const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
+        const bool addDOF = true);
+
+
+    /** \brief Extend the point container storage by nPoints.
+    *
+    * \sa addPointsWarning
+    */
+    virtual void addPointsProcess(const sofa::Size nPoints);
+    
+
+    /** \brief Sends a message to warn that some points are about to be deleted.
+    *
+    * \sa removePointsProcess
+    */
+    // side effect: indices are sorted first
+    void removePointsWarning(/*const*/ sofa::helper::vector< PointID >& indices,
+        const bool removeDOF = true);
+
+    /** \brief Remove a subset of points
+    *
+    * Elements corresponding to these points are removed from the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
+    * \sa removePointsWarning
+    *
+    * @param indices is not const because it is actually sorted from the highest index to the lowest one.
+    * @param removeDOF if true the points are actually deleted from the mechanical object's state vectors
+    */
+    virtual void removePointsProcess(const sofa::helper::vector< PointID >& indices,
+        const bool removeDOF = true);
+
+
+    /** \brief move input points indices to input new coords. Also propagate event
+     *
+     * @param id : list of indices to move
+     * @param : ancestors list of ancestors to define relative new position
+     * @param coefs : barycoef to locate new coord relatively to ancestors.
+     * @moveDOF bool allowing the move (default true)
+     */
+    virtual void movePointsProcess(const sofa::helper::vector < PointID >& id,
+        const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
+        const bool moveDOF = true);
+
+
     /** \brief Sends a message to warn that points are about to be reordered.
     *
     * \sa renumberPointsProcess

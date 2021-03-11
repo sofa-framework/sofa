@@ -3,11 +3,6 @@ project(SofaSimpleGUI)
 
 set(SOFASIMPLEGUI_VERSION 0.1)
 
-if(${SOFA_NO_OPENGL})
-    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
-    message("Flag SOFA_NO_OPENGL incompatible with the SofaSimpleGUI plugin.")
-endif()
-
 set(HEADER_FILES
     Camera.h
     Interactor.h
@@ -16,7 +11,7 @@ set(HEADER_FILES
     SofaScene.h
     SpringInteractor.h
     VisualPickVisitor.h
-    config.h
+    config.h.in
 )
 
 set(SOURCE_FILES
@@ -31,6 +26,7 @@ set(SOURCE_FILES
 
 sofa_find_package(SofaComponentAll REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
+sofa_find_package(Sofa.GL REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaComponentAll SofaSimulationGraph)

@@ -19,34 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/WriteStateVisitor.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-namespace sofa
+#include <sofa/core/behavior/MechanicalMatrix.h>
+#include <iostream>
+namespace sofa::core::behavior
 {
 
-namespace simulation
+std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
 {
-
-
-WriteStateVisitor::WriteStateVisitor( const sofa::core::ExecParams* params, std::ostream& out )
-    : Visitor(params), m_out(out)
-{}
-
-WriteStateVisitor::~WriteStateVisitor()
-{}
-
-Visitor::Result WriteStateVisitor::processNodeTopDown( simulation::Node* gnode )
-{
-    if (gnode->mechanicalState != nullptr)
+    out << '(';
+    bool first = true;
+    for (unsigned int i=0; i<m.factors.size(); ++i)
     {
-        gnode->mechanicalState->writeState(m_out);
+        SReal f = m.factors[i];
+        if (f!=0.0)
+        {
+            if (!first) out << ' ';
+            if (f == -1.0) out << '-';
+            else if (f < 0) out << f << ' ';
+            else
+            {
+                if (!first) out << '+';
+                if (f != 1.0) out << f << ' ';
+            }
+            out << ("MBK")[i];
+            first = false;
+        }
     }
-    return Visitor::RESULT_CONTINUE;
+    out << ')';
+    return out;
 }
 
-} // namespace simulation
+const MechanicalMatrix MechanicalMatrix::M(1,0,0);
+const MechanicalMatrix MechanicalMatrix::B(0,1,0);
+const MechanicalMatrix MechanicalMatrix::K(0,0,1);
 
-} // namespace sofa
+} /// namespace sofa::core::behavior
 

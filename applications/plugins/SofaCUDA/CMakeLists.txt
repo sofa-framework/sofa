@@ -154,8 +154,9 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/mycuda.cu
 )
 
-if(SOFA_NO_OPENGL)
-    message(WARNING "CMake flag SOFA_NO_OPENGL is active.")
+sofa_find_package(Sofa.GL QUIET)
+if(NOT Sofa.GL_FOUND)
+    message(WARNING "Sofa.GL is not active.")
     message("OpenGL-related code wont be enabled (Sharing OpenGL buffers with CUDA)")
 else()
     list(APPEND HEADER_FILES
@@ -340,7 +341,7 @@ target_link_libraries(${PROJECT_NAME}
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
-if(NOT SOFA_NO_OPENGL)
+if(SofaOpenglVisual_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
 endif()
 

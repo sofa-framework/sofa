@@ -24,7 +24,7 @@
 
 #include <sofa/config.h>
 
-#ifdef SOFA_BUILD_EULERIAN_FLUID
+#ifdef SOFA_BUILD_SOFAEULERIANFLUID
 #  define SOFA_TARGET SofaEulerianFluid
 #  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else

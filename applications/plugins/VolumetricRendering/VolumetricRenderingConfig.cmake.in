@@ -4,7 +4,7 @@
 @PACKAGE_INIT@
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaBase REQUIRED)
+find_package(Sofa.GL REQUIRED)
 
 
 if(NOT TARGET VolumetricRendering)

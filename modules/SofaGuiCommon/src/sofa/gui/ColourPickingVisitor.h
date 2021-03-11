@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/gui/config.h>
 #include <sofa/simulation/Visitor.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/fwd.h>
 #include <SofaBaseCollision/fwd.h>
 #include <SofaUserInteraction/MouseInteractor.h>

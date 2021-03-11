@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/topology/BaseTopology.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 namespace sofa
 {
