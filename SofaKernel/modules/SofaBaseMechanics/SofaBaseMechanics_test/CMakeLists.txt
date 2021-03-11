@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaBaseMechanics_test)
 
+# Do not find dependencies explicitely, let CMake decide the appropriate time to do it
+#sofa_find_package(SofaTest REQUIRED)
+
 set(SOURCE_FILES
     UniformMass_test.cpp
     DiagonalMass_test.cpp
