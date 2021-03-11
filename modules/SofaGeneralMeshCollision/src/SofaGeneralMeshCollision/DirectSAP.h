@@ -107,6 +107,8 @@ private:
     Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     CubeCollisionModel::SPtr boxModel;
+    std::list<EndPoint> endPointContainer;
+
 
     sofa::helper::vector<DSAPBox> _boxes;//boxes
     sofa::helper::vector<bool> _isBoxInvestigated;
@@ -120,14 +122,11 @@ private:
     double _alarmDist_d2;
     double _sq_alarmDist;
 
-    void deleteGarbage();
-
 protected:
     DirectSAP();
 
-    ~DirectSAP() override;
+    ~DirectSAP() override = default;
 
-    std::vector<EndPoint*> _to_del;//EndPoint arrays to delete when deleting DirectSAP
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
 

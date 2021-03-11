@@ -70,12 +70,6 @@ inline double DSAPBox::squaredDistance(const DSAPBox & other, int axis) const
     return 0;
 }
 
-void DirectSAP::deleteGarbage()
-{
-    for (unsigned int i = 0; i < _to_del.size(); ++i)
-        delete[] _to_del[i];
-}
-
 DirectSAP::DirectSAP()
     : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
     , bShowOnlyInvestigatedBoxes(initData(&bShowOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
@@ -87,12 +81,6 @@ DirectSAP::DirectSAP()
     , _sq_alarmDist(0)
 {
     nbPairs.setReadOnly(true);
-}
-
-
-DirectSAP::~DirectSAP()
-{
-    deleteGarbage();
 }
 
 void DirectSAP::init()
@@ -117,7 +105,7 @@ void DirectSAP::reinit()
 
 void DirectSAP::reset()
 {
-    deleteGarbage();
+    endPointContainer.clear();
     _boxes.clear();
     _isBoxInvestigated.clear();
     _end_points.clear();
@@ -166,10 +154,7 @@ void DirectSAP::createBoxesFromCollisionModels()
     }
 
     _boxes.reserve(_boxes.size() + totalNbElements);
-    EndPoint * end_pts = new EndPoint[2*totalNbElements];
-    _to_del.push_back(end_pts);
 
-    int cur_EndPtID = 0;
     int cur_boxID = static_cast<int>(_boxes.size());
 
     for (auto* cm : cube_models)
@@ -178,8 +163,11 @@ void DirectSAP::createBoxesFromCollisionModels()
         {
             for (Size j = 0; j < cm->getSize(); ++j)
             {
-                EndPoint * min = &end_pts[cur_EndPtID++];
-                EndPoint * max = &end_pts[cur_EndPtID++];
+                endPointContainer.emplace_back();
+                EndPoint* min = &endPointContainer.back();
+
+                endPointContainer.emplace_back();
+                EndPoint* max = &endPointContainer.back();
 
                 min->setBoxID(cur_boxID);
                 max->setBoxID(cur_boxID);
