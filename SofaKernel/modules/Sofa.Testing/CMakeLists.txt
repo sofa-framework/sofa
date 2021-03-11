@@ -45,6 +45,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEAD
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType SofaCore gtest SofaGTestMain SofaSimulationGraph)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/Sofa.Testing/Sofa.Testing/compat>")
 source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
 # own include dir, the macro does not handle "independent" package for SofaFramework-style include 
@@ -57,7 +58,6 @@ sofa_create_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
-    RELOCATABLE "plugins"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)
