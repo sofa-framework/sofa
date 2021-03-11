@@ -94,7 +94,6 @@ public:
     using SetIndex = sofa::topology::SetIndex;
     using SetIndices = sofa::topology::SetIndices;
 
-    using Point = PointID;
     using Edge = sofa::topology::Edge;
     using Triangle = sofa::topology::Triangle;
     using Quad = sofa::topology::Quad;
