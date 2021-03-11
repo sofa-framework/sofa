@@ -167,3 +167,8 @@ sofa_add_targets_to_package(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaFramework"
     )
+
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(SofaSimulationCore_test)
+    add_subdirectory(SofaSimulationCore_simutest)
+endif()

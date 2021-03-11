@@ -246,11 +246,6 @@ endif()
 ## Plugins
 add_subdirectory(applications/plugins)
 
-if(SOFA_BUILD_TESTS)
-    # Tests for all the modules, written using SofaTest.
-    add_subdirectory(tests)
-endif()
-
 ## Applications
 add_subdirectory(applications/projects)
 

@@ -191,6 +191,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/thread/CircularQueue.cpp
     ${SRC_ROOT}/system/thread/debug.cpp
     ${SRC_ROOT}/system/FileRepository.cpp
+    ${SRC_ROOT}/set.cpp
     ${SRC_ROOT}/vector.cpp
     ${SRC_ROOT}/vector_Real.cpp
     ${SRC_ROOT}/vector_Integral.cpp
@@ -337,3 +338,8 @@ sofa_add_targets_to_package(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaFramework"
     )
+
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(SofaHelper_test)
+    add_subdirectory(SofaHelper_simutest)
+endif()
