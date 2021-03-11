@@ -386,7 +386,7 @@ protected:
 public:
 
     MechanicalVisitor(const core::MechanicalParams* m_mparams)
-        : BaseMechanicalVisitor(sofa::core::mechanicalparams::dynamicCastToExecParams(m_mparams))
+        : BaseMechanicalVisitor(sofa::core::mechanicalparams::castToExecParams(m_mparams))
         , mparams(m_mparams)
     {}
 };
