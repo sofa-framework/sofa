@@ -24,19 +24,6 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/fwd.h>
-#include <sofa/helper/list.h>
-
-#ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-namespace std
-{
-    extern template class list<const sofa::core::topology::TopologyChange*>;
-}
-namespace sofa::core::objectmodel
-{
-    extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
-}
-
-#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
 
 namespace sofa
 {

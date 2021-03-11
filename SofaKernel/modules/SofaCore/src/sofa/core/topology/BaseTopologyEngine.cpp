@@ -19,22 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION true
 #include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/topology/TopologyChange.h>
-
-#ifdef SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-namespace std
-{
-    template class list<const sofa::core::topology::TopologyChange*>;
-}
-
-namespace sofa::core::objectmodel
-{
-template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
-}
-#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-
 
 namespace sofa::core::topology
 {
