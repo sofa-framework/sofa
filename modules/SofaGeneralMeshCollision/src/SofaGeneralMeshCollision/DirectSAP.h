@@ -30,6 +30,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <set>
 
+#include "sofa/helper/ScopedAdvancedTimer.h"
+
 namespace sofa::component::collision
 {
 
@@ -48,9 +50,11 @@ public:
 
     void update(int axis,double alarmDist);
 
+    [[nodiscard]]
     double squaredDistance(const DSAPBox & other) const;
 
     /// Compute the squared distance from this to other on a specific axis
+    [[nodiscard]]
     double squaredDistance(const DSAPBox & other, int axis)const;
 
     void show() const;
@@ -72,45 +76,52 @@ class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP :
 public:
     SOFA_CLASS2(DirectSAP, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
-    typedef std::vector<EndPoint*> EndPointList;
-
+    typedef sofa::helper::vector<EndPoint*> EndPointList;
     typedef DSAPBox SAPBox;
 
-    //void collidingCubes(std::vector<std::pair<Cube,Cube> > & col_cubes)const;
 private:
-    /**
-      *Returns the axis number which have the greatest variance for the primitive end points.
-      *This axis is used when updating and sorting end points. The greatest variance means
-      *that this axis have the most chance to eliminate a maximum of not overlaping SAPBox pairs
-      *because along this axis, SAPBoxes are the sparsest.
-      */
+
+    /** \brief Returns the axis number which have the greatest variance for the primitive end points.
+     *
+     * This axis is used when updating and sorting end points. The greatest variance means
+     * that this axis have the most chance to eliminate a maximum of not overlaping SAPBox pairs
+     * because along this axis, SAPBoxes are the sparsest.
+     */
     int greatestVarianceAxis()const;
 
-    bool added(core::CollisionModel * cm)const;
+    /// Return true if the collision model has already been added to the list of managed models
+    bool added(core::CollisionModel * cm) const;
 
+    /// Add a collision model to the list of managed models
     void add(core::CollisionModel * cm);
 
     /**
-      *Updates values of end points. These values are coordinates of AABB on axis that maximazes the variance for the AABBs.
+      * Updates values of end points. These values are coordinates of AABB on axis that maximazes the variance for the AABBs.
       */
     void update();
 
     Data<bool> bDraw; ///< enable/disable display of results
+    Data<bool> bShowOnlyInvestigatedBoxes;
+    Data<int> nbPairs; ///< number of pairs of elements sent to narrow phase
 
     Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     CubeCollisionModel::SPtr boxModel;
 
-    std::vector<DSAPBox> _boxes;//boxes
+    sofa::helper::vector<DSAPBox> _boxes;//boxes
+    sofa::helper::vector<bool> _isBoxInvestigated;
     EndPointList _end_points;//end points of _boxes
     int _cur_axis;//the current greatest variance axis
 
     std::set<core::CollisionModel*> collisionModels;//used to check if a collision model is added
-    std::vector<core::CollisionModel*> _new_cm;//eventual new collision models to  add at a step
+    sofa::helper::vector<core::CollisionModel*> _new_cm;//eventual new collision models to  add at a step
 
     double _alarmDist;
     double _alarmDist_d2;
     double _sq_alarmDist;
+
+    void deleteGarbage();
+
 protected:
     DirectSAP();
 
@@ -122,6 +133,7 @@ public:
 
     void init() override;
     void reinit() override;
+    void reset() override;
 
     void addCollisionModel (core::CollisionModel *cm) override;
 
@@ -136,9 +148,11 @@ public:
 
 
     /* for debugging */
-    void draw(const core::visual::VisualParams*) override {}
+    void draw(const core::visual::VisualParams*) override;
 
     inline bool needsDeepBoundingTree()const override {return false;}
+
+    void createBoxesFromCollisionModels();
 };
 
 } // namespace sofa::component::collision

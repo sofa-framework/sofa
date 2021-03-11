@@ -59,7 +59,7 @@ public:
         {
             DetectionOutputVector *do_vec = (it->second);
 
-            if (do_vec != 0)
+            if (do_vec != nullptr)
                 do_vec->clear();
         }
     }

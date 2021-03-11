@@ -32,13 +32,26 @@
 namespace sofa::component::collision
 {
 
-inline void DSAPBox::update(int axis, double alarmDist){
+inline void DSAPBox::update(int axis, double alarmDist)
+{
     min->value = (cube.minVect())[axis] - alarmDist;
     max->value = (cube.maxVect())[axis] + alarmDist;
 }
 
+double DSAPBox::squaredDistance(const DSAPBox & other) const
+{
+    double dist2 = 0;
 
-inline double DSAPBox::squaredDistance(const DSAPBox & other,int axis)const{
+    for (int axis = 0; axis < 3; ++axis)
+    {
+        dist2 += squaredDistance(other, axis);
+    }
+
+    return dist2;
+}
+
+inline double DSAPBox::squaredDistance(const DSAPBox & other, int axis) const
+{
     const defaulttype::Vector3 & min0 = this->cube.minVect();
     const defaulttype::Vector3 & max0 = this->cube.maxVect();
     const defaulttype::Vector3 & min1 = other.cube.minVect();
@@ -51,29 +64,36 @@ inline double DSAPBox::squaredDistance(const DSAPBox & other,int axis)const{
 
     if(min1[axis] > max0[axis])
     {
-        return std::pow((min1[axis] - max0[axis]), 2);
+        return std::pow(min1[axis] - max0[axis], 2);
     }
 
     return 0;
 }
 
+void DirectSAP::deleteGarbage()
+{
+    for (unsigned int i = 0; i < _to_del.size(); ++i)
+        delete[] _to_del[i];
+}
+
 DirectSAP::DirectSAP()
     : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
+    , bShowOnlyInvestigatedBoxes(initData(&bShowOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
+    , nbPairs(initData(&nbPairs, 0, "nbPairs", "number of pairs of elements sent to narrow phase"))
     , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
     , _cur_axis(0)
     , _alarmDist(0)
     , _alarmDist_d2(0)
     , _sq_alarmDist(0)
 {
+    nbPairs.setReadOnly(true);
 }
 
 
 DirectSAP::~DirectSAP()
 {
-    for(unsigned int i = 0 ; i < _to_del.size() ; ++i)
-        delete[] _to_del[i];
+    deleteGarbage();
 }
-
 
 void DirectSAP::init()
 {
@@ -93,6 +113,15 @@ void DirectSAP::reinit()
         boxModel->resize(1);
         boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
     }
+}
+
+void DirectSAP::reset()
+{
+    deleteGarbage();
+    _boxes.clear();
+    _isBoxInvestigated.clear();
+    _end_points.clear();
+    collisionModels.clear();
 }
 
 inline bool DirectSAP::added(core::CollisionModel *cm) const
@@ -123,7 +152,7 @@ void DirectSAP::createBoxesFromCollisionModels()
 {
     //to gain time, we create at the same time all SAPboxes so as to allocate
     //memory the less times
-    std::vector<CubeCollisionModel*> cube_models;
+    sofa::helper::vector<CubeCollisionModel*> cube_models;
     cube_models.reserve(_new_cm.size());
 
     int totalNbElements = 0;
@@ -142,30 +171,35 @@ void DirectSAP::createBoxesFromCollisionModels()
 
     int cur_EndPtID = 0;
     int cur_boxID = static_cast<int>(_boxes.size());
-    for(unsigned int i = 0 ; i < cube_models.size() ; ++i){
-        CubeCollisionModel * cm = cube_models[i];
-        for(Size j = 0 ; j < cm->getSize() ; ++j){
-            EndPoint * min = &end_pts[cur_EndPtID];
-            ++cur_EndPtID;
-            EndPoint * max = &end_pts[cur_EndPtID];
-            ++cur_EndPtID;
 
-            min->setBoxID(cur_boxID);
-            max->setBoxID(cur_boxID);
-            max->setMax();
+    for (auto* cm : cube_models)
+    {
+        if (cm != nullptr)
+        {
+            for (Size j = 0; j < cm->getSize(); ++j)
+            {
+                EndPoint * min = &end_pts[cur_EndPtID++];
+                EndPoint * max = &end_pts[cur_EndPtID++];
 
-            _end_points.push_back(min);
-            _end_points.push_back(max);
+                min->setBoxID(cur_boxID);
+                max->setBoxID(cur_boxID);
+                max->setMax();
 
-            _boxes.push_back(DSAPBox(Cube(cm,j),min,max));
-            ++cur_boxID;
+                _end_points.push_back(min);
+                _end_points.push_back(max);
+
+                _boxes.emplace_back(Cube(cm, j), min, max);
+                ++cur_boxID;
+            }
         }
     }
+
+    _isBoxInvestigated.resize(_boxes.size(), false);
 }
 
-
-
-void DirectSAP::addCollisionModel(core::CollisionModel *cm){
+void DirectSAP::addCollisionModel(core::CollisionModel *cm)
+{
+    assert(cm != nullptr);
     if(!added(cm))
         add(cm);
 }
@@ -210,11 +244,16 @@ int DirectSAP::greatestVarianceAxis() const
     return 2;
 }
 
-void DirectSAP::update(){
+void DirectSAP::update()
+{
     _cur_axis = greatestVarianceAxis();
-    for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        _boxes[i].update(_cur_axis,_alarmDist_d2);
+    for (auto& dsapBox : _boxes)
+    {
+        dsapBox.update(_cur_axis, _alarmDist_d2);
     }
+
+    _isBoxInvestigated.resize(_boxes.size(), false);
+    std::fill(_isBoxInvestigated.begin(), _isBoxInvestigated.end(), false);
 }
 
 void DirectSAP::beginNarrowPhase()
@@ -223,6 +262,7 @@ void DirectSAP::beginNarrowPhase()
     _alarmDist = getIntersectionMethod()->getAlarmDistance();
     _sq_alarmDist = _alarmDist * _alarmDist;
     _alarmDist_d2 = _alarmDist/2.0;
+    int nbDetectedPairs{ 0 };
 
     update();
 
@@ -232,6 +272,8 @@ void DirectSAP::beginNarrowPhase()
 
     sofa::helper::AdvancedTimer::stepBegin("Direct SAP intersection");
 
+    std::map<int, std::set<int> > pairMap;
+
     std::deque<int> active_boxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
                                  //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
                                  //                                                                                                      b1_min---------------------b1_max
@@ -240,74 +282,156 @@ void DirectSAP::beginNarrowPhase()
                                  //                  the active boxes.
                                  //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
                                  //                  so, we delete the owner box, of this max end point from the active boxes
-    for(EndPointList::iterator it = _end_points.begin() ; it != _end_points.end() ; ++it){
-        if((**it).max()){//erase it from the active_boxes
-            assert(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()) != active_boxes.end());
-            active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()));
+    for (auto* endPoint : _end_points)
+    {
+        assert(endPoint != nullptr);
+        if (endPoint->max())
+        {
+            //erase it from the active_boxes
+            assert(std::find(active_boxes.begin(), active_boxes.end(), endPoint->boxID()) != active_boxes.end());
+            active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(), endPoint->boxID()));
         }
-        else{//we encounter a min possible intersection between it and active_boxes
-            int new_box = (**it).boxID();
-
+        else //we encounter a min possible intersection between it and active_boxes
+        {
+            const int new_box = endPoint->boxID();
             DSAPBox & box0 = _boxes[new_box];
-            for(unsigned int i = 0 ; i < active_boxes.size() ; ++i){
-                DSAPBox & box1 = _boxes[active_boxes[i]];
 
-                core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
-                core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
-                if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
-                        (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) &&
-                         /*box0.overlaps(box1,axis1,_alarmDist) && box0.overlaps(box1,axis2,_alarmDist)*/
-                         box0.squaredDistance(box1) <= _sq_alarmDist)){//intersection on all axes
+            for (int activeBoxId : active_boxes)
+            {
+                DSAPBox & box1 = _boxes[activeBoxId];
 
-                    bool swapModels = false;
-                    core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2, swapModels);//find the method for the finnest CollisionModels
+                core::CollisionModel *finalcm0 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
+                core::CollisionModel *finalcm1 = box1.cube.getCollisionModel()->getLast();
 
-                    assert(box0.cube.getExternalChildren().first.getIndex() == box0.cube.getIndex());
-                    assert(box1.cube.getExternalChildren().first.getIndex() == box1.cube.getIndex());
+                const bool isAnySimulated = finalcm0->isSimulated() || finalcm1->isSimulated();
+                if (isAnySimulated)
+                {
+                    const bool isSameObject = finalcm0->getContext() == finalcm1->getContext();
+                    if ((!isSameObject || finalcm0->canCollideWith(finalcm1)) &&
+                        box0.squaredDistance(box1) <= _sq_alarmDist)
+                    {
+                        bool swapModels = false;
+                        core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm0, finalcm1, swapModels);//find the method for the finnest CollisionModels
 
-                    if((!swapModels) && finalcm1->getClass() == finalcm2->getClass() && finalcm1 > finalcm2)//we do that to have only pair (p1,p2) without having (p2,p1)
-                        swapModels = true;
+                        assert(box0.cube.getExternalChildren().first.getIndex() == box0.cube.getIndex());
+                        assert(box1.cube.getExternalChildren().first.getIndex() == box1.cube.getIndex());
 
+                        if (!swapModels && finalcm0->getClass() == finalcm1->getClass() && finalcm0 > finalcm1)//we do that to have only pair (p1,p2) without having (p2,p1)
+                            swapModels = true;
 
-                    if(finalintersector != nullptr){
-                        if(swapModels){
-                            sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm2, finalcm1);
-                            finalintersector->beginIntersect(finalcm2, finalcm1, outputs);//creates outputs if null
+                        if (finalintersector != nullptr)
+                        {
+                            auto collisionElement0 = box0.cube.getExternalChildren().first;
+                            auto collisionElement1 = box1.cube.getExternalChildren().first;
 
-                            finalintersector->intersect(box1.cube.getExternalChildren().first,box0.cube.getExternalChildren().first,outputs) ;
+                            if (swapModels)
+                            {
+                                std::swap(finalcm0, finalcm1);
+                                std::swap(collisionElement0, collisionElement1);
+                            }
+
+                            sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm0, finalcm1);
+                            finalintersector->beginIntersect(finalcm0, finalcm1, outputs);//creates outputs if null
+                            finalintersector->intersect(collisionElement0, collisionElement1, outputs);
+                            nbDetectedPairs++;
+
+                            _isBoxInvestigated[activeBoxId] = true;
+                            _isBoxInvestigated[new_box] = true;
                         }
-                        else{
-                            sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finalcm1, finalcm2);
 
-                            finalintersector->beginIntersect(finalcm1, finalcm2, outputs);//creates outputs if null
-
-                            finalintersector->intersect(box0.cube.getExternalChildren().first,box1.cube.getExternalChildren().first,outputs) ;
-                        }
-                    }
-                    else{
                     }
                 }
             }
             active_boxes.push_back(new_box);
         }
     }
+    nbPairs.setValue(nbDetectedPairs);
+    sofa::helper::AdvancedTimer::valSet("Direct SAP pairs", nbDetectedPairs);
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP intersection");
+}
+
+void DirectSAP::draw(const core::visual::VisualParams* vparams)
+{
+    if (!bDraw.getValue())
+        return;
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
+    std::vector<sofa::helper::types::RGBAColor> colors;
+
+    vparams->drawTool()->setPolygonMode(0, true);
+    std::vector<sofa::defaulttype::Vector3> vertices;
+
+    unsigned int boxId{ 0 };
+    for (const auto& dsapBox : _boxes)
+    {
+        const bool isBoxInvestigated = _isBoxInvestigated[boxId++];
+        if (bShowOnlyInvestigatedBoxes.getValue() && !isBoxInvestigated) continue;
+
+        const auto& minCorner = dsapBox.cube.minVect();
+        const auto& maxCorner = dsapBox.cube.maxVect();
+
+        vertices.emplace_back(minCorner[0], minCorner[1], minCorner[2]);
+        vertices.emplace_back(maxCorner[0], minCorner[1], minCorner[2]);
+
+        vertices.emplace_back(minCorner[0], minCorner[1], minCorner[2]);
+        vertices.emplace_back(minCorner[0], maxCorner[1], minCorner[2]);
+
+        vertices.emplace_back(minCorner[0], minCorner[1], minCorner[2]);
+        vertices.emplace_back(minCorner[0], minCorner[1], maxCorner[2]);
+
+        vertices.emplace_back(minCorner[0], minCorner[1], maxCorner[2]);
+        vertices.emplace_back(maxCorner[0], minCorner[1], maxCorner[2]);
+
+        vertices.emplace_back(minCorner[0], maxCorner[1], minCorner[2]);
+        vertices.emplace_back(maxCorner[0], maxCorner[1], minCorner[2]);
+
+        vertices.emplace_back(maxCorner[0], minCorner[1], minCorner[2]);
+        vertices.emplace_back(maxCorner[0], maxCorner[1], minCorner[2]);
+
+        vertices.emplace_back(minCorner[0], maxCorner[1], minCorner[2]);
+        vertices.emplace_back(minCorner[0], maxCorner[1], maxCorner[2]);
+
+        vertices.emplace_back(maxCorner[0], maxCorner[1], minCorner[2]);
+        vertices.emplace_back(maxCorner[0], maxCorner[1], maxCorner[2]);
+
+        vertices.emplace_back(maxCorner[0], minCorner[1], minCorner[2]);
+        vertices.emplace_back(maxCorner[0], minCorner[1], maxCorner[2]);
+
+        vertices.emplace_back(minCorner[0], maxCorner[1], maxCorner[2]);
+        vertices.emplace_back(maxCorner[0], maxCorner[1], maxCorner[2]);
+
+        vertices.emplace_back(maxCorner[0], minCorner[1], maxCorner[2]);
+        vertices.emplace_back(maxCorner[0], maxCorner[1], maxCorner[2]);
+
+        vertices.emplace_back(minCorner[0], minCorner[1], maxCorner[2]);
+        vertices.emplace_back(minCorner[0], maxCorner[1], maxCorner[2]);
+
+        if (isBoxInvestigated)
+        {
+            for (unsigned int i = 0; i < 12; ++i)
+            {
+                colors.emplace_back(1.0, 0.0, 0.0, 1.0);
+            }
+        }
+        else
+        {
+            for (unsigned int i = 0; i < 12; ++i)
+            {
+                colors.emplace_back(0.0, 0.0, 1.0, 1.0);
+            }
+        }
+    }
+
+    vparams->drawTool()->drawLines(vertices, 3, colors);
+    vparams->drawTool()->restoreLastState();
 }
 
 inline void DSAPBox::show()const
 {
     msg_info("DSAPBox") <<"MIN "<<cube.minVect()<< msgendl
                         <<"MAX "<<cube.maxVect() ;
-}
-
-double DSAPBox::squaredDistance(const DSAPBox & other)const{
-    double dist2 = 0;
-
-    for(int axis = 0 ; axis < 3 ; ++axis){
-        dist2 += squaredDistance(other,axis);
-    }
-
-    return dist2;
 }
 
 using namespace sofa::defaulttype;
