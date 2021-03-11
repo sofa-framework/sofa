@@ -28,7 +28,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/types/Material.h>
 #include <sofa/helper/types/PrimitiveGroup.h>
-#include <sofa/core/topology/Topology.h>
+#include <sofa/topology/Topology.h>
 
 namespace sofa
 {
@@ -38,7 +38,7 @@ namespace helper
 
 namespace io
 {
-    using namespace sofa::core::topology;
+    using namespace sofa::topology;
 
 class SOFA_HELPER_API Mesh
 {    
@@ -50,7 +50,7 @@ public:
     typedef sofa::defaulttype::Vector3 Vector3;
     typedef sofa::helper::types::PrimitiveGroup PrimitiveGroup;
     typedef sofa::helper::types::Material Material;
-    typedef Topology::PointID PointID;
+    typedef sofa::Index PointID;
 
     /* specify for each control point lying on an edge : the control point index, the index of the  edge,
     the 2 integers specifying the position within this edge (i.e. 11 for a quadratic edge, 13 within a quartic edge).. */
@@ -71,20 +71,20 @@ public:
     sofa::helper::vector<Vector3> & getVertices() { return m_vertices; }
     const sofa::helper::vector<Vector3> & getVertices() const { return m_vertices; }
 
-    sofa::helper::vector< Topology::Edge > & getEdges() { return m_edges; }
-    const sofa::helper::vector< Topology::Edge > & getEdges() const { return m_edges; }
+    sofa::helper::vector< Edge > & getEdges() { return m_edges; }
+    const sofa::helper::vector< Edge > & getEdges() const { return m_edges; }
 
-    sofa::helper::vector< Topology::Triangle > & getTriangles() { return m_triangles; }
-    const sofa::helper::vector< Topology::Triangle > & getTriangles() const { return m_triangles; }
+    sofa::helper::vector< Triangle > & getTriangles() { return m_triangles; }
+    const sofa::helper::vector< Triangle > & getTriangles() const { return m_triangles; }
 
-    sofa::helper::vector< Topology::Quad > & getQuads() { return m_quads; }
-    const sofa::helper::vector< Topology::Quad > & getQuads() const { return m_quads; }
+    sofa::helper::vector< Quad > & getQuads() { return m_quads; }
+    const sofa::helper::vector< Quad > & getQuads() const { return m_quads; }
 
-    sofa::helper::vector< Topology::Tetrahedron > & getTetrahedra() { return m_tetrahedra; }
-    const sofa::helper::vector< Topology::Tetrahedron > & getTetrahedra() const { return m_tetrahedra; }
+    sofa::helper::vector< Tetrahedron > & getTetrahedra() { return m_tetrahedra; }
+    const sofa::helper::vector< Tetrahedron > & getTetrahedra() const { return m_tetrahedra; }
 
-    sofa::helper::vector< Topology::Hexahedron > & getHexahedra() { return m_hexahedra; }
-    const sofa::helper::vector< Topology::Hexahedron > & getHexahedra() const { return m_hexahedra; }
+    sofa::helper::vector< Hexahedron > & getHexahedra() { return m_hexahedra; }
+    const sofa::helper::vector< Hexahedron > & getHexahedra() const { return m_hexahedra; }
 
     sofa::helper::vector<Vector3> & getTexCoords() { return texCoords; }
     const sofa::helper::vector<Vector3> & getTexCoords() const { return texCoords; }
@@ -131,17 +131,17 @@ protected:
     sofa::helper::vector<Vector3> m_vertices;
 
     // Tab of 2D elements composition
-    sofa::helper::vector< Topology::Edge > m_edges; ///< Edges of the mesh loaded
-    sofa::helper::vector< Topology::Triangle > m_triangles; ///< Triangles of the mesh loaded
-    sofa::helper::vector< Topology::Quad > m_quads; ///< Quads of the mesh loaded
+    sofa::helper::vector< Edge > m_edges; ///< Edges of the mesh loaded
+    sofa::helper::vector< Triangle > m_triangles; ///< Triangles of the mesh loaded
+    sofa::helper::vector< Quad > m_quads; ///< Quads of the mesh loaded
     helper::vector< helper::vector <unsigned int> > m_polygons; ///< Polygons of the mesh loaded
     helper::vector< HighOrderEdgePosition > m_highOrderEdgePositions; ///< High order edge points of the mesh loaded
     helper::vector< HighOrderTrianglePosition > m_highOrderTrianglePositions; ///< High order triangle points of the mesh loaded
     helper::vector< HighOrderQuadPosition > m_highOrderQuadPositions; ///< High order quad points of the mesh loaded
 
     // Tab of 3D elements composition
-    sofa::helper::vector< Topology::Tetrahedron > m_tetrahedra; ///< Tetrahedra of the mesh loaded
-    sofa::helper::vector< Topology::Hexahedron > m_hexahedra; ///< Hexahedra of the mesh loaded
+    sofa::helper::vector< Tetrahedron > m_tetrahedra; ///< Tetrahedra of the mesh loaded
+    sofa::helper::vector< Hexahedron > m_hexahedra; ///< Hexahedra of the mesh loaded
     
     // Groups
     helper::vector< PrimitiveGroup > m_edgesGroups; ///< Groups of Edges
