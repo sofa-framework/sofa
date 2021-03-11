@@ -35,10 +35,4 @@ if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 endif()
 
-# This need to be AFTER the inclusion of SofaFrameworkTargets.cmake since Sofa.GL is dependant on SofaHelper and
-# SofaDefaultType targets, which are defined there.
-if(NOT SOFA_NO_OPENGL)
-    find_package(Sofa.GL CONFIG QUIET REQUIRED)
-endif()
-
 check_required_components(@PROJECT_NAME@)

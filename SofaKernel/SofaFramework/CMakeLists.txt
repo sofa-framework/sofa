@@ -6,10 +6,6 @@ set(SOFAFRAMEWORK_VERSION "${Sofa_VERSION}")
 
 # Package install include directory
 set(SOFAFRAMEWORK_TARGETS Sofa.Type SofaHelper SofaDefaultType SofaCore SofaSimulationCore)
-if(NOT SOFA_NO_OPENGL)
-    list(APPEND SOFAFRAMEWORK_TARGETS Sofa.GL)
-endif()
-
 
 foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
