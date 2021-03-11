@@ -103,7 +103,10 @@ using sofa::simulation::SceneLoaderFactory;
 #include <QMimeData>
 #include <QCompleter>
 #include <QDesktopServices>
-#include <QDesktopWidget>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
+    #include <QDesktopWidget>
+#endif
 
 #   ifdef SOFA_GUI_INTERACTION
 #    include <QCursor>
