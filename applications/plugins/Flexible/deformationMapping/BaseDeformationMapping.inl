@@ -704,7 +704,7 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+#ifdef SOFA_WITH_OPENGL
     if (!vparams->displayFlags().getShowMechanicalMappings() && !showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) return;
 
 
@@ -859,7 +859,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         }
     }
     glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+#endif /* SOFA_WITH_OPENGL */
 }
 
 

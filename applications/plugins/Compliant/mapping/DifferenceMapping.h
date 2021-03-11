@@ -116,7 +116,7 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
     void draw(const core::visual::VisualParams* vparams) override
     {
 
-#ifndef SOFA_NO_OPENGL
+#ifdef SOFA_WITH_OPENGL
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
         SReal scale = d_showObjectScale.getValue();
@@ -147,7 +147,7 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
-#endif /* SOFA_NO_OPENGL */
+#endif /* SOFA_WITH_OPENGL */
     }
 
     virtual void updateForceMask() override

@@ -41,7 +41,7 @@ namespace mapping
 template<Size matdim,typename Real>
 void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype::Vec<3,Real> &p, const float& scale)
 {
-#ifndef SOFA_NO_OPENGL
+#ifdef SOFA_WITH_OPENGL
     glPushMatrix();
 
     GLdouble transformMatrix[16];
