@@ -203,7 +203,7 @@ using defaulttype::Vec4f;
 template <> SOFA_Flexible_API
 void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifdef SOFA_WITH_OPENGL
+#ifdef FLEXIBLE_HAVE_SOFA_GL
 
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
@@ -244,7 +244,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
             vparams->drawTool()->popMatrix();
         }
     }
- /* SOFA_WITH_OPENGL */
+ /* FLEXIBLE_HAVE_SOFA_GL */
 }
 #endif
 // ==========================================================================
