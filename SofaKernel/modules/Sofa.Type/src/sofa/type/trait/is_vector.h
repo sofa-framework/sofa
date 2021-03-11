@@ -19,55 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_SET_H
-#define SOFA_HELPER_SET_H
+#pragma once
+#include <type_traits>
 
-#include <sofa/helper/config.h>
-#include <set>
-#include <iostream>
-
-/// adding string serialization to std::set to make it compatible with Data
-/// \todo: refactoring of the containers required
-/// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
-namespace std
+namespace sofa::type::trait
 {
 
-/// Output stream
-template<class K>
-std::ostream& operator<< ( std::ostream& o, const std::set<K>& s )
+/// Detect if a type T has iterator/const iterator function and operator[](size_t)
+template<typename T>
+struct is_vector
 {
-    if( !s.empty() )
-    {
-        typename std::set<K>::const_iterator i=s.begin(), iend=s.end();
-        o << *i;
-        ++i;
-        for( ; i!=iend; ++i )
-            o << ' ' << *i;
+    typedef typename std::remove_const<T>::type test_type;
+
+    template<typename A>
+    static constexpr bool test(
+        A * pt,
+        A const * cpt = nullptr,
+        decltype(pt->begin()) * = nullptr,
+        decltype(pt->end()) * = nullptr,
+        decltype(cpt->begin()) * = nullptr,
+        decltype(cpt->end()) * = nullptr,
+        typename std::decay<decltype((*pt)[0])>::type * = nullptr,   ///< Is there an operator[] ?
+        typename A::iterator * = nullptr,
+        typename A::const_iterator * = nullptr,
+        typename A::value_type * = nullptr) {
+
+        typedef typename A::iterator iterator;
+        typedef typename A::const_iterator const_iterator;
+        return  std::is_same<decltype(pt->begin()),iterator>::value
+                && std::is_same<decltype(pt->end()),iterator>::value
+                && std::is_same<decltype(cpt->begin()),const_iterator>::value
+                && std::is_same<decltype(cpt->end()),const_iterator>::value;
     }
-    return o;
+
+    template<typename A>
+    static constexpr bool test(...) {
+        return false;
+    }
+
+    static const bool value = test<test_type>(nullptr);
+};
+
 }
-
-/// Input stream
-template<class K>
-std::istream& operator>> ( std::istream& i, std::set<K>& s )
-{
-    K t;
-    s.clear();
-    while(i>>t)
-        s.insert(t);
-    if( i.rdstate() & std::ios_base::eofbit ) { i.clear(); }
-    return i;
-}
-
-/// Input stream
-/// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
-template<> SOFA_HELPER_API std::istream& operator>> ( std::istream& in, std::set<int>& _set );
-
-/// Input stream
-/// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B
-template<> SOFA_HELPER_API std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set );
-
-
-} // namespace std
-
-#endif

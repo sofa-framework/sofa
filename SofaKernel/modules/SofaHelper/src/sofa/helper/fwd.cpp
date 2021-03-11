@@ -19,55 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_SET_H
-#define SOFA_HELPER_SET_H
+#pragma once
 
-#include <sofa/helper/config.h>
-#include <set>
-#include <iostream>
-
-/// adding string serialization to std::set to make it compatible with Data
-/// \todo: refactoring of the containers required
-/// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
-namespace std
+#include <sofa/helper/fwd.h>
+#include <sofa/helper/AdvancedTimer.h>
+namespace sofa::helper::advancedtimer
 {
-
-/// Output stream
-template<class K>
-std::ostream& operator<< ( std::ostream& o, const std::set<K>& s )
+void stepBegin(const char* idStr)
 {
-    if( !s.empty() )
-    {
-        typename std::set<K>::const_iterator i=s.begin(), iend=s.end();
-        o << *i;
-        ++i;
-        for( ; i!=iend; ++i )
-            o << ' ' << *i;
-    }
-    return o;
+    AdvancedTimer::stepBegin(idStr);
 }
 
-/// Input stream
-template<class K>
-std::istream& operator>> ( std::istream& i, std::set<K>& s )
+void stepEnd(const char* idStr)
 {
-    K t;
-    s.clear();
-    while(i>>t)
-        s.insert(t);
-    if( i.rdstate() & std::ios_base::eofbit ) { i.clear(); }
-    return i;
+    AdvancedTimer::stepEnd(idStr);
 }
 
-/// Input stream
-/// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
-template<> SOFA_HELPER_API std::istream& operator>> ( std::istream& in, std::set<int>& _set );
+}
 
-/// Input stream
-/// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B
-template<> SOFA_HELPER_API std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set );
-
-
-} // namespace std
-
-#endif

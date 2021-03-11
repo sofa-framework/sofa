@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/core/topology/BaseTopologyEngine.h>
+#include <sofa/core/topology/TopologyEngine.h>
 #include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/core/topology/BaseTopologyData.h>
 
@@ -40,10 +40,10 @@ namespace sofa::component::topology
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT>
-class TopologyEngineImpl : public sofa::core::topology::TopologyEngine
+class TopologyDataEngine : public sofa::core::topology::TopologyEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TopologyEngineImpl,VecT), sofa::core::topology::TopologyEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(TopologyDataEngine,VecT), sofa::core::topology::TopologyEngine);
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
     typedef sofa::core::topology::BaseTopologyData<VecT> t_topologicalData;
@@ -58,7 +58,7 @@ public:
     typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
 protected:
-    TopologyEngineImpl(t_topologicalData* _topologicalData,
+    TopologyDataEngine(t_topologicalData* _topologicalData,
             sofa::core::topology::BaseMeshTopology* _topology,
             sofa::core::topology::TopologyHandler* _topoHandler);
 

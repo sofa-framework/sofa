@@ -19,62 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H
-#define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H
+#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/fwd.h>
-
-namespace sofa
+namespace sofa::core::topology
 {
 
-namespace core
+void TopologyEngine::init()
 {
+    sofa::core::DataEngine::init();
+    this->createEngineName();
+}
 
-namespace topology
+size_t TopologyEngine::getNumberOfTopologicalChanges()
 {
+    return (m_changeList.getValue()).size();
+}
 
-/** A class that will interact on a topological Data */
-class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
+void TopologyEngine::createEngineName()
 {
-public:
-    SOFA_ABSTRACT_CLASS(TopologyEngine, DataEngine);
+    if (m_data_name.empty())
+        setName( m_prefix + "no_name" );
+    else
+        setName( m_prefix + m_data_name );
 
-protected:
-    TopologyEngine() {}
-    ~TopologyEngine() override {}
+    return;
+}
 
-public:
-    void init() override ;
-    void handleTopologyChange() override {}
-
-public:
-    // really need to be a Data??
-    Data <std::list<const TopologyChange *> >m_changeList;
-
-    size_t getNumberOfTopologicalChanges();
-
-    virtual void createEngineName();
-    virtual void linkToPointDataArray() {}
-    virtual void linkToEdgeDataArray() {}
-    virtual void linkToTriangleDataArray() {}
-    virtual void linkToQuadDataArray() {}
-    virtual void linkToTetrahedronDataArray() {}
-    virtual void linkToHexahedronDataArray() {}
-
-    void setNamePrefix(const std::string& s) { m_prefix = s; }
-
-protected:
-    /// use to define engine name.
-    std::string m_prefix;
-    /// use to define data handled name.
-    std::string m_data_name;
-};
-
-} // namespace topology
-
-} // namespace component
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H

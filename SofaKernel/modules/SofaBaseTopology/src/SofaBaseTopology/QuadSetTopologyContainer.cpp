@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <sofa/core/topology/BaseTopologyEngine.h>
+#include <sofa/core/topology/TopologyEngine.h>
 
 #include <sofa/core/ObjectFactory.h>
 
