@@ -5,11 +5,11 @@ set(SOFAGENERALIMPLICITODESOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAGENERALIMPLICITODESOLVER_SRC}/config.h.in
-    ${SOFAGENERALIMPLICITODESOLVER_SRC}/initSofaGeneralImplicitODESolver.h
+    ${SOFAGENERALIMPLICITODESOLVER_SRC}/initSofaGeneralImplicitOdeSolver.h
     )
 
 set(SOURCE_FILES
-    ${SOFAGENERALIMPLICITODESOLVER_SRC}/initSofaGeneralImplicitODESolver.cpp
+    ${SOFAGENERALIMPLICITODESOLVER_SRC}/initSofaGeneralImplicitOdeSolver.cpp
     )
 
 list(APPEND HEADER_FILES
@@ -19,7 +19,7 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALIMPLICITODESOLVER_SRC}/VariationalSymplecticSolver.cpp
     )
 
-find_package(SofaFramework REQUIRED) # SofaSimulationCore
+sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)

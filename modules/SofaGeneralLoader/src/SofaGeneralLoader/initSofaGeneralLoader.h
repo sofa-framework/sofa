@@ -26,4 +26,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAGENERALLOADER_API void initSofaGeneralLoader();
+
 } //namespace sofa::component

@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 #include <sofa/core/ObjectFactory.h>
 

@@ -25,10 +25,10 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(TinyXML REQUIRED)
-find_package(SofaBaseTopology REQUIRED)
+sofa_find_package(SofaBaseTopology REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaDefaultType)
 target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
 
 sofa_create_package_with_targets(
@@ -41,7 +41,7 @@ sofa_create_package_with_targets(
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFABASETOPOLOGY_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+cmake_dependent_option(SOFABASEVISUAL_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 if(SOFABASEVISUAL_BUILD_TESTS)
     enable_testing()
     add_subdirectory(${PROJECT_NAME}_test)

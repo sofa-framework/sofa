@@ -24,6 +24,7 @@
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 #include <algorithm>
 
@@ -488,19 +489,6 @@ void QuadSetTopologyModifier::removeQuads(const sofa::helper::vector< QuadID >& 
 void QuadSetTopologyModifier::removeItems(const sofa::helper::vector<QuadID> &items)
 {
     removeQuads(items, true, true);
-}
-
-void QuadSetTopologyModifier::renumberPoints( const sofa::helper::vector<PointID> &index,
-        const sofa::helper::vector<PointID> &inv_index)
-{
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
 }
 
 

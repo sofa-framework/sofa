@@ -30,6 +30,7 @@
 #include <sofa/helper/decompose.h>
 
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 
 #include "DeformableFrameMass.h"
 

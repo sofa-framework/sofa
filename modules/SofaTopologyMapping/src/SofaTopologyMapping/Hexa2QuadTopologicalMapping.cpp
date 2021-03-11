@@ -369,10 +369,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
             Topology::SetIndices & tab_indices = indices;
 
-            to_tstm->removePointsWarning(tab_indices, false);
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->removePointsProcess(tab_indices, false);
-
+            to_tstm->removePoints(tab_indices, false);
             break;
         }
 
@@ -393,9 +390,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
             Topology::SetIndices & tab_indices = indices;
             Topology::SetIndices & inv_tab_indices = inv_indices;
 
-            to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
+            to_tstm->renumberPoints(tab_indices, inv_tab_indices, false);
 
             break;
         }

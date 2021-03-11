@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 project(CImgPlugin_test)
 
-find_package(CImgPlugin REQUIRED)
+sofa_find_package(CImgPlugin REQUIRED)
 
 set(SOURCE_FILES
     ImageCImg_test.cpp

@@ -21,13 +21,15 @@
 ******************************************************************************/
 #include "SofaWindowProfiler.h"
 
+#include <stack>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <QGridLayout>
 #include <QDebug>
 
+#include <sofa/helper/logging/Messaging.h>
 namespace sofa::gui::qt
 {
 using namespace sofa::helper;

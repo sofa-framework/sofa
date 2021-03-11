@@ -1,19 +1,19 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaNonUniformFem LANGUAGES CXX)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaSimpleFem REQUIRED)
-find_package(SofaGeneralSimpleFem REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(SofaGeneralSimpleFem REQUIRED)
 
 set(SOFANONUNIFORMFEM_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFANONUNIFORMFEM_SRC}/config.h.in
-    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFEM.h
+    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFem.h
     )
 
 set(SOURCE_FILES
-    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFEM.cpp
+    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFem.cpp
     )
 
 list(APPEND HEADER_FILES

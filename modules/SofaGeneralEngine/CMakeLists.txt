@@ -183,8 +183,8 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALENGINE_SRC}/Vertex2Frame.cpp
     )
 
-find_package(SofaMeshCollision REQUIRED)
-find_package(SofaGeneralMeshCollision REQUIRED)
+sofa_find_package(SofaMeshCollision REQUIRED)
+sofa_find_package(SofaGeneralMeshCollision REQUIRED)
 sofa_find_package(Sofa.GL QUIET)
 
 if(Sofa.GL_FOUND)

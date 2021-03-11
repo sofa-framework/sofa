@@ -148,11 +148,9 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
    if (!triangleGeo)
    {
        msg_error() << "Missing component: Unable to get TriangleSetGeometryAlgorithms from the current context.";
+       sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+       return;
    }
-
-    // FIXME: a dirty way to avoid a crash
-    if(!triangleGeo)
-        return;
 
     const sofa::helper::vector <Index>& my_map = trianglePressureMap.getMap2Elements();
     sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
@@ -263,13 +261,21 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
     std::vector< sofa::defaulttype::Vector3 > vertices;
 
     const sofa::helper::vector <Index>& my_map = trianglePressureMap.getMap2Elements();
-
+    const sofa::helper::vector<TrianglePressureInformation>& my_subset = trianglePressureMap.getValue();
+    std::vector< sofa::defaulttype::Vector3 > forceVectors;
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        for(unsigned int j=0 ; j<3 ; j++)
-            vertices.push_back(x[m_topology->getTriangle(my_map[i])[j]]);
+        Deriv force = my_subset[i].force / 3;
+        for (unsigned int j = 0; j < 3; j++)
+        {
+            sofa::defaulttype::Vector3 p = x[m_topology->getTriangle(my_map[i])[j]];
+            vertices.push_back(p);
+            forceVectors.push_back(p);
+            forceVectors.push_back(p + force);
+        }
     }
     vparams->drawTool()->drawTriangles(vertices, color);
+    vparams->drawTool()->drawLines(forceVectors, 1, sofa::helper::types::RGBAColor::red());
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);

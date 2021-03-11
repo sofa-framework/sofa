@@ -68,13 +68,13 @@ list(APPEND SOURCE_FILES
     ${SOFAUSERINTERACTION_SRC}/SuturePointPerformer.cpp
     )
 
-find_package(SofaMeshCollision REQUIRED)
-find_package(SofaDeformable REQUIRED)
-find_package(SofaGeneralMeshCollision REQUIRED)
-find_package(SofaGeneralVisual REQUIRED)
-find_package(SofaTopologyMapping REQUIRED)
-find_package(SofaBoundaryCondition REQUIRED)
-find_package(SofaGraphComponent REQUIRED)
+sofa_find_package(SofaMeshCollision REQUIRED)
+sofa_find_package(SofaDeformable REQUIRED)
+sofa_find_package(SofaGeneralMeshCollision REQUIRED)
+sofa_find_package(SofaGeneralVisual REQUIRED)
+sofa_find_package(SofaTopologyMapping REQUIRED)
+sofa_find_package(SofaBoundaryCondition REQUIRED)
+sofa_find_package(SofaGraphComponent REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent)

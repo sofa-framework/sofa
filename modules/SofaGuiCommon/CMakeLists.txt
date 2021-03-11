@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGuiCommon)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
-find_package(SofaGraphComponent REQUIRED)
-find_package(SofaSimulationCommon REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaUserInteraction REQUIRED)
+sofa_find_package(SofaGraphComponent REQUIRED)
+sofa_find_package(SofaSimulationCommon REQUIRED)
 sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
+sofa_find_package(Boost REQUIRED COMPONENTS program_options)
+
 if(Sofa.GL_FOUND)
     message("-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
 else()
@@ -28,6 +30,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/PickHandler.h
     ${SRC_ROOT}/SofaGUI.h
     ${SRC_ROOT}/ViewerFactory.h
+    ${SRC_ROOT}/ArgumentParser.h
 )
 
 set(SOURCE_FILES
@@ -41,13 +44,26 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MouseOperations.cpp
     ${SRC_ROOT}/PickHandler.cpp
     ${SRC_ROOT}/ViewerFactory.cpp
+    ${SRC_ROOT}/ArgumentParser.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction SofaSimulationCommon)
+# Compatibility files
+set (COMPATSRC_ROOT "compat/")
+set (COMPAT_HEADER_FILES
+    ${COMPATSRC_ROOT}/sofa/helper/ArgumentParser.h
+    )
 
-# This is required to be able to #include <sofa/gui/BaseGui.h> instead of #include <SofaGuiCommon/sofa/gui/BaseGui.h>
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}/${PROJECT_NAME}>")
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC Boost::program_options)
+
+if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
+    sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
+endif()
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/SofaGuiCommon/SofaGuiCommon/compat>")
+source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
@@ -65,7 +81,3 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     )
-
-# sofa_create_package_with_targets add automatically PROJECT_NAME as include_dir
-# but SofaGui's code is like sofa/gui... so we need to forcefully add src/SofaGuiCommon
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}>")

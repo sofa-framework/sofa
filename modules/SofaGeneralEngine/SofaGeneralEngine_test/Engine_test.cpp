@@ -234,9 +234,9 @@ TEST_F(Engine_test , check_propagation )
 #include <SofaGeneralEngine/SmoothMeshEngine.h>
 #include <SofaGeneralEngine/Spiral.h>
 #include <SofaGeneralEngine/Vertex2Frame.h>
-#if SOFAGENERALENGINE_HAVE_SOFA_GL
+#if SOFAGENERALENGINE_HAVE_SOFA_GL == 1
 #include <SofaGeneralEngine/TextureInterpolation.h>
-#endif // SOFAGENERALENGINE_HAVE_SOFA_GL
+#endif // SOFAGENERALENGINE_HAVE_SOFA_GL == 1
 #include <SofaGeneralEngine/SubsetTopology.h>
 #include <SofaGeneralEngine/RigidToQuatEngine.h>
 #include <SofaGeneralEngine/QuatToRigidEngine.h>
@@ -308,9 +308,9 @@ TestDataEngine< component::engine::RandomPointDistributionInSurface<defaulttype:
 TestDataEngine< component::engine::SmoothMeshEngine<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::Spiral<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::Vertex2Frame<defaulttype::Rigid3Types> >,
-#if SOFAGENERALENGINE_HAVE_SOFA_GL
+#if SOFAGENERALENGINE_HAVE_SOFA_GL == 1
 TestDataEngine< component::engine::TextureInterpolation<defaulttype::Vec3Types> >,
-#endif // SOFAGENERALENGINE_HAVE_SOFA_GL
+#endif // SOFAGENERALENGINE_HAVE_SOFA_GL == 1
 TestDataEngine< component::engine::SubsetTopology<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::RigidToQuatEngine<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::QuatToRigidEngine<defaulttype::Vec3Types> >,

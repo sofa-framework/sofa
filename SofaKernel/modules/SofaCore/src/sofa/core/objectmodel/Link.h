@@ -24,8 +24,10 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/helper/stable_vector.h>
-
 #include <sofa/core/PathResolver.h>
+#include <sofa/core/sptr.h>
+#include <sofa/core/fwd.h>
+
 namespace sofa
 {
 
@@ -53,7 +55,7 @@ template<class TDestType>
 class LinkTraitsDestPtr<TDestType, true>
 {
 public:
-    typedef typename TDestType::SPtr T;
+    typedef typename sofa::core::sptr<TDestType> T;
     static TDestType* get(const T& p) { return p.get(); }
 };
 
@@ -317,56 +319,55 @@ public:
     {
     }
 
-    SOFA_BEGIN_DEPRECATION_AS_ERROR
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    size_t size(const core::ExecParams*) const { return size(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    size_t size(const core::ExecParams*) const = delete;
     size_t size() const
     {
         return static_cast<size_t>(m_value.size());
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    bool empty(const core::ExecParams* param) const ;
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    bool empty(const core::ExecParams* param) const  = delete;
     bool empty() const
     {
         return m_value.empty();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const Container& getValue(const core::ExecParams*) const { return getValue(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const Container& getValue(const core::ExecParams*) const = delete;
     const Container& getValue() const
     {
         return m_value;
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const_iterator begin(const core::ExecParams*) const { return begin(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const_iterator begin(const core::ExecParams*) const = delete;
     const_iterator begin() const
     {
         return m_value.cbegin();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const_iterator end(const core::ExecParams*) const { return end(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const_iterator end(const core::ExecParams*) const = delete;
     const_iterator end() const
     {
         return m_value.cend();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const_reverse_iterator rbegin(const core::ExecParams*) const { return rbegin(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const_reverse_iterator rbegin(const core::ExecParams*) const = delete;
     const_reverse_iterator rbegin() const
     {
         return m_value.crbegin();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const_reverse_iterator rend(const core::ExecParams*) const { return rend(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const_reverse_iterator rend(const core::ExecParams*) const = delete;
     const_reverse_iterator rend() const
     {
         return m_value.crend();
     }
-    SOFA_END_DEPRECATION_AS_ERROR
+
     void clear()
     {
         TraitsContainer::clear(m_value);
@@ -437,12 +438,12 @@ public:
 
     const BaseClass* getDestClass() const override
     {
-        return DestType::GetClass();
+        return sofa::core::objectmodel::base::GetClass<DestType>();
     }
 
     const BaseClass* getOwnerClass() const override
     {
-        return OwnerType::GetClass();
+        return sofa::core::objectmodel::base::GetClass<OwnerType>();
     }
 
     size_t getSize() const override
@@ -450,23 +451,15 @@ public:
         return size();
     }
 
-    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
-    BaseData* getLinkedData(std::size_t =0) const override
-    {
-        return nullptr;
-    }
-
-
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    BaseData* getLinkedData(std::size_t =0) const = delete;
     sofa::core::objectmodel::Base* getOwnerBase() const override
     {
         return m_owner;
     }
 
-    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
-    sofa::core::objectmodel::BaseData* getOwnerData() const override
-    {
-        return nullptr;
-    }
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     void setOwner(OwnerType* owner)
     {
@@ -478,7 +471,7 @@ public:
     [[deprecated("2021-01-01: CheckPath as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPath(Base*, BaseClass*, string).")]]
     static bool CheckPath(const std::string& path, Base* context)
     {
-        return PathResolver::CheckPath(context, GetDestClass(), path);
+        return PathResolver::CheckPath(context, sofa::core::objectmodel::base::GetClass<DestType>(), path);
     }
 
 protected:
@@ -495,18 +488,6 @@ protected:
     virtual void added(DestPtr ptr, std::size_t index) = 0;
     virtual void removed(DestPtr ptr, std::size_t index) = 0;
 
-    [[deprecated("2021-01-01: GetDestClass is there only for backward compatibility while deprecating Link::CheckPath.")]]
-    static const BaseClass* GetDestClass()
-    {
-        return DestType::GetClass();
-    }
-
-    [[deprecated("2021-01-01: GetOwnerClass is there only for backward compatibility while deprecating Link::CheckPath.")]]
-    static const BaseClass* GetOwnerClass()
-    {
-        return OwnerType::GetClass();
-    }
-
     void _doClear_() override
     {
          TraitsContainer::clear(m_value);
@@ -522,7 +503,7 @@ protected:
 
         /// Downcast the pointer to a compatible type and
         /// If the types are not compatible with the Link we returns false
-        auto destptr = dynamic_cast<DestType*>(baseptr);
+        auto destptr = dynamicCastBaseTo<DestType*>(baseptr);
         if(baseptr && !destptr)
         {
             return false;
@@ -536,7 +517,7 @@ protected:
     bool _doSet_(Base* baseptr, const size_t index) override
     {
         assert(index < m_value.size());
-        auto destptr = dynamic_cast<DestType*>(baseptr);
+        auto destptr = dynamicCastBaseTo<DestType*>(baseptr);
 
         if(!destptr)
             return false;
@@ -547,7 +528,7 @@ protected:
 
     Base* _doGet_(const size_t index=0) const override
     {
-        return getIndex(index);
+        return sofa::core::dynamicCastBaseFrom(getIndex(index));
     }
 
     std::string _doGetLinkedPath_(const std::size_t index=0) const override
@@ -560,7 +541,7 @@ protected:
         {
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (ptr)
-                path = BaseLink::CreateString(ptr, nullptr, m_owner);
+                path = BaseLink::CreateString(sofa::core::dynamicCastBaseFrom(ptr), m_owner);
         }
         return path;
     }
@@ -615,8 +596,8 @@ public:
         m_validator = fn;
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    DestType* get(std::size_t index, const core::ExecParams*) const { return get(index); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    DestType* get(std::size_t index, const core::ExecParams*) const = delete;
     DestType* get(std::size_t index) const
     {
         if (index < this->m_value.size())
@@ -633,7 +614,7 @@ public:
     [[deprecated("2021-01-01: CheckPaths as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPaths(Base*, BaseClass*, string).")]]
     static bool CheckPaths(const std::string& pathes, Base* context)
     {
-        return PathResolver::CheckPaths(context, Inherit::GetDestClass(), pathes);
+        return PathResolver::CheckPaths(context, DestType::GetClass(), pathes);
     }
 
 protected:
@@ -700,8 +681,8 @@ public:
         m_validator = fn;
     }
 
-    [[deprecated("2020-01-12: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    DestType* get(const core::ExecParams*) const { return get(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    DestType* get(const core::ExecParams*) const = delete;
     DestType* get() const
     {
         return TraitsDestPtr::get(TraitsValueType::get(m_value.get()));

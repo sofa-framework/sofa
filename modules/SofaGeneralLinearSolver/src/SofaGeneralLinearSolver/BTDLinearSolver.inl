@@ -699,7 +699,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
     // the block is computed now :
     // 1. all the diagonal block between N and i need to be computed
     const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
-    Index i0 = i;
+    sofa::SignedIndex i0 = i;
     while (nBlockComputedMinv[i0]==0)
         ++i0;
     // i0 is the "closest" block of the diagonal that is computed
@@ -745,7 +745,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
     //2. all the block on the lines of block i between the diagonal and the block j are computed
     // i0=i
 
-    Index j0 = i-nBlockComputedMinv[i];
+    SignedIndex j0 = i-nBlockComputedMinv[i];
 
 
     /////////////// ADD : Calcul pour faire du partial_solve //////////
@@ -816,7 +816,7 @@ void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
     {
         x.asub(i,bsize) = alpha_inv[i]*(b.asub(i,bsize) - B[i]*x.asub((i-1),bsize));
     }
-    for (Index i=nb-2; i>=0; --i)
+    for (sofa::SignedIndex i=nb-2; i>=0; --i)
     {
         x.asub(i,bsize) /* = Y.asub(i,bsize)- */ -= lambda[i]*x.asub((i+1),bsize);
     }
@@ -1104,29 +1104,11 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
 
     Index MinIdBloc_OUT = Iout.front();
     Index MaxIdBloc_OUT = Iout.back();
-
-
-    //std::cout<<"partial_solve: need update on position for bloc between dofs "<< MinIdBloc_OUT<< "  and "<<MaxIdBloc_OUT<<std::endl;
-    if (verification.getValue())
-    {
-//        const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
-//        std::cout<<" input Force= ";
-//        for (Index i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
-//        {
-//            std::cout<<"     ["<<i<<"] "<<this->currentGroup->systemRHVector->asub(i,bsize);
-//        }
-//        std::cout<<" "<<std::endl;
-    }
-
-
     if( NewIn)
     {
 
         Index MinIdBloc_IN = Iin.front(); //  Iin needs to be sorted
         Index MaxIdBloc_IN = Iin.back();  //
-
-
-
         //debug
         if (problem.getValue())
             std::cout<<"STEP1: new force on bloc between dofs "<< MinIdBloc_IN<< "  and "<<MaxIdBloc_IN<<std::endl;
@@ -1139,11 +1121,7 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
 
         // now the fwdLH begins to be wrong when > to the indice of MinIdBloc_IN (need to be updated in step 3 or 4)
         this->_indMaxFwdLHComputed = MinIdBloc_IN;
-
-
-
     }
-
 
     if (current_bloc > MinIdBloc_OUT)
     {
@@ -1174,8 +1152,6 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
             std::cout<<" new current_bloc = "<<current_bloc<<std::endl;
     }
 
-
-
     if ( _indMaxFwdLHComputed < MaxIdBloc_OUT)
     {
         //debug
@@ -1183,20 +1159,10 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
             std::cout<<" STEP 4 :_indMaxFwdLHComputed = "<<_indMaxFwdLHComputed<<" < "<<"MaxIdBloc_OUT = "<<MaxIdBloc_OUT<<"  - verify that current_bloc="<<current_bloc<<" == "<<" MinIdBloc_OUT ="<<MinIdBloc_OUT<<std::endl;
 
         fwdComputeLHinBloc(MaxIdBloc_OUT );
-
-
         //debug
         if (problem.getValue())
             std::cout<<"  new _indMaxFwdLHComputed = "<<_indMaxFwdLHComputed<<std::endl;
     }
-
-
-
-
-
-
-
-
     // debug: test
     if (verification.getValue())
     {
@@ -1224,8 +1190,6 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
 
         if (normDR > ((1.0e-7)*normR + 1.0e-20) )
         {
-
-
             std::cout<<"++++++++++++++++ WARNING +++++++++++\n \n Found solution for bloc OUT :";
             for (Index i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
             {
@@ -1239,41 +1203,24 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
                 std::cout<<"     ["<<i<<"] "<<Result->asub(i,bsize);
             }
             std::cout<<std::endl;
-
         }
-
-
-
         delete(Result_partial_Solve);
         delete(Result);
         delete(DR);
-
-
         return;
     }
-
-
-
 }
-
-
-
-
 
 template<class Matrix, class Vector>
 template<class RMatrix, class JMatrix>
 bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, double fact)
 {
-    //const Index Jrows = J.rowSize();
     const Index Jcols = J.colSize();
     if (Jcols != Minv.rowSize())
     {
         msg_error() << "AddJMInvJt: incompatible J matrix size.";
         return false;
     }
-
-
-    //const bool verbose  = this->f_verbose.getValue();
 
     if (this->notMuted())
     {

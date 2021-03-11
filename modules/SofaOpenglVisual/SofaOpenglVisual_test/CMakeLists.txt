@@ -14,9 +14,8 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL Darwin)
      ClipPlane_test.cpp)
 endif()
 
-find_package(SofaBase REQUIRED)
-find_package(SofaOpenglVisual REQUIRED)
-find_package(SofaBaseMechanics REQUIRED)
+sofa_find_package(SofaBaseMechanics REQUIRED)
+sofa_find_package(SofaOpenglVisual REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaOpenglVisual SofaBaseMechanics)

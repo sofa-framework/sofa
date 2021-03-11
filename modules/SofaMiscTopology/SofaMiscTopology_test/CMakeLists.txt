@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaMiscTopology_test)
 
 
-find_package(SofaMiscTopology REQUIRED)
+sofa_find_package(SofaMiscTopology REQUIRED)
 
 set(HEADER_FILES)
 set(SOURCE_FILES ../../empty.cpp)

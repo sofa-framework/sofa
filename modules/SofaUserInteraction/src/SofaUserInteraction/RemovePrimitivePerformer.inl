@@ -23,6 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/topology/BaseTopology.h>
 namespace sofa::component::collision
 {
 

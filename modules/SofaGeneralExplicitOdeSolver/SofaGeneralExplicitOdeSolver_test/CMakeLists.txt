@@ -10,7 +10,7 @@ list(APPEND SOURCE_FILES
     RungeKutta4ExplicitSolverDynamic_test.cpp
     )
 
-find_package(SofaGeneralExplicitOdeSolver REQUIRED)
+sofa_find_package(SofaGeneralExplicitOdeSolver REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaGeneralExplicitOdeSolver)

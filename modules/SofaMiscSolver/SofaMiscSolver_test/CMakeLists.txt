@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaMiscSolver_test)
 
-find_package(SofaMiscSolver REQUIRED)
+sofa_find_package(SofaMiscSolver REQUIRED)
 
 set(SOURCE_FILES
     NewmarkImplicitSolverDynamic_test.cpp)

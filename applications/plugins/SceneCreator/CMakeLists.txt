@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 project(SceneCreator VERSION 0.1)
 
-find_package(SofaSimulationGraph REQUIRED)
+sofa_find_package(SofaSimulationGraph REQUIRED)
 sofa_find_package(SofaSparseSolver QUIET)
-find_package(Eigen3 REQUIRED)
+sofa_find_package(Eigen3 REQUIRED)
 
 set(HEADER_FILES
     src/SceneCreator/config.h.in
@@ -41,6 +41,6 @@ add_subdirectory(sceneCreatorExamples)
 
 ## Add test project
 if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
+    sofa_find_package(SofaTest QUIET)
     add_subdirectory(SceneCreator_test)
 endif()

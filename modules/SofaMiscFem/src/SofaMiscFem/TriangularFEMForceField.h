@@ -33,6 +33,11 @@
 #include <map>
 #include <sofa/helper/map.h>
 
+namespace sofa::helper
+{
+    class ColorMap;
+}
+
 namespace sofa::component::forcefield
 {
 
@@ -237,8 +242,6 @@ public:
     void setMethod(const std::string& methodName);
 
 public:
-
-    Index getFracturedEdge();
     void getFractureCriteria(int element, Deriv& direction, Real& value);
     /// Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
     void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &direction, const defaulttype::Vec<3,Real> &stress);
@@ -303,7 +306,6 @@ public:
     Data< sofa::helper::vector <Transformation> > m_initialTransformation; ///< Flag activating rendering of stress directions within each triangle
 
     /// Fracture parameters
-    Data<bool> f_fracturable;
     Data<Real> hosfordExponant; ///< Exponant in the Hosford yield criteria
     Data<Real> criteriaValue; ///< Fracturable threshold used to draw fracturable triangles
 
@@ -334,6 +336,9 @@ public:
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graphOrientation; ///< Graph of the orientation of the principal stress direction corresponding to the element id
 #endif
 
+private:
+    bool p_computeDrawInfo;
+    sofa::helper::ColorMap* p_drawColorMap;
 };
 
 

@@ -47,7 +47,6 @@ class BaseObjectDescription;
 class SOFA_CORE_API BaseLink
 {
 public:
-    SOFA_BEGIN_DEPRECATION_AS_ERROR
     enum LinkFlagsEnum
     {
         FLAG_NONE       = 0,
@@ -92,9 +91,8 @@ public:
 
     virtual Base* getOwnerBase() const = 0;
 
-    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    virtual sofa::core::objectmodel::BaseData* getOwnerData() const = 0;
-
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     /// Set one of the flags.
     void setFlag(LinkFlagsEnum flag, bool b)
@@ -108,8 +106,8 @@ public:
 
     bool isMultiLink() const { return getFlag(FLAG_MULTILINK); }
 
-    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    bool isDataLink() const { return false; }
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    bool isDataLink() const = delete;
     bool isStrongLink() const { return getFlag(FLAG_STRONGLINK); }
     bool isDoubleLink() const { return getFlag(FLAG_DOUBLELINK); }
     bool isDuplicate() const { return getFlag(FLAG_DUPLICATE); }
@@ -131,16 +129,17 @@ public:
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    int getCounter(const core::ExecParams*) const { return getCounter(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    int getCounter(const core::ExecParams*) const = delete;
 
     void setLinkedBase(Base* link);
 
     virtual size_t getSize() const = 0;
     Base* getLinkedBase(std::size_t index=0) const { return _doGet_(index); }
 
-    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    virtual BaseData* getLinkedData(std::size_t index=0) const = 0;
+
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    BaseData* getLinkedData(std::size_t index=0) const = delete;
 
     // Remove all links
     void clear() { _doClear_(); }
@@ -196,9 +195,6 @@ public:
     /// Change the link's target at the provided index.
     bool set(Base* baseptr, size_t index=0) { return _doSet_(baseptr, index); }
 
-    /// @}
-    ///
-    SOFA_END_DEPRECATION_AS_ERROR
 protected:
     virtual bool _doSet_(Base* target, const size_t index=0) = 0;
     virtual Base* _doGetOwner_() const = 0 ;

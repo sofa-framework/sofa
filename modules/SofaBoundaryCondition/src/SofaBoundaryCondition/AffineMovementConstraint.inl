@@ -21,11 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <iostream>
 #include <sofa/helper/cast.h>
+#include <sofa/helper/vector_algorithm.h>
 
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 
@@ -177,7 +179,6 @@ void AffineMovementConstraint<DataTypes>::projectVelocity(const core::Mechanical
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
-    sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
     helper::WriteAccessor<DataVecCoord> x = xData;
     const SetIndexArray & indices = m_indices.getValue();
 
@@ -202,7 +203,7 @@ void AffineMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
     if (xf.size() == 0)
         this->initializeFinalPositions(indices,xData,x0,xf);
     // Update the intermediate Dofs positions computed by linear interpolation
-    SReal time = root->getTime();
+    SReal time = sofa::core::objectmodel::basecontext::getTime(this->getContext()->getRootContext());
     if( time > beginTime && time <= endTime && totalTime > 0)
     {
         for (auto index : indices)

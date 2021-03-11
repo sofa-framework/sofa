@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
@@ -585,24 +586,6 @@ void TriangleSetTopologyModifier::renumberPointsProcess( const sofa::helper::vec
     // call the parent's method
     EdgeSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
-
-
-
-
-void TriangleSetTopologyModifier::renumberPoints( const sofa::helper::vector<PointID> &index,
-        const sofa::helper::vector<PointID> &inv_index)
-{
-
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
-}
-
 
 
 void TriangleSetTopologyModifier::addRemoveTriangles( const sofa::Size nTri2Add,

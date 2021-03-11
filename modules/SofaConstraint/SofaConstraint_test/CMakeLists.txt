@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaConstraint_test)
 
-find_package(SofaConstraint REQUIRED)
+sofa_find_package(SofaConstraint REQUIRED)
 
 set(SOURCE_FILES ../../empty.cpp)
 

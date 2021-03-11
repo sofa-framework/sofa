@@ -89,9 +89,9 @@ void QAttachOperation::configure(PickHandler *picker, sofa::component::configura
     if (sofa::component::configurationsetting::AttachBodyButtonSetting* attachSetting=dynamic_cast<sofa::component::configurationsetting::AttachBodyButtonSetting*>(button))
     {
         AttachOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
-        setting->stiffness.copyValue(&(attachSetting->stiffness));
-        setting->arrowSize.copyValue(&(attachSetting->arrowSize) );
-        setting->showFactorSize.copyValue(&( attachSetting->showFactorSize) ) ;
+        setting->stiffness.copyValueFrom(&(attachSetting->stiffness));
+        setting->arrowSize.copyValueFrom(&(attachSetting->arrowSize) );
+        setting->showFactorSize.copyValueFrom(&( attachSetting->showFactorSize) ) ;
 
         stiffnessWidget->updateWidgetValue();
         arrowSizeWidget->updateWidgetValue();

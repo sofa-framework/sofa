@@ -22,9 +22,11 @@
 #pragma once
 
 #include <sofa/type/config.h>
+#include <sofa/type/fwd.h>
 
 #include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/type/Vec.h>
+
 #include <iostream>
 
 namespace // anonymous
@@ -43,7 +45,7 @@ namespace // anonymous
 namespace sofa::type
 {
 
-template <sofa::Size L, sofa::Size C, class real=float>
+template <sofa::Size L, sofa::Size C, class real>
 class Mat : public stdtype::fixed_array<VecNoInit<C,real>, L>
 {
 public:
@@ -731,7 +733,7 @@ template <sofa::Size L, sofa::Size C, typename real> Mat<L,L,real> Mat<L,C,real>
 
 
 /// Same as Mat except the values are not initialized by default
-template <sofa::Size L, sofa::Size C, typename real=float>
+template <sofa::Size L, sofa::Size C, typename real>
 class MatNoInit : public Mat<L,C,real>
 {
 public:
@@ -969,29 +971,6 @@ bool transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 
     return b;
 }
-
-typedef Mat<1,1,float> Mat1x1f;
-typedef Mat<1,1,double> Mat1x1d;
-
-typedef Mat<2,2,float> Mat2x2f;
-typedef Mat<2,2,double> Mat2x2d;
-
-typedef Mat<3,3,float> Mat3x3f;
-typedef Mat<3,3,double> Mat3x3d;
-
-typedef Mat<3,4,float> Mat3x4f;
-typedef Mat<3,4,double> Mat3x4d;
-
-typedef Mat<4,4,float> Mat4x4f;
-typedef Mat<4,4,double> Mat4x4d;
-
-typedef Mat<2,2,SReal> Mat2x2;
-typedef Mat<3,3,SReal> Mat3x3;
-typedef Mat<4,4,SReal> Mat4x4;
-
-typedef Mat<2,2,SReal> Matrix2;
-typedef Mat<3,3,SReal> Matrix3;
-typedef Mat<4,4,SReal> Matrix4;
 
 template <sofa::Size L, sofa::Size C, typename real>
 std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
