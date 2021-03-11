@@ -5,11 +5,11 @@ set(SOFAGENERALEXPLICITODESOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAGENERALEXPLICITODESOLVER_SRC}/config.h.in
-    ${SOFAGENERALEXPLICITODESOLVER_SRC}/initSofaGeneralExplicitODESolver.h
+    ${SOFAGENERALEXPLICITODESOLVER_SRC}/initSofaGeneralExplicitOdeSolver.h
     )
 
 set(SOURCE_FILES
-    ${SOFAGENERALEXPLICITODESOLVER_SRC}/initSofaGeneralExplicitODESolver.cpp
+    ${SOFAGENERALEXPLICITODESOLVER_SRC}/initSofaGeneralExplicitOdeSolver.cpp
     )
 
 list(APPEND HEADER_FILES
@@ -23,7 +23,7 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALEXPLICITODESOLVER_SRC}/RungeKutta4Solver.cpp
     )
 
-find_package(SofaFramework REQUIRED) # SofaSimulationCore
+sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)

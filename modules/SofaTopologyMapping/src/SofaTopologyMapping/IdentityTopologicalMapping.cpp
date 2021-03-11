@@ -139,9 +139,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const PointsAdded * pAdd = static_cast< const PointsAdded * >( topoChange );
             dmsg_info() << "POINTSADDED : " << pAdd->getNbAddedVertices() ;
-            toPointMod->addPointsProcess(pAdd->getNbAddedVertices());
-            toPointMod->addPointsWarning(pAdd->getNbAddedVertices(), pAdd->ancestorsList, pAdd->coefs, true);
-            toPointMod->propagateTopologicalChanges();
+            toPointMod->addPoints(pAdd->getNbAddedVertices(), pAdd->ancestorsList, pAdd->coefs, true);
             break;
         }
         case core::topology::POINTSREMOVED:
@@ -149,9 +147,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const PointsRemoved *pRem = static_cast< const PointsRemoved * >( topoChange );
             auto tab = pRem->getArray();
             dmsg_info() << "POINTSREMOVED : " << tab.size() ;
-            toPointMod->removePointsWarning(tab, true);
-            toPointMod->propagateTopologicalChanges();
-            toPointMod->removePointsProcess(tab, true);
+            toPointMod->removePoints(tab, true);
             break;
         }
         case core::topology::POINTSRENUMBERING:
@@ -160,9 +156,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const auto &tab = pRenumber->getIndexArray();
             const auto &inv_tab = pRenumber->getinv_IndexArray();
             dmsg_info() << "POINTSRENUMBERING : " << tab.size() ;
-            toPointMod->renumberPointsWarning(tab, inv_tab, true);
-            toPointMod->propagateTopologicalChanges();
-            toPointMod->renumberPointsProcess(tab, inv_tab, true);
+            toPointMod->renumberPoints(tab, inv_tab, true);
             break;
         }
 

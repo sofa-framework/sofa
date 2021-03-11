@@ -23,8 +23,7 @@
 #define SOFA_DEFAULTTYPE_BASEVECTOR_H
 
 #include <sofa/defaulttype/config.h>
-#include <iostream>
-#include <sofa/defaulttype/TopologyTypes.h>
+#include <iosfwd>
 
 namespace sofa
 {
@@ -36,10 +35,10 @@ namespace defaulttype
 ///
 /// Note that accessing values using this class is rather slow and should only be used in codes where the
 /// provided genericity is necessary.
-class BaseVector
+class SOFA_DEFAULTTYPE_API BaseVector
 {
 public:
-    typedef int Index;
+    typedef sofa::SignedIndex Index;
 
     virtual ~BaseVector() {}
 
@@ -165,26 +164,14 @@ public:
         addDefaultImpl(i0,n,src);
     }
 
-    /*
-        /// Write the value of element i
-        virtual void set(Index i, SReal v) { set(i,(SReal)v); }
-        /// Add v to the existing value of element i
-        virtual void add(Index i, SReal v) { add(i,(SReal)v); }
-    */
     /// Reset the value of element i to 0
     virtual void clear(Index i) { set(i,0.0); }
 
-    friend std::ostream& operator << (std::ostream& out, const BaseVector& v )
-    {
-        Index ny = v.size();
-        for (Index y=0; y<ny; ++y)
-        {
-            out << " " << v.element(y);
-        }
-        return out;
-    }
-
+    friend SOFA_DEFAULTTYPE_API std::ostream& operator << (std::ostream& out, const BaseVector& v );
 };
+
+/// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
+SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  BaseVector& v );
 
 } // nampespace defaulttype
 

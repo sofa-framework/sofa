@@ -24,6 +24,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/topology/TopologyEngine.h>
 
 #include <algorithm>
 
@@ -606,19 +607,6 @@ void HexahedronSetTopologyModifier::removeHexahedra(const sofa::helper::vector< 
 void HexahedronSetTopologyModifier::removeItems(const sofa::helper::vector< HexahedronID >& items)
 {
     removeHexahedra(items);
-}
-
-void HexahedronSetTopologyModifier::renumberPoints(const sofa::helper::vector<PointID> &index,
-        const sofa::helper::vector<PointID> &inv_index)
-{
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
 }
 
 void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()

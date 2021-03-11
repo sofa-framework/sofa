@@ -22,8 +22,8 @@
 #ifndef SOFA_HELPER_VECTOR_DEVICE_H
 #define SOFA_HELPER_VECTOR_DEVICE_H
 
-#include <sofa/helper/vector.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/helper/vector.h>
 
 // maximum number of bytes we allow to increase the size when of a vector in a single step when we reserve on the host or device
 #define SOFA_VECTOR_HOST_STEP_SIZE 32768
@@ -54,7 +54,7 @@ namespace helper
 DEBUG_OUT_V(extern SOFA_HELPER_API int cptid;)
 
 template <class T, class MemoryManager>
-class vector
+class vector_device
 {
 public:
     typedef T      value_type;
@@ -69,7 +69,7 @@ public:
     typedef MemoryManager memory_manager;
     template<class T2> struct rebind
     {
-        typedef vector<T2, typename memory_manager::template rebind<T2>::other > other;
+        typedef vector_device<T2, typename memory_manager::template rebind<T2>::other > other;
     };
 
 protected:
@@ -95,7 +95,7 @@ protected:
 
 public:
 
-    vector()
+    vector_device()
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -113,7 +113,7 @@ public:
 #endif
         clearSize = 0;
     }
-    vector ( Size n )
+    vector_device ( Size n )
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -132,7 +132,7 @@ public:
         clearSize = 0;
         resize ( n );
     }
-    vector ( const vector<T,MemoryManager >& v )
+    vector_device ( const vector_device<T,MemoryManager >& v )
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -173,7 +173,7 @@ public:
         DEBUG_OUT_V(SPACEM << "clear vector " << std::endl);
     }
 
-    void operator= ( const vector<T,MemoryManager >& v )
+    void operator= ( const vector_device<T,MemoryManager >& v )
     {
         if (&v == this)
         {
@@ -231,7 +231,7 @@ public:
         DEBUG_OUT_V(SPACEM << "operator= " << std::endl);
     }
 
-    ~vector()
+    ~vector_device()
     {
         if ( hostPointer!=nullptr ) MemoryManager::hostFree ( hostPointer );
 
@@ -477,7 +477,7 @@ public:
         DEBUG_OUT_V(SPACEM << "resize " << std::endl);
     }
 
-    void swap ( vector<T,MemoryManager>& v )
+    void swap ( vector_device<T,MemoryManager>& v )
     {
         DEBUG_OUT_V(SPACEP << "swap " << std::endl);
 #define VSWAP(type, var) { type t = var; var = v.var; v.var = t; }
@@ -675,7 +675,7 @@ public:
     }
 
     /// Output stream
-    inline friend std::ostream& operator<< ( std::ostream& os, const vector<T,MemoryManager>& vec )
+    inline friend std::ostream& operator<< ( std::ostream& os, const vector_device<T,MemoryManager>& vec )
     {
         if ( vec.size() >0 )
         {
@@ -686,7 +686,7 @@ public:
     }
 
     /// Input stream
-    inline friend std::istream& operator>> ( std::istream& in, vector<T,MemoryManager>& vec )
+    inline friend std::istream& operator>> ( std::istream& in, vector_device<T,MemoryManager>& vec )
     {
         T t;
         vec.clear();

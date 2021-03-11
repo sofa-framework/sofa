@@ -91,8 +91,8 @@ set(SOURCE_FILES
     ${SOFABASETOPOLOGY_SRC}/polygon_cube_intersection/polygon_cube_intersection.cpp
 )
 
-find_package(SofaFramework REQUIRED)
-find_package(Eigen3 REQUIRED)
+sofa_find_package(SofaFramework REQUIRED)
+sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)

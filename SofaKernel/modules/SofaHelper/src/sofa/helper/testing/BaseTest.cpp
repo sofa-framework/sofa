@@ -39,7 +39,9 @@ using sofa::helper::BackTrace;
 
 #include <sofa/helper/system/console.h>
 
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::MainGtestMessageHandler ;
 

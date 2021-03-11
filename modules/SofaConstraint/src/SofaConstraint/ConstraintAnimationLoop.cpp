@@ -23,6 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>

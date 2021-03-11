@@ -34,8 +34,7 @@
 #include <sofa/simulation/Visitor.h>
 #endif
 
-#include <sofa/helper/AdvancedTimer.h>
-using sofa::helper::AdvancedTimer ;
+#include <sofa/helper/ScopedAdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer ;
 
 

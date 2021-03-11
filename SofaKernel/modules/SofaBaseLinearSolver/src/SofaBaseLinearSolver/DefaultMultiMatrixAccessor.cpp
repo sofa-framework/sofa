@@ -22,6 +22,8 @@
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/BaseMapping.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 using sofa::core::behavior::BaseMechanicalState;

@@ -5,31 +5,67 @@ project(SofaGuiQt)
 set(QT_TARGETS "")
 set(QT_USE_IMPORTED_TARGETS 1)
 set(QT5_NO_LINK_QTMAIN 1)
-sofa_find_package(Qt5 COMPONENTS Core Gui OpenGL QUIET)
 
-if(NOT Qt5Core_FOUND)
-    message(SEND_ERROR "SofaGuiQt: Qt5 is required and was not found.\n"
-        "Add Qt5 directory to CMAKE_PREFIX_PATH or disable SofaGuiQt by setting SOFAGUI_QT to OFF.")
+# Will only use Qt6 if Qt6 is found and Qt5 is not found
+# if Qt5 and Qt6 are both found, Qt5 will take priority
+# Qt6 needs cmake >= 3.16, https://doc.qt.io/qt-6/cmake-get-started.html 
+if(${CMAKE_VERSION} VERSION_GREATER "3.16.0")
+    find_package(Qt6 COMPONENTS Core QUIET)
 endif()
-set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
+find_package(Qt5 COMPONENTS Core QUIET)
 
-sofa_find_package(Qt5 COMPONENTS Charts QUIET BOTH_SCOPES)
-if(Qt5Charts_FOUND)
-    set(QT_TARGETS ${QT_TARGETS} Qt5::Charts)
+if (Qt5Core_FOUND)
+    message("SofaGuiQt: will use Qt5")
+    sofa_find_package(Qt5 COMPONENTS Core Gui OpenGL REQUIRED)
+    set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
+elseif (Qt6Core_FOUND)
+    message("SofaGuiQt: will use Qt6 (beta)")
+    sofa_find_package(Qt6 COMPONENTS Widgets OpenGLWidgets REQUIRED)
+    set(QT_TARGETS ${QT_TARGETS} Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets )
 else()
-    message(STATUS "SofaGuiQt: Qt5Charts not found. No chart nor Profile will be compiled")
+    message(SEND_ERROR "SofaGuiQt: Could not find either Qt5 or Qt6.")
 endif()
 
-# QDocBrowser
-find_package(Qt5 COMPONENTS WebEngine QUIET) # if found, then QDocBrowser will be ON by default
-option(SOFAGUIQT_ENABLE_QDOCBROWSER "Build the QDocBrowser. Qt5WebEngine is needed." ${Qt5WebEngine_FOUND})
-if(SOFAGUIQT_ENABLE_QDOCBROWSER)
-    sofa_find_package(Qt5 COMPONENTS WebEngine WebEngineWidgets REQUIRED BOTH_SCOPES)
-    set(QT_TARGETS ${QT_TARGETS} Qt5::WebEngine Qt5::WebEngineWidgets)
+if (Qt5Core_FOUND)
+    # Profiling
+    sofa_find_package(Qt5 COMPONENTS Charts QUIET BOTH_SCOPES)
+    if(Qt5Charts_FOUND)
+        set(QT_TARGETS ${QT_TARGETS} Qt5::Charts)
+    else()
+        message(STATUS "SofaGuiQt: Qt5Charts not found. No chart nor Profile will be compiled")
+    endif()
+
+    # QDocBrowser
+    find_package(Qt5 COMPONENTS WebEngine QUIET) # if found, then QDocBrowser will be ON by default
+    option(SOFAGUIQT_ENABLE_QDOCBROWSER "Build the QDocBrowser. QtWebEngine is needed." ${Qt5WebEngine_FOUND})
+    if(SOFAGUIQT_ENABLE_QDOCBROWSER)
+        sofa_find_package(Qt5 COMPONENTS WebEngine WebEngineWidgets REQUIRED BOTH_SCOPES)
+        set(QT_TARGETS ${QT_TARGETS} Qt5::WebEngine Qt5::WebEngineWidgets)
+    endif()
+elseif (Qt6Core_FOUND)
+    # https://doc-snapshots.qt.io/qt6-dev/whatsnew60.html
+    # Charts and WebEngine have been removed from Qt6 and may be reintroduced later
+
+    # Profiling
+    # sofa_find_package(Qt6 COMPONENTS Charts QUIET BOTH_SCOPES)
+    # if(Qt6Charts_FOUND)
+    #     set(QT_TARGETS ${QT_TARGETS} Qt::Charts)
+    # else()
+    #     message(STATUS "SofaGuiQt: Qt6 Charts not found. No chart nor Profile will be compiled")
+    # endif()
+
+    # # QDocBrowser
+    # find_package(Qt6 COMPONENTS WebEngine QUIET) # if found, then QDocBrowser will be ON by default
+    # option(SOFAGUIQT_ENABLE_QDOCBROWSER "Build the QDocBrowser. QtWebEngine is needed." ${Qt6WebEngine_FOUND})
+    # if(SOFAGUIQT_ENABLE_QDOCBROWSER)
+    #     sofa_find_package(Qt6 COMPONENTS WebEngine WebEngineWidgets REQUIRED BOTH_SCOPES)
+    #     set(QT_TARGETS ${QT_TARGETS} Qt::WebEngine Qt::WebEngineWidgets)
+    # endif()
 endif()
 
+find_package(Sofa.GL QUIET)
 # QtViewer and QGLViewer
-if(NOT SOFA_NO_OPENGL)
+if(Sofa.GL_FOUND)
     # QtViewer
     # TODO: rename SOFAGUI_QTVIEWER into SOFAGUIQT_ENABLE_QTVIEWER
     option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
@@ -37,6 +73,11 @@ if(NOT SOFA_NO_OPENGL)
     # QGLViewer
     # TODO: rename SOFAGUI_QGLVIEWER into SOFAGUIQT_ENABLE_QGLVIEWER
     option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
+    # Remove the discard once qglviewer is compatible with Qt6 (if ever)
+    if(SOFAGUIQT_HAVE_QT6)
+        message(WARNING "QGLViewer is not (yet?) compatible with Qt6")
+        set(SOFAGUI_QGLVIEWER OFF)
+    endif()
     if(SOFAGUI_QGLVIEWER)
         find_package(QGLViewer QUIET)
         if(NOT QGLViewer_FOUND)
@@ -44,9 +85,11 @@ if(NOT SOFA_NO_OPENGL)
         endif()
     endif()
 else()
+    message(STATUS "Sofa.GL has not been activated, QtViewer/QGLViewer will be disabled.")
     set(SOFAGUI_QTVIEWER OFF)
     set(SOFAGUI_QGLVIEWER OFF)
 endif()
+
 sofa_set_01(SOFAGUIQT_HAVE_QTVIEWER VALUE ${SOFAGUI_QTVIEWER} BOTH_SCOPES)
 sofa_set_01(SOFAGUIQT_HAVE_QGLVIEWER VALUE ${SOFAGUI_QGLVIEWER} BOTH_SCOPES)
 
@@ -80,6 +123,7 @@ endif()
 set(SRC_ROOT src/sofa/gui/qt)
 
 set(MOC_HEADER_FILES
+    ${SRC_ROOT}/AboutSOFADialog.h    
     ${SRC_ROOT}/AddObject.h
     ${SRC_ROOT}/DataFilenameWidget.h
     ${SRC_ROOT}/DataWidget.h
@@ -111,6 +155,7 @@ set(MOC_HEADER_FILES
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/SofaGuiQt.h
+    ${SRC_ROOT}/qt.conf.h
     ${SRC_ROOT}/FileManagement.h
     ${SRC_ROOT}/GraphListenerQListView.h
     ${SRC_ROOT}/PickHandlerCallBacks.h
@@ -124,6 +169,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/GenericWidget.h
     )
 set(SOURCE_FILES
+    ${SRC_ROOT}/AboutSOFADialog.cpp
     ${SRC_ROOT}/AddObject.cpp
     ${SRC_ROOT}/DataFilenameWidget.cpp
     ${SRC_ROOT}/DataWidget.cpp
@@ -161,6 +207,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/viewer/VisualModelPolicy.cpp    
 )
 set(UI_FILES
+    ${SRC_ROOT}/AboutDialog.ui
     ${SRC_ROOT}/BaseGenGraphForm.ui
     ${SRC_ROOT}/DialogAddObject.ui
     ${SRC_ROOT}/GUI.ui
@@ -189,7 +236,7 @@ if(SOFA_DUMP_VISITOR_INFO)
         )
 endif()
 
-if(NOT SOFA_NO_OPENGL)
+if(Sofa.GL_FOUND)
     list(APPEND HEADER_FILES
         ${SRC_ROOT}/GLPickHandler.h
         ${SRC_ROOT}/viewer/GLBackend.h
@@ -256,9 +303,14 @@ if (SOFAGUIQT_ENABLE_NODEGRAPH)
         )
 endif()
 
-qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+if (Qt5Core_FOUND)
+    qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    qt5_wrap_ui(FORM_FILES ${UI_FILES})
+elseif (Qt6Core_FOUND)
+    qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    qt6_wrap_ui(FORM_FILES ${UI_FILES})
+endif()
 set(MOC_FILES_GROUP "Generated")
-qt5_wrap_ui(FORM_FILES ${UI_FILES})
 set(FORM_FILES_GROUP "Generated")
 
 find_package(SofaMiscForceField REQUIRED)
@@ -275,7 +327,7 @@ if(SOFA_DUMP_VISITOR_INFO)
     target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml)
 endif()
 
-if(NOT SOFA_NO_OPENGL)
+if(Sofa.GL_FOUND)
     if(SOFAGUI_QGLVIEWER)
         target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
     endif()

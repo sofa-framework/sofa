@@ -325,22 +325,37 @@ macro(sofa_find_package name)
     if(find_package_args)
         list(REMOVE_ITEM find_package_args "BOTH_SCOPES")
     endif()
-    find_package(${name} ${find_package_args})
+
+    if(NOT TARGET ${name})
+        find_package(${name} ${find_package_args})
+    else()
+        # Dirty ? set the variable _FOUND if the target is present
+        if(NOT ${name}_FOUND)
+            set(${name}_FOUND TRUE)
+        endif()
+    endif()
+
     string(TOUPPER ${name} name_upper)
     string(TOUPPER ${PROJECT_NAME} project_upper)
+    string(REPLACE "." "_" name_upper "${name_upper}")
+    string(REPLACE "." "_" project_upper "${project_upper}")
+
     set(scopes "") # nothing = current scope only
     if(ARG_BOTH_SCOPES)
         set(scopes "BOTH_SCOPES")
     endif()
     if(ARG_COMPONENTS OR ARG_OPTIONAL_COMPONENTS)
+        set(all_components_found TRUE)
         foreach(component ${ARG_COMPONENTS} ${ARG_OPTIONAL_COMPONENTS})
             string(TOUPPER ${component} component_upper)
             if(TARGET ${name}::${component})
                 sofa_set_01(${project_upper}_HAVE_${name_upper}_${component_upper} VALUE TRUE ${scopes})
             else()
+                set(all_components_found FALSE)
                 sofa_set_01(${project_upper}_HAVE_${name_upper}_${component_upper} VALUE FALSE ${scopes})
             endif()
         endforeach()
+        sofa_set_01(${project_upper}_HAVE_${name_upper} VALUE ${all_components_found} ${scopes})
     else()
         if(${name}_FOUND OR ${name_upper}_FOUND)
             sofa_set_01(${project_upper}_HAVE_${name_upper} VALUE TRUE ${scopes})
@@ -358,12 +373,14 @@ endmacro()
 # It eases deps management, especially on Windows with the WinDepPack.
 macro(sofa_set_targets_release_only)
     foreach(target ${ARGN})
-        if(TARGET ${target})
-            set_target_properties(${target} PROPERTIES
-                MAP_IMPORTED_CONFIG_MINSIZEREL Release
-                MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
-                MAP_IMPORTED_CONFIG_DEBUG Release
-                )
+        if(NOT TARGET ${target})
+            message("sofa_set_targets_release_only: ${target} is not a target")
+            continue()
         endif()
+        set_target_properties(${target} PROPERTIES
+            MAP_IMPORTED_CONFIG_MINSIZEREL Release
+            MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
+            MAP_IMPORTED_CONFIG_DEBUG Release
+            )
     endforeach()
 endmacro()

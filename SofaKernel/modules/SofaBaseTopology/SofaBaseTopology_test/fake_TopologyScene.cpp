@@ -26,7 +26,6 @@
 #include "fake_TopologyScene.h"
 
 using namespace sofa::simpleapi;
-using namespace sofa::simpleapi::components;
 using namespace sofa::core::topology;
 
 fake_TopologyScene::fake_TopologyScene(const std::string& filename, TopologyElementType topoType, bool staticTopo)

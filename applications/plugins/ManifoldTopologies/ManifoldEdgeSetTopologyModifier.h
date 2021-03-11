@@ -94,11 +94,6 @@ public:
      */
     virtual void removeItems(/*const*/ sofa::helper::vector< EdgeID >& items);
 
-    /** \brief Generic method for points renumbering
-    */
-    virtual void renumberPoints( const sofa::helper::vector<Index> & index,
-            const sofa::helper::vector<Index> & inv_index) override;
-
     /** \brief add a set  of edges
     @param edges an array of pair of vertex indices describing the edge to be created
     *

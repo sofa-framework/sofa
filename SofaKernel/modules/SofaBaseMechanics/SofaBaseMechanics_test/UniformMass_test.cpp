@@ -34,9 +34,6 @@ using namespace sofa::defaulttype ;
 #include <SofaBaseMechanics/UniformMass.h>
 using sofa::component::mass::UniformMass ;
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
-using sofa::component::initBaseMechanics ;
-
 #include <SofaSimulationGraph/SimpleApi.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -87,7 +84,6 @@ struct UniformMassTest :  public BaseTest
         sofa::simpleapi::importPlugin("SofaComponentAll") ;
 
         todo = true ;
-        initBaseMechanics();
         setSimulation( m_simu = new DAGSimulation() );
         m_root = m_simu->createNewGraph("root");
     }

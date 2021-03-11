@@ -24,8 +24,7 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/BaseState.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/fwd.h>
 namespace sofa
 {
 
@@ -155,7 +154,6 @@ extern template class SOFA_CORE_API State<defaulttype::Vec6Types>;
 extern template class SOFA_CORE_API State<defaulttype::Rigid3Types>;
 extern template class SOFA_CORE_API State<defaulttype::Rigid2Types>;
 extern template class SOFA_CORE_API State<defaulttype::Vec3fTypes>;
-
 #endif
 } // namespace core
 

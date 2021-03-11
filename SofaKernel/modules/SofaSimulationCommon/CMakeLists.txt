@@ -9,6 +9,7 @@ set(HEADER_FILES
     ${SOFASIMULATIONCOMMON_SRC}/config.h.in
     ${SOFASIMULATIONCOMMON_SRC}/common.h
     ${SOFASIMULATIONCOMMON_SRC}/init.h
+    ${SOFASIMULATIONCOMMON_SRC}/initSofaSimulationCommon.h
     ${SOFASIMULATIONCOMMON_SRC}/FindByTypeVisitor.h
     ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderPHP.h
     ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderXML.h
@@ -30,6 +31,7 @@ set(SOURCE_FILES
     ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderXML.cpp
     ${SOFASIMULATIONCOMMON_SRC}/TransformationVisitor.cpp
     ${SOFASIMULATIONCOMMON_SRC}/init.cpp
+    ${SOFASIMULATIONCOMMON_SRC}/initSofaSimulationCommon.cpp
     ${SOFASIMULATIONCOMMON_SRC}/xml/AttributeElement.cpp
     ${SOFASIMULATIONCOMMON_SRC}/xml/BaseElement.cpp
     ${SOFASIMULATIONCOMMON_SRC}/xml/BaseMultiMappingElement.cpp

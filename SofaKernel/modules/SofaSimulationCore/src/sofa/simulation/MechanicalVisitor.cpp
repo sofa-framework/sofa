@@ -23,7 +23,11 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/LocalStorage.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/CollisionModel.h>
 #include <iostream>
 
 namespace sofa
