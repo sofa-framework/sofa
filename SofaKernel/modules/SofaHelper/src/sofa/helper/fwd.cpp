@@ -21,20 +21,19 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/config.h>
-
-namespace sofa::helper
+#include <sofa/helper/fwd.h>
+#include <sofa/helper/AdvancedTimer.h>
+namespace sofa::helper::advancedtimer
 {
-class StateMask;
-
-namespace advancedtimer
+void stepBegin(const char* idStr)
 {
-SOFA_HELPER_API void stepBegin(const char* idStr);
-SOFA_HELPER_API void stepEnd(const char* idStr);
-}
+    AdvancedTimer::stepBegin(idStr);
 }
 
-namespace sofa::helper::visual
+void stepEnd(const char* idStr)
 {
-class DrawTool;
+    AdvancedTimer::stepEnd(idStr);
 }
+
+}
+
