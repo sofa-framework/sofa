@@ -19,23 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "GenerateRigid.h"
+#include <sofa/helper/GenerateRigid.h>
 
 #include <cstdlib>
 #include <cmath>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
+#include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
+namespace sofa::helper
 {
 
-namespace helper
-{
-
-using namespace sofa::defaulttype;
-
-void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Mesh* mesh)
+template<typename Rigid3MassType>
+void generateRigid(Rigid3MassType& mass, type::Vector3& center, const sofa::helper::io::Mesh* mesh)
 {
     using namespace sofa::helper;
     // Geometric Tools, Inc.
@@ -162,10 +159,11 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
     mass.inertiaMatrix /= mass.mass;
 }
 
-void generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, helper::io::Mesh* mesh
+template<typename Rigid3MassType>
+void generateRigid(Rigid3MassType& mass, type::Vector3& center, helper::io::Mesh* mesh
                                   , SReal density
-                                  , const defaulttype::Vector3& scale
-                                  , const defaulttype::Vector3& rotation /*Euler angles*/
+                                  , const type::Vector3& scale
+                                  , const type::Vector3& rotation /*Euler angles*/
                                   )
 {
     if( scale != Vector3(1, 1, 1) ) {
@@ -191,10 +189,11 @@ void generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center,
 
 }
 
-bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFilename
+template<typename Rigid3MassType>
+bool generateRigid(Rigid3MassType& mass, type::Vector3& center, const std::string& meshFilename
                    , SReal density
-                   , const Vector3& scale
-                   , const Vector3& rotation /*Euler angles*/
+                   , const type::Vector3& scale
+                   , const type::Vector3& rotation /*Euler angles*/
                   )
 {
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
@@ -210,12 +209,12 @@ bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
 }
 
 
-
+template<typename Rigid3MassType>
 bool generateRigid(GenerateRigidInfo& res
                                   , const std::string& meshFilename
                                   , SReal density
-                                  , const defaulttype::Vector3& scale
-                                  , const Vector3 &rotation)
+                                  , const type::Vector3& scale
+                                  , const type::Vector3 &rotation)
 {
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
     if (mesh == nullptr)
@@ -227,15 +226,16 @@ bool generateRigid(GenerateRigidInfo& res
     return true;
 }
 
+template<typename Rigid3MassType>
 void generateRigid( GenerateRigidInfo& res
                                   , io::Mesh *mesh
                                   , std::string const& meshName
                                   , SReal density
-                                  , const defaulttype::Vector3& scale
-                                  , const Vector3 &rotation
+                                  , const type::Vector3& scale
+                                  , const type::Vector3 &rotation
                                   )
 {
-    Rigid3Mass rigidMass;
+    Rigid3MassType rigidMass;
 
     generateRigid( rigidMass, res.com, mesh, density, scale, rotation  );
 
@@ -250,16 +250,16 @@ void generateRigid( GenerateRigidInfo& res
     res.inertia = res.mass * rigidMass.inertiaMatrix;
 
     // a threshol to test if inertia is diagonal in function of diagonal values
-    SReal threshold = defaulttype::trace( res.inertia ) * 1e-6;
+    SReal threshold = type::trace( res.inertia ) * 1e-6;
 
     // if not diagonal, extracting principal axes basis to get the corresponding rotation with a diagonal inertia
     if( res.inertia[0][1]>threshold || res.inertia[0][2]>threshold || res.inertia[1][2]>threshold )
     {
-        defaulttype::Matrix3 U;
+        type::Matrix3 U;
         Decompose<SReal>::eigenDecomposition_iterative( res.inertia, U, res.inertia_diagonal );
 
         // det should be 1->rotation or -1->reflexion
-        if( defaulttype::determinant( U ) < 0 ) // reflexion
+        if( type::determinant( U ) < 0 ) // reflexion
         {
             // made it a rotation by negating a column
             U[0][0] = -U[0][0];
@@ -277,7 +277,4 @@ void generateRigid( GenerateRigidInfo& res
     }
 }
 
-
-}
-
-}
+} // namespace sofa::helper
