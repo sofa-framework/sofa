@@ -32,6 +32,11 @@
 
 #include "sofa/helper/ScopedAdvancedTimer.h"
 
+namespace sofa::core::collision
+{
+    class ElementIntersector;
+}
+
 namespace sofa::component::collision
 {
 
@@ -122,6 +127,8 @@ private:
     double _alarmDist_d2;
     double _sq_alarmDist;
 
+    static bool isSquaredDistanceLessThan(const DSAPBox& a, const DSAPBox& b, double threshold);
+
 protected:
     DirectSAP();
 
@@ -144,6 +151,13 @@ public:
 
     void endBroadPhase() override;
     void beginNarrowPhase() override;
+
+    void narrowCollisionDetectionForPair(
+            core::collision::ElementIntersector* intersector,
+            core::CollisionModel *collisionModel0,
+            core::CollisionModel *collisionModel1,
+            core::CollisionElementIterator collisionModelIterator0,
+            core::CollisionElementIterator collisionModelIterator1);
 
 
     /* for debugging */
