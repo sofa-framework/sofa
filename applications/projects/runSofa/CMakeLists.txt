@@ -20,9 +20,9 @@ configure_file(${_defaultConfigPluginFilePath} ${PROJECT_BINARY_DIR}/${_defaultC
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 ###################################
 
-find_package(SofaValidation QUIET)
-find_package(SofaGui REQUIRED)
-find_package(SofaGraphComponent REQUIRED)
+sofa_find_package(SofaValidation QUIET)
+sofa_find_package(SofaGui REQUIRED)
+sofa_find_package(SofaGraphComponent REQUIRED)
 
 set(HEADER_FILES
     runSofaValidation.h
@@ -69,7 +69,7 @@ else()
 endif()
 
 if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
+    sofa_find_package(SofaTest QUIET)
     if(SofaTest_FOUND)
         add_subdirectory(runSofa_test)
     endif()

@@ -28,6 +28,9 @@ namespace sofa::component::topology
 {
 class EdgeSetTopologyContainer;
 
+template <class DataTypes>
+class EdgeSetGeometryAlgorithms;
+
 
 /**
  * A class that can apply basic transformations on a set of edges.
@@ -36,6 +39,9 @@ class SOFA_SOFABASETOPOLOGY_API EdgeSetTopologyModifier : public PointSetTopolog
 {
 public:
     SOFA_CLASS(EdgeSetTopologyModifier,PointSetTopologyModifier);
+
+    template <class DataTypes>
+    friend class EdgeSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
@@ -177,32 +183,6 @@ public:
             const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs,
             const bool removeIsolatedPoints = true);
 
-    /** \brief Add some points to this topology.
-    *
-    * \sa addPointsWarning
-    */
-    void addPointsProcess(const sofa::Size nPoints) override;
-
-    /** \brief Remove a subset of points
-    *
-    * these points are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
-    * \sa removePointsWarning
-    * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
-    */
-    void removePointsProcess(const sofa::helper::vector<PointID> &indices,
-            const bool removeDOF = true) override;
-
-    /** \brief Reorder this topology.
-    *
-    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
-    * \see MechanicalObject::renumberValues
-    */
-    void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
-            const sofa::helper::vector<PointID> &/*inv_index*/,
-            const bool renumberDOF = true) override;
-
     /** \brief Remove a set of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
     *
@@ -214,10 +194,6 @@ public:
     */
     void removeItems(const sofa::helper::vector<EdgeID> &items) override;
 
-    /** \brief Generic method for points renumbering
-    */
-    void renumberPoints( const sofa::helper::vector<PointID> & index,
-            const sofa::helper::vector<PointID> & inv_index) override;
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
     *
@@ -251,22 +227,6 @@ public:
     */
     virtual void resortCuthillMckee(sofa::helper::vector<int>& inverse_permutation);
 
-
-    /** \brief Move input points indices to input new coords.
-     * Also propagate event and update edgesAroundVertex for data handling.
-     *
-     * @param id The list of indices to move
-     * @param ancestors The list of ancestors to define relative new position
-     * @param coefs The barycoef to locate new coord relatively to ancestors.
-     * @moveDOF bool allowing the move (default true)
-     */
-    void movePointsProcess (const sofa::helper::vector <PointID>& id,
-            const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
-            const bool moveDOF = true) override;
-
-
-
     /** \brief Given an element indice, it will remove all the connected component in which this element belongs to.
     *  Warning: if there is only one connected component in the model. All the object will be removed.
     *
@@ -295,6 +255,46 @@ public:
     * @return false if something goes wrong during the process.
     */
     virtual bool removeIsolatedElements(sofa::Size scaleElem);
+
+protected:
+    /** \brief Add some points to this topology.
+    *
+    * \sa addPointsWarning
+    */
+    void addPointsProcess(const sofa::Size nPoints) override;
+
+    /** \brief Remove a subset of points
+    *
+    * these points are removed form the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
+    * \sa removePointsWarning
+    * Important : the points are actually deleted from the mechanical object's state vectors if (removeDOF == true)
+    */
+    void removePointsProcess(const sofa::helper::vector<PointID>& indices,
+        const bool removeDOF = true) override;
+
+    /** \brief Move input points indices to input new coords.
+     * Also propagate event and update edgesAroundVertex for data handling.
+     *
+     * @param id The list of indices to move
+     * @param ancestors The list of ancestors to define relative new position
+     * @param coefs The barycoef to locate new coord relatively to ancestors.
+     * @moveDOF bool allowing the move (default true)
+     */
+    void movePointsProcess(const sofa::helper::vector <PointID>& id,
+        const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
+        const bool moveDOF = true) override;
+
+    /** \brief Reorder this topology.
+    *
+    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
+    * \see MechanicalObject::renumberValues
+    */
+    void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
+        const sofa::helper::vector<PointID>&/*inv_index*/,
+        const bool renumberDOF = true) override;
 
 private:
     EdgeSetTopologyContainer* 	m_container;

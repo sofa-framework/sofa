@@ -1,5 +1,6 @@
 #include "CompliantSleepController.h"
 #include <sofa/simulation/Node.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/ObjectFactory.h>
 #include "../compliance/DiagonalCompliance.h"
 #include "../compliance/UniformCompliance.h"

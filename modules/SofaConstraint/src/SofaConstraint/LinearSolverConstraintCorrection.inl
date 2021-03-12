@@ -233,9 +233,9 @@ void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const 
     {
         const unsigned int numDOFs = mstate->getSize();
 
-        auto x = sofa::helper::write(x_d, cparams);
-        auto v = sofa::helper::write(v_d, cparams);
-        auto dx = sofa::helper::write(dx_d, cparams);
+        auto x = sofa::helper::getWriteAccessor(x_d);
+        auto v = sofa::helper::getWriteAccessor(v_d);
+        auto dx = sofa::helper::getWriteAccessor(dx_d);
 
         const VecDeriv& correction = correction_d.getValue();
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
@@ -262,8 +262,8 @@ void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(cons
     if (mstate)
     {
         const unsigned int numDOFs = mstate->getSize();
-        auto x  = sofa::helper::write(x_d, cparams);
-        auto dx = sofa::helper::write(dx_d, cparams);
+        auto x  = sofa::helper::getWriteAccessor(x_d);
+        auto dx = sofa::helper::getWriteAccessor(dx_d);
 
         const VecDeriv& correction = correction_d.getValue();
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
@@ -286,8 +286,8 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
     {
         const auto numDOFs = mstate->getSize();
 
-        auto v  = sofa::helper::write(v_d,cparams);
-        auto dv = sofa::helper::write(dv_d, cparams); 
+        auto v  = sofa::helper::getWriteAccessor(v_d);
+        auto dv = sofa::helper::getWriteAccessor(dv_d);
 
         const VecDeriv& correction = correction_d.getValue();
         const VecDeriv& v_free = cparams->readV(mstate)->getValue();

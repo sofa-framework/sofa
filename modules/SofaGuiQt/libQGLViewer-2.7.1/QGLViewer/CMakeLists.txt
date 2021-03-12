@@ -3,10 +3,12 @@ project(QGLViewer VERSION 2.7.1)
 
 sofa_find_package(OpenGL REQUIRED)
 sofa_find_package(Qt5 COMPONENTS Core Gui Xml OpenGL Widgets QUIET)
+
 if(NOT Qt5Core_FOUND)
     message(SEND_ERROR "QGLViewer: Qt5 is required and was not found.\n"
         "Add Qt5 directory to CMAKE_PREFIX_PATH or disable QGLViewer by setting SOFAGUI_QGLVIEWER to OFF.")
 endif()
+
 set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
 
 set(MOC_HEADER_FILES
@@ -72,8 +74,13 @@ set(UI_FILES
     VRenderInterface.ui
     )
 
-qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
-qt5_wrap_ui(FORM_FILES ${UI_FILES})
+if (Qt5Core_FOUND)
+    qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    qt5_wrap_ui(FORM_FILES ${UI_FILES})
+elseif (Qt6Core_FOUND)
+    qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    qt6_wrap_ui(FORM_FILES ${UI_FILES})
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 

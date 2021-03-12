@@ -6,6 +6,7 @@ set(SOFASIMULATIONGRAPH_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFASIMULATIONGRAPH_SRC}/config.h.in
     ${SOFASIMULATIONGRAPH_SRC}/init.h
+    ${SOFASIMULATIONGRAPH_SRC}/initSofaSimulationGraph.h
     ${SOFASIMULATIONGRAPH_SRC}/graph.h
     ${SOFASIMULATIONGRAPH_SRC}/DAGNode.h
     ${SOFASIMULATIONGRAPH_SRC}/DAGNodeMultiMappingElement.h
@@ -15,6 +16,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     ${SOFASIMULATIONGRAPH_SRC}/init.cpp
+    ${SOFASIMULATIONGRAPH_SRC}/initSofaSimulationGraph.cpp
     ${SOFASIMULATIONGRAPH_SRC}/DAGNode.cpp
     ${SOFASIMULATIONGRAPH_SRC}/DAGNodeMultiMappingElement.cpp
     ${SOFASIMULATIONGRAPH_SRC}/DAGSimulation.cpp
@@ -26,7 +28,7 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     list(APPEND SOURCE_FILES ${SOFASIMULATIONGRAPH_SRC}/testing/BaseSimulationTest.cpp)
 endif()
 
-find_package(SofaSimulationCommon REQUIRED)
+sofa_find_package(SofaSimulationCommon REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)

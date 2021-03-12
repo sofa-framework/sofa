@@ -26,4 +26,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAIMPLICITODESOLVER_API void initSofaImplicitOdeSolver();
+
 } // namespace sofa::component

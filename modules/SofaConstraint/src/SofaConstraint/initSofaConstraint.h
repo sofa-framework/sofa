@@ -25,4 +25,6 @@
 namespace sofa::component
 {
 
-} //namespace sofa::component
+SOFA_SOFACONSTRAINT_API void initSofaConstraint();
+
+} // namespace sofa::component

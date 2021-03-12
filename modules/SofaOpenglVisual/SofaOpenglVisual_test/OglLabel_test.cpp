@@ -48,8 +48,6 @@ using sofa::component::visualmodel::OglLabel ;
 #include <sofa/helper/types/RGBAColor.h>
 using sofa::helper::types::RGBAColor ;
 
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-
 #include <SofaSimulationGraph/SimpleApi.h>
 
 class OglLabelTest : public BaseTest
@@ -57,7 +55,6 @@ class OglLabelTest : public BaseTest
 public:
     void SetUp()
     {
-        sofa::component::initSofaBaseMechanics();
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 

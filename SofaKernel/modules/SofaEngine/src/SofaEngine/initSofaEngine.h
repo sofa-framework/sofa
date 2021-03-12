@@ -25,4 +25,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAENGINE_API void initSofaEngine();
+
 } // namespace sofa::component

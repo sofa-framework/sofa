@@ -25,6 +25,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 #include <algorithm>
 #include <utility>
@@ -648,19 +649,6 @@ void EdgeSetTopologyModifier::removeEdges(const sofa::helper::vector< EdgeID >& 
 void EdgeSetTopologyModifier::removeItems(const sofa::helper::vector< EdgeID >& items)
 {
     removeEdges(items);
-}
-
-void EdgeSetTopologyModifier::renumberPoints( const sofa::helper::vector<EdgeID> &index,
-        const sofa::helper::vector<EdgeID> &inv_index)
-{
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
 }
 
 void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges)

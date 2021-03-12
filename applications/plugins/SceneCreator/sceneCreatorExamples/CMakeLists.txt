@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 
 project(sceneCreatorExamples)
 
-find_package(SofaGui)
-find_package(SceneCreator)
+sofa_find_package(SofaGui)
+sofa_find_package(SceneCreator)
 
 SET( HEADERS
 

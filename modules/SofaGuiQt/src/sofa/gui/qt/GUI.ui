@@ -1045,4 +1045,19 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>showDocBrowser()</slot>
+  <slot>fileNew()</slot>
+  <slot>popupOpenFileSelector()</slot>
+  <slot>fileReload()</slot>
+  <slot>fileSave()</slot>
+  <slot>fileSaveAs()</slot>
+  <slot>fileExit()</slot>
+  <slot>editRecordDirectory()</slot>
+  <slot>showPluginManager()</slot>
+  <slot>showMouseManager()</slot>
+  <slot>showWindowDataGraph()</slot>
+  <slot>editGnuplotDirectory()</slot>
+  <slot>showVideoRecorderManager()</slot>
+ </slots>
 </ui>

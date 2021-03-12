@@ -102,7 +102,6 @@ set(SOFACONFIG_BUILD_OPTIONS_SRC
     ${SOFACONFIGSRC_ROOT}/config/sharedlibrary_defines.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_deprecated_components.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_dump_visitor.h.in
-    ${SOFACONFIGSRC_ROOT}/config/build_option_opengl.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_threading.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_bbox.h.in
 )
@@ -198,7 +197,7 @@ endif()
 ## OpenMP
 option(SOFA_OPENMP "Compile Sofa with OpenMP multithreading." OFF)
 if(SOFA_OPENMP)
-    find_package(OpenMP QUIET)
+    sofa_find_package(OpenMP QUIET)
     if (OPENMP_FOUND)
         list(APPEND SOFACONFIG_COMPILE_OPTIONS "${OpenMP_CXX_FLAGS}")
         list(APPEND SOFACONFIG_LINK_OPTIONS "${OpenMP_CXX_FLAGS}")

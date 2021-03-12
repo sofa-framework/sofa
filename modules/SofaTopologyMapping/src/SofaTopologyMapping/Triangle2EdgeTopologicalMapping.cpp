@@ -331,10 +331,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
             auto& tab_indices = indices;
 
-            m_outTopoModifier->removePointsWarning(tab_indices, false);
-            m_outTopoModifier->propagateTopologicalChanges();
-            m_outTopoModifier->removePointsProcess(tab_indices, false);
-
+            m_outTopoModifier->removePoints(tab_indices, false);
             break;
         }
         case core::topology::POINTSRENUMBERING:
@@ -354,9 +351,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             auto& tab_indices = indices;
             auto& inv_tab_indices = inv_indices;
 
-            m_outTopoModifier->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-            m_outTopoModifier->propagateTopologicalChanges();
-            m_outTopoModifier->renumberPointsProcess(tab_indices, inv_tab_indices, false);
+            m_outTopoModifier->renumberPoints(tab_indices, inv_tab_indices, false);
             break;
         }
         /**
@@ -445,9 +440,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSADDED:
         {
             const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
-            m_outTopoModifier->addPointsProcess(ta->getNbAddedVertices());
-            m_outTopoModifier->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
-            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->addPoints(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
             break;
         }
         default:

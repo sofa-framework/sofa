@@ -600,7 +600,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyMotionCorrection(const sof
 
     const VecDeriv& correction = correction_d.getValue();
 
-    auto dx = sofa::helper::write(dx_d, cparams);
+    auto dx = sofa::helper::getWriteAccessor(dx_d);
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
@@ -633,7 +633,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPositionCorrection(const s
 
     const VecDeriv& correction = correction_d.getValue();
 
-    auto dx = sofa::helper::write(dx_d,cparams);
+    auto dx = sofa::helper::getWriteAccessor(dx_d);
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
@@ -655,7 +655,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const s
     sofa::Data< VecDeriv > &v_d, sofa::Data< VecDeriv > &dv_d, const sofa::Data<VecDeriv>& correction_d)
 {
     const VecDeriv& correction = correction_d.getValue();
-    auto dv = sofa::helper::write(dv_d, cparams);
+    auto dv = sofa::helper::getWriteAccessor(dv_d);
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();

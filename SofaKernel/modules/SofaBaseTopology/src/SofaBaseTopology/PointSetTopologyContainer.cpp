@@ -23,6 +23,7 @@
 
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 #include <algorithm>
 

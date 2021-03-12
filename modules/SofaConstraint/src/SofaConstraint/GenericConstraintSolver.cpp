@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include <SofaConstraint/GenericConstraintSolver.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>

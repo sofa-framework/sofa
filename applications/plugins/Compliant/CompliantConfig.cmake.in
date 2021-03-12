@@ -4,7 +4,7 @@
 
 set(COMPLIANT_HAVE_SOFAPYTHON @COMPLIANT_HAVE_SOFAPYTHON@)
 
-find_package(SofaSimulation REQUIRED)
+sofa_find_package(SofaSimulationGraph REQUIRED)
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
 find_package(Eigen3 QUIET REQUIRED)
