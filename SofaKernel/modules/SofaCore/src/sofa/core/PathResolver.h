@@ -23,24 +23,20 @@
 
 #include <string>
 #include <sofa/core/config.h>
-
-namespace sofa::core::objectmodel
-{
-    class Base;
-    class BaseData;
-    class BaseLink;
-    class AbstractDataLink;
-    class BaseClass;
-}
+#include <sofa/core/fwd.h>
 
 namespace sofa::core
 {
 
+/// Private (anonymous) namespace to make things more readable.
+namespace {
 using objectmodel::Base;
 using objectmodel::BaseData;
 using objectmodel::BaseLink;
 using objectmodel::BaseClass;
 using objectmodel::AbstractDataLink;
+using sofa::core::dynamicCastBaseTo;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// @brief This class expose an API to query a context to find Base* or a BaseData*.
@@ -64,8 +60,8 @@ public:
     template<class T>
     static bool FindLinkDest(Base* base, T*& ptr, const std::string& path, const BaseLink* link)
     {
-        Base* result = FindLinkDestClass(base, T::GetClass(), path, link);
-        ptr=dynamic_cast<T*>(result);
+        Base* result = FindLinkDestClass(base,  sofa::core::objectmodel::base::GetClass<T>(), path, link);
+        ptr=dynamicCastBaseTo<T*>(result);
         return (result != nullptr);
     }
 
@@ -75,7 +71,7 @@ public:
     template<class T>
     static bool CheckPath(Base* base, T*&, const std::string& path, const BaseLink* link)
     {
-        void* result = FindLinkDestClass(base, T::GetClass(), path, link);
+        void* result = FindLinkDestClass(base, sofa::core::objectmodel::base::GetClass<T>(), path, link);
         return result != nullptr;
     }
 
@@ -84,7 +80,7 @@ public:
     {
         if (path.empty())
             return false;
-        return CheckPath(context, T::GetClass(), path);
+        return CheckPath(context, sofa::core::objectmodel::base::GetClass<T>(), path);
     }
 
     /// Check that a given path is valid and that the pointed object exists regardless of its type.

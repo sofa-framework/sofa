@@ -444,9 +444,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSADDED:
         {
             const auto nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-            m_outTopoModifier->addPointsProcess(nbAddedPoints);
-            m_outTopoModifier->addPointsWarning(nbAddedPoints, true);
-            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->addPoints(nbAddedPoints, true);
             break;
         }
 
@@ -464,10 +462,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             Topology::SetIndices & tab_indices = indices;
 
-            m_outTopoModifier->removePointsWarning(tab_indices, false);
-
-            m_outTopoModifier->propagateTopologicalChanges();
-            m_outTopoModifier->removePointsProcess(tab_indices, false);
+            m_outTopoModifier->removePoints(tab_indices, false);
             break;
         }
 

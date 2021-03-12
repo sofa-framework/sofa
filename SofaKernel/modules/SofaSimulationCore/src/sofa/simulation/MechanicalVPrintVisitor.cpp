@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/simulation/MechanicalVPrintVisitor.h>
 #include <sofa/simulation/Node.h>
-
+#include <sofa/core/behavior/BaseMechanicalState.h>
 using namespace sofa::core;
 namespace sofa
 {

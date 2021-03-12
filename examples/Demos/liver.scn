@@ -4,8 +4,10 @@
     <RequiredPlugin name='SofaImplicitOdeSolver'/>
     <RequiredPlugin name='SofaLoader'/>
     <RequiredPlugin name='SofaGeneralSimpleFem'/>
-    
-    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+	<RequiredPlugin pluginName='SofaBoundaryCondition'/>
+	<RequiredPlugin pluginName='SofaGeneralLoader'/>
+
+	<DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
     <DiscreteIntersection/>

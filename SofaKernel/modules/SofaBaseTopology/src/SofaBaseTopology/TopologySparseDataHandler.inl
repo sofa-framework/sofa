@@ -31,7 +31,7 @@ template <typename TopologyElementType, typename VecT>
 void TopologySparseDataHandler <TopologyElementType, VecT>::swap( Index i1, Index i2 )
 {
     // get access to data and its map
-    auto* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* >(m_topologyData);
+    auto* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseData<TopologyElementType, VecT>* >(m_topologyData);
     container_type& data = *(_topologyData->beginEdit());
     sofa::helper::vector <Index>& keys = _topologyData->getMap2Elements();
 
@@ -54,7 +54,7 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::add(sofa::Size nbEle
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
     // get access to data and its map
-    sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* >(m_topologyData);
+    sofa::component::topology::TopologySparseData<TopologyElementType, VecT>* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseData<TopologyElementType, VecT>* >(m_topologyData);
     if (!_topologyData->getSparseDataStatus())
         return;
 
@@ -108,7 +108,7 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::move( const sofa::he
 template <typename TopologyElementType, typename VecT>
 void TopologySparseDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<Index> &index )
 {
-    sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* >(m_topologyData);
+    sofa::component::topology::TopologySparseData<TopologyElementType, VecT>* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseData<TopologyElementType, VecT>* >(m_topologyData);
 
     // get the sparseData map
     sofa::helper::vector <Index>& keys = _topologyData->getMap2Elements();

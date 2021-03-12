@@ -155,6 +155,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
     ${SRC_ROOT}/init.cpp
+    ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/io/BaseFileAccess.cpp
     ${SRC_ROOT}/io/FileAccess.cpp
     ${SRC_ROOT}/io/File.cpp
@@ -350,4 +351,5 @@ sofa_add_targets_to_package(
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaHelper_test)
+    add_subdirectory(SofaHelper_simutest)
 endif()

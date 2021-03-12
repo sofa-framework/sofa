@@ -22,11 +22,11 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/defaulttype/BoundingBox.h>                    //NOTE-FOR-SELF: Remove
+#include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/Link.h>                      //NOTE-FOR-SELF: Remove
+#include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>     //NOTE-FOR-SELF: Remove
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <list>
 #include <sofa/core/sptr.h>
