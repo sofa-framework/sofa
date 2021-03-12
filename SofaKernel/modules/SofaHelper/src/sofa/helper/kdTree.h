@@ -19,19 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_KDTREE_H
-#define SOFA_HELPER_KDTREE_H
+#pragma once
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
 #include <set>
 #include <list>
 
+#include <sofa/type/Vec.h>
+#include <sofa/helper/vector.h>
 
-namespace sofa
-{
 
-namespace helper
+namespace sofa::helper
 {
 
 /**
@@ -51,7 +48,7 @@ class kdTree
 public:
     typedef typename Coord::value_type Real;
     enum { dim=Coord::total_size };
-    typedef vector<Coord> VecCoord;
+    typedef helper::vector<Coord> VecCoord;
 
     typedef std::pair<Real,unsigned int> distanceToPoint;
     typedef std::set<distanceToPoint> distanceSet;
@@ -67,7 +64,7 @@ public:
 
     bool isEmpty() const {return tree.size()==0;}
     void build(const VecCoord& positions);       ///< update tree (to be used whenever positions have changed)
-    void build(const VecCoord& positions, const vector<unsigned int> &ROI);       ///< update tree based on positions subset (to be used whenever points p have changed)
+    void build(const VecCoord& positions, const helper::vector<unsigned int> &ROI);       ///< update tree based on positions subset (to be used whenever points p have changed)
     void getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n) const;  ///< get an ordered set of n distance/index pairs between positions and x
     unsigned int getClosest(const Coord &x, const VecCoord& positions) const; ///< get the index of the closest point between positions and x
     bool getNClosestCached(distanceSet &cl, distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n) const;  ///< use distance caching to accelerate closest point computation when positions are fixed (see simon96 thesis)
@@ -82,7 +79,7 @@ public:
 protected :
     void print(const unsigned int index);
 
-    vector< TREENODE > tree; unsigned int firstNode;
+    helper::vector< TREENODE > tree; unsigned int firstNode;
 
     unsigned int build(UIlist &list, unsigned char direction, const VecCoord& positions); // recursive function to build the kdtree
     void closest(distanceSet &cl, const Coord &x, const unsigned int &currentnode, const VecCoord& positions, unsigned N) const;     // recursive function to get closest points
@@ -91,13 +88,8 @@ protected :
 
 
 #if  !defined(SOFA_HELPER_KDTREE_CPP)
-extern template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec2d>;
-extern template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec3d>;
-
-
+extern template class SOFA_HELPER_API kdTree<sofa::type::Vec<2, double>>;
+extern template class SOFA_HELPER_API kdTree<sofa::type::Vec<3, double>>;
 #endif
 
-}
-}
-
-#endif
+} // namespace sofa::helper
