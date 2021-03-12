@@ -181,6 +181,7 @@ void DirectSAP::createBoxesFromCollisionModels()
     }
 
     _isBoxInvestigated.resize(_boxes.size(), false);
+    m_boxData.resize(_boxes.size());
 }
 
 void DirectSAP::addCollisionModel(core::CollisionModel *cm)
@@ -272,28 +273,29 @@ void DirectSAP::beginNarrowPhase()
 
     update();
 
+    {
+        sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP cache");
+        unsigned int i{ 0 };
+        for (const auto& box : _boxes)
+        {
+            auto* cm = box.cube.getCollisionModel()->getLast();
+
+            auto& data = m_boxData[i];
+            data.collisionModel = cm;
+            data.context = cm->getContext();
+            data.doesBoxSelfCollide = cm->getSelfCollision();
+            data.isBoxSimulated = cm->isSimulated();
+            data.collisionElementIterator = box.cube.getExternalChildren().first;
+
+            ++i;
+        }
+    }
+
     sofa::helper::AdvancedTimer::stepBegin("Direct SAP sort");
     std::sort(m_sortedEndPoints.begin(), m_sortedEndPoints.end(), CompPEndPoint());
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP sort");
 
     sofa::helper::AdvancedTimer::stepBegin("Direct SAP intersection");
-
-    const auto isPairFiltered = [this](
-            core::CollisionModel* cm0, core::CollisionModel* cm1,
-            const DSAPBox& box0, const DSAPBox& box1
-            )
-    {
-        if (cm0->isSimulated() || cm1->isSimulated()) //is any of the object simulated?
-        {
-            // do the models belong to the same object? Can both object collide?
-            if ((!(cm0->getContext() == cm1->getContext()) || cm0->canCollideWith(cm1)) &&
-                isSquaredDistanceLessThan(box0, box1, _sq_alarmDist))
-            {
-                return false;
-            }
-        }
-        return true;
-    };
 
     std::list<int> activeBoxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
                                  //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
@@ -324,17 +326,20 @@ void DirectSAP::beginNarrowPhase()
         else //we encounter a min possible intersection between it and active_boxes
         {
             const int boxId0 = endPoint->boxID();
-            const DSAPBox & box0 = _boxes[boxId0];
-            core::CollisionModel *cm0 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
-            auto collisionElement0 = box0.cube.getExternalChildren().first;
+            const DSAPBox& box0 = _boxes[boxId0];
+            const BoxData& data0 = m_boxData[boxId0];
+
+            core::CollisionModel *cm0 = data0.collisionModel;
+            auto collisionElement0 = data0.collisionElementIterator;
 
             for (int boxId1 : activeBoxes)
             {
-                const DSAPBox & box1 = _boxes[boxId1];
-                core::CollisionModel *cm1 = box1.cube.getCollisionModel()->getLast();
+                const BoxData& data1 = m_boxData[boxId1];
 
-                if (!isPairFiltered(cm0, cm1, box0, box1))
+                if (!isPairFiltered(data0, data1, box0, boxId1))
                 {
+                    core::CollisionModel *cm1 = data1.collisionModel;
+
                     bool swapModels = false;
                     core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(cm0, cm1, swapModels);//find the method for the finnest CollisionModels
 
@@ -343,7 +348,7 @@ void DirectSAP::beginNarrowPhase()
 
                     if (finalintersector != nullptr)
                     {
-                        auto collisionElement1 = box1.cube.getExternalChildren().first;
+                        auto collisionElement1 = data1.collisionElementIterator;
 
                         auto swappableCm0 = cm0;
                         auto swappableCollisionElement0 = collisionElement0;
@@ -368,13 +373,30 @@ void DirectSAP::beginNarrowPhase()
             activeBoxes.push_back(boxId0);// complexity: Constant
             auto last = activeBoxes.end();
             --last;
-            activeBoxesIt[boxId0] = last;
+            activeBoxesIt.insert({boxId0, std::move(last)});// complexity: Average case: O(1), worst case O(size())
         }
     }
 
     d_nbPairs.setValue(nbInvestigatedPairs);
     sofa::helper::AdvancedTimer::valSet("Direct SAP pairs", nbInvestigatedPairs);
     sofa::helper::AdvancedTimer::stepEnd("Direct SAP intersection");
+}
+
+bool DirectSAP::isPairFiltered(const BoxData& data0, const BoxData& data1,
+                               const DSAPBox& box0, int boxId1) const
+{
+    if (data0.isBoxSimulated || data1.isBoxSimulated) //is any of the object simulated?
+    {
+        // do the models belong to the same object? Can both object collide?
+        if ((data0.context != data1.context) || data0.doesBoxSelfCollide)
+        {
+            if (isSquaredDistanceLessThan(box0, _boxes[boxId1], _sq_alarmDist))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 void DirectSAP::narrowCollisionDetectionForPair(core::collision::ElementIntersector* intersector,

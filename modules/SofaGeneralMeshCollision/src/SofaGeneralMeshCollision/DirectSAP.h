@@ -32,6 +32,11 @@
 
 #include "sofa/helper/ScopedAdvancedTimer.h"
 
+namespace sofa::core::objectmodel
+{
+    class BaseContext;
+}
+
 namespace sofa::core::collision
 {
     class ElementIntersector;
@@ -134,6 +139,29 @@ protected:
 
     ~DirectSAP() override = default;
 
+    struct BoxData
+    {
+        core::CollisionModel* collisionModel { nullptr };
+        sofa::core::objectmodel::BaseContext* context { nullptr };
+        bool isBoxSimulated { false };
+        bool doesBoxSelfCollide { false };
+        sofa::core::CollisionElementIterator collisionElementIterator;
+    };
+    std::vector<BoxData> m_boxData;
+
+    bool isPairFiltered(const BoxData& data0, const BoxData& data1,
+                        const DSAPBox& box0, int boxId1
+                ) const;
+
+    void narrowCollisionDetectionForPair(
+            core::collision::ElementIntersector* intersector,
+            core::CollisionModel *collisionModel0,
+            core::CollisionModel *collisionModel1,
+            core::CollisionElementIterator collisionModelIterator0,
+            core::CollisionElementIterator collisionModelIterator1);
+
+    void createBoxesFromCollisionModels();
+
 public:
     void setDraw(bool val) { d_draw.setValue(val); }
 
@@ -152,12 +180,7 @@ public:
     void endBroadPhase() override;
     void beginNarrowPhase() override;
 
-    void narrowCollisionDetectionForPair(
-            core::collision::ElementIntersector* intersector,
-            core::CollisionModel *collisionModel0,
-            core::CollisionModel *collisionModel1,
-            core::CollisionElementIterator collisionModelIterator0,
-            core::CollisionElementIterator collisionModelIterator1);
+
 
 
     /* for debugging */
@@ -165,7 +188,6 @@ public:
 
     inline bool needsDeepBoundingTree()const override {return false;}
 
-    void createBoxesFromCollisionModels();
 };
 
 } // namespace sofa::component::collision
