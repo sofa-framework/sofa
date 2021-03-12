@@ -183,6 +183,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/thread/CircularQueue.cpp
     ${SRC_ROOT}/system/thread/debug.cpp
     ${SRC_ROOT}/system/FileRepository.cpp
+    ${SRC_ROOT}/set.cpp
     ${SRC_ROOT}/logging/Message.cpp
     ${SRC_ROOT}/logging/MessageDispatcher.cpp
     ${SRC_ROOT}/logging/MessageFormatter.cpp
