@@ -111,6 +111,8 @@ GenericConstraintSolver::GenericConstraintSolver()
 
 GenericConstraintSolver::~GenericConstraintSolver()
 {
+    if(d_multithreading.getValue())
+        simulation::TaskScheduler::getInstance()->stop();
 }
 
 void GenericConstraintSolver::init()
@@ -141,6 +143,9 @@ void GenericConstraintSolver::init()
         dx.realloc(&vop,false,true);
         m_dxId = dx.id();
     }
+
+    if(d_multithreading.getValue())
+        simulation::TaskScheduler::getInstance()->init();
 }
 
 void GenericConstraintSolver::cleanup()
@@ -298,13 +303,12 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
         if(d_multithreading.getValue()){
 
+            simulation::TaskScheduler* taskScheduler = simulation::TaskScheduler::getInstance();
             simulation::CpuTask::Status status;
-            simulation::DefaultTaskScheduler* scheduler = simulation::DefaultTaskScheduler::create();
 
             helper::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
             sofa::Index nbTasks = constraintCorrections.size();
             tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
-            scheduler->init(nbTasks);
             sofa::Index dim = current_cp->W.rowSize();
 
             for (sofa::Index i=0; i<nbTasks; i++)
@@ -314,10 +318,9 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
                     continue;
 
                 tasks[i].set(cc, *cParams, dim);
-                scheduler->addTask(&tasks[i]);
+                taskScheduler->addTask(&tasks[i]);
             }
-            scheduler->workUntilDone(&status);
-            scheduler->stop();
+            taskScheduler->workUntilDone(&status);
 
             auto & W = current_cp->W;
 
