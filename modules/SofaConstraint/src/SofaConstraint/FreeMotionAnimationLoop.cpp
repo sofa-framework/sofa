@@ -132,7 +132,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 #endif
 
     {
-        ScopedAdvancedTimer("AnimateBeginEvent");
+        ScopedAdvancedTimer timer("AnimateBeginEvent");
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
         gnode->execute ( act );
@@ -239,7 +239,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
-        ScopedAdvancedTimer("AnimateEndEvent");
+        ScopedAdvancedTimer timer("AnimateEndEvent");
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
         gnode->execute ( act );
