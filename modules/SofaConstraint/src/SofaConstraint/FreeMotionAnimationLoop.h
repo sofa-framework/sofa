@@ -23,7 +23,6 @@
 #include <SofaConstraint/config.h>
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
-#include <SofaConstraint/LCPConstraintSolver.h>
 
 namespace sofa::component::animationloop
 {
@@ -58,7 +57,7 @@ protected:
     ~FreeMotionAnimationLoop() override ;
 
     sofa::core::behavior::ConstraintSolver *constraintSolver;
-    component::constraintset::LCPConstraintSolver::SPtr defaultSolver;
+    sofa::core::behavior::ConstraintSolver::SPtr defaultSolver;
 };
 
 } // namespace sofa::component::animationloop
