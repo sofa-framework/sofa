@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_MAPPING_VolumeMapping_H
 
 #include <sofa/core/Mapping.h>
+#include <sofa/core/MechanicalParams.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Mat.h>
@@ -196,7 +197,7 @@ public:
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
         const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
         helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
-        for(size_t m=0;m<f_nbMeshes.getValue();++m)        hessian[m].addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[m][0]);
+        for(size_t m=0;m<f_nbMeshes.getValue();++m)        hessian[m].addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams)*childForce[m][0]);
     }
 
     virtual const defaulttype::BaseMatrix* getK() override

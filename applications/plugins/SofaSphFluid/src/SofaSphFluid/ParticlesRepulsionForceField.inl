@@ -148,7 +148,7 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalPa
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Real h = distance.getValue();
     const Real h2 = h*h;
-    const Real ks = (Real)(stiffness.getValue() * mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
+    const Real ks = (Real)(stiffness.getValue() * sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()));
     //const Real kd = damping.getValue()*bFactor;
     const size_t n = x.size();
     df.resize(dx.size());

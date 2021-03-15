@@ -25,6 +25,7 @@
 #include <SofaBaseLinearSolver/BlocMatrixWriter.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <vector>
 #include <map>
@@ -285,7 +286,7 @@ void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalP
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
     helper::ReadAccessor<VecDeriv> gradV = this->gradV;
 
-    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     //const Real currentVolume = m_currentVolume.getValue();
     const Real currentPressure = m_currentPressure.getValue();
     const Real currentStiffness = m_currentStiffness.getValue();
@@ -348,7 +349,7 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::Mechani
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate);
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
-    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const Real currentPressure = m_currentPressure.getValue();
     const Real currentStiffness = m_currentStiffness.getValue();
 

@@ -19,7 +19,7 @@ using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
@@ -84,7 +84,7 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(lm, nullptr) ;
@@ -111,7 +111,7 @@ void TestLight::checkPositionalLightValidAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     ASSERT_NE(lm, nullptr) ;
@@ -154,7 +154,7 @@ void TestLight::checkDirectionalLightValidAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     ASSERT_NE(lm, nullptr) ;
@@ -200,7 +200,7 @@ void TestLight::checkSpotLightValidAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     ASSERT_NE(lm, nullptr) ;

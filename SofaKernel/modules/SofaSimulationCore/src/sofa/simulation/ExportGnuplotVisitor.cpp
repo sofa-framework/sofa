@@ -83,7 +83,7 @@ simulation::Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation:
     }
     if (node->mass)
     {
-        node->mass->exportGnuplot(core::MechanicalParams::defaultInstance(), m_time);
+        node->mass->exportGnuplot(core::mechanicalparams::defaultInstance(), m_time);
     }
     return RESULT_CONTINUE;
 }

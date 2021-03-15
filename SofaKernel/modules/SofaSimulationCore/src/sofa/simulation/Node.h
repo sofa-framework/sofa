@@ -24,7 +24,7 @@
 
 #include <sofa/simulation/config.h>
 
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
 #include <sofa/core/objectmodel/BaseNode.h>

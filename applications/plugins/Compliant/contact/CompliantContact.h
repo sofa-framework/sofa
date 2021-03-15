@@ -91,27 +91,6 @@ protected:
 
     void create_node() override
     {
-
-//        simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor bob( sofa::core::MechanicalParams::defaultInstance() );
-//        this->mstate1->getContext()->getRootContext()->executeVisitor( &bob );
-//        this->mstate2->getContext()->getRootContext()->executeVisitor( &bob );
-//        this->mstate1->getContext()->executeVisitor( &bob );
-//        this->mstate2->getContext()->executeVisitor( &bob );
-
-
-//        typedef sofa::core::TMultiVecId<core::V_DERIV,core::V_READ> DestMultiVecId;
-//        typedef sofa::core::TVecId<core::V_DERIV,core::V_READ> MyVecId;
-
-//        DestMultiVecId v(core::VecDerivId::velocity());
-//        MyVecId vid = v.getId(this->mstate1.get());
-
-//        std::cerr<<SOFA_CLASS_METHOD<<"dof1 "<<this->mstate1->getName()<<"  ";this->mstate1->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
-
-//        MyVecId vid2 = v.getId(this->mstate2.get());
-//        std::cerr<<SOFA_CLASS_METHOD<<"dof2 "<<this->mstate2->getName()<<"  ";this->mstate2->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
-
-
-
         const unsigned size = this->mappedContacts.size();
 
         this->make_delta();

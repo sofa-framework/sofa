@@ -22,8 +22,6 @@
 #ifndef SOFA_SIMULATION_TREE_VISUALACTION_H
 #define SOFA_SIMULATION_TREE_VISUALACTION_H
 
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ExecParams.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <iostream>
@@ -34,23 +32,14 @@
 namespace sofa
 {
 
-namespace core
-{
-namespace visual
-{
-class VisualParams;
-} // namespace visual
-} // namespace core
-
 namespace simulation
 {
-
 
 class SOFA_SIMULATION_CORE_API VisualVisitor : public Visitor
 {
 public:
     VisualVisitor(core::visual::VisualParams* params)
-        : Visitor(params)
+        : Visitor(sofa::core::visual::visualparams::castToExecParams(params))
         ,vparams(params)
     {}
 

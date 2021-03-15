@@ -33,6 +33,7 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/decompose.h>
+#include <sofa/core/MechanicalParams.h>
 
 #include <Eigen/Dense>
 

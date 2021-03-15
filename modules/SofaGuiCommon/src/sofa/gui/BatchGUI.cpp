@@ -127,7 +127,7 @@ void BatchGUI::resetScene()
         root->setTime(0.);
         simulation::getSimulation()->reset ( root );
 
-        sofa::simulation::UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
+        sofa::simulation::UpdateSimulationContextVisitor(sofa::core::execparams::defaultInstance()).execute(root);
     }
 }
 

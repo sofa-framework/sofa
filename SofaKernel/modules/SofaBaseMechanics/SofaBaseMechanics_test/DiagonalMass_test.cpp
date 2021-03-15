@@ -155,7 +155,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -192,7 +192,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -219,7 +219,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -246,7 +246,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -279,7 +279,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -312,7 +312,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -347,7 +347,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -381,7 +381,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -415,7 +415,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -450,7 +450,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -484,7 +484,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -519,7 +519,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -554,7 +554,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -589,7 +589,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -624,12 +624,12 @@ public:
         if(shouldFail)
         {
             EXPECT_MSG_EMIT(Error);
-            root->init(ExecParams::defaultInstance());
+            root->init(sofa::core::execparams::defaultInstance());
             EXPECT_FALSE( mass->isComponentStateValid() );
         }else
         {
             EXPECT_MSG_NOEMIT(Error);
-            root->init(ExecParams::defaultInstance()) ;
+            root->init(sofa::core::execparams::defaultInstance()) ;
             EXPECT_TRUE( mass->isComponentStateValid() );
         }
 

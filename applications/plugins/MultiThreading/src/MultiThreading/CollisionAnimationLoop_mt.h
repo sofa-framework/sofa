@@ -25,7 +25,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "BaseAnimationLoop_mt.h"
-#include <sofa/core/ExecParams.h>
+
 #include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
@@ -79,7 +79,7 @@ protected:
 
 public:
 
-	virtual void step(const core::ExecParams* params /* PARAMS FIRST =ExecParams::defaultInstance()*/, double dt) = 0;
+	virtual void step(const core::ExecParams* params /* PARAMS FIRST =execparams::defaultInstance()*/, double dt) = 0;
 
     /// Construction method called by ObjectFactory.
     template<class T>
@@ -100,15 +100,15 @@ protected:
     /// @{
 
     /// Activate collision pipeline
-	virtual void collisionReset(const core::ExecParams* params = core::ExecParams::defaultInstance());
+	virtual void collisionReset(const core::ExecParams* params = core::execparams::defaultInstance());
 	
-    virtual void collisionCompute(const core::ExecParams* params = core::ExecParams::defaultInstance());
+    virtual void collisionCompute(const core::ExecParams* params = core::execparams::defaultInstance());
 
-	virtual void collisionResponse(const core::ExecParams* params = core::ExecParams::defaultInstance());
+	virtual void collisionResponse(const core::ExecParams* params = core::execparams::defaultInstance());
 
 
     /// Activate OdeSolvers
-    virtual void integrate(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, double dt);
+    virtual void integrate(const core::ExecParams* params /* PARAMS FIRST  = core::execparams::defaultInstance()*/, double dt);
 
 
     typedef simulation::Node::Sequence<core::behavior::OdeSolver> Solvers;

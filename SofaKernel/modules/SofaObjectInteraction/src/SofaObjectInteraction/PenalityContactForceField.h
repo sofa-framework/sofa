@@ -27,7 +27,6 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
-#include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::interactionforcefield
 {

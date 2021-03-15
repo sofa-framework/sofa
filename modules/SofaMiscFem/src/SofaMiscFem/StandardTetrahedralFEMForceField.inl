@@ -35,6 +35,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/MechanicalParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <SofaBaseTopology/TopologyData.inl>
@@ -456,7 +457,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
@@ -654,7 +655,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
         }
 
         //this->addForce( force1, pos, force1 );
-        this->addForce( core::MechanicalParams::defaultInstance(), d_force1, d_pos, d_force1 );
+        this->addForce( core::mechanicalparams::defaultInstance(), d_force1, d_pos, d_force1 );
 
         // get current energy around
         Real energy1 = 0;
@@ -670,13 +671,13 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
         deltaPos[moveIdx] = epsilon;
         // calc derivative
         //this->addDForce( deltaForceCalculated, deltaPos);
-        this->addDForce( core::MechanicalParams::defaultInstance(), d_deltaForceCalculated, d_deltaPos );
+        this->addDForce( core::mechanicalparams::defaultInstance(), d_deltaForceCalculated, d_deltaPos );
 
         deltaPos[moveIdx] = zero;
         // calc factual change
         pos[moveIdx] = pos[moveIdx] + epsilon;
         //this->addForce( force2, pos, force2 );
-        this->addForce( core::MechanicalParams::defaultInstance(), d_force2, d_pos, d_force2 );
+        this->addForce( core::mechanicalparams::defaultInstance(), d_force2, d_pos, d_force2 );
 
         pos[moveIdx] = pos[moveIdx] - epsilon;
         // check first derivative:

@@ -22,7 +22,7 @@
 #include <SofaTest/Elasticity_test.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/core/ExecParams.h>
+
 
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>

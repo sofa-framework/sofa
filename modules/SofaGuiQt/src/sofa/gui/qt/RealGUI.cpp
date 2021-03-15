@@ -564,7 +564,7 @@ void RealGUI::mouseMoveEvent(QMouseEvent * /*e*/)
         QCursor::setPos(p);
         Node* groot = mViewer->getScene();
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
         return;
     }
 }
@@ -578,7 +578,7 @@ void RealGUI::wheelEvent(QWheelEvent* e)
         sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
         Node* groot = mViewer->getScene();
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
         e->accept();
         return;
     }
@@ -597,21 +597,21 @@ void RealGUI::mousePressEvent(QMouseEvent * e)
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::RightButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::MidButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             return;
         }
@@ -631,21 +631,21 @@ void RealGUI::mouseReleaseEvent(QMouseEvent * e)
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::RightButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::MidButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             return;
         }
@@ -661,7 +661,7 @@ void RealGUI::keyReleaseEvent(QKeyEvent * e)
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
         Node* groot = mViewer->getScene();
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
         return;
     }
 }
@@ -870,7 +870,7 @@ void RealGUI::emitIdle()
     Node* groot = mViewer->getScene();
     if (groot)
     {
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &hb);
+        groot->propagateEvent(core::execparams::defaultInstance(), &hb);
     }
 
     if(isEmbeddedViewer())
@@ -1648,7 +1648,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
             Node* groot = qtViewer->getScene();
             if (groot)
-                groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+                groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
         }
         return;
     }
@@ -1988,7 +1988,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
 
     if (activate)
         node->setActive(true);
-    simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), activate);
+    simulation::DeactivationVisitor v(sofa::core::execparams::defaultInstance(), activate);
     node->executeVisitor(&v);
 
     using core::objectmodel::BaseNode;
@@ -2117,7 +2117,7 @@ void RealGUI::playpauseGUI ( bool startSimulation )
     if(startSimulation)
     {
         SimulationStopEvent startEvt;
-        root->propagateEvent(core::ExecParams::defaultInstance(), &startEvt);
+        root->propagateEvent(core::execparams::defaultInstance(), &startEvt);
         m_clockBeforeLastStep = 0;
         frameCounter=0;
         timerStep->start(0);
@@ -2125,7 +2125,7 @@ void RealGUI::playpauseGUI ( bool startSimulation )
     }
 
     SimulationStartEvent stopEvt;
-    root->propagateEvent(core::ExecParams::defaultInstance(), &stopEvt);
+    root->propagateEvent(core::execparams::defaultInstance(), &stopEvt);
 
     timerStep->stop();
     return;
@@ -2425,7 +2425,7 @@ void RealGUI::setExportGnuplot ( bool exp )
     m_exportGnuplot = exp;
     if ( exp && root )
     {
-        sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+        sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
         InitGnuplotVisitor v(params , gnuplot_directory);
         root->execute( v );
         exportGnuplot(root,gnuplot_directory);
