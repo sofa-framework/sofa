@@ -49,7 +49,7 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
         nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
-        sofa::helper::ScopedAdvancedTimer timer("ComputeBBox: " + (*object)->getName());
+        sofa::helper::ScopedAdvancedTimer("ComputeBBox: " + (*object)->getName());
         // warning the second parameter should NOT be false
         // otherwise every object will participate to the bounding box
         // when it makes no sense for some of them
