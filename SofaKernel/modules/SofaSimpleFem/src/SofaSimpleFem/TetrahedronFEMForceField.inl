@@ -1601,7 +1601,15 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
                     matVert[k][l] = X0[ix][l-1];
             }
 
-            defaulttype::invertMatrix(elemShapeFun[i], matVert);
+            if (auto res = type::invertMatrix(matVert))
+            {
+                elemShapeFun[i] = res.value();
+            }
+            else
+            {
+                msg_error() << "Cannot compute vonMises for  element " << (*it) << " because "
+                    << res.error().what();
+            }
         }
         computeVonMisesStress();
     }

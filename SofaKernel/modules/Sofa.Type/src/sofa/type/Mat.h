@@ -28,6 +28,8 @@
 #include <sofa/type/Vec.h>
 
 #include <iostream>
+#include <boost/outcome/outcome.hpp>
+namespace outcome = BOOST_OUTCOME_V2_NAMESPACE;
 
 namespace // anonymous
 {
@@ -841,8 +843,10 @@ inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
 
 /// Matrix inversion (general case).
 template<sofa::Size S, class real>
-[[nodiscard]] bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
+auto invertMatrix(const Mat<S,S,real>& from) -> outcome::result< Mat<S, S, real>, std::exception >
 {
+    Mat<S, S, real> res(NOINIT);
+    
     sofa::Size i, j, k;
     Vec<S, sofa::Size> r, c, row, col;
 
@@ -874,7 +878,7 @@ template<sofa::Size S, class real>
 
         if (pivot <= (real) MIN_DETERMINANT)
         {
-            return false;
+            return std::logic_error("Cannot inverse because the determinant is 0");
         }
 
         row[r[k]] = col[c[k]] = 1;
@@ -902,54 +906,73 @@ template<sofa::Size S, class real>
                 row[i] = r[j];
 
     for ( i = 0; i < S; i++ )
-        dest[i] = m2[row[i]];
+        res[i] = m2[row[i]];
 
-    return true;
+    return res;
 }
 
 /// Matrix inversion (special case 3x3).
 template<class real>
-[[nodiscard]] bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
+auto invertMatrix(const Mat<3,3,real>& from) -> outcome::result< Mat<3, 3, real>, std::exception >
 {
+    Mat<3, 3, real> res(NOINIT);
+
     real det=determinant(from);
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        return false;
+        return std::logic_error("Cannot inverse because the determinant is 0");
     }
 
-    dest(0,0)= (from(1,1)*from(2,2) - from(2,1)*from(1,2))/det;
-    dest(1,0)= (from(1,2)*from(2,0) - from(2,2)*from(1,0))/det;
-    dest(2,0)= (from(1,0)*from(2,1) - from(2,0)*from(1,1))/det;
-    dest(0,1)= (from(2,1)*from(0,2) - from(0,1)*from(2,2))/det;
-    dest(1,1)= (from(2,2)*from(0,0) - from(0,2)*from(2,0))/det;
-    dest(2,1)= (from(2,0)*from(0,1) - from(0,0)*from(2,1))/det;
-    dest(0,2)= (from(0,1)*from(1,2) - from(1,1)*from(0,2))/det;
-    dest(1,2)= (from(0,2)*from(1,0) - from(1,2)*from(0,0))/det;
-    dest(2,2)= (from(0,0)*from(1,1) - from(1,0)*from(0,1))/det;
+    res(0,0)= (from(1,1)*from(2,2) - from(2,1)*from(1,2))/det;
+    res(1,0)= (from(1,2)*from(2,0) - from(2,2)*from(1,0))/det;
+    res(2,0)= (from(1,0)*from(2,1) - from(2,0)*from(1,1))/det;
+    res(0,1)= (from(2,1)*from(0,2) - from(0,1)*from(2,2))/det;
+    res(1,1)= (from(2,2)*from(0,0) - from(0,2)*from(2,0))/det;
+    res(2,1)= (from(2,0)*from(0,1) - from(0,0)*from(2,1))/det;
+    res(0,2)= (from(0,1)*from(1,2) - from(1,1)*from(0,2))/det;
+    res(1,2)= (from(0,2)*from(1,0) - from(1,2)*from(0,0))/det;
+    res(2,2)= (from(0,0)*from(1,1) - from(1,0)*from(0,1))/det;
 
-    return true;
+    return res;
 }
 
 /// Matrix inversion (special case 2x2).
 template<class real>
-bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
+auto invertMatrix(const Mat<2,2,real>& from) -> outcome::result< Mat<2, 2, real>, std::exception >
 {
+    Mat<2, 2, real> res(NOINIT);
     real det=determinant(from);
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        return false;
+        return std::logic_error("Cannot inverse because the determinant is 0");
     }
 
-    dest(0,0)=  from(1,1)/det;
-    dest(0,1)= -from(0,1)/det;
-    dest(1,0)= -from(1,0)/det;
-    dest(1,1)=  from(0,0)/det;
+    res(0,0)=  from(1,1)/det;
+    res(0,1)= -from(0,1)/det;
+    res(1,0)= -from(1,0)/det;
+    res(1,1)=  from(0,0)/det;
 
-    return true;
+    return res;
 }
 #undef MIN_DETERMINANT
+
+
+//compat
+template<sofa::Size S, class real>
+bool invertMatrix(Mat<S, S, real>& dest, const Mat<S, S, real>& from)
+{
+    if (auto res = invertMatrix(from))
+    {
+        dest = res.value();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 /// Inverse Matrix considering the matrix as a transformation.
 template<sofa::Size S, class real>

@@ -44,11 +44,13 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/stdtype/fixed_array.cpp
 )
 
+sofa_find_package(Boost REQUIRED)
+
 sofa_find_package(Sofa.Config REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config Boost::boost)
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework
