@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_MASS_INL
 #define SOFA_CORE_BEHAVIOR_MASS_INL
 
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
@@ -100,7 +101,7 @@ void Mass<DataTypes>::addDForce(const MechanicalParams*
 #ifndef NDEBUG
     // @TODO Remove
     // Hack to disable warning message
-    mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 #endif
 }
 

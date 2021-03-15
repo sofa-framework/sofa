@@ -24,6 +24,7 @@
 #include "DistanceFromTargetMapping.h"
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <iostream>
 

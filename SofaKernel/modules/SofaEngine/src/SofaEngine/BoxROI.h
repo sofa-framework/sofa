@@ -28,7 +28,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::engine::boxroi
 {

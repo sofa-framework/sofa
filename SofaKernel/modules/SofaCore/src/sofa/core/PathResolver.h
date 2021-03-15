@@ -35,7 +35,7 @@ using objectmodel::BaseData;
 using objectmodel::BaseLink;
 using objectmodel::BaseClass;
 using objectmodel::AbstractDataLink;
-using sofa::core::dynamicCastBaseTo;
+using sofa::core::castTo;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ public:
     static bool FindLinkDest(Base* base, T*& ptr, const std::string& path, const BaseLink* link)
     {
         Base* result = FindLinkDestClass(base,  sofa::core::objectmodel::base::GetClass<T>(), path, link);
-        ptr=dynamicCastBaseTo<T*>(result);
+        ptr=castTo<T*>(result);
         return (result != nullptr);
     }
 

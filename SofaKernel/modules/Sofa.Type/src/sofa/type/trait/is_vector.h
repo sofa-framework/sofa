@@ -19,47 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION true
-#include <sofa/core/topology/BaseTopologyEngine.h>
-#include <sofa/core/topology/TopologyChange.h>
+#pragma once
+#include <type_traits>
 
-#ifdef SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-namespace std
+namespace sofa::type::trait
 {
-    template class list<const sofa::core::topology::TopologyChange*>;
+
+/// Detect if a type T has iterator/const iterator function and operator[](size_t)
+template<typename T>
+struct is_vector
+{
+    typedef typename std::remove_const<T>::type test_type;
+
+    template<typename A>
+    static constexpr bool test(
+        A * pt,
+        A const * cpt = nullptr,
+        decltype(pt->begin()) * = nullptr,
+        decltype(pt->end()) * = nullptr,
+        decltype(cpt->begin()) * = nullptr,
+        decltype(cpt->end()) * = nullptr,
+        typename std::decay<decltype((*pt)[0])>::type * = nullptr,   ///< Is there an operator[] ?
+        typename A::iterator * = nullptr,
+        typename A::const_iterator * = nullptr,
+        typename A::value_type * = nullptr) {
+
+        typedef typename A::iterator iterator;
+        typedef typename A::const_iterator const_iterator;
+        return  std::is_same<decltype(pt->begin()),iterator>::value
+                && std::is_same<decltype(pt->end()),iterator>::value
+                && std::is_same<decltype(cpt->begin()),const_iterator>::value
+                && std::is_same<decltype(cpt->end()),const_iterator>::value;
+    }
+
+    template<typename A>
+    static constexpr bool test(...) {
+        return false;
+    }
+
+    static const bool value = test<test_type>(nullptr);
+};
+
 }
-
-namespace sofa::core::objectmodel
-{
-template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
-}
-#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-
-
-namespace sofa::core::topology
-{
-
-void TopologyEngine::init()
-{
-    sofa::core::DataEngine::init();
-    this->createEngineName();
-}
-
-size_t TopologyEngine::getNumberOfTopologicalChanges()
-{
-    return (m_changeList.getValue()).size();
-}
-
-void TopologyEngine::createEngineName()
-{
-    if (m_data_name.empty())
-        setName( m_prefix + "no_name" );
-    else
-        setName( m_prefix + m_data_name );
-
-    return;
-}
-
-
-} // namespace sofa
-

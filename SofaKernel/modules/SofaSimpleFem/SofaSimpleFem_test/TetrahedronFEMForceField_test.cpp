@@ -32,7 +32,8 @@ using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+
+using sofa::core::execparams::defaultInstance; 
 
 namespace sofa {
 
@@ -126,7 +127,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* fem = root->getTreeNode("FEMnode")->getObject("fem") ;
         EXPECT_NE(fem, nullptr) ;

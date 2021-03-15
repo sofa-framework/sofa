@@ -1,5 +1,9 @@
 #include <sofa/core/fwd.h>
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/ExecParams.h>
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/CollisionModel.h>
@@ -33,6 +37,73 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/Shader.h>
+
+namespace sofa::core::execparams
+{
+ExecParams* defaultInstance()
+{
+    return ExecParams::defaultInstance();
+}
+}
+
+namespace sofa::core::constraintparams
+{
+const ConstraintParams* defaultInstance()
+{
+    return ConstraintParams::defaultInstance();
+}
+
+ExecParams* castToExecParams(sofa::core::ConstraintParams* cparams){ return cparams; }
+const ExecParams* castToExecParams(const sofa::core::ConstraintParams* cparams){ return cparams; }
+
+}
+
+
+namespace sofa::core::mechanicalparams
+{
+
+const MechanicalParams* defaultInstance()
+{
+    return MechanicalParams::defaultInstance();
+}
+
+SReal kFactorIncludingRayleighDamping(const sofa::core::MechanicalParams* mparams, SReal d)
+{
+    return mparams->kFactorIncludingRayleighDamping(d);
+}
+SReal mFactorIncludingRayleighDamping(const sofa::core::MechanicalParams* mparams, SReal d)
+{
+    return mparams->mFactorIncludingRayleighDamping(d);
+}
+SReal dt(const sofa::core::MechanicalParams* mparams)
+{
+    return mparams->dt();
+}
+SReal bFactor(const sofa::core::MechanicalParams* mparams)
+{
+    return mparams->bFactor();
+}
+SReal kFactor(const sofa::core::MechanicalParams* mparams)
+{
+    return mparams->kFactor();
+}
+
+ExecParams* castToExecParams(sofa::core::MechanicalParams* mparams){ return mparams; }
+const ExecParams* castToExecParams(const sofa::core::MechanicalParams* mparams){ return mparams; }
+}
+
+namespace sofa::core::visual::visualparams
+{
+VisualParams* defaultInstance(){ return VisualParams::defaultInstance(); }
+
+sofa::core::ExecParams* castToExecParams(sofa::core::visual::VisualParams* vparams){return vparams;}
+const sofa::core::ExecParams* castToExecParams(const sofa::core::visual::VisualParams* vparams){return vparams;}
+
+sofa::core::visual::DrawTool* getDrawTool(VisualParams* params){ return params->drawTool(); }
+sofa::core::visual::DisplayFlags& getDisplayFlags(VisualParams* params){ return params->displayFlags(); }
+sofa::core::visual::DrawTool* getDrawTool(const VisualParams* params){ return params->drawTool(); }
+const sofa::core::visual::DisplayFlags& getDisplayFlags(const VisualParams* params){ return params->displayFlags(); }
+}
 
 namespace sofa::core::topology
 {

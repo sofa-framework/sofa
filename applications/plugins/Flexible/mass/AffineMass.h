@@ -142,10 +142,10 @@ public:
             VecDeriv& v = *d_v.beginEdit();
 
             // gravity
-            Vec3 g ( this->getContext()->getGravity() * (mparams->dt()) );
+            Vec3 g ( this->getContext()->getGravity() * sofa::core::mechanicalparams::dt(mparams) );
             Deriv theGravity;
             DataTypes::set ( theGravity, g[0], g[1], g[2]);
-            Deriv hg = theGravity * (mparams->dt());
+            Deriv hg = theGravity * sofa::core::mechanicalparams::dt(mparams);
 
             // add weight force
             for (unsigned int i=0; i<v.size(); i++)
@@ -159,7 +159,7 @@ public:
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-        Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+        Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
         d_massMatrix.getValue().addToBaseMatrix( r.matrix, mFactor, r.offset );
     }
 

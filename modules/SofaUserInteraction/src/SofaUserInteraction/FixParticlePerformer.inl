@@ -79,7 +79,7 @@ void FixParticlePerformer<DataTypes>::start()
         distanceForceField->addSpring(0,points[i], stiffness*coeffStiffness, friction, 0);
     nodeFixation->addObject(distanceForceField);
 
-    nodeFixation->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
+    nodeFixation->execute<simulation::InitVisitor>(sofa::core::execparams::defaultInstance());
 }
 
 template <class DataTypes>

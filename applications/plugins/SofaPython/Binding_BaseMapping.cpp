@@ -112,7 +112,7 @@ static PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    mapping->apply(MechanicalParams::defaultInstance(),VecCoordId::position(),ConstVecCoordId::position());
+    mapping->apply(sofa::core::mechanicalparams::defaultInstance(),VecCoordId::position(),ConstVecCoordId::position());
 
     Py_RETURN_NONE;
 }
@@ -121,7 +121,7 @@ static PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    mapping->applyJ(MechanicalParams::defaultInstance(),VecDerivId::velocity(),ConstVecDerivId::velocity());
+    mapping->applyJ(sofa::core::mechanicalparams::defaultInstance(),VecDerivId::velocity(),ConstVecDerivId::velocity());
 
     Py_RETURN_NONE;
 }
@@ -131,7 +131,7 @@ static PyObject * BaseMapping_applyJT(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
+    mapping->applyJT(sofa::core::mechanicalparams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
 
     Py_RETURN_NONE;
 }
@@ -142,7 +142,7 @@ static PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
     BaseMapping* mapping  = get_basemapping( self );
 
     // note: the position delta must be set in dx beforehand
-    mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
+    mapping->applyJT(sofa::core::mechanicalparams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
 
     Py_RETURN_NONE;
 }

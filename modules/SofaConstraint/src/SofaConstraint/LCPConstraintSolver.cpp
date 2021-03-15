@@ -50,7 +50,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
     last_lcp = lcp;
-    simulation::MechanicalVOpVisitor(core::ExecParams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
+    simulation::MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
 
     msg_info() <<" propagate DXn performed - collision called" ;
 

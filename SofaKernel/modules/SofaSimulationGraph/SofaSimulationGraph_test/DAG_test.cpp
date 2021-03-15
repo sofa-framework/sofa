@@ -62,7 +62,7 @@ struct DAG_test : public BaseTest
         TreeTraversalRepetition repeat; // repeat callbacks
 
         TestVisitor()
-            : Visitor(sofa::core::ExecParams::defaultInstance() )
+            : Visitor(sofa::core::execparams::defaultInstance() )
             , tree( false )
             , repeat( NO_REPETITION )
         {

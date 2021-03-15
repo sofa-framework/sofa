@@ -4,7 +4,7 @@
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-
+#include <sofa/core/visual/VisualParams.h>
 using std::cout;
 using std::cerr;
 using std::endl;

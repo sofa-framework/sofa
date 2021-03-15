@@ -57,8 +57,8 @@ struct UncoupledConstraintCorrection_test: public BaseSimulationTest
         ASSERT_NE(nodeToRemove.get(), nullptr);
 
         nodeToRemove->detachFromGraph();
-        nodeToRemove->execute<sofa::simulation::CleanupVisitor>(sofa::core::ExecParams::defaultInstance());
-        nodeToRemove->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        nodeToRemove->execute<sofa::simulation::CleanupVisitor>(sofa::core::execparams::defaultInstance());
+        nodeToRemove->execute<sofa::simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         sceneinstance.simulate(0.04);
     }
 };

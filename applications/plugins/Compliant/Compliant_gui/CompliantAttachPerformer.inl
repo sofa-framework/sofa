@@ -284,7 +284,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     interactionNode->addObject(compliance);
     compliance->rayleighStiffness.setValue(_compliance!=0?0.1:0);
 
-    interactionNode->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
+    interactionNode->execute<simulation::InitVisitor>(sofa::core::execparams::defaultInstance());
 
 }
 
@@ -308,15 +308,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = DataTypes::getCPos(xmouse[0]);
         _vm->m_positions.endEdit();
-    //    std::cerr<<"mouse: "<<mstateCollision->getName()<<" "<<mstateCollision->getPX(pickedParticleIndex)<<std::endl;
     }
-
-
-
-
-//    mouseMapping->apply(core::MechanicalParams::defaultInstance());
-//    mouseMapping->applyJ(core::MechanicalParams::defaultInstance());
-
     this->interactor->setMouseAttached(true);
 }
 
