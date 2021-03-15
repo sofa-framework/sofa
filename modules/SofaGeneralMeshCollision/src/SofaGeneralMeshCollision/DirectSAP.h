@@ -106,31 +106,32 @@ private:
     void add(core::CollisionModel * cm);
 
     /**
-      * Updates values of end points. These values are coordinates of AABB on axis that maximazes the variance for the AABBs.
+      * Updates values of end points. These values are coordinates of AABB on axis that maximize the variance for the AABBs.
       */
     void update();
 
     Data<bool> d_draw; ///< enable/disable display of results
     Data<bool> d_showOnlyInvestigatedBoxes;
     Data<int> d_nbPairs; ///< number of pairs of elements sent to narrow phase
+    Data< helper::fixed_array<defaulttype::Vector3,2> > d_box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
-    Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
+    CubeCollisionModel::SPtr m_boxModel;
 
-    CubeCollisionModel::SPtr boxModel;
+    /// Store a permanent list of end points
+    /// The container is a std::list to avoid invalidation of pointers after an insertion
     std::list<EndPoint> m_endPointContainer;
 
-
-    sofa::helper::vector<DSAPBox> _boxes;//boxes
-    sofa::helper::vector<bool> _isBoxInvestigated;
+    sofa::helper::vector<DSAPBox> m_boxes;//boxes
+    sofa::helper::vector<bool> m_isBoxInvestigated;
     EndPointList m_sortedEndPoints; ///< list of EndPoints dedicated to be sorted. Owner of pointers is m_endPointContainer
     int m_currentAxis;//the current greatest variance axis
 
-    std::set<core::CollisionModel*> collisionModels;//used to check if a collision model is added
-    sofa::helper::vector<core::CollisionModel*> _new_cm;//eventual new collision models to  add at a step
+    std::set<core::CollisionModel*> m_collisionModels;//used to check if a collision model is added
+    sofa::helper::vector<core::CollisionModel*> m_newCollisionModels;//eventual new collision models to add at a step
 
-    double _alarmDist;
-    double _alarmDist_d2;
-    double _sq_alarmDist;
+    double m_alarmDist;
+    double m_alarmDist_d2;
+    double m_sq_alarmDist;
 
     static bool isSquaredDistanceLessThan(const DSAPBox& a, const DSAPBox& b, double threshold);
 
@@ -161,6 +162,9 @@ protected:
             core::CollisionElementIterator collisionModelIterator1);
 
     void createBoxesFromCollisionModels();
+    void cacheData(); /// Cache data into vector to avoid overhead during access
+    void sortEndPoints();
+    void narrowCollisionDetectionFromSortedEndPoints();
 
 public:
     void setDraw(bool val) { d_draw.setValue(val); }
@@ -179,9 +183,6 @@ public:
 
     void endBroadPhase() override;
     void beginNarrowPhase() override;
-
-
-
 
     /* for debugging */
     void draw(const core::visual::VisualParams*) override;
