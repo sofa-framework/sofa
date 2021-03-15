@@ -257,7 +257,7 @@ bool DirectSAP::isSquaredDistanceLessThan(const DSAPBox &a, const DSAPBox &b, do
         }
     }
 
-    return dist2 < threshold;
+    return true;
 }
 
 void DirectSAP::cacheData()
