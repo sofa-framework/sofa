@@ -742,12 +742,13 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-    if (!SOFA_NO_UPDATE_BBOX)
+#if SOFA_NO_UPDATE_BBOX == 0
     {
-        sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+        sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
         this->gnode->execute<UpdateBoundingBoxVisitor>(params);
-        sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
     }
+#endif
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif

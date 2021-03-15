@@ -256,11 +256,12 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         }
     }
 
-    if (!SOFA_NO_UPDATE_BBOX)
+#if SOFA_NO_UPDATE_BBOX == 0
     {
         ScopedAdvancedTimer timer("UpdateBBox");
         gnode->execute<UpdateBoundingBoxVisitor>(params);
     }
+#endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
