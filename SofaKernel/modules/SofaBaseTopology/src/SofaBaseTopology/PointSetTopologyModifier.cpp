@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/core/topology/BaseTopologyEngine.h>
+#include <sofa/core/topology/TopologyEngine.h>
 
 namespace sofa::component::topology
 {
@@ -436,7 +436,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 
     this->propagateTopologicalEngineChanges();
     
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
 
     getContext()->executeVisitor(&a);
@@ -448,7 +448,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
 
     getContext()->executeVisitor(&a);
@@ -488,7 +488,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 void PointSetTopologyModifier::propagateStateChanges()
 {
     if (m_container->beginStateChange() == m_container->endStateChange()) return; // nothing to do if no event is stored
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     sofa::simulation::StateChangeVisitor a(params, m_container);
     getContext()->executeVisitor(&a);
 

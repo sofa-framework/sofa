@@ -19,49 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
-#define SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
+#define SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION true
+#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyChange.h>
+
+#ifdef SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
+namespace std
+{
+    template class list<const sofa::core::topology::TopologyChange*>;
+}
+
+namespace sofa::core::objectmodel
+{
+template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+}
+#endif /// SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
 
 
-#include <sofa/simulation/Visitor.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/simulation/fwd.h>
-#include <string>
-#include <iostream>
-#include <sofa/defaulttype/TopologyTypes.h>
-
-namespace sofa
+namespace sofa::core::topology
 {
 
-namespace simulation
+void TopologyEngine::init()
 {
+    sofa::core::DataEngine::init();
+    this->createEngineName();
+}
 
-class SOFA_SIMULATION_CORE_API ExportOBJVisitor : public Visitor
+size_t TopologyEngine::getNumberOfTopologicalChanges()
 {
-public:
-    std::ostream* out;
-    std::ostream* mtl;
+    return (m_changeList.getValue()).size();
+}
 
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out);
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out, std::ostream* mtl);
-    ~ExportOBJVisitor() override;
+void TopologyEngine::createEngineName()
+{
+    if (m_data_name.empty())
+        setName( m_prefix + "no_name" );
+    else
+        setName( m_prefix + m_data_name );
 
-    virtual void processVisualModel(Node* node, core::visual::VisualModel* vm);
+    return;
+}
 
-    Result processNodeTopDown(Node* node) override;
-    void processNodeBottomUp(Node* node) override;
-    const char* getClassName() const override { return "ExportOBJVisitor"; }
-
-protected:
-    int ID;
-    sofa::Index vindex;
-    sofa::Index nindex;
-    sofa::Index tindex;
-    int count;
-};
-
-} // namespace simulation
 
 } // namespace sofa
 
-#endif // SOFA_SIMULATION_TREE_EXPORTOBJACTION_H

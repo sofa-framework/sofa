@@ -50,8 +50,7 @@ using sofa::component::container::MechanicalObject ;
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
 using sofa::component::forcefield::ConstantForceField ;
-using sofa::core::ExecParams ;
-
+using sofa::core::execparams::defaultInstance; 
 
 template <typename TDataType, typename TMassType>
 struct TypeTuple
@@ -91,7 +90,7 @@ struct ConstantForceField_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMechanicalObject* mechanicalobject ;
         root->getTreeObject(mechanicalobject) ;
@@ -142,7 +141,7 @@ struct ConstantForceField_test : public Sofa_test<>
                                                                   scene.str().size()) ;
                 ASSERT_NE(root.get(), nullptr) << "Problem to load scene: " << scene.str() ;
                 EXPECT_MSG_EMIT(Error) ;
-                root->init(ExecParams::defaultInstance());
+                root->init(sofa::core::execparams::defaultInstance());
 
                 sofa::core::objectmodel::BaseObject* constantff = root->getObject("myForceField") ;
                 ASSERT_NE( constantff, nullptr) ;
@@ -176,7 +175,7 @@ struct ConstantForceField_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheConstantForceField* forcefield ;
         root->getTreeObject(forcefield) ;
@@ -215,7 +214,7 @@ struct ConstantForceField_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 };
 

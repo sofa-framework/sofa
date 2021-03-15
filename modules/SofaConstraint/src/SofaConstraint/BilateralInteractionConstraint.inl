@@ -29,6 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/core/ConstraintParams.h>
 #include <algorithm> // for std::min
 
 namespace sofa::component::constraintset::bilateralinteractionconstraint

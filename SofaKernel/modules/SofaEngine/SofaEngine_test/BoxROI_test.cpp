@@ -30,6 +30,8 @@ using std::string;
 #include <gtest/gtest.h>
 using ::testing::Types;
 
+using sofa::core::execparams::defaultInstance; 
+
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::core::objectmodel::ComponentState;
@@ -51,7 +53,6 @@ using sofa::simulation::setSimulation;
 using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::New;
-using sofa::core::ExecParams;
 using sofa::component::container::MechanicalObject;
 using sofa::defaulttype::Vec3Types;
 
@@ -133,7 +134,7 @@ struct BoxROITest :  public sofa::helper::testing::BaseTest
                                                           scene.c_str(),
                                                           scene.size());
         EXPECT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
         BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");
         EXPECT_NE(boxroi, nullptr);
@@ -163,7 +164,7 @@ struct BoxROITest :  public sofa::helper::testing::BaseTest
                                                           scene.c_str(),
                                                           scene.size());
         EXPECT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
         TheBoxROI* boxroi = root->getTreeObject<TheBoxROI>();
         EXPECT_NE(boxroi, nullptr);
@@ -186,7 +187,7 @@ struct BoxROITest :  public sofa::helper::testing::BaseTest
                                                           scene.c_str(),
                                                           scene.size());
         EXPECT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
         TheBoxROI* boxroi = root->getTreeObject<TheBoxROI>();
         EXPECT_NE(boxroi, nullptr);
@@ -209,7 +210,7 @@ struct BoxROITest :  public sofa::helper::testing::BaseTest
                                                           scene.c_str(),
                                                           scene.size());
         EXPECT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
         BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");
 
         EXPECT_NE(boxroi, nullptr);

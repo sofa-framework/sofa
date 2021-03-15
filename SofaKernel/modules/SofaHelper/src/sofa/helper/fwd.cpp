@@ -19,47 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION true
-#include <sofa/core/topology/BaseTopologyEngine.h>
-#include <sofa/core/topology/TopologyChange.h>
+#pragma once
 
-#ifdef SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-namespace std
+#include <sofa/helper/fwd.h>
+#include <sofa/helper/AdvancedTimer.h>
+namespace sofa::helper::advancedtimer
 {
-    template class list<const sofa::core::topology::TopologyChange*>;
+void stepBegin(const char* idStr)
+{
+    AdvancedTimer::stepBegin(idStr);
 }
 
-namespace sofa::core::objectmodel
+void stepEnd(const char* idStr)
 {
-template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
-}
-#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-
-
-namespace sofa::core::topology
-{
-
-void TopologyEngine::init()
-{
-    sofa::core::DataEngine::init();
-    this->createEngineName();
+    AdvancedTimer::stepEnd(idStr);
 }
 
-size_t TopologyEngine::getNumberOfTopologicalChanges()
-{
-    return (m_changeList.getValue()).size();
 }
-
-void TopologyEngine::createEngineName()
-{
-    if (m_data_name.empty())
-        setName( m_prefix + "no_name" );
-    else
-        setName( m_prefix + m_data_name );
-
-    return;
-}
-
-
-} // namespace sofa
 

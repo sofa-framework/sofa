@@ -134,7 +134,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
            xprev[i] = x[i] = CPos(i,0,0);
        }
 
-       projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
+       projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
 
        helper::vector<CPos> m_origin;
 
@@ -185,7 +185,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
            vprev[i] = v[i] = CPos(i,0,0);
        }
 
-       projection->projectVelocity(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
+       projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted

@@ -250,7 +250,7 @@ public:
         VecDeriv& df = *m_rotatedDofs->f.beginEdit();
         std::fill(df.begin(),df.end(),Deriv());
 
-        m_assembledK.addMult( df, dx, mparams->kFactor() );
+        m_assembledK.addMult( df, dx, sofa::core::mechanicalparams::kFactor(mparams) );
 
         m_rotatedDofs->f.endEdit();
 

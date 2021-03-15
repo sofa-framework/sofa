@@ -57,7 +57,7 @@ protected:
 GetDownObjectsVisitor::GetDownObjectsVisitor(const sofa::core::objectmodel::ClassInfo& class_info,
                                              DAGNode::GetObjectsCallBack& container,
                                              const sofa::core::objectmodel::TagSet& tags)
-    : Visitor( core::ExecParams::defaultInstance() )
+    : Visitor( core::execparams::defaultInstance() )
     , _class_info(class_info)
     , _container(container)
     , _tags(tags)
@@ -109,7 +109,7 @@ GetUpObjectsVisitor::GetUpObjectsVisitor(DAGNode* searchNode,
                                          const sofa::core::objectmodel::ClassInfo& class_info,
                                          DAGNode::GetObjectsCallBack& container,
                                          const sofa::core::objectmodel::TagSet& tags)
-    : Visitor( core::ExecParams::defaultInstance() )
+    : Visitor( core::execparams::defaultInstance() )
     , _searchNode( searchNode )
     , _class_info(class_info)
     , _container(container)

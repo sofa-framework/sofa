@@ -106,7 +106,7 @@ void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::Mechanica
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const helper::vector<Contact>& cc = contacts.getValue();
 
     df1.resize(dx1.size());

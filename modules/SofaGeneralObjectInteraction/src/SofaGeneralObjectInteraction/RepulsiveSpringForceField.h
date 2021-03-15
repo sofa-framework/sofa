@@ -23,7 +23,6 @@
 #include <SofaGeneralObjectInteraction/config.h>
 
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::interactionforcefield
 {

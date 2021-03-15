@@ -566,7 +566,7 @@ void QSofaListView::RemoveNode()
         else
         {
             node->detachFromGraph();
-            node->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+            node->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
             emit NodeRemoved();
         }
         emit Lock(false);
@@ -853,7 +853,7 @@ void QSofaListView::transformObject ( Node *node, double dx, double dy, double d
 {
     if ( node == nullptr )
         return;
-    TransformationVisitor transform(sofa::core::ExecParams::defaultInstance());
+    TransformationVisitor transform(sofa::core::execparams::defaultInstance());
     transform.setTranslation(dx,dy,dz);
     transform.setRotation(rx,ry,rz);
     transform.setScale(scale,scale,scale);

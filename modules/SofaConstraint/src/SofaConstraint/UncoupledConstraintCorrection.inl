@@ -240,7 +240,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     }
 
     //////////// compliance computation call //////////
-    this->addComplianceInConstraintSpace(sofa::core::ConstraintParams::defaultInstance(), Wmerged);
+    this->addComplianceInConstraintSpace(sofa::core::constraintparams::defaultInstance(), Wmerged);
 
     /////////// BACK TO THE INITIAL CONSTRAINT SET//////////////
 

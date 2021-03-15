@@ -164,6 +164,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
     ${SRC_ROOT}/init.cpp
+    ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/io/BaseFileAccess.cpp
     ${SRC_ROOT}/io/FileAccess.cpp
     ${SRC_ROOT}/io/File.cpp
