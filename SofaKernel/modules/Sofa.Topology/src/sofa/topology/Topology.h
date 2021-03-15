@@ -33,8 +33,3 @@
 #include <sofa/topology/Tetrahedron.h>
 #include <sofa/topology/Pyramid.h>
 #include <sofa/topology/Hexahedron.h>
-
-namespace sofa::topology
-{
-
-}
