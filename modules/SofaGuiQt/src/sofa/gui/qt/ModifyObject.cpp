@@ -511,7 +511,7 @@ void ModifyObject::updateValues()
             {
                 obj->reinit();
             }
-            else if (simulation::Node *n = sofa::simulation::node::getNodeFrom(basenode)) n->reinit(sofa::core::ExecParams::defaultInstance());
+            else if (simulation::Node *n = sofa::simulation::node::getNodeFrom(basenode)) n->reinit(sofa::core::execparams::defaultInstance());
         }
 
     }
