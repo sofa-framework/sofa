@@ -47,7 +47,6 @@ namespace sofa::component::animationloop
 
 using namespace core::behavior;
 using namespace sofa::simulation;
-using helper::system::thread::CTime;
 using sofa::helper::ScopedAdvancedTimer;
 
 FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
@@ -140,14 +139,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         gnode->execute ( act );
     }
 
-    double time = 0.0;
-    double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
-
-    if (displayTime.getValue())
-    {
-        time = (double) CTime::getTime();
-    }
-
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
     dmsg_info() << "updatePos called" ;
@@ -213,24 +204,10 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     }
     dmsg_info() << " SolveVisitor for freeMotion performed" ;
 
-    if (displayTime.getValue())
-    {
-        msg_info() << " >>>>> Begin display FreeMotionAnimationLoop time  " << msgendl
-                   <<" Free Motion " << ((double)CTime::getTime() - time) * timeScale << " ms" ;
-
-        time = (double)CTime::getTime();
-    }
-
     // Collision detection and response creation
     {
         ScopedAdvancedTimer timer("Collision");
         computeCollision(params);
-    }
-
-    if (displayTime.getValue())
-    {
-        msg_info() << " computeCollision " << ((double) CTime::getTime() - time) * timeScale << " ms";
-        time = (double)CTime::getTime();
     }
 
     // Solve constraints
@@ -251,12 +228,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         MultiVecDeriv dx(&vop, constraintSolver->getDx());
         mop.projectResponse(dx);
         mop.propagateDx(dx, true);
-    }
-
-    if ( displayTime.getValue() )
-    {
-        msg_info() << " contactCorrections " << ((double)CTime::getTime() - time) * timeScale << " ms"
-                << "<<<<<< End display FreeMotionAnimationLoop time.";
     }
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(params, dt);

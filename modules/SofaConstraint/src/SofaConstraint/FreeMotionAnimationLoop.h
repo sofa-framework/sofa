@@ -50,7 +50,6 @@ public:
         return obj;
     }
 
-    Data<bool> displayTime;
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
     Data<bool> d_threadSafeVisitor;
 
