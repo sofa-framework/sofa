@@ -23,11 +23,12 @@
 #ifndef SOFA_CORE_VISUAL_VISUALPARAMS_H
 #define SOFA_CORE_VISUAL_VISUALPARAMS_H
 
+#include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/helper/visual/Transformation.h>
 #include <sofa/core/visual/DisplayFlags.h>
-#include <sofa/core/ExecParams.h>
+
 
 namespace sofa::core::visual
 {

@@ -33,7 +33,6 @@
 
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-#include <sofa/core/MechanicalParams.h>
 
 
 namespace sofa::component::interactionforcefield

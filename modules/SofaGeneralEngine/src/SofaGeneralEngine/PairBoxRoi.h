@@ -32,6 +32,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::engine
 {

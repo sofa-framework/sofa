@@ -2,16 +2,45 @@
 #include <sofa/core/config.h>
 #include <iosfwd>
 
+namespace sofa::helper::visual { class DrawTool; }
+
 namespace sofa::core
 {
 class BaseState;
-class ExecParams;
-class ConstraintParams;
 class BaseMapping;
+class BehaviorModel;
 class CollisionModel;
 class CollisionElementIterator;
+
+class ExecParams;
 class ConstraintParams;
-class BehaviorModel;
+namespace constraintparams
+{
+SOFA_CORE_API const ConstraintParams* defaultInstance();
+SOFA_CORE_API ExecParams* castToExecParams(sofa::core::ConstraintParams*);
+SOFA_CORE_API const ExecParams* castToExecParams(const sofa::core::ConstraintParams*);
+}
+
+class ExecParams;
+namespace execparams
+{
+SOFA_CORE_API ExecParams* defaultInstance();
+}
+
+class MechanicalParams;
+namespace mechanicalparams
+{
+SOFA_CORE_API const MechanicalParams* defaultInstance();
+SOFA_CORE_API ExecParams* castToExecParams(sofa::core::MechanicalParams*);
+SOFA_CORE_API const ExecParams* castToExecParams(const sofa::core::MechanicalParams*);
+
+SOFA_CORE_API SReal kFactor(const sofa::core::MechanicalParams*);
+SOFA_CORE_API SReal bFactor(const sofa::core::MechanicalParams*);
+SOFA_CORE_API SReal kFactorIncludingRayleighDamping(const sofa::core::MechanicalParams*, SReal d);
+SOFA_CORE_API SReal mFactorIncludingRayleighDamping(const sofa::core::MechanicalParams*, SReal d);
+SOFA_CORE_API SReal dt(const sofa::core::MechanicalParams*);
+}
+
 }
 
 namespace sofa::core::objectmodel
@@ -68,9 +97,16 @@ SOFA_CORE_API std::istream& operator>> ( std::istream& in, sofa::core::topology:
 SOFA_CORE_API std::istream& operator>> ( std::istream& in, const sofa::core::topology::TopologyChange*& );
 }
 
+
+namespace sofa::component::topology
+{
+class TetrahedronSetTopologyContainer;
+SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
+SOFA_CORE_API std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
+}
+
 namespace sofa::core::visual
 {
-class VisualParams;
 class VisualLoop;
 class VisualModel;
 class VisualManager;
@@ -83,6 +119,22 @@ SOFA_CORE_API std::istream& operator>> ( std::istream& in, FlagTreeItem& root );
 class DisplayFlags;
 SOFA_CORE_API std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags );
 SOFA_CORE_API std::istream& operator>> ( std::istream& in, DisplayFlags& flags );
+
+using sofa::helper::visual::DrawTool;
+
+class VisualParams;
+namespace visualparams
+{
+SOFA_CORE_API VisualParams* defaultInstance();
+
+SOFA_CORE_API ExecParams* castToExecParams(sofa::core::visual::VisualParams*);
+SOFA_CORE_API const ExecParams* castToExecParams(const sofa::core::visual::VisualParams*);
+
+SOFA_CORE_API sofa::core::visual::DrawTool* getDrawTool(VisualParams* params);
+SOFA_CORE_API sofa::core::visual::DisplayFlags& getDisplayFlags(VisualParams* params);
+SOFA_CORE_API sofa::core::visual::DrawTool* getDrawTool(const VisualParams* params);
+SOFA_CORE_API const sofa::core::visual::DisplayFlags& getDisplayFlags(const VisualParams* params);
+}
 }
 
 namespace sofa::core::collision
@@ -97,8 +149,8 @@ namespace sofa::core
 /// CORE::OPAQUE function are a groupe of function that make "opaque" some of the common sofa behaviors.
 ///
 /// Core::Opaque functions are:
-///     - Base* sofa::core::dynamicCastBaseFrom(T*) replace dynamic_cast<Base*>(T*);
-///     - T* sofa::core::dynamicCastBaseTo(Base*) replace dynamic_cast<T*>(Base*);
+///     - Base* sofa::core::castToBase(T*) replace dynamic_cast<Base*>(T*);
+///     - T* sofa::core::castTo(Base*) replace dynamic_cast<T*>(Base*);
 ///     - sofa:core::objectmodel::base::GetClass<T>() replace T::GetClass();
 ///
 /// These functions are called "opaque" as they work with only forward declaration of the involved
@@ -119,11 +171,11 @@ namespace sofa::core
 
 /// Dynamic cast from the type parameter B* into Base*
 template<class Source>
-sofa::core::objectmodel::Base* dynamicCastBaseFrom(Source*b){ return dynamic_cast<sofa::core::objectmodel::Base*>(b);}
+sofa::core::objectmodel::Base* castToBase(Source*b){ return b; }
 
 /// Dynamic cast from Base* into the type parameter Des
 template<class Dest>
-Dest dynamicCastBaseTo(sofa::core::objectmodel::Base* base){ return dynamic_cast<Dest>(base); }
+Dest castTo(sofa::core::objectmodel::Base* base){ return dynamic_cast<Dest>(base); }
 
 namespace objectmodel::base
 {
@@ -139,15 +191,15 @@ const sofa::core::objectmodel::BaseClass* GetClass(){return B::GetClass(); }
 /// Doing:
 ///     SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(MyType)
 /// Will add the following functions:
-///     MyType* dynamiCastBaseTo(sofa::core::objectmodel::Base*)
-///     sofa::core::objectmodel::Base* dynamiCastBaseFrom(MyType*)
+///     MyType* castTo<MyType>(sofa::core::objectmodel::Base*)
+///     sofa::core::objectmodel::Base* castToBase(MyType*)
 ///     BaseClass* sofa::core::objectmodel::base::GetClass()
 ///
 /// Once declare it is mandatory to also define the same functions.
 /// For that you must use SOFA_DEFINE_OPAQUE_FUNCTION_BETWEEN_BASE_AND
 #define SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(TYPENAME) \
-    template<> SOFA_CORE_API TYPENAME* dynamicCastBaseTo(sofa::core::objectmodel::Base* base); \
-    SOFA_CORE_API sofa::core::objectmodel::Base* dynamicCastBaseFrom(TYPENAME* b); \
+    template<> SOFA_CORE_API TYPENAME* castTo(sofa::core::objectmodel::Base* base); \
+    SOFA_CORE_API sofa::core::objectmodel::Base* castToBase(TYPENAME* b); \
     namespace objectmodel::base { template<> SOFA_CORE_API const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>(); }
 
 /// Define the opaque function signature for a type that in-herit from Base.
@@ -162,12 +214,12 @@ const sofa::core::objectmodel::BaseClass* GetClass(){return B::GetClass(); }
 ///
 #define SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(TYPENAME) \
     template<> \
-    TYPENAME* dynamicCastBaseTo(sofa::core::objectmodel::Base* base) \
-    { return dynamic_cast<TYPENAME*>(base); } \
-    sofa::core::objectmodel::Base* dynamicCastBaseFrom(TYPENAME* b) \
-    { return dynamic_cast<sofa::core::objectmodel::Base*>(b); } \
+    TYPENAME* castTo(sofa::core::objectmodel::Base* base) \
+{ return dynamic_cast<TYPENAME*>(base); } \
+    sofa::core::objectmodel::Base* castToBase(TYPENAME* b) \
+{ return b; } \
     namespace objectmodel::base { template<> const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>() \
-    { return TYPENAME::GetClass(); } }
+{ return TYPENAME::GetClass(); } }
 
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::BaseState);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::BaseMapping);

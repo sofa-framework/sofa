@@ -25,7 +25,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <string>
-#include <sofa/core/ExecParams.h>
+
 
 namespace sofa
 {
