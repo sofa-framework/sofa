@@ -140,11 +140,12 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-    if (!SOFA_NO_UPDATE_BBOX)
+#if SOFA_NO_UPDATE_BBOX == 0
     {
         sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
         gnode->execute< UpdateBoundingBoxVisitor >(params);
     }
+#endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
