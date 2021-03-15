@@ -48,10 +48,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/Sofa.Testing/Sofa.Testing/compat>")
 source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
-# own include dir, the macro does not handle "independent" package for SofaFramework-style include 
-# i.e NOT the name of package first (sofa/testing is wanted, instead of Sofa.Testing/)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}>")
-
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}
