@@ -1,11 +1,12 @@
 #include <sofa/simulation/InitTasks.h>
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/ExecParams.h>
-#include <sofa/core/ConstraintParams.h>
+
+
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa
 {
@@ -24,13 +25,13 @@ namespace sofa
         Task::MemoryAlloc InitPerThreadDataTask::run()
         {
             
-            core::ExecParams::defaultInstance();
+            core::execparams::defaultInstance();
             
-            core::ConstraintParams::defaultInstance();
+            core::constraintparams::defaultInstance();
             
-            core::MechanicalParams::defaultInstance();
+            core::mechanicalparams::defaultInstance();
             
-            core::visual::VisualParams::defaultInstance();
+            core::visual::visualparams::defaultInstance();
             
             {
                 // to solve IdFactory<Base>::getID() problem in AdvancedTimer functions

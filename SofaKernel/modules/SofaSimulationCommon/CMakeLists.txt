@@ -9,6 +9,7 @@ set(HEADER_FILES
     ${SOFASIMULATIONCOMMON_SRC}/config.h.in
     ${SOFASIMULATIONCOMMON_SRC}/common.h
     ${SOFASIMULATIONCOMMON_SRC}/init.h
+    ${SOFASIMULATIONCOMMON_SRC}/initSofaSimulationCommon.h
     ${SOFASIMULATIONCOMMON_SRC}/FindByTypeVisitor.h
     ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderPHP.h
     ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderXML.h
@@ -30,6 +31,7 @@ set(SOURCE_FILES
     ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderXML.cpp
     ${SOFASIMULATIONCOMMON_SRC}/TransformationVisitor.cpp
     ${SOFASIMULATIONCOMMON_SRC}/init.cpp
+    ${SOFASIMULATIONCOMMON_SRC}/initSofaSimulationCommon.cpp
     ${SOFASIMULATIONCOMMON_SRC}/xml/AttributeElement.cpp
     ${SOFASIMULATIONCOMMON_SRC}/xml/BaseElement.cpp
     ${SOFASIMULATIONCOMMON_SRC}/xml/BaseMultiMappingElement.cpp
@@ -54,8 +56,8 @@ sofa_create_package_with_targets(
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-# cmake_dependent_option(SOFASIMULATIONCOMMON_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-# if(SOFASIMULATIONCOMMON_BUILD_TESTS)
-#     enable_testing()
-#     add_subdirectory(${PROJECT_NAME}_test)
-# endif()
+cmake_dependent_option(SOFASIMULATIONCOMMON_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFASIMULATIONCOMMON_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(${PROJECT_NAME}_test)
+endif()

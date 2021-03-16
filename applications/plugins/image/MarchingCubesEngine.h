@@ -33,7 +33,6 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/Texture.h>
 
 namespace sofa
 {

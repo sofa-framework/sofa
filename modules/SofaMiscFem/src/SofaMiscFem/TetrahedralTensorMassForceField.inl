@@ -433,7 +433,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
     int nbEdges=m_topology->getNbEdges();

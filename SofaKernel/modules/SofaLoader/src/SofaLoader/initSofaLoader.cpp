@@ -28,6 +28,15 @@ using sofa::core::ObjectFactory;
 namespace sofa::component
 {
 
+void initSofaLoader()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
 extern "C" {
     SOFA_SOFALOADER_API void initExternalModule();
     SOFA_SOFALOADER_API const char* getModuleName();
@@ -39,11 +48,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    initSofaLoader();
 }
 
 const char* getModuleName()

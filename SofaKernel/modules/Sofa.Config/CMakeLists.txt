@@ -56,7 +56,7 @@ endif()
 
 # Options
 option(SOFA_DETECTIONOUTPUT_FREEMOTION "Compile Sofa with the DETECTIONOUTPUT_FREEMOTION macro defined." OFF)
-option(SOFA_NO_OPENGL "Compile Sofa with no OpenGL support. (This will define the SOFA_NO_OPENGL macro.)" OFF)
+option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
 option(SOFA_NO_UPDATE_BBOX "Compile Sofa with the SOFA_NO_UPDATE_BBOX macro defined." OFF)
 option(SOFA_DUMP_VISITOR_INFO "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macro defined." OFF)
 if(MSVC)
@@ -102,7 +102,6 @@ set(SOFACONFIG_BUILD_OPTIONS_SRC
     ${SOFACONFIGSRC_ROOT}/config/sharedlibrary_defines.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_deprecated_components.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_dump_visitor.h.in
-    ${SOFACONFIGSRC_ROOT}/config/build_option_opengl.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_threading.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_bbox.h.in
 )

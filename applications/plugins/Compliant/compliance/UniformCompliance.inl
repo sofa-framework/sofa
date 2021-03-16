@@ -170,7 +170,7 @@ void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, Data
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kfactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
 
     if( kfactor )
     {
@@ -179,7 +179,7 @@ void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mpara
 
     if( damping.getValue() > 0 )
     {
-        Real bfactor = (Real)mparams->bFactor();
+        Real bfactor = (Real)sofa::core::mechanicalparams::bFactor(mparams);
         matB.addMult( df, dx, bfactor );
     }
 }

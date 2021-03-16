@@ -76,7 +76,7 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 
 void FreeMotionAnimationLoop::init()
 {
-    simulation::common::VectorOperations vop(core::ExecParams::defaultInstance(), getContext());
+    simulation::common::VectorOperations vop(core::execparams::defaultInstance(), getContext());
     MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
     MultiVecDeriv df(&vop, core::VecDerivId::dforce()); df.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 

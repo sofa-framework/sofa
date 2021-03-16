@@ -22,7 +22,11 @@
 #ifndef SOFA_COMPONENT_MAPPING_BaseDeformationImpl_INL
 #define SOFA_COMPONENT_MAPPING_BaseDeformationImpl_INL
 
-#include <sofa/helper/system/gl.h>
+#include <Flexible/config.h>
+
+#if FLEXIBLE_HAVE_SOFA_GL
+#include <sofa/gl/gl.h>
+#endif // FLEXIBLE_HAVE_SOFA_GL
 
 // NB: These implementations have been factored from BaseDeformationMapping.inl and BaseDeformationMultiMapping.inl
 // so that LinearMapping.h and LinearMultiMapping.h can be included together.
@@ -41,7 +45,7 @@ namespace mapping
 template<Size matdim,typename Real>
 void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype::Vec<3,Real> &p, const float& scale)
 {
-#ifndef SOFA_NO_OPENGL
+#if FLEXIBLE_HAVE_SOFA_GL
     glPushMatrix();
 
     GLdouble transformMatrix[16];
