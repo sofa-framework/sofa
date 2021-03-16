@@ -16,7 +16,7 @@ namespace sofa
         // the TaskScheduler::_schedulers must be initialized before any call to TaskScheduler::registerScheduler
         std::map<std::string, std::function<TaskScheduler*()> > TaskScheduler::_schedulers;
         std::string TaskScheduler::_currentSchedulerName;
-        TaskScheduler* TaskScheduler::_currentScheduler = nullptr;
+        std::shared_ptr<TaskScheduler> TaskScheduler::_currentScheduler = nullptr;
         
         // register default task scheduler
         const bool DefaultTaskScheduler::isRegistered = TaskScheduler::registerScheduler(DefaultTaskScheduler::name(), &DefaultTaskScheduler::create);
@@ -27,7 +27,7 @@ namespace sofa
             // is already the current scheduler
             std::string nameStr(name);
             if (!nameStr.empty() && _currentSchedulerName == name)
-                return _currentScheduler;
+                return _currentScheduler.get();
             
             auto iter = _schedulers.find(name);
             if (iter == _schedulers.end())
@@ -40,17 +40,17 @@ namespace sofa
             
             if (_currentScheduler != nullptr)
             {
-                delete _currentScheduler;
+                _currentScheduler.reset();
             }
             
             TaskSchedulerCreatorFunction& creatorFunc = iter->second;
-            _currentScheduler = creatorFunc();
+            _currentScheduler = std::shared_ptr<TaskScheduler>(creatorFunc());
             
             _currentSchedulerName = iter->first;
             
             Task::setAllocator(_currentScheduler->getTaskAllocator());
             
-            return _currentScheduler;
+            return _currentScheduler.get();
         }
         
         
@@ -68,13 +68,12 @@ namespace sofa
                 _currentScheduler->init();
             }
             
-            return _currentScheduler;
+            return _currentScheduler.get();
         }
         
         
         TaskScheduler::~TaskScheduler()
         {
-            
         }
 
 	} // namespace simulation
