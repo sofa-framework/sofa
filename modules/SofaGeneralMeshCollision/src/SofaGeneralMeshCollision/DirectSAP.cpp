@@ -26,7 +26,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.h>
-#include <queue>
+#include <unordered_map>
 
 
 namespace sofa::component::collision
