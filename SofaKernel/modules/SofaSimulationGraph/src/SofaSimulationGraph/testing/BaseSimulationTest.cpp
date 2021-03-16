@@ -106,7 +106,6 @@ BaseSimulationTest::SceneInstance::~SceneInstance()
 void BaseSimulationTest::SceneInstance::initScene()
 {
     simulation->init(root.get());
-    root->init(sofa::core::execparams::defaultInstance()) ;
 }
 
 void BaseSimulationTest::SceneInstance::simulate(const double timestep)

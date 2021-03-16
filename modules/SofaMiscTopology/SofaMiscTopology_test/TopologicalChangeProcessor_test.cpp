@@ -114,14 +114,14 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
         EXPECT_EQ(topoCon->getNbPoints(), 774);
 
         // to test incise animates the scene at least 1.2s
-        for (int i = 0; i < 400; i++)
+        for (int i = 0; i < 50; i++)
         {
-            m_instance.simulate(0.01);
+            m_instance.simulate(0.05);
         }
 
-        EXPECT_EQ(topoCon->getNbTriangles(), 1450);
-        EXPECT_EQ(topoCon->getNbEdges(), 2223);
-        EXPECT_EQ(topoCon->getNbPoints(), 774);
+        EXPECT_EQ(topoCon->getNbTriangles(), 1677);
+        EXPECT_EQ(topoCon->getNbEdges(), 2704);
+        EXPECT_EQ(topoCon->getNbPoints(), 1026);
 
         return true;
     }
@@ -187,9 +187,9 @@ struct RemoveTriangleProcessor_test : TopologicalChangeProcessor_test
         }
         
 
-        EXPECT_EQ(topoCon->getNbTriangles(), 1451);
-        EXPECT_EQ(topoCon->getNbEdges(), 2223);
-        EXPECT_EQ(topoCon->getNbPoints(), 774);
+        EXPECT_EQ(topoCon->getNbTriangles(), 145);
+        EXPECT_EQ(topoCon->getNbEdges(), 384);
+        EXPECT_EQ(topoCon->getNbPoints(), 261);
 
         return true;
     }
