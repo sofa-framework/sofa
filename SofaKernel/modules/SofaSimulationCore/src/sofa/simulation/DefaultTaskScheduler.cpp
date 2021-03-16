@@ -112,7 +112,7 @@ namespace sofa
             m_workerThreadsIdle = true;
             m_mainTaskStatus	= nullptr;          
             
-            // default number of thread: only physicsal cores. no advantage from hyperthreading.
+            // default number of thread: only physical cores. no advantage from hyperthreading.
             m_threadCount = GetHardwareThreadsCount();
             
             if ( NbThread > 0 )//&& NbThread <= MAX_THREADS  )
@@ -131,7 +131,6 @@ namespace sofa
             
             m_workerThreadCount = m_threadCount;
             m_isInitialized = true;
-            return;
         }
         
         
@@ -140,7 +139,7 @@ namespace sofa
         {
             m_isClosing = true;
             
-            if ( m_isInitialized ) 
+            if ( m_isInitialized )
             {
                 // wait for all
                 WaitForWorkersToBeReady();
@@ -307,7 +306,7 @@ namespace sofa
             return;
         }
         
-        const std::thread::id WorkerThread::getId()
+        const std::thread::id WorkerThread::getId() const
         {
             return m_stdThread.get_id();
         }
