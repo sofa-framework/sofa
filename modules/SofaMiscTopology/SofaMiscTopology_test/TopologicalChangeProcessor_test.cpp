@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 using sofa::helper::testing::BaseSimulationTest;
@@ -46,7 +47,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
         sofa::simpleapi::importPlugin("SofaComponentAll");
         // Load the scene from the xml file
         std::string filePath = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + m_fileName;
-
+        std::cout << "filePath: " << filePath << std::endl;
         m_instance = BaseSimulationTest::SceneInstance();
         // Load scene
         m_instance.loadSceneFile(filePath);
@@ -56,7 +57,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
         // Test if root is not null
         if(!m_instance.root)
         {
-            ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
             return;
         }
     }
@@ -87,7 +88,7 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
 
         if (!root)
         {
-            ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
             return false;
         }
 
@@ -95,14 +96,14 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
         Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
         if (!nodeTopo)
         {
-            ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+            ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
             return false;
         }
 
         TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(nodeTopo->getMeshTopology());
         if (topoCon == nullptr)
         {
-            ADD_FAILURE() << "Error: TriangleSetTopologyContainer not found in 'SquareGravity' Node, in scene: " << "IncisionTrianglesProcess.scn" << std::endl;
+            ADD_FAILURE() << "Error: TriangleSetTopologyContainer not found in 'SquareGravity' Node, in scene: " << m_fileName << std::endl;
             return false;
         }
 
@@ -127,9 +128,266 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
 };
 
 
-TEST_F(InciseProcessor_test, Incise)
+struct RemoveTriangleProcessor_test : TopologicalChangeProcessor_test
+{
+    RemoveTriangleProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "RemovingTrianglesProcess.scn";
+    }
+
+    bool testTopologyChanges() override
+    {
+        Node::SPtr root = m_instance.root;
+
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TriangleSetTopologyContainer not found in 'SquareGravity' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTriangles(), 1450);
+        EXPECT_EQ(topoCon->getNbEdges(), 2223);
+        EXPECT_EQ(topoCon->getNbPoints(), 774);
+
+        //// to test incise animates the scene at least 1.2s
+        try {
+            for (int i = 0; i < 20; i++)
+            {
+                m_instance.simulate(0.01);
+            }
+}
+        catch (const std::exception& e) {
+            return false;
+        }
+        catch (const std::overflow_error& e) {
+            return false;
+        }
+        catch (const std::runtime_error& e) {
+            return false;
+        }
+        catch (...) {
+            return false;
+        }
+        
+
+        EXPECT_EQ(topoCon->getNbTriangles(), 1451);
+        EXPECT_EQ(topoCon->getNbEdges(), 2223);
+        EXPECT_EQ(topoCon->getNbPoints(), 774);
+
+        return true;
+    }
+};
+
+
+struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
+{
+    AddTriangleProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "AddingTrianglesProcess.scn";
+    }
+
+    bool testTopologyChanges() override
+    {
+        Node::SPtr root = m_instance.root;
+
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TriangleSetTopologyContainer not found in 'SquareGravity' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTriangles(), 0);
+        EXPECT_EQ(topoCon->getNbEdges(), 0);
+        EXPECT_EQ(topoCon->getNbPoints(), 0);
+
+        // to test incise animates the scene at least 1.2s
+        for (int i = 0; i < 100; i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+        EXPECT_EQ(topoCon->getNbTriangles(), 24);
+        EXPECT_EQ(topoCon->getNbEdges(), 42);
+        EXPECT_EQ(topoCon->getNbPoints(), 18);
+
+        return true;
+    }
+};
+
+
+
+struct RemoveTetrahedronProcessor_test : TopologicalChangeProcessor_test
+{
+    RemoveTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "RemovingTetraProcess.scn";
+    }
+
+    bool testTopologyChanges() override
+    {
+        Node::SPtr root = m_instance.root;
+
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        Node::SPtr nodeTopo = root.get()->getChild("TT");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'TT' Node not found in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TetrahedronSetTopologyContainer not found in 'TT' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTetrahedra(), 44);
+        EXPECT_EQ(topoCon->getNbTriangles(), 112);
+        EXPECT_EQ(topoCon->getNbEdges(), 93);
+        EXPECT_EQ(topoCon->getNbPoints(), 26);
+
+
+        for (int i = 0; i < 20; i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+
+        EXPECT_EQ(topoCon->getNbTetrahedra(), 34);
+        EXPECT_EQ(topoCon->getNbTriangles(), 97);
+        EXPECT_EQ(topoCon->getNbEdges(), 86);
+        EXPECT_EQ(topoCon->getNbPoints(), 25);
+
+        return true;
+    }
+};
+
+
+struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
+{
+    AddTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "AddingTetraProcess.scn";
+    }
+
+    bool testTopologyChanges() override
+    {
+        Node::SPtr root = m_instance.root;
+
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        Node::SPtr nodeTopo = root.get()->getChild("TT");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'TT' Node not found in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TetrahedronSetTopologyContainer not found in 'TT' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTetrahedra(), 0);
+        EXPECT_EQ(topoCon->getNbTriangles(), 0);
+        EXPECT_EQ(topoCon->getNbEdges(), 0);
+        EXPECT_EQ(topoCon->getNbPoints(), 0);
+
+        for (int i = 0; i < 41; i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+        EXPECT_EQ(topoCon->getNbTetrahedra(), 8);
+        EXPECT_EQ(topoCon->getNbTriangles(), 24);
+        EXPECT_EQ(topoCon->getNbEdges(), 25);
+        EXPECT_EQ(topoCon->getNbPoints(), 14);
+
+        return true;
+    }
+};
+
+
+TEST_F(RemoveTetrahedronProcessor_test, RemoveTretrahedra)
 {
     ASSERT_TRUE(this->testTopologyChanges());
 }
+
+TEST_F(AddTetrahedronProcessor_test, AddTretrahedra)
+{
+    ASSERT_TRUE(this->testTopologyChanges());
+}
+
+
+
+TEST_F(InciseProcessor_test, InciseTriangles)
+{
+    ASSERT_TRUE(this->testTopologyChanges());
+}
+
+TEST_F(AddTriangleProcessor_test, AddTriangles)
+{
+    ASSERT_TRUE(this->testTopologyChanges());
+}
+
+TEST_F(RemoveTriangleProcessor_test, RemoveTriangles)
+{
+    ASSERT_TRUE(this->testTopologyChanges());
+}
+
+
+
 
 }// namespace sofa::helper::testing
