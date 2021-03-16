@@ -444,7 +444,7 @@ void FastTriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalPa
     const VecDeriv& dx = d_dx.getValue();
     typename MechanicalState::WriteVecDeriv df(d_df);
     const helper::vector<EdgeSpring>& edgeInf = d_edgeSprings.getValue();
-    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     df.resize(dx.size());
     for(unsigned i=0; i<edgeInf.size(); i++ )
     {

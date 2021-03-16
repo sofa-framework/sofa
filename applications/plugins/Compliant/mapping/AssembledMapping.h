@@ -2,6 +2,7 @@
 #ifndef COMPLIANT_ASSEMBLEDMAPPING_H
 #define COMPLIANT_ASSEMBLEDMAPPING_H
 
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <Compliant/config.h>
@@ -41,10 +42,10 @@ namespace sofa {
                 void update()
                 {
                     this->reinit();
-                    base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-                    base::applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+                    base::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+                    base::applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
                     if (this->f_applyRestPosition.getValue())
-                        base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+                        base::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
                 }
 	
                 const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override {
@@ -122,7 +123,7 @@ namespace sofa {
                         // TODO does this even make sense ?
                         geometric.addMult(*inForce[from_write].write(),
                                           inDx,
-                                          mparams->kFactor());
+                                          sofa::core::mechanicalparams::kFactor(mparams));
                     }
 
                     

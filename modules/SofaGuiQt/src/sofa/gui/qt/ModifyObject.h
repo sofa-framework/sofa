@@ -162,7 +162,7 @@ protected:
     QString parseDataModified();
     void* Id_;
     QTreeWidgetItem* item_;
-    core::objectmodel::Base* node;
+    core::objectmodel::Base* basenode;
     core::objectmodel::BaseData* data_;
     const ModifyObjectFlags dialogFlags_;
 

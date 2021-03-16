@@ -258,11 +258,11 @@ void ReadState::processReadState()
 
     if (updated)
     {
-        sofa::simulation::MechanicalProjectPositionAndVelocityVisitor action0(core::MechanicalParams::defaultInstance());
+        sofa::simulation::MechanicalProjectPositionAndVelocityVisitor action0(core::mechanicalparams::defaultInstance());
         this->getContext()->executeVisitor(&action0);
-        sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor action1(core::MechanicalParams::defaultInstance());
+        sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor action1(core::mechanicalparams::defaultInstance());
         this->getContext()->executeVisitor(&action1);
-        sofa::simulation::UpdateMappingVisitor action2(core::MechanicalParams::defaultInstance());
+        sofa::simulation::UpdateMappingVisitor action2(core::mechanicalparams::defaultInstance());
         this->getContext()->executeVisitor(&action2);
     }
 }

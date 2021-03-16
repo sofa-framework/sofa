@@ -68,7 +68,7 @@ Vector getVector( core::ConstVecId id, bool indep )
     else
         size = getSizeVisitor.velocitySize();
     FullVector v(size);
-    GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), &v, id);
+    GetVectorVisitor getVec( sofa::core::mechanicalparams::castToExecParams(core::mechanicalparams::defaultInstance()), &v, id);
     getVec.setIndependentOnly(indep);
     sofa::modeling::getRoot()->execute(getVec);
 

@@ -425,7 +425,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     dmsg_info() << "[" << this->getName() << "]: calling addDForce " ;
     VecDeriv& df       = *(datadF.beginEdit());
     const VecCoord& dx =   datadX.getValue()  ;
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int j;
     int i;
@@ -498,7 +498,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(const core::
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
-        addKToMatrix(r.matrix, mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()), r.offset);
+        addKToMatrix(r.matrix, sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()), r.offset);
     else
         msg_error() << "addKToMatrix found no valid matrix accessor.";
 }

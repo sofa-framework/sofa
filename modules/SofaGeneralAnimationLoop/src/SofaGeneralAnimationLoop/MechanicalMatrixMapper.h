@@ -27,14 +27,13 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
-#include <sofa/core/MechanicalParams.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/core/ConstraintParams.h>
+
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/defaulttype/BaseMatrix.h>

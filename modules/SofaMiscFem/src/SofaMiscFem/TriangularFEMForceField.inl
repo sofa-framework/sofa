@@ -1356,7 +1356,7 @@ void TriangularFEMForceField<DataTypes>::addDForce(const core::MechanicalParams*
 {
     VecDeriv& df1 = *df.beginEdit();
     const VecDeriv& dx1 = dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     Real h=1;
     df1.resize(dx1.size());

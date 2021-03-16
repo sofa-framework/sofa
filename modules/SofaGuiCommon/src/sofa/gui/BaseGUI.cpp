@@ -33,7 +33,7 @@
 #include <algorithm>
 #include <cstring>
 
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
 using namespace sofa::simulation;
@@ -118,7 +118,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 
 void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_directory*/ )
 {
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );
 }

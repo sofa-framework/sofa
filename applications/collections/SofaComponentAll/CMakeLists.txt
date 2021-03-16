@@ -70,10 +70,19 @@ set(SOFACOMPONENTALL_MODULES
 
 set(SOFACOMPONENTALL_MODULES_INCLUDES "")
 set(SOFACOMPONENTALL_MODULES_INITS "")
+set(SOFACOMPONENTALL_MODULES_HAVES "")
 foreach(module ${SOFACOMPONENTALL_MODULES})
-    sofa_find_package(${module} REQUIRED)
-    set(SOFACOMPONENTALL_MODULES_INCLUDES "${SOFACOMPONENTALL_MODULES_INCLUDES}\n#include <${module}/init${module}.h>")
-    set(SOFACOMPONENTALL_MODULES_INITS "${SOFACOMPONENTALL_MODULES_INITS} \\\n    init${module}();")
+    string(TOUPPER "${module}" module_upper)
+
+    sofa_find_package(${module} QUIET)
+
+    if(${module}_FOUND)
+        set(SOFACOMPONENTALL_MODULES_INCLUDES "${SOFACOMPONENTALL_MODULES_INCLUDES}\n#include <${module}/init${module}.h>")
+        set(SOFACOMPONENTALL_MODULES_INITS "${SOFACOMPONENTALL_MODULES_INITS} \\\n    init${module}();")
+    else()
+        message("${PROJECT_NAME}: ${module} will not be in the collection.")
+    endif()
+    set(SOFACOMPONENTALL_MODULES_HAVES "${SOFACOMPONENTALL_MODULES_HAVES}\nset(SOFACOMPONENTALL_HAVE_${module_upper} ${SOFACOMPONENTALL_HAVE_${module_upper}})")
 endforeach()
 
 set(HEADER_FILES

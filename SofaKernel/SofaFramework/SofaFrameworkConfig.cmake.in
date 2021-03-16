@@ -37,7 +37,7 @@ endif()
 
 # This need to be AFTER the inclusion of SofaFrameworkTargets.cmake since Sofa.GL is dependant on SofaHelper and
 # SofaDefaultType targets, which are defined there.
-if(NOT SOFA_NO_OPENGL)
+if(SOFA_WITH_OPENGL)
     find_package(Sofa.GL CONFIG QUIET REQUIRED)
 endif()
 

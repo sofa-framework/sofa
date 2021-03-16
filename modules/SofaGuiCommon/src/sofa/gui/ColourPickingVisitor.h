@@ -64,7 +64,7 @@ public:
     /// the TriangleElement with the given index
 
     ColourPickingVisitor(const core::visual::VisualParams* params, ColourCode Method)
-        :simulation::Visitor(params),vparams(params),method(Method)
+        :simulation::Visitor(sofa::core::visual::visualparams::castToExecParams(params)),vparams(params),method(Method)
     {}
 
     void processCollisionModel(simulation::Node* node, core::CollisionModel* /*o*/);

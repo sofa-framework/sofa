@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_SIMULATION_MECHANICALVISITOR_CPP
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/LocalStorage.h>
 #include <sofa/core/behavior/BaseMass.h>
@@ -1609,6 +1610,11 @@ std::string MechanicalVNormVisitor::getInfos() const
    std::string name("v= norm(a) with a[");
    name += a.getName() + "]";
    return name;
+}
+
+std::string MechanicalAccFromFVisitor::getInfos() const
+{
+    std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name;
 }
 
 

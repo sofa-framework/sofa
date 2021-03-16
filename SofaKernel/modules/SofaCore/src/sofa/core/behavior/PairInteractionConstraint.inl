@@ -23,7 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_INL
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
-
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa
 {

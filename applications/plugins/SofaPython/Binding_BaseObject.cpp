@@ -269,7 +269,7 @@ static PyObject * BaseObject_getTarget(PyObject *self, PyObject * args)
 static PyObject * BaseObject_computeBBox(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj = get_baseobject( self );
-    obj->computeBBox(sofa::core::ExecParams::defaultInstance(), false);
+    obj->computeBBox(sofa::core::execparams::defaultInstance(), false);
     Py_RETURN_NONE;
 }
 

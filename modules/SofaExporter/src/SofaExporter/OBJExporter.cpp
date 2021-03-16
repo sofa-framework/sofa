@@ -93,7 +93,7 @@ bool OBJExporter::writeOBJ()
         return false ;
     }
 
-    ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),&outfile, &mtlfile);
+    ExportOBJVisitor exportOBJ(core::execparams::defaultInstance(),&outfile, &mtlfile);
     getContext()->executeVisitor(&exportOBJ);
 
     outfile.close();
