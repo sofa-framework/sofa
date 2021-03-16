@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+
 #include <SofaUserInteraction/AddFramePerformer.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
