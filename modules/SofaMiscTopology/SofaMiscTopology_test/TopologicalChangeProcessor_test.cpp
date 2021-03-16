@@ -34,35 +34,54 @@ namespace sofa::helper::testing
 
 struct TopologicalChangeProcessor_test: public BaseSimulationTest
 {
-    /// root
-    Node::SPtr root;
-
     /// Store SceneInstance 
     BaseSimulationTest::SceneInstance m_instance;
+
+    /// Name of the file to load
+    std::string m_fileName = "";
+
+    /// Method use at start to load the scene file    
     void SetUp()
     {
         sofa::simpleapi::importPlugin("SofaComponentAll");
         // Load the scene from the xml file
-        std::string fileName = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + "IncisionTrianglesProcess.scn";
+        std::string filePath = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + m_fileName;
 
         m_instance = BaseSimulationTest::SceneInstance();
         // Load scene
-        m_instance.loadSceneFile(fileName);
+        m_instance.loadSceneFile(filePath);
         // Init scene
         m_instance.initScene();
-       
-        root = m_instance.root;
 
         // Test if root is not null
-        if(!root)
+        if(!m_instance.root)
         {
             ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
             return;
         }
-     
     }
 
-    bool TestInciseProcess()
+    /// Method to really do the test per type of topology change, to be implemented by child classes
+    virtual bool testTopologyChanges() = 0;
+
+    /// Unload the scene
+    void TearDown()
+    {
+        if (m_instance.root !=nullptr)
+            sofa::simulation::getSimulation()->unload(m_instance.root);
+    }
+
+};
+
+
+struct InciseProcessor_test : TopologicalChangeProcessor_test
+{
+    InciseProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "IncisionTrianglesProcess.scn";
+    }
+
+    bool testTopologyChanges() override
     {
         Node::SPtr root = m_instance.root;
 
@@ -94,7 +113,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
         EXPECT_EQ(topoCon->getNbPoints(), 774);
 
         // to test incise animates the scene at least 1.2s
-        for(int i=0;i<400;i++)
+        for (int i = 0; i < 400; i++)
         {
             m_instance.simulate(0.01);
         }
@@ -105,19 +124,12 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
 
         return true;
     }
-
-   /// Unload the scene
-   void TearDown()
-   {
-       if (m_instance.root !=nullptr)
-           sofa::simulation::getSimulation()->unload(m_instance.root);
-   }
-
 };
 
-TEST_F( TopologicalChangeProcessor_test,Incise)
+
+TEST_F(InciseProcessor_test, Incise)
 {
-    ASSERT_TRUE(this->TestInciseProcess());
+    ASSERT_TRUE(this->testTopologyChanges());
 }
 
 }// namespace sofa::helper::testing
