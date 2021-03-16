@@ -11,7 +11,3 @@ sofa_add_module(SofaEngine SofaEngine ON)
 sofa_add_module(SofaExplicitOdeSolver SofaExplicitOdeSolver ON)
 sofa_add_module(SofaImplicitOdeSolver SofaImplicitOdeSolver ON)
 sofa_add_module(SofaLoader SofaLoader ON)
-
-sofa_add_module(Sofa.GL Sofa.GL ON
-    WHEN_TO_SHOW "SOFA_WITH_OPENGL"
-    VALUE_IF_HIDDEN OFF)

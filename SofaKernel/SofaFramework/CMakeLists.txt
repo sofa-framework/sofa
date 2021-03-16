@@ -14,6 +14,11 @@ foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
     endif()
 endforeach()
 
+if(SOFA_WITH_OPENGL)
+    add_subdirectory(../modules/Sofa.GL ${CMAKE_CURRENT_BINARY_DIR}/Sofa.GL)
+    list(APPEND SOFAFRAMEWORK_TARGETS Sofa.GL)
+endif()
+
 set(SOFAFRAMEWORK_SRC src/SofaFramework)
 set(HEADER_FILES
     ${SOFAFRAMEWORK_SRC}/config.h.in
