@@ -28,6 +28,8 @@ namespace sofa::component::topology
 {
 class TriangleSetTopologyContainer;
 
+template <class DataTypes>
+class TriangleSetGeometryAlgorithms;
 
 /**
  * A class that modifies the topology by adding and removing triangles
@@ -36,6 +38,9 @@ class SOFA_SOFABASETOPOLOGY_API TriangleSetTopologyModifier : public EdgeSetTopo
 {
 public:
     SOFA_CLASS(TriangleSetTopologyModifier,EdgeSetTopologyModifier);
+
+    template <class DataTypes>
+    friend class TriangleSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::TriangleID TriangleID;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
@@ -101,12 +106,6 @@ public:
     /** \brief Effectively Add some triangles. Test precondition and apply:
     */
     virtual void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles);
-
-    /** \brief Add some points to this topology.
-     *
-     * \sa addPointsWarning
-     */
-    void addPointsProcess(const sofa::Size nPoints) override;
 
     /** \brief Sends a message to warn that some edges were added in this topology.
      *
@@ -213,6 +212,18 @@ public:
             const bool removeIsolatedItems=false) override;
 
 
+    /** \brief Duplicates the given edge. Only works if at least one of its points is adjacent to a border.
+     * @returns the number of newly created points, or -1 if the incision failed.
+     */
+    virtual int InciseAlongEdge(EdgeID edge, int* createdPoints = nullptr);
+
+protected:
+    /** \brief Add some points to this topology.
+     *
+     * \sa addPointsWarning
+     */
+    void addPointsProcess(const sofa::Size nPoints) override;
+
     /** \brief Remove a subset of points
      *
      * Elements corresponding to these points are removed from the mechanical object's state vectors.
@@ -221,9 +232,8 @@ public:
      * \sa removePointsWarning
      * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
      */
-    void removePointsProcess(const sofa::helper::vector<PointID> &indices,
-            const bool removeDOF = true) override;
-
+    void removePointsProcess(const sofa::helper::vector<PointID>& indices,
+        const bool removeDOF = true) override;
 
     /** \brief Move input points indices to input new coords.
      * Also propagate event and update edgesAroundVertex and trianglesAroundVertex for data handling.
@@ -233,18 +243,11 @@ public:
      * @param coefs : barycoef to locate new coord relatively to ancestors.
      * @moveDOF bool allowing the move (default true)
      */
-    void movePointsProcess (const sofa::helper::vector < PointID >& id,
-            const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
-            const bool moveDOF = true) override;
+    void movePointsProcess(const sofa::helper::vector < PointID >& id,
+        const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
+        const bool moveDOF = true) override;
 
-
-    /** \brief Duplicates the given edge. Only works if at least one of its points is adjacent to a border.
-     * @returns the number of newly created points, or -1 if the incision failed.
-     */
-    virtual int InciseAlongEdge(EdgeID edge, int* createdPoints = nullptr);
-
-protected:
     /** \brief Reorder this topology.
     *
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
@@ -253,6 +256,7 @@ protected:
     void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
         const sofa::helper::vector<PointID>& inv_index,
         const bool renumberDOF = true) override;
+
 
     /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
      *

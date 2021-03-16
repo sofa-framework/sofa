@@ -19,74 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H
-#define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H
+#pragma once
 
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/fwd.h>
+#include <sofa/core/config.h>
+#include <sofa/type/Vec.h>
+#include <iosfwd>
 
-#ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-namespace std
+namespace sofa::core::behavior
 {
-    extern template class list<const sofa::core::topology::TopologyChange*>;
-}
-namespace sofa::core::objectmodel
+
+namespace
 {
-    extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+    using sofa::type::Vec;
 }
 
-#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-
-namespace sofa
+/// Helper class allowing to construct mechanical expressions
+///
+class SOFA_CORE_API MechanicalMatrix
 {
-
-namespace core
-{
-
-namespace topology
-{
-
-/** A class that will interact on a topological Data */
-class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
-{
-public:
-    SOFA_ABSTRACT_CLASS(TopologyEngine, DataEngine);
-
 protected:
-    TopologyEngine() {}
-    ~TopologyEngine() override {}
-
+    enum { MFACT = 0, BFACT = 1, KFACT = 2 };
+    Vec<3,SReal> factors;
 public:
-    void init() override ;
-    void handleTopologyChange() override {}
+    MechanicalMatrix(SReal m, SReal b, SReal k) : factors(m,b,k) {}
+    explicit MechanicalMatrix(const Vec<3,SReal>& f) : factors(f) {}
 
-public:
-    // really need to be a Data??
-    Data <std::list<const TopologyChange *> >m_changeList;
+    static const MechanicalMatrix M;
+    static const MechanicalMatrix B;
+    static const MechanicalMatrix K;
 
-    size_t getNumberOfTopologicalChanges();
+    SReal getMFact() const { return factors[MFACT]; }
+    SReal getBFact() const { return factors[BFACT]; }
+    SReal getKFact() const { return factors[KFACT]; }
 
-    virtual void createEngineName();
-    virtual void linkToPointDataArray() {}
-    virtual void linkToEdgeDataArray() {}
-    virtual void linkToTriangleDataArray() {}
-    virtual void linkToQuadDataArray() {}
-    virtual void linkToTetrahedronDataArray() {}
-    virtual void linkToHexahedronDataArray() {}
-
-    void setNamePrefix(const std::string& s) { m_prefix = s; }
-
-protected:
-    /// use to define engine name.
-    std::string m_prefix;
-    /// use to define data handled name.
-    std::string m_data_name;
+    MechanicalMatrix operator + (const MechanicalMatrix& m2) const { return MechanicalMatrix(factors + m2.factors); }
+    MechanicalMatrix operator - (const MechanicalMatrix& m2) const { return MechanicalMatrix(factors - m2.factors); }
+    MechanicalMatrix operator - () const { return MechanicalMatrix(- factors); }
+    MechanicalMatrix operator * (SReal f) const { return MechanicalMatrix(factors * f); }
+    MechanicalMatrix operator / (SReal f) const { return MechanicalMatrix(factors / f); }
+    friend SOFA_CORE_API std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
 };
 
-} // namespace topology
+SOFA_CORE_API std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
 
-} // namespace component
+} /// namespace sofa::core::behavior
 
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H

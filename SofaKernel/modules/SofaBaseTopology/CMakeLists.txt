@@ -43,8 +43,8 @@ set(HEADER_FILES
     ${SOFABASETOPOLOGY_SRC}/TopologyData.inl
     ${SOFABASETOPOLOGY_SRC}/TopologyDataHandler.h
     ${SOFABASETOPOLOGY_SRC}/TopologyDataHandler.inl
-    ${SOFABASETOPOLOGY_SRC}/TopologyEngine.h
-    ${SOFABASETOPOLOGY_SRC}/TopologyEngine.inl
+    ${SOFABASETOPOLOGY_SRC}/TopologyDataEngine.h
+    ${SOFABASETOPOLOGY_SRC}/TopologyDataEngine.inl
     ${SOFABASETOPOLOGY_SRC}/TopologySparseData.h
     ${SOFABASETOPOLOGY_SRC}/TopologySparseData.inl
     ${SOFABASETOPOLOGY_SRC}/TopologySparseDataHandler.h

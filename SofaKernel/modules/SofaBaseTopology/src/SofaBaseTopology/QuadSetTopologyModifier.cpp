@@ -24,6 +24,7 @@
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/topology/TopologyEngine.h>
 
 #include <algorithm>
 

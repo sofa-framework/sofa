@@ -5,8 +5,13 @@
 
 set(SOFACOMPONENTALL_MODULES @SOFACOMPONENTALL_MODULES@)
 
+@SOFACOMPONENTALL_MODULES_HAVES@
+
 foreach(module ${SOFACOMPONENTALL_MODULES})
-    find_package(${module} QUIET REQUIRED)
+    string(TOUPPER "${module}" module_upper)
+    if(SOFACOMPONENTALL_HAVE_${module_upper})
+        find_package(${module} QUIET REQUIRED)
+    endif()
 endforeach()
 
 if(NOT TARGET @PROJECT_NAME@)

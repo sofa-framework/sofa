@@ -386,10 +386,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             sofa::helper::vector<Index>& tab_indices = indices;
 
-            to_tstm->removePointsWarning(tab_indices, false);
-            to_tstm->propagateTopologicalChanges();
-            to_tstm->removePointsProcess(tab_indices, false);
-
+            to_tstm->removePoints(tab_indices, false);
             break;
         }
 
@@ -420,10 +417,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const auto * ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
 
-            to_tstm->addPointsProcess(ta->getNbAddedVertices());
-            to_tstm->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
-            to_tstm->propagateTopologicalChanges();
-
+            to_tstm->addPoints(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
             break;
         }
         default:

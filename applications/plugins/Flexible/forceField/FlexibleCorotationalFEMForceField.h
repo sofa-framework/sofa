@@ -298,7 +298,7 @@ public:
 
             _strainJacobianBlocks[i].addmult( E, F );
 
-            _materialBlocks[i].addDForce( PE, E, mparams->kFactor(), mparams->bFactor() );
+            _materialBlocks[i].addDForce( PE, E, sofa::core::mechanicalparams::kFactor(mparams), sofa::core::mechanicalparams::bFactor(mparams) );
 
             _strainJacobianBlocks[i].addMultTranspose( PF, PE );
 
@@ -310,17 +310,17 @@ public:
                 {
                     case QR:
                     {
-                        _strainJacobianBlocks[i].addDForce_qr( PF, F, _stresses[i], mparams->kFactor() );
+                        _strainJacobianBlocks[i].addDForce_qr( PF, F, _stresses[i], sofa::core::mechanicalparams::kFactor(mparams) );
                         break;
                     }
                     case POLAR:
                     {
-                        _strainJacobianBlocks[i].addDForce_polar( PF, F, _stresses[i], mparams->kFactor() );
+                        _strainJacobianBlocks[i].addDForce_polar( PF, F, _stresses[i], sofa::core::mechanicalparams::kFactor(mparams) );
                         break;
                     }
                     case SVD:
                     {
-                        _strainJacobianBlocks[i].addDForce_svd( PF, F, _stresses[i], mparams->kFactor() );
+                        _strainJacobianBlocks[i].addDForce_svd( PF, F, _stresses[i], sofa::core::mechanicalparams::kFactor(mparams) );
                         break;
                     }
                     default:

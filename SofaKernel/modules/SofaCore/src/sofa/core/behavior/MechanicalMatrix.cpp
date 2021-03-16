@@ -19,47 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION true
-#include <sofa/core/topology/BaseTopologyEngine.h>
-#include <sofa/core/topology/TopologyChange.h>
-
-#ifdef SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-namespace std
+#include <sofa/core/behavior/MechanicalMatrix.h>
+#include <iostream>
+namespace sofa::core::behavior
 {
-    template class list<const sofa::core::topology::TopologyChange*>;
+
+std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
+{
+    out << '(';
+    bool first = true;
+    for (unsigned int i=0; i<m.factors.size(); ++i)
+    {
+        SReal f = m.factors[i];
+        if (f!=0.0)
+        {
+            if (!first) out << ' ';
+            if (f == -1.0) out << '-';
+            else if (f < 0) out << f << ' ';
+            else
+            {
+                if (!first) out << '+';
+                if (f != 1.0) out << f << ' ';
+            }
+            out << ("MBK")[i];
+            first = false;
+        }
+    }
+    out << ')';
+    return out;
 }
 
-namespace sofa::core::objectmodel
-{
-template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
-}
-#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
+const MechanicalMatrix MechanicalMatrix::M(1,0,0);
+const MechanicalMatrix MechanicalMatrix::B(0,1,0);
+const MechanicalMatrix MechanicalMatrix::K(0,0,1);
 
-
-namespace sofa::core::topology
-{
-
-void TopologyEngine::init()
-{
-    sofa::core::DataEngine::init();
-    this->createEngineName();
-}
-
-size_t TopologyEngine::getNumberOfTopologicalChanges()
-{
-    return (m_changeList.getValue()).size();
-}
-
-void TopologyEngine::createEngineName()
-{
-    if (m_data_name.empty())
-        setName( m_prefix + "no_name" );
-    else
-        setName( m_prefix + m_data_name );
-
-    return;
-}
-
-
-} // namespace sofa
+} /// namespace sofa::core::behavior
 

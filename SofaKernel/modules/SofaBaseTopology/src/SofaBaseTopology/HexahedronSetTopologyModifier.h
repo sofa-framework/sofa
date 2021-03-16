@@ -28,6 +28,8 @@ namespace sofa::component::topology
 {
 class HexahedronSetTopologyContainer;
 
+template <class DataTypes>
+class HexahedronSetGeometryAlgorithms;
 
 /**
 * A class that modifies the topology by adding and removing hexahedra
@@ -37,6 +39,8 @@ class SOFA_SOFABASETOPOLOGY_API HexahedronSetTopologyModifier : public QuadSetTo
 public:
     SOFA_CLASS(HexahedronSetTopologyModifier,QuadSetTopologyModifier);
 
+    template <class DataTypes>
+    friend class HexahedronSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::HexaID HexaID;
     typedef core::topology::BaseMeshTopology::HexahedronID HexahedronID;
@@ -161,6 +165,17 @@ public:
     void removeEdgesProcess(const sofa::helper::vector<EdgeID> &indices,
             const bool removeIsolatedItems = false) override;
 
+    /** \brief Remove a set  of hexahedra
+    @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
+    *
+    */
+    virtual void removeHexahedra(const sofa::helper::vector<HexahedronID> &hexahedraIds);
+
+    /** \brief Generic method to remove a list of items.
+    */
+    void removeItems(const sofa::helper::vector<HexahedronID> &items) override;
+
+protected:
     /** \brief Add some points to this topology.
     *
     * \sa addPointsWarning
@@ -175,19 +190,8 @@ public:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    void removePointsProcess(const sofa::helper::vector<PointID> &indices, const bool removeDOF = true) override;
+    void removePointsProcess(const sofa::helper::vector<PointID>& indices, const bool removeDOF = true) override;
 
-    /** \brief Remove a set  of hexahedra
-    @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
-    *
-    */
-    virtual void removeHexahedra(const sofa::helper::vector<HexahedronID> &hexahedraIds);
-
-    /** \brief Generic method to remove a list of items.
-    */
-    void removeItems(const sofa::helper::vector<HexahedronID> &items) override;
-
-protected:
     /** \brief Reorder this topology.
     *
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)

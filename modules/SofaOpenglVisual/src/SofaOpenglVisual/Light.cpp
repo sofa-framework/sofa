@@ -439,7 +439,7 @@ void DirectionalLight::drawSource(const core::visual::VisualParams* vparams)
 void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &direction)
 {
     //1-compute bounding box
-    sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
+    sofa::core::visual::VisualParams* vp = sofa::core::visual::visualparams::defaultInstance();
     const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
     Vector3 center = (sceneBBox.minBBox() + sceneBBox.maxBBox()) * 0.5;
     Vector3 posLight = center;

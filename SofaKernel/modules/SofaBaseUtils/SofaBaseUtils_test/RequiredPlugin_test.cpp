@@ -5,7 +5,7 @@
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 
-using sofa::core::ExecParams;
+using sofa::core::execparams::defaultInstance; 
 
 namespace sofa
 {
@@ -27,7 +27,7 @@ struct RequiredPlugin_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
     void testNoParameter()
@@ -45,7 +45,7 @@ struct RequiredPlugin_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 };
 

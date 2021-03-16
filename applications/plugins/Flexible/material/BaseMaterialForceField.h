@@ -181,15 +181,15 @@ public:
 
         if(this->assemble.getValue())
         {
-            B.addMult(df,dx,mparams->bFactor());
-            K.addMult(df,dx,mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
+            B.addMult(df,dx,sofa::core::mechanicalparams::bFactor(mparams));
+            K.addMult(df,dx,sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue()));
         }
         else
         {
             const SReal& rayleighStiffness = this->rayleighStiffness.getValue();
             for(unsigned int i=0; i<material.size(); i++)
             {
-                material[i].addDForce(df[i],dx[i],mparams->kFactorIncludingRayleighDamping(rayleighStiffness),mparams->bFactor());
+                material[i].addDForce(df[i],dx[i],mparams->kFactorIncludingRayleighDamping(rayleighStiffness),sofa::core::mechanicalparams::bFactor(mparams));
             }
         }
 

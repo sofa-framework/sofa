@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 
-#include <sofa/core/ExecParams.h>
-using sofa::core::ExecParams ;
+#include <sofa/core/fwd.h>
+using sofa::core::execparams::defaultInstance;
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory ;
@@ -105,8 +105,8 @@ BaseSimulationTest::SceneInstance::~SceneInstance()
 
 void BaseSimulationTest::SceneInstance::initScene()
 {
-    root->init(ExecParams::defaultInstance()) ;
     simulation->init(root.get());
+    root->init(sofa::core::execparams::defaultInstance()) ;
 }
 
 void BaseSimulationTest::SceneInstance::simulate(const double timestep)

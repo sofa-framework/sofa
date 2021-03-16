@@ -159,7 +159,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     sprintf(name,"Error %d",newton_iter);
     sofa::helper::vector<double>& graph_error = graph[std::string(name)];
 
-    const core::ExecParams* params = core::ExecParams::defaultInstance();
+    const core::ExecParams* params = core::execparams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
     Vector& r = *vtmp.createTempVector();
     Vector& w = *vtmp.createTempVector();

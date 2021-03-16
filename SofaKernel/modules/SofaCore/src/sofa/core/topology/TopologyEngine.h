@@ -19,10 +19,71 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CONFIG_BUILD_OPTION_OPENGL_H
-#define SOFA_CONFIG_BUILD_OPTION_OPENGL_H
+#pragma once
 
-#cmakedefine SOFA_NO_OPENGL
-#define SOFA_WITH_OPENGL ${SOFA_WITH_OPENGL_}
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/fwd.h>
 
-#endif
+#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
+namespace std
+{
+    extern template class list<const sofa::core::topology::TopologyChange*>;
+}
+namespace sofa::core::objectmodel
+{
+    extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+}
+
+#endif /// SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
+
+namespace sofa
+{
+
+namespace core
+{
+
+namespace topology
+{
+
+/** A class that will interact on a topological Data */
+class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
+{
+public:
+    SOFA_ABSTRACT_CLASS(TopologyEngine, DataEngine);
+
+protected:
+    TopologyEngine() {}
+    ~TopologyEngine() override {}
+
+public:
+    void init() override ;
+    void handleTopologyChange() override {}
+
+public:
+    // really need to be a Data??
+    Data <std::list<const TopologyChange *> >m_changeList;
+
+    size_t getNumberOfTopologicalChanges();
+
+    virtual void createEngineName();
+    virtual void linkToPointDataArray() {}
+    virtual void linkToEdgeDataArray() {}
+    virtual void linkToTriangleDataArray() {}
+    virtual void linkToQuadDataArray() {}
+    virtual void linkToTetrahedronDataArray() {}
+    virtual void linkToHexahedronDataArray() {}
+
+    void setNamePrefix(const std::string& s) { m_prefix = s; }
+
+protected:
+    /// use to define engine name.
+    std::string m_prefix;
+    /// use to define data handled name.
+    std::string m_data_name;
+};
+
+} // namespace topology
+
+} // namespace component
+
+} // namespace sofa

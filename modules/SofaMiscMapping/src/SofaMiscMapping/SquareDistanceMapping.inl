@@ -23,8 +23,11 @@
 
 #include "SquareDistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/MechanicalState.inl>
 
 namespace sofa::component::mapping
 {

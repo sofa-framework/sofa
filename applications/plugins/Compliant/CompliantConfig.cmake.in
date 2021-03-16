@@ -3,6 +3,7 @@
 @PACKAGE_INIT@
 
 set(COMPLIANT_HAVE_SOFAPYTHON @COMPLIANT_HAVE_SOFAPYTHON@)
+set(COMPLIANT_HAVE_SOFA_GL @COMPLIANT_HAVE_SOFA_GL@)
 
 sofa_find_package(SofaSimulationGraph REQUIRED)
 find_package(SofaMiscMapping REQUIRED)
@@ -11,6 +12,9 @@ find_package(Eigen3 QUIET REQUIRED)
 
 if(COMPLIANT_HAVE_SOFAPYTHON)
     find_package(SofaPython QUIET REQUIRED)
+endif()
+if(COMPLIANT_HAVE_SOFA_GL)
+    find_package(Sofa.GL QUIET REQUIRED)
 endif()
 
 if(NOT TARGET Compliant)

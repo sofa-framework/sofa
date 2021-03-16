@@ -392,7 +392,7 @@ size_t Mesh2PointTopologicalMapping::addInputPoint(Index i, PointSetTopologyModi
 
     if (toPointMod)
     {
-        toPointMod->addPointsProcess(pBaryCoords.size());
+        toPointMod->addPoints(pBaryCoords.size());
     }
     else
     {
@@ -406,13 +406,6 @@ size_t Mesh2PointTopologicalMapping::addInputPoint(Index i, PointSetTopologyModi
     {        
         pointsMappedFrom[POINT][i].push_back((unsigned int)pointSource.size());
         pointSource.push_back(std::make_pair(POINT, i));
-    }
-    
-    if (toPointMod)
-    {  
-        helper::vector< helper::vector< Index > > ancestors;
-        helper::vector< helper::vector< double       > > coefs;
-        toPointMod->addPointsWarning(pBaryCoords.size(), ancestors, coefs);
     }
     
     return pointBaryCoords.getValue().size();
@@ -440,7 +433,7 @@ void Mesh2PointTopologicalMapping::addInputEdge(Index i, PointSetTopologyModifie
 
     if (toPointMod)
     {
-        toPointMod->addPointsProcess(eBaryCoords.size());
+        toPointMod->addPoints(eBaryCoords.size());
     }
     else
     {
@@ -452,13 +445,6 @@ void Mesh2PointTopologicalMapping::addInputEdge(Index i, PointSetTopologyModifie
 
             toModel->addPoint(result[0], result[1], result[2]);
         }
-    }
-
-    if (toPointMod)
-    {
-        helper::vector< helper::vector< Index > > ancestors;
-        helper::vector< helper::vector< double       > > coefs;
-        toPointMod->addPointsWarning(eBaryCoords.size(), ancestors, coefs);
     }
 }
 
@@ -484,7 +470,7 @@ void Mesh2PointTopologicalMapping::addInputTriangle(Index i, PointSetTopologyMod
 
     if (toPointMod)
     {
-        toPointMod->addPointsProcess(tBaryCoords.size());
+        toPointMod->addPoints(tBaryCoords.size());
     }
     else
     {
@@ -497,13 +483,6 @@ void Mesh2PointTopologicalMapping::addInputTriangle(Index i, PointSetTopologyMod
 
             toModel->addPoint(result[0], result[1], result[2]);
         }
-    }
-
-    if (toPointMod)
-    {
-        helper::vector< helper::vector< Index > > ancestors;
-        helper::vector< helper::vector< double       > > coefs;
-        toPointMod->addPointsWarning(tBaryCoords.size(), ancestors, coefs);
     }
 }
 
@@ -531,7 +510,7 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(Index i, PointSetTopology
 
     if (toPointMod)
     {
-        toPointMod->addPointsProcess(tBaryCoords.size());
+        toPointMod->addPoints(tBaryCoords.size());
     }
     else
     {
@@ -545,13 +524,6 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(Index i, PointSetTopology
 
             toModel->addPoint(result[0], result[1], result[2]);
         }
-    }
-
-    if (toPointMod)
-    {
-        helper::vector< helper::vector< Index > > ancestors;
-        helper::vector< helper::vector< double       > > coefs;
-        toPointMod->addPointsWarning(tBaryCoords.size(), ancestors, coefs);
     }
 }
 
@@ -817,14 +789,9 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                     vitems.reserve(pointsToRemove.size());
                     vitems.insert(vitems.end(), pointsToRemove.rbegin(), pointsToRemove.rend());
 
-                    toPointMod->removePointsWarning(vitems);
-                    toPointMod->propagateTopologicalChanges();
-
                     removeOutputPoints(vitems);
+                    toPointMod->removePoints(vitems);
 
-                    toPointMod->removePointsProcess(vitems);
-
-                    toPointMod->propagateTopologicalChanges();
                     toPointMod->notifyEndingEvent();
                     toPointMod->propagateTopologicalChanges();
 
