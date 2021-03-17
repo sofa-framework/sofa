@@ -217,9 +217,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::ENDING_EVENT:
         {
-            to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
-            to_tstm->propagateTopologicalChanges();
             break;
         }
 
@@ -425,7 +423,6 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-    to_tstm->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("Update Quad2TriangleTopologicalMapping");

@@ -66,10 +66,6 @@ public:
 
     Data< bool > removeIsolated; ///< Controlled DOF index.
 
-    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    void propagateTopologicalEngineChanges() override;
-
-
     /** \brief add a set of hexahedra
     @param hexahedra an array of vertex indices describing the hexahedra to be created
     */
@@ -202,6 +198,10 @@ protected:
     void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
         const sofa::helper::vector<PointID>& inv_index,
         const bool renumberDOF = true) override;
+
+
+    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
+    void propagateTopologicalEngineChanges() override;
 
 private:
     HexahedronSetTopologyContainer* 	m_container;

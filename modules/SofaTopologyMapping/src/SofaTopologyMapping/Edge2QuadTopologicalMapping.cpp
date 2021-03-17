@@ -301,9 +301,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                 {
-                    to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
-                    to_tstm->propagateTopologicalChanges();
                     break;
                 }
 
@@ -550,7 +548,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 ++itBegin;
             }
 
-            to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
         }
     }
