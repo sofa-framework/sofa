@@ -24,6 +24,7 @@
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
+#include <sofa/core/CollisionElement.h>
 #include <sofa/helper/vector.h>
 
 
