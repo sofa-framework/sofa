@@ -19,46 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_BASETEST_H
-#define SOFA_BASETEST_H
+#pragma once
 
-#include <gtest/gtest.h>
-#include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
-namespace sofa {
-namespace helper {
-namespace testing {
-/// acceptable ratio between finite difference delta and error threshold
-const SReal g_minDeltaErrorRatio = .1;
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/testing/TestMessageHandler.h")
 
-/** @brief Base class for Sofa test fixtures.
-  */
-class SOFA_HELPER_API BaseTest : public ::testing::Test
+namespace sofa::helper::logging
 {
-public:
-    /// To prevent that you simply need to add the line
-    /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
-    sofa::helper::logging::MessageAsTestFailure m_fatal ;
-    sofa::helper::logging::MessageAsTestFailure m_error ;
-
-    /// Initialize Sofa and the random number generator
-    BaseTest() ;
-    ~BaseTest() override;
-
-    virtual void onSetUp() {}
-    virtual void onTearDown() {}
-
-    /// Seed value
-    static int seed;
-
-private:
-    void SetUp() override ;
-    void TearDown() override ;
-};
-
-} /// namespace testing
-} /// namespace helper
-} /// namespace sofa
-
-
-#endif // SOFA_BASETEST_H
+    using sofa::testing::MessageAsTestFailure;
+    using sofa::testing::IgnoreMessage;
+    using sofa::testing::MainGtestMessageHandler;
+}

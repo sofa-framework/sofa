@@ -23,11 +23,6 @@ set(SOURCE_FILES
     ${SOFASIMULATIONGRAPH_SRC}/SimpleApi.cpp
 )
 
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    list(APPEND HEADER_FILES ${SOFASIMULATIONGRAPH_SRC}/testing/BaseSimulationTest.h)
-    list(APPEND SOURCE_FILES ${SOFASIMULATIONGRAPH_SRC}/testing/BaseSimulationTest.cpp)
-endif()
-
 sofa_find_package(SofaSimulationCommon REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -44,7 +39,3 @@ sofa_create_package_with_targets(
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
 cmake_dependent_option(SOFASIMULATIONGRAPH_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFASIMULATIONGRAPH_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(${PROJECT_NAME}_test)
-endif()

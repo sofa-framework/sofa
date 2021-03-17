@@ -22,7 +22,7 @@
 #include <sofa/helper/testing/NumericTest.h>
 using sofa::helper::testing::NumericTest ;
 
-using testing::Types;
+using ::testing::Types;
 
 #include <sofa/helper/vector.h>
 using sofa::helper::vector ;

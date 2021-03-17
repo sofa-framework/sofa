@@ -21,39 +21,34 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaSimulationGraph/config.h>
-#include <sofa/helper/testing/BaseTest.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
+#include <sofa/testing/NumericTest.h>
 
-namespace sofa::helper::testing
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/testing/NumericTest.h")
+
+namespace sofa::helper
 {
-using sofa::simulation::Node ;
-using sofa::simulation::Simulation ;
+    namespace testing = sofa::testing;
+}
 
-class SOFA_SOFASIMULATIONGRAPH_API BaseSimulationTest : public virtual BaseTest
-{
-public:
-    BaseSimulationTest() ;
-
-    bool importPlugin(const std::string& name) ;
-
-    class SOFA_SOFASIMULATIONGRAPH_API SceneInstance
-    {
-    public:
-         SceneInstance(const std::string& rootname="root") ;
-         SceneInstance(const std::string& type, const std::string& memory) ;
-         ~SceneInstance() ;
-
-        /// Create a new scene instance from the content of the filename using the factory.
-        static SceneInstance LoadFromFile(const std::string& filename) ;
-
-        Node::SPtr root ;
-        Simulation* simulation {nullptr} ;
-
-        void initScene() ;
-        void simulate(const double timestep) ;
-    } ;
-};
-
-} // namespace sofa::helper::testing
+//namespace sofa::helper::testing
+//{
+//    template <typename _Real = SReal>
+//    using NumericTest = sofa::testing::NumericTest<_Real>;
+//
+//    template<class Vector, class ReadData>
+//    void copyFromData(Vector& v, const ReadData& d) 
+//    {
+//        sofa::testing::copyFromData(v,d);
+//    }
+//
+//    template<class WriteData, class Vector>
+//    void copyToData(WriteData& d, const Vector& v) 
+//    {
+//        sofa::testing::copyToData(v, d);
+//    }
+//
+//    template<class _DataTypes>
+//    using data_traits = sofa::testing::data_traits<_DataTypes>;
+//
+//
+//} // namespace sofa::helper::testing

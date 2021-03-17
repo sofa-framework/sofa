@@ -124,8 +124,8 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
 };
 
 // ========= Define the list of types to instanciate.
-//using testing::Types;
-typedef testing::Types<
+//using ::testing::Types;
+typedef ::testing::Types<
 component::forcefield::HexahedronFEMForceField<defaulttype::Vec3Types>
 > TestTypes; // the types to instanciate.
 
