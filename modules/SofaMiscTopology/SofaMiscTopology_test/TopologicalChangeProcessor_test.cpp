@@ -24,11 +24,15 @@
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
-using sofa::helper::testing::BaseSimulationTest;
-using namespace sofa::component::topology;
+#include <sofa/simulation/Node.h>
 
-namespace sofa::helper::testing
+using sofa::helper::testing::BaseSimulationTest;
+
+namespace 
 {
+
+using namespace sofa::component::topology;
+using namespace sofa::simulation;
 
 /**  Test TopologicalChangeProcessor incise process
   */
@@ -390,4 +394,4 @@ TEST_F(RemoveTriangleProcessor_test, RemoveTriangles)
 
 
 
-}// namespace sofa::helper::testing
+}// namespace 
