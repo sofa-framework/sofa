@@ -6,6 +6,9 @@
 #include "DataExchange.h"
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/PrintVisitor.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>

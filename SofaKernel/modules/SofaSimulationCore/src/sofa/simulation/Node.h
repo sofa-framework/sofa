@@ -19,69 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_CORE_NODE_H
-#define SOFA_SIMULATION_CORE_NODE_H
+#pragma once
 
 #include <sofa/simulation/config.h>
-
-
-#include <sofa/core/objectmodel/Context.h>
-// moved from GNode (27/04/08)
-#include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/objectmodel/ContextObject.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/Shader.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/Mass.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/collision/Pipeline.h>
-#include <sofa/core/loader/BaseLoader.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/VisitorScheduler.h>
-
 #include <sofa/simulation/fwd.h>
+
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/objectmodel/Context.h>
+
 #include <type_traits>
-
-namespace sofa
-{
-namespace simulation
-{
-class Visitor;
-}
-}
-
 #include <string>
 #include <stack>
 
-namespace sofa
-{
-
-namespace core
-{
-namespace visual
-{
-class VisualParams;
-} // namespace visual
-} // namespace core
-
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
@@ -117,8 +67,6 @@ public:
     bool isInitialized() {return initialized;}
     /// Apply modifications to the components
     void reinit(const sofa::core::ExecParams* params);
-    /// Do one step forward in time
-//    void animate(const core::ExecParams* params, SReal dt);
     /// Draw the objects (using visual visitors)
     void draw(sofa::core::visual::VisualParams* params);
     /// @}
@@ -132,17 +80,17 @@ public:
     virtual void doExecuteVisitor(Visitor* action, bool precomputedOrder=false)=0;
 
     /// Execute a recursive action starting from this node
-    void executeVisitor( simulation::Visitor* action, bool precomputedOrder=false) override;
+    void executeVisitor(Visitor* action, bool precomputedOrder=false) override;
 
     /// Execute a recursive action starting from this node
-    void execute(simulation::Visitor& action, bool precomputedOrder=false)
+    void execute(Visitor& action, bool precomputedOrder=false)
     {
         simulation::Visitor* p = &action;
         executeVisitor(p, precomputedOrder);
     }
 
     /// Execute a recursive action starting from this node
-    void execute(simulation::Visitor* p, bool precomputedOrder=false)
+    void execute(Visitor* p, bool precomputedOrder=false)
     {
         executeVisitor(p, precomputedOrder);
     }
@@ -152,7 +100,7 @@ public:
     void execute(const Params* params, bool precomputedOrder=false)
     {
         Act action(params);
-        simulation::Visitor* p = &action;
+        Visitor* p = &action;
         executeVisitor(p, precomputedOrder);
     }
 
@@ -161,7 +109,7 @@ public:
     void execute(sofa::core::visual::VisualParams* vparams, bool precomputedOrder=false)
     {
         Act action(vparams);
-        simulation::Visitor* p = &action;
+        Visitor* p = &action;
         executeVisitor(p, precomputedOrder);
     }
 
@@ -172,8 +120,6 @@ public:
 
     /// @name Component containers
     /// @{
-    // methods moved from GNode (27/04/08)
-
     /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
     /// UPDATE: it is now an alias for the Link pointer container
     template < class T, bool strong = false >
@@ -183,7 +129,6 @@ public:
         typedef MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)> Inherit;
         typedef T pointed_type;
         typedef typename Inherit::DestPtr value_type;
-        //typedef TPtr value_type;
         typedef typename Inherit::const_iterator const_iterator;
         typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
         typedef const_iterator iterator;
@@ -219,7 +164,6 @@ public:
         typedef SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)> Inherit;
         typedef T pointed_type;
         typedef typename Inherit::DestPtr value_type;
-        //typedef TPtr value_type;
         typedef typename Inherit::const_iterator const_iterator;
         typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
         typedef const_iterator iterator;
@@ -506,7 +450,6 @@ public:
 
     Node* setDebug(bool);
     bool getDebug() const;
-    // debug
     void printComponents();
 
     const BaseContext* getContext() const override;
@@ -546,7 +489,7 @@ public:
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
 
     /// override context setSleeping to add notification.
-    void setSleeping(bool /*val*/) override;
+    void setSleeping(bool val) override;
 
 protected:
     bool debug_;
@@ -596,14 +539,12 @@ public:
     virtual void add##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.add(obj); } \
     virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.remove(obj); }
 
-    // WARNINGS subtilities:
-    // an InteractioFF is NOT in the FF Sequence
-    // a MechanicalMapping is NOT in the Mapping Sequence
-    // a Mass is in the FF Sequence
-    // a MeshTopology is in the topology Sequence
-
+    /// WARNINGS subtilities:
+    /// an InteractioFF is NOT in the FF Sequence
+    /// a MechanicalMapping is NOT in the Mapping Sequence
+    /// a Mass is in the FF Sequence
+    /// a MeshTopology is in the topology Sequence
 public:
-
     NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
     NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
     NODE_ADD_IN_SEQUENCE( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
@@ -638,6 +579,3 @@ public:
 
 }
 
-}
-
-#endif
