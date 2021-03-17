@@ -52,7 +52,6 @@ public:
     const char* getClassName() const override { return "TopologyChangeVisitor"; }
     std::string getInfos() const override;
 protected:
-    /// Flag to know the number of iterations of the overloaded method processNodeTopDown
     core::topology::Topology* m_source;
 };
 
