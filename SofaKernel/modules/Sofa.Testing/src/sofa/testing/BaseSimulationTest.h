@@ -19,46 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_BASETEST_H
-#define SOFA_BASETEST_H
+#pragma once
 
-#include <gtest/gtest.h>
-#include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/testing/config.h>
 
-namespace sofa {
-namespace helper {
-namespace testing {
-/// acceptable ratio between finite difference delta and error threshold
-const SReal g_minDeltaErrorRatio = .1;
+#include <sofa/testing/BaseTest.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 
-/** @brief Base class for Sofa test fixtures.
-  */
-class SOFA_HELPER_API BaseTest : public ::testing::Test
+namespace sofa::testing
+{
+using sofa::simulation::Node ;
+using sofa::simulation::Simulation ;
+
+class SOFA_TESTING_API BaseSimulationTest : public virtual BaseTest
 {
 public:
-    /// To prevent that you simply need to add the line
-    /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
-    sofa::helper::logging::MessageAsTestFailure m_fatal ;
-    sofa::helper::logging::MessageAsTestFailure m_error ;
+    BaseSimulationTest() ;
 
-    /// Initialize Sofa and the random number generator
-    BaseTest() ;
-    ~BaseTest() override;
+    bool importPlugin(const std::string& name) ;
 
-    virtual void onSetUp() {}
-    virtual void onTearDown() {}
+    class SOFA_TESTING_API SceneInstance
+    {
+    public:
+         SceneInstance(const std::string& rootname="root") ;
+         SceneInstance(const std::string& type, const std::string& memory) ;
+         ~SceneInstance() ;
 
-    /// Seed value
-    static int seed;
+        /// Create a new scene instance from the content of the filename using the factory.
+        static SceneInstance LoadFromFile(const std::string& filename) ;
 
-private:
-    void SetUp() override ;
-    void TearDown() override ;
+        Node::SPtr root ;
+        Simulation* simulation {nullptr} ;
+
+        void initScene() ;
+        void simulate(const double timestep) ;
+        void loadSceneFile(const std::string& filename);
+    } ;
 };
 
-} /// namespace testing
-} /// namespace helper
-} /// namespace sofa
-
-
-#endif // SOFA_BASETEST_H
+} // namespace sofa::testing

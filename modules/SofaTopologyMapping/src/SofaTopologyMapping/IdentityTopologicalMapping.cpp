@@ -166,9 +166,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toEdgeMod) break;
             const EdgesAdded *eAdd = static_cast< const EdgesAdded * >( topoChange );
             dmsg_info() << "EDGESADDED : " << eAdd->getNbAddedEdges() ;
-            toEdgeMod->addEdgesProcess(eAdd->edgeArray);
-            toEdgeMod->addEdgesWarning(eAdd->getNbAddedEdges(), eAdd->edgeArray, eAdd->edgeIndexArray, eAdd->ancestorsList, eAdd->coefs);
-            toEdgeMod->propagateTopologicalChanges();
+            toEdgeMod->addEdges(eAdd->edgeArray, eAdd->ancestorsList, eAdd->coefs);
             break;
         }
 
@@ -179,9 +177,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( topoChange );
             auto tab = eRem->getArray();
             dmsg_info() << "EDGESREMOVED : " ;
-            toEdgeMod->removeEdgesWarning(tab);
-            toEdgeMod->propagateTopologicalChanges();
-            toEdgeMod->removeEdgesProcess(tab, false);
+            toEdgeMod->removeEdges(tab, false);
             break;
         }
 
@@ -191,9 +187,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toTriangleMod) break;
             const TrianglesAdded *tAdd = static_cast< const TrianglesAdded * >( topoChange );
             dmsg_info() << "TRIANGLESADDED : " << tAdd->getNbAddedTriangles() ;
-            toTriangleMod->addTrianglesProcess(tAdd->triangleArray);
-            toTriangleMod->addTrianglesWarning(tAdd->getNbAddedTriangles(), tAdd->triangleArray, tAdd->triangleIndexArray, tAdd->ancestorsList, tAdd->coefs);
-            toTriangleMod->propagateTopologicalChanges();
+            toTriangleMod->addTriangles(tAdd->triangleArray, tAdd->ancestorsList, tAdd->coefs);
             break;
         }
 
@@ -204,9 +198,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( topoChange );
             auto tab = tRem->getArray();
             dmsg_info() << "TRIANGLESREMOVED : " << tab.size() ;
-            toTriangleMod->removeTrianglesWarning(tab);
-            toTriangleMod->propagateTopologicalChanges();
-            toTriangleMod->removeTrianglesProcess(tab, false);
+            toTriangleMod->removeTriangles(tab, false, false);
             break;
         }
 

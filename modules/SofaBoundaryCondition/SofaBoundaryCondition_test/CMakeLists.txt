@@ -26,7 +26,7 @@ set(SOURCE_FILES
 
 add_definitions("-DSOFABOUNDARYCONDITION_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SceneCreator)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SceneCreator)
 if(SofaSparseSolver_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaSparseSolver)
 endif()

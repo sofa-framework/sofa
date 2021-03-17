@@ -21,40 +21,39 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaSimulationGraph/config.h>
-#include <sofa/helper/testing/BaseTest.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
+#include <sofa/testing/config.h>
 
-namespace sofa::helper::testing
+#include <gtest/gtest.h>
+#include <sofa/testing/TestMessageHandler.h>
+
+namespace sofa::testing
 {
-using sofa::simulation::Node ;
-using sofa::simulation::Simulation ;
+/// acceptable ratio between finite difference delta and error threshold
+const SReal g_minDeltaErrorRatio = .1;
 
-class SOFA_SOFASIMULATIONGRAPH_API BaseSimulationTest : public virtual BaseTest
+/** @brief Base class for Sofa test fixtures.
+  */
+class SOFA_TESTING_API BaseTest : public ::testing::Test
 {
 public:
-    BaseSimulationTest() ;
+    /// To prevent that you simply need to add the line
+    /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
+    sofa::testing::MessageAsTestFailure m_fatal ;
+    sofa::testing::MessageAsTestFailure m_error ;
 
-    bool importPlugin(const std::string& name) ;
+    /// Initialize Sofa and the random number generator
+    BaseTest() ;
+    ~BaseTest() override;
 
-    class SOFA_SOFASIMULATIONGRAPH_API SceneInstance
-    {
-    public:
-         SceneInstance(const std::string& rootname="root") ;
-         SceneInstance(const std::string& type, const std::string& memory) ;
-         ~SceneInstance() ;
+    virtual void onSetUp() {}
+    virtual void onTearDown() {}
 
-        /// Create a new scene instance from the content of the filename using the factory.
-        static SceneInstance LoadFromFile(const std::string& filename) ;
+    /// Seed value
+    static int seed;
 
-        Node::SPtr root ;
-        Simulation* simulation {nullptr} ;
-
-        void initScene() ;
-        void simulate(const double timestep) ;
-        void loadSceneFile(const std::string& filename);
-    } ;
+private:
+    void SetUp() override ;
+    void TearDown() override ;
 };
 
-} // namespace sofa::helper::testing
+} // namespace sofa::testing

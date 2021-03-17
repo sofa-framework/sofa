@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef TESTMESSAGEHANDLER_H
-#define TESTMESSAGEHANDLER_H
+#pragma once
+
+#include <sofa/testing/config.h>
 
 #include <sofa/helper/vector.h>
 #include <sofa/helper/logging/CountingMessageHandler.h>
@@ -61,13 +62,7 @@
 /// NB: This is done automatically if you are inhering from Sofa_test.
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::testing
 {
 /// Forward declaration of private classes.
 class GtestMessageFrame;
@@ -77,10 +72,10 @@ class GtestMessageFrame;
 ///    EXPECT_MSG_NOEMIT(Error) as a more 'good looking' version of
 ///
 /// sofa::helper::logging::MessageAsTestFailure failure(sofa::helper::logging::Message::Error, __FILE__, __LINE__);
-class SOFA_HELPER_API MessageAsTestFailure
+class SOFA_TESTING_API MessageAsTestFailure
 {
 public:
-    MessageAsTestFailure(Message::Type t,
+    MessageAsTestFailure(helper::logging::Message::Type t,
                            const char* filename="unknown", int lineno=0) ;
 
     virtual ~MessageAsTestFailure() ;
@@ -95,10 +90,10 @@ private:
 ///    EXPECT_MSG_EMIT(Error) as a more 'good looking' version of
 ///
 /// sofa::helper::logging::ExpectMessage failure(sofa::helper::logging::Message::Error, __FILE__, __LINE__);
-class SOFA_HELPER_API ExpectMessage
+class SOFA_TESTING_API ExpectMessage
 {
 public:
-    ExpectMessage(Message::Type t,
+    ExpectMessage(helper::logging::Message::Type t,
                    const char* filename="unknown", int lineno=0) ;
 
     virtual ~ExpectMessage() ;
@@ -113,10 +108,10 @@ private:
 ///    IGNORE_MSG(Error) as a more 'good looking' version of
 ///
 /// sofa::helper::logging::IgnoreMessage ignore(sofa::helper::logging::Message::Error);
-class SOFA_HELPER_API IgnoreMessage
+class SOFA_TESTING_API IgnoreMessage
 {
 public:
-    IgnoreMessage(Message::Type t) ;
+    IgnoreMessage(helper::logging::Message::Type t) ;
     virtual ~IgnoreMessage() ;
 
 private:
@@ -126,10 +121,10 @@ private:
 /// Inherited from MessageHandler, this handler must be installed to have the testing subsystem
 /// working. By default it is added in Sofa_test but if you are not inheriting from Sofa_test
 /// you have to install it manually.
-class SOFA_HELPER_API MainGtestMessageHandler
+class SOFA_TESTING_API MainGtestMessageHandler
 {
 public:
-    static MessageHandler* getInstance() ;
+    static helper::logging::MessageHandler* getInstance() ;
 };
 
 ////////////////////////////// MACROS TO EASE THE USERS ////////////////////////////////////////////
@@ -146,7 +141,7 @@ public:
 /// The macros are mimicking the way gtest macros are working... and thus as any macro are really
 /// hard to understand and error prone.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#define IGNORE_MSG(t) sofa::helper::logging::IgnoreMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarI_, __LINE__) ( sofa::helper::logging::Message::t)
+#define IGNORE_MSG(t) sofa::testing::IgnoreMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarI_, __LINE__) ( sofa::helper::logging::Message::t)
 
 ///From http://en.cppreference.com/w/cpp/preprocessor/replace
 #define EXPECT_MSG_PASTER(x,y) x ## _ ## y
@@ -157,10 +152,10 @@ public:
 #define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses
 
 #define EXPECT_MSG_EMIT2(a,b) \
-    sofa::helper::logging::ExpectMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
-    sofa::helper::logging::ExpectMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
+    sofa::testing::ExpectMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
+    sofa::testing::ExpectMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
 
-#define EXPECT_MSG_EMIT1(t)   sofa::helper::logging::ExpectMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarT_, __LINE__) ( sofa::helper::logging::Message::t, __FILE__, __LINE__ )
+#define EXPECT_MSG_EMIT1(t)   sofa::testing::ExpectMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarT_, __LINE__) ( sofa::helper::logging::Message::t, __FILE__, __LINE__ )
 #define EXPECT_MSG_EMIT0
 
 #define EXPECT_MSG_EMIT_CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, EXPECT_MSG_EMIT2, EXPECT_MSG_EMIT1, ))
@@ -170,10 +165,10 @@ public:
 #define EXPECT_MSG_EMIT(...) EXPECT_MSG_EMIT_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 #define EXPECT_MSG_NOEMIT2(a,b) \
-       sofa::helper::logging::MessageAsTestFailure EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
-       sofa::helper::logging::MessageAsTestFailure EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
+       sofa::testing::MessageAsTestFailure EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
+       sofa::testing::MessageAsTestFailure EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
 
-#define EXPECT_MSG_NOEMIT1(t)   sofa::helper::logging::MessageAsTestFailure EXPECT_MSG_EVALUATOR(__hiddenscopevarT_, __LINE__)( sofa::helper::logging::Message::t, __FILE__, __LINE__ )
+#define EXPECT_MSG_NOEMIT1(t)   sofa::testing::MessageAsTestFailure EXPECT_MSG_EVALUATOR(__hiddenscopevarT_, __LINE__)( sofa::helper::logging::Message::t, __FILE__, __LINE__ )
 #define EXPECT_MSG_NOEMIT0
 
 #define EXPECT_MSG_NOEMIT_CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, EXPECT_MSG_NOEMIT2, EXPECT_MSG_NOEMIT1, ))
@@ -182,10 +177,4 @@ public:
 
 #define EXPECT_MSG_NOEMIT(...) EXPECT_MSG_NOEMIT_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
-} // logging
-} // helper
-
-} // sofa
-
-#endif // TESTMESSAGEHANDLER_H
-
+} // namespace sofa::testing

@@ -15,3 +15,5 @@ sofa_create_package_with_targets(
     PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)

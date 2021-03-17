@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralObjectInteraction/AttachConstraint.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/Node.h>
-
 
 namespace sofa::component::projectiveconstraintset
 {

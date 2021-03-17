@@ -15,10 +15,7 @@ if(SOFAHELPER_HAVE_BOOST_FILESYSTEM
 else()
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
 endif()
-# GTest
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    sofa_find_package(GTest CONFIG BOTH_SCOPES)
-endif()
+
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
@@ -225,18 +222,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
 endif()
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    list(APPEND HEADER_FILES
-        ${SRC_ROOT}/testing/BaseTest.h
-        ${SRC_ROOT}/testing/NumericTest.h
-        ${SRC_ROOT}/testing/TestMessageHandler.h
-        )
-    list(APPEND SOURCE_FILES
-        ${SRC_ROOT}/testing/BaseTest.cpp
-        ${SRC_ROOT}/testing/NumericTest.cpp
-        ${SRC_ROOT}/testing/TestMessageHandler.cpp
-        )
-endif()
 if(Boost_THREAD_FOUND)
     list(APPEND HEADER_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.h)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.cpp)
@@ -338,11 +323,6 @@ if(Boost_FOUND)
         #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
         target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_ALL_DYN_LINK)
     endif()
-endif()
-
-# GTest
-if((SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE) AND GTest_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 endif()
 
 # Eigen (header only)

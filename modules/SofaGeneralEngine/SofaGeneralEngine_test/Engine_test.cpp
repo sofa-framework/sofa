@@ -271,7 +271,7 @@ void DataEngine_test< TestDataEngine<component::engine::RandomPointDistributionI
 
 // testing every engines of SofaEngine here
 
-typedef testing::Types<
+typedef ::testing::Types<
 //TestDataEngine< component::engine::AverageCoord<defaulttype::Vec3Types> >,  // getObject pb -> require a scene
 //TestDataEngine< component::engine::BoxROI<defaulttype::Vec3Types> >, // getObject pb -> recuire a scene
 //TestDataEngine< component::engine::PairBoxROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene

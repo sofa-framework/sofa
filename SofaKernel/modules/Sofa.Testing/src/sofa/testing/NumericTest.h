@@ -19,10 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_NUMERICTEST_H
-#define SOFA_HELPER_NUMERICTEST_H
+#pragma once
 
-#include "BaseTest.h"
+#include <sofa/testing/config.h>
+
+#include <sofa/testing/BaseTest.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -32,14 +33,13 @@
 #include <ctime>
 #include <iostream>
 
-namespace sofa {
-namespace helper {
-namespace testing {
+namespace sofa::testing
+{
 
 /** @brief Helper functions to compare scalars, vectors, matrices, etc.
   */
 template <typename _Real=SReal>
-struct SOFA_HELPER_API NumericTest : public virtual BaseTest
+struct SOFA_TESTING_API NumericTest : public virtual BaseTest
 {
     NumericTest() {}
 
@@ -301,12 +301,7 @@ void EXPECT_MAT_NEAR(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::def
             EXPECT_NEAR(expected(i,j), actual(i,j), abs_error);
 }
 
-} /// namespace testing
-} /// namespace helper
-} /// namespace sofa
+} // namespace sofa::testing
 
 
-extern template struct SOFA_HELPER_API sofa::helper::testing::NumericTest<double>;
-
-
-#endif // SOFA_HELPER_NUMERICTEST_H
+extern template struct SOFA_TESTING_API sofa::testing::NumericTest<double>;

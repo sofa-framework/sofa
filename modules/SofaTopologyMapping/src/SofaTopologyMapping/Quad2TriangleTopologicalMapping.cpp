@@ -259,9 +259,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             }
 
-            to_tstm->addTrianglesProcess(triangles_to_create) ;
-            to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
-            to_tstm->propagateTopologicalChanges();
+            to_tstm->addTriangles(triangles_to_create) ;
             break;
         }
         case core::topology::QUADSREMOVED:

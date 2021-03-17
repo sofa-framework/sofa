@@ -88,3 +88,5 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "include"
     INCLUDE_INSTALL_DIR "extlibs/GTest"
     )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)

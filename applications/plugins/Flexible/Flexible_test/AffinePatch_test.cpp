@@ -187,7 +187,7 @@ namespace sofa {
     };
 
       // Define the list of DataTypes to instantiate
-    using testing::Types;
+    using ::testing::Types;
     typedef Types<
         Vec3Types
     > DataTypes; // the types to instantiate.
