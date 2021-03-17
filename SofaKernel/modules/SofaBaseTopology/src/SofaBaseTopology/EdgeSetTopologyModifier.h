@@ -85,77 +85,11 @@ public:
     virtual void addEdges( const sofa::helper::vector< Edge >& edges,
         const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems);
 
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
-    virtual void addEdgesWarning(const sofa::Size nEdges);
-
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
-    virtual void addEdgesWarning(const sofa::Size nEdges,
-            const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< EdgeID >& edgesIndexList);
-
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
-    virtual void addEdgesWarning(const sofa::Size nEdges,
-            const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< EdgeID >& edgesIndexList,
-            const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors);
-
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
-    virtual void addEdgesWarning(const sofa::Size nEdges,
-            const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< EdgeID >& edgesIndexList,
-            const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs);
-    
-    /** \brief Sends a message to warn that some edges were added in this topology.
-    *
-    * \sa addEdgesProcess
-    */
-    virtual void addEdgesWarning(const sofa::Size nEdges,
-            const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< EdgeID >& edgesIndexList,
-            const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems);
 
     /** \brief Effectively add an edge.
     */
     void addEdgeProcess(Edge e);
 
-    /** \brief Effectively add some edges to this topology.
-    *
-    * \sa addEdgesWarning
-    */
-    virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
-
-    /** \brief Sends a message to warn that some edges are about to be deleted.
-    *
-    * \sa removeEdgesProcess
-    */
-    // side effect : edges are sorted first
-    virtual void removeEdgesWarning(/*const*/ sofa::helper::vector<EdgeID> &edges);
-
-    /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
-    *
-    * Elements corresponding to these edges are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the edges are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeEdgesWarning
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    *
-    * @param removeIsolatedItems if true isolated vertices are also removed
-    */
-    virtual void removeEdgesProcess(const sofa::helper::vector<EdgeID> &indices, const bool removeIsolatedItems = false);
 
     /** \brief Swap the edges.
     *
@@ -257,6 +191,76 @@ public:
     virtual bool removeIsolatedElements(sofa::Size scaleElem);
 
 protected:
+    /** \brief Sends a message to warn that some edges were added in this topology.
+    *
+    * \sa addEdgesProcess
+    */
+    virtual void addEdgesWarning(const sofa::Size nEdges);
+
+    /** \brief Sends a message to warn that some edges were added in this topology.
+    *
+    * \sa addEdgesProcess
+    */
+    virtual void addEdgesWarning(const sofa::Size nEdges,
+        const sofa::helper::vector< Edge >& edgesList,
+        const sofa::helper::vector< EdgeID >& edgesIndexList);
+
+    /** \brief Sends a message to warn that some edges were added in this topology.
+    *
+    * \sa addEdgesProcess
+    */
+    virtual void addEdgesWarning(const sofa::Size nEdges,
+        const sofa::helper::vector< Edge >& edgesList,
+        const sofa::helper::vector< EdgeID >& edgesIndexList,
+        const sofa::helper::vector< sofa::helper::vector< EdgeID > >& ancestors);
+
+    /** \brief Sends a message to warn that some edges were added in this topology.
+    *
+    * \sa addEdgesProcess
+    */
+    virtual void addEdgesWarning(const sofa::Size nEdges,
+        const sofa::helper::vector< Edge >& edgesList,
+        const sofa::helper::vector< EdgeID >& edgesIndexList,
+        const sofa::helper::vector< sofa::helper::vector< EdgeID > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs);
+
+    /** \brief Sends a message to warn that some edges were added in this topology.
+    *
+    * \sa addEdgesProcess
+    */
+    virtual void addEdgesWarning(const sofa::Size nEdges,
+        const sofa::helper::vector< Edge >& edgesList,
+        const sofa::helper::vector< EdgeID >& edgesIndexList,
+        const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems);
+
+    /** \brief Effectively add some edges to this topology.
+    *
+    * \sa addEdgesWarning
+    */
+    virtual void addEdgesProcess(const sofa::helper::vector< Edge >& edges);
+
+    /** \brief Sends a message to warn that some edges are about to be deleted.
+    *
+    * \sa removeEdgesProcess
+    */
+    // side effect : edges are sorted first
+    virtual void removeEdgesWarning(/*const*/ sofa::helper::vector<EdgeID>& edges);
+
+    /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
+    *
+    * Elements corresponding to these edges are removed form the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the edges are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeEdgesWarning
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    *
+    * @param removeIsolatedItems if true isolated vertices are also removed
+    */
+    virtual void removeEdgesProcess(const sofa::helper::vector<EdgeID>& indices, const bool removeIsolatedItems = false);
+
+
+
     /** \brief Add some points to this topology.
     *
     * \sa addPointsWarning
