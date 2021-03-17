@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_INL
 #define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_INL
 
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseNode.h>

@@ -50,7 +50,7 @@ ComponentMouseInteraction::~ComponentMouseInteraction()
 {
     if (nodeRayPick)
     {
-        nodeRayPick->execute< simulation::DeleteVisitor >(sofa::core::ExecParams::defaultInstance());
+        nodeRayPick->execute< simulation::DeleteVisitor >(sofa::core::execparams::defaultInstance());
         nodeRayPick.reset();
     }
 }

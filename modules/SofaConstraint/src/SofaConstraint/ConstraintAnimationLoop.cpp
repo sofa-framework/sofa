@@ -40,7 +40,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
 
-#include <sofa/core/ConstraintParams.h>
+
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/behavior/BaseConstraint.h> ///< ConstraintResolution.
@@ -484,7 +484,7 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->addComplianceInConstraintSpace(core::ConstraintParams::defaultInstance(), getCP()->getW());
+        cc->addComplianceInConstraintSpace(core::constraintparams::defaultInstance(), getCP()->getW());
     }
 
     sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");

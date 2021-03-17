@@ -23,7 +23,7 @@
 #include <SofaTest/TestMessageHandler.h>
 
 
-#include <sofa/core/ExecParams.h>
+
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -121,7 +121,7 @@ struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     defaulttype::Vec3Types
 > DataTypes; // the types to instanciate.

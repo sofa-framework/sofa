@@ -312,9 +312,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 }
             }
 
-            m_outTopoModifier->addEdgesProcess(edges_to_create) ;
-            m_outTopoModifier->addEdgesWarning(edges_to_create.size(), edges_to_create, edgesIndexList) ;
-            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->addEdges(edges_to_create) ;
             break;
         }
         case core::topology::POINTSREMOVED:
@@ -331,10 +329,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
             auto& tab_indices = indices;
 
-            m_outTopoModifier->removePointsWarning(tab_indices, false);
-            m_outTopoModifier->propagateTopologicalChanges();
-            m_outTopoModifier->removePointsProcess(tab_indices, false);
-
+            m_outTopoModifier->removePoints(tab_indices, false);
             break;
         }
         case core::topology::POINTSRENUMBERING:
@@ -402,10 +397,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             }
 
             // add new edges to output topology
-            m_outTopoModifier->addEdgesProcess(edges_to_create);
-            m_outTopoModifier->addEdgesWarning(edges_to_create.size(), edges_to_create, edgeId_to_create);
-            m_outTopoModifier->propagateTopologicalChanges();
-
+            m_outTopoModifier->addEdges(edges_to_create);
 
             // remove edges not anymore on part of the border
             sofa::helper::vector< BaseMeshTopology::EdgeID > local_edgeId_to_remove;
@@ -443,9 +435,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSADDED:
         {
             const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
-            m_outTopoModifier->addPointsProcess(ta->getNbAddedVertices());
-            m_outTopoModifier->addPointsWarning(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
-            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->addPoints(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
             break;
         }
         default:

@@ -324,7 +324,7 @@ void ImageDataEngine_test< TestDataEngine<component::engine::MeshToImageEngine<d
 
 // testing every engines of image plugin here
 
-typedef testing::Types<
+typedef ::testing::Types<
  /*TestDataEngine< component::engine::DepthMapToMeshEngine<defaulttype::ImageUC> > // crash on MAC (opengl related?)
 ,*/TestDataEngine< component::engine::ImageAccumulator<defaulttype::ImageUC> >
 ,TestDataEngine< component::engine::ImageDataDisplay<defaulttype::ImageUC,defaulttype::ImageUC> >

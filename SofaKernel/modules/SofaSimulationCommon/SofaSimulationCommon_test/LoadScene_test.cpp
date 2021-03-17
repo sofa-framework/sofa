@@ -19,13 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "stdafx.h"
-#include "Sofa_test.h"
-
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
+#include <SofaTest/Sofa_test.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -45,17 +39,11 @@ struct LoadScene_test: public Sofa_test<>
 
    bool LoadScene(std::string sceneName)
    {
-       // Init Sofa
-       sofa::component::initSofaBase();
-       sofa::component::initSofaCommon();
-       sofa::component::initSofaGeneral();
-       sofa::component::initSofaMisc();
-
        simulation::Simulation* simulation;
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
        // Load the scene from the xml file
-       std::string fileName = std::string(SOFASIMULATION_TEST_SCENES_DIR) + "/common/" + sceneName;
+       std::string fileName = std::string(SOFASIMULATION_TEST_SCENES_DIR) + "/" + sceneName;
        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
        // Test if load has succeeded

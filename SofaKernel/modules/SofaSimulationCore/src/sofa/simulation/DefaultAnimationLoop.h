@@ -24,7 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/simulation/fwd.h>
 
 namespace sofa {

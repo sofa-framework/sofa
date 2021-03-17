@@ -27,7 +27,7 @@ using std::vector;
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest;
 
-using testing::Types;
+using ::testing::Types;
 
 namespace {
 

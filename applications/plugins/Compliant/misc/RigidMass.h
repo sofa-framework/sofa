@@ -246,7 +246,7 @@ public:
 		sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix( this->mstate );
 		const unsigned size = defaulttype::DataTypeInfo<typename DataTypes::Deriv>::size();
 
-        real mFactor = (real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+        real mFactor = (real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
 		
 		for(unsigned i = 0, n = this->mstate->getSize(); i < n; ++i) {
 

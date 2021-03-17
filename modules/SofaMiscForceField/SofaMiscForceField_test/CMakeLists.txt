@@ -10,6 +10,6 @@ set(SOURCE_FILES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaMiscForceField)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaMiscForceField)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

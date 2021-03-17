@@ -25,5 +25,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAGENERALLINEARSOLVER_API void initSofaGeneralLinearSolver();
 
 } //namespace sofa::component
