@@ -111,7 +111,7 @@ namespace sofa
             
             // current instantiated scheduler
             static std::string _currentSchedulerName;
-            static std::shared_ptr<TaskScheduler> _currentScheduler;
+            static std::unique_ptr<TaskScheduler> _currentScheduler;
             
             friend class Task;
         };

@@ -16,7 +16,7 @@ namespace sofa
         // the TaskScheduler::_schedulers must be initialized before any call to TaskScheduler::registerScheduler
         std::map<std::string, std::function<TaskScheduler*()> > TaskScheduler::_schedulers;
         std::string TaskScheduler::_currentSchedulerName;
-        std::shared_ptr<TaskScheduler> TaskScheduler::_currentScheduler = nullptr;
+        std::unique_ptr<TaskScheduler> TaskScheduler::_currentScheduler = nullptr;
         
         // register default task scheduler
         const bool DefaultTaskScheduler::isRegistered = TaskScheduler::registerScheduler(DefaultTaskScheduler::name(), &DefaultTaskScheduler::create);
@@ -44,7 +44,7 @@ namespace sofa
             }
             
             TaskSchedulerCreatorFunction& creatorFunc = iter->second;
-            _currentScheduler = std::shared_ptr<TaskScheduler>(creatorFunc());
+            _currentScheduler = std::unique_ptr<TaskScheduler>(creatorFunc());
             
             _currentSchedulerName = iter->first;
             
