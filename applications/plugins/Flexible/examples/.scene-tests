@@ -49,3 +49,6 @@ ignore "demos/steak_diffusion.scn"
 # IGNORE ALL PYTHON SCENES
 ignore *.py
 ignore *.pyscn
+ignore IO/*.py
+ignore deformation/*.py
+ignore strain/*.py
