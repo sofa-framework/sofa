@@ -22,7 +22,7 @@
 #include <SofaTest/Elasticity_test.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/core/ExecParams.h>
+
 
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -191,13 +191,13 @@ struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(EulerImplicitDynamic_test, DataTypes);
+TYPED_TEST_SUITE(EulerImplicitDynamic_test, DataTypes);
 
 // Test case: h=0.1 k=100 m =10 rm=0 rk=0
 TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_without_damping)

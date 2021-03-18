@@ -22,8 +22,6 @@
 #include <SofaGeneral/config.h>
 
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
 
 namespace sofa
 {
@@ -40,8 +38,6 @@ void initSofaGeneral()
         first = false;
     }
 
-    initGeneralLoader();
-    initConstraint();
 }
 
 

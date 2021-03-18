@@ -22,12 +22,15 @@
 #pragma once
 
 #include "DistanceMapping.h"
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/core/ConstraintParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
-
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/MechanicalState.h>
 namespace sofa::component::mapping
 {
 
@@ -215,7 +218,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
     if( !geometricStiffness ) return;
 
-    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get(mparams)].write());
+    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
     const SReal& kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
@@ -270,8 +273,9 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& in, const Data<OutMatrixDeriv>& out)
 {
-    const OutMatrixDeriv& childMat  = sofa::helper::read(out, cparams).ref();
-    InMatrixDeriv&        parentMat = sofa::helper::write(in, cparams).wref();
+    SOFA_UNUSED(cparams);
+    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(out).ref();
+    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(in).wref();
     addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
@@ -293,11 +297,12 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
 {
+    SOFA_UNUSED(mparams);
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
 
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get(mparams)].read() );
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
     const SeqEdges& links = m_edgeContainer->getEdges();
 
     unsigned int size = this->fromModel->getSize();

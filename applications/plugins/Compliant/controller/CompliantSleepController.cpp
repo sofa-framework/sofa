@@ -1,5 +1,6 @@
 #include "CompliantSleepController.h"
-
+#include <sofa/simulation/Node.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/ObjectFactory.h>
 #include "../compliance/DiagonalCompliance.h"
 #include "../compliance/UniformCompliance.h"
@@ -39,7 +40,7 @@ void CompliantSleepController::collectWakeupPairs(std::vector<BaseContexts>& wak
 {
 	SleepController::collectWakeupPairs(wakeupPairs);
 
-	GetConstrainedContextPairs(core::ExecParams::defaultInstance(), this, wakeupPairs).execute(getContext()->getRootContext());
+    GetConstrainedContextPairs(core::execparams::defaultInstance(), this, wakeupPairs).execute(getContext()->getRootContext());
 }
 
 bool CompliantSleepController::isCompliance(core::objectmodel::BaseObject* o) const

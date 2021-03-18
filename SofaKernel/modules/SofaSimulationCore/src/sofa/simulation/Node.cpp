@@ -20,7 +20,36 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/Node.h>
+
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/loader/BaseLoader.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualManager.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/Shader.h>
+
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/Mapping.h>
+
 #include <sofa/simulation/Node.inl>
+#include <sofa/simulation/VisitorScheduler.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/AnimateVisitor.h>
@@ -30,13 +59,11 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 
+#include <sofa/simulation/MutationListener.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
 #include <iostream>
-
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/topological_sort.hpp>
 
 /// If you want to activate/deactivate that please set them to true/false
 #define DEBUG_VISITOR false
@@ -90,10 +117,10 @@ Node::Node(const std::string& name)
 
     , debug_(false)
     , initialized(false)
-    , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
 {
     _context = this;
     setName(name);
+    f_printLog.setValue(DEBUG_LINK);
 }
 
 
@@ -358,7 +385,7 @@ core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
     return nullptr;
 }
 
-void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link)
+sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link)
 {
     std::string pathStr;
     if (link)
@@ -524,7 +551,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
     }
     else
     {
-        void* r = destType->dynamicCast(node);
+        Base* r = destType->dynamicCast(node);
         if (r)
         {
             if(DEBUG_LINK)
@@ -534,7 +561,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         for (ObjectIterator it = node->object.begin(), itend = node->object.end(); it != itend; ++it)
         {
             BaseObject* obj = it->get();
-            void *o = destType->dynamicCast(obj);
+            Base *o = destType->dynamicCast(obj);
             if (!o) continue;
             if(DEBUG_LINK)
                 dmsg_info()  << "  found " << obj->getTypeName() << " " << obj->getName() << "." ;
@@ -814,7 +841,6 @@ void Node::initialize()
     initialized = true;  // flag telling is the node is initialized
 
     initVisualContext();
-    sortComponents();
     updateSimulationContext();
 }
 
@@ -977,72 +1003,6 @@ void Node::printComponents()
 
     msg_info() << sstream.str();
 }
-
-/** @name Dependency graph
-This graph reflects the dependencies between the components. It is used internally to ensure that the initialization order is comform to the dependencies.
-*/
-/// @{
-// Vertices
-struct component_t
-{
-    typedef boost::vertex_property_tag kind;
-};
-typedef boost::property<component_t, BaseObject::SPtr> VertexProperty;
-
-// Graph
-typedef ::boost::adjacency_list < ::boost::vecS, ::boost::vecS, ::boost::bidirectionalS, VertexProperty > DependencyGraph;
-
-void Node::sortComponents()
-{
-    if (depend.getValue().empty())
-        return;
-    typedef DependencyGraph::vertex_descriptor Vertex;
-    DependencyGraph dependencyGraph;
-    // map vertex->component
-    boost::property_map< DependencyGraph, component_t >::type  component_from_vertex = boost::get( component_t(), dependencyGraph );
-    // map component->vertex
-    std::map< BaseObject::SPtr, Vertex > vertex_from_component;
-
-    // build the graph
-    for (int i = int(object.size()) - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one
-    {
-        Vertex v = add_vertex( dependencyGraph );
-        component_from_vertex[v] = object[unsigned(i)];
-        vertex_from_component[object[unsigned(i)]] = v;
-    }
-    assert( depend.getValue().size()%2 == 0 ); // must contain only pairs
-    for ( unsigned i=0; i<depend.getValue().size(); i+=2 )
-    {
-        BaseObject* o1 = getObject( depend.getValue()[i] );
-        BaseObject* o2 = getObject( depend.getValue()[i+1] );
-        if ( o1==nullptr ) {
-            msg_warning() <<" Node::sortComponent, could not find object called "<<depend.getValue()[i];
-        }else if ( o2==nullptr ) {
-            msg_warning() <<" Node::sortComponent, could not find object called "<<depend.getValue()[i+1];
-        }else
-        {
-            boost::add_edge( vertex_from_component[o1], vertex_from_component[o2], dependencyGraph );
-        }
-    }
-
-    // sort the components according to the dependencies
-    typedef std::vector< Vertex > container;
-    container c;
-    boost::topological_sort(dependencyGraph, std::back_inserter(c));
-
-    // remove all the components
-    for ( container::reverse_iterator ii=c.rbegin(); ii!=c.rend(); ++ii)
-    {
-        removeObject(component_from_vertex[*ii]);
-    }
-
-    // put the components in the right order
-    for ( container::reverse_iterator ii=c.rbegin(); ii!=c.rend(); ++ii)
-    {
-        addObject(component_from_vertex[*ii]);
-    }
-}
-
 
 Node::SPtr Node::create( const std::string& name )
 {

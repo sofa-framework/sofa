@@ -19,20 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaCarving/CarvingManager.h>
 #include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaBaseUtils/initSofaBaseUtils.h>
+#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
 
 using namespace sofa::helper::testing;
 using namespace sofa::component::collision;
 using namespace sofa::simpleapi;
-using namespace sofa::simpleapi::components;
-
 
 class SofaCarving_test : public BaseSimulationTest
 {
@@ -60,9 +57,8 @@ private:
 
 bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
+    sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
+    sofa::component::initSofaBaseLinearSolver(); // needed to instanciate CGLinearSolver
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
@@ -72,6 +68,10 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     m_root->setDt(0.01);
     createObject(m_root, "RequiredPlugin", { { "name","SofaGeneralSimpleFem" } });
     createObject(m_root, "RequiredPlugin", { { "name","SofaTopologyMapping" } });
+    createObject(m_root, "RequiredPlugin", { { "name","SofaGeneralLoader" } });
+    createObject(m_root, "RequiredPlugin", { { "name","SofaEngine" } });
+    createObject(m_root, "RequiredPlugin", { { "name","SofaImplicitOdeSolver" } });
+
     // create collision pipeline
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
     createObject(m_root, "BruteForceDetection", { { "name","Detection" } });
@@ -124,10 +124,6 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     createObject(nodeVolume, "TetrahedronSetTopologyModifier", {
         { "name","Modifier" }
         });
-    createObject(nodeVolume, "TetrahedronSetTopologyAlgorithms", {
-        { "name","TopoAlgo" },
-        { "template", "Vec3" }
-        });
     createObject(nodeVolume, "TetrahedronSetGeometryAlgorithms", {
         { "name","GeomAlgo" },
         { "template", "Vec3" }
@@ -164,10 +160,6 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         });
     createObject(nodeSurface, "TriangleSetTopologyModifier", {
         { "name","Modifier" }
-        });
-    createObject(nodeSurface, "TriangleSetTopologyAlgorithms", {
-        { "name","TopoAlgo" },
-        { "template", "Vec3" }
         });
     createObject(nodeSurface, "TriangleSetGeometryAlgorithms", {
         { "name","GeomAlgo" },

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGraphComponent LANGUAGES CXX)
 
-find_package(SofaBase REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
 
 set(SOFAGRAPHCOMPONENT_SRC "src/${PROJECT_NAME}")
 
@@ -58,7 +58,7 @@ list(APPEND SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaSimulationTree SofaBaseUtils)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaBaseUtils)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

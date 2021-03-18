@@ -236,14 +236,14 @@ struct Type2{
 const std::string Type2::sceneName= "CylinderTractionElaston.scn";
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     Type1,
     Type2
 > DataTypes; 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(Material_test, DataTypes);
+TYPED_TEST_SUITE(Material_test, DataTypes);
 
 // Test traction cylinder
 TYPED_TEST( Material_test , testTractionCylinder )

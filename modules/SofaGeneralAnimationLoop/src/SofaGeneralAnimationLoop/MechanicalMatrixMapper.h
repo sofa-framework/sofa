@@ -27,14 +27,13 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
-#include <sofa/core/MechanicalParams.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/core/ConstraintParams.h>
+
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/defaulttype/BaseMatrix.h>
@@ -272,10 +271,13 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP)
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Rigid3Types, defaulttype::Rigid3Types>;
 extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Rigid3Types>;
 extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Vec3Types>;
 extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Vec3Types>;
 extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Vec1Types>;
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Rigid3Types, defaulttype::Vec1Types>;
 #endif
 
 } // namespace sofa::component::interactionforcefield

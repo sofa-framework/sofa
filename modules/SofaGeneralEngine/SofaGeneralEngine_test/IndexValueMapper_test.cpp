@@ -27,7 +27,7 @@ using sofa::core::objectmodel::New ;
 
 #include <SofaTest/Sofa_test.h>
 
-using testing::Types;
+using ::testing::Types;
 using sofa::defaulttype::Vec3fTypes ;
 using sofa::defaulttype::Vec3dTypes ;
 
@@ -130,7 +130,7 @@ Vec3Types
 
 > DataTypes;
 
-TYPED_TEST_CASE(TestIndexValueMapper, DataTypes);
+TYPED_TEST_SUITE(TestIndexValueMapper, DataTypes);
 
 TYPED_TEST(TestIndexValueMapper, input_to_output_empty_values)
 {

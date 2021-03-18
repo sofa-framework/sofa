@@ -21,7 +21,14 @@
 ******************************************************************************/
 #define SOFA_SIMULATION_MECHANICALVISITOR_CPP
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/LocalStorage.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/CollisionModel.h>
 #include <iostream>
 
 namespace sofa
@@ -135,28 +142,28 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::ConstraintSolver>,core::behavior::ConstraintSolver>(this, ctx, node->constraintSolver, &MechanicalVisitor::fwdConstraintSolver);
+        res = for_each_r(this, ctx, node->constraintSolver, &MechanicalVisitor::fwdConstraintSolver);
     }
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseForceField>,core::behavior::BaseForceField>(this, ctx, node->forceField, &MechanicalVisitor::fwdForceField);
+        res = for_each_r(this, ctx, node->forceField, &MechanicalVisitor::fwdForceField);
     }
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseInteractionForceField>,core::behavior::BaseInteractionForceField>(this, ctx, node->interactionForceField, &MechanicalVisitor::fwdInteractionForceField);
+        res = for_each_r(this, ctx, node->interactionForceField, &MechanicalVisitor::fwdInteractionForceField);
     }
 
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseProjectiveConstraintSet>,core::behavior::BaseProjectiveConstraintSet>(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::fwdProjectiveConstraintSet);
+        res = for_each_r(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::fwdProjectiveConstraintSet);
     }
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseConstraintSet>,core::behavior::BaseConstraintSet>(this, ctx, node->constraintSet, &MechanicalVisitor::fwdConstraintSet);
+        res = for_each_r(this, ctx, node->constraintSet, &MechanicalVisitor::fwdConstraintSet);
     }
 
 
@@ -166,9 +173,9 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
 
 void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorContext* ctx)
 {
-    for_each<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseProjectiveConstraintSet>,core::behavior::BaseProjectiveConstraintSet>(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::bwdProjectiveConstraintSet);
-    for_each<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseConstraintSet>,core::behavior::BaseConstraintSet>(this, ctx, node->constraintSet, &MechanicalVisitor::bwdConstraintSet);
-    for_each<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::ConstraintSolver>,core::behavior::ConstraintSolver>(this, ctx, node->constraintSolver, &MechanicalVisitor::bwdConstraintSolver);
+    for_each(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::bwdProjectiveConstraintSet);
+    for_each(this, ctx, node->constraintSet, &MechanicalVisitor::bwdConstraintSet);
+    for_each(this, ctx, node->constraintSolver, &MechanicalVisitor::bwdConstraintSolver);
 
     if (node->mechanicalState != nullptr)
     {
@@ -238,6 +245,18 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node)
     ctx.node = node;
     ctx.nodeData = rootData;
     processNodeBottomUp(node, &ctx);
+}
+
+/// Process all the InteractionConstraint
+Visitor::Result BaseMechanicalVisitor::fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseInteractionProjectiveConstraintSet* c)
+{
+    return fwdProjectiveConstraintSet(ctx->node, c);
+}
+
+/// Process all the InteractionConstraint
+Visitor::Result BaseMechanicalVisitor::fwdInteractionConstraint(VisitorContext* ctx, core::behavior::BaseInteractionConstraint* c)
+{
+    return fwdConstraintSet(ctx->node, c);
 }
 
 
@@ -1181,18 +1200,6 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdConstraintSet(simulation::N
 }
 
 
-
-Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
-{
-    if (core::behavior::BaseLMConstraint* LMc=c->toBaseLMConstraint())
-    {
-        LMc->writeConstraintEquations(offset, id, order);
-        datasC.push_back(LMc);
-    }
-    return RESULT_CONTINUE;
-}
-
-
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
     ctime_t t0 = begin(node, c);
@@ -1208,6 +1215,7 @@ void MechanicalAccumulateConstraint::bwdMechanicalMapping(simulation::Node* node
     end(node, map, t0);
 }
 
+
 Visitor::Result MechanicalBuildConstraintMatrix::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
     ctime_t t0 = begin(node, c);
@@ -1215,6 +1223,7 @@ Visitor::Result MechanicalBuildConstraintMatrix::fwdConstraintSet(simulation::No
     end(node, c, t0);
     return RESULT_CONTINUE;
 }
+
 
 void MechanicalAccumulateMatrixDeriv::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
 {
@@ -1603,18 +1612,10 @@ std::string MechanicalVNormVisitor::getInfos() const
    return name;
 }
 
-std::string MechanicalWriteLMConstraint::getInfos() const
+std::string MechanicalAccFromFVisitor::getInfos() const
 {
-    std::string name;
-    if      (order == core::ConstraintParams::ACC)
-        name= "["+sofa::core::VecId::dx().getName()+"]";
-    else if (order == core::ConstraintParams::VEL)
-        name= "["+sofa::core::VecId::velocity().getName()+"]";
-    else if (order == core::ConstraintParams::POS)
-        name= "["+sofa::core::VecId::position().getName()+"]";
-    return name;
+    std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name;
 }
-
 
 
 template class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor<V_COORD>;

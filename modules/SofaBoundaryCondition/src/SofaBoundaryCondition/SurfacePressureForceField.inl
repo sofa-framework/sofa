@@ -21,8 +21,11 @@
 ******************************************************************************/
 #pragma once
 
+
 #include <SofaBoundaryCondition/SurfacePressureForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <vector>
@@ -241,7 +244,7 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     return;
 
     const int N = Coord::total_size;
@@ -437,7 +440,7 @@ void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(unsigned int q
 template <class DataTypes>
 bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) const
 {
-    if ( (m_max == Coord()) && (m_min == Coord()) )
+    if ( (m_max.getValue() == Coord()) && (m_min.getValue() == Coord()) )
         return true;
 
     return ( (x[0] >= m_min.getValue()[0])
@@ -531,7 +534,7 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::addDForce(const core::
 {
 
 
-	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 	VecDeriv& df       = *(d_df.beginEdit());
 	const VecDeriv& dx =   d_dx.getValue()  ;
 

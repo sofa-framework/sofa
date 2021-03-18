@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 /* -------------------------------------------------------- */
-#ifndef __WDOUBLELINEEDIT__
-#define __WDOUBLELINEEDIT__
-/* -------------------------------------------------------- */
+#pragma once
 #include <sofa/gui/qt/config.h>
 #include <qvalidator.h>
 #include <qlineedit.h>
@@ -101,6 +99,3 @@ public slots:
     void setValuePercent(int p);
 
 };
-/* -------------------------------------------------------- */
-#endif
-/* -------------------------------------------------------- */

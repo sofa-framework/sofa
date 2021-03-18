@@ -28,11 +28,9 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/decompose.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif /* SOFA_SMP */
 
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 
 #include "DeformableFrameMass.h"
 
@@ -42,6 +40,24 @@ namespace sofa
 namespace defaulttype
 {
 
+
+template<typename Real>
+static Vec<2,Real> convertSpatialToQuadraticCoord(const Vec<1,Real>& p)
+{
+    return Vec<5,Real>( p[0], p[0]*p[0]);
+}
+
+template<typename Real>
+static Vec<5,Real> convertSpatialToQuadraticCoord(const Vec<2,Real>& p)
+{
+    return Vec<5,Real>( p[0], p[1], p[0]*p[0], p[1]*p[1], p[0]*p[1]);
+}
+
+template<typename Real>
+static Vec<9,Real> convertSpatialToQuadraticCoord(const Vec<3,Real>& p)
+{
+    return Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
+}
 
 /** DOF types associated with 2nd order deformable frames. Each deformable frame generates an quadratic displacement field, with 30 independent degrees of freedom.
 */
@@ -229,10 +245,10 @@ public:
     {
         Affine m;
 #ifdef DEBUG
-        bool invertible = invertMatrix(m,c.getAffine());
+        bool invertible = defaulttype::invertMatrix(m,c.getAffine());
         assert(invertible);
 #else
-        invertMatrix(m,c.getAffine());
+        defaulttype::invertMatrix(m,c.getAffine());
 #endif
         return Coord( -(m*c.getCenter()),m );
     }
@@ -364,7 +380,7 @@ public:
                     // the projection matrix is however non symmetric..
 
                     // Compute velocity tensor W = Adot.Ainv
-                    Affine Ainv;  invertMatrix(Ainv,c.getAffine());
+                    Affine Ainv;  defaulttype::invertMatrix(Ainv,c.getAffine());
                     Affine W = getAffine() * Ainv;
 
                     // make it skew-symmetric
@@ -507,25 +523,6 @@ public:
 
 
 };
-
-
-template<typename Real>
-static Vec<2,Real> convertSpatialToQuadraticCoord(const Vec<1,Real>& p)
-{
-    return Vec<5,Real>( p[0], p[0]*p[0]);
-}
-
-template<typename Real>
-static Vec<5,Real> convertSpatialToQuadraticCoord(const Vec<2,Real>& p)
-{
-    return Vec<5,Real>( p[0], p[1], p[0]*p[0], p[1]*p[1], p[0]*p[1]);
-}
-
-template<typename Real>
-static Vec<9,Real> convertSpatialToQuadraticCoord(const Vec<3,Real>& p)
-{
-    return Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
-}
 
 
 // returns dp^* / dp

@@ -22,7 +22,7 @@ namespace sofa {
     using namespace component;
     using defaulttype::Vec;
     using defaulttype::Mat;
-    using testing::Types;
+    using ::testing::Types;
 
     using namespace component::mapping;
 

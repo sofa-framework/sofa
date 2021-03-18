@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASELINK_H
 
 #include <sofa/core/config.h>
-#include <sofa/core/ExecParams.h>
+#include <sofa/core/fwd.h>
 #include <string>
 
 namespace sofa
@@ -91,9 +91,8 @@ public:
 
     virtual Base* getOwnerBase() const = 0;
 
-    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    virtual sofa::core::objectmodel::BaseData* getOwnerData() const = 0;
-
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     /// Set one of the flags.
     void setFlag(LinkFlagsEnum flag, bool b)
@@ -107,8 +106,8 @@ public:
 
     bool isMultiLink() const { return getFlag(FLAG_MULTILINK); }
 
-    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    bool isDataLink() const { return false; }
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    bool isDataLink() const = delete;
     bool isStrongLink() const { return getFlag(FLAG_STRONGLINK); }
     bool isDoubleLink() const { return getFlag(FLAG_DOUBLELINK); }
     bool isDuplicate() const { return getFlag(FLAG_DUPLICATE); }
@@ -130,28 +129,34 @@ public:
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    int getCounter(const core::ExecParams*) const { return getCounter(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    int getCounter(const core::ExecParams*) const = delete;
 
     void setLinkedBase(Base* link);
 
     virtual size_t getSize() const = 0;
-    virtual Base* getLinkedBase(std::size_t index=0) const = 0;
+    Base* getLinkedBase(std::size_t index=0) const { return _doGet_(index); }
 
-    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    virtual BaseData* getLinkedData(std::size_t index=0) const = 0;
 
-    virtual std::string getLinkedPath(std::size_t index=0) const = 0;
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    BaseData* getLinkedData(std::size_t index=0) const = delete;
+
+    // Remove all links
+    void clear() { _doClear_(); }
+
+    std::string getLinkedPath(const std::size_t index=0) const;
+
+    std::string getPath(std::size_t index=0) const { return getLinkedPath(index); }
 
     /// @name Serialization API
     /// @{
 
     /// Read the command line
-    virtual bool read( const std::string& str ) = 0;
+    bool read( const std::string& str );
 
     /// Update pointers in case the pointed-to objects have appeared
     /// @return false if there are broken links
-    virtual bool updateLinks() = 0;
+    bool updateLinks();
 
     /// Print the value of the associated variable
     virtual void printValue( std::ostream& ) const;
@@ -167,7 +172,7 @@ public:
     /// @name Serialization Helper API
     /// @{
 
-    static bool ParseString(const std::string& text, std::string* path, std::string* data = nullptr, Base* start = nullptr);
+    static bool ParseString(const std::string& text, std::string* path, std::string* data = nullptr, Base *start = nullptr);
 
     bool parseString(const std::string& text, std::string* path, std::string* data = nullptr) const
     {
@@ -181,9 +186,24 @@ public:
     static std::string CreateString(BaseData* data, Base* from);
     static std::string CreateString(Base* object, BaseData* data, Base* from);
 
-    /// @}
+    Base* getOwner() const { return _doGetOwner_(); }
+    void setOwner(Base* owner){ return _doSetOwner_(owner); }
+
+    /// Add a new target to the link.
+    bool add(Base* baseptr, const std::string& path) { return _doAdd_(baseptr, path); }
+
+    /// Change the link's target at the provided index.
+    bool set(Base* baseptr, size_t index=0) { return _doSet_(baseptr, index); }
 
 protected:
+    virtual bool _doSet_(Base* target, const size_t index=0) = 0;
+    virtual Base* _doGetOwner_() const = 0 ;
+    virtual void _doSetOwner_(Base* owner) = 0;
+    virtual Base* _doGet_(const size_t=0) const = 0;
+    virtual bool _doAdd_(Base* target, const std::string&) = 0;
+    virtual void _doClear_() = 0;
+    virtual std::string _doGetLinkedPath_(const size_t=0) const = 0;
+
     unsigned int m_flags;
     std::string m_name;
     std::string m_help;

@@ -173,13 +173,13 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(LinearElasticity_test, DataTypes);
+TYPED_TEST_SUITE(LinearElasticity_test, DataTypes);
 
 // first test topology
 TYPED_TEST( LinearElasticity_test , testTractionTensorMass )

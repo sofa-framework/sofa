@@ -89,7 +89,7 @@ namespace sofa {
     > InvariantDataTypes; // the types to instanciate.
 
     // Test suite for all the instanciations
-    TYPED_TEST_CASE(InvariantMappingTest, InvariantDataTypes);
+    TYPED_TEST_SUITE(InvariantMappingTest, InvariantDataTypes);
     // first test case
     TYPED_TEST( InvariantMappingTest , test_auto )
     {

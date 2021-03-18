@@ -19,17 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QMOMENTUMSTATWIDGET_H
-#define SOFA_GUI_QT_QMOMENTUMSTATWIDGET_H
-
+#pragma once
 #include <sofa/gui/qt/QGraphStatWidget.h>
 #include <sofa/simulation/MechanicalGetMomentumVisitor.h>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class QMomentumStatWidget : public QGraphStatWidget
@@ -50,9 +44,4 @@ public:
 };
 
 
-} // qt
-} // gui
-} //sofa
-
-#endif // SOFA_GUI_QT_QMOMENTUMSTATWIDGET_H
-
+} //namespace sofa::gui::qt

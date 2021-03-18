@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralMeshCollision LANGUAGES CXX)
 
-
-find_package(SofaCommon REQUIRED)
-
 set(SOFAGENERALMESHCOLLISION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -42,6 +39,11 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctreeModel.cpp
     )
 
+sofa_find_package(SofaBase REQUIRED) # SofaBaseCollision
+sofa_find_package(SofaMeshCollision REQUIRED)
+sofa_find_package(SofaObjectInteraction REQUIRED)
+sofa_find_package(SofaRigid REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaMeshCollision)
 
@@ -53,11 +55,3 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     RELOCATABLE "plugins"
 )
-
-# Tests
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-# cmake_dependent_option(SOFAGENERALMESHCOLLISION_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-# if(SOFAGENERALMESHCOLLISION_BUILD_TESTS)
-#     enable_testing()
-#     add_subdirectory(${PROJECT_NAME}_test)
-# endif()

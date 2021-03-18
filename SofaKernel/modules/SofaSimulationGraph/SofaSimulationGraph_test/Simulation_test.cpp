@@ -29,7 +29,6 @@ using sofa::defaulttype::Vec3Types ;
 typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>
@@ -178,7 +177,7 @@ struct Scene_test: public NumericTest<SReal>
         {
             simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);
             nodeToRemove->detachFromGraph();
-            nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+            nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         }
 
         simulation->animate(root.get());

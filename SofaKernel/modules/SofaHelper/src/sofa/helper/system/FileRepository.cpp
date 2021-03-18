@@ -77,22 +77,32 @@ std::string cleanPath( const std::string& path )
 // Initialize PluginRepository and DataRepository
 #ifdef WIN32
 FileRepository PluginRepository(
-        "SOFA_PLUGIN_PATH", {
-            Utils::getExecutableDirectory(),
-            Utils::getSofaPathTo("plugins")
-        }
+    "SOFA_PLUGIN_PATH",
+    {
+        Utils::getSofaPathTo("plugins"),
+        Utils::getSofaPathTo("bin"),
+        Utils::getExecutableDirectory(),
+    }
 );
 #else
 FileRepository PluginRepository(
-        "SOFA_PLUGIN_PATH", {
-            Utils::getSofaPathTo("lib"),
-            Utils::getSofaPathTo("plugins"),
-        }
+    "SOFA_PLUGIN_PATH",
+    {
+        Utils::getSofaPathTo("plugins"),
+        Utils::getSofaPathTo("lib"),
+    }
 );
 #endif
-FileRepository DataRepository( "SOFA_DATA_PATH", nullptr, {
-                                   { Utils::getSofaPathTo("etc/sofa.ini"), {"SHARE_DIR", "EXAMPLES_DIR"} }
-                               });
+FileRepository DataRepository(
+    "SOFA_DATA_PATH",
+    {
+        Utils::getSofaPathTo("share/sofa"),
+        Utils::getSofaPathTo("share/sofa/examples")
+    },
+    {
+        { Utils::getSofaPathTo("etc/sofa.ini"), {"SHARE_DIR", "EXAMPLES_DIR"} }
+    }
+);
 
 FileRepository::FileRepository(const char* envVar, const std::vector<std::string> & paths, const fileKeysMap& iniFilesAndKeys) {
     if (envVar != nullptr && envVar[0]!='\0')
@@ -136,7 +146,7 @@ FileRepository::FileRepository(const char* envVar, const std::vector<std::string
                 }
 
                 const std::string& absoluteDir = SetDirectory::GetRelativeFromProcess(lineDir.c_str());
-                if ( FileSystem::isDirectory(absoluteDir) )
+                if ( FileSystem::exists(absoluteDir) && FileSystem::isDirectory(absoluteDir) )
                 {
                     addFirstPath(absoluteDir);
                 }
@@ -238,7 +248,7 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
     {
         locale = std::locale("en_US.UTF-8");
     }
-    catch (std::exception e)
+    catch (const std::exception & e)
     {
         locale = std::locale("");
     }

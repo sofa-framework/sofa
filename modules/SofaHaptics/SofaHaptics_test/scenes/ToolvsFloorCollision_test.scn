@@ -3,6 +3,9 @@
     <RequiredPlugin name='SofaOpenglVisual'/>
     <RequiredPlugin name='SofaHaptics'/>
     <RequiredPlugin name='SofaSparseSolver'/>
+    <RequiredPlugin name='SofaConstraint'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaLoader'/>
     
     <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
     <BruteForceDetection name="detection" />

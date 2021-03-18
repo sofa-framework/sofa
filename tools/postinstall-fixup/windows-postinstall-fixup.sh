@@ -1,4 +1,4 @@
-#!/bin/bash
+#!bash
 
 usage() {
     echo "Usage: windows-postinstall-fixup.sh <build-dir> <install-dir>"
@@ -11,19 +11,43 @@ else
     usage; exit 1
 fi
 
+# Adapt INSTALL_DIR to NSIS install
+INSTALL_DIR_BIN="$INSTALL_DIR/bin"
+if [[ "$INSTALL_DIR" == *"/NSIS/"* ]] && [[ -e "$INSTALL_DIR/../applications/bin" ]]; then
+    INSTALL_DIR="$(cd $INSTALL_DIR/.. && pwd)"
+    INSTALL_DIR_BIN="$INSTALL_DIR/applications/bin"
+fi
+
+echo "BUILD_DIR = $BUILD_DIR"
+echo "INSTALL_DIR = $INSTALL_DIR"
+echo "INSTALL_DIR_BIN = $INSTALL_DIR_BIN"
+
 # Keep plugin_list as short as possible
-echo "" > "$INSTALL_DIR/bin/plugin_list.conf"
+echo "" > "$INSTALL_DIR_BIN/plugin_list.conf"
+disabled_plugins='plugins_ignored_by_default'
 for plugin in \
-        SofaExporter       \
-        SofaSparseSolver   \
-        SofaPreconditioner \
-        SofaValidation     \
-        SofaDenseSolver    \
-        SofaNonUniformFem  \
-        SofaOpenglVisual   \
-        SofaSphFluid       \
-        CImgPlugin         \
-        SofaMiscCollision  \
+        SofaEulerianFluid     \
+        SofaDistanceGrid      \
+        SofaImplicitField     \
+        MultiThreading        \
+        DiffusionSolver       \
+        image                 \
+        Compliant             \
+        SofaPython            \
+        Flexible              \
+        Registration          \
+        ExternalBehaviorModel \
+        ManifoldTopologies    \
+        ManualMapping         \
+        THMPGSpatialHashing   \
+        SofaCarving           \
+        RigidScale            \
     ; do
-    grep "$plugin" "$INSTALL_DIR/bin/plugin_list.conf.default" >> "$INSTALL_DIR/bin/plugin_list.conf"
+    disabled_plugins=$disabled_plugins'\|'$plugin
+done
+grep -v $disabled_plugins "$INSTALL_DIR_BIN/plugin_list.conf.default" >> "$INSTALL_DIR_BIN/plugin_list.conf"
+
+# Copy all plugin libs in install/bin to make them easily findable
+cd "$INSTALL_DIR" && find -name "*.dll" -path "*/plugins/*" | while read lib; do
+    cp "$lib" "$INSTALL_DIR_BIN"
 done

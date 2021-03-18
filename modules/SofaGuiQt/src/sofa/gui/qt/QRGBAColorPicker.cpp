@@ -22,13 +22,7 @@
 #include <limits>
 #include "QRGBAColorPicker.h"
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
-namespace qrgbacolorpicker_h
+namespace sofa::gui::qt::qrgbacolorpicker_h
 {
 
 QRGBAColorPicker::QRGBAColorPicker(QWidget* parent) : QWidget(parent)
@@ -141,11 +135,16 @@ void QRGBAColorPicker::raiseQColorDialog()
     typedef unsigned char uchar;
     const uchar max = std::numeric_limits<uchar>::max();
     int r,g,b,a;
-    bool ok;
 
     Vec4f color;
+#if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
+    bool ok;
     QColor qcolor = QColorDialog::getRgba(_rgba,&ok,this);
     if( ok )
+#else
+    QColor qcolor = QColorDialog::getColor(_rgba, this);
+    if( qcolor.isValid() )
+#endif
     {
         QRgb rgba=qcolor.rgb();
         r=qRed(rgba);
@@ -161,7 +160,4 @@ void QRGBAColorPicker::raiseQColorDialog()
     }
 }
 
-} // namespace q
-} // qt
-} // gui
-} // sofa
+} // namespace sofa::gui::qt::qrgbacolorpicker_h

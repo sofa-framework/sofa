@@ -24,11 +24,10 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/helper/stable_vector.h>
-
 #include <sofa/core/PathResolver.h>
-#include <sstream>
-#include <utility>
-#include <vector>
+#include <sofa/core/sptr.h>
+#include <sofa/core/fwd.h>
+
 namespace sofa
 {
 
@@ -56,7 +55,7 @@ template<class TDestType>
 class LinkTraitsDestPtr<TDestType, true>
 {
 public:
-    typedef typename TDestType::SPtr T;
+    typedef typename sofa::core::sptr<TDestType> T;
     static TDestType* get(const T& p) { return p.get(); }
 };
 
@@ -114,10 +113,11 @@ class LinkTraitsContainer;
 
 
 /// Class to hold 0-or-1 pointer. The interface is similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
-template < class T, class TPtr = T* >
+template < class T, class TDestPtr, class TPtr = T* >
 class SinglePtr
 {
 protected:
+    bool isEmpty {true};
     TPtr elems[1];
 public:
     typedef T pointed_type;
@@ -135,7 +135,7 @@ public:
     }
     const_iterator end() const
     {
-        return (!elems[0])?elems:elems+1;
+        return (isEmpty)?elems:elems+1;
     }
     const_reverse_iterator rbegin() const
     {
@@ -163,14 +163,22 @@ public:
     }
     std::size_t size() const
     {
-        return (!elems[0])?0:1;
+        return !isEmpty;
+    }
+    void resize(size_t size)
+    {
+        if(size == 1)
+            isEmpty=false;
+        else
+            isEmpty=true;
     }
     bool empty() const
     {
-        return !elems[0];
+        return isEmpty;
     }
     void clear()
     {
+        isEmpty = true;
         elems[0] = TPtr();
     }
     const TPtr& get() const
@@ -180,6 +188,11 @@ public:
     TPtr& get()
     {
         return elems[0];
+    }
+    void add(TDestPtr v)
+    {
+        isEmpty = false;
+        elems[0] = v;
     }
     const TPtr& operator[](std::size_t i) const
     {
@@ -211,14 +224,18 @@ template<class TDestType, class TDestPtr, class TValueType>
 class LinkTraitsContainer<TDestType, TDestPtr, TValueType, false>
 {
 public:
-    typedef SinglePtr<TDestType, TValueType> T;
+    typedef SinglePtr<TDestType, TDestPtr, TValueType> T;
+    static void resize(T& c, size_t newsize)
+    {
+        c.resize(newsize);
+    }
     static void clear(T& c)
     {
         c.clear();
     }
     static std::size_t add(T& c, TDestPtr v)
     {
-        c.get() = v;
+        c.add(v);
         return 0;
     }
     static std::size_t find(const T& c, TDestPtr v)
@@ -302,58 +319,64 @@ public:
     {
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    size_t size(const core::ExecParams*) const { return size(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    size_t size(const core::ExecParams*) const = delete;
     size_t size() const
     {
         return static_cast<size_t>(m_value.size());
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    bool empty(const core::ExecParams* param) const ;
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    bool empty(const core::ExecParams* param) const  = delete;
     bool empty() const
     {
         return m_value.empty();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const Container& getValue(const core::ExecParams*) const { return getValue(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const Container& getValue(const core::ExecParams*) const = delete;
     const Container& getValue() const
     {
         return m_value;
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const_iterator begin(const core::ExecParams*) const { return begin(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const_iterator begin(const core::ExecParams*) const = delete;
     const_iterator begin() const
     {
         return m_value.cbegin();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const_iterator end(const core::ExecParams*) const { return end(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const_iterator end(const core::ExecParams*) const = delete;
     const_iterator end() const
     {
         return m_value.cend();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const_reverse_iterator rbegin(const core::ExecParams*) const { return rbegin(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const_reverse_iterator rbegin(const core::ExecParams*) const = delete;
     const_reverse_iterator rbegin() const
     {
         return m_value.crbegin();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const_reverse_iterator rend(const core::ExecParams*) const { return rend(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    const_reverse_iterator rend(const core::ExecParams*) const = delete;
     const_reverse_iterator rend() const
     {
         return m_value.crend();
     }
 
+    void clear()
+    {
+        TraitsContainer::clear(m_value);
+    }
+
     bool add(DestPtr v)
     {
-        if (!v) return false;
+        if (!v)
+            return false;
         std::size_t index = TraitsContainer::add(m_value,v);
         updateCounter();
         added(v, index);
@@ -362,7 +385,8 @@ public:
 
     bool add(DestPtr v, const std::string& path)
     {
-        if (!v && path.empty()) return false;
+        if (!v && path.empty())
+            return false;
         std::size_t index = TraitsContainer::add(m_value,v);
         TraitsValueType::setPath(m_value[index],path);
         updateCounter();
@@ -372,7 +396,8 @@ public:
 
     bool addPath(const std::string& path)
     {
-        if (path.empty()) return false;
+        if (path.empty())
+            return false;
         DestType* ptr = nullptr;
         if (m_owner)
             PathResolver::FindLinkDest(m_owner, ptr, path, this);
@@ -381,13 +406,9 @@ public:
 
     bool remove(DestPtr v)
     {
-        if (!v) return false;
-        std::size_t index = TraitsContainer::find(m_value,v);
-        if (index >= m_value.size()) return false;
-        TraitsContainer::remove(m_value,index);
-        updateCounter();
-        removed(v, index);
-        return true;
+        if (!v)
+            return false;
+        return removeAt(TraitsContainer::find(m_value,v));
     }
 
     bool removeAt(std::size_t index)
@@ -395,9 +416,9 @@ public:
         if (index >= m_value.size())
             return false;
 
+        DestPtr v = TraitsDestPtr::get(TraitsValueType::get(m_value[index]));
         TraitsContainer::remove(m_value,index);
         updateCounter();
-        DestPtr v=m_value[index];
         removed(v, index);
         return true;
     }
@@ -410,25 +431,19 @@ public:
         {
             std::string p = getPath(index);
             if (p == path)
-            {
-                DestPtr v = m_value[index];
-                TraitsContainer::remove(m_value,index);
-                updateCounter();
-                removed(v, index);
-                return true;
-            }
+                return removeAt(index);
         }
         return false;
     }
 
     const BaseClass* getDestClass() const override
     {
-        return DestType::GetClass();
+        return sofa::core::objectmodel::base::GetClass<DestType>();
     }
 
     const BaseClass* getOwnerClass() const override
     {
-        return OwnerType::GetClass();
+        return sofa::core::objectmodel::base::GetClass<OwnerType>();
     }
 
     size_t getSize() const override
@@ -436,168 +451,27 @@ public:
         return size();
     }
 
-    std::string getPath(std::size_t index) const
-    {
-        if (index >= m_value.size())
-            return std::string();
-        std::string path;
-        const ValueType& value = m_value[index];
-        if (!TraitsValueType::path(value, path))
-        {
-            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
-            if (ptr)
-                path = BaseLink::CreateString(ptr, nullptr, m_owner);
-        }
-        return path;
-    }
-
-    Base* getLinkedBase(std::size_t index=0) const override
-    {
-        return getIndex(index);
-    }
-
-    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
-    BaseData* getLinkedData(std::size_t =0) const override
-    {
-        return nullptr;
-    }
-
-    std::string getLinkedPath(std::size_t index=0) const override
-    {
-        return getPath(index);
-    }
-
-    /// @name Serialization API
-    /// @{
-
-    /// Read the command line
-    virtual bool read( const std::string& str ) override
-    {
-        if (str.empty())
-            return true;
-
-        bool ok = true;
-
-        // Allows spaces in links values for single links
-        if (!getFlag(BaseLink::FLAG_MULTILINK))
-        {
-            DestType* ptr = nullptr;
-
-            if (str[0] != '@')
-            {
-                return false;
-            }
-            else if (m_owner && !PathResolver::FindLinkDest(m_owner, ptr, str, this))
-            {
-                // This is not an error, as the destination can be added later in the graph
-                // instead, we will check for failed links after init is completed
-                add(ptr, str);
-                return true;
-            }
-            else
-            {
-                // read should return false if link is not properly added despite
-                // already having an owner and being able to look for linkDest
-                add(ptr, str);
-                return ptr != nullptr;
-            }
-
-        }
-        else
-        {
-            Container& container = m_value;
-            std::istringstream istr(str.c_str());
-            std::string path;
-
-            // Find the target of each path, and store those targets in
-            // a temporary vector of (pointer, path) pairs
-            typedef std::vector< std::pair<DestPtr, std::string> > PairVector;
-            PairVector newList;
-            while (istr >> path)
-            {
-                DestType *ptr = nullptr;
-                if (m_owner && !PathResolver::FindLinkDest(m_owner, ptr, path, this))
-                {
-                    // This is not an error, as the destination can be added later in the graph
-                    // instead, we will check for failed links after init is completed
-                    //ok = false;
-                }
-                else if (path[0] != '@')
-                {
-                    ok = false;
-                }
-                newList.push_back(std::make_pair(ptr, path));
-            }
-
-            // Add the objects that are not already present to the container of this Link
-            for (typename PairVector::iterator i = newList.begin(); i != newList.end(); i++)
-            {
-                const DestPtr ptr = i->first;
-                const std::string& path = i->second;
-
-                if (TraitsContainer::find(container, ptr) == container.size()) // Not found
-                    add(ptr, path);
-            }
-
-            // Remove the objects from the container that are not in the new list
-            // TODO epernod 2018-08-01: This cast from size_t to unsigned int remove a large amount of warnings.
-            // But need to be rethink in the future. The problem is if index i is a site_t, then we need to template container<size_t> which impact the whole architecture.
-            std::size_t csize = container.size();
-            for (std::size_t i = 0; i != csize; i++)
-            {
-                DestPtr dest(container[i]);
-                bool destFound = false;
-                typename PairVector::iterator j = newList.begin();
-                while (j != newList.end() && !destFound)
-                {
-                    if (j->first == dest)
-                        destFound = true;
-                    j++;
-                }
-
-                if (!destFound)
-                    remove(dest);
-            }
-        }
-
-        return ok;
-    }
-
-
-    /// Check that a given path is valid, that the pointed object exists and is of the right type
-    template <class TContext>
-    static bool CheckPath( const std::string& path, TContext* context)
-    {
-        if (path.empty())
-            return false;
-        if (!context)
-        {
-            std::string p,d;
-            return BaseLink::ParseString(path, &p, nullptr, context);
-        }
-
-        DestType* ptr = nullptr;
-        return context->findLinkDest(ptr, path, nullptr);
-    }
-
-    /// @}
-
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    BaseData* getLinkedData(std::size_t =0) const = delete;
     sofa::core::objectmodel::Base* getOwnerBase() const override
     {
         return m_owner;
     }
 
-    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
-    sofa::core::objectmodel::BaseData* getOwnerData() const override
-    {
-        return nullptr;
-    }
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
+    sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     void setOwner(OwnerType* owner)
     {
         m_owner = owner;
         if (!owner) return;
         m_owner->addLink(this);
+    }
+
+    [[deprecated("2021-01-01: CheckPath as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPath(Base*, BaseClass*, string).")]]
+    static bool CheckPath(const std::string& path, Base* context)
+    {
+        return PathResolver::CheckPath(context, sofa::core::objectmodel::base::GetClass<DestType>(), path);
     }
 
 protected:
@@ -608,12 +482,76 @@ protected:
     {
         if (index < m_value.size())
             return TraitsDestPtr::get(TraitsValueType::get(m_value[index]));
-        else
-            return nullptr;
+        return nullptr;
     }
 
     virtual void added(DestPtr ptr, std::size_t index) = 0;
     virtual void removed(DestPtr ptr, std::size_t index) = 0;
+
+    void _doClear_() override
+    {
+         TraitsContainer::clear(m_value);
+    }
+
+    /// Set a new link entry from a Base*
+    /// returns false if neither base & path are provided or if the provided base object has the wrong type.
+    bool _doAdd_(Base* baseptr, const std::string& path) override
+    {
+        /// If the pointer is null and the path empty we do nothing
+        if(!baseptr && path.empty())
+            return false;
+
+        /// Downcast the pointer to a compatible type and
+        /// If the types are not compatible with the Link we returns false
+        auto destptr = castTo<DestType*>(baseptr);
+        if(baseptr && !destptr)
+        {
+            return false;
+        }
+
+        /// TLink:adding accepts nullptr (for a not yet resolved link).
+        return TLink::add(destptr, path);
+    }
+
+    /// Returns false on type mismatch
+    bool _doSet_(Base* baseptr, const size_t index) override
+    {
+        assert(index < m_value.size());
+        auto destptr = castTo<DestType*>(baseptr);
+
+        if(!destptr)
+            return false;
+
+        TraitsValueType::set(m_value[index], destptr);
+        return true;
+    }
+
+    Base* _doGet_(const size_t index=0) const override
+    {
+        return sofa::core::castToBase(getIndex(index));
+    }
+
+    std::string _doGetLinkedPath_(const std::size_t index=0) const override
+    {
+        if (index >= m_value.size())
+            return std::string();
+        std::string path;
+        const ValueType& value = m_value[index];
+        if (!TraitsValueType::path(value, path))
+        {
+            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
+            if (ptr)
+                path = BaseLink::CreateString(sofa::core::castToBase(ptr), m_owner);
+        }
+        return path;
+    }
+
+    Base* _doGetOwner_() const override { return m_owner; }
+    void _doSetOwner_(Base* owner) override
+    {
+        m_owner = dynamic_cast<OwnerType*>(owner);
+    }
+
 };
 
 /**
@@ -636,6 +574,8 @@ public:
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr v, std::size_t index, bool add);
 
+    MultiLink() : m_validator{nullptr} {}
+
     MultiLink(const BaseLink::InitLink<OwnerType>& init)
         : Inherit(init), m_validator(nullptr)
     {
@@ -656,59 +596,8 @@ public:
         m_validator = fn;
     }
 
-    /// Check that a given list of path is valid, that the pointed object exists and is of the right type
-    template<class TContext>
-    static bool CheckPaths( const std::string& str, TContext* context)
-    {
-        if (str.empty())
-            return false;
-        std::istringstream istr( str.c_str() );
-        std::string path;
-        bool ok = true;
-        while (istr >> path)
-        {
-            ok &= TLink<TOwnerType,TDestType,TFlags|BaseLink::FLAG_MULTILINK>::CheckPath(path, context);
-        }
-        return ok;
-    }
-
-    /// Update pointers in case the pointed-to objects have appeared
-    /// @return false if there are broken links
-    virtual bool updateLinks()
-    {
-        if (!this->m_owner) return false;
-        bool ok = true;
-        std::size_t n = this->getSize();
-        for (std::size_t i = 0; i<n; ++i)
-        {
-            ValueType& value = this->m_value[i];
-            std::string path;
-            if (TraitsValueType::path(value, path))
-            {
-                DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
-                if (!ptr)
-                {
-                    PathResolver::FindLinkDest(this->m_owner, ptr, path, this);
-                    if (ptr)
-                    {
-                        DestPtr v = ptr;
-                        TraitsValueType::set(value,v);
-                        this->updateCounter();
-                        this->added(v, i);
-                    }
-                    else
-                    {
-                        ok = false;
-                    }
-                }
-            }
-        }
-        return ok;
-    }
-
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
-    DestType* get(std::size_t index, const core::ExecParams*) const { return get(index); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    DestType* get(std::size_t index, const core::ExecParams*) const = delete;
     DestType* get(std::size_t index) const
     {
         if (index < this->m_value.size())
@@ -720,6 +609,12 @@ public:
     DestType* operator[](std::size_t index) const
     {
         return get(index);
+    }
+
+    [[deprecated("2021-01-01: CheckPaths as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPaths(Base*, BaseClass*, string).")]]
+    static bool CheckPaths(const std::string& pathes, Base* context)
+    {
+        return PathResolver::CheckPaths(context, DestType::GetClass(), pathes);
     }
 
 protected:
@@ -786,12 +681,8 @@ public:
         m_validator = fn;
     }
 
-    std::string getPath() const
-    {
-        return Inherit::getPath(0);
-    }
-
-    DestType* get(const core::ExecParams*) const { return get(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    DestType* get(const core::ExecParams*) const = delete;
     DestType* get() const
     {
         return TraitsDestPtr::get(TraitsValueType::get(m_value.get()));
@@ -799,16 +690,12 @@ public:
 
     void reset()
     {
-        ValueType& value = m_value.get();
-        const DestPtr before = TraitsValueType::get(value);
-        if (!before) return;
-        TraitsValueType::set(value, nullptr);
-        updateCounter();
-        changed(before, nullptr);
+        set(nullptr);
     }
 
     void set(DestPtr v)
     {
+        TraitsContainer::resize(m_value, 1);
         ValueType& value = m_value.get();
         const DestPtr before = TraitsValueType::get(value);
         if (v == before) return;
@@ -819,6 +706,7 @@ public:
 
     void set(DestPtr v, const std::string& path)
     {
+        TraitsContainer::resize(m_value, 1);
         ValueType& value = m_value.get();
         const DestPtr before = TraitsValueType::get(value);
         if (v != before)
@@ -831,42 +719,20 @@ public:
 
     void setPath(const std::string& path)
     {
-        if (path.empty()) { reset(); return; }
+        TraitsContainer::resize(m_value, 1);
+        if (path.empty())
+        {
+            set(nullptr);
+            return;
+        }
+
         DestType* ptr = nullptr;
         if (m_owner)
             PathResolver::FindLinkDest(m_owner, ptr, path, this);
         set(ptr, path);
     }
 
-    /// Update pointers in case the pointed-to objects have appeared
-    /// @return false if there are broken links
-    virtual bool updateLinks()
-    {
-        if (!m_owner) return false;
-        bool ok = true;
-        ValueType& value = m_value.get();
-        std::string path;
-        if (TraitsValueType::path(value, path))
-        {
-            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
-            if (!ptr)
-            {
-                PathResolver::FindLinkDest(m_owner, ptr, path, this);
-                if (ptr)
-                {
-                    set(ptr, path);
-                }
-                else
-                {
-                    ok = false;
-                }
-            }
-        }
-        return ok;
-    }
-
-#ifndef SOFA_MAYBE_DEPRECATED
-    // Convenient operators to make a SingleLink appear as a regular pointer
+    /// Convenient operators to make a SingleLink appear as a regular pointer
     operator DestType*() const
     {
         return get();
@@ -885,8 +751,6 @@ public:
         set(v);
         return v;
     }
-#endif
-
 protected:
     ValidatorFn m_validator;
 

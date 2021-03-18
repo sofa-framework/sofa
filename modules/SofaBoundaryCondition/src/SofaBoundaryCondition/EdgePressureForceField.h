@@ -59,6 +59,11 @@ protected:
         EdgePressureInformation(const EdgePressureInformation &e)
             : length(e.length),force(e.force)
         { }
+        constexpr EdgePressureInformation & operator=(const EdgePressureInformation & other) {
+            length = other.length;
+            force = other.force;
+            return *this;
+        }
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgePressureInformation& /*ei*/ )

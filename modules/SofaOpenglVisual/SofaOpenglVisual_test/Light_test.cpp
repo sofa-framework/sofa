@@ -13,11 +13,13 @@ using sofa::core::objectmodel::BaseObject ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
@@ -25,9 +27,9 @@ using sofa::helper::BackTrace ;
 #include <SofaOpenglVisual/OglModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
-
 #include <SofaSimulationGraph/SimpleApi.h>
+
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 namespace light_test
 {
@@ -53,7 +55,8 @@ public:
 
     void SetUp() override
     {
-        sofa::component::initBaseMechanics();
+        sofa::component::initSofaBaseMechanics(); // needed to instanciate MechanicalObject
+
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 
@@ -81,7 +84,7 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(lm, nullptr) ;
@@ -108,7 +111,7 @@ void TestLight::checkPositionalLightValidAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     ASSERT_NE(lm, nullptr) ;
@@ -151,7 +154,7 @@ void TestLight::checkDirectionalLightValidAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     ASSERT_NE(lm, nullptr) ;
@@ -197,7 +200,7 @@ void TestLight::checkSpotLightValidAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     ASSERT_NE(lm, nullptr) ;

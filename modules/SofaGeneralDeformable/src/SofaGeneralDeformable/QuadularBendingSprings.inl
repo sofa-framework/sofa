@@ -685,7 +685,7 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     size_t nbEdges=m_topology->getNbEdges();
 
@@ -741,7 +741,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
 
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
     std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::helper::types::RGBAColor> colors;
     sofa::helper::types::RGBAColor green_color = sofa::helper::types::RGBAColor::green();
     sofa::helper::types::RGBAColor red_color   = sofa::helper::types::RGBAColor::red();
     sofa::helper::types::RGBAColor color1 = sofa::helper::types::RGBAColor(1,0.5, 0,1);

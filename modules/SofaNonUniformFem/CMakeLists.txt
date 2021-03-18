@@ -1,18 +1,19 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaNonUniformFem LANGUAGES CXX)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaGeneral REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(SofaGeneralSimpleFem REQUIRED)
 
 set(SOFANONUNIFORMFEM_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFANONUNIFORMFEM_SRC}/config.h.in
-    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFEM.h
+    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFem.h
     )
 
 set(SOURCE_FILES
-    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFEM.cpp
+    ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFem.cpp
     )
 
 list(APPEND HEADER_FILES
@@ -33,7 +34,6 @@ list(APPEND HEADER_FILES
     )
 list(APPEND SOURCE_FILES
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.cpp
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyAlgorithms.cpp
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyContainer.cpp
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyModifier.cpp
     ${SOFANONUNIFORMFEM_SRC}/MultilevelHexahedronSetTopologyContainer.cpp
@@ -66,6 +66,10 @@ if(SofaDenseSolver_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
 endif()
 
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

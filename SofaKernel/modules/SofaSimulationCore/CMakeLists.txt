@@ -5,13 +5,13 @@ set(SRC_ROOT "src/sofa/simulation")
 
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/simulationcore.h
     ${SRC_ROOT}/AnimateBeginEvent.h
     ${SRC_ROOT}/AnimateEndEvent.h
     ${SRC_ROOT}/AnimateVisitor.h
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.h
     ${SRC_ROOT}/CactusStackStorage.h
-    ${SRC_ROOT}/ClassSystem.h
     ${SRC_ROOT}/CleanupVisitor.h
     ${SRC_ROOT}/CollisionAnimationLoop.h
     ${SRC_ROOT}/CollisionBeginEvent.h
@@ -22,6 +22,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
     ${SRC_ROOT}/DeleteVisitor.h
+    ${SRC_ROOT}/ExportDotVisitor.h
     ${SRC_ROOT}/ExportGnuplotVisitor.h
     ${SRC_ROOT}/ExportOBJVisitor.h
     ${SRC_ROOT}/InitVisitor.h
@@ -73,6 +74,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/VisitorAsync.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
     ${SRC_ROOT}/events/SimulationInitStartEvent.h
+    ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.h
     ${SRC_ROOT}/events/SimulationStartEvent.h
     ${SRC_ROOT}/events/SimulationStopEvent.h
 )
@@ -92,6 +94,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp
     ${SRC_ROOT}/DeleteVisitor.cpp
+    ${SRC_ROOT}/ExportDotVisitor.cpp
     ${SRC_ROOT}/ExportGnuplotVisitor.cpp
     ${SRC_ROOT}/ExportOBJVisitor.cpp
     ${SRC_ROOT}/InitVisitor.cpp
@@ -129,6 +132,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/WriteStateVisitor.cpp
     ${SRC_ROOT}/XMLPrintVisitor.cpp
     ${SRC_ROOT}/init.cpp
+    ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/MechanicalComputeEnergyVisitor.cpp
     ${SRC_ROOT}/BaseSimulationExporter.cpp
     ${SRC_ROOT}/TaskScheduler.cpp
@@ -137,6 +141,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/InitTasks.cpp
     ${SRC_ROOT}/events/SimulationInitDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationInitStartEvent.cpp
+    ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
 )
@@ -165,4 +170,5 @@ sofa_add_targets_to_package(
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaSimulationCore_test)
+    add_subdirectory(SofaSimulationCore_simutest)
 endif()

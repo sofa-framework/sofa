@@ -25,9 +25,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
-
-#include <sofa/simulation/Simulation.h>
-
 #include <string>
 
 namespace sofa::component::mapping
@@ -274,7 +271,7 @@ void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
         points.push_back(point);
     }
 
-    vparams->drawTool()->drawPoints(points, 7, sofa::defaulttype::Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(points, 7, sofa::helper::types::RGBAColor::yellow());
     vparams->drawTool()->restoreLastState();
 }
 

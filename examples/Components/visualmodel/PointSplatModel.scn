@@ -3,6 +3,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="SofaSphFluid"/>
     <RequiredPlugin pluginName="SofaMiscCollision"/>
+    <RequiredPlugin pluginName='SofaGeneralExplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
 
     <DefaultPipeline verbose="0" />
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
@@ -44,7 +46,7 @@
         <SpatialGridContainer cellWidth="0.75" sortPoints="true" />
         <SPHFluidForceField radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
         <!-- Visual model -->
-        <PointSplat name="VModel" radius="0.5" alpha="0.04" color="cyan" />
+        <PointSplatModel name="VModel" radius="0.5" alpha="0.04" color="cyan" />
         <!-- Collision model -->
         <SpatialGridPointModel contactStiffness="1000" />
     </Node>

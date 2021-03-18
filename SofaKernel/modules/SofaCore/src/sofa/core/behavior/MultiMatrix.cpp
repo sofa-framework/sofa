@@ -21,22 +21,3 @@
 ******************************************************************************/
 #include <sofa/core/behavior/MultiMatrix.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
-{
-
-const MechanicalMatrix MechanicalMatrix::M(1,0,0);
-const MechanicalMatrix MechanicalMatrix::B(0,1,0);
-const MechanicalMatrix MechanicalMatrix::K(0,0,1);
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-

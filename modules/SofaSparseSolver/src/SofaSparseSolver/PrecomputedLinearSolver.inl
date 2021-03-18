@@ -206,7 +206,7 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatri
 {
     if (first)
     {
-        core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
+        core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();
         //TODO get the m b k factor from euler
 
         msg_error() << "The construction of the matrix when the solver is used only as cvonstraint "

@@ -229,8 +229,7 @@ public:
         return RealObject::HeaderFileLocation();
     }
 
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     virtual std::string shortName(objectmodel::BaseObjectDescription* arg) override
     {
         SOFA_UNUSED(arg);

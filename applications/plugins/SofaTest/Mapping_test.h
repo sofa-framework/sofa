@@ -25,23 +25,20 @@
 #define SOFA_STANDARDTEST_Mapping_test_H
 
 #include "Sofa_test.h"
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/VectorOperations.h>
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
+#include <sofa/core/Mapping.h>
 
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/ArgumentParser.h>
 
 namespace sofa {
 
@@ -130,9 +127,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::initSofaBase();
-        sofa::component::initSofaCommon();
-        sofa::component::initSofaGeneral();
+        sofa::component::initSofaComponentAll();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
@@ -148,14 +143,12 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::initSofaBase();
-        sofa::component::initSofaCommon();
-        sofa::component::initSofaGeneral();
+        sofa::component::initSofaComponentAll();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(fileName.c_str(), false, sofa::helper::ArgumentParser::extra_args());
+        root = sofa::simulation::getSimulation()->load(fileName.c_str(), false);
 
         // InDofs
         inDofs = root->get<InDOFs>(root->SearchDown);

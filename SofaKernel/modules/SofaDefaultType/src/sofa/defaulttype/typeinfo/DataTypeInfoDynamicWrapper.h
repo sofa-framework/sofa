@@ -75,10 +75,19 @@ class DataTypeInfoDynamicWrapper : public AbstractTypeInfo, public Info
 public:
     typedef typename Info::DataType DataType;
 
+    const AbstractTypeInfo* BaseType() const override
+    {
+        return DataTypeInfoDynamicWrapper<DataTypeInfo<typename Info::BaseType>>::get();
+    }
+    const AbstractTypeInfo* ValueType() const override
+    {
+        return DataTypeInfoDynamicWrapper<DataTypeInfo<typename Info::ValueType>>::get();
+    }
+
     static AbstractTypeInfo* get() { static DataTypeInfoDynamicWrapper<Info> t; return &t; }
 
-    virtual const TypeInfoId& getBaseTypeId() const { return TypeInfoId::GetTypeId<typename Info::BaseType>(); }
-    virtual const TypeInfoId& getValueTypeId() const { return TypeInfoId::GetTypeId<typename Info::ValueType>(); }
+    const TypeInfoId& getBaseTypeId() const override { return TypeInfoId::GetTypeId<typename Info::BaseType>(); }
+    const TypeInfoId& getValueTypeId() const override { return TypeInfoId::GetTypeId<typename Info::ValueType>(); }
 
     std::string name() const override { return Info::name(); }
     std::string getTypeName() const override {return Info::name();}

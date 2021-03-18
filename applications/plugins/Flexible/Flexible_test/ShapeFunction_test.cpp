@@ -222,14 +222,14 @@ namespace sofa {
     };
 
     // Define the list of DataTypes to instantiate
-    using testing::Types;
-    typedef testing::Types<
+    using ::testing::Types;
+    typedef ::testing::Types<
         LinearMapping<Affine3Types, F331Types>,
         LinearMapping<Affine3Types, F332Types>
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(ShapeFunction_test, DataTypes);
+    TYPED_TEST_SUITE(ShapeFunction_test, DataTypes);
 
     // test case: voronoi shape function test
     TYPED_TEST( ShapeFunction_test , VoronoiShapeFunctionTest)

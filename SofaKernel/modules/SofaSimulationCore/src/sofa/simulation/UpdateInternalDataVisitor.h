@@ -22,9 +22,9 @@
 #ifndef SOFA_SIMULATION_UPDATEINTERNALDATAVISITOR_H
 #define SOFA_SIMULATION_UPDATEINTERNALDATAVISITOR_H
 
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 namespace sofa
 {

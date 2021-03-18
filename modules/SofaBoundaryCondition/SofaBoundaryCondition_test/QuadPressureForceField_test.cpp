@@ -107,14 +107,14 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 };
 
 // Types to instantiate.
-typedef testing::Types<
+typedef ::testing::Types<
     component::forcefield::QuadPressureForceField<defaulttype::Vec3Types>
 > TestTypes;
 
 
 
 // Tests to run for each instantiated type
-TYPED_TEST_CASE(QuadPressureForceField_test, TestTypes);
+TYPED_TEST_SUITE(QuadPressureForceField_test, TestTypes);
 
 // first test case: test force value
 TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)

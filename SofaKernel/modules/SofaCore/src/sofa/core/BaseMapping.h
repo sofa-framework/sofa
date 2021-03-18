@@ -22,10 +22,7 @@
 #ifndef SOFA_CORE_BASEMAPPING_H
 #define SOFA_CORE_BASEMAPPING_H
 
-
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ConstraintParams.h>
-#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {
@@ -65,9 +62,9 @@ public:
     Data<bool> f_mapMatrices; ///< Are matrix explicit mapped?
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
-    virtual void apply (const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
+    virtual void apply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
     /// Compute output velocity based on input velocity, using the linearized transformation (tangent operator). Also used to propagate small displacements.
-    virtual void applyJ(const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
+    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
 
     /// Accessor to the input model of this mapping
     virtual helper::vector<BaseState*> getFrom() = 0;
@@ -174,8 +171,6 @@ protected:
     bool m_forceMaskNewStep;
 #endif
 
-    /// type used for masks
-    typedef behavior::BaseMechanicalState::ForceMask ForceMask;
     /// Useful when the mapping is applied only on a subset of parent dofs.
     /// It is automatically called by applyJT.
     ///
@@ -183,12 +178,9 @@ protected:
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask() = 0;
 
-
 public:
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
-
 };
 
 } // namespace core

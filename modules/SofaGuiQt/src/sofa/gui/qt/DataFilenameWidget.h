@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_DATAFILENAMEWIDGET_H
-#define SOFA_GUI_QT_DATAFILENAMEWIDGET_H
-
+#pragma once
 #include <QLineEdit>
 #include <QPushButton>
 #include <QHBoxLayout>
@@ -29,11 +27,7 @@
 #include "DataWidget.h"
 
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class DataFileNameWidget : public TDataWidget<std::string>
@@ -62,30 +56,4 @@ protected slots :
     virtual void raiseDialog();
 };
 
-//      class DataDirectoryWidget : public DataFileNameWidget
-//      {
-//        Q_OBJECT
-//      public:
-//        DataDirectoryWidget(QWidget* parent,
-//                            const char* name,
-//                            core::objectmodel::TData<std::string>* data)
-//        :DataFileNameWidget(parent,name,data)
-//        {}
-
-//      protected:
-//        virtual void readFromData();
-//        virtual void writeToData();
-
-//     protected slots:
-//        virtual void raiseDialog();
-
-//      };
-
-}
-}
-}
-
-#endif //SOFA_GUI_QT_DATAFILENAMEWIDGET_H
-
-
-
+} // namespace sofa::gui::qt

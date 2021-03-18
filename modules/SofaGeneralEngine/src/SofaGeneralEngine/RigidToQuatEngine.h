@@ -55,14 +55,6 @@ public:
     void init() override;
     void reinit() override;
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return core::objectmodel::BaseObject::create(tObj, context, arg);
-    }
-
-    //
     Data<helper::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
     Data<helper::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
     Data<helper::vector<Vec3> > f_orientationsEuler; ///< Orientation (Euler angle)

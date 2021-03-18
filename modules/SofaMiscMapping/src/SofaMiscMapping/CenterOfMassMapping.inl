@@ -24,10 +24,9 @@
 #include <SofaMiscMapping/CenterOfMassMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/simulation/Simulation.h>
-
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <string>
 #include <iostream>
@@ -156,7 +155,7 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
         points.push_back(point2);
     }
 
-    vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::yellow());
 
     vparams->drawTool()->restoreLastState();
 }

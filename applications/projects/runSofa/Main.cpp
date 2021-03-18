@@ -37,22 +37,16 @@ using std::vector;
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #include <SofaSimulationCommon/init.h>
-#ifdef SOFA_HAVE_DAG
 #include <SofaSimulationGraph/init.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
-#endif
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 using sofa::simulation::Node;
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <SofaGraphComponent/SceneCheckerListener.h>
 using sofa::simulation::scenechecking::SceneCheckerListener;
 
-#include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
 
-#include <SofaGeneralLoader/ReadState.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
@@ -64,17 +58,14 @@ using sofa::helper::system::FileSystem;
 #include <sofa/gui/GUIManager.h>
 using sofa::gui::GUIManager;
 
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
-#include <sofa/helper/system/gl.h>
 
 using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
 
-using sofa::component::misc::ReadStateActivator;
-using sofa::simulation::tree::TreeSimulation;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
@@ -160,7 +151,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-    sofa::gui::initMain();
+    sofa::gui::initSofaGui();
 
     string fileName ;
     bool        startAnim = false;
@@ -344,22 +335,12 @@ int main(int argc, char** argv)
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
-    sofa::simulation::tree::init();
-#ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::init();
-#endif
     sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
 
-#ifdef SOFA_HAVE_DAG
     if (simulationType == "tree")
-        sofa::simulation::setSimulation(new TreeSimulation());
-    else
-        sofa::simulation::setSimulation(new DAGSimulation());
-#else //SOFA_HAVE_DAG
-    sofa::simulation::setSimulation(new TreeSimulation());
-#endif
+        msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
+    sofa::simulation::setSimulation(new DAGSimulation());
 
     if (colorsStatus == "unset") {
         // If the parameter is unset, check the environment variable
@@ -499,7 +480,7 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->init(groot.get());
     if( computationTimeAtBegin )
     {
-        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot.get());
+        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
     }
 
     //=======================================
@@ -546,9 +527,6 @@ int main(int argc, char** argv)
     GUIManager::closeGUI();
 
     sofa::simulation::common::cleanup();
-    sofa::simulation::tree::cleanup();
-#ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::cleanup();
-#endif
     return 0;
 }

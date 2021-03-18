@@ -22,10 +22,15 @@
 #ifndef SOFA_SIMULATION_CORE_SIMULATION_H
 #define SOFA_SIMULATION_CORE_SIMULATION_H
 
-#include <sofa/simulation/Node.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/visual/DisplayFlags.h>
-#include <memory>
+#include <sofa/simulation/config.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/fwd.h>
+
+namespace sofa::simulation
+{
+    class Node;
+    typedef sofa::core::sptr<Node> NodeSPtr;
+}
 
 namespace sofa
 {
@@ -42,7 +47,9 @@ class SOFA_SIMULATION_CORE_API Simulation: public virtual sofa::core::objectmode
 public:
     SOFA_CLASS(Simulation, sofa::core::objectmodel::Base);
 
-    typedef sofa::core::visual::DisplayFlags DisplayFlags;
+    [[deprecated("Simulation::DisplayFlags is deprecated use sofa::core::visual::DisplayFlags instead.")]]
+    typedef int DisplayFlags;
+
     Simulation();
     ~Simulation() override;
 	
@@ -109,16 +116,16 @@ public:
     virtual void dumpState( Node* root, std::ofstream& out );
 
     /// Load a scene from a file
-    virtual Node::SPtr load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0));
+    virtual NodeSPtr load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0));
 
     /// Unload a scene from a Node.
-    virtual void unload(Node::SPtr root);
+    virtual void unload(NodeSPtr root);
 
     /// create a new graph(or tree) and return its root node.
-    virtual Node::SPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
+    virtual NodeSPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
 
     /// creates and returns a new node.
-    virtual Node::SPtr createNewNode(const std::string& name)=0;
+    virtual NodeSPtr createNewNode(const std::string& name)=0;
 
     /// @warning this singleton has one limitation: it is easy to create several types of
     /// simulations at the same time (e.g. DAGSimulation + TreeSimulation)
@@ -129,14 +136,6 @@ public:
     virtual bool isDirectedAcyclicGraph() = 0;
 
 };
-
-/// Set the (unique) simulation which controls the scene
-SOFA_SIMULATION_CORE_API void setSimulation(Simulation* s);
-
-/** Get the (unique) simulation which controls the scene.
-    Automatically creates one if no Simulation has been set.
- */
-SOFA_SIMULATION_CORE_API Simulation* getSimulation();
 
 } // namespace simulation
 

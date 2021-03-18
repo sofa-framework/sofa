@@ -24,8 +24,6 @@
 #include <SofaMiscMapping/CenterOfMassMultiMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/simulation/Simulation.h>
-
 #include <algorithm>
 #include <functional>
 
@@ -246,7 +244,7 @@ void CenterOfMassMultiMapping< TIn, TOut >::draw(const core::visual::VisualParam
         points.push_back(point2);
     }
 
-    vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::yellow());
 }
 
 } // namespace sofa::component::mapping

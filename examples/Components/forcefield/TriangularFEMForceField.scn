@@ -1,6 +1,10 @@
 <!-- Mechanical TriangularFEMForceField Example -->
 <Node name="root" dt="0.05" gravity="0 -9.8 10" showBoundingTree="0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -14,14 +18,13 @@
         <MechanicalObject src="@loader" name="DOFs" scale3d="100 100 0" />
         <TriangleSetTopologyContainer src="@loader" name="Container" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <DiagonalMass massDensity="0.005" />
         <FixedConstraint indices="0 1 2" />
         <TriangularFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" />
         <Node name="VisuA">
             <OglModel name="Visual" color="yellow" />
-            <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../DOFs" output="@Visual" />
+            <IdentityMapping template="Vec3d,Vec3d" name="visualMapping" input="@../DOFs" output="@Visual" />
         </Node>
     </Node>
 </Node>

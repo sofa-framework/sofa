@@ -27,11 +27,13 @@
 #include "SofaPhysicsDataMonitor_impl.h"
 #include "SofaPhysicsDataController_impl.h"
 
+#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/helper/gl/Texture.h>
+#include <sofa/simulation/Node.h>
 
 #include <map>
 

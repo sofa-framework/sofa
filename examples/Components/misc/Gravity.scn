@@ -1,13 +1,18 @@
 <Node name="root" dt="0.03333">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaGraphComponent"/>
-    
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+
     <DefaultPipeline verbose="0" depth="10" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
-    <Node name="Torus">
+    <Node name="Torus1">
         <Gravity gravity="0 -10 0" />
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -30,7 +35,7 @@
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus2">
         <Gravity gravity="0 10 0" />
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -57,19 +62,19 @@
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="30.25" scale="0.7" rx="180" />
-        <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
-        <LineCollisionModel name="Floor" simulated="0" moving="0" />
-        <PointCollisionModel name="Floor" simulated="0" moving="0" />
+        <TriangleCollisionModel name="FloorTri1" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLine1" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorPoint1" simulated="0" moving="0" />
         <MeshObjLoader name="meshLoader_1" filename="mesh/floor2b.obj" scale="0.5" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_1" texturename="textures/floor.bmp" rx="180" dy="30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />
     </Node>
-    <Node name="Floor">
+    <Node name="Floor2">
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-30.25" scale="0.7" />
-        <TriangleCollisionModel name="Floor" simulated="0" moving="0" />
-        <LineCollisionModel name="Floor" simulated="0" moving="0" />
-        <PointCollisionModel name="Floor" simulated="0" moving="0" />
+        <TriangleCollisionModel name="FloorTri2" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLine2" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorPoint2" simulated="0" moving="0" />
         <MeshObjLoader name="meshLoader_2" filename="mesh/floor2b.obj" scale="0.5" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_2" texturename="textures/floor.bmp" dy="-30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />/
     </Node>

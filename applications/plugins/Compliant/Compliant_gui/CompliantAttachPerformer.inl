@@ -24,7 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseMapping.h>
 #include <SofaUserInteraction/MouseInteractor.h>
-#include <sofa/simulation/Simulation.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -197,28 +196,18 @@ void CompliantAttachPerformer<DataTypes>::start()
         pickedParticleIndex = 0;
 
     //-------- Mouse manipulator
-    mouseMapping = this->interactor->core::objectmodel::BaseObject::template searchUp<sofa::core::BaseMapping>();
+    mouseMapping = this->interactor->getContext()->template get<sofa::core::BaseMapping>();
     this->mouseState = down_cast<Point3dState>(this->interactor->getMouseContainer());
-//    typename Point3dState::ReadVecCoord xmouse = mouseState->readPositions();
-//    typename Point3dState::Coord pointOnRay = mouseState->readPositions()[0];
-
-
 
     // set target point to closest point on the ray
     SReal distanceFromMouse=picked.rayLength;
     Ray ray = this->interactor->getMouseRayModel()->getRay(0);
     defaulttype::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
-//    ray.setOrigin(pointOnRay);
     this->interactor->setMouseAttached(true);
     this->interactor->setDistanceFromMouse(distanceFromMouse);
 
 
     initialMousePos = DataTypes::getCPos(mouseState->readPositions()[0]);
-
-//    cerr<<"CompliantAttachPerformer<DataTypes>::start() "<<mouseState->readPositions()[0]<<" "<<pointOnRay<< endl;
-
-//    mouseState->writePositions()[0] = pointOnRay;
-
     //---------- Set up the interaction
 
     // look for existing interactions
@@ -295,7 +284,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     interactionNode->addObject(compliance);
     compliance->rayleighStiffness.setValue(_compliance!=0?0.1:0);
 
-    interactionNode->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
+    interactionNode->execute<simulation::InitVisitor>(sofa::core::execparams::defaultInstance());
 
 }
 
@@ -319,15 +308,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = DataTypes::getCPos(xmouse[0]);
         _vm->m_positions.endEdit();
-    //    std::cerr<<"mouse: "<<mstateCollision->getName()<<" "<<mstateCollision->getPX(pickedParticleIndex)<<std::endl;
     }
-
-
-
-
-//    mouseMapping->apply(core::MechanicalParams::defaultInstance());
-//    mouseMapping->applyJ(core::MechanicalParams::defaultInstance());
-
     this->interactor->setMouseAttached(true);
 }
 

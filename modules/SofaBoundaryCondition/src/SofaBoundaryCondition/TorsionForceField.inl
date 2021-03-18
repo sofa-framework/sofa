@@ -24,6 +24,7 @@
 #include <SofaBoundaryCondition/TorsionForceField.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::forcefield
 {

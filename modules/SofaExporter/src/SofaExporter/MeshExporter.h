@@ -60,6 +60,7 @@ using sofa::core::behavior::BaseMechanicalState ;
 using sofa::core::objectmodel::Event ;
 using sofa::core::topology::BaseMeshTopology ;
 using sofa::simulation::BaseSimulationExporter ;
+using sofa::core::topology::Topology ;
 
 class SOFA_SOFAEXPORTER_API MeshExporter : public BaseSimulationExporter
 {
@@ -95,6 +96,7 @@ public:
     bool writeMeshGmsh();
     bool writeMeshNetgen();
     bool writeMeshTetgen();
+    bool writeMeshObj();
 
 
 protected:

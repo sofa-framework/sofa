@@ -22,8 +22,6 @@
 #pragma once
 #include "IndexValueMapper.h"
 
-#include <sofa/core/objectmodel/BaseObject.h>
-
 namespace sofa::component::engine
 {
 

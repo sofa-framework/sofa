@@ -23,12 +23,11 @@
 #define SOFA_SIMULATION_ANIMATEACTION_H
 
 #include <sofa/simulation/config.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/core/VecId.h>
+#include <sofa/core/behavior/fwd.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/ExecParams.h>
-#include <sofa/core/MechanicalParams.h>
+
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/OdeSolver.h>
@@ -48,7 +47,7 @@ protected :
     SReal dt;
     bool firstNodeVisited;
 public:
-    AnimateVisitor(const core::ExecParams* params = core::ExecParams::defaultInstance());
+    AnimateVisitor(const core::ExecParams* params = core::execparams::defaultInstance());
     AnimateVisitor(const core::ExecParams* params, SReal dt);
 
     void setDt(SReal v) { dt = v; }

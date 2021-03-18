@@ -21,13 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/stable_vector.h>
 #include <sofa/core/config.h>
-
-namespace sofa::core
-{
-    class ExecParams;
-}
+#include <sofa/core/fwd.h>
+#include <vector>
 
 namespace sofa::core::objectmodel
 {
@@ -43,7 +39,7 @@ class DDGNode;
 class SOFA_CORE_API DDGNode
 {
 public:
-    typedef sofa::helper::stable_vector<DDGNode*> DDGLinkContainer;
+    typedef std::vector<DDGNode*> DDGLinkContainer;
     typedef DDGLinkContainer::const_iterator DDGLinkIterator;
 
     /// Constructor
@@ -74,33 +70,33 @@ public:
     virtual void update() = 0;
 
     /// Returns true if the DDGNode needs to be updated
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    bool isDirty(const core::ExecParams*) const { return isDirty(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    bool isDirty(const core::ExecParams*) const = delete;
     bool isDirty() const { return dirtyFlags.dirtyValue; }
 
     /// Indicate the value needs to be updated
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    virtual void setDirtyValue(const core::ExecParams*) final { return setDirtyValue(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    virtual void setDirtyValue(const core::ExecParams*) final = delete;
     virtual void setDirtyValue();
 
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    virtual void setDirtyOutputs(const core::ExecParams*) final { setDirtyOutputs(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    virtual void setDirtyOutputs(const core::ExecParams*) final = delete;
     virtual void setDirtyOutputs();
 
     /// Set dirty flag to false
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    void cleanDirty(const core::ExecParams*){ cleanDirty(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    void cleanDirty(const core::ExecParams*) = delete;
     void cleanDirty();
 
     /// Notify links that the DGNode has been modified
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    virtual void notifyEndEdit(const core::ExecParams*) final { notifyEndEdit(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    virtual void notifyEndEdit(const core::ExecParams*) final = delete;
     virtual void notifyEndEdit();
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    void updateIfDirty(const core::ExecParams*) const { updateIfDirty(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    void updateIfDirty(const core::ExecParams*) const = delete;
     void updateIfDirty() const;
 
 protected:
@@ -113,8 +109,8 @@ protected:
     virtual void doDelOutput(DDGNode* n);
 
     /// the dirtyOutputs flags of all the inputs will be set to false
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    void cleanDirtyOutputsOfInputs(const core::ExecParams*) { cleanDirtyOutputsOfInputs(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    void cleanDirtyOutputsOfInputs(const core::ExecParams*) = delete;
     void cleanDirtyOutputsOfInputs();
 
 private:

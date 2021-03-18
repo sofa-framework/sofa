@@ -27,7 +27,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <iostream>
 
 namespace sofa::component::projectiveconstraintset
@@ -396,10 +396,10 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4, float> (1.0f , 0.5f , 0.5f , 1.0f));
-        vparams->drawTool()->drawLines (linesX,  2, defaulttype::Vec<4, float> (0.75f, 0.0f , 0.0f , 1.0f));
-        vparams->drawTool()->drawLines (linesY,  2, defaulttype::Vec<4, float> (0.0f , 0.75f, 0.0f , 1.0f));
-        vparams->drawTool()->drawLines (linesZ,  2, defaulttype::Vec<4, float> (0.0f , 0.0f , 0.75f, 1.0f));
+        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor (1.0f , 0.5f , 0.5f , 1.0f));
+        vparams->drawTool()->drawLines (linesX,  2, sofa::helper::types::RGBAColor (0.75f, 0.0f , 0.0f , 1.0f));
+        vparams->drawTool()->drawLines (linesY,  2, sofa::helper::types::RGBAColor (0.0f , 0.75f, 0.0f , 1.0f));
+        vparams->drawTool()->drawLines (linesZ,  2, sofa::helper::types::RGBAColor (0.0f , 0.0f , 0.75f, 1.0f));
     }
 
     points.clear();
@@ -428,10 +428,10 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4, float> (1.0f, 0.5f, 0.5f, 1.0f));
-        vparams->drawTool()->drawLines (linesX, 2 , defaulttype::Vec<4, float> (1.0f, 0.0f, 0.0f, 1.0f));
-        vparams->drawTool()->drawLines (linesY, 2 , defaulttype::Vec<4, float> (0.0f, 1.0f, 0.0f, 1.0f));
-        vparams->drawTool()->drawLines (linesZ, 2 , defaulttype::Vec<4, float> (0.0f, 0.0f, 1.0f, 1.0f));
+        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor (1.0f, 0.5f, 0.5f, 1.0f));
+        vparams->drawTool()->drawLines (linesX, 2 , sofa::helper::types::RGBAColor (1.0f, 0.0f, 0.0f, 1.0f));
+        vparams->drawTool()->drawLines (linesY, 2 , sofa::helper::types::RGBAColor (0.0f, 1.0f, 0.0f, 1.0f));
+        vparams->drawTool()->drawLines (linesZ, 2 , sofa::helper::types::RGBAColor (0.0f, 0.0f, 1.0f, 1.0f));
     }
 }
 

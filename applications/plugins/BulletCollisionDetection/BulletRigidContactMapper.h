@@ -8,7 +8,6 @@
 #include <SofaBaseMechanics/SubsetMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
@@ -105,8 +104,8 @@ public:
         if (mapping!=NULL)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            map->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+            map->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }
 
@@ -115,7 +114,7 @@ public:
         if (mapping!=NULL)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
         }
     }
 };

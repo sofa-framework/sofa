@@ -61,9 +61,9 @@ void FrameSpringForceField<DataTypes>::addSpringForce ( SReal& /*potentialEnergy
 
     Mat Mr01, Mr10, Mr02, Mr20;
     p1[a].writeRotationMatrix ( Mr01 );
-    invertMatrix ( Mr10, Mr01 );
+    defaulttype::invertMatrix ( Mr10, Mr01 );
     p2[b].writeRotationMatrix ( Mr02 );
-    invertMatrix ( Mr20, Mr02 );
+    defaulttype::invertMatrix ( Mr20, Mr02 );
 
     Deriv Vp1p2 = v2[b] - v1[a];
 
@@ -98,7 +98,7 @@ void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const Vec
 
     Mat Mr01, Mr10;
     springRef[a].writeRotationMatrix ( Mr01 );
-    invertMatrix ( Mr10, Mr01 );
+    defaulttype::invertMatrix ( Mr10, Mr01 );
 
     VecN kst ( spring.stiffnessTrans, spring.stiffnessTrans, spring.stiffnessTrans );
     VecN ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );
@@ -173,7 +173,7 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::helper::types::RGBAColor> colors;
 
     bool external = ( this->mstate1!=this->mstate2 );
     const helper::vector<Spring>& springs = this->springs.getValue();

@@ -19,20 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_BATCHGUI_H
-#define SOFA_GUI_BATCHGUI_H
+#pragma once
 
 #include <sofa/gui/BaseGUI.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/helper/ArgumentParser.h>
 #include <string>
 
 using sofa::helper::ArgumentParser;
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 class SOFA_SOFAGUICOMMON_API BatchGUI : public BaseGUI
@@ -45,7 +41,7 @@ public:
 
     BatchGUI();
 
-    void setScene(sofa::simulation::Node::SPtr groot, const char* filename="", bool temporaryFile=false) override;
+    void setScene(sofa::simulation::NodeSPtr groot, const char* filename="", bool temporaryFile=false) override;
 
     void resetScene();
 
@@ -78,7 +74,7 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
 
 
@@ -94,14 +90,10 @@ protected:
 
     std::ostringstream m_dumpVisitorStream;
 
-    sofa::simulation::Node::SPtr groot;
+    sofa::simulation::NodeSPtr groot;
     std::string filename;
     static signed int nbIter;
     static std::string nbIterInp;
 };
 
-} // namespace gui
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gui

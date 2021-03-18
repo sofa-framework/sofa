@@ -61,7 +61,7 @@ TriangleStrainAverageMapping<TIn, TOut>::~TriangleStrainAverageMapping()
 template <class TIn, class TOut>
 void TriangleStrainAverageMapping<TIn, TOut>::init()
 {
-    triangleContainer = this->template searchUp<sofa::component::topology::TriangleSetTopologyContainer>();
+    triangleContainer = this->getContext()->template get<sofa::component::topology::TriangleSetTopologyContainer>();
 
     if( !triangleContainer )
         serr<<"No TriangleSetTopologyContainer found ! "<<sendl;

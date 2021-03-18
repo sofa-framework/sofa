@@ -5,8 +5,10 @@ find_package(SofaMiscMapping REQUIRED)
 find_package(SofaValidation REQUIRED)
 find_package(SofaGeneralEngine REQUIRED)
 find_package(SofaBoundaryCondition REQUIRED)
-sofa_find_package(SofaPython REQUIRED)
+find_package(SofaConstraint REQUIRED)
+find_package(SofaEngine REQUIRED)
 sofa_find_package(image QUIET)
+sofa_find_package(Sofa.GL QUIET)
 sofa_find_package(SofaHighOrderTopology QUIET)
 find_package(Eigen3 REQUIRED)
 
@@ -177,15 +179,10 @@ set(SOURCE_FILES
 set(README_FILES
     README_Flexible.txt
     )
-set(PYTHON_FILES
-    python/Flexible/__init__.py
-    python/Flexible/IO.py
-    python/Flexible/StressVisu.py
-    python/Flexible/API.py
-    python/Flexible/sml.py
-    )
 # Config files and install rules for pythons scripts
-sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
+sofa_install_pythonscripts(
+    PLUGIN_NAME ${PROJECT_NAME}
+    PYTHONSCRIPTS_SOURCE_DIR "python")
 
 if(image_FOUND)
     list(APPEND HEADER_FILES
@@ -225,15 +222,20 @@ else()
     message(STATUS "Flexible: could not find SofaHighOrderTopology")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMiscMapping SofaValidation SofaBaseVisual SofaGeneralEngine SofaBoundaryCondition)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMiscMapping SofaValidation SofaBaseVisual SofaGeneralEngine SofaBoundaryCondition SofaConstraint SofaEngine)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image)
+endif()
+
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
 endif()
 
 # TODO: Clean this. We should find_package(MGDiffusion) somehow.

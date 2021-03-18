@@ -22,8 +22,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 #define SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/BaseMapping.h>
+#include <sofa/core/config.h>
+#include <sofa/core/fwd.h>
+#include <sofa/defaulttype/fwd.h>
 
 namespace sofa
 {
@@ -41,7 +42,7 @@ namespace behavior
 class SOFA_CORE_API MultiMatrixAccessor
 {
 public:
-    using Index = defaulttype::BaseMatrix::Index;
+    using Index = sofa::SignedIndex ;
 
     virtual ~MultiMatrixAccessor();
 
@@ -52,6 +53,7 @@ public:
         defaulttype::BaseMatrix* matrix;
         unsigned int offset;
         MatrixRef() : matrix(nullptr), offset(0) {}
+        constexpr MatrixRef(const MatrixRef & other) = default;
         defaulttype::BaseMatrix* operator->() const { return matrix; }
         bool operator!() const { return matrix == nullptr; }
         operator bool() const { return matrix != nullptr; }
@@ -65,6 +67,7 @@ public:
         defaulttype::BaseMatrix* matrix;
         unsigned int offRow, offCol;
         InteractionMatrixRef() : matrix(nullptr), offRow(0), offCol(0) {}
+        constexpr InteractionMatrixRef(const InteractionMatrixRef & other) = default;
         defaulttype::BaseMatrix* operator->() const { return matrix; }
         bool operator!() const { return matrix == nullptr; }
         operator bool() const { return matrix != nullptr; }

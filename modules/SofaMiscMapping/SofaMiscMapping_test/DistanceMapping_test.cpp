@@ -70,14 +70,14 @@ struct DistanceMappingTest : public Mapping_test<DistanceMapping>
 
 
 // Define the list of types to instanciate.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 component::mapping::DistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>,
 component::mapping::DistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE( DistanceMappingTest, DataTypes );
+TYPED_TEST_SUITE( DistanceMappingTest, DataTypes );
 
 // test case
 TYPED_TEST( DistanceMappingTest , test )

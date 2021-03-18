@@ -134,23 +134,17 @@ public:
     ///
     /// This pointer should be used via the instance of AbstractTypeInfo
     /// returned by getValueTypeInfo().
-    virtual const void* getValueVoidPtr() const = 0;
+    const void* getValueVoidPtr() const;
 
     /// Get a void pointer to the value held in this %Data, to be used with AbstractTypeInfo.
     ///
     /// This pointer should be used via the instance of AbstractTypeInfo
     /// returned by getValueTypeInfo().
     /// \warning You must call endEditVoidPtr() once you're done modifying the value.
-    virtual void* beginEditVoidPtr() = 0;
+    void* beginEditVoidPtr();
 
     /// Must be called after beginEditVoidPtr(), after you are finished modifying this %Data.
-    virtual void endEditVoidPtr() = 0;
-
-    /// Copy the value from another Data.
-    ///
-    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
-    /// @return true if the copy was successful.
-    virtual bool copyValue(const BaseData* parent);
+    void endEditVoidPtr();
 
     /// Get a help message that describes this %Data.
     const std::string& getHelp() const { return help; }
@@ -159,9 +153,11 @@ public:
     void setHelp(const std::string& val) { help = val; }
 
     /// Get owner class
+    SOFA_ATTRIBUTE_REMOVAL_OF_BASEDATA_OWNERCLASS_ACCESSOR("Replace getOwnerClass() by getOwner()->className")
     const std::string& getOwnerClass() const { return ownerClass; }
 
     /// Set owner class
+    SOFA_ATTRIBUTE_REMOVAL_OF_BASEDATA_OWNERCLASS_ACCESSOR("The function will be totally removed. The owner's class name being using getOwner()->className")
     void setOwnerClass(const char* val) { ownerClass = val; }
 
     /// Get group
@@ -177,7 +173,8 @@ public:
     void setWidget(const char* val) { widget = val; }
 
     /// True if the counter of modification gives valid information.
-    virtual bool isCounterValid() const = 0;
+    SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA("Data<> must have, by design, their counter valid.")
+    bool isCounterValid() const { return true; }
 
     /// @name Flags
     /// @{
@@ -213,6 +210,7 @@ public:
 
     /// If we use the Data as a link and not as value directly
     virtual std::string getLinkPath() const { return parentData.getPath(); }
+
     /// Return whether this %Data can be used as a linkPath.
     ///
     /// True by default.
@@ -240,30 +238,28 @@ public:
 
     /// @name Optimized edition and retrieval API (for multi-threading performances)
     /// @{
-
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)s
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     bool isSet(const core::ExecParams*) const { return isSet(); }
     bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     void unset(const core::ExecParams*) { unset(); }
     void unset() { m_isSet = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     void forceSet(const core::ExecParams*) { forceSet(); }
     void forceSet() { m_isSet = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     int getCounter(const core::ExecParams*) const { return getCounter(); }
     int getCounter() const { return m_counter; }
-
     /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
@@ -271,21 +267,26 @@ public:
     bool setParent(const std::string& path);
 
     /// Check if a given Data can be linked as a parent of this data
-    virtual bool validParent(BaseData* parent);
+    virtual bool validParent(const BaseData *parent);
 
     BaseData* getParent() { return parentData.getTarget(); }
 
     /// Update the value of this %Data
     void update() override;
 
-protected:
-    /// @}
+    /// Copy the value from another Data.
+    ///
+    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
+    /// @return true if the copy was successful.
+    SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA("Use copyValueFrom() instead.")
+    bool copyValue(const BaseData* data){ return copyValueFrom(data); }
 
-    /// Delegates from DDGNode.
-    void doDelInput(DDGNode* n) override;
-
-    /// Update this %Data from the value of its parent
-    virtual bool updateFromParentValue(const BaseData* parent);
+    /// Copy the value from another Data.
+    ///
+    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
+    /// @return true if the copy was successful.
+    bool copyValueFrom(const BaseData* data);
+    bool updateValueFromLink(const BaseData* data);
 
     /// Help message
     std::string help {""};
@@ -323,6 +324,23 @@ public:
         else
             return decodeTypeName(typeid(T));
     }
+
+protected:
+    /// Try to update this Data from the value of its parent in "fast mode";
+    bool genericCopyValueFrom(const BaseData* parent);
+
+private:
+    /// Delegates from DDGNode.
+    void doDelInput(DDGNode* n) override;
+
+    virtual bool doCopyValueFrom(const BaseData* parent) = 0;
+    virtual bool doSetValueFromLink(const BaseData* parent) = 0;
+
+    virtual bool doIsExactSameDataType(const BaseData* parent) = 0;
+    virtual const void* doGetValueVoidPtr() const = 0;
+    virtual void* doBeginEditVoidPtr() = 0;
+    virtual void doEndEditVoidPtr() = 0;
+    virtual void doOnUpdate() {};
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container

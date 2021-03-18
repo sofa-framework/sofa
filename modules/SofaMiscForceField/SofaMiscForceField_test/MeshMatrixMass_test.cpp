@@ -20,8 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaMiscForceField/MeshMatrixMass.h>
-
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -152,7 +151,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -191,7 +190,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -224,7 +223,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -257,7 +256,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -295,7 +294,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -328,7 +327,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -362,7 +361,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -398,7 +397,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -430,7 +429,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -462,7 +461,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -495,7 +494,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -527,7 +526,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -563,7 +562,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -597,7 +596,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -630,7 +629,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' />                                                           "
@@ -642,7 +640,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -676,7 +674,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' totalMass='2.0'/>                                            "
@@ -688,7 +685,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -716,7 +713,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' massDensity='1.0' />                                         "
@@ -728,7 +724,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -755,7 +751,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 1 1 1 1 1 1 1' />                  "
@@ -767,7 +762,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -800,7 +795,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='2.0' />                         "
@@ -812,7 +806,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -839,7 +833,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 1 1 1 1 1 1 1' totalMass='2.0'/>   "
@@ -851,7 +844,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -879,7 +872,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' vertexMass='1 1 1 1 1 1 1 1' lumping='1' massDensity='1.0' />"
@@ -891,7 +883,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -922,7 +914,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' totalMass='-2.0'/>                                           "
@@ -934,7 +925,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -961,7 +952,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' massDensity='-1.0'/>                                         "
@@ -973,7 +963,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1000,7 +990,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' massDensity='1.0 4.0'/>                                      "
@@ -1012,7 +1001,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1039,7 +1028,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' vertexMass='1 -1 1 1 1 1 1 1' lumping='1' />                 "
@@ -1051,7 +1039,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1078,7 +1066,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' vertexMass='1.0 2.0' lumping='1' />                          "
@@ -1089,7 +1076,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1118,7 +1105,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='-2.0' />                        "
@@ -1132,7 +1118,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1159,7 +1145,6 @@ public:
                 "        <MechanicalObject src='@../grid'/>                                                         "
                 "        <TetrahedronSetTopologyContainer name='Container' />                                       "
                 "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
-                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
                 "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
                 "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
                 "        <MeshMatrixMass name='m_mass' massDensity='1.0 1.0' totalMass='2.0' />                     "
@@ -1173,7 +1158,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;

@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
-#include <sofa/core/behavior/BaseLMConstraint.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {
@@ -110,7 +110,6 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
         if (    obj->toBaseInteractionForceField() == nullptr
             &&  obj->toBaseInteractionConstraint() == nullptr
             &&  obj->toBaseInteractionProjectiveConstraintSet() == nullptr
-            &&  obj->toBaseLMConstraint() == nullptr
            )
             this->processObject(obj);
     }
@@ -126,7 +125,6 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
         if (    obj->toBaseInteractionForceField() != nullptr
             ||  obj->toBaseInteractionConstraint() != nullptr
             ||  obj->toBaseInteractionProjectiveConstraintSet() != nullptr
-            ||  obj->toBaseLMConstraint() != nullptr
            )
             this->processObject(obj);
     }

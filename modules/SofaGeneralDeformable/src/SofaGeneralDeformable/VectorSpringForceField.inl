@@ -26,7 +26,6 @@
 #include <sofa/helper/io/XspLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/helper/system/gl.h>
 #include <sofa/simulation/Simulation.h>
 #include <cassert>
 #include <iostream>
@@ -325,7 +324,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
-    Real kFactor       =  Real(mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
+    Real kFactor       =  Real(sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()));
 
     Deriv dforce,d;
 
@@ -404,7 +403,7 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
             points.push_back(Vector3(x2[e[1]]));
         }
     }
-    vparams->drawTool()->drawLines(points, 3, Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->drawLines(points, 3, sofa::helper::types::RGBAColor::red());
 }
 
 

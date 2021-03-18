@@ -1,6 +1,14 @@
 <!-- Mechanical SubsetMapping Group Basic Example -->
 <Node name="root" dt="0.01" gravity="0 -9.6 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+	<RequiredPlugin pluginName='SofaConstraint'/>
+	<RequiredPlugin pluginName='SofaEngine'/>
+	<RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+	<RequiredPlugin pluginName='SofaMeshCollision'/>
+	<RequiredPlugin pluginName='SofaSimpleFem'/>
+	<RequiredPlugin pluginName='SofaTopologyMapping'/>
+
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe" />
     <DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
@@ -11,7 +19,7 @@
 		<EulerImplicitSolver name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MechanicalObject template="Vec3d"/>
-		<UniformMass mass="0.001"/>
+		<UniformMass vertexMass="0.001"/>
 		<RegularGridTopology name="grid"
 				nx="10" ny="4" nz="10"
 				xmin="-0.05" xmax="0.05"
@@ -35,13 +43,11 @@
 			<Node name="Tetra1">
 				<TetrahedronSetTopologyContainer name="Container"/>
 				<TetrahedronSetTopologyModifier name="Modifier"/>
-				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 				<Hexa2TetraTopologicalMapping input="@../grid" output="@Container"/>
 				<Node name="Visu1">
 					<TriangleSetTopologyContainer name="Container"/>
 					<TriangleSetTopologyModifier name="Modifier"/>
-					<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 					<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
 <!-- 					<OglModel name="Visual" filename="mesh/suture.obj" putOnlyTexCoords="true"  dx="-0.055" material="texture Ambient 1 0.2 0.2 0.2 0.0 Diffuse 1 1.0 0.8 0.7 1.0 Specular 1 0.1 0.1 0.1 1.0 Emissive 0 0.15 0.05 0.05 0.0 Shininess 1 20" />
@@ -73,13 +79,11 @@
 			<Node name="Tetra2">
 				<TetrahedronSetTopologyContainer name="Container"/>
 				<TetrahedronSetTopologyModifier name="Modifier"/>
-				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 				<Hexa2TetraTopologicalMapping input="@../grid" output="@Container"/>
 				<Node name="Visu2">
 					<TriangleSetTopologyContainer name="Container"/>
 					<TriangleSetTopologyModifier name="Modifier"/>
-					<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 					<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
 <!-- 					<OglModel name="Visual" filename="mesh/suture.obj" putOnlyTexCoords="true"  dx="0.00" material="texture Ambient 1 0.2 0.2 0.2 0.0 Diffuse 1 1.0 0.8 0.7 1.0 Specular 1 0.1 0.1 0.1 1.0 Emissive 0 0.15 0.05 0.05 0.0 Shininess 1 20" />
@@ -111,13 +115,11 @@
 			<Node name="Tetra3">
 				<TetrahedronSetTopologyContainer name="Container"/>
 				<TetrahedronSetTopologyModifier name="Modifier"/>
-				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 				<Hexa2TetraTopologicalMapping input="@../grid" output="@Container"/>
 				<Node name="Visu3">
 					<TriangleSetTopologyContainer name="Container"/>
 					<TriangleSetTopologyModifier name="Modifier"/>
-					<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 					<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
 					<OglModel name="Visual3" color="1 0.3 0.1 1"/>

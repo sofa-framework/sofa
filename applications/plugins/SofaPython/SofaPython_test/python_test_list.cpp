@@ -27,7 +27,7 @@ static struct Tests : public Python_test_list
 
 
 // run test list
-INSTANTIATE_TEST_CASE_P(Batch,
+INSTANTIATE_TEST_SUITE_P(Batch,
                         Python_test,
                         ::testing::ValuesIn(tests.list));
 
@@ -57,7 +57,8 @@ static struct SceneTests : public Python_test_list
         addTest( "dataVecResize.py", scenePath );
         addTest( "automaticNodeInitialization.py", scenePath );
         addTest( "unicodeData.py", scenePath);
-        
+        addTest( "MechanicalObject_test.py", scenePath);
+
         // call it several times in the same python environment to simulate a reload
         for( int i=0 ; i<5 ; ++i )
             addTest( "moduleReload.py",  scenePath );
@@ -68,7 +69,7 @@ static struct SceneTests : public Python_test_list
 
 
 // run test list
-INSTANTIATE_TEST_CASE_P(Batch,
+INSTANTIATE_TEST_SUITE_P(Batch,
                         Python_scene_test,
                         ::testing::ValuesIn(sceneTests.list));
 

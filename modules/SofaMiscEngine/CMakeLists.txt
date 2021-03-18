@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscEngine LANGUAGES CXX)
 
-find_package(SofaNonUniformFem REQUIRED)
+sofa_find_package(SofaNonUniformFem REQUIRED)
 
 set(SOFAMISCENGINE_SRC "src/${PROJECT_NAME}")
 
@@ -30,6 +30,11 @@ list(APPEND SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaNonUniformFem)
+
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

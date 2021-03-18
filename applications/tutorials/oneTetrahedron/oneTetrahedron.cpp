@@ -29,13 +29,12 @@ using sofa::defaulttype::Vec3Types;
 using Coord3 = sofa::defaulttype::Vector3;
 using VecCoord3 = sofa::helper::vector<Coord3>;
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
 
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 using CGLinearSolver = sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector>;
@@ -57,9 +56,7 @@ using sofa::component::odesolver::EulerImplicitSolver;
 using sofa::component::visualmodel::OglModel;
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>;
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/GNode.h>
-#include <SofaSimulationTree/TreeSimulation.h>
+#include <SofaSimulationGraph/SimpleApi.h>
 
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::New;
@@ -76,20 +73,17 @@ using sofa::simulation::Node;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    sofa::simulation::tree::init();
     ArgumentParser argParser(argc, argv);
     sofa::gui::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
-    sofa::gui::initMain();
+    sofa::gui::initSofaGui();
     sofa::gui::GUIManager::Init(argv[0]);
 
     sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
 
     // The graph root node : gravity already exists in a GNode by default
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-    sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
+    auto simulation = sofa::simpleapi::createSimulation();
+    auto groot = sofa::simpleapi::createRootNode(simulation, "root");
     groot->setGravity( sofa::defaulttype::Vector3(0,-10,0) );
 
     // One solver for all the graph
@@ -179,14 +173,11 @@ int main(int argc, char** argv)
     style->displayFlags.endEdit();
 
     // Init the scene
-    sofa::simulation::tree::getSimulation()->init(groot.get());
+    simulation->init(groot.get());
     groot->setAnimate(false);
-
 
     //=======================================
     // Run the main loop
     sofa::gui::GUIManager::MainLoop(groot);
-
-    sofa::simulation::tree::cleanup();
     return 0;
 }

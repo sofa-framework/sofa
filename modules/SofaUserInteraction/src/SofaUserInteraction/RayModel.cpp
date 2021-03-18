@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaUserInteraction/RayModel.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
-
 
 namespace sofa::component::collision
 {
@@ -113,7 +113,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {       
-        for (int i=0; i<size; i++)
+        for (sofa::Index i=0; i<size; i++)
         {
             draw(vparams,i);
         }
@@ -135,7 +135,7 @@ void RayCollisionModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        for (int i=0; i<size; i++)
+        for (sofa::Index i=0; i<size; i++)
         {
             Ray r(this, i);
             const Vector3& o = r.origin();
@@ -170,5 +170,34 @@ void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
         ray.setOrigin(ray.origin() + d);
     }
 }
+
+const defaulttype::Vector3& Ray::origin() const
+{
+    return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()[index];
+}
+
+const defaulttype::Vector3& Ray::direction() const
+{
+    return model->direction[index];
+}
+
+defaulttype::Vector3::value_type Ray::l() const
+{
+    return model->length[index];
+}
+
+void Ray::setOrigin(const defaulttype::Vector3& newOrigin)
+{
+    helper::WriteAccessor<Data<helper::vector<defaulttype::Vector3> > > xData =
+        *model->getMechanicalState()->write(core::VecCoordId::position());
+    xData.wref()[index] = newOrigin;
+
+    helper::WriteAccessor<Data<helper::vector<defaulttype::Vector3> > > xDataFree =
+        *model->getMechanicalState()->write(core::VecCoordId::freePosition());
+    defaulttype::Vec3Types::VecCoord& freePos = xDataFree.wref();
+    freePos.resize(model->getMechanicalState()->getSize());
+    freePos[index] = newOrigin;
+}
+
 
 } //namespace sofa::component::collision

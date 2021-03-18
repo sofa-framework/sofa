@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
 
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/VecId.h>
@@ -39,10 +40,7 @@ using core::topology::BaseMeshTopology;
 
 // forward declarations:
 
-/// Provides high-level topology algorithms (e.g. CutAlongPlane, DecimateTopology, etc).
-class TopologyAlgorithms;
-
-/// Provides some geometric functions (e.g. ComputeTriangleNormal, ComputeShell, etc).
+/// Provides some geometric functions (e.g. ComputeTriangleNormal, ComputeShell, etc) and high-level topology algorithms (e.g. CutAlongPlane, DecimateTopology, etc).
 class GeometryAlgorithms;
 
 /// Provides low-level topology methods (e.g. AddPoint, RemoveEdge, etc).
@@ -57,36 +55,6 @@ class TopologicalMapping;
 /// Allow topological handle events
 class TopologyEngine;
 
-
-/** A class that contains a set of high-level (user frisendly) methods that perform topological changes */
-class SOFA_CORE_API TopologyAlgorithms : public sofa::core::topology::BaseTopologyObject
-{
-public:
-    SOFA_CLASS(TopologyAlgorithms, BaseTopologyObject);
-
-protected:
-    /** \brief Constructor.
-    *
-    */
-    TopologyAlgorithms()
-    {}
-
-
-    /// Destructor
-    ~TopologyAlgorithms() override
-    {}
-public:
-    void init() override;
-
-protected:
-    /** \brief Adds a TopologyChange object to the list of the topology this object describes.
-    */
-    void addTopologyChange(const TopologyChange *topologyChange);
-
-protected:
-    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
-    TopologyContainer *m_topologyContainer;
-};
 
 /** A class that contains a set of methods that describes the geometry of the object */
 class SOFA_CORE_API GeometryAlgorithms : public sofa::core::topology::BaseTopologyObject

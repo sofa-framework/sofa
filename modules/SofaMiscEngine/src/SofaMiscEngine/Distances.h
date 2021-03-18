@@ -137,7 +137,7 @@ public:
     /// if they are compatible with the input and output model types of this
     /// mapping.
     template<class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static bool canCreate ( T*& /*obj*/, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
         if (arg->findObject(arg->getAttribute("hexaContainerPath", "../..")) == nullptr) {
             msg_error(context) << "Cannot create " << T::GetClass()->className << " as the hexas container is missing.";

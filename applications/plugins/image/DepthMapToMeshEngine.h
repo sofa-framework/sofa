@@ -33,7 +33,10 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/Texture.h>
+
+#if IMAGE_HAVE_SOFA_GL == 1
+#include <sofa/gl/Texture.h>
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
 namespace sofa
 {
@@ -108,9 +111,9 @@ public:
         , texOffset(initData(&texOffset,TexCoord(0.0,0.0),"texOffset","texture offsets (in [0,1])"))
         , triangles(initData(&triangles,SeqTriangles(),"triangles","output triangles"))
         , time((unsigned int)0)
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         , texture(NULL)
-#endif /* SOFA_NO_OPENGL */
+#endif // IMAGE_HAVE_SOFA_GL == 1
     {
         image.setReadOnly(true);
         transform.setReadOnly(true);
@@ -119,9 +122,9 @@ public:
 
     ~DepthMapToMeshEngine() override
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         if(texture) delete texture;
-#endif /* SOFA_NO_OPENGL */
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
     void init() override
@@ -139,10 +142,10 @@ public:
 protected:
 
     unsigned int time;
-#ifndef SOFA_NO_OPENGL
-    helper::gl::Texture* texture;
+#if IMAGE_HAVE_SOFA_GL == 1
+    sofa::gl::Texture* texture;
     static const unsigned texture_res=256;
-#endif /* SOFA_NO_OPENGL */
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
     void doUpdate() override
     {
@@ -159,7 +162,7 @@ protected:
         const cimg_library::CImg<T>& img = in->getCImg(this->time);
         Real f = this->depthFactor.getValue();
 
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         // update texture
         if(texture && !inTex->isEmpty())
         {
@@ -174,7 +177,7 @@ protected:
             }
             texture->update();
         }
-#endif /* SOFA_NO_OPENGL */
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
         // update points
         unsigned int count=0,p1,p2,p3;
@@ -232,10 +235,11 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams) override
     {
+#if IMAGE_HAVE_SOFA_GL == 1
         // need a valid opengl context to initialize an opengl texture, a context is not always bound during the init phase so we init the texture here
         if(!texture)
         {
-            texture = new helper::gl::Texture(new helper::io::Image,false);
+            texture = new sofa::gl::Texture(new helper::io::Image,false);
             texture->getImage()->init(texture_res,texture_res,32);
             texture->init();
 
@@ -252,7 +256,7 @@ protected:
         raTriangles tri(this->triangles);
         raTexture inTex(this->texImage);
 
-        vparams->drawTool()->setMaterial({0.5,0.5,0.5,0.});
+        vparams->drawTool()->setMaterial(sofa::helper::types::RGBAColor{0.5,0.5,0.5,0.});
 
         vparams->drawTool()->enableLighting();
 
@@ -281,6 +285,7 @@ protected:
         }
 
         vparams->drawTool()->restoreLastState();
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 };
 

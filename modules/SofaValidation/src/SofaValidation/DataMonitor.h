@@ -36,7 +36,7 @@ public:
     SOFA_CLASS(DataMonitor, core::objectmodel::BaseObject);
 
     /// Get the value of the associated variable
-    const char* getValue();
+    const std::string getValue();
 
 protected:
     DataMonitor();

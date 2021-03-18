@@ -21,13 +21,16 @@
 ******************************************************************************/
 
 #include <SofaValidation/CompareState.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/core/ObjectFactory.h>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/simulation/Node.h>
+
 
 #include <sstream>
 #include <algorithm>
@@ -238,7 +241,7 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
                         for (int c=0; c<nc; ++c)
                             pRefX[c] = infoRefX->getScalarValue(valueRefX, p*ncRefX+c);
                     }
-                    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1.0f,0.0f,0.5f,1.0f));
+                    vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor(1.0f,0.0f,0.5f,1.0f));
                 }
             }
         }

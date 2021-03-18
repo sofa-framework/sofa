@@ -31,8 +31,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::engine
 {
@@ -85,13 +85,6 @@ public:
         }
 
         return BaseObject::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
 protected:

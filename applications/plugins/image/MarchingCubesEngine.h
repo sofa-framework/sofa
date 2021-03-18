@@ -33,7 +33,6 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/Texture.h>
 
 namespace sofa
 {
@@ -180,14 +179,14 @@ protected:
         raPositions pos(this->position);
         raTriangles tri(this->triangles);
 
-        const sofa::defaulttype::Vec4f color(0.5,0.5,0.5,0.5);
+        const sofa::helper::types::RGBAColor color(0.5,0.5,0.5,0.5);
         vparams->drawTool()->setMaterial(color);
         vparams->drawTool()->enableLighting();
 
         std::size_t size = tri.size();
         std::vector<defaulttype::Vector3> points;
         std::vector<defaulttype::Vector3> normals;
-        std::vector<defaulttype::Vec4f> colors;
+        std::vector<sofa::helper::types::RGBAColor> colors;
         points.resize(3*size);
         normals.resize(size);
         colors.resize(size);

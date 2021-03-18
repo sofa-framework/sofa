@@ -180,7 +180,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
             std::cout << "run_test,          x = " << x << std::endl;
             std::cout << "                   v = " << v << std::endl;
             std::cout << "            expected f = " << ef << std::endl;
-            std::cout << "            actual f = " <<  f << std::endl;
+            std::cout << "            actual f = " <<  f.ref() << std::endl;
         }
         ASSERT_TRUE( this->vectorMaxDiff(f,ef)< errorMax*this->epsilon() );
 

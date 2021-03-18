@@ -23,7 +23,6 @@
 
 #include <SofaNonUniformFem/HexahedronCompositeFEMMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <string>
@@ -379,7 +378,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::Visua
     }
 
 
-    vparams->drawTool()->drawPoints(points, 7, sofa::defaulttype::Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
+    vparams->drawTool()->drawPoints(points, 7, sofa::helper::types::RGBAColor(0.2f,1.0f,0.0f,1.0f));
 }
 
 } // namespace sofa::component::mapping

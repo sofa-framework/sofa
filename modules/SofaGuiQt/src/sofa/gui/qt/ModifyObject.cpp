@@ -34,9 +34,9 @@
 #include <sofa/gui/qt/QMomentumStatWidget.h>
 #endif
 #include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::Message ;
+using sofa::helper::logging::Message;
 
-
+#include <sofa/simulation/Node.h>
 #include <iostream>
 
 #include <QPushButton>
@@ -46,21 +46,13 @@ using sofa::helper::logging::Message ;
 #include <QTreeWidget>
 #include <QScrollArea>
 #include <QApplication>
-#include <QDesktopWidget>
-
+#include <QScreen>
 
 // uncomment to show traces of GUI operations in this file
 // #define DEBUG_GUI
 
-namespace sofa
+namespace sofa::gui::qt
 {
-
-namespace gui
-{
-
-namespace qt
-{
-
 
 ModifyObject::ModifyObject(void *Id,
                            QTreeWidgetItem* item_clicked,
@@ -71,7 +63,7 @@ ModifyObject::ModifyObject(void *Id,
     :QDialog(parent, f),
       Id_(Id),
       item_(item_clicked),
-      node(nullptr),
+      basenode(nullptr),
       data_(nullptr),
       dialogFlags_(dialogFlags),
       messageTab(nullptr),
@@ -103,13 +95,13 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 #ifdef DEBUG_GUI
     std::cout << "GUI<emit beginObjectModification(" << base->getName() << ")" << std::endl;
 #endif
-    node = base;
+    basenode = base;
     data_ = nullptr;
 
     //Layout to organize the whole window
     QVBoxLayout *generalLayout = new QVBoxLayout(this);
     generalLayout->setObjectName("generalLayout");
-    generalLayout->setMargin(0);
+    generalLayout->setContentsMargins(0,0,0,0);
     generalLayout->setSpacing(1);
 
     //Tabulation widget
@@ -119,7 +111,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     QScrollArea* m_scrollArea = new QScrollArea();
 
     //    const int screenHeight = QApplication::desktop()->height();
-    QRect geometry = QApplication::desktop()->screenGeometry(this);
+    QRect geometry = QGuiApplication::primaryScreen()->availableGeometry();
 
     m_scrollArea->setMinimumSize(600, geometry.height() * 0.75);
     m_scrollArea->setWidgetResizable(true);
@@ -146,10 +138,10 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     buttonRefresh->setText( tr( "Refresh" ) );
 
     // displayWidget
-    if (node)
+    if (basenode)
     {
-        const sofa::core::objectmodel::Base::VecData& fields = node->getDataFields();
-        const sofa::core::objectmodel::Base::VecLink& links = node->getLinks();
+        const sofa::core::objectmodel::Base::VecData& fields = basenode->getDataFields();
+        const sofa::core::objectmodel::Base::VecLink& links = basenode->getLinks();
 
         std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
 
@@ -162,7 +154,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             core::objectmodel::BaseData* data=*it;
             if (!data)
             {
-                dmsg_error("ModifyObject") << "nullptr Data in '" << node->getName() << "'" ;
+                dmsg_error("ModifyObject") << "nullptr Data in '" << basenode->getName() << "'" ;
                 continue;
             }
 
@@ -190,7 +182,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             if (tabs.empty() || tabs.back()->isFull())
             {
                 newTab = true;
-                m_tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+                m_tabs.push_back(new QTabulationModifyObject(this,basenode, item_,tabs.size()+1));
                 tabs.push_back(m_tabs.back());
             }
             currentTab = tabs.back();
@@ -240,7 +232,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             if (tabs.empty()) tabNames.push_back(currentGroup);
             if (tabs.empty() || tabs.back()->isFull())
             {
-                m_tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+                m_tabs.push_back(new QTabulationModifyObject(this,basenode, item_,tabs.size()+1));
                 tabs.push_back(m_tabs.back() );
             }
             currentTab = tabs.back();
@@ -277,7 +269,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 #if SOFAGUIQT_HAVE_QT5_CHARTS
         //Energy Widget
-        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(basenode))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -287,7 +279,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         }
 
         //Momentum Widget
-        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(basenode))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -300,7 +292,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
         /// Info Widget
         {
-            QDataDescriptionWidget* description=new QDataDescriptionWidget(dialogTab, node);
+            QDataDescriptionWidget* description=new QDataDescriptionWidget(dialogTab, basenode);
             dialogTab->addTab(description, QString("Infos"));
         }
 
@@ -310,7 +302,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             if (messageTab)
             {
                 std::stringstream tmp;
-                int numMessages = node->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
+                int numMessages = basenode->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
                                                              Message::Error, Message::Warning, Message::Fatal});
                 tmp << "Messages(" << numMessages << ")" ;
                 dialogTab->addTab(messageTab, QString::fromStdString(tmp.str()));
@@ -319,7 +311,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
         //Adding buttons at the bottom of the dialog
         QHBoxLayout *lineLayout = new QHBoxLayout( nullptr);
-        lineLayout->setMargin(0);
+        lineLayout->setContentsMargins(0,0,0,0);
         lineLayout->setSpacing(6);
         lineLayout->setObjectName("Button Layout");
         lineLayout->addWidget(buttonUpdate);
@@ -343,11 +335,11 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 void ModifyObject::clearMessages()
 {
-    node->clearWarnings();
+    basenode->clearWarnings();
     messageEdit->clear();
 
     std::stringstream tmp;
-    int numMessages = node->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
+    int numMessages = basenode->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
                                                  Message::Error, Message::Warning, Message::Fatal});
     tmp << "Messages(" << numMessages << ")" ;
 
@@ -359,7 +351,7 @@ void ModifyObject::clearMessages()
 void ModifyObject::createDialog(core::objectmodel::BaseData* data)
 {
     data_ = data;
-    node = nullptr;
+    basenode = nullptr;
 
 #ifdef DEBUG_GUI
     std::cout << "GUI>emit beginDataModification("<<data->getName()<<")" << std::endl;
@@ -374,11 +366,11 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
 #endif
 
     QVBoxLayout *generalLayout = new QVBoxLayout(this);
-    generalLayout->setMargin(0);
+    generalLayout->setContentsMargins(0, 0, 0, 0);
     generalLayout->setSpacing(1);
     generalLayout->setObjectName("generalLayout");
     QHBoxLayout *lineLayout = new QHBoxLayout( nullptr);
-    lineLayout->setMargin(0);
+    lineLayout->setContentsMargins(0, 0, 0, 0);
     lineLayout->setSpacing(6);
     lineLayout->setObjectName("Button Layout");
     buttonUpdate = new QPushButton( this );
@@ -455,7 +447,7 @@ void ModifyObject::updateConsole()
     {
         messageTab = new QWidget();
         QVBoxLayout* tabLayout = new QVBoxLayout( messageTab);
-        tabLayout->setMargin(0);
+        tabLayout->setContentsMargins(0, 0, 0, 0);
         tabLayout->setSpacing(1);
         tabLayout->setObjectName("tabWarningLayout");
         QPushButton *buttonClearWarnings = new QPushButton(messageTab);
@@ -480,7 +472,7 @@ void ModifyObject::updateConsole()
         tmp << "<table>";
         tmp << "<tr><td><td><td><td>" ;
         m_numMessages = 0 ;
-        for(const Message& message : node->getLoggedMessages())
+        for(const Message& message : basenode->getLoggedMessages())
         {
             tmp << "<tr>";
             tmp << "<td>["<<toHtmlString(message.type())<<"]</td>" ;
@@ -501,13 +493,13 @@ void ModifyObject::updateValues()
     if (buttonUpdate == nullptr) return;
 
     //Make the update of all the values
-    if (node)
+    if (basenode)
     {
-        bool isNode =( dynamic_cast< simulation::Node *>(node) != nullptr);
+        bool isNode =( sofa::simulation::node::getNodeFrom(basenode) != nullptr);
         //If the current element is a node of the graph, we first apply the transformations
         if (transformation && dialogFlags_.REINIT_FLAG && isNode)
         {
-            simulation::Node* current_node = dynamic_cast< simulation::Node *>(node);
+            simulation::Node* current_node = sofa::simulation::node::getNodeFrom(basenode);
             if (!transformation->isDefaultValues())
                 transformation->applyTransformation(current_node);
             transformation->setDefaultValues();
@@ -515,11 +507,11 @@ void ModifyObject::updateValues()
 
         if (dialogFlags_.REINIT_FLAG)
         {
-            if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
+            if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(basenode))
             {
                 obj->reinit();
             }
-            else if (simulation::Node *n = dynamic_cast< simulation::Node *>(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
+            else if (simulation::Node *n = sofa::simulation::node::getNodeFrom(basenode)) n->reinit(sofa::core::execparams::defaultInstance());
         }
 
     }
@@ -532,19 +524,19 @@ void ModifyObject::updateValues()
     std::cout << "GUI<emit objectUpdated()" << std::endl;
 #endif
 
-    if (node)
+    if (basenode)
     {
 #ifdef DEBUG_GUI
         std::cout << "GUI>emit endObjectModification("<<node->getName()<<")" << std::endl;
 #endif
-        emit endObjectModification(node);
+        emit endObjectModification(basenode);
 #ifdef DEBUG_GUI
         std::cout << "GUI<emit endObjectModification("<<node->getName()<<")" << std::endl;
 #endif
 #ifdef DEBUG_GUI
         std::cout << "GUI>emit beginObjectModification("<<node->getName()<<")" << std::endl;
 #endif
-        emit beginObjectModification(node);
+        emit beginObjectModification(basenode);
 #ifdef DEBUG_GUI
         std::cout << "GUI<emit beginObjectModification("<<node->getName()<<")" << std::endl;
 #endif
@@ -593,7 +585,7 @@ void ModifyObject::updateTables()
     }
 #endif
 
-    if(node)
+    if(basenode)
     {
         updateConsole();
     }
@@ -601,12 +593,12 @@ void ModifyObject::updateTables()
 
 void ModifyObject::reject   ()
 {
-    if (node)
+    if (basenode)
     {
 #ifdef DEBUG_GUI
         std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
-        emit endObjectModification(node);
+        emit endObjectModification(basenode);
 #ifdef DEBUG_GUI
         std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
@@ -633,12 +625,12 @@ void ModifyObject::accept   ()
         emit  dataModified( dataModifiedString  );
     }
 
-    if (node)
+    if (basenode)
     {
 #ifdef DEBUG_GUI
         std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
-        emit endObjectModification(node);
+        emit endObjectModification(basenode);
 #ifdef DEBUG_GUI
         std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
@@ -668,8 +660,7 @@ QString ModifyObject::parseDataModified()
     return cat;
 }
 
-} // namespace qt
+bool ModifyObject::hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
 
-} // namespace gui
 
-} // namespace sofa
+} // namespace sofa::gui::qt

@@ -572,22 +572,25 @@ RegisterObject::operator int()
                 reg.defaultTemplate = entry.defaultTemplate;
             }
         }
-        for (ObjectFactory::CreatorMap::iterator itc = entry.creatorMap.begin(), itcend = entry.creatorMap.end(); itc != itcend; ++itc)
+        for (auto & creator_entry : entry.creatorMap)
         {
-            if (reg.creatorMap.find(itc->first) != reg.creatorMap.end())
-            {
-                msg_warning("ObjectFactory") << "Class already registered: " << itc->first;
-            }
-            else
-            {
-                reg.creatorMap.insert(*itc);
+            const std::string & template_name = creator_entry.first;
+            if (reg.creatorMap.find(template_name) != reg.creatorMap.end()) {
+                if (template_name.empty()) {
+                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className;
+                } else {
+                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className << "<" << template_name << ">";
+                }
+            } else {
+                reg.creatorMap.insert(creator_entry);
             }
         }
-        for (std::set<std::string>::iterator it = entry.aliases.begin(), itend = entry.aliases.end(); it != itend; ++it)
+
+        for (const auto & alias : entry.aliases)
         {
-            if (reg.aliases.find(*it) == reg.aliases.end())
+            if (reg.aliases.find(alias) == reg.aliases.end())
             {
-                ObjectFactory::getInstance()->addAlias(*it,entry.className);
+                ObjectFactory::getInstance()->addAlias(alias,entry.className);
             }
         }
         return 1;

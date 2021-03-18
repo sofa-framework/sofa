@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscTopology LANGUAGES CXX)
 
-find_package(SofaBase REQUIRED) # SofaBaseTopology
-sofa_find_package(ZLIB BOTH_SCOPES)
-
 set(SOFAMISCTOPOLOGY_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -23,6 +20,9 @@ list(APPEND SOURCE_FILES
 	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.cpp
 	${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.cpp
 )
+
+sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
+sofa_find_package(ZLIB BOTH_SCOPES)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)

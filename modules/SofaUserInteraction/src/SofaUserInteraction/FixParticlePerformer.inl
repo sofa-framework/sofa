@@ -24,11 +24,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 
-#include <sofa/simulation/Simulation.h>
-
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
-
+#include <sofa/simulation/Node.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/OBBModel.h>
@@ -81,7 +79,7 @@ void FixParticlePerformer<DataTypes>::start()
         distanceForceField->addSpring(0,points[i], stiffness*coeffStiffness, friction, 0);
     nodeFixation->addObject(distanceForceField);
 
-    nodeFixation->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
+    nodeFixation->execute<simulation::InitVisitor>(sofa::core::execparams::defaultInstance());
 }
 
 template <class DataTypes>

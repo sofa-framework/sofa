@@ -138,13 +138,13 @@ struct TriangleNumericalIntegration_test : public Sofa_test<typename _DataTypes:
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec2Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(TriangleNumericalIntegration_test, DataTypes);
+TYPED_TEST_SUITE(TriangleNumericalIntegration_test, DataTypes);
 
 // first test topology
 TYPED_TEST(TriangleNumericalIntegration_test, testNumericalIntegration)

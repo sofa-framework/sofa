@@ -22,12 +22,9 @@
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+#include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 QEnergyStatWidget::QEnergyStatWidget( QWidget* parent, simulation::Node* node )
@@ -37,7 +34,7 @@ QEnergyStatWidget::QEnergyStatWidget( QWidget* parent, simulation::Node* node )
     setCurve( 1, "Potential", Qt::green );
     setCurve( 2, "Mechanical", Qt::blue );
 
-    m_energyVisitor   = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
+    m_energyVisitor   = new sofa::simulation::MechanicalComputeEnergyVisitor(core::mechanicalparams::defaultInstance());
 }
 
 QEnergyStatWidget::~QEnergyStatWidget()
@@ -74,8 +71,4 @@ void QEnergyStatWidget::stepImpl()
 }
 
 
-} // qt
-} // gui
-} //sofa
-
-
+} //namespace sofa::gui::qt

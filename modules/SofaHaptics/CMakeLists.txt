@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaHaptics LANGUAGES CXX)
 
-find_package(SofaGeneral REQUIRED) # To have SofaConstraint
+sofa_find_package(SofaConstraint REQUIRED)
 
 set(HEADER_FILES
     src/SofaHaptics/config.h
-    src/SofaHaptics/initHaptics.h
+    src/SofaHaptics/initSofaHaptics.h
     src/SofaHaptics/ForceFeedback.h
     src/SofaHaptics/LCPForceFeedback.h
     src/SofaHaptics/LCPForceFeedback.inl
@@ -15,7 +15,7 @@ set(HEADER_FILES
     )
 
 set(SOURCE_FILES
-    src/SofaHaptics/initHaptics.cpp
+    src/SofaHaptics/initSofaHaptics.cpp
     src/SofaHaptics/ForceFeedback.cpp
     src/SofaHaptics/LCPForceFeedback.cpp
     src/SofaHaptics/NullForceFeedback.cpp
@@ -28,6 +28,11 @@ set(EXTRA_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaConstraint)
+
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

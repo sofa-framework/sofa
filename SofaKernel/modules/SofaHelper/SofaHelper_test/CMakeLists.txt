@@ -22,15 +22,9 @@ set(SOURCE_FILES
     testing/TestMessageHandler_test.cpp
 )
 
-if(NOT SOFA_NO_OPENGL)
-    list(APPEND SOURCE_FILES
-        gl/GLSLShader_test.cpp
-    )
-endif()
-
 add_subdirectory(system/TestPlugin)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaHelper)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaHelper)
 
 add_test(NAME SofaHelper_test COMMAND SofaHelper_test)

@@ -6,8 +6,12 @@
 set(SOFAASSIMP_HAVE_IMAGE @SOFAASSIMP_HAVE_IMAGE@)
 set(SOFAASSIMP_HAVE_FLEXIBLE @SOFAASSIMP_HAVE_FLEXIBLE@)
 
-find_package(SofaGeneral REQUIRED)
 find_package(Assimp REQUIRED)
+find_package(SofaLoader REQUIRED)
+find_package(SofaOpenglVisual REQUIRED)
+find_package(SofaBoundaryCondition REQUIRED)
+find_package(SofaGeneralRigid REQUIRED)
+find_package(SofaMeshCollision REQUIRED)
 
 if(SOFAASSIMP_HAVE_IMAGE)
     find_package(image QUIET REQUIRED)

@@ -468,7 +468,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor ( 0,1,0,1 ) );
 
     points.clear();
     std::vector< sofa::defaulttype::Vector3 > tetraPoints;
@@ -511,9 +511,9 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
             tetraLines.push_back(sofa::defaulttype::Vector3(tp1[0],tp1[1],tp1[2]));
         }
 
-        vparams->drawTool()->drawPoints ( points, 10, sofa::defaulttype::Vec<4,float> ( 1,0,0,1 ) );
-        vparams->drawTool()->drawPoints ( tetraPoints, 10, sofa::defaulttype::Vec<4,float> ( 1,0,1,1 ) );
-        vparams->drawTool()->drawLines ( tetraLines, 3.0, sofa::defaulttype::Vec<4,float> ( 1,0,1,1 ) );
+        vparams->drawTool()->drawPoints ( points, 10, sofa::helper::types::RGBAColor::red());
+        vparams->drawTool()->drawPoints ( tetraPoints, 10, sofa::helper::types::RGBAColor::magenta() );
+        vparams->drawTool()->drawLines ( tetraLines, 3.0, sofa::helper::types::RGBAColor::magenta() );
 
     }
 }

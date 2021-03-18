@@ -3,8 +3,11 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscFem'/>
     <RequiredPlugin name='SofaGeneralDeformable'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+	<RequiredPlugin pluginName='SofaBoundaryCondition'/>
+	<RequiredPlugin pluginName='SofaMeshCollision'/>
 
-    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+	<VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager response="default" />

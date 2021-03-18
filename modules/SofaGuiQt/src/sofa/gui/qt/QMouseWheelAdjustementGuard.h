@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QMOUSEWHEELADJUSTEMENTGUARD_H
-#define SOFA_GUI_QT_QMOUSEWHEELADJUSTEMENTGUARD_H
-
+#pragma once
 #include <QObject>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 /// @brief Filter qt events to allows wheel event to only be accepted when the widget has focus.
@@ -50,9 +42,4 @@ protected:
     bool eventFilter(QObject* o, QEvent* e) override;
 };
 
-} /// namespace qt
-} /// namespace gui
-} /// namespace sofa
-
-#endif /// SOFA_GUI_QT_QMOUSEWHEELADJUSTEMENTGUARD_H
-
+} //namespace sofa::gui::qt

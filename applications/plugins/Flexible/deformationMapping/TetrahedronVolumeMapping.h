@@ -5,7 +5,7 @@
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {
@@ -141,18 +141,19 @@ public:
 
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId ) override
     {
-        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get()].write();
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
-        geometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+        geometricStiffness.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
     }
 
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override
     {
+        SOFA_UNUSED(mparams);
         size_t size = this->fromModel->getSize();
         geometricStiffness.resizeBlocks( size, size );
 
-        const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
+        const OutVecDeriv& childForce = childForceId[this->toModel.get()].read()->getValue();
         const OutVecDeriv* cf; // force per tetra
         if( d_volumePerNodes.getValue() )
         {

@@ -25,6 +25,7 @@
 #include "BaseDeformationMapping.h"
 #include "BaseDeformationImpl.inl"
 #include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/IndexOpenMP.h>
@@ -350,11 +351,12 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
+    SOFA_UNUSED(mparams);
     unsigned geometricStiffness = d_geometricStiffness.getValue();
 
     if( BlockType::constant || !geometricStiffness ) { K.resize(0,0); return; }
 
-    const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
+    const OutVecDeriv& childForce = childForceId[this->toModel.get()].read()->getValue();
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     const VecVRef& indices = this->f_index.getValue();
 
@@ -527,7 +529,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
 {
     if( BlockType::constant || !d_geometricStiffness.getValue() ) return;
 
-    Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+    Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get()].write();
     const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
     const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
 
@@ -703,7 +705,7 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+#if FLEXIBLE_HAVE_SOFA_GL
     if (!vparams->displayFlags().getShowMechanicalMappings() && !showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) return;
 
 
@@ -830,7 +832,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
             if(extTriangles) nb+=extTriangles->size();
 
             std::vector< defaulttype::Vector3 > points(3*nb),normals;
-            std::vector< defaulttype::Vec<4,float> > colors(3*nb);
+            std::vector< sofa::helper::types::RGBAColor > colors(3*nb);
             size_t count=0;
 
             if(triangles)
@@ -839,7 +841,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                     {
                         size_t index = (*triangles)[i][j];
                         if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                        sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
+                        colors[count] = sofa::helper::types::RGBAColor::fromHSVA(float(val[index]),1.f,.8f,1.f);
                         count++;
                     }
             if(extTriangles)
@@ -849,7 +851,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                         size_t index = (*extTriangles)[i][j];
                         if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
                         if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                        sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
+                        colors[count] = sofa::helper::types::RGBAColor::fromHSVA(float(val[index]),1.f,.8f,1.f);
                         count++;
                     }
 
@@ -858,7 +860,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         }
     }
     glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+#endif /* FLEXIBLE_HAVE_SOFA_GL */
 }
 
 

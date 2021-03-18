@@ -21,12 +21,14 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/simulation/Node.h>
 #include "PatchTestMovementConstraint.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
+#include <sofa/helper/vector_algorithm.h>
 #include <sofa/helper/cast.h>
 
 namespace sofa::component::projectiveconstraintset
@@ -458,12 +460,12 @@ void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualPara
 
     if(d_drawConstrainedPoints.getValue())
     {
-        for (SetIndexArray::const_iterator it = indices.begin();it != indices.end();++it)
+        for (unsigned int index : indices)
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
     }
 }
 

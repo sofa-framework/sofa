@@ -448,7 +448,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
@@ -599,7 +599,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
         d_pos.setValue(pos);
 
         //this->addForce( force1, pos, force1 );
-        this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force1, d_pos, d_force1 );
+        this->addForce( core::mechanicalparams::defaultInstance() /* PARAMS FIRST */, d_force1, d_pos, d_force1 );
 
         // get current energy around
         Real energy1 = 0;
@@ -614,7 +614,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
         epsilon[2]= cs * ((Real)rand()/(Real)(RAND_MAX - 0.5));
         deltaPos[moveIdx] = epsilon;
         // calc derivative
-        this->addDForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_deltaForceCalculated, d_deltaPos );
+        this->addDForce( core::mechanicalparams::defaultInstance() /* PARAMS FIRST */, d_deltaForceCalculated, d_deltaPos );
         deltaPos[moveIdx] = zero;
         // calc factual change
         pos[moveIdx] = pos[moveIdx] + epsilon;
@@ -622,7 +622,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
         DataVecCoord d_force2;
         d_force2.setValue(force2);
         //this->addForce( force2, pos, force2 );
-        this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force2, d_pos, d_force2 );
+        this->addForce( core::mechanicalparams::defaultInstance() /* PARAMS FIRST */, d_force2, d_pos, d_force2 );
 
         pos[moveIdx] = pos[moveIdx] - epsilon;
         // check first derivative:
@@ -810,59 +810,59 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
         points[3].push_back(pb);
     }
 
-    Vec<4,float> color1;
-    Vec<4,float> color2;
-    Vec<4,float> color3;
-    Vec<4,float> color4;
+    sofa::helper::types::RGBAColor color1;
+    sofa::helper::types::RGBAColor color2;
+    sofa::helper::types::RGBAColor color3;
+    sofa::helper::types::RGBAColor color4;
 
     std::string material = d_materialName.getValue();
     if (material=="ArrudaBoyce") {
-        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else if (material=="StVenantKirchhoff"){
-        color1 = Vec<4,float>(1.0,0.0,0.0,1.0);
-        color2 = Vec<4,float>(1.0,0.0,0.5,1.0);
-        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-        color4 = Vec<4,float>(1.0,0.5,1.0,1.0);
+        color1 = sofa::helper::types::RGBAColor(1.0,0.0,0.0,1.0);
+        color2 = sofa::helper::types::RGBAColor(1.0,0.0,0.5,1.0);
+        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::helper::types::RGBAColor(1.0,0.5,1.0,1.0);
     }
     else if (material=="NeoHookean"){
-        color1 = Vec<4,float>(0.0,1.0,1.0,1.0);
-        color2 = Vec<4,float>(0.5,0.0,1.0,1.0);
-        color3 = Vec<4,float>(1.0,0.0,1.0,1.0);
-        color4 = Vec<4,float>(1.0,0.5,1.0,1.0);
+        color1 = sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0);
+        color2 = sofa::helper::types::RGBAColor(0.5,0.0,1.0,1.0);
+        color3 = sofa::helper::types::RGBAColor(1.0,0.0,1.0,1.0);
+        color4 = sofa::helper::types::RGBAColor(1.0,0.5,1.0,1.0);
     }
     else if (material=="MooneyRivlin"){
-        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-        color2 = Vec<4,float>(0.0,1.0,0.5,1.0);
-        color3 = Vec<4,float>(0.0,1.0,1.0,1.0);
-        color4 = Vec<4,float>(0.5,1.0,1.0,1.0);
+        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::helper::types::RGBAColor(0.0,1.0,0.5,1.0);
+        color3 = sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0);
+        color4 = sofa::helper::types::RGBAColor(0.5,1.0,1.0,1.0);
     }
     else if (material=="VerondaWestman"){
-        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else if (material=="Costa"){
-        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else if (material=="Ogden"){
-        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else {
-        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
     }
 
 

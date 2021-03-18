@@ -22,8 +22,8 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
+#include <sofa/core/fwd.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
@@ -127,7 +127,8 @@ public:
     virtual const Tetra getTetrahedron(TetraID i)    { return getTetrahedra()[i]; }
     virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }   
 	   
-    virtual sofa::core::topology::TopologyObjectType getTopologyType() const = 0 ;
+    /// Type of higher topology element contains in this container @see TopologyElementType
+    virtual sofa::core::topology::TopologyElementType getTopologyType() const = 0;
     /// @}
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones
@@ -325,7 +326,6 @@ public:
 protected:
 
     sofa::core::objectmodel::DataFileName fileTopology;
-
 
 public:
 

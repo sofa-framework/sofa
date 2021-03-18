@@ -22,6 +22,7 @@
 #include "TopologicalChangeManager.h"
 
 #include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -33,7 +34,6 @@
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
@@ -505,9 +505,6 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
         sofa::component::topology::TriangleSetTopologyModifier* triangleModifier;
         currentTopology->getContext()->get(triangleModifier);
 
-        sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlgorithm;
-        currentTopology->getContext()->get(triangleAlgorithm);
-
         sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeometry;
         currentTopology->getContext()->get(triangleGeometry);
 
@@ -531,7 +528,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
 
 
         // Output declarations
-        sofa::helper::vector< sofa::core::topology::TopologyObjectType> topoPath_list;
+        sofa::helper::vector< sofa::core::topology::TopologyElementType> topoPath_list;
         sofa::helper::vector<Index> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
@@ -552,7 +549,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
 
         // -- STEP 5: Splitting elements along path (incision path is stored inside "new_edges")
         sofa::helper::vector< Index > new_edges;
-        int result = triangleAlgorithm->SplitAlongPath(last_indexPoint, coord_a, core::topology::BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
+        int result = triangleGeometry->SplitAlongPath(last_indexPoint, coord_a, core::topology::BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
 
         if (result == -1)
         {
@@ -564,7 +561,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
         sofa::helper::vector<Index> new_points;
         sofa::helper::vector<Index> end_points;
         bool reachBorder = false;
-        bool incision_ok =  triangleAlgorithm->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
+        bool incision_ok = triangleGeometry->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
 
         if (!incision_ok)
         {
@@ -587,9 +584,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
             incision.indexPoint = end_points.back();
 
         // -- STEP 8: Propagating topological events.
-        triangleModifier->propagateTopologicalChanges();
         triangleModifier->notifyEndingEvent();
-        triangleModifier->propagateTopologicalChanges(); // needed?
 
         return true;
     }

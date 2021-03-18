@@ -24,30 +24,15 @@
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/DataTracker.h>
+#include <sofa/core/fwd.h>
 namespace sofa
 {
 
 namespace core
 {
 
-// forward declaration of referenced classes
-namespace topology
-{
-class Topology;
-} // namespace topology
-
-namespace visual
-{
-class VisualParams;
-class DisplayFlags;
-}
-
-
 namespace objectmodel
 {
-
-class Event;
-class BaseNode;
 
 /**
  *  \brief Base class for simulation components.
@@ -150,250 +135,131 @@ public:
     virtual void removeSlave(BaseObject::SPtr s);
     /// @}
 
+
     /// @name Component accessors
     /// @{
 
-    /// Local search of an object of the given type
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->get<T>(BaseContext::Local)
     template<class T>
-    typename T::SPtr searchLocal() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::Local)); }
-    /// Upward search of an object of the given type, starting from the local context
-    template<class T>
-    typename T::SPtr searchUp() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::SearchUp)); }
-    /// Downward search of an object of the given type, starting from the local context
-    template<class T>
-    typename T::SPtr searchDown() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::SearchDown)); }
-    /// Search of an object of the given type, starting from the root
-    /// @todo or only in the root ?
-    template<class T>
-    typename T::SPtr searchFromRoot() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::SearchRoot)); }
-    /// Search of an object of the given type, in the parents of the local context
-    /// @todo is this an upward search starting from each parent, or only a local search in each parent ?
-    template<class T>
-    typename T::SPtr searchInParents() const { const BaseContext* context = getContext(); return typename T::SPtr(context->get<T>(BaseContext::SearchParents)); }
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::Local) to update.")
+    typename T::SPtr searchLocal() const = delete;
 
-    /// Local search of all objects of the given type
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->get<T>(BaseContext::SearchUp)
     template<class T>
-    helper::vector<typename T::SPtr> searchAllLocal() const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,BaseContext::Local);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Upward search of all objects of the given type, starting from the local context
-    template<class T>
-    helper::vector<typename T::SPtr> searchAllUp() const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,BaseContext::SearchUp);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Downward search of all objects of the given type, starting from the local context
-    template<class T>
-    helper::vector<typename T::SPtr> searchAllDown() const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,BaseContext::SearchDown);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Search of all objects of the given type, starting from the root
-    template<class T>
-    helper::vector<typename T::SPtr> searchAllFromRoot() const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,BaseContext::SearchRoot);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Search of all objects of the given type, in the parents of the local context
-    /// @todo is this an upward search starting from each parent, or only a local search in each parent ?
-    template<class T>
-    helper::vector<typename T::SPtr> searchAllInParents() const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,BaseContext::SearchParents);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
+    typename T::SPtr searchUp() const = delete;
 
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->get<T>(BaseContext::SearchDown)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
+    typename T::SPtr searchDown() const = delete;
 
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->get<T>(BaseContext::SearchRoot)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchFromRoot) to update.")
+    typename T::SPtr searchFromRoot() const = delete;
 
-    /// Local search of all objects of the given type with a given Tag
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->get<T>(BaseContext::SearchParents)
     template<class T>
-    helper::vector<typename T::SPtr> searchAllLocal(const Tag& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::Local);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Upward search of all objects of the given type with a given Tag, starting from the local context
-    template<class T>
-    helper::vector<typename T::SPtr> searchAllUp(const Tag& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::SearchUp);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Downward search of all objects of the given typee with a given Tag, starting from the local context
-    template<class T>
-    helper::vector<typename T::SPtr> searchAllDown(const Tag& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::SearchDown);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Search of all objects of the given typee with a given Tag, starting from the root
-    template<class T>
-    helper::vector<typename T::SPtr> searchAllFromRoot(const Tag& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::SearchRoot);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Search of all objects of the given typee with a given Tag, in the parents of the local context
-    /// @todo is this an upward search starting from each parent, or only a local search in each parent ?
-    template<class T>
-    helper::vector<typename T::SPtr> searchAllInParents(const Tag& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::SearchParents);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
+    typename T::SPtr searchInParents() const = delete;
 
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::Local)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchLocal) to update.")
+    helper::vector<typename T::SPtr> searchAllLocal() const = delete;
 
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchUp)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
+    helper::vector<typename T::SPtr> searchAllUp() const = delete;
 
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchDown)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
+    helper::vector<typename T::SPtr> searchAllDown() const = delete;
 
-    /// Local search of all objects of the given type with a given TagSet
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchRoot)
     template<class T>
-    helper::vector<typename T::SPtr> searchAllLocal(const TagSet& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::Local);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Upward search of all objects of the given type with a given TagSet, starting from the local context
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchRoot) to update.")
+    helper::vector<typename T::SPtr> searchAllFromRoot() const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchParents)
     template<class T>
-    helper::vector<typename T::SPtr> searchAllUp(const TagSet& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::SearchUp);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Downward search of all objects of the given typee with a given TagSet, starting from the local context
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
+    helper::vector<typename T::SPtr> searchAllInParents() const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::Local)
     template<class T>
-    helper::vector<typename T::SPtr> searchAllDown(const TagSet& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::SearchDown);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Search of all objects of the given typee with a given TagSet, starting from the root
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchLocal) to update.")
+    helper::vector<typename T::SPtr> searchAllLocal(const Tag& t) const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchUp)
     template<class T>
-    helper::vector<typename T::SPtr> searchAllFromRoot(const TagSet& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::SearchRoot);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
-    /// Search of all objects of the given typee with a given TagSet, in the parents of the local context
-    /// @todo is this an upward search starting from each parent, or only a local search in each parent ?
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
+    helper::vector<typename T::SPtr> searchAllUp(const Tag& t) const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchDown)
     template<class T>
-    helper::vector<typename T::SPtr> searchAllInParents(const TagSet& t) const
-    {
-        helper::vector<T*> v;
-        const BaseContext* context = getContext();
-        context->get<T>(&v,t,BaseContext::SearchParents);
-        helper::vector<typename T::SPtr> vp;
-        for( unsigned i=0; i<v.size(); i++ )
-        {
-            vp.push_back(typename T::SPtr(v[i]));
-        }
-        return vp;
-    }
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
+    helper::vector<typename T::SPtr> searchAllDown(const Tag& t) const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchRoot)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchRoot) to update.")
+    helper::vector<typename T::SPtr> searchAllFromRoot(const Tag& t) const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchParents)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
+    helper::vector<typename T::SPtr> searchAllInParents(const Tag& t) const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::Local)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::Local) to update.")
+    helper::vector<typename T::SPtr> searchAllLocal(const TagSet& t) const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchUp)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
+    helper::vector<typename T::SPtr> searchAllUp(const TagSet& t) const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchDown)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
+    helper::vector<typename T::SPtr> searchAllDown(const TagSet& t) const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchRoot)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchRoot) to update.")
+    helper::vector<typename T::SPtr> searchAllFromRoot(const TagSet& t) const = delete;
+
+    /// This function was removed as it duplicates the behavior that is already available by
+    /// using getContext()->getObjects<T>(BaseContext::SearchParents)
+    template<class T>
+    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
+    helper::vector<typename T::SPtr> searchAllInParents(const TagSet& t) const = delete;
 
     /// @}
-
 
     /// @name data access
     ///   Access to external data
@@ -434,7 +300,7 @@ public:
     /// Use it before scene graph insertion
     void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=nullptr);
 
-    void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
+    Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
 
 
     /// Return the full path name of this object
@@ -486,7 +352,6 @@ public:
     /// so the Node does not have to test its type against every known types.
     /// \returns true iff the component was removed
     virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
-
 };
 
 } // namespace objectmodel

@@ -659,7 +659,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     size_t nbEdges=m_topology->getNbEdges();
     const EdgeInformation *einfo;
@@ -712,7 +712,7 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::helper::types::RGBAColor> colors;
 
     vparams->drawTool()->disableLighting();
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();

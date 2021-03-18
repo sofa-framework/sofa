@@ -25,6 +25,7 @@
 #include <SofaBaseLinearSolver/BlocMatrixWriter.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <vector>
 #include <map>
@@ -52,7 +53,7 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_initialSurfaceArea(initData(&m_initialSurfaceArea, (Real)0.0, "initialSurfaceArea", "OUT: Initial surface area, as computed from the surface rest position")),
     m_currentSurfaceArea(initData(&m_currentSurfaceArea, (Real)0.0, "currentSurfaceArea", "OUT: Current surface area, as computed from the last surface position")),
     m_drawForceScale(initData(&m_drawForceScale, (Real)0.001, "drawForceScale", "DEBUG: scale used to render force vectors")),
-    m_drawForceColor(initData(&m_drawForceColor, defaulttype::Vec4f(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
+    m_drawForceColor(initData(&m_drawForceColor, sofa::helper::types::RGBAColor(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
     m_volumeAfterTC(initData(&m_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
     m_surfaceAreaAfterTC(initData(&m_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
     l_topology(initLink("topology", "link to the topology container")),
@@ -285,7 +286,7 @@ void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalP
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
     helper::ReadAccessor<VecDeriv> gradV = this->gradV;
 
-    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     //const Real currentVolume = m_currentVolume.getValue();
     const Real currentPressure = m_currentPressure.getValue();
     const Real currentStiffness = m_currentStiffness.getValue();
@@ -348,7 +349,7 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::Mechani
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate);
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
-    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const Real currentPressure = m_currentPressure.getValue();
     const Real currentStiffness = m_currentStiffness.getValue();
 

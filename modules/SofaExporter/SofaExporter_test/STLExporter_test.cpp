@@ -34,16 +34,20 @@ using sofa::core::objectmodel::BaseObject ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
+
+#include <SofaBaseUtils/initSofaBaseUtils.h>
 
 #include <boost/filesystem.hpp>
 namespace {
@@ -57,6 +61,7 @@ public:
 
     void SetUp()
     {
+        sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
         sofa::simpleapi::importPlugin("SofaOpenglVisual");
     }
 
@@ -79,6 +84,7 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
+                "   <RequiredPlugin name='SofaLoader' />                           \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <MeshObjLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
                 "   <OglModel src='@loader'/>                                      \n"
@@ -90,7 +96,7 @@ public:
                                                           scene1.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) << scene1.str() ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         sofa::simulation::getSimulation()->animate(root.get(), 0.5);
 
@@ -123,7 +129,7 @@ public:
                                                           scene1.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         for(unsigned int i=0;i<numstep;i++)
         {

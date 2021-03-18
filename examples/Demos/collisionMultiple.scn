@@ -3,6 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<RequiredPlugin name="SofaMiscCollision"/>
 	<RequiredPlugin name="CImgPlugin"/>
+    <RequiredPlugin name='SofaLoader'/>
 
     <DefaultPipeline verbose="0" depth="10" draw="0" />
     <BruteForceDetection name="N2" />

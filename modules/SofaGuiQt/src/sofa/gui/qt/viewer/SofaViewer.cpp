@@ -26,13 +26,7 @@
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
 #include <sofa/gui/BaseGUI.h>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
-namespace viewer
+namespace sofa::gui::qt::viewer
 {
 
 SofaViewer::SofaViewer()
@@ -74,7 +68,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Shift:
     {
         if (!getPickHandler()) break;
-        int viewport[4];
+        int viewport[4] = {};
         //todo
 //        glGetIntegerv(GL_VIEWPORT,viewport);
         getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
@@ -83,7 +77,15 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_B:
         // --- change background
     {
-        _background = (_background + 1) % 3;
+        _background = (_background + 1) % 4;
+        if(_background==0)
+        {
+            setBackgroundImage("textures/SOFA_logo.bmp");
+        }
+        if (_background==1)
+        {
+            setBackgroundImage("textures/SOFA_logo_white.bmp");
+        }
         break;
     }
     case Qt::Key_R:
@@ -277,7 +279,8 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
         sofa::core::objectmodel::MouseEvent mouseEvent(
             sofa::core::objectmodel::MouseEvent::Reset);
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
+        [[fallthrough]];
     }
     default:
     {
@@ -289,7 +292,7 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
     {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
     }
 
 }
@@ -304,12 +307,16 @@ void SofaViewer::wheelEvent(QWheelEvent *e)
 {
     if (!currentCamera) return;
     //<CAMERA API>
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
+#else
+    sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel,e->angleDelta().y());
+#endif
     currentCamera->manageEvent(&me);
 
     getQWidget()->update();
     if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
+        groot->propagateEvent(core::execparams::defaultInstance(), &me);
 }
 
 void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
@@ -321,7 +328,7 @@ void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
 
     getQWidget()->update();
     if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
+        groot->propagateEvent(core::execparams::defaultInstance(), &me);
 }
 
 void SofaViewer::mousePressEvent ( QMouseEvent * e)
@@ -329,13 +336,17 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
     if (!currentCamera) return;
     //<CAMERA API>
     sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
-    if (e->button() == Qt::LeftButton)
+    if (e->button() == Qt::LeftButton) {
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, e->x(), e->y());
-    else if (e->button() == Qt::RightButton)
+    } else if (e->button() == Qt::RightButton) {
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed, e->x(), e->y());
-    else if (e->button() == Qt::MidButton)
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
+    } else if (e->button() == Qt::MidButton) {
+#else
+    } else if (e->button() == Qt::MiddleButton) {
+#endif
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, e->x(), e->y());
-	else{
+	} else {
 		// A fallback event to rules them all... 
 	    mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonPressed, e->x(), e->y());
 	}
@@ -343,7 +354,7 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
 
     getQWidget()->update();
     if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
+        groot->propagateEvent(core::execparams::defaultInstance(), mEvent);
 }
 
 void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
@@ -351,13 +362,17 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
     if (!currentCamera) return;
     //<CAMERA API>
     sofa::core::objectmodel::MouseEvent* mEvent = nullptr;
-    if (e->button() == Qt::LeftButton)
+    if (e->button() == Qt::LeftButton) {
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, e->x(), e->y());
-    else if (e->button() == Qt::RightButton)
+    } else if (e->button() == Qt::RightButton) {
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased, e->x(), e->y());
-    else if (e->button() == Qt::MidButton)
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
+    } else if (e->button() == Qt::MidButton) {
+#else
+    } else if (e->button() == Qt::MiddleButton) {
+#endif
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, e->x(), e->y());
-	else{
+	} else {
 		// A fallback event to rules them all... 
 	    mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonReleased, e->x(), e->y());
 	}
@@ -366,7 +381,7 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
 
     getQWidget()->update();
     if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
+        groot->propagateEvent(core::execparams::defaultInstance(), mEvent);
 }
 
 bool SofaViewer::mouseEvent(QMouseEvent *e)
@@ -401,7 +416,11 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
             {
                 getPickHandler()->handleMouseEvent(PRESSED, RIGHT);
             }
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
             else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+#else
+            else if (e->button() == Qt::MiddleButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+#endif
             {
                 getPickHandler()->handleMouseEvent(PRESSED, MIDDLE);
             }
@@ -418,7 +437,11 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
             {
                 getPickHandler()->handleMouseEvent(RELEASED, RIGHT);
             }
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
             else if (e->button() == Qt::MidButton)
+#else
+            else if (e->button() == Qt::MiddleButton)
+#endif
             {
                 getPickHandler()->handleMouseEvent(RELEASED, MIDDLE);
             }
@@ -505,7 +528,6 @@ void SofaViewer::screenshot(const std::string& filename, int compression_level)
 
 void SofaViewer::setBackgroundImage(std::string imageFileName)
 {
-    _background = 0;
     if( sofa::helper::system::DataRepository.findFile(imageFileName) )
     {
         backgroundImageFile = sofa::helper::system::DataRepository.getFile(imageFileName);
@@ -526,11 +548,6 @@ void SofaViewer::setBackgroundImage(std::string imageFileName)
             m_backend->setBackgroundImage(image);
         }
     }
-
 }
 
-
-}
-}
-}
-}
+} // namespace sofa::gui::qt::viewer

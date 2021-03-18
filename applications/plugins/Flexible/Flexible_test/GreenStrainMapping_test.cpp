@@ -82,7 +82,7 @@ namespace sofa {
     > GreenDataTypes; // the types to instanciate.
 
     // Test suite for all the instanciations
-    TYPED_TEST_CASE(GreenStrainMappingTest, GreenDataTypes);
+    TYPED_TEST_SUITE(GreenStrainMappingTest, GreenDataTypes);
     // first test case
     TYPED_TEST( GreenStrainMappingTest , test_auto )
     {

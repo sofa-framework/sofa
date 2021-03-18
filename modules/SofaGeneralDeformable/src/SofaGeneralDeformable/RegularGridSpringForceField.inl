@@ -263,8 +263,8 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
-    Real kFactor       =  (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    Real bFactor       =  (Real)mparams->bFactor();
+    Real kFactor       =  (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
+    Real bFactor       =  (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
     const helper::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)
@@ -509,7 +509,7 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
         }
     }
 
-    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(0.5,0.5,0.5,1));
+    vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor(0.5,0.5,0.5,1));
     vparams->drawTool()->restoreLastState();
 }
 

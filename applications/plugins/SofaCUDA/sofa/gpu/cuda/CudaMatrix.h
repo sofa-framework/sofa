@@ -190,13 +190,19 @@ public:
         if (devicePointer!=NULL) mycudaFree(devicePointer);
     }
 
-    Size getSizeX() const {
+    Size colSize() const {
         return sizeX;
     }
 
-    Size getSizeY() const {
+    Size rowSize() const {
         return sizeY;
     }
+
+    [[deprecated("2021-02-17: Method has been depreciate in PR #1788. Please use rowSize instead")]]
+    Size getSizeY() const {return  rowSize();}
+
+    [[deprecated("2021-02-17: Method has been depreciate in PR #1788. Please use colSize instead")]]
+    Size getSizeX() const {return  colSize();}
 
     Size getPitchDevice() const {
         return pitch_device;
@@ -455,10 +461,10 @@ public:
     friend std::ostream& operator<< ( std::ostream& os, const Matrix & mat ) {
         mat.hostRead();
         os << "[\n";
-        for (unsigned j=0; j<mat.getSizeY(); j++)
+        for (unsigned j=0; j<mat.rowSize(); j++)
         {
             os << "[ ";
-            for (unsigned i=0; i<mat.getSizeX(); i++)
+            for (unsigned i=0; i<mat.colSize(); i++)
             {
                 os << " " << mat[j][i];
             }

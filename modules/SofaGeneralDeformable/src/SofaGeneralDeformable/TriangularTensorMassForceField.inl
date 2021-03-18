@@ -380,7 +380,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
     size_t nbEdges=m_topology->getNbEdges();
@@ -432,7 +432,7 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     size_t nbTriangles=m_topology->getNbTriangles();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::helper::types::RGBAColor> colors;
     std::vector<sofa::defaulttype::Vector3> normals;
 
     vparams->drawTool()->disableLighting();

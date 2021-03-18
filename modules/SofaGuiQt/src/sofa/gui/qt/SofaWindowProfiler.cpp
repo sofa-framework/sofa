@@ -21,20 +21,16 @@
 ******************************************************************************/
 #include "SofaWindowProfiler.h"
 
+#include <stack>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <QGridLayout>
 #include <QDebug>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+#include <sofa/helper/logging/Messaging.h>
+namespace sofa::gui::qt
 {
 using namespace sofa::helper;
 using namespace QtCharts;
@@ -587,8 +583,4 @@ void SofaWindowProfiler::onStepSelected(QTreeWidgetItem *item, int /*column*/)
 }
 
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

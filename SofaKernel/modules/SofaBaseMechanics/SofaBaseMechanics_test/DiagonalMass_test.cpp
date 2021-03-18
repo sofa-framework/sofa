@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaBaseMechanics/DiagonalMass.h>
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
 using sofa::core::ExecParams ;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -93,7 +92,6 @@ public:
     {
         sofa::simpleapi::importPlugin("SofaComponentAll") ;
 
-        component::initBaseMechanics();
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
     }
@@ -157,7 +155,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -194,7 +192,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -221,7 +219,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
 
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -248,7 +246,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -271,7 +269,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' massDensity='1.0'/>                                        "
@@ -282,7 +279,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -305,7 +302,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' massDensity='-1.0'/>                                        "
@@ -316,7 +312,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -340,7 +336,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' totalMass='10.0'/>                                        "
@@ -352,7 +347,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -375,7 +370,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' totalMass='-10.0'/>                                        "
@@ -387,7 +381,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -410,7 +404,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' massDensity='10.0' totalMass='10.0'/>                                        "
@@ -422,7 +415,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -446,7 +439,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' massDensity='-10.0' totalMass='10.0'/>                                        "
@@ -458,7 +450,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -481,7 +473,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' massDensity='10.0' totalMass='-10.0'/>                                        "
@@ -493,7 +484,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -517,7 +508,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' vertexMass='2 2 2 2 2 2 2 2'/>                             "
@@ -529,7 +519,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -553,7 +543,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' massDensity = '-1.0' vertexMass='2.08334 1.25 1.25 0.416667 0.416667 1.25 1.25 2.08333'/>"
@@ -565,7 +554,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -589,7 +578,6 @@ public:
                 "    <Node name='Tetra' >                                                                           "
                 "            <TetrahedronSetTopologyContainer name='Container' />                                   "
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
                 "            <DiagonalMass name='m_mass' vertexMass='10 2.08334 1.25 1.25 0.416667 0.416667 1.25 1.25 2.08333'/>"
@@ -601,7 +589,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -636,12 +624,12 @@ public:
         if(shouldFail)
         {
             EXPECT_MSG_EMIT(Error);
-            root->init(ExecParams::defaultInstance());
+            root->init(sofa::core::execparams::defaultInstance());
             EXPECT_FALSE( mass->isComponentStateValid() );
         }else
         {
             EXPECT_MSG_NOEMIT(Error);
-            root->init(ExecParams::defaultInstance()) ;
+            root->init(sofa::core::execparams::defaultInstance()) ;
             EXPECT_TRUE( mass->isComponentStateValid() );
         }
 

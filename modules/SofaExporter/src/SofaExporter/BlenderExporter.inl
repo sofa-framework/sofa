@@ -49,7 +49,7 @@ namespace sofa
             template<class T>
             void BlenderExporter<T>::init()
             {
-                mmodel = Inherit::searchLocal<DataType>();
+                mmodel = getContext()->template get<DataType>(sofa::core::objectmodel::BaseContext::SearchDirection::Local);
                 if(mmodel == nullptr)
                     msg_error()<<"Initialization failed!";
                 Inherit::init();
@@ -150,7 +150,7 @@ namespace sofa
                             ReadVecCoord posData = mmodel->readPositions();
 
 
-                            for(auto i=size-1; i>=0; i--)
+                            for(int i=size-1; i>=0; i--)
                             {
                                 //create an additional point for root tangent
                                 if((simulationType.getValue() == Hair && (i%nbPtsByHair.getValue()==0)))

@@ -74,7 +74,7 @@ void InvertTransformMatrixEngine::doUpdate()
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
-    /*bool ok = */transformInvertMatrix((*outT), (*inT));
+    /*bool ok = */defaulttype::transformInvertMatrix((*outT), (*inT));
     // TODO print warning if not ok
 }
 

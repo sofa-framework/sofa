@@ -94,13 +94,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return core::objectmodel::BaseObject::create(tObj, context, arg);
-    }
-
 protected:
 	bool isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
     bool isPointInSphere(const PointID& pid, const Real& r, const Coord& p);

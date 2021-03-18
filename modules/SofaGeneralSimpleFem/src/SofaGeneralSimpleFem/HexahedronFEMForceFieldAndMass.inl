@@ -229,7 +229,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
     {
         const ElementMass &Me = d_elementMasses.getValue()[e];
 
-        Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+        Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -265,7 +265,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addGravityToV(const core::Mechan
     if(mparams)
     {
         VecDeriv& v = *d_v.beginEdit();
-        SReal dt = mparams->dt();
+        SReal dt = sofa::core::mechanicalparams::dt(mparams);
         for (unsigned int i=0; i<_particleMasses.size(); i++)
         {
             v[i] +=this->getContext()->getGravity()*dt;
@@ -317,13 +317,13 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
     // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
     std::vector<defaulttype::Vector3> pos;
     pos.resize(x.size());
-    std::vector<defaulttype::Vector3>::iterator posIT = pos.begin();
+    auto posIT = pos.begin();
     typename VecCoord::const_iterator xIT = x.begin();
     for(; posIT != pos.end() ; ++posIT, ++xIT)
     {
         *posIT = *xIT;
     }
-    vparams->drawTool()->drawPoints(pos,2.0f, defaulttype::Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
+    vparams->drawTool()->drawPoints(pos,2.0f, sofa::helper::types::RGBAColor::white());
 }
 
 } // namespace sofa::component::forcefield
