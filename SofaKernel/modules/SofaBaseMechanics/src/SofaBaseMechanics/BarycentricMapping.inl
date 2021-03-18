@@ -86,6 +86,7 @@ static bool is_a(const V * topology) {
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper)
     : Inherit1 ( from, to )
+    , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
     , d_mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
     , d_input_topology(initLink("input_topology", "Input topology container (usually the surrounding domain)."))
     , d_output_topology(initLink("output_topology", "Output topology container (usually the immersed domain)."))
@@ -100,6 +101,7 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::S
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::State<Out>* to, BaseMeshTopology * input_topology )
     : Inherit1 ( from, to )
+    , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
     , d_mapper (initLink("mapper","Internal mapper created depending on the type of topology"))
     , d_input_topology(initLink("input_topology", "Input topology container (usually the surrounding domain)."))
     , d_output_topology(initLink("output_topology", "Output topology container (usually the immersed domain)."))
