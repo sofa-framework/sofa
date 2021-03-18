@@ -23,6 +23,7 @@
 #include <sofa/simulation/TopologyChangeVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa
 {
@@ -46,6 +47,10 @@ TopologyChangeVisitor::TopologyChangeVisitor(const sofa::core::ExecParams* param
 
 }
 
+std::string TopologyChangeVisitor::getInfos() const
+{
+    return "Topology:" + m_source->getName();
+}
 
 void TopologyChangeVisitor::processTopologyChange(simulation::Node *node, core::objectmodel::BaseObject* obj)
 {

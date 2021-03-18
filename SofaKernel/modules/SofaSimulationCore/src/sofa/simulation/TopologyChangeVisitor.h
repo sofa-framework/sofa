@@ -23,14 +23,12 @@
 #define SOFA_SIMULATION_TREE_TOPOLOGYCHANGEACTION_H
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/topology/Topology.h>
 
 namespace sofa
 {
 
 namespace simulation
 {
-
 
 class SOFA_SIMULATION_CORE_API TopologyChangeVisitor : public Visitor
 {
@@ -52,12 +50,8 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getCategoryName() const override { return "topologyChange"; }
     const char* getClassName() const override { return "TopologyChangeVisitor"; }
-    virtual std::string getInfos() const override { return "Topology:" + m_source->getName(); }
-
+    std::string getInfos() const override;
 protected:
-    /// Flag to know the number of iterations of the overloaded method processNodeTopDown
-    //simulation::Node* root;
-
     core::topology::Topology* m_source;
 };
 
