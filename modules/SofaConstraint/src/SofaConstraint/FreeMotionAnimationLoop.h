@@ -24,6 +24,11 @@
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
 
+namespace sofa::core::behavior
+{
+    class ConstraintSolver;
+}
+
 namespace sofa::component::animationloop
 {
 
@@ -56,8 +61,11 @@ protected:
     FreeMotionAnimationLoop(simulation::Node* gnode);
     ~FreeMotionAnimationLoop() override ;
 
+    ///< pointer towards a possible ConstraintSolver present in the scene graph
     sofa::core::behavior::ConstraintSolver *constraintSolver;
-    sofa::core::behavior::ConstraintSolver::SPtr defaultSolver;
+
+    ///< pointer towards a default ConstraintSolver (LCPConstraintSolver) used in case none was found in the scene graph
+    sofa::core::sptr<sofa::core::behavior::ConstraintSolver> defaultSolver;
 };
 
 } // namespace sofa::component::animationloop
