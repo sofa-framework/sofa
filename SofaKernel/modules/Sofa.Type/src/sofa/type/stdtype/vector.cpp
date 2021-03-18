@@ -19,30 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FIXED_ARRAY_CPP
+#define SOFA_HELPER_VECTOR_DEFINITION
+#include <sofa/type/stdtype/vector.h>
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sstream>
 
 namespace sofa::type::stdtype
 {
 
-template class SOFA_TYPE_API fixed_array<float, 2>;
-template class SOFA_TYPE_API fixed_array<double, 2>;
+void SOFA_TYPE_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type)
+{
+    std::ostringstream oss;
+    oss << "in vector<" << type.name() << "> " << std::hex << (long)vec << std::dec << " size " << size << " : invalid index " << (int)i;
+    throw std::logic_error(oss.str());
+}
 
-template class SOFA_TYPE_API fixed_array<float, 3>;
-template class SOFA_TYPE_API fixed_array<double, 3>;
-
-template class SOFA_TYPE_API fixed_array<float, 4>;
-template class SOFA_TYPE_API fixed_array<double, 4>;
-
-template class SOFA_TYPE_API fixed_array<float, 5>;
-template class SOFA_TYPE_API fixed_array<double, 5>;
-
-template class SOFA_TYPE_API fixed_array<float, 6>;
-template class SOFA_TYPE_API fixed_array<double, 6>;
-
-template class SOFA_TYPE_API fixed_array<float, 7>;
-template class SOFA_TYPE_API fixed_array<double, 7>;
 
 } // namespace sofa::type::stdtype
-

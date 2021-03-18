@@ -21,17 +21,75 @@
 ******************************************************************************/
 #define SOFA_HELPER_VECTOR_INTEGRAL_DEFINITION
 
-#include <sofa/helper/vector_Integral.h>
-#include <sofa/helper/vector_T.inl>
-#include <sofa/helper/logging/Messaging.h>
+#include <sofa/type/stdtype/vector_Integral.h>
+#include <sofa/type/stdtype/vector_T.inl>
 
-namespace sofa::helper
+#include <iostream>
+#include <sstream>
+#include <cstring>
+
+namespace sofa::type::stdtype
 {
+
+/// Convert the string 's' into an unsigned int. The error are reported in msg & numErrors
+/// is incremented.
+SOFA_TYPE_API int getInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors)
+{
+    const char* attrstr = s.c_str();
+    char* end = nullptr;
+    int retval = strtol(attrstr, &end, 10);
+
+    /// It is important to check that the string was totally parsed to report
+    /// message to users because a silent error is the worse thing that can happen in UX.
+    if (end == attrstr + strlen(attrstr))
+        return retval;
+
+    if (numErrors < 5)
+        msg << "    - problem while parsing '" << s << "' as Integer'. Replaced by 0 instead." << "\n";
+    if (numErrors == 5)
+        msg << "   - ... " << "\n";
+    numErrors++;
+    return 0;
+}
+
+/// Convert the string 's' into an unsigned int. The error are reported in msg & numErrors
+/// is incremented.
+SOFA_TYPE_API unsigned int getUnsignedInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors)
+{
+    const char* attrstr = s.c_str();
+    char* end = nullptr;
+
+    long long tmp = strtoll(attrstr, &end, 10);
+
+    /// If there is minus sign we exit.
+    if (tmp < 0) {
+        if (numErrors < 5)
+            msg << "   - problem while parsing '" << s << "' as Unsigned Integer because the minus sign is not allowed'. Replaced by 0 instead." << "\n";
+        if (numErrors == 5)
+            msg << "   - ... " << "\n";
+        numErrors++;
+        return 0;
+    }
+
+    /// It is important to check that the string was totally parsed to report
+    /// message to users because a silent error is the worse thing that can happen in UX.
+    if (end != attrstr + strlen(attrstr))
+    {
+        if (numErrors < 5)
+            msg << "   - problem while parsing '" << s << "' as Unsigned Integer'. Replaced by 0 instead." << "\n";
+        if (numErrors == 5)
+            msg << "   - ... " << "\n";
+        numErrors++;
+        return 0;
+    }
+
+    return (unsigned int)tmp;
+}
 
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
 template<>
-SOFA_HELPER_API std::istream& vector<int>::read( std::istream& in )
+SOFA_TYPE_API std::istream& vector<int>::read( std::istream& in )
 {
     int t;
     this->clear();
@@ -76,7 +134,7 @@ SOFA_HELPER_API std::istream& vector<int>::read( std::istream& in )
                 if (tinc == 0)
                 {
                     tinc = (t1<t2) ? 1 : -1;
-                    msg << "- Increment 0 is replaced by "<< tinc << msgendl;
+                    msg << "- Increment 0 is replaced by "<< tinc << "\n";
                 }
                 if ((t2-t1)*tinc < 0)
                 {
@@ -100,8 +158,9 @@ SOFA_HELPER_API std::istream& vector<int>::read( std::istream& in )
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
     if(numErrors!=0)
     {
-        msg_warning("vector<int>") << "Unable to parse vector values:" << msgendl
-                                   << msg.str() ;
+        std::cerr << "Unable to parse values" << "\n"
+                  << msg.str();
+        in.setstate(std::ios::failbit);
     }
     return in;
 }
@@ -110,7 +169,7 @@ SOFA_HELPER_API std::istream& vector<int>::read( std::istream& in )
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
 template<>
-SOFA_HELPER_API std::istream& vector<unsigned int>::read( std::istream& in )
+SOFA_TYPE_API std::istream& vector<unsigned int>::read( std::istream& in )
 {
     std::stringstream errmsg ;
     unsigned int errcnt = 0 ;
@@ -172,8 +231,9 @@ SOFA_HELPER_API std::istream& vector<unsigned int>::read( std::istream& in )
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
     if(errcnt!=0)
     {
-        msg_warning("vector<unsigned int>") << "Unable to parse values" << msgendl
-                                            << errmsg.str() ;
+        std::cerr << "Unable to parse values" << "\n"
+                  << errmsg.str() ;
+        in.setstate(std::ios::failbit);
     }
 
     return in;
@@ -182,7 +242,7 @@ SOFA_HELPER_API std::istream& vector<unsigned int>::read( std::istream& in )
 /// Output stream
 /// Specialization for writing vectors of unsigned char
 template<>
-SOFA_HELPER_API std::ostream& vector<unsigned char>::write(std::ostream& os) const
+SOFA_TYPE_API std::ostream& vector<unsigned char>::write(std::ostream& os) const
 {
     if( this->size()>0 )
     {
@@ -198,7 +258,7 @@ SOFA_HELPER_API std::ostream& vector<unsigned char>::write(std::ostream& os) con
 /// Input stream
 /// Specialization for reading vectors of unsigned char
 template<>
-SOFA_HELPER_API std::istream& vector<unsigned char>::read(std::istream& in)
+SOFA_TYPE_API std::istream& vector<unsigned char>::read(std::istream& in)
 {
     int t;
     this->clear();
@@ -210,15 +270,15 @@ SOFA_HELPER_API std::istream& vector<unsigned char>::read(std::istream& in)
     return in;
 }
 
-} /// namespace sofa::helper
+} /// namespace sofa::type::stdtype
 
 
-template class SOFA_HELPER_API sofa::helper::vector<bool>;
-template class SOFA_HELPER_API sofa::helper::vector<char>;
-template class SOFA_HELPER_API sofa::helper::vector<unsigned char>;
-template class SOFA_HELPER_API sofa::helper::vector<int>;
-template class SOFA_HELPER_API sofa::helper::vector<unsigned int>;
-template class SOFA_HELPER_API sofa::helper::vector<long>;
-template class SOFA_HELPER_API sofa::helper::vector<unsigned long>;
-template class SOFA_HELPER_API sofa::helper::vector<long long>;
-template class SOFA_HELPER_API sofa::helper::vector<unsigned long long>;
+template class SOFA_TYPE_API sofa::type::stdtype::vector<bool>;
+template class SOFA_TYPE_API sofa::type::stdtype::vector<char>;
+template class SOFA_TYPE_API sofa::type::stdtype::vector<unsigned char>;
+template class SOFA_TYPE_API sofa::type::stdtype::vector<int>;
+template class SOFA_TYPE_API sofa::type::stdtype::vector<unsigned int>;
+template class SOFA_TYPE_API sofa::type::stdtype::vector<long>;
+template class SOFA_TYPE_API sofa::type::stdtype::vector<unsigned long>;
+template class SOFA_TYPE_API sofa::type::stdtype::vector<long long>;
+template class SOFA_TYPE_API sofa::type::stdtype::vector<unsigned long long>;

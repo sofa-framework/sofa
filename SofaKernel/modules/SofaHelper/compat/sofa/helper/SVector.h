@@ -19,23 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STABLE_VECTOR_H
-#define SOFA_HELPER_STABLE_VECTOR_H
+#pragma once
 
+#include <sofa/type/stdtype/SVector.h>
 
-#include <boost/container/stable_vector.hpp>
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/SVector.h")
 
-
-namespace sofa
+namespace sofa::helper
 {
-namespace helper
-{
+    template< class T >
+    using SVector = sofa::type::stdtype::SVector<T>;
 
-    template<class T, class A = std::allocator<T>>
-    using stable_vector = boost::container::stable_vector<T,A>;
-
-
-} // namespace helper
-} // namespace sofa
-
-#endif
+} // namespace sofa::helper

@@ -19,30 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FIXED_ARRAY_CPP
+#pragma once
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/stdtype/vector_algebra.h>
 
-namespace sofa::type::stdtype
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/vector_algebra.h")
+
+namespace sofa::helper
 {
+    template<class V1, class V2>
+    SReal dot(const V1& vector1, const V2& vector2)
+    {
+        return sofa::type::stdtype::dot(vector1, vector2);
+    }
 
-template class SOFA_TYPE_API fixed_array<float, 2>;
-template class SOFA_TYPE_API fixed_array<double, 2>;
+    /// Norm of a vector
+    template<class V>
+    SReal norm(const V& v)
+    {
+        return sofa::type::stdtype::norm(v);
+    }
 
-template class SOFA_TYPE_API fixed_array<float, 3>;
-template class SOFA_TYPE_API fixed_array<double, 3>;
+    /// Vector operation: result = ax + y
+    template<class V1, class Scalar, class V2, class V3>
+    void axpy(V1& result, Scalar a, const V2& x, const V3& y)
+    {
+         sofa::type::stdtype::axpy(result, a, x, y);
+    }
 
-template class SOFA_TYPE_API fixed_array<float, 4>;
-template class SOFA_TYPE_API fixed_array<double, 4>;
-
-template class SOFA_TYPE_API fixed_array<float, 5>;
-template class SOFA_TYPE_API fixed_array<double, 5>;
-
-template class SOFA_TYPE_API fixed_array<float, 6>;
-template class SOFA_TYPE_API fixed_array<double, 6>;
-
-template class SOFA_TYPE_API fixed_array<float, 7>;
-template class SOFA_TYPE_API fixed_array<double, 7>;
-
-} // namespace sofa::type::stdtype
-
+} // namespace sofa::helper

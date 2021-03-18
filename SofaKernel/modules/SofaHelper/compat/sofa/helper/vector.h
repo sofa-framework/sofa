@@ -20,13 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/helper/vector_T.h>
 
-/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
-template<> SOFA_HELPER_API std::istream& sofa::helper::vector<int>::read( std::istream& in );
-template<> SOFA_HELPER_API std::istream& sofa::helper::vector<unsigned int>::read( std::istream& in );
+#include <sofa/type/stdtype/vector.h>
 
-/// Specialization for writing vectors of unsigned char
-template<> SOFA_HELPER_API std::ostream& sofa::helper::vector<unsigned char>::write(std::ostream& os) const;
-template<> SOFA_HELPER_API std::istream& sofa::helper::vector<unsigned char>::read(std::istream& in);
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/vector.h")
 
+namespace sofa::helper
+{
+    template <class T, class MemoryManager = sofa::type::stdtype::CPUMemoryManager<T> >
+    using vector = sofa::type::stdtype::vector<T, MemoryManager>;
+
+} // namespace sofa::helper

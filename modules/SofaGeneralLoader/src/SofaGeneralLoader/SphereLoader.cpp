@@ -29,6 +29,7 @@
 
 using namespace sofa::core::loader;
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 namespace sofa::component::loader
 {

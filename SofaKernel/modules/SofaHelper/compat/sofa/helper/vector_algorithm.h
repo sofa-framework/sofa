@@ -19,34 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_STRING_DEFINITION
-#include <sofa/helper/vector_String.h>
-#include <sofa/helper/vector_T.inl>
+#pragma once
 
-#include <iostream>
-#include <sstream>
+#include <sofa/type/stdtype/vector_algorithm.h>
 
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/vector_algorithm.h")
 
-/// All integral types are considered as extern templates.
 namespace sofa::helper
 {
 
-/// Output stream
-/// Specialization for writing vectors of unsigned char
-template<>
-SOFA_HELPER_API std::ostream& vector<std::string>::write(std::ostream& os) const
-{
-    std::string separator = "";
-    os << "[";
-    for(auto& v : (*this))
+    template<class T1, class T2>
+    void remove(T1& v, const T2& elem)
     {
-        os << separator << '"' << v << '"';
-        separator = ", ";
+        sofa::type::stdtype::remove(v, elem);
     }
-    os << "]";
-    return os;
-}
+
+    template<class T1, class T2>
+    void removeValue(T1& v, const T2& elem)
+    {
+        sofa::type::stdtype::removeValue(v, elem);
+    }
+
+    template<class T, class TT>
+    void removeIndex(std::vector<T, TT>& v, size_t index)
+    {
+        sofa::type::stdtype::removeIndex(v, index);
+    }
 
 } // namespace sofa::helper
-
-template class SOFA_HELPER_API sofa::helper::vector<std::string>;

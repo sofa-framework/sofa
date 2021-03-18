@@ -19,71 +19,66 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_SVECTOR_H
-#define SOFA_HELPER_SVECTOR_H
+#pragma once
 
-#include <sofa/helper/vector.h>
-#include <sofa/helper/logging/Messaging.h>
+#include <sofa/type/stdtype/vector.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::type::stdtype
 {
 
 //======================================================================
-/// Same as helper::vector, + delimitors on serialization
+/// Same as type::stdtype::vector, + delimitors on serialization
 //======================================================================
-template<
-class T
->
-class SVector: public helper::vector<T, helper::CPUMemoryManager<T> >
+template<class T>
+class SVector: public type::stdtype::vector<T, type::stdtype::CPUMemoryManager<T> >
 {
 public:
-    typedef helper::CPUMemoryManager<T>  Alloc;
+    using Inherit = type::stdtype::vector<T, type::stdtype::CPUMemoryManager<T> >;
+
+    typedef type::stdtype::CPUMemoryManager<T>  Alloc;
     /// Size
-    typedef typename helper::vector<T,Alloc>::Size Size;
+    typedef typename Inherit::Size Size;
     /// reference to a value (read-write)
-    //typedef typename helper::vector<T,Alloc>::reference reference;
+    //typedef typename Inherit::reference reference;
     /// const reference to a value (read only)
-    //typedef typename helper::vector<T,Alloc>::const_reference const_reference;
+    //typedef typename Inherit::const_reference const_reference;
 
     /// Basic onstructor
-    SVector() : helper::vector<T,Alloc>() {}
+    SVector() : Inherit() {}
     /// Constructor
-    SVector(Size n, const T& value): helper::vector<T,Alloc>(n,value) {}
+    SVector(Size n, const T& value): Inherit(n,value) {}
     /// Constructor
-    SVector(int n, const T& value): helper::vector<T,Alloc>(n,value) {}
+    SVector(int n, const T& value): Inherit(n,value) {}
     /// Constructor
-    SVector(long n, const T& value): helper::vector<T,Alloc>(n,value) {}
+    SVector(long n, const T& value): Inherit(n,value) {}
     /// Constructor
-    explicit SVector(Size n): helper::vector<T,Alloc>(n) {}
+    explicit SVector(Size n): Inherit(n) {}
     /// Constructor
-    SVector(const helper::vector<T, Alloc>& x): helper::vector<T,Alloc>(x) {}
+    SVector(const Inherit& x): Inherit(x) {}
     /// Move constructor
-    SVector(helper::vector<T,Alloc>&& v): helper::vector<T,Alloc>(std::move(v)) {}
+    SVector(Inherit&& v): Inherit(std::move(v)) {}
 
 
     /// Copy operator
-    SVector<T>& operator=(const helper::vector<T, Alloc>& x)
+    SVector<T>& operator=(const Inherit& x)
     {
-        helper::vector<T,Alloc>::operator=(x);
+        Inherit::operator=(x);
         return *this;
     }
     /// Move assignment operator
-    SVector<T>& operator=(helper::vector<T,Alloc>&& v)
+    SVector<T>& operator=(Inherit&& v)
     {
-        helper::vector<T,Alloc>::operator=(std::move(v));
+        Inherit::operator=(std::move(v));
         return *this;
     }
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
     template <class InputIterator>
-    SVector(InputIterator first, InputIterator last): helper::vector<T,Alloc>(first,last) {}
+    SVector(InputIterator first, InputIterator last): Inherit(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    SVector(typename SVector<T>::const_iterator first, typename SVector<T>::const_iterator last): helper::vector<T,Alloc>(first,last) {}
+    SVector(typename SVector<T>::const_iterator first, typename SVector<T>::const_iterator last): Inherit(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
 
@@ -115,7 +110,8 @@ public:
 
         if ( c != '[' )
         {
-            msg_error("SVector") << "read : Bad begin character : " << c << ", expected  [";
+            std::cerr << "Error (SVector) " << "read : Bad begin character : " << c << ", expected  [" << std::endl;
+            in.setstate(std::ios::failbit);
             return in;
         }
         std::streampos pos = in.tellg();
@@ -136,7 +132,8 @@ public:
             }
             if ( c != ']' )
             {
-                msg_error("SVector") << "read : Bad end character : " << c << ", expected  ]";
+                std::cerr << "Error (SVector) " << "read : Bad end character : " << c << ", expected  ]" << std::endl;
+                in.setstate(std::ios::failbit);
                 return in;
             }
         }
@@ -167,10 +164,4 @@ template<>
 std::ostream& SVector<std::string>::write( std::ostream& os ) const;
 
 
-} // namespace helper
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::type::stdtype

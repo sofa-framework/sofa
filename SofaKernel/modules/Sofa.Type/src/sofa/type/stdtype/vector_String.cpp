@@ -19,30 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FIXED_ARRAY_CPP
+#define SOFA_HELPER_VECTOR_STRING_DEFINITION
+#include <sofa/type/stdtype/vector_String.h>
+#include <sofa/type/stdtype/vector_T.inl>
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <iostream>
+#include <sstream>
 
+
+/// All integral types are considered as extern templates.
 namespace sofa::type::stdtype
 {
 
-template class SOFA_TYPE_API fixed_array<float, 2>;
-template class SOFA_TYPE_API fixed_array<double, 2>;
-
-template class SOFA_TYPE_API fixed_array<float, 3>;
-template class SOFA_TYPE_API fixed_array<double, 3>;
-
-template class SOFA_TYPE_API fixed_array<float, 4>;
-template class SOFA_TYPE_API fixed_array<double, 4>;
-
-template class SOFA_TYPE_API fixed_array<float, 5>;
-template class SOFA_TYPE_API fixed_array<double, 5>;
-
-template class SOFA_TYPE_API fixed_array<float, 6>;
-template class SOFA_TYPE_API fixed_array<double, 6>;
-
-template class SOFA_TYPE_API fixed_array<float, 7>;
-template class SOFA_TYPE_API fixed_array<double, 7>;
+/// Output stream
+/// Specialization for writing vectors of unsigned char
+template<>
+SOFA_TYPE_API std::ostream& vector<std::string>::write(std::ostream& os) const
+{
+    std::string separator = "";
+    os << "[";
+    for(auto& v : (*this))
+    {
+        os << separator << '"' << v << '"';
+        separator = ", ";
+    }
+    os << "]";
+    return os;
+}
 
 } // namespace sofa::type::stdtype
 
+template class SOFA_TYPE_API sofa::type::stdtype::vector<std::string>;

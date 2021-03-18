@@ -19,30 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FIXED_ARRAY_CPP
+#pragma once
+#include <sofa/type/stdtype/vector_T.h>
 
-#include <sofa/type/stdtype/fixed_array.h>
+/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
+template<> SOFA_TYPE_API std::istream& sofa::type::stdtype::vector<int>::read( std::istream& in );
+template<> SOFA_TYPE_API std::istream& sofa::type::stdtype::vector<unsigned int>::read( std::istream& in );
 
-namespace sofa::type::stdtype
-{
-
-template class SOFA_TYPE_API fixed_array<float, 2>;
-template class SOFA_TYPE_API fixed_array<double, 2>;
-
-template class SOFA_TYPE_API fixed_array<float, 3>;
-template class SOFA_TYPE_API fixed_array<double, 3>;
-
-template class SOFA_TYPE_API fixed_array<float, 4>;
-template class SOFA_TYPE_API fixed_array<double, 4>;
-
-template class SOFA_TYPE_API fixed_array<float, 5>;
-template class SOFA_TYPE_API fixed_array<double, 5>;
-
-template class SOFA_TYPE_API fixed_array<float, 6>;
-template class SOFA_TYPE_API fixed_array<double, 6>;
-
-template class SOFA_TYPE_API fixed_array<float, 7>;
-template class SOFA_TYPE_API fixed_array<double, 7>;
-
-} // namespace sofa::type::stdtype
+/// Specialization for writing vectors of unsigned char
+template<> SOFA_TYPE_API std::ostream& sofa::type::stdtype::vector<unsigned char>::write(std::ostream& os) const;
+template<> SOFA_TYPE_API std::istream& sofa::type::stdtype::vector<unsigned char>::read(std::istream& in);
 
