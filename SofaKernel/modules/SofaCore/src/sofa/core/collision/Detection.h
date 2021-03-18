@@ -22,9 +22,7 @@
 #ifndef SOFA_CORE_COLLISION_DETECTION_H
 #define SOFA_CORE_COLLISION_DETECTION_H
 
-#include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/CollisionAlgorithm.h>
-#include <sofa/core/collision/Intersection.h>
 #include <map>
 
 namespace sofa
