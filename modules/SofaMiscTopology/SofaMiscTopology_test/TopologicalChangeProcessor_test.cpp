@@ -171,25 +171,10 @@ struct RemoveTriangleProcessor_test : TopologicalChangeProcessor_test
         EXPECT_EQ(topoCon->getNbPoints(), 774);
 
         //// to test incise animates the scene at least 1.2s
-        try {
-            for (int i = 0; i < 20; i++)
-            {
-                m_instance.simulate(0.01);
-            }
-}
-        catch (const std::exception& e) {
-            return false;
+        for (int i = 0; i < 20; i++)
+        {
+            m_instance.simulate(0.01);
         }
-        catch (const std::overflow_error& e) {
-            return false;
-        }
-        catch (const std::runtime_error& e) {
-            return false;
-        }
-        catch (...) {
-            return false;
-        }
-        
 
         EXPECT_EQ(topoCon->getNbTriangles(), 145);
         EXPECT_EQ(topoCon->getNbEdges(), 384);
