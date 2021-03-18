@@ -36,7 +36,7 @@ void FullVector<Real>::checkIndex(Index n) const
     {
         msg_error("FullVector") << "in vector<" << sofa::helper::gettypename(typeid(*this)) << "> " << std::hex << (long)this << std::dec << " size " << cursize << " : invalid index " << (int)n;
         sofa::helper::BackTrace::dump();
-        assert(i < size);
+        assert(n < cursize);
     }
 }
 
