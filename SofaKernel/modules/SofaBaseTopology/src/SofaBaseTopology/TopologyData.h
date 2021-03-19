@@ -81,22 +81,6 @@ public:
     void registerTopologicalData();
 
 
-    const value_type& operator[](int i) const
-    {
-        const container_type& data = *(this->getValue());
-        const value_type& result = data[i];
-        return result;
-    }
-
-    value_type& operator[](int i)
-    {
-        container_type& data = *(this->beginEdit());
-        value_type& result = data[i];
-        this->endEdit();
-        return result;
-    }
-
-
     /// Link Data to topology arrays
     void linkToPointDataArray();
     void linkToEdgeDataArray();
