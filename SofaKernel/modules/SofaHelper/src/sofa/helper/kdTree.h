@@ -24,6 +24,7 @@
 #include <set>
 #include <list>
 
+#include <sofa/helper/config.h>
 #include <sofa/type/Vec.h>
 #include <sofa/helper/vector.h>
 
