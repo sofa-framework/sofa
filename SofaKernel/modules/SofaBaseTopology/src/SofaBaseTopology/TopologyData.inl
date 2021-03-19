@@ -78,7 +78,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::cor
     this->m_topologicalEngine->init();
     std::cout << "linkToElementDataArray" << std::endl;
     this->linkToElementDataArray((TopologyElementType*)nullptr);
-    msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << m_topology->getClassName() << "Topology.";
+    msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << this->m_topology->getClassName() << "Topology.";
 }
 
 
