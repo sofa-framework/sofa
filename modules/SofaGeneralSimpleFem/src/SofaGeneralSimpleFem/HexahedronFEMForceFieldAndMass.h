@@ -75,6 +75,8 @@ public:
 
     void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
+    bool isDiagonal() const override { return d_lumpedMass.getValue(); }
+
     using HexahedronFEMForceFieldT::addKToMatrix;
     using core::behavior::Mass<DataTypes>::addKToMatrix;
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override

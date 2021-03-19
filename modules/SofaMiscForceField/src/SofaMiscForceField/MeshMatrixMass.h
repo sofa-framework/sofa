@@ -221,7 +221,7 @@ public:
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    bool isDiagonal() const override { return false; }
+    bool isDiagonal() const override { return isLumped(); }
 
 
 
@@ -234,7 +234,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     /// Answer wether mass matrix is lumped or not
-    bool isLumped() { return d_lumping.getValue(); }
+    bool isLumped() const { return d_lumping.getValue(); }
 
 
 protected:
