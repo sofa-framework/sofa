@@ -321,7 +321,7 @@ static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args) {
     }
 
     sofa::helper::GenerateRigidInfo rigid;
-    if( !sofa::helper::generateRigid( rigid, meshFilename, density, Vector3(sx,sy,sz), Vector3(rx,ry,rz) ) )
+    if( !sofa::helper::generateRigid<sofa::defaulttype::Rigid3Mass>( rigid, meshFilename, density, Vector3(sx,sy,sz), Vector3(rx,ry,rz) ) )
         exit(0);
 
     return Py_BuildValue("ddddddddddd",rigid.mass
