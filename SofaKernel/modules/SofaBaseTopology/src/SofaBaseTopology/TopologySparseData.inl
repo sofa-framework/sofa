@@ -67,7 +67,7 @@ void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     Size size = data.size();
     data.resize(size + nbElements);
 
-    if (m_topologicalEngine)
+    if (this->m_topologicalEngine)
     {
         for (unsigned int i = 0; i < nbElements; ++i)
         {
@@ -76,10 +76,10 @@ void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
             {
                 const sofa::helper::vector< Index > empty_vecint;
                 const sofa::helper::vector< double > empty_vecdouble;
-                m_topologicalEngine->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
+                this->m_topologicalEngine->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
             }
             else
-                m_topologicalEngine->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
+                this->m_topologicalEngine->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
 
             // Incremente the total number of edges in topology
             this->lastElementIndex++;
@@ -140,9 +140,9 @@ void TopologySparseData <TopologyElementType, VecT>::remove(const sofa::helper::
             continue;
 
         cptDone++;
-        if (m_topologicalEngine)
+        if (this->m_topologicalEngine)
         {
-            m_topologicalEngine->applyDestroyFunction(id, data[id]);
+            this->m_topologicalEngine->applyDestroyFunction(id, data[id]);
         }
         this->swap(id, last);
         --last;

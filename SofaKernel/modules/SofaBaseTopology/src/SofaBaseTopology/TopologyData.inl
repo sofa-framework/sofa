@@ -107,8 +107,8 @@ void TopologyData <TopologyElementType, VecT>::addInputData(sofa::core::objectmo
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToPointDataArray()
 {
-    if(m_topologicalEngine)
-        m_topologicalEngine->linkToPointDataArray();
+    if(this->m_topologicalEngine)
+        this->m_topologicalEngine->linkToPointDataArray();
     msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToPointDataArray ";
 }
 
@@ -116,8 +116,8 @@ void TopologyData <TopologyElementType, VecT>::linkToPointDataArray()
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToEdgeDataArray()
 {
-    if(m_topologicalEngine)
-        m_topologicalEngine->linkToEdgeDataArray();
+    if(this->m_topologicalEngine)
+        this->m_topologicalEngine->linkToEdgeDataArray();
     msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToEdgeDataArray ";
 }
 
@@ -125,8 +125,8 @@ void TopologyData <TopologyElementType, VecT>::linkToEdgeDataArray()
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToTriangleDataArray()
 {
-    if(m_topologicalEngine)
-        m_topologicalEngine->linkToTriangleDataArray();
+    if(this->m_topologicalEngine)
+        this->m_topologicalEngine->linkToTriangleDataArray();
     msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToTriangleDataArray ";
 }
 
@@ -134,8 +134,8 @@ void TopologyData <TopologyElementType, VecT>::linkToTriangleDataArray()
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToQuadDataArray()
 {
-    if(m_topologicalEngine)
-        m_topologicalEngine->linkToQuadDataArray();
+    if(this->m_topologicalEngine)
+        this->m_topologicalEngine->linkToQuadDataArray();
     msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToQuadDataArray ";
 }
 
@@ -143,16 +143,16 @@ void TopologyData <TopologyElementType, VecT>::linkToQuadDataArray()
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToTetrahedronDataArray()
 {
-    if(m_topologicalEngine)
-        m_topologicalEngine->linkToTetrahedronDataArray();
+    if(this->m_topologicalEngine)
+        this->m_topologicalEngine->linkToTetrahedronDataArray();
 }
 
 /// Method used to link Data to hexahedron Data array, using the engine's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToHexahedronDataArray()
 {
-    if(m_topologicalEngine)
-        m_topologicalEngine->linkToHexahedronDataArray();
+    if(this->m_topologicalEngine)
+        this->m_topologicalEngine->linkToHexahedronDataArray();
     msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToHexahedronDataArray ";
 }
 
@@ -181,8 +181,8 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::helper::vector
 
         for (std::size_t i = 0; i < index.size(); ++i)
         {
-            if (m_topologicalEngine) {
-                m_topologicalEngine->applyDestroyFunction(index[i], data[index[i]]);
+            if (this->m_topologicalEngine) {
+                this->m_topologicalEngine->applyDestroyFunction(index[i], data[index[i]]);
             }
             this->swap(index[i], last);
             --last;
@@ -220,13 +220,13 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
     const sofa::helper::vector< Index > empty_vecint;
     const sofa::helper::vector< double > empty_vecdouble;
 
-    if (m_topologicalEngine) 
+    if (this->m_topologicalEngine)
     {
         for (Index i = 0; i < nbElements; ++i)
         {
             value_type& t = data[i0 + i];
         
-                m_topologicalEngine->applyCreateFunction(Index(i0 + i), t, elems[i],
+            this->m_topologicalEngine->applyCreateFunction(Index(i0 + i), t, elems[i],
                     (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
                     (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
                     (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
@@ -244,12 +244,12 @@ void TopologyData <TopologyElementType, VecT>::move(const sofa::helper::vector<I
 {
     container_type& data = *(this->beginEdit());
 
-    if (m_topologicalEngine)
+    if (this->m_topologicalEngine)
     {
         for (std::size_t i = 0; i < indexList.size(); i++)
         {
-            m_topologicalEngine->applyDestroyFunction(indexList[i], data[indexList[i]]);
-            m_topologicalEngine->applyCreateFunction(indexList[i], data[indexList[i]], ancestors[i], coefs[i]);
+            this->m_topologicalEngine->applyDestroyFunction(indexList[i], data[indexList[i]]);
+            this->m_topologicalEngine->applyCreateFunction(indexList[i], data[indexList[i]], ancestors[i], coefs[i]);
         }
     }
 
@@ -283,12 +283,12 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::he
     coefs.push_back(1.0);
     ancestors.resize(1);
 
-    if (m_topologicalEngine)
+    if (this->m_topologicalEngine)
     {
         for (std::size_t i = 0; i < indexList.size(); i++)
         {
             ancestors[0] = indexList[i];
-            m_topologicalEngine->applyCreateFunction(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
+            this->m_topologicalEngine->applyCreateFunction(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
         }
     }
     this->endEdit();
@@ -300,10 +300,10 @@ void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa:
 {
     container_type& data = *(this->beginEdit());
 
-    if (m_topologicalEngine)
+    if (this->m_topologicalEngine)
     {
         for (std::size_t i = 0; i < indices.size(); i++) {
-            m_topologicalEngine->applyDestroyFunction(indices[i], data[indices[i]]);
+            this->m_topologicalEngine->applyDestroyFunction(indices[i], data[indices[i]]);
         }
     }
 

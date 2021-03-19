@@ -61,7 +61,7 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
 
     size_t size = data.size();
     
-    if (m_topologicalEngine)
+    if (this->m_topologicalEngine)
     {
         bool test = false;
         for (std::size_t i = 0; i < nbElements; ++i)
@@ -71,10 +71,10 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
                 const sofa::helper::vector< Index > empty_vecint;
                 const sofa::helper::vector< double > empty_vecdouble;
 
-                test = m_topologicalEngine->applyTestCreateFunction(Index(size + i), empty_vecint, empty_vecdouble);
+                test = this->m_topologicalEngine->applyTestCreateFunction(Index(size + i), empty_vecint, empty_vecdouble);
             }
             else {
-                test = m_topologicalEngine->applyTestCreateFunction(Index(size + i), ancestors[i], coefs[i]);
+                test = this->m_topologicalEngine->applyTestCreateFunction(Index(size + i), ancestors[i], coefs[i]);
             }
 
             if (test)
@@ -142,9 +142,9 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
             size_t size_before = data.size();
 
             // Call destroy function implemented in specific component
-            if (m_topologicalEngine)
+            if (this->m_topologicalEngine)
             {
-                m_topologicalEngine->applyDestroyFunction(index[i], data[data.size() - 1]);
+                this->m_topologicalEngine->applyDestroyFunction(index[i], data[data.size() - 1]);
             }
 
             // As applyDestroyFunction could already perfom the suppression, if implemented. Size is checked again. If no change this handler really perform the suppresion
