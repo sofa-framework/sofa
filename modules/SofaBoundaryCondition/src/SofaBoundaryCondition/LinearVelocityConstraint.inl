@@ -96,7 +96,7 @@ void LinearVelocityConstraint<TDataTypes>::addIndex(Index index)
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::removeIndex(Index index)
 {
-    removeValue(*d_indices.beginEdit(),index);
+    sofa::helper::removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();
 }
 

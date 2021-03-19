@@ -6,6 +6,9 @@
 #include "DataExchange.h"
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/PrintVisitor.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
@@ -102,10 +105,6 @@ namespace simulation
             _taskScheduler = TaskScheduler::create(schedulerName.getValue().c_str());
         }        
         _taskScheduler->init( mNbThread );
-
-		sofa::core::objectmodel::classidT<sofa::core::behavior::ConstraintSolver>();
-		sofa::core::objectmodel::classidT<sofa::core::behavior::LinearSolver>();
-		sofa::core::objectmodel::classidT<sofa::core::CollisionModel>();
 	}
 
 

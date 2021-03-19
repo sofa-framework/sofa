@@ -305,8 +305,8 @@ const std::string TypePrincipalStretchesNHHexaTest::sceneName= "AssembledSolverM
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     //TypeInvariantNHHexaTest,        // TODO Use TypeInvariantNHHexaTest type to test
     TypePrincipalStretchesNHHexaTest
 > DataTypes; 

@@ -98,7 +98,7 @@ void ProjectToPlaneConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void ProjectToPlaneConstraint<DataTypes>::removeConstraint(Index index)
 {
-    removeValue(*f_indices.beginEdit(),index);
+    sofa::helper::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 

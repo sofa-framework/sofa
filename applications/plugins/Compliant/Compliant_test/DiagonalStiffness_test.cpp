@@ -98,7 +98,7 @@ struct DiagonalStiffness_test : public ForceField_test<_DiagonalStiffness>
 
 // ========= Define the list of types to instanciate.
 //using testing::Types;
-typedef testing::Types<
+typedef ::testing::Types<
 component::forcefield::DiagonalStiffness<defaulttype::Vec1Types>
 > TestTypes; // the types to instanciate.
 
