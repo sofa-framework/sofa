@@ -127,8 +127,9 @@ void TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
 template <typename TopologyElementType, typename VecT>
 void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChanges()
 {
-    if (m_topologyData && !this->isTopologyDataRegistered())
+    if (m_topologyData && this->isTopologyDataRegistered()) {
         m_topologyData->setDataSetArraySize(m_topology->getNbPoints());
+    }
 
     sofa::core::topology::TopologyEngine::ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
 }
