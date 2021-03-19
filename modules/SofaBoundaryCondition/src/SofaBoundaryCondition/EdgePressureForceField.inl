@@ -179,6 +179,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     const type::vector<Real>& intensities = p_intensity.getValue();
 
     const sofa::type::vector<Index>& my_map = edgePressureMap.getMap2Elements();
+    helper::WriteAccessor< Data<sofa::type::vector< EdgePressureInformation> > > edgePMap(edgePressureMap);
 
     sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
@@ -209,7 +210,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 Real intensity = (intensities.size() > 1 && intensities.size() > (unsigned int) i) ? intensities[i] : intensities[0];
                 ei.length = edgeGeo->computeRestEdgeLength(i);
                 ei.force = normal * intensity * ei.length ;
-                edgePressureMap[i] = ei;
+                edgePMap[i] = ei;
             }
         }
         else
@@ -271,7 +272,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                     Real intensity = (intensities.size() > 1 && intensities.size() > (unsigned int) i) ? intensities[i] : intensities[0];
                     ei.length = edgeGeo->computeRestEdgeLength(i);
                     ei.force = n1 * ei.length * intensity;
-                    edgePressureMap[i] = ei;
+                    edgePMap[i] = ei;
                 }
             }
         }
