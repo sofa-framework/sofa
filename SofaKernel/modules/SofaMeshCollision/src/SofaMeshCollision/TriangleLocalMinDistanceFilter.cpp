@@ -294,7 +294,8 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(In
 
 bool TriangleLocalMinDistanceFilter::validPoint(const Index pointIndex, const defaulttype::Vector3 &PQ)
 {
-    PointInfo & Pi = m_pointInfo[pointIndex];
+    helper::WriteAccessor< Data<sofa::helper::vector<PointInfo> > > pInfo(m_pointInfo);
+    PointInfo & Pi = pInfo[pointIndex];
 
     if(this->isRigid())
     {
@@ -311,7 +312,8 @@ bool TriangleLocalMinDistanceFilter::validPoint(const Index pointIndex, const de
 
 bool TriangleLocalMinDistanceFilter::validLine(const Index lineIndex, const defaulttype::Vector3 &PQ)
 {
-    LineInfo &Li = m_lineInfo[lineIndex];  // filter is precomputed
+    helper::WriteAccessor< Data<sofa::helper::vector<LineInfo> > > lInfo(m_lineInfo);
+    LineInfo &Li = lInfo[lineIndex];  // filter is precomputed
 
     if(this->isRigid())
     {
@@ -326,7 +328,8 @@ bool TriangleLocalMinDistanceFilter::validLine(const Index lineIndex, const defa
 
 bool TriangleLocalMinDistanceFilter::validTriangle(const Index triangleIndex, const defaulttype::Vector3 &PQ)
 {
-    TriangleInfo &Ti = m_triangleInfo[triangleIndex];
+    helper::WriteAccessor< Data<sofa::helper::vector<TriangleInfo> > > tInfo(m_triangleInfo);
+    TriangleInfo &Ti = tInfo[triangleIndex];
 
     if(this->isRigid())
     {

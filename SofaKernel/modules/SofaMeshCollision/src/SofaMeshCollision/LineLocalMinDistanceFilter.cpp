@@ -258,7 +258,8 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index /*ed
 
 bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
 {
-    PointInfo & Pi = m_pointInfo[pointIndex];
+    helper::WriteAccessor< Data<sofa::helper::vector<PointInfo> > > pInfo(m_pointInfo);
+    PointInfo & Pi = pInfo[pointIndex];
     if(this->isRigid())
     {
         // filter is precomputed in the rest position
