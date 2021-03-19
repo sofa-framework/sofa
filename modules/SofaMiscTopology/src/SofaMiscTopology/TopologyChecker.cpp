@@ -87,18 +87,18 @@ void TopologyChecker::reinit()
 
 bool TopologyChecker::checkContainer()
 {
-    msg_info() << "CheckContainer TopologyType: " << parseTopologyObjectTypeToString(m_topology->getTopologyType());
+    msg_info() << "CheckContainer TopologyType: " << parseTopologyElementTypeToString(m_topology->getTopologyType());
 
     bool result = false;
-    if (m_topology->getTopologyType() == TopologyObjectType::HEXAHEDRON)
+    if (m_topology->getTopologyType() == TopologyElementType::HEXAHEDRON)
         result = checkTetrahedronTopology();
-    if (m_topology->getTopologyType() == TopologyObjectType::TETRAHEDRON)
+    if (m_topology->getTopologyType() == TopologyElementType::TETRAHEDRON)
         result = checkTetrahedronTopology();
-    else if (m_topology->getTopologyType() == TopologyObjectType::QUAD)
+    else if (m_topology->getTopologyType() == TopologyElementType::QUAD)
         result = checkTriangleTopology();
-    else if (m_topology->getTopologyType() == TopologyObjectType::TRIANGLE)
+    else if (m_topology->getTopologyType() == TopologyElementType::TRIANGLE)
         result = checkQuadTopology();
-    else if (m_topology->getTopologyType() == TopologyObjectType::EDGE)
+    else if (m_topology->getTopologyType() == TopologyElementType::EDGE)
         result = checkEdgeTopology();
 
     return result;
