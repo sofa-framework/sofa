@@ -277,6 +277,8 @@ public:
 		
     }
 
+    bool isDiagonal() const override { return false; }
+
 };
 
 }
