@@ -97,6 +97,17 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
 
 
 template <typename TopologyElementType, typename VecT>
+void TopologySubsetData <TopologyElementType, VecT>::add(const sofa::helper::vector<Index>& index,
+    const sofa::helper::vector< TopologyElementType >& elems,
+    const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+    const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+    const sofa::helper::vector< AncestorElem >& ancestorElems)
+{
+    this->add(index.size(), ancestors, coefs);
+}
+
+
+template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::move(const sofa::helper::vector<Index>&,
     const sofa::helper::vector< sofa::helper::vector< Index > >&,
     const sofa::helper::vector< sofa::helper::vector< double > >&)
