@@ -58,6 +58,9 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology.";
     }
 
+    // TODO need to check why second call is needed...
+    this->m_topologyHandler->registerTopology();
+
     //if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner()))
     //    dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologyHandler);
 }
@@ -80,20 +83,13 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
         this->linkToElementDataArray((TopologyElementType*)nullptr);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << this->m_topology->getClassName() << "Topology.";
     }
+    else
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologicalEngine method before registerTopologicalData to allow topological changes.";
     
     //if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) 
     //    dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologyHandler);   
 }
 
-
-template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::registerTopologicalData()
-{
-    if (this->m_topologyHandler)
-        this->m_topologyHandler->registerTopology(this->m_topology);
-    else if (!this->m_topology)
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologyHandler method before registerTopologicalData to allow topological changes." ;
-}
 
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::addInputData(sofa::core::objectmodel::BaseData *_data)

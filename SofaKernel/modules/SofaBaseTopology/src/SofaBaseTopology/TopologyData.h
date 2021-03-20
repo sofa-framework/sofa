@@ -76,11 +76,6 @@ public:
     /// Allow to add additionnal dependencies to others Data.
     void addInputData(sofa::core::objectmodel::BaseData* _data);
 
-    /// Function to link the topological Data with the engine and the current topology. And init everything.
-    /// This function should be used at the end of the all declaration link to this Data while using it in a component.
-    void registerTopologicalData();
-
-
     /// Link Data to topology arrays
     void linkToPointDataArray();
     void linkToEdgeDataArray();

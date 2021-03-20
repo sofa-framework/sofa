@@ -149,8 +149,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
     }
 
     tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
-    tetrahedronInfo.registerTopologicalData();
-
     tetrahedronInfo.endEdit();
 }
 

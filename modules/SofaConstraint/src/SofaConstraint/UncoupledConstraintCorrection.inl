@@ -165,7 +165,6 @@ void UncoupledConstraintCorrection<DataTypes>::init()
             if (_topology != nullptr)
             {
                 compliance.createTopologyHandler(_topology);
-                compliance.registerTopologicalData();
             }
         }
     }
