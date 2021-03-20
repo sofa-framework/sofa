@@ -48,6 +48,9 @@ public:
     typedef typename container_type::const_reference const_reference;
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
+    typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
+    typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
+    typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
     using Index = sofa::Index;
 
