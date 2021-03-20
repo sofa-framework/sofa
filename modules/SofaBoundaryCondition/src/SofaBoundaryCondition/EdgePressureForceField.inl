@@ -97,7 +97,6 @@ void EdgePressureForceField<DataTypes>::init()
 
     // init edgesubsetData engine
     edgePressureMap.createTopologyHandler(m_topology);
-    edgePressureMap.registerTopologicalData();
 
     if (dmin.getValue()!=dmax.getValue())
     {

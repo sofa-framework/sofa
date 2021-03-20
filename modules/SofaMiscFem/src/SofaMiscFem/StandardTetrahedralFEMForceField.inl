@@ -158,10 +158,7 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
     }
 
     tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
-    tetrahedronInfo.registerTopologicalData();
-
     edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.registerTopologicalData();
 
     /** parse the parameter set */
     SetParameterArray paramSet=f_parameterSet.getValue();
