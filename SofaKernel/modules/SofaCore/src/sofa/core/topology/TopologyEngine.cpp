@@ -138,13 +138,16 @@ void TopologyEngine::ApplyTopologyChanges(const std::list<const core::topology::
 }
 
 
-void TopologyEngine::registerTopology()
+bool TopologyEngine::registerTopology()
 {
-
+    return false;
 }
 
-
-
+bool TopologyEngine::registerTopology(sofa::core::topology::BaseMeshTopology* _topology)
+{
+    SOFA_UNUSED(_topology);
+    return false;
+}
 
 } // namespace sofa
 

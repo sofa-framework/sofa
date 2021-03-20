@@ -176,8 +176,8 @@ public:
 
     void setNamePrefix(const std::string& s) { m_prefix = s; }
 
-    virtual void registerTopology();
-    virtual void registerTopology(sofa::core::topology::BaseMeshTopology* _topology) {}
+    virtual bool registerTopology();
+    virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
 protected:
     /// use to define engine name.
     std::string m_prefix;

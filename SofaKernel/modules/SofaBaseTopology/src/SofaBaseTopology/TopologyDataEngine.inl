@@ -100,30 +100,34 @@ void TopologyDataEngine<TopologyElementType,  VecT>::doUpdate()
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::registerTopology(sofa::core::topology::BaseMeshTopology *_topology)
+bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology(sofa::core::topology::BaseMeshTopology *_topology)
 {
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
     if (m_topology == nullptr)
     {
         msg_error() <<"Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
-        return;
+        return false;
     }
     else
         m_topology->addTopologyEngine(this);
+
+    return true;
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
+bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
 {
     if (m_topology == nullptr)
     {
         msg_error() << "Current topology is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
-        return;
+        return false;
     }
     else
         m_topology->addTopologyEngine(this);
+
+    return true;
 }
 
 

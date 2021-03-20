@@ -85,9 +85,9 @@ public:
 
     void ApplyTopologyChanges();
 
-    virtual void registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
+    bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology) override;
 
-    virtual void registerTopology();
+    bool registerTopology() override;
 
     void registerTopologicalData(t_topologicalData *topologicalData) {m_topologyData = topologicalData;}
 
