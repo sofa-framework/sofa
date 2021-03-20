@@ -89,6 +89,9 @@ void TopologyDataEngine<TopologyElementType,  VecT>::reinit()
 template <typename TopologyElementType, typename VecT>
 void TopologyDataEngine<TopologyElementType,  VecT>::doUpdate()
 {
+    if (!this->isTopologyDataRegistered())
+        return;
+
     std::string msg = this->name.getValue() + " - doUpdate: Nbr changes: " + std::to_string(m_changeList.getValue().size());
     sofa::helper::AdvancedTimer::stepBegin(msg.c_str());
     this->ApplyTopologyChanges();
@@ -127,9 +130,10 @@ void TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
 template <typename TopologyElementType, typename VecT>
 void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChanges()
 {
-    if (m_topologyData && this->isTopologyDataRegistered()) {
-        m_topologyData->setDataSetArraySize(m_topology->getNbPoints());
-    }
+    if (!this->isTopologyDataRegistered() || m_topology == nullptr)
+        return;
+
+    m_topologyData->setDataSetArraySize(m_topology->getNbPoints());
 
     sofa::core::topology::TopologyEngine::ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
 }
