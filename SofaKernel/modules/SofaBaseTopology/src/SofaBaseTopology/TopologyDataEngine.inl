@@ -39,9 +39,6 @@ TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topological
     , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
-
-    if (m_topology == nullptr)
-        msg_error() << "Topology is not dynamic";
 }
 
 

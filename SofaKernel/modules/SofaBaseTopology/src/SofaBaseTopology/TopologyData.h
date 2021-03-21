@@ -138,6 +138,8 @@ public:
 protected:
     sofa::component::topology::TopologyDataEngine< TopologyElementType, VecT>* m_topologicalEngine;
 
+    bool m_isTopologyDynamic;
+
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*      ) { linkToPointDataArray();       }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*       ) { linkToEdgeDataArray();        }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*   ) { linkToTriangleDataArray();    }
