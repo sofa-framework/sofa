@@ -38,11 +38,6 @@ TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core
     this->lastElementIndex = 0;
 }
 
-template <typename TopologyElementType, typename VecT>
-TopologyData <TopologyElementType, VecT>::~TopologyData() 
-{
-    std::cout << "TopologyData: " << this->getName() << " Delete! " << std::endl;
-}
 
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology)

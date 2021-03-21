@@ -106,7 +106,7 @@ bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology(sofa::core
 
     if (m_topology == nullptr)
     {
-        msg_error() <<"Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        msg_info() <<"Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
         return false;
     }
     else
@@ -121,7 +121,7 @@ bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
 {
     if (m_topology == nullptr)
     {
-        msg_error() << "Current topology is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        msg_info() << "Current topology is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
         return false;
     }
     else

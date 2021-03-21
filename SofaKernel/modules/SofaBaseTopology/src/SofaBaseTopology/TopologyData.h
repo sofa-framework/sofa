@@ -65,8 +65,6 @@ public:
     TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
 
-    virtual ~TopologyData();
-
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
@@ -106,12 +104,6 @@ public:
     void linkToQuadDataArray();
     void linkToTetrahedronDataArray();
     void linkToHexahedronDataArray();
-
-   /* sofa::component::topology::TopologyDataEngine<VecT>* getTopologicalEngine()
-    {
-        return m_topologicalEngine.get();
-    }*/
-
 
     /// Swaps values at indices i1 and i2.
     void swap(Index i1, Index i2) override;
