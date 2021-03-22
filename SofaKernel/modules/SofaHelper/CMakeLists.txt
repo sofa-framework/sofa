@@ -215,62 +215,15 @@ if(Boost_FILESYSTEM_FOUND)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/system/FileRepository.cpp)
 endif()
 
-# Compatibility files
-set (COMPATSRC_ROOT "compat/")
-set (COMPAT_HEADER_FILES
-    ${COMPATSRC_ROOT}/sofa/core/visual/DrawTool.h
-    ${COMPATSRC_ROOT}/sofa/core/visual/DrawToolGL.h
-    ${COMPATSRC_ROOT}/sofa/helper/system/gl.h
-    ${COMPATSRC_ROOT}/sofa/helper/system/glu.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/template.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Texture.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/FrameBufferObject.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/GLSLShader.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Transformation.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/RAII.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/BasicShapes.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Capture.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/VideoRecorderFFMPEG.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Axis.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.inl
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Color.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
-    ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
-    ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
-    ${COMPATSRC_ROOT}/sofa/helper/Quater.h
-    ${COMPATSRC_ROOT}/sofa/helper/Quater.inl
-    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.h
-    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.inl
-    ${COMPATSRC_ROOT}/sofa/helper/types/RGBAColor.h
-    ${COMPATSRC_ROOT}/sofa/helper/types/RGBAColor_fwd.h
-    ${COMPATSRC_ROOT}/sofa/helper/types/Material.h
-    ${COMPATSRC_ROOT}/sofa/helper/types/PrimitiveGroup.h
-    ${COMPATSRC_ROOT}/sofa/helper/vector.h
-    ${COMPATSRC_ROOT}/sofa/helper/vector_device.h
-    ${COMPATSRC_ROOT}/sofa/helper/SVector.h
-    ${COMPATSRC_ROOT}/sofa/helper/stable_vector.h
-    ${COMPATSRC_ROOT}/sofa/helper/vector_algebra.h
-    ${COMPATSRC_ROOT}/sofa/helper/vector_algorithm.h
-    )
-
-
 sofa_find_package(Sofa.Config REQUIRED)
 
 # LIBRARY
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaSimulationCore/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaCore/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Sofa.Type/src>")
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
-                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/compat>")
-source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
