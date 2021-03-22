@@ -24,7 +24,9 @@
 
 #include <sofa/config.h>
 
-#ifdef SOFA_BUILD_SPH_FLUID
+#cmakedefine01 SOFASPHFLUID_HAVE_SOFA_GL
+
+#ifdef SOFA_BUILD_SOFASPHFLUID
 #  define SOFA_TARGET SofaSphFluid
 #  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else

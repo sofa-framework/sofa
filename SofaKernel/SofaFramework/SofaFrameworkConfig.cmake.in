@@ -9,23 +9,11 @@ set(SOFAFRAMEWORK_TARGETS @SOFAFRAMEWORK_TARGETS@)
 set(SOFAHELPER_HAVE_BOOST "@SOFAHELPER_HAVE_BOOST@")
 set(SOFAHELPER_HAVE_BOOST_FILESYSTEM "@SOFAHELPER_HAVE_BOOST_FILESYSTEM@")
 set(SOFAHELPER_HAVE_BOOST_THREAD "@SOFAHELPER_HAVE_BOOST_THREAD@")
-set(SOFAHELPER_HAVE_OPENGL "@SOFAHELPER_HAVE_OPENGL@")
-set(SOFAHELPER_HAVE_GLEW "@SOFAHELPER_HAVE_GLEW@")
-set(SOFAHELPER_HAVE_GTEST "@SOFAHELPER_HAVE_GTEST@")
 
 # Find dependencies
 find_package(Boost QUIET REQUIRED filesystem)
 if(SOFAHELPER_HAVE_BOOST_THREAD)
     find_package(Boost QUIET REQUIRED thread)
-endif()
-if(SOFAHELPER_HAVE_OPENGL)
-    find_package(OpenGL QUIET REQUIRED)
-endif()
-if(SOFAHELPER_HAVE_GLEW)
-    find_package(GLEW QUIET REQUIRED)
-endif()
-if(SOFAHELPER_HAVE_GTEST)
-    find_package(GTest CONFIG QUIET REQUIRED)
 endif()
 
 find_package(Sofa.Config QUIET REQUIRED)
@@ -45,7 +33,7 @@ endif()
 
 # This need to be AFTER the inclusion of SofaFrameworkTargets.cmake since Sofa.GL is dependant on SofaHelper and
 # SofaDefaultType targets, which are defined there.
-if(NOT SOFA_NO_OPENGL)
+if(SOFA_WITH_OPENGL)
     find_package(Sofa.GL CONFIG QUIET REQUIRED)
 endif()
 

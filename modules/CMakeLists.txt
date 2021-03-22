@@ -28,17 +28,16 @@ sofa_add_module(SofaHaptics SofaHaptics ON)
 sofa_add_module(SofaValidation SofaValidation ON)
 
 find_package(Newmat QUIET)
-sofa_add_module(SofaDenseSolver SofaDenseSolver ${Newmat_FOUND})
+sofa_add_module(SofaDenseSolver SofaDenseSolver ON
+    WHEN_TO_SHOW "Newmat_FOUND"
+    VALUE_IF_HIDDEN OFF)
 
 sofa_add_module(SofaNonUniformFem SofaNonUniformFem ON)
 
 find_package(Sofa.GL QUIET)
-if(Sofa.GL_FOUND)
-    sofa_add_module(SofaOpenglVisual SofaOpenglVisual ON)
-else()
-    sofa_add_module(SofaOpenglVisual SofaOpenglVisual OFF)
-    message("-- SofaOpenGLVisual: Sofa.GL not found; disabled")
-endif()
+sofa_add_module(SofaOpenglVisual SofaOpenglVisual ON
+    WHEN_TO_SHOW "Sofa.GL_FOUND"
+    VALUE_IF_HIDDEN OFF)
 
 # Misc
 sofa_add_module(SofaMiscTopology SofaMiscTopology ON)

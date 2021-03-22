@@ -15,10 +15,7 @@ if(SOFAHELPER_HAVE_BOOST_FILESYSTEM
 else()
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
 endif()
-# GTest
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    sofa_find_package(GTest CONFIG BOTH_SCOPES)
-endif()
+
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
@@ -167,6 +164,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
     ${SRC_ROOT}/init.cpp
+    ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/io/BaseFileAccess.cpp
     ${SRC_ROOT}/io/FileAccess.cpp
     ${SRC_ROOT}/io/File.cpp
@@ -194,6 +192,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/thread/CircularQueue.cpp
     ${SRC_ROOT}/system/thread/debug.cpp
     ${SRC_ROOT}/system/FileRepository.cpp
+    ${SRC_ROOT}/set.cpp
     ${SRC_ROOT}/vector.cpp
     ${SRC_ROOT}/vector_Real.cpp
     ${SRC_ROOT}/vector_Integral.cpp
@@ -222,18 +221,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_macosx.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
-endif()
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    list(APPEND HEADER_FILES
-        ${SRC_ROOT}/testing/BaseTest.h
-        ${SRC_ROOT}/testing/NumericTest.h
-        ${SRC_ROOT}/testing/TestMessageHandler.h
-        )
-    list(APPEND SOURCE_FILES
-        ${SRC_ROOT}/testing/BaseTest.cpp
-        ${SRC_ROOT}/testing/NumericTest.cpp
-        ${SRC_ROOT}/testing/TestMessageHandler.cpp
-        )
 endif()
 if(Boost_THREAD_FOUND)
     list(APPEND HEADER_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.h)
@@ -338,11 +325,6 @@ if(Boost_FOUND)
     endif()
 endif()
 
-# GTest
-if((SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE) AND GTest_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
-endif()
-
 # Eigen (header only)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
@@ -360,4 +342,5 @@ sofa_add_targets_to_package(
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaHelper_test)
+    add_subdirectory(SofaHelper_simutest)
 endif()

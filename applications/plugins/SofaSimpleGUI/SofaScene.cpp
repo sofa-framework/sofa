@@ -6,9 +6,7 @@ using std::cout;
 using std::endl;
 
 #include <sofa/helper/system/PluginManager.h>
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
@@ -34,9 +32,7 @@ SofaScene::SofaScene()
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
 
     sofaSimulation = sofa::simulation::graph::getSimulation(); // creates one if it is not already created
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
+    sofa::component::initSofaComponentAll();
 }
 
 void SofaScene::step( SReal dt)

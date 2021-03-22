@@ -25,8 +25,7 @@
 namespace sofa::component
 {
 
-
-void SOFA_SOFAGENERALVISUAL_API initGeneralVisual();
+void SOFA_SOFAGENERALVISUAL_API initSofaGeneralVisual();
 
 } // namespace sofa::component
 

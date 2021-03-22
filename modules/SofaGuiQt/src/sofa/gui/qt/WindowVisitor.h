@@ -21,8 +21,9 @@
 ******************************************************************************/
 #pragma once
 #include <ui_VisitorGUI.h>
-#include "PieWidget.h"
-#include "QVisitorControlPanel.h"
+
+#include <sofa/gui/qt/PieWidget.h>
+#include <sofa/gui/qt/QVisitorControlPanel.h>
 
 #include <QTreeWidgetItem>
 #include <QDrag>
@@ -120,8 +121,5 @@ protected:
     ChartsWidget *chartsVisitor;
     QComboBox *typeOfCharts;
 };
-}
-}
-}
 
-#endif
+} // namespace sofa::gui::qt

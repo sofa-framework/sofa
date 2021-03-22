@@ -3,7 +3,8 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaCommon REQUIRED)
+find_package(SofaBaseCollision REQUIRED)
+find_package(SofaMeshCollision REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

@@ -25,7 +25,6 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/Quater.h>

@@ -26,5 +26,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAGENERALRIGID_API void initSofaGeneralRigid();
 
 } //namespace sofa::component

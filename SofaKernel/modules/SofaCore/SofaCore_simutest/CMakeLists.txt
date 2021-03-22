@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaCore_simutest)
 
-sofa_find_package(SofaBase REQUIRED)
+# Do not find dependencies explicitely, let CMake decide the appropriate time to do it
+#sofa_find_package(SofaBase REQUIRED)
 
 set(SOURCE_FILES
     objectmodel/Base_test.cpp
@@ -12,6 +13,6 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaBaseUtils)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaBaseUtils)
 
 add_test(NAME SofaCore_simutest COMMAND SofaCore_simutest)

@@ -22,7 +22,7 @@
 #include <SofaTest/Elasticity_test_deprecated.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/core/ExecParams.h>
+
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -236,7 +236,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.

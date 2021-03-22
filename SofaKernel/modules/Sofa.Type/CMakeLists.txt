@@ -13,6 +13,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/Mat_solve_LU.h
     ${SOFATYPESRC_ROOT}/Mat_solve_SVD.h
     ${SOFATYPESRC_ROOT}/trait/is_container.h
+    ${SOFATYPESRC_ROOT}/trait/is_vector.h
     ${SOFATYPESRC_ROOT}/fwd.h
     ${SOFATYPESRC_ROOT}/Quat.h
     ${SOFATYPESRC_ROOT}/Quat.inl
@@ -56,10 +57,3 @@ sofa_add_targets_to_package(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaFramework"
     )
-
-## Tests
-# cmake_dependent_option(SOFA_TYPE_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-# if(SOFA_TYPE_BUILD_TESTS)
-#     enable_testing()
-#     add_subdirectory(${PROJECT_NAME}_test)
-# endif()

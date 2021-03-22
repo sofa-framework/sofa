@@ -189,7 +189,7 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 mapping::RigidMapping<defaulttype::Rigid2Types,defaulttype::Vec2Types>,
 mapping::RigidMapping<defaulttype::Rigid3Types,defaulttype::Vec3Types>

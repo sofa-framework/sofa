@@ -28,7 +28,6 @@
 #include "VectorVis.h"
 
 #include <sofa/helper/io/Image.h>
-#include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -40,8 +39,12 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/helper/system/glu.h>
 #include <sofa/helper/vector.h>
+
+#if IMAGE_HAVE_SOFA_GL == 1
+#include <sofa/gl/Texture.h>
+#include <sofa/gl/glu.h>
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
 namespace sofa
 {
@@ -169,17 +172,17 @@ public:
         
         vectorVisualization.setWidget("vectorvis");
 
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         for(unsigned int i=0;i<3;i++)	cutplane_tex[i]=NULL;
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
     
     
     ~ImageViewer() override
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         for(unsigned int i=0;i<3;i++)	if(cutplane_tex[i]) delete cutplane_tex[i];
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
     
     void init() override
@@ -321,7 +324,7 @@ public:
     
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         if (!vparams->displayFlags().getShowVisualModels() || display.getValue()==false) return;
 
         bool initialized=true;
@@ -330,7 +333,7 @@ public:
         {
             for(unsigned int i=0;i<3;i++)
             {
-                cutplane_tex[i]= new helper::gl::Texture(new helper::io::Image,false);
+                cutplane_tex[i]= new sofa::gl::Texture(new helper::io::Image,false);
                 cutplane_tex[i]->getImage()->init(cutplane_res,cutplane_res,32);
             }
             updateTextures();
@@ -397,7 +400,7 @@ public:
         glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
         drawCutplanes();
         glPopAttrib();
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
 
@@ -444,9 +447,9 @@ protected:
     
     static const unsigned cutplane_res=1024;
 
-#ifndef SOFA_NO_OPENGL
-    helper::gl::Texture* cutplane_tex[3];
-#endif //SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
+    sofa::gl::Texture* cutplane_tex[3];
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
     //Draw vectors as arrows
     void drawArrows(const core::visual::VisualParams* vparams)
@@ -483,7 +486,7 @@ protected:
     //Draw tensors as ellipsoids
     void drawEllipsoid()
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         raImage rimage(this->image);
         raPlane rplane(this->plane);
         raTransform rtransform(this->transform);
@@ -583,7 +586,7 @@ protected:
 
                     }
         }
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
     cimg_library::CImg<T> computeTensorFromLowerTriRowMajorVector(cimg_library::CImg<T> vector)
@@ -627,7 +630,7 @@ protected:
     //Draw the boxes around the slices
     void drawCutplanes()
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         raPlane rplane(this->plane);
         if (!rplane->getDimensions()[0]) return;
 
@@ -675,14 +678,14 @@ protected:
                             glEnd ();
 
                         }
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
 
     //Update and draw the slices
     void updateTextures()
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         raPlane rplane(this->plane);
         if (!rplane->getDimensions()[0]) return;
 
@@ -728,7 +731,7 @@ protected:
                 cutplane_tex[i]->update();
             }
         }
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
 };

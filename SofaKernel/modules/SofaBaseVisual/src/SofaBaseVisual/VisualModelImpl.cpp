@@ -40,8 +40,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/types/Material.h>
-
-#include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include <sstream>
 #include <map>
@@ -1994,11 +1993,3 @@ template class SOFA_SOFABASEVISUAL_API VisualModelPointHandler< VisualModelImpl:
 template class SOFA_SOFABASEVISUAL_API VisualModelPointHandler< VisualModelImpl::VecTexCoord>;
 
 } // namespace sofa::component::visualmodel
-
-namespace sofa::component::topology
-{
-
-template class PointData< sofa::defaulttype::Vec3fTypes::VecCoord >;
-template class PointData< sofa::defaulttype::Vec2fTypes::VecCoord >;
-
-} // namespace sofa::component::topology

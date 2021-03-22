@@ -229,7 +229,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
     {
         const ElementMass &Me = d_elementMasses.getValue()[e];
 
-        Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+        Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -265,7 +265,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addGravityToV(const core::Mechan
     if(mparams)
     {
         VecDeriv& v = *d_v.beginEdit();
-        SReal dt = mparams->dt();
+        SReal dt = sofa::core::mechanicalparams::dt(mparams);
         for (unsigned int i=0; i<_particleMasses.size(); i++)
         {
             v[i] +=this->getContext()->getGravity()*dt;

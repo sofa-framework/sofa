@@ -22,11 +22,7 @@
 #ifndef SOFA_CORE_BASEMAPPING_H
 #define SOFA_CORE_BASEMAPPING_H
 
-#include <sofa/core/config.h>
-#include <sofa/core/fwd.h>
-#include <sofa/defaulttype/fwd.h>
-#include <sofa/core/MechanicalParams.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa
 {
@@ -66,9 +62,9 @@ public:
     Data<bool> f_mapMatrices; ///< Are matrix explicit mapped?
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
-    virtual void apply (const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
+    virtual void apply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
     /// Compute output velocity based on input velocity, using the linearized transformation (tangent operator). Also used to propagate small displacements.
-    virtual void applyJ(const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
+    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
 
     /// Accessor to the input model of this mapping
     virtual helper::vector<BaseState*> getFrom() = 0;

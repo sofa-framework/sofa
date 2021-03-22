@@ -100,9 +100,7 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
         if (pointMod != nullptr)
         {
             msg_info() << "Remove: " << remove.size() << " out of: " << n <<" particles using PointSetTopologyModifier.";
-            pointMod->removePointsWarning(remove);
-            pointMod->propagateTopologicalChanges();
-            pointMod->removePointsProcess(remove);
+            pointMod->removePoints(remove);
         }
         else if(container::MechanicalObject<DataTypes>* object = dynamic_cast<container::MechanicalObject<DataTypes>*>(this->mstate.get()))
         {
