@@ -14,17 +14,5 @@ timeout "validations/damping.scn" "50"
 iterations "FEM-donuts.scn" "50"
 
 # IGNORE ALL PYTHON SCENES
-ignore *.py
-ignore *.pyscn
-ignore alt/*.py
-ignore bielle_manivelle/*.py
-ignore cloth/*.py
-ignore contact/*.py
-ignore forcefield/*.py
-ignore knee/*.py
-ignore mapping/*.py
-ignore python/*.py
-ignore skinning/*.py
-ignore static/*.py
-ignore mapping/*.py
-ignore validations/*.py
+ignore ".*\.py"
+ignore ".*\.pyscn"
