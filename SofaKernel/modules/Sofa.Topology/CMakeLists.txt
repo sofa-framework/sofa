@@ -32,26 +32,12 @@ set(SOURCE_FILES
     ${SOFATOPOLOGYSRC_ROOT}/Hexahedron.cpp
 )
 
-# Compatibility files
-set (COMPATSRC_ROOT "compat/")
-set(COMPAT_HEADER_FILES
-)
-
 find_package(Sofa.Config REQUIRED)
 # find_package(Sofa.Type REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES} )
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config Sofa.Type Sofa.Geometry)
-
-# needs vector(header) from SofaHelper :/
-# to remove once vector has moved to Sofa.Type
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaHelper/src>")
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
-                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
-source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework
