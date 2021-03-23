@@ -699,7 +699,7 @@ void QuadBendingFEMForceField<DataTypes>::addDForce(const core::MechanicalParams
 {
   VecDeriv& df1 = *df.beginEdit();
   const VecDeriv& dx1 = dx.getValue();
-  Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()); 
+  Real kFactor = sofa::core::mechanicalparams::kFactor(mparams);
 
   Real h=1;
   df1.resize(dx1.size());
