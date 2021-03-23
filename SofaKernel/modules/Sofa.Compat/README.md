@@ -1,1 +1,1 @@
-# Sofa.Config
+# Sofa.Compat

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa.Compat LANGUAGES CXX)
 
-set(SOFACOMPATSRC_ROOT "src/")
+set(SOFACOMPATSRC_ROOT "src")
 
 set(HEADER_FILES
     # ${SOFACOMPATSRC_ROOT}/config.h.in 

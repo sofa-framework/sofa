@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
 
 namespace sofa
 {
