@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa.Compat LANGUAGES CXX)
 
-set(SOFACOMPATSRC_ROOT "src/sofa")
+set(SOFACOMPATSRC_ROOT "src/")
 
 set(HEADER_FILES
     # ${SOFACOMPATSRC_ROOT}/config.h.in 
@@ -58,11 +58,11 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    ${SOFACOMPATSRC_ROOT}/initSofaCompat.cpp
+    ${SOFACOMPATSRC_ROOT}/sofa/initSofaCompat.cpp
 )
 
 sofa_find_package(Sofa.Config REQUIRED)
-sofa_find_package(SofaFramework REQUIRED)
+# sofa_find_package(SofaFramework REQUIRED)
 # sofa_find_package(Sofa.Type REQUIRED)
 # sofa_find_package(Sofa.Geometry REQUIRED)
 # sofa_find_package(Sofa.Topology REQUIRED)
@@ -70,14 +70,17 @@ sofa_find_package(SofaFramework REQUIRED)
 # sofa_find_package(SofaDefaulttype REQUIRED)
 # sofa_find_package(SofaCore REQUIRED)
 # sofa_find_package(SofaSimulationCore REQUIRED)
-sofa_find_package(Sofa.GL QUIET)
+# sofa_find_package(Sofa.GL QUIET)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Geometry Sofa.Topology)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaulttype SofaCore SofaSimulationCore)
-if(Sofa.GL_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
-endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
+# target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Geometry Sofa.Topology)
+# target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaulttype SofaCore SofaSimulationCore)
+# if(Sofa.GL_FOUND)
+#     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
+# endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework) # IDE folder
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

@@ -61,13 +61,17 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Boost REQUIRED)
-
 sofa_find_package(Sofa.Config REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost)
+
+# TODO1: add an option when the sofa code has been converted
+# TODO2: if cmake >= 3.13, move those lines to SofaFramework project (or a cmakefile in module/ dir)
+add_subdirectory(../Sofa.Compat ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Compat)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Compat) # force compat layer for everybody
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework

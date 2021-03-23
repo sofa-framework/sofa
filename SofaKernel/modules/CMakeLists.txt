@@ -1,9 +1,6 @@
 # These are real modules. If you need components from there you
 # need to first add find_package(XXX) in your CMakeLists.txt
 
-# Add compatibility layer
-add_subdirectory(Sofa.Compat)
-
 # Common
 sofa_add_module(SofaSimpleFem SofaSimpleFem ON)
 sofa_add_module(SofaRigid SofaRigid ON)
