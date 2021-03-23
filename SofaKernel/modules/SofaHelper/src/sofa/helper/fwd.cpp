@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
 #include <sofa/helper/fwd.h>
 #include <sofa/helper/AdvancedTimer.h>

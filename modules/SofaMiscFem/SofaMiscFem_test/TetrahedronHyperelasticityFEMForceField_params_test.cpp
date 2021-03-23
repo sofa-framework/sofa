@@ -132,8 +132,8 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public Sofa_test<ty
 
 
 // ========= Define the list of types to instanciate.
-//using testing::Types;
-typedef testing::Types<component::forcefield::TetrahedronHyperelasticityFEMForceField<defaulttype::Vec3Types> > TestTypes; // the types to instanciate.
+//using ::testing::Types;
+typedef ::testing::Types<component::forcefield::TetrahedronHyperelasticityFEMForceField<defaulttype::Vec3Types> > TestTypes; // the types to instanciate.
 
 
 // ========= Tests to run for each instanciated type

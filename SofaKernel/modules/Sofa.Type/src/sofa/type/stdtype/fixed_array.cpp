@@ -44,5 +44,5 @@ template class SOFA_TYPE_API fixed_array<double, 6>;
 template class SOFA_TYPE_API fixed_array<float, 7>;
 template class SOFA_TYPE_API fixed_array<double, 7>;
 
-} // namespace sofa::helper::stdtype
+} // namespace sofa::type::stdtype
 

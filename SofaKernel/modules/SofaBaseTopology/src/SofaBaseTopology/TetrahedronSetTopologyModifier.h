@@ -67,9 +67,6 @@ public:
 
     void reinit() override;
 
-    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    void propagateTopologicalEngineChanges() override;
-
     /** \brief add a set of tetrahedra
     @param tetrahedra an array of vertex indices describing the tetrahedra to be created
     */
@@ -85,93 +82,16 @@ public:
             const sofa::helper::vector< sofa::helper::vector< TetrahedronID > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
-
-    /** \brief Sends a message to warn that some tetrahedra were added in this topology.
-    *
-    * \sa addTetrahedraProcess
-    */
-    void addTetrahedraWarning(const size_t nTetrahedra,
-            const sofa::helper::vector< Tetrahedron >& tetrahedraList,
-            const sofa::helper::vector< TetrahedronID >& tetrahedraIndexList);
-
-    /** \brief Sends a message to warn that some tetrahedra were added in this topology.
-    *
-    * \sa addTetrahedraProcess
-    */
-    void addTetrahedraWarning(const size_t nTetrahedra,
-            const sofa::helper::vector< Tetrahedron >& tetrahedraList,
-            const sofa::helper::vector< TetrahedronID >& tetrahedraIndexList,
-            const sofa::helper::vector< sofa::helper::vector< TetrahedronID > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
-
     /** \brief Add a tetrahedron.
     *
     */
     void addTetrahedronProcess(Tetrahedron e);
-
-    /** \brief Actually Add some tetrahedra to this topology.
-    *
-    * \sa addTetrahedraWarning
-    */
-    virtual void addTetrahedraProcess(const sofa::helper::vector< Tetrahedron > &tetrahedra);
-
-    /** \brief Sends a message to warn that some tetrahedra are about to be deleted.
-    *
-    * \sa removeTetrahedraProcess
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    */
-    void removeTetrahedraWarning( sofa::helper::vector<TetrahedronID> &tetrahedra);
-
-    /** \brief Remove a subset of tetrahedra
-    *
-    * Elements corresponding to these points are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeTetrahedraWarning
-    * @param removeIsolatedItems if true remove isolated triangles, edges and vertices
-    */
-    virtual void removeTetrahedraProcess( const sofa::helper::vector<TetrahedronID> &indices,
-            const bool removeIsolatedItems=false);
-
-    /** \brief Actually Add some triangles to this topology.
-    *
-    * \sa addTrianglesWarning
-    */
-    void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles) override;
-
-    /** \brief Remove a subset of triangles
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * @param removeIsolatedEdges if true isolated edges are also removed
-    * @param removeIsolatedPoints if true isolated vertices are also removed
-    */
-    void removeTrianglesProcess(const sofa::helper::vector<TriangleID> &indices,
-            const bool removeIsolatedEdges=false,
-            const bool removeIsolatedPoints=false) override;
-
-    /** \brief Add some edges to this topology.
-    *
-    * \sa addEdgesWarning
-    */
-    void addEdgesProcess(const sofa::helper::vector< Edge > &edges) override;
-
-    /** \brief Remove a subset of edges
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeEdgesWarning
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    * @param removeIsolatedItems if true remove isolated vertices
-    */
-    void removeEdgesProcess( const sofa::helper::vector<EdgeID> &indices,
-            const bool removeIsolatedItems=false) override;
-
+    
     /** \brief Remove a set  of tetrahedra
     @param tetrahedra an array of tetrahedron indices to be removed (note that the array is not const since it needs to be sorted)
     *
     */
-    virtual void removeTetrahedra(const sofa::helper::vector< TetrahedronID >& tetrahedraIds);
+    virtual void removeTetrahedra(const sofa::helper::vector< TetrahedronID >& tetrahedraIds, const bool removeIsolatedItems = true);
 
     /** \brief Generic method to remove a list of items.
     */
@@ -182,6 +102,86 @@ public:
     void RemoveTetraBall(TetrahedronID ind_ta, TetrahedronID ind_tb);
 
 protected:
+    /** \brief Sends a message to warn that some tetrahedra were added in this topology.
+    *
+    * \sa addTetrahedraProcess
+    */
+    void addTetrahedraWarning(const size_t nTetrahedra,
+        const sofa::helper::vector< Tetrahedron >& tetrahedraList,
+        const sofa::helper::vector< TetrahedronID >& tetrahedraIndexList);
+
+    /** \brief Sends a message to warn that some tetrahedra were added in this topology.
+    *
+    * \sa addTetrahedraProcess
+    */
+    void addTetrahedraWarning(const size_t nTetrahedra,
+        const sofa::helper::vector< Tetrahedron >& tetrahedraList,
+        const sofa::helper::vector< TetrahedronID >& tetrahedraIndexList,
+        const sofa::helper::vector< sofa::helper::vector< TetrahedronID > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
+
+    /** \brief Actually Add some tetrahedra to this topology.
+    *
+    * \sa addTetrahedraWarning
+    */
+    virtual void addTetrahedraProcess(const sofa::helper::vector< Tetrahedron >& tetrahedra);
+
+    /** \brief Sends a message to warn that some tetrahedra are about to be deleted.
+    *
+    * \sa removeTetrahedraProcess
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    */
+    void removeTetrahedraWarning(sofa::helper::vector<TetrahedronID>& tetrahedra);
+
+    /** \brief Remove a subset of tetrahedra
+    *
+    * Elements corresponding to these points are removed form the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeTetrahedraWarning
+    * @param removeIsolatedItems if true remove isolated triangles, edges and vertices
+    */
+    virtual void removeTetrahedraProcess(const sofa::helper::vector<TetrahedronID>& indices,
+        const bool removeIsolatedItems = false);
+
+
+
+    /** \brief Actually Add some triangles to this topology.
+    *
+    * \sa addTrianglesWarning
+    */
+    void addTrianglesProcess(const sofa::helper::vector< Triangle >& triangles) override;
+
+    /** \brief Remove a subset of triangles
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * @param removeIsolatedEdges if true isolated edges are also removed
+    * @param removeIsolatedPoints if true isolated vertices are also removed
+    */
+    void removeTrianglesProcess(const sofa::helper::vector<TriangleID>& indices,
+        const bool removeIsolatedEdges = false,
+        const bool removeIsolatedPoints = false) override;
+
+
+    /** \brief Add some edges to this topology.
+    *
+    * \sa addEdgesWarning
+    */
+    void addEdgesProcess(const sofa::helper::vector< Edge >& edges) override;
+
+    /** \brief Remove a subset of edges
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeEdgesWarning
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    * @param removeIsolatedItems if true remove isolated vertices
+    */
+    void removeEdgesProcess(const sofa::helper::vector<EdgeID>& indices,
+        const bool removeIsolatedItems = false) override;
+
+
     /** \brief Add some points to this topology.
     *
     * \sa addPointsWarning
@@ -206,6 +206,10 @@ protected:
     void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
         const sofa::helper::vector<PointID>&/*inv_index*/,
         const bool renumberDOF = true) override;
+
+
+    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
+    void propagateTopologicalEngineChanges() override;
 
 private:
     TetrahedronSetTopologyContainer* 	m_container;

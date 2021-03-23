@@ -88,7 +88,7 @@ void FixedTranslationConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::removeIndex(Index index)
 {
-    removeValue(*f_indices.beginEdit(),index);
+    sofa::helper::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 

@@ -102,23 +102,8 @@ public:
     virtual void removePoints(sofa::helper::vector< PointID >& indices, const bool removeDOF = true);
 
 
-    /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
-    *
-    * ChangeList should contain all TopologyChange objects corresponding to changes in this topology
-    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
-    * last call to propagateTopologicalChanges.
-    *
-    * @sa beginChange()
-    * @sa endChange()
-    */
-    void propagateTopologicalChanges() override;  // DEPRECATED
-
-    /// TODO: doc ??
-    void propagateTopologicalChangesWithoutReset();
-
-    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    /// TODO: temporary duplication of topological events (commented by default)
-    virtual void propagateTopologicalEngineChanges();
+    /// This Method has been removed in PR #1860 as it was never used nor supported
+    void propagateTopologicalChangesWithoutReset() = delete;
 
 
     /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
@@ -226,6 +211,21 @@ protected:
         const sofa::helper::vector< PointID >&/*inv_index*/,
         const bool renumberDOF = true);
 
+
+    /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
+    *
+    * ChangeList should contain all TopologyChange objects corresponding to changes in this topology
+    * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
+    * last call to propagateTopologicalChanges.
+    *
+    * @sa beginChange()
+    * @sa endChange()
+    */
+    void propagateTopologicalChanges() override;  // DEPRECATED
+
+    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
+    /// TODO: temporary duplication of topological events (commented by default)
+    virtual void propagateTopologicalEngineChanges();
 
 private:
     PointSetTopologyContainer* 	m_container;

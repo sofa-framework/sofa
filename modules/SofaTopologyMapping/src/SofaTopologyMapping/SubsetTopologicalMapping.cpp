@@ -436,9 +436,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::ENDING_EVENT:
         {
             msg_info() << "[" << count << "]ENDING_EVENT";
-            toPointMod->propagateTopologicalChanges();
             toPointMod->notifyEndingEvent();
-            toPointMod->propagateTopologicalChanges();
             if (!samePoints.getValue())
             {
                 if (pS2D.size() != (unsigned)fromModel->getNbPoints()) msg_error() << "Invalid pointS2D size : " << pS2D.size() << " != " << fromModel->getNbPoints();
@@ -714,9 +712,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             if (nDadd > 0)
             {
                 msg_info() << "    -> EDGESADDED : " << nDadd << " : " << edgeIndexArray << " : " << edgeArray;
-                toEdgeMod->addEdgesProcess(edgeArray);
-                toEdgeMod->addEdgesWarning(nDadd, edgeArray, edgeIndexArray, ancestors, coefs);
-                toEdgeMod->propagateTopologicalChanges();
+                toEdgeMod->addEdges(edgeArray, ancestors, coefs);
             }
             break;
         }
@@ -761,9 +757,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             }
             if (!tab2.empty())
             {
-                toEdgeMod->removeEdgesWarning(tab2);
-                toEdgeMod->propagateTopologicalChanges();
-                toEdgeMod->removeEdgesProcess(tab2, false);
+                toEdgeMod->removeEdges(tab2, false);
                 // apply removals in eD2S
                 {
                     size_t last = eD2S.size() -1;
@@ -862,9 +856,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             if (nDadd > 0)
             {
                 msg_info() << "    -> TRIANGLESADDED : " << nDadd  << " : " << triangleIndexArray << " : " << triangleArray;
-                toTriangleMod->addTrianglesProcess(triangleArray);
-                toTriangleMod->addTrianglesWarning(nDadd, triangleArray, triangleIndexArray, ancestors, coefs);
-                toTriangleMod->propagateTopologicalChanges();
+                toTriangleMod->addTriangles(triangleArray, ancestors, coefs);
             }
             break;
         }
@@ -909,9 +901,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             }
             if (!tab2.empty())
             {
-                toTriangleMod->removeTrianglesWarning(tab2);
-                toTriangleMod->propagateTopologicalChanges();
-                toTriangleMod->removeTrianglesProcess(tab2, !handleEdges.getValue());
+                toTriangleMod->removeTriangles(tab2, !handleEdges.getValue(), false);
                 // apply removals in tD2S
                 {
                     size_t last = tD2S.size() -1;
@@ -940,7 +930,6 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         ++count;
         ++itBegin;
     }
-    toPointMod->propagateTopologicalChanges();
 }
 
 } //namespace sofa::component::topology

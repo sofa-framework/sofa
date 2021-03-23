@@ -28,6 +28,7 @@ namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 using namespace sofa::core::loader;
 using helper::vector;
 
