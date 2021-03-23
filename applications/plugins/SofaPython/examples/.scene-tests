@@ -18,8 +18,8 @@ add "PythonMainScriptController.py"
 ignore "PythonAdvancedTimer/poutre_grid_sofa.py"
 
 # ProjectionToLineMapping and ProjectionToPlaneMapping have been removed
-ignore "mapping/ProjectionToLineMapping.py"
-ignore "mapping/ProjectionToPlaneMapping.py"
+ignore "Components/mapping/ProjectionToLineMapping.py"
+ignore "Components/mapping/ProjectionToPlaneMapping.py"
 
 # Logger test obviously emit errors
 ignore "logger.py"
@@ -29,5 +29,10 @@ ignore "console.py"
 
 # TetrahedronSetTopologyAlgorithms has been removed
 ignore "RegularGridFromMesh.py"
+
+# No such file or directory: 'PythonScene2.py'
+ignore "PythonScene2.pyscn"
+
+ignore "BaseContext.py"
 
 
