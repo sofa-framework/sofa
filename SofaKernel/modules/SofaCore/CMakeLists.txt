@@ -256,7 +256,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+sofa_find_package(Sofa.Topology REQUIRED)
+sofa_find_package(SofaHelper REQUIRED)
+sofa_find_package(SofaDefaulttype REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Topology SofaDefaultType)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)
@@ -269,12 +273,13 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
 endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaFramework
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaFramework"
-    )
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaCore_test)
