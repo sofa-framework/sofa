@@ -6,25 +6,11 @@ cmake_minimum_required(VERSION 3.12)
 
 set(SOFAFRAMEWORK_TARGETS @SOFAFRAMEWORK_TARGETS@)
 
-set(SOFAHELPER_HAVE_BOOST "@SOFAHELPER_HAVE_BOOST@")
-set(SOFAHELPER_HAVE_BOOST_FILESYSTEM "@SOFAHELPER_HAVE_BOOST_FILESYSTEM@")
-set(SOFAHELPER_HAVE_BOOST_THREAD "@SOFAHELPER_HAVE_BOOST_THREAD@")
-set(SOFA_TYPE_HAVE_SOFA_COMPAT "@SOFA_TYPE_HAVE_SOFA_COMPAT@")
-
-# Find dependencies
-find_package(Boost QUIET REQUIRED filesystem)
-if(SOFAHELPER_HAVE_BOOST_THREAD)
-    find_package(Boost QUIET REQUIRED thread)
-endif()
-
-if(SOFA_TYPE_HAVE_SOFA_COMPAT)
-	find_package(Sofa.Compat QUIET REQUIRED)
-endif()
-
 find_package(Sofa.Config QUIET REQUIRED)
-
-# Eigen3 is required by SofaDefaultType and SofaHelper
-find_package(Eigen3 QUIET REQUIRED)
+find_package(Sofa.Type QUIET REQUIRED)
+find_package(Sofa.Geometry QUIET REQUIRED)
+find_package(Sofa.Topology QUIET REQUIRED)
+find_package(SofaHelper QUIET REQUIRED)
 
 foreach(target ${SOFAFRAMEWORK_TARGETS})
     if(NOT TARGET ${target})

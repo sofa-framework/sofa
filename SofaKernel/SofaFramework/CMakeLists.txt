@@ -12,6 +12,8 @@ foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
     if(SOFA_BUILD_TESTS)
         target_compile_options(${TARGET} PUBLIC "-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/tests\"")
     endif()
+
+    set_target_properties(${TARGET} PROPERTIES FOLDER SofaFramework) # IDE folder
 endforeach()
 
 set(SOFAFRAMEWORK_SRC src/SofaFramework)
