@@ -42,8 +42,7 @@ int TopologyCheckerClass = core::RegisterObject("Read topological Changes and pr
 
 
 TopologyChecker::TopologyChecker()
-    : m_draw( initData(&m_draw, false, "draw", "draw information"))
-    , d_eachStep(initData(&d_eachStep, false, "draw", "Check topology at each step"))
+    : d_eachStep(initData(&d_eachStep, false, "eachStep", "Check topology at each step"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
@@ -773,9 +772,6 @@ void TopologyChecker::handleEvent(sofa::core::objectmodel::Event* event)
 void TopologyChecker::draw(const core::visual::VisualParams* vparams)
 {
     if (!m_topology)
-        return;
-
-    if(!m_draw.getValue())
         return;
 
     if (!vparams->displayFlags().getShowBehaviorModels())

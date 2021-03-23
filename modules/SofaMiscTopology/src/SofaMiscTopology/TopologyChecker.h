@@ -63,9 +63,7 @@ protected:
     
     
 public:
-    ///< draw information
-    Data<bool> m_draw;
-
+    /// bool to check topology at each step.
     Data<bool> d_eachStep;
 
     /// Link to be set to the topology container in the component graph.
