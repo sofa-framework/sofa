@@ -80,199 +80,90 @@ public:
     typedef sofa::Size     size_type;
     typedef std::ptrdiff_t difference_type;
 
-    fixed_array()
-    {
-    }
-
+    fixed_array() noexcept = default;
 
     /// Specific constructor for 1-element vectors.
-    template<size_type NN = N, typename std::enable_if<NN==1,int>::type = 0>
-    explicit fixed_array(value_type r1)
+    template<size_type NN = N, typename std::enable_if<NN == 1, int>::type = 0>
+    explicit constexpr fixed_array(value_type r1) noexcept
     {
-        static_assert(N==1, "");
-        this->elems[0]=r1;
+        static_assert(N == 1, "");
+        this->elems[0] = r1;
     }
 
-    /// Specific constructor for 2-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==2,int>::type = 0>
-    fixed_array(value_type r1, value_type r2)
+    template<typename... ArgsT,
+        typename = std::enable_if_t < (std::is_convertible_v<ArgsT, value_type> && ...)>,
+        typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
+    >
+    constexpr fixed_array(const ArgsT... r) noexcept
     {
-        static_assert(N == 2, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
+        // this->elems = { r... }; // doable if Array was assignable
+        std::size_t i = 0;
+        ( (this->elems[i++] = r), ...);
+        
     }
-
-    /// Specific constructor for 3-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==3,int>::type = 0>
-    fixed_array(value_type r1, value_type r2, value_type r3)
-    {
-        static_assert(N == 3, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-    }
-
-    /// Specific constructor for 4-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==4,int>::type = 0>
-    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4)
-    {
-        static_assert(N == 4, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
-    }
-
-    /// Specific constructor for 5-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==5,int>::type = 0>
-    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5)
-    {
-        static_assert(N == 5, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
-        this->elems[4]=r5;
-    }
-
-    /// Specific constructor for 6-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==6,int>::type = 0>
-    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6)
-    {
-        static_assert(N == 6, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
-        this->elems[4]=r5;
-        this->elems[5]=r6;
-    }
-
-    /// Specific constructor for 7-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==7,int>::type = 0>
-    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7)
-    {
-        static_assert(N == 7, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
-        this->elems[4]=r5;
-        this->elems[5]=r6;
-        this->elems[6]=r7;
-    }
-
-    /// Specific constructor for 8-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==8,int>::type = 0>
-    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8)
-    {
-        static_assert(N == 8, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
-        this->elems[4]=r5;
-        this->elems[5]=r6;
-        this->elems[6]=r7;
-        this->elems[7]=r8;
-    }
-
-    /// Specific constructor for 9-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==9,int>::type = 0>
-    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9)
-    {
-        static_assert(N == 9, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
-        this->elems[4]=r5;
-        this->elems[5]=r6;
-        this->elems[6]=r7;
-        this->elems[7]=r8;
-        this->elems[8]=r9;
-    }
-
-    /// Specific constructor for 10-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==10,int>::type = 0>
-    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9, value_type r10)
-    {
-        static_assert(N == 10, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
-        this->elems[4]=r5;
-        this->elems[5]=r6;
-        this->elems[6]=r7;
-        this->elems[7]=r8;
-        this->elems[8]=r9;
-        this->elems[9]=r10;
-    }
-
 
     // iterator support
-    iterator begin()
+    constexpr iterator begin() noexcept
     {
-        return elems;
+        return this->elems;
     }
-    const_iterator begin() const
+    constexpr const_iterator begin() const noexcept
     {
-        return elems;
+        return this->elems;
     }
-    iterator end()
+    constexpr iterator end() noexcept
     {
-        return elems+N;
+        return this->elems+N;
     }
-    const_iterator end() const
+    constexpr const_iterator end() const noexcept
     {
-        return elems+N;
+        return this->elems+N;
     }
 
     // operator[]
-    reference operator[](size_type i)
+    constexpr reference operator[](size_type i)
     {
 #ifndef NDEBUG
         assert(i<N && "index in fixed_array must be smaller than size");
 #endif
-        return elems[i];
+        return this->elems[i];
     }
-    const_reference operator[](size_type i) const
+    constexpr const_reference operator[](size_type i) const
     {
 #ifndef NDEBUG
         assert(i<N && "index in fixed_array must be smaller than size");
 #endif
-        return elems[i];
+        return this->elems[i];
     }
 
     // at() with range check
-    reference at(size_type i)
+    constexpr reference at(size_type i)
     {
         rangecheck(i);
-        return elems[i];
+        return this->elems[i];
     }
-    const_reference at(size_type i) const
+    constexpr const_reference at(size_type i) const
     {
         rangecheck(i);
-        return elems[i];
+        return this->elems[i];
     }
 
     // front() and back()
-    reference front()
+    constexpr reference front() noexcept
     {
-        return elems[0];
+        return this->elems[0];
     }
-    const_reference front() const
+    constexpr const_reference front() const noexcept
     {
-        return elems[0];
+        return this->elems[0];
     }
-    reference back()
+    constexpr reference back() noexcept
     {
-        return elems[N-1];
+        return this->elems[N-1];
     }
-    const_reference back() const
+    constexpr const_reference back() const noexcept
     {
-        return elems[N-1];
+        return this->elems[N-1];
     }
 
     // size is constant
@@ -297,42 +188,39 @@ public:
     }
 
     // direct access to data
-    const T* data() const
+    constexpr const T* data() const noexcept
     {
-        return elems;
+        return this->elems;
     }
 
     /// direct access to array
-    const Array& array() const
+    constexpr const Array& array() const noexcept
     {
-        return elems;
+        return this->elems;
     }
 
     /// direct access to array
-    Array& array()
+    constexpr Array& array() noexcept
     {
-        return elems;
+        return this->elems;
     }
 
     // assignment with type conversion
     template <typename T2>
-    fixed_array<T,N>& operator= (const fixed_array<T2,N>& rhs)
+    constexpr fixed_array<T,N>& operator= (const fixed_array<T2,N>& rhs) noexcept
     {
-        //std::copy(rhs.begin(),rhs.end(), begin());
         for (size_type i=0; i<N; i++)
-            elems[i] = rhs[i];
+            this->elems[i] = rhs[i];
         return *this;
     }
 
     // assign one value to all elements
-    inline void assign (const T& value)
+    constexpr inline void assign (const T& value) noexcept
     {
-        //std::fill_n(begin(),size(),value);
         for (size_type i=0; i<N; i++)
-            elems[i] = value;
+            this->elems[i] = value;
     }
 
-    //template<int NN = N, typename std::enable_if<NN>0,int>::type = 0>
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
         static_assert(N>0, "Cannot create a zero size arrays") ;
@@ -349,13 +237,13 @@ public:
         return in;
     }
 
-    inline bool operator < (const fixed_array& v ) const
+    constexpr inline bool operator < (const fixed_array& v ) const noexcept
     {
         for( size_type i=0; i<N; i++ )
         {
-            if( elems[i]<v[i] )
+            if( this->elems[i]<v[i] )
                 return true;  // (*this)<v
-            else if( elems[i]>v[i] )
+            else if( this->elems[i]>v[i] )
                 return false; // (*this)>v
         }
         return false; // (*this)==v
@@ -373,121 +261,10 @@ private:
     }
 };
 
-template<class T>
-inline fixed_array<T, 2> make_array(const T& v0, const T& v1)
+template<typename... Ts>
+constexpr auto make_array(Ts&&... ts) -> fixed_array<std::common_type_t<Ts...>, sizeof...(Ts)>
 {
-    fixed_array<T, 2> v;
-    v[0] = v0;
-    v[1] = v1;
-    return v;
-}
-
-template<class T>
-inline fixed_array<T, 3> make_array(const T& v0, const T& v1, const T& v2)
-{
-    fixed_array<T, 3> v;
-    v[0] = v0;
-    v[1] = v1;
-    v[2] = v2;
-    return v;
-}
-
-template<class T>
-inline fixed_array<T, 4> make_array(const T& v0, const T& v1, const T& v2, const T& v3)
-{
-    fixed_array<T, 4> v;
-    v[0] = v0;
-    v[1] = v1;
-    v[2] = v2;
-    v[3] = v3;
-    return v;
-}
-
-template<class T>
-inline fixed_array<T, 5> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4)
-{
-    fixed_array<T, 5> v;
-    v[0] = v0;
-    v[1] = v1;
-    v[2] = v2;
-    v[3] = v3;
-    v[4] = v4;
-    return v;
-}
-
-template<class T>
-inline fixed_array<T, 6> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5)
-{
-    fixed_array<T, 6> v;
-    v[0] = v0;
-    v[1] = v1;
-    v[2] = v2;
-    v[3] = v3;
-    v[4] = v4;
-    v[5] = v5;
-    return v;
-}
-
-template<class T>
-inline fixed_array<T, 7> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6)
-{
-    fixed_array<T, 7> v;
-    v[0] = v0;
-    v[1] = v1;
-    v[2] = v2;
-    v[3] = v3;
-    v[4] = v4;
-    v[5] = v5;
-    v[6] = v6;
-    return v;
-}
-
-template<class T>
-inline fixed_array<T, 8> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6, const T& v7)
-{
-    fixed_array<T, 8> v;
-    v[0] = v0;
-    v[1] = v1;
-    v[2] = v2;
-    v[3] = v3;
-    v[4] = v4;
-    v[5] = v5;
-    v[6] = v6;
-    v[7] = v7;
-    return v;
-}
-
-template<class T>
-inline fixed_array<T, 9> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6, const T& v7, const T& v8)
-{
-    fixed_array<T, 9> v;
-    v[0] = v0;
-    v[1] = v1;
-    v[2] = v2;
-    v[3] = v3;
-    v[4] = v4;
-    v[5] = v5;
-    v[6] = v6;
-    v[7] = v7;
-    v[8] = v8;
-    return v;
-}
-
-template<class T>
-inline fixed_array<T, 10> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6, const T& v7, const T& v8, const T& v9)
-{
-    fixed_array<T, 10> v;
-    v[0] = v0;
-    v[1] = v1;
-    v[2] = v2;
-    v[3] = v3;
-    v[4] = v4;
-    v[5] = v5;
-    v[6] = v6;
-    v[7] = v7;
-    v[8] = v8;
-    v[9] = v9;
-    return v;
+    return { std::forward<Ts>(ts)... };
 }
 
 #ifndef FIXED_ARRAY_CPP
