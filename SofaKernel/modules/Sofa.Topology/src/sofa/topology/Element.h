@@ -40,13 +40,14 @@ struct Element : public sofa::type::stdtype::fixed_array<sofa::Index, GeometryEl
     }
 
     template< typename... ArgsT
-        , typename = std::enable_if_t<std::conjunction<std::is_convertible<ArgsT, sofa::Index>...>::value>
-        , typename = std::enable_if_t< (GeometryElement::NumberOfNodes == sizeof...(ArgsT)) >
+        , typename = std::enable_if_t < (std::is_convertible_v<ArgsT, sofa::Index> && ...)>
     >
         constexpr Element(ArgsT&&... args) noexcept
         : sofa::type::stdtype::fixed_array< sofa::Index, GeometryElement::NumberOfNodes >
     { static_cast<sofa::Index>(std::forward< ArgsT >(args))... }
-    {}
+    {
+        static_assert(GeometryElement::NumberOfNodes == sizeof...(ArgsT), "Trying to construct the element with an incorrect number of nodes.");
+    }
 };
 
 } // namespace sofa::geometry
