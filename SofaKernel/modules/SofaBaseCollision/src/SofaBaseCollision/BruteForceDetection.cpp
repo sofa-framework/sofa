@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaBaseCollision/BruteForceDetection.h>
 
-#include <SofaBaseCollision/CubeModel.h>
 #include <SofaBaseCollision/MirrorIntersector.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>

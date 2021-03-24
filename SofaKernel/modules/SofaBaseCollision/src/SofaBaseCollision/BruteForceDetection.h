@@ -24,6 +24,7 @@
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/helper/vector.h>
 
 
@@ -45,7 +46,7 @@ private:
 
     Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
-    sofa::core::sptr<CubeCollisionModel> boxModel;
+    CubeCollisionModel::SPtr boxModel;
 
 
 protected:
