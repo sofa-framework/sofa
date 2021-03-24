@@ -77,13 +77,9 @@ public:
 
 public:
 
-    void init() override;
+    void init();
 
-    void reinit() override;
-
-    void doUpdate() override;
-
-    void ApplyTopologyChanges();
+    void handleTopologyChange() override;
 
     bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology) override;
 

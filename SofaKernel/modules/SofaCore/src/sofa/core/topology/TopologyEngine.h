@@ -47,17 +47,15 @@ namespace topology
 {
 
 /** A class that will interact on a topological Data */
-class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
+class SOFA_CORE_API TopologyEngine : public sofa::core::objectmodel::DDGNode
 {
-public:
-    SOFA_ABSTRACT_CLASS(TopologyEngine, DataEngine);
-
 protected:
     TopologyEngine() {}
 
 public:
-    void init() override ;
-    void handleTopologyChange() override {}
+    virtual void handleTopologyChange() {}
+
+    void update() override;
 
 public:
     // really need to be a Data??
@@ -166,7 +164,6 @@ public:
 
     size_t getNumberOfTopologicalChanges();
 
-    virtual void createEngineName();
     virtual void linkToPointDataArray() {}
     virtual void linkToEdgeDataArray() {}
     virtual void linkToTriangleDataArray() {}

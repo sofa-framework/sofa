@@ -39,26 +39,11 @@ template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
 namespace sofa::core::topology
 {
 
-void TopologyEngine::init()
-{
-    sofa::core::DataEngine::init();
-    this->createEngineName();
-}
-
 size_t TopologyEngine::getNumberOfTopologicalChanges()
 {
     return (m_changeList.getValue()).size();
 }
 
-void TopologyEngine::createEngineName()
-{
-    if (m_data_name.empty())
-        setName( m_prefix + "no_name" );
-    else
-        setName( m_prefix + m_data_name );
-
-    return;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
@@ -137,6 +122,18 @@ void TopologyEngine::ApplyTopologyChanges(const std::list<const core::topology::
     }
 }
 
+
+void TopologyEngine::update()
+{
+    DDGNode::cleanDirty();
+    if (!this->isTopologyDataRegistered())
+        return;
+
+    std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_changeList.getValue().size());
+    sofa::helper::AdvancedTimer::stepBegin(msg.c_str());
+    this->handleTopologyChange();
+    sofa::helper::AdvancedTimer::stepEnd(msg.c_str());
+}
 
 bool TopologyEngine::registerTopology()
 {
