@@ -23,9 +23,9 @@
 
 #include <sofa/type/config.h>
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 
-namespace sofa::type::stdtype::pairwise
+namespace sofa::type::pairwise
 {
 
 /// @brief clamp a single value. This function should be removed when std::clamp will be available
@@ -97,5 +97,5 @@ T operator/(const T& r, const typename T::value_type& f)
 }
 
 
-} /// namespace sofa::type::stdtype::pairwise
+} /// namespace sofa::type::pairwise
 

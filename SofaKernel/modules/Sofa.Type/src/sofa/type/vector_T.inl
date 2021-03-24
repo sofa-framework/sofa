@@ -22,4 +22,4 @@
 #pragma once
 #include <cassert>
 #include <iostream>
-#include <sofa/type/stdtype/vector_T.h>
+#include <sofa/type/vector_T.h>

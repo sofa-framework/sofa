@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/stdtype/vector.h>
+#include <sofa/type/vector.h>
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
 // -----------------------------------------------------------
@@ -64,4 +64,4 @@ void axpy( V1& result, Scalar a, const V2& x, const V3& y )
         result[i] = x[i]*a + y[i];
 }
 
-} // namespace sofa::type::stdtype
+} // namespace sofa::type

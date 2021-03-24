@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_HELPER_VECTOR_DEFINITION
-#include <sofa/type/stdtype/vector.h>
+#include <sofa/type/vector.h>
 
 #include <sstream>
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
 void SOFA_TYPE_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type)
@@ -35,4 +35,4 @@ void SOFA_TYPE_API vector_access_failure(const void* vec, unsigned size, unsigne
 }
 
 
-} // namespace sofa::type::stdtype
+} // namespace sofa::type

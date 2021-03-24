@@ -24,8 +24,8 @@
 #include <sstream>
 #include <locale>
 
-#include <sofa/type/stdtype/fixed_array_algorithms.h>
-using namespace sofa::type::stdtype::pairwise;
+#include <sofa/type/fixed_array_algorithms.h>
+using namespace sofa::type::pairwise;
 
 namespace // anonymous
 {

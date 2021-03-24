@@ -21,15 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/stdtype/SVector.h>
+#include <sofa/type/SVector.h>
 
 // The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
 // This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/SVector.h")
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/SVector.h")
 
 namespace sofa::helper
 {
     template< class T >
-    using SVector = sofa::type::stdtype::SVector<T>;
+    using SVector = sofa::type::SVector<T>;
 
 } // namespace sofa::helper

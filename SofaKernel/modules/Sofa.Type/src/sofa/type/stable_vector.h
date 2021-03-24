@@ -24,10 +24,10 @@
 #include <boost/container/stable_vector.hpp>
 
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
     template<class T, class A = std::allocator<T>>
     using stable_vector = boost::container::stable_vector<T,A>;
 
-} // namespace sofa::type::stdtype
+} // namespace sofa::type

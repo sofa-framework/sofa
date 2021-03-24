@@ -21,9 +21,9 @@
 ******************************************************************************/
 #define FIXED_ARRAY_CPP
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
 template class SOFA_TYPE_API fixed_array<float, 2>;
@@ -44,5 +44,5 @@ template class SOFA_TYPE_API fixed_array<double, 6>;
 template class SOFA_TYPE_API fixed_array<float, 7>;
 template class SOFA_TYPE_API fixed_array<double, 7>;
 
-} // namespace sofa::type::stdtype
+} // namespace sofa::type
 
