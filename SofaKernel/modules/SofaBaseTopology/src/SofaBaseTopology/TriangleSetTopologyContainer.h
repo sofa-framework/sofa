@@ -330,7 +330,7 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_triangle
-    void updateTopologyEngineGraph() override;
+    void updateTopologyHandlerGraph() override;
 
 
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
@@ -366,7 +366,7 @@ protected:
     bool m_triangleTopologyDirty;
 
     /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;

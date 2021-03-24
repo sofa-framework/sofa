@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/core/topology/BaseTopologyData.h>
 
 #include <sofa/core/topology/BaseTopology.h>
@@ -39,10 +39,10 @@ namespace sofa::component::topology
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class TopologyElementType, class VecT>
-class TopologyDataEngine : public sofa::core::topology::TopologyEngine
+class TopologyDataEngine : public sofa::core::topology::TopologyHandler
 {
 public:
-    //SOFA_CLASS(SOFA_TEMPLATE(TopologyDataEngine,VecT), sofa::core::topology::TopologyEngine);
+    //SOFA_CLASS(SOFA_TEMPLATE(TopologyDataEngine,VecT), sofa::core::topology::TopologyHandler);
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
     typedef sofa::core::topology::BaseTopologyData<VecT> t_topologicalData;
@@ -102,7 +102,7 @@ public:
         else return false;
     }
 
-    using TopologyEngine::ApplyTopologyChange;
+    using TopologyHandler::ApplyTopologyChange;
 
     /// Apply swap between indices elements.
     virtual void ApplyTopologyChange(const EIndicesSwap* event) override;

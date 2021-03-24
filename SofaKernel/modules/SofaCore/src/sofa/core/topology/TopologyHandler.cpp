@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION true
-#include <sofa/core/topology/TopologyEngine.h>
+#define SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION true
+#include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#ifdef SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
+#ifdef SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION
 namespace std
 {
     template class list<const sofa::core::topology::TopologyChange*>;
@@ -33,13 +33,13 @@ namespace sofa::core::objectmodel
 {
 template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
 }
-#endif /// SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
+#endif /// SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION
 
 
 namespace sofa::core::topology
 {
 
-size_t TopologyEngine::getNumberOfTopologicalChanges()
+size_t TopologyHandler::getNumberOfTopologicalChanges()
 {
     return (m_changeList.getValue()).size();
 }
@@ -49,7 +49,7 @@ size_t TopologyEngine::getNumberOfTopologicalChanges()
 //////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void TopologyEngine::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize)
+void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize)
 {
     if (!this->isTopologyDataRegistered())
         return;
@@ -60,7 +60,7 @@ void TopologyEngine::ApplyTopologyChanges(const std::list<const core::topology::
     for (changeIt = _changeList.begin(); changeIt != _changeList.end(); ++changeIt)
     {
         core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
-        std::string topoChangeType = "DefaultTopologyEngine: " + parseTopologyChangeTypeToString(changeType);
+        std::string topoChangeType = "DefaultTopologyHandler: " + parseTopologyChangeTypeToString(changeType);
         sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
 
         switch (changeType)
@@ -123,7 +123,7 @@ void TopologyEngine::ApplyTopologyChanges(const std::list<const core::topology::
 }
 
 
-void TopologyEngine::update()
+void TopologyHandler::update()
 {
     DDGNode::cleanDirty();
     if (!this->isTopologyDataRegistered())
@@ -135,12 +135,12 @@ void TopologyEngine::update()
     sofa::helper::AdvancedTimer::stepEnd(msg.c_str());
 }
 
-bool TopologyEngine::registerTopology()
+bool TopologyHandler::registerTopology()
 {
     return false;
 }
 
-bool TopologyEngine::registerTopology(sofa::core::topology::BaseMeshTopology* _topology)
+bool TopologyHandler::registerTopology(sofa::core::topology::BaseMeshTopology* _topology)
 {
     SOFA_UNUSED(_topology);
     return false;

@@ -166,7 +166,7 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
     if (!d_fileMass.getValue().empty())
         load(d_fileMass.getFullPath().c_str());
     Inherited::init();
-    initTopologyEngines();
+    initTopologyHandlers();
 
     // Initialize the f_mass vector. The f_mass vector is enlarged to contains
     // as much as value as the 'mstate'. The new entries are initialized with the

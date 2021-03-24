@@ -241,7 +241,7 @@ public:
 
 protected:
     bool checkTopology();
-    void initTopologyEngines();
+    void initTopologyHandlers();
     void massInitialization();
 
 public:

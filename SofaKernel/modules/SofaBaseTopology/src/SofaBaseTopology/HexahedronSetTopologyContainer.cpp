@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -1195,10 +1195,10 @@ void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
     m_hexahedronTopologyDirty = true;
 
     // set all engines link to this container to dirty
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
         msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->getName();
     }
@@ -1209,7 +1209,7 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
     m_hexahedronTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
         if ((*it)->isDirty())
@@ -1220,13 +1220,13 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
     }
 }
 
-void HexahedronSetTopologyContainer::updateTopologyEngineGraph()
+void HexahedronSetTopologyContainer::updateTopologyHandlerGraph()
 {
     // calling real update Data graph function implemented once in PointSetTopologyModifier
     this->updateDataEngineGraph(this->d_hexahedron, this->m_enginesList);
 
     // will concatenate with edges one:
-    QuadSetTopologyContainer::updateTopologyEngineGraph();
+    QuadSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
 } //namespace sofa::component::topology

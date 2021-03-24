@@ -702,7 +702,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::initTopologyEngines()
+void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
     // add the functions to handle topology changes.
     m_pointEngine = new DMassPointEngine(this, &d_vertexMass);
@@ -870,7 +870,7 @@ void DiagonalMass<DataTypes, MassType>::init()
             return;
         }
         Inherited::init();
-        initTopologyEngines();
+        initTopologyHandlers();
 
         // TODO(dmarchal 2018-11-10): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
         if (this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < unsigned(this->mstate->getSize()))

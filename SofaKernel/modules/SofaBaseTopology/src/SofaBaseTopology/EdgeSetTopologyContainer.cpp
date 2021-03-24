@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -544,10 +544,10 @@ void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
     // set this container to dirty
     m_edgeTopologyDirty = true;
 
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
         msg_info() << "Edge Topology Set dirty engine: " << topoEngine->getName();
     }
@@ -558,7 +558,7 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
     m_edgeTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
         if ((*it)->isDirty())
@@ -569,12 +569,12 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
     }
 }
 
-void EdgeSetTopologyContainer::updateTopologyEngineGraph()
+void EdgeSetTopologyContainer::updateTopologyHandlerGraph()
 {
     this->updateDataEngineGraph(this->d_edge, this->m_enginesList);
 
     // will concatenate with points one:
-    PointSetTopologyContainer::updateTopologyEngineGraph();
+    PointSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
 

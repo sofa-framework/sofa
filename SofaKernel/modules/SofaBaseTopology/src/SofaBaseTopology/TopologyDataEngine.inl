@@ -32,7 +32,7 @@ namespace sofa::component::topology
 template <typename TopologyElementType, typename VecT>
 TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topologicalData *_topologicalData,
         sofa::core::topology::BaseMeshTopology *_topology, value_type defaultValue)
-    : TopologyEngine()
+    : TopologyHandler()
     , m_topologyData(_topologicalData)
     , m_topology(nullptr)
     , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
@@ -46,7 +46,7 @@ TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topological
 template <typename TopologyElementType, typename VecT>
 TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topologicalData* _topologicalData,
     value_type defaultValue)
-    : TopologyEngine()
+    : TopologyHandler()
     , m_topologyData(_topologicalData)
     , m_defaultValue(defaultValue) 
     , m_topology(nullptr)
@@ -64,13 +64,13 @@ void TopologyDataEngine<TopologyElementType,  VecT>::init()
     //this->linkToPointDataArray();  // already done while creating engine
 
     // Name creation
-    if (m_prefix.empty()) m_prefix = "TopologyEngine_";
+    if (m_prefix.empty()) m_prefix = "TopologyHandler_";
     m_data_name = this->m_topologyData->getName();
     this->addOutput(this->m_topologyData);
 
     // Register Engine in containter list
     //if (m_topology)
-    //   m_topology->addTopologyEngine(this);
+    //   m_topology->addTopologyHandler(this);
     //this->registerTopology(m_topology);
 }
 
@@ -86,7 +86,7 @@ bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology(sofa::core
         return false;
     }
     else
-        m_topology->addTopologyEngine(this);
+        m_topology->addTopologyHandler(this);
 
     return true;
 }
@@ -101,7 +101,7 @@ bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
         return false;
     }
     else
-        m_topology->addTopologyEngine(this);
+        m_topology->addTopologyHandler(this);
 
     return true;
 }
@@ -115,7 +115,7 @@ void TopologyDataEngine<TopologyElementType,  VecT>::handleTopologyChange()
 
     m_topologyData->setDataSetArraySize(m_topology->getNbPoints());
 
-    sofa::core::topology::TopologyEngine::ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
+    sofa::core::topology::TopologyHandler::ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
 }
 
 

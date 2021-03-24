@@ -25,7 +25,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/fwd.h>
 
-#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
+#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION
 namespace std
 {
     extern template class list<const sofa::core::topology::TopologyChange*>;
@@ -35,7 +35,7 @@ namespace sofa::core::objectmodel
     extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
 }
 
-#endif /// SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
+#endif /// SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION
 
 namespace sofa
 {
@@ -47,10 +47,10 @@ namespace topology
 {
 
 /** A class that will interact on a topological Data */
-class SOFA_CORE_API TopologyEngine : public sofa::core::objectmodel::DDGNode
+class SOFA_CORE_API TopologyHandler : public sofa::core::objectmodel::DDGNode
 {
 protected:
-    TopologyEngine() {}
+    TopologyHandler() {}
 
 public:
     virtual void handleTopologyChange() {}
