@@ -47,7 +47,94 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    bool checkContainer();
+    bool checkTopology();
+
+
+    /// Edge methods
+    ///{
+    /// Full method to check Edge Topology. Will call @sa checkEdgeContainer and @sa checkEdgeToVertexCrossContainer
+    bool checkEdgeTopology();
+
+    /// Method to test Edge container concistency
+    bool checkEdgeContainer();
+
+    /// Method to test Edge to vertex cross container concistency
+    bool checkEdgeToVertexCrossContainer();
+    ///}
+
+
+    /// Triangle methods
+    ///{
+    /// Full method to check Triangle Topology. Will call @sa checkTriangleContainer, @sa checkTriangleToEdgeCrossContainer and @sa checkTriangleToVertexCrossContainer
+    bool checkTriangleTopology();
+
+    /// Method to test Triangle container concistency
+    bool checkTriangleContainer();
+
+    /// Method to test triangles to edges cross container concistency
+    bool checkTriangleToEdgeCrossContainer();
+
+    /// Method to test triangles to vertices cross container concistency
+    bool checkTriangleToVertexCrossContainer();
+    ///}
+
+
+    /// Quad methods
+    ///{
+    /// Full method to check Quad Topology. Will call @sa checkQuadContainer, @sa checkQuadToEdgeCrossContainer and @sa checkQuadToVertexCrossContainer
+    bool checkQuadTopology();
+
+    /// Method to test quad container concistency
+    bool checkQuadContainer();
+
+    /// Method to test quads to edges cross container concistency
+    bool checkQuadToEdgeCrossContainer();
+
+    /// Method to test quads to vertices cross container concistency
+    bool checkQuadToVertexCrossContainer();
+    /// }
+    
+
+    /// Tetrahedron methods
+    ///{
+    /// Full method to check Tetrahedron Topology. Will call @sa checkTetrahedronContainer, @sa checkTetrahedronToTriangleCrossContainer
+    /// @sa checkTetrahedronToEdgeCrossContainer and @sa checkTetrahedronToVertexCrossContainer
+    bool checkTetrahedronTopology();
+
+    /// Method to test Tetrahedron container concistency
+    bool checkTetrahedronContainer();
+
+    /// Method to test Tetrahedron to triangles cross container concistency
+    bool checkTetrahedronToTriangleCrossContainer();
+
+    /// Method to test Tetrahedron to edges cross container concistency
+    bool checkTetrahedronToEdgeCrossContainer();
+
+    /// Method to test Tetrahedron to vertices cross container concistency
+    bool checkTetrahedronToVertexCrossContainer();
+    /// }
+
+
+    /// Hexahedron methods
+    ///{
+    /// Full method to check Hexahedron Topology. Will call @sa checkHexahedronContainer, @sa checkHexahedronToQuadCrossContainer
+    /// @sa checkHexahedronToEdgeCrossContainer and @sa checkHexahedronToVertexCrossContainer
+    bool checkHexahedronTopology();
+
+    /// Method to test Hexahedron container concistency
+    bool checkHexahedronContainer();
+
+    /// Method to test Hexahedron to quads cross container concistency
+    bool checkHexahedronToQuadCrossContainer();
+
+    /// Method to test Hexahedron to edges cross container concistency
+    bool checkHexahedronToEdgeCrossContainer();
+
+    /// Method to test Hexahedron to vertices cross container concistency
+    bool checkHexahedronToVertexCrossContainer();
+    /// }
+
+   
 
 protected:
     TopologyChecker();
@@ -55,13 +142,6 @@ protected:
     ~TopologyChecker() override;
 
 
-    bool checkHexahedronTopology();
-    bool checkTetrahedronTopology();
-    bool checkQuadTopology();
-    bool checkTriangleTopology();
-    bool checkEdgeTopology();
-    
-    
 public:
     /// bool to check topology at each step.
     Data<bool> d_eachStep;

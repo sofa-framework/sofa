@@ -75,7 +75,7 @@ void TopologyChecker::init()
     }
 
 
-    checkContainer();
+    checkTopology();
 }
 
 void TopologyChecker::reinit()
@@ -84,9 +84,9 @@ void TopologyChecker::reinit()
 }
 
 
-bool TopologyChecker::checkContainer()
+bool TopologyChecker::checkTopology()
 {
-    msg_info() << "CheckContainer TopologyType: " << parseTopologyElementTypeToString(m_topology->getTopologyType());
+    msg_info() << "checkTopology TopologyType: " << parseTopologyElementTypeToString(m_topology->getTopologyType());
 
     bool result = false;
     if (m_topology->getTopologyType() == TopologyElementType::HEXAHEDRON)
@@ -107,7 +107,17 @@ bool TopologyChecker::checkContainer()
 
 bool TopologyChecker::checkEdgeTopology()
 {
-    bool ret = true;
+    // check edge container consistency
+    if (checkEdgeContainer() == false)
+        return false;
+
+    // check cross elements consistency
+    return checkEdgeToVertexCrossContainer();
+}
+
+
+bool TopologyChecker::checkEdgeContainer()
+{
     sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
 
@@ -118,19 +128,26 @@ bool TopologyChecker::checkEdgeTopology()
     }
 
     // check edge buffer
+    bool res = true;
     for (sofa::Index i = 0; i < nbE; ++i)
     {
         const auto& edge = my_edges[i];
         if (edge[0] == edge[1]) {
             msg_error() << "CheckEdgeTopology failed: edge " << i << " has 2 identical vertices: " << edge;
-            ret = false;
+            res = false;
         }
     }
 
-    // check cross element
-    sofa::Size nbP = m_topology->getNbPoints();
+    return res;
+}
 
+bool TopologyChecker::checkEdgeToVertexCrossContainer()
+{
+    const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
     std::set<int> edgeSet;
+
+    bool res = true;
+    sofa::Size nbP = m_topology->getNbPoints();
     for (sofa::Index i = 0; i < nbP; ++i)
     {
         const auto& EdgesAV = m_topology->getEdgesAroundVertex(i);
@@ -140,7 +157,7 @@ bool TopologyChecker::checkEdgeTopology()
             if (!(edge[0] == i || edge[1] == i))
             {
                 msg_error() << "CheckEdgeTopology failed: edge " << EdgesAV[j] << ": [" << edge << "] not around vertex: " << i;
-                ret = false;
+                res = false;
             }
 
             // count number of edge
@@ -148,20 +165,35 @@ bool TopologyChecker::checkEdgeTopology()
         }
     }
 
-    if (edgeSet.size() != nbE)
+    if (edgeSet.size() != my_edges.size())
     {
-        msg_error() << "CheckEdgeTopology failed: found " << edgeSet.size() << " edges in m_edgesAroundVertex out of " << nbE;
-        ret = false;
+        msg_error() << "CheckEdgeTopology failed: found " << edgeSet.size() << " edges in m_edgesAroundVertex out of " << my_edges.size();
+        res = false;
     }
 
-    return ret;
+    return res;
 }
+
 
 
 
 bool TopologyChecker::checkTriangleTopology()
 {
-    bool ret = true;
+    // check edge container consistency
+    if (checkTriangleContainer() == false)
+        return false;
+
+    // check cross elements consistency
+    bool res = checkTriangleToEdgeCrossContainer();
+    
+    res = res && checkTriangleToVertexCrossContainer();
+
+    return res && checkEdgeTopology();
+}
+
+
+bool TopologyChecker::checkTriangleContainer()
+{
     sofa::Size nbT = m_topology->getNbTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
 
@@ -172,46 +204,32 @@ bool TopologyChecker::checkTriangleTopology()
     }
 
     // check triangle buffer
+    bool res = true;
     for (sofa::Index i = 0; i < nbT; ++i)
     {
         const auto& triangle = my_triangles[i];
         if (triangle[0] == triangle[1] || triangle[0] == triangle[2] || triangle[1] == triangle[2]) {
             msg_error() << "CheckTriangleTopology failed: triangle " << i << " has 2 identical vertices: " << triangle;
-            ret = false;
+            res = false;
         }
     }
 
-    // check cross element
-    sofa::Size nbP = m_topology->getNbPoints();
+    return res;
+}
 
-    // check triangles around vertex
+
+bool TopologyChecker::checkTriangleToEdgeCrossContainer()
+{
+    bool ret = true;
+    sofa::Size nbT = m_topology->getNbTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
+
+    // check triangles buffer
     std::set <int> triangleSet;
-    for (sofa::Index i = 0; i < nbP; ++i)
-    {
-        const auto& triAV = m_topology->getTrianglesAroundVertex(i);
-        for (size_t j = 0; j < triAV.size(); ++j)
-        {
-            const Topology::Triangle& triangle = my_triangles[triAV[j]];
-            bool check_triangle_vertex_shell = (triangle[0] == i) || (triangle[1] == i) || (triangle[2] == i);
-            if (!check_triangle_vertex_shell)
-            {
-                msg_error() << "CheckTriangleTopology failed: triangle " << triAV[j] << ": [" << triangle << "] not around vertex: " << i;
-                ret = false;
-            }
-
-            triangleSet.insert(triAV[j]);
-        }
-    }
-
-    if (triangleSet.size() != my_triangles.size())
-    {
-        msg_error() << "CheckTriangleTopology failed: found " << triangleSet.size() << " triangles in trianglesAroundVertex out of " << my_triangles.size();
-        ret = false;
-    }
-    
-
+   
     sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
+    
     // check edges in triangles
     for (sofa::Index i = 0; i < nbT; ++i)
     {
@@ -240,7 +258,7 @@ bool TopologyChecker::checkTriangleTopology()
             }
         }
     }
-    
+
 
     // check triangles around edges
     // check m_trianglesAroundEdge using checked m_edgesInTriangle
@@ -270,15 +288,65 @@ bool TopologyChecker::checkTriangleTopology()
         ret = false;
     }
 
-    return ret && checkEdgeTopology();
+    return ret;
 }
+
+
+bool TopologyChecker::checkTriangleToVertexCrossContainer()
+{
+    bool ret = true;
+    // check cross element
+    sofa::Size nbP = m_topology->getNbPoints();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
+
+    // check triangles around vertex
+    std::set <int> triangleSet;
+    for (sofa::Index i = 0; i < nbP; ++i)
+    {
+        const auto& triAV = m_topology->getTrianglesAroundVertex(i);
+        for (size_t j = 0; j < triAV.size(); ++j)
+        {
+            const Topology::Triangle& triangle = my_triangles[triAV[j]];
+            bool check_triangle_vertex_shell = (triangle[0] == i) || (triangle[1] == i) || (triangle[2] == i);
+            if (!check_triangle_vertex_shell)
+            {
+                msg_error() << "CheckTriangleTopology failed: triangle " << triAV[j] << ": [" << triangle << "] not around vertex: " << i;
+                ret = false;
+            }
+
+            triangleSet.insert(triAV[j]);
+        }
+    }
+
+    if (triangleSet.size() != my_triangles.size())
+    {
+        msg_error() << "CheckTriangleTopology failed: found " << triangleSet.size() << " triangles in trianglesAroundVertex out of " << my_triangles.size();
+        ret = false;
+    }
+
+    return ret;
+}
+
 
 
 
 bool TopologyChecker::checkQuadTopology()
 {
-    std::cout << "TopologyChecker::checkQuadTopology()" << std::endl;
-    bool ret = true;
+    // check edge container consistency
+    if (checkQuadContainer() == false)
+        return false;
+
+    // check cross elements consistency
+    bool res = checkQuadToEdgeCrossContainer();
+
+    res = res && checkQuadToVertexCrossContainer();
+
+    return res && checkEdgeTopology();
+}
+
+
+bool TopologyChecker::checkQuadContainer()
+{
     sofa::Size nbQ = m_topology->getNbQuads();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& my_quads = m_topology->getQuads();
 
@@ -288,7 +356,8 @@ bool TopologyChecker::checkQuadTopology()
         return false;
     }
 
-    // check triangle buffer
+    // check quad buffer
+    bool res = true;
     for (sofa::Index i = 0; i < nbQ; ++i)
     {
         const auto& quad = my_quads[i];
@@ -299,43 +368,27 @@ bool TopologyChecker::checkQuadTopology()
                 if (quad[j] == quad[k])
                 {
                     msg_error() << "checkQuadTopology failed: quad " << i << " has 2 identical vertices: " << quad;
-                    ret = false;
+                    res = false;
                 }
             }
         }
     }
 
-    // check cross element
-    sofa::Size nbP = m_topology->getNbPoints();
+    return res;
+}
 
-    // check quads around vertex
+
+bool TopologyChecker::checkQuadToEdgeCrossContainer()
+{
+    bool ret = true;
+    sofa::Size nbQ = m_topology->getNbQuads();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& my_quads = m_topology->getQuads();
+
     std::set <int> quadSet;
-    for (sofa::Index i = 0; i < nbP; ++i)
-    {
-        const auto& quadAV = m_topology->getQuadsAroundVertex(i);
-        for (size_t j = 0; j < quadAV.size(); ++j)
-        {
-            const Topology::Quad& quad = my_quads[quadAV[j]];
-            bool check_quad_vertex_shell = (quad[0] == i) || (quad[1] == i) || (quad[2] == i) || (quad[3] == i);
-            if (!check_quad_vertex_shell)
-            {
-                msg_error() << "CheckQuadTopology failed: quad " << quadAV[j] << ": [" << quad << "] not around vertex: " << i;
-                ret = false;
-            }
-
-            quadSet.insert(quadAV[j]);
-        }
-    }
-
-    if (quadSet.size() != my_quads.size())
-    {
-        msg_error() << "CheckQuadTopology failed: found " << quadSet.size() << " quads in quadsAroundVertex out of " << my_quads.size();
-        ret = false;
-    }
-
 
     sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
+    
     // check edges in quads
     for (sofa::Index i = 0; i < nbQ; ++i)
     {
@@ -344,6 +397,13 @@ bool TopologyChecker::checkQuadTopology()
 
         for (auto eId : eInQ)
         {
+            if (eId == Topology::InvalidID)
+            {
+                msg_error() << "CheckQuadTopology failed: EdgesInQuad of quad: " << i << ": " << quad << " has invalid ID: " << eInQ;
+                ret = false;
+                continue;
+            }
+
             const Topology::Edge& edge = my_edges[eId];
             int cptFound = 0;
             for (unsigned int k = 0; k < 4; k++)
@@ -357,7 +417,6 @@ bool TopologyChecker::checkQuadTopology()
             }
         }
     }
-
 
     // check quads around edges
     // check m_quadsAroundEdge using checked m_edgesInQuad
@@ -387,14 +446,68 @@ bool TopologyChecker::checkQuadTopology()
         msg_error() << "CheckQuadTopology failed: found " << quadSet.size() << " quads in m_quadsAroundEdge out of " << my_quads.size();
         ret = false;
     }
-    return ret && checkEdgeTopology();
+
+    return ret;
 }
+
+
+bool TopologyChecker::checkQuadToVertexCrossContainer()
+{
+    bool ret = true;
+    // check cross element
+    sofa::Size nbP = m_topology->getNbPoints();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& my_quads = m_topology->getQuads();
+
+    // check quads around vertex
+    std::set <int> quadSet;
+    for (sofa::Index i = 0; i < nbP; ++i)
+    {
+        const auto& quadAV = m_topology->getQuadsAroundVertex(i);
+        for (size_t j = 0; j < quadAV.size(); ++j)
+        {
+            const Topology::Quad& quad = my_quads[quadAV[j]];
+            bool check_quad_vertex_shell = (quad[0] == i) || (quad[1] == i) || (quad[2] == i) || (quad[3] == i);
+            if (!check_quad_vertex_shell)
+            {
+                msg_error() << "CheckQuadTopology failed: quad " << quadAV[j] << ": [" << quad << "] not around vertex: " << i;
+                ret = false;
+            }
+
+            quadSet.insert(quadAV[j]);
+        }
+    }
+
+    if (quadSet.size() != my_quads.size())
+    {
+        msg_error() << "CheckQuadTopology failed: found " << quadSet.size() << " quads in quadsAroundVertex out of " << my_quads.size();
+        ret = false;
+    }
+
+    return ret;
+}
+
 
 
 
 bool TopologyChecker::checkTetrahedronTopology()
 {
-    bool ret = true;
+    // check edge container consistency
+    if (checkTetrahedronContainer() == false)
+        return false;
+
+    // check cross elements consistency
+    bool res = checkTetrahedronToTriangleCrossContainer();
+
+    res = res && checkTetrahedronToEdgeCrossContainer();
+
+    res = res && checkTetrahedronToVertexCrossContainer();
+
+    return res && checkTriangleTopology();
+}
+
+
+bool TopologyChecker::checkTetrahedronContainer()
+{
     sofa::Size nbT = m_topology->getNbTetrahedra();
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& my_tetrahedra = m_topology->getTetrahedra();
 
@@ -405,6 +518,7 @@ bool TopologyChecker::checkTetrahedronTopology()
     }
 
     // check tetrahedron buffer
+    bool res = true;
     for (sofa::Index i = 0; i < nbT; ++i)
     {
         const auto& tetra = my_tetrahedra[i];
@@ -415,47 +529,27 @@ bool TopologyChecker::checkTetrahedronTopology()
                 if (tetra[j] == tetra[k])
                 {
                     msg_error() << "checkTetrahedronTopology failed: tetrahedron " << i << " has 2 identical vertices: " << tetra;
-                    ret = false;
+                    res = false;
                 }
             }
         }
     }
 
-    // check cross element
-    sofa::Size nbP = m_topology->getNbPoints();
+    return res;
+}
 
-    // check tetrahedra around vertex
+
+bool TopologyChecker::checkTetrahedronToTriangleCrossContainer()
+{
+    bool ret = true;
+    sofa::Size nbT = m_topology->getNbTetrahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& my_tetrahedra = m_topology->getTetrahedra();
+
     std::set <int> tetrahedronSet;
-    for (sofa::Index pId = 0; pId < nbP; ++pId)
-    {
-        const auto& tetraAV = m_topology->getTetrahedraAroundVertex(pId);
-        for (auto tetraId : tetraAV )
-        {
-            const Topology::Tetrahedron& tetra = my_tetrahedra[tetraId];
-            bool check_tetra_vertex_shell = (tetra[0] == pId)
-                || (tetra[1] == pId)
-                || (tetra[2] == pId)
-                || (tetra[3] == pId);
-            if (!check_tetra_vertex_shell)
-            {
-                msg_error() << "checkTetrahedronTopology failed: Tetrahedron " << tetraId << ": [" << tetra << "] not around vertex: " << pId;
-                ret = false;
-            }
-
-            tetrahedronSet.insert(tetraId);
-        }
-    }
-
-    if (tetrahedronSet.size() != my_tetrahedra.size())
-    {
-        msg_error() << "checkTetrahedronTopology failed: found " << tetrahedronSet.size() << " tetrahedra in tetrahedraAroundVertex out of " << my_tetrahedra.size();
-        ret = false;
-    }
-
-
 
     sofa::Size nbTri = m_topology->getNbTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
+    
     // check first m_trianglesInTetrahedron
     for (sofa::Index tetraId = 0; tetraId < nbT; ++tetraId)
     {
@@ -514,7 +608,17 @@ bool TopologyChecker::checkTetrahedronTopology()
         ret = false;
     }
 
+    return ret;
+}
 
+
+bool TopologyChecker::checkTetrahedronToEdgeCrossContainer()
+{
+    bool ret = true;
+    sofa::Size nbT = m_topology->getNbTetrahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& my_tetrahedra = m_topology->getTetrahedra();
+
+    std::set <int> tetrahedronSet;
 
     sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
@@ -571,14 +675,71 @@ bool TopologyChecker::checkTetrahedronTopology()
         ret = false;
     }
 
-
-    return ret && checkTriangleTopology();
+    return ret;
 }
+
+
+bool TopologyChecker::checkTetrahedronToVertexCrossContainer()
+{
+    bool ret = true;
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& my_tetrahedra = m_topology->getTetrahedra();
+
+    // check cross element
+    sofa::Size nbP = m_topology->getNbPoints();
+
+    // check tetrahedra around vertex
+    std::set <int> tetrahedronSet;
+    for (sofa::Index pId = 0; pId < nbP; ++pId)
+    {
+        const auto& tetraAV = m_topology->getTetrahedraAroundVertex(pId);
+        for (auto tetraId : tetraAV)
+        {
+            const Topology::Tetrahedron& tetra = my_tetrahedra[tetraId];
+            bool check_tetra_vertex_shell = (tetra[0] == pId)
+                || (tetra[1] == pId)
+                || (tetra[2] == pId)
+                || (tetra[3] == pId);
+            if (!check_tetra_vertex_shell)
+            {
+                msg_error() << "checkTetrahedronTopology failed: Tetrahedron " << tetraId << ": [" << tetra << "] not around vertex: " << pId;
+                ret = false;
+            }
+
+            tetrahedronSet.insert(tetraId);
+        }
+    }
+
+    if (tetrahedronSet.size() != my_tetrahedra.size())
+    {
+        msg_error() << "checkTetrahedronTopology failed: found " << tetrahedronSet.size() << " tetrahedra in tetrahedraAroundVertex out of " << my_tetrahedra.size();
+        ret = false;
+    }
+
+    return ret;
+}
+
+
 
 
 bool TopologyChecker::checkHexahedronTopology()
 {
-    bool ret = true;
+    // check edge container consistency
+    if (checkHexahedronContainer() == false)
+        return false;
+
+    // check cross elements consistency
+    bool res = checkHexahedronToQuadCrossContainer();
+
+    res = res && checkHexahedronToEdgeCrossContainer();
+
+    res = res && checkHexahedronToVertexCrossContainer();
+
+    return res && checkQuadTopology();
+}
+
+
+bool TopologyChecker::checkHexahedronContainer()
+{
     sofa::Size nbH = m_topology->getNbHexahedra();
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& my_hexahedra = m_topology->getHexahedra();
 
@@ -589,6 +750,7 @@ bool TopologyChecker::checkHexahedronTopology()
     }
 
     // check hexahedron buffer
+    bool res = true;
     for (sofa::Index i = 0; i < nbH; ++i)
     {
         const auto& hexahedron = my_hexahedra[i];
@@ -599,52 +761,27 @@ bool TopologyChecker::checkHexahedronTopology()
                 if (hexahedron[j] == hexahedron[k])
                 {
                     msg_error() << "checkHexahedronTopology failed: hexahedron " << i << " has 2 identical vertices: " << hexahedron;
-                    ret = false;
+                    res = false;
                 }
             }
         }
     }
 
-    // check cross element
-    sofa::Size nbP = m_topology->getNbPoints();
+    return res;
+}
 
-    // check hexahedra around vertex
+
+bool TopologyChecker::checkHexahedronToQuadCrossContainer()
+{
+    bool ret = true;
+    sofa::Size nbH = m_topology->getNbHexahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& my_hexahedra = m_topology->getHexahedra();
+
     std::set <int> hexahedronSet;
-    for (sofa::Index pId = 0; pId < nbP; ++pId)
-    {
-        const auto& hexaAV = m_topology->getHexahedraAroundVertex(pId);
-        for (auto hexaId : hexaAV)
-        {
-            const Topology::Hexahedron& hexa = my_hexahedra[hexaId];
-            bool check_hexa_vertex_shell = false;
-            for (int j = 0; j < 8; ++j)
-            {
-                if (hexa[j] == pId) {
-                    check_hexa_vertex_shell = true;
-                    break;
-                }
-            }
-
-            if (!check_hexa_vertex_shell)
-            {
-                msg_error() << "checkHexahedronTopology failed: Hexahedron " << hexaId << ": [" << hexa << "] not around vertex: " << pId;
-                ret = false;
-            }
-
-            hexahedronSet.insert(hexaId);
-        }
-    }
-
-    if (hexahedronSet.size() != my_hexahedra.size())
-    {
-        msg_error() << "checkHexahedronTopology failed: found " << hexahedronSet.size() << " hexahedra in hexahedraAroundVertex out of " << my_hexahedra.size();
-        ret = false;
-    }
-
-
 
     sofa::Size nbQ = m_topology->getNbQuads();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& my_quads = m_topology->getQuads();
+    
     // check first m_quadsInHexahedron
     for (sofa::Index hexaId = 0; hexaId < nbH; ++hexaId)
     {
@@ -653,6 +790,13 @@ bool TopologyChecker::checkHexahedronTopology()
 
         for (auto qId : qInHexa)
         {
+            if (qId == Topology::InvalidID)
+            {
+                msg_error() << "checkHexahedronTopology failed: QuadsInHexahedron of hexahedron: " << hexaId << ": " << hexahedron << " has invalid ID: " << qInHexa;
+                ret = false;
+                continue;
+            }
+
             const Topology::Quad& quad = my_quads[qId];
             int cptFound = 0;
             for (unsigned int k = 0; k < 8; k++)
@@ -700,7 +844,16 @@ bool TopologyChecker::checkHexahedronTopology()
         msg_error() << "checkHexahedronTopology failed: found " << hexahedronSet.size() << " hexahedra in m_hexahedraAroundQuad out of " << my_hexahedra.size();
         ret = false;
     }
+}
 
+
+bool TopologyChecker::checkHexahedronToEdgeCrossContainer()
+{
+    bool ret = true;
+    sofa::Size nbH = m_topology->getNbHexahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& my_hexahedra = m_topology->getHexahedra();
+
+    std::set <int> hexahedronSet;
 
     sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
@@ -735,7 +888,7 @@ bool TopologyChecker::checkHexahedronTopology()
         for (auto hexaId : hAe)
         {
             const BaseMeshTopology::EdgesInHexahedron& eInHexa = m_topology->getEdgesInHexahedron(hexaId);
-            
+
             bool check_hexa_edge_shell = false;
             for (auto eInID : eInHexa)
             {
@@ -744,7 +897,7 @@ bool TopologyChecker::checkHexahedronTopology()
                     break;
                 }
             }
-            
+
             if (!check_hexa_edge_shell)
             {
                 msg_error() << "checkHexahedronTopology failed: hexahedron: " << hexaId << " with edges: [" << eInHexa << "] not found around edge: " << edgeId;
@@ -761,7 +914,52 @@ bool TopologyChecker::checkHexahedronTopology()
         ret = false;
     }
 
-    return ret && checkQuadTopology();
+    return ret;
+}
+
+
+bool TopologyChecker::checkHexahedronToVertexCrossContainer()
+{
+    bool ret = true;
+    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& my_hexahedra = m_topology->getHexahedra();
+
+    // check cross element
+    sofa::Size nbP = m_topology->getNbPoints();
+
+    // check hexahedra around vertex
+    std::set <int> hexahedronSet;
+    for (sofa::Index pId = 0; pId < nbP; ++pId)
+    {
+        const auto& hexaAV = m_topology->getHexahedraAroundVertex(pId);
+        for (auto hexaId : hexaAV)
+        {
+            const Topology::Hexahedron& hexa = my_hexahedra[hexaId];
+            bool check_hexa_vertex_shell = false;
+            for (int j = 0; j < 8; ++j)
+            {
+                if (hexa[j] == pId) {
+                    check_hexa_vertex_shell = true;
+                    break;
+                }
+            }
+
+            if (!check_hexa_vertex_shell)
+            {
+                msg_error() << "checkHexahedronTopology failed: Hexahedron " << hexaId << ": [" << hexa << "] not around vertex: " << pId;
+                ret = false;
+            }
+
+            hexahedronSet.insert(hexaId);
+        }
+    }
+
+    if (hexahedronSet.size() != my_hexahedra.size())
+    {
+        msg_error() << "checkHexahedronTopology failed: found " << hexahedronSet.size() << " hexahedra in hexahedraAroundVertex out of " << my_hexahedra.size();
+        ret = false;
+    }
+
+    return ret;
 }
 
 
@@ -771,9 +969,9 @@ void TopologyChecker::handleEvent(sofa::core::objectmodel::Event* event)
     {
         if (ev->getKey() == 'T')
         {
-            bool res = checkContainer();
+            bool res = checkTopology();
             if (!res)
-                msg_error() << "CheckContainer Error!!";
+                msg_error() << "checkTopology Error!!";
         }
     }
 
