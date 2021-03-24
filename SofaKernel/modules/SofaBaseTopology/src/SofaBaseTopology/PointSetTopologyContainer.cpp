@@ -211,7 +211,7 @@ void PointSetTopologyContainer::setPointTopologyToDirty()
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        msg_info() << "Point Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Point Topology Set dirty engine: " << topoEngine->getName();
     }
 }
 
@@ -225,7 +225,7 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
     {
         if ((*it)->isDirty())
         {
-            msg_warning() << "Point Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Point Topology update did not clean engine: " << (*it)->getName();
             (*it)->cleanDirty();
         }
     }

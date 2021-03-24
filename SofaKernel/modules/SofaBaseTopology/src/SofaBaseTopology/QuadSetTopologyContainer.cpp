@@ -748,7 +748,7 @@ void QuadSetTopologyContainer::setQuadTopologyToDirty()
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        msg_info() << "Quad Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Quad Topology Set dirty engine: " << topoEngine->getName();
     }
 }
 
@@ -762,7 +762,7 @@ void QuadSetTopologyContainer::cleanQuadTopologyFromDirty()
     {
         if ((*it)->isDirty())
         {
-            msg_warning() << "Quad Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Quad Topology update did not clean engine: " << (*it)->getName();
             (*it)->cleanDirty();
         }
     }

@@ -175,6 +175,7 @@ public:
     virtual void linkToHexahedronDataArray() {}
 
     void setNamePrefix(const std::string& s) { m_prefix = s; }
+    std::string getName() { return m_prefix + m_data_name; }
 
     virtual bool registerTopology();
     virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);

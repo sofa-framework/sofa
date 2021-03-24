@@ -549,7 +549,7 @@ void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        msg_info() << "Edge Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Edge Topology Set dirty engine: " << topoEngine->getName();
     }
 }
 
@@ -563,7 +563,7 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
     {
         if ((*it)->isDirty())
         {
-            msg_warning() << "Edge Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Edge Topology update did not clean engine: " << (*it)->getName();
             (*it)->cleanDirty();
         }
     }
