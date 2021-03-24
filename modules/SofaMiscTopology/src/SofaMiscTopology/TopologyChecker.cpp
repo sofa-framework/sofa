@@ -90,13 +90,13 @@ bool TopologyChecker::checkContainer()
 
     bool result = false;
     if (m_topology->getTopologyType() == TopologyElementType::HEXAHEDRON)
-        result = checkTetrahedronTopology();
+        result = checkHexahedronTopology();
     if (m_topology->getTopologyType() == TopologyElementType::TETRAHEDRON)
         result = checkTetrahedronTopology();
     else if (m_topology->getTopologyType() == TopologyElementType::QUAD)
-        result = checkTriangleTopology();
-    else if (m_topology->getTopologyType() == TopologyElementType::TRIANGLE)
         result = checkQuadTopology();
+    else if (m_topology->getTopologyType() == TopologyElementType::TRIANGLE)
+        result = checkTriangleTopology();
     else if (m_topology->getTopologyType() == TopologyElementType::EDGE)
         result = checkEdgeTopology();
 
@@ -220,6 +220,13 @@ bool TopologyChecker::checkTriangleTopology()
 
         for (unsigned int j = 0; j < 3; j++)
         {
+            if (eInTri[j] == Topology::InvalidID)
+            {
+                msg_error() << "CheckTriangleTopology failed: EdgesInTriangle of triangle: " << i << ": " << triangle << " has invalid ID: " << eInTri;
+                ret = false;
+                continue;
+            }
+
             const Topology::Edge& edge = my_edges[eInTri[j]];
             int cptFound = 0;
             for (unsigned int k = 0; k < 3; k++)
@@ -234,6 +241,7 @@ bool TopologyChecker::checkTriangleTopology()
         }
     }
     
+
     // check triangles around edges
     // check m_trianglesAroundEdge using checked m_edgesInTriangle
     triangleSet.clear();
@@ -456,6 +464,13 @@ bool TopologyChecker::checkTetrahedronTopology()
 
         for (unsigned int j = 0; j < 4; j++)
         {
+            if (triInTetra[j] == Topology::InvalidID)
+            {
+                msg_error() << "checkTetrahedronTopology failed: TrianglesInTetrahedron of tetrahedron: " << tetraId << ": " << tetrahedron << " has invalid ID: " << triInTetra;
+                ret = false;
+                continue;
+            }
+
             const Topology::Triangle& triangle = my_triangles[triInTetra[j]];
             int cptFound = 0;
             for (unsigned int k = 0; k < 4; k++)
