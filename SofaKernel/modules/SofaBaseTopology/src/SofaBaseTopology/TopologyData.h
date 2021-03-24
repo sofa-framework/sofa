@@ -25,7 +25,7 @@
 #include <sofa/helper/vector.h>
 
 #include <sofa/core/topology/BaseTopologyData.h>
-#include <SofaBaseTopology/TopologyDataEngine.h>
+#include <SofaBaseTopology/TopologyDataHandler.h>
 
 
 namespace sofa::component::topology
@@ -71,7 +71,7 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataEngine< TopologyElementType, VecT>* topoEngine);
+    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine);
 
     /// Allow to add additionnal dependencies to others Data.
     void addInputData(sofa::core::objectmodel::BaseData* _data);
@@ -136,7 +136,7 @@ public:
 
 
 protected:
-    sofa::component::topology::TopologyDataEngine< TopologyElementType, VecT>* m_topologicalEngine;
+    sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* m_topologyHandler;
 
     bool m_isTopologyDynamic;
 

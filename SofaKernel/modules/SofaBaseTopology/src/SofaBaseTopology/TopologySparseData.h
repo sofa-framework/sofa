@@ -23,7 +23,7 @@
 #include <SofaBaseTopology/config.h>
 
 #include <SofaBaseTopology/TopologyData.h>
-#include <SofaBaseTopology/TopologyDataEngine.h>
+#include <SofaBaseTopology/TopologyDataHandler.h>
 
 namespace sofa::component::topology
 {
@@ -89,7 +89,7 @@ public:
     /// Swaps values at indices i1 and i2.
     void swap(Index i1, Index i2) override;
 
-    //using core::topology::TopologyDataEngine< TopologyElementType >::add;
+    //using core::topology::TopologyDataHandler< TopologyElementType >::add;
     /// Add some values. Values are added at the end of the vector.
     void add(sofa::Size nbElements,
         const sofa::helper::vector< TopologyElementType >&,

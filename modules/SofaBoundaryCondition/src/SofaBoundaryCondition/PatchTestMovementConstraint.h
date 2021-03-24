@@ -136,13 +136,13 @@ public:
     /// Draw the constrained points (= border mesh points)
      void draw(const core::visual::VisualParams* vparams) override;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
     public:
         typedef typename PatchTestMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
         FCPointHandler(PatchTestMovementConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
         void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 

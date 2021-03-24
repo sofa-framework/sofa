@@ -145,11 +145,11 @@ public:
     void updateLameCoefficients();
 
 
-    class TetrahedralTMEdgeHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >
+    class TetrahedralTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >
     {
     public:
         typedef typename TetrahedralTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
-        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, topology::EdgeData<edgeRestInfoVector >* _data) : topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge, edgeRestInfoVector >(_data), ff(_ff) {}
+        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, topology::EdgeData<edgeRestInfoVector >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, edgeRestInfoVector >(_data), ff(_ff) {}
 
         void applyCreateFunction(Index edgeIndex, EdgeRestInformation& ei,
                 const core::topology::BaseMeshTopology::Edge &,
@@ -163,7 +163,7 @@ public:
 
         void applyTetrahedronDestruction(const sofa::helper::vector<Index> &edgeRemoved);
 
-        using topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >::ApplyTopologyChange;
         /// Callback to add tetrahedron elements.
         void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/);
         /// Callback to remove tetrahedron elements.

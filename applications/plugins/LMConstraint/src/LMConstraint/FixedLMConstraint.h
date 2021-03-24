@@ -101,12 +101,12 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<FixedLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
     public:
         typedef typename FixedLMConstraint<DataTypes>::SetIndexArray SetIndexArray;
         FCPointHandler(FixedLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray >* _data)
-            : sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
 

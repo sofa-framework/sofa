@@ -95,12 +95,12 @@ public:
     PointData< VecDeriv > f; ///< force vector of the degrees of freedom
     PointData< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
 
-    class MOPointHandler : public sofa::component::topology::TopologyDataEngine<sofa::core::topology::Point,VecCoord >
+    class MOPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
     {
     public:
         typedef typename MechanicalObject<DataTypes>::VecCoord VecCoord;
         typedef typename MechanicalObject<DataTypes>::Coord Coord;
-        MOPointHandler(MechanicalObject<DataTypes>* _obj, sofa::component::topology::PointData<VecCoord>* _data) : sofa::component::topology::TopologyDataEngine<sofa::core::topology::Point, VecCoord >(_data), obj(_obj) {}
+        MOPointHandler(MechanicalObject<DataTypes>* _obj, sofa::component::topology::PointData<VecCoord>* _data) : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(_data), obj(_obj) {}
 
         void applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
                 const sofa::helper::vector< unsigned int > &ancestors,

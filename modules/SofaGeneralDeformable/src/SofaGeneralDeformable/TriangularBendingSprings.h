@@ -112,12 +112,12 @@ protected:
 
     sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
-    class TriangularBSEdgeHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >
+    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >
     {
     public:
         typedef typename TriangularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
         TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, topology::EdgeData<helper::vector<EdgeInformation> >* _data)
-            : topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
+            : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(Index edgeIndex,
                 EdgeInformation &ei,
@@ -135,7 +135,7 @@ protected:
 
         void applyPointRenumbering(const helper::vector<Index> &pointToRenumber);
 
-        using topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.

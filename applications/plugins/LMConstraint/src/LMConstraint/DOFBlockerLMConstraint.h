@@ -117,11 +117,11 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<DOFBlockerLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    class FCTPointHandler : public sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, helper::vector<Index> >
+    class FCTPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<Index> >
     {
     public:
         FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<helper::vector<Index> >* _data)
-            : sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, sofa::helper::vector<Index> >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, sofa::helper::vector<Index> >(_data), fc(_fc) {}
 
 
 

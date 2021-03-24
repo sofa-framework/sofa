@@ -89,13 +89,13 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
     public:
         typedef typename FixedTranslationConstraint<DataTypes>::SetIndexArray SetIndexArray;
         typedef sofa::core::topology::Point Point;
         FCPointHandler(FixedTranslationConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
 

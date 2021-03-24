@@ -177,14 +177,14 @@ public:
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
-    class TRBSEdgeHandler : public sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >
+    class TRBSEdgeHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
 
         TRBSEdgeHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
                 sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* data)
-            :sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >(data)
+            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >(data)
             ,ff(ff)
         {
         }
@@ -195,14 +195,14 @@ public:
         TriangularBiquadraticSpringsForceField<DataTypes>* ff;
     };
 
-    class TRBSTriangleHandler : public sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Triangle,sofa::helper::vector<TriangleRestInformation> >
+    class TRBSTriangleHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,sofa::helper::vector<TriangleRestInformation> >
     {
     public:
         typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
 
         TRBSTriangleHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
                 sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* data)
-            :sofa::component::topology::TopologyDataEngine<core::topology::BaseMeshTopology::Triangle,sofa::helper::vector<TriangleRestInformation> >(data)
+            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,sofa::helper::vector<TriangleRestInformation> >(data)
             ,ff(ff)
         {
         }

@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseTopology/TopologySparseData.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/TopologyDataEngine.inl>
+#include <SofaBaseTopology/TopologyDataHandler.inl>
 
 namespace sofa::component::topology
 {
@@ -67,7 +67,7 @@ void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     Size size = data.size();
     data.resize(size + nbElements);
 
-    if (this->m_topologicalEngine)
+    if (this->m_topologyHandler)
     {
         for (unsigned int i = 0; i < nbElements; ++i)
         {
@@ -76,10 +76,10 @@ void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
             {
                 const sofa::helper::vector< Index > empty_vecint;
                 const sofa::helper::vector< double > empty_vecdouble;
-                this->m_topologicalEngine->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
+                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
             }
             else
-                this->m_topologicalEngine->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
+                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
 
             // Incremente the total number of edges in topology
             this->lastElementIndex++;
@@ -151,9 +151,9 @@ void TopologySparseData <TopologyElementType, VecT>::remove(const sofa::helper::
             continue;
 
         cptDone++;
-        if (this->m_topologicalEngine)
+        if (this->m_topologyHandler)
         {
-            this->m_topologicalEngine->applyDestroyFunction(id, data[id]);
+            this->m_topologyHandler->applyDestroyFunction(id, data[id]);
         }
         this->swap(id, last);
         --last;

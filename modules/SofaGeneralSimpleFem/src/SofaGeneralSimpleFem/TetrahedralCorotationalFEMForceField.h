@@ -139,14 +139,14 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 public:
-    class SOFA_SOFAGENERALSIMPLEFEM_API TetrahedronHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
+    class SOFA_SOFAGENERALSIMPLEFEM_API TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
     {
     public :
         typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
         using Index = sofa::Index;
         TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
                            topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
-            :topology::TopologyDataEngine<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
+            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
             ,ff(ff)
         {
 

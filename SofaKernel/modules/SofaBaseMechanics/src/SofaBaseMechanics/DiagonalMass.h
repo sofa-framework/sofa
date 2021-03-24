@@ -89,18 +89,18 @@ public:
     typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
     typedef core::topology::BaseMeshTopology::HexahedronID HexahedronID;
 
-    class DMassPointEngine : public topology::TopologyDataEngine<Point,MassVector>
+    class DMassPointEngine : public topology::TopologyDataHandler<Point,MassVector>
     {
     public:
         typedef typename DiagonalMass<DataTypes,TMassType>::MassVector MassVector;
         DMassPointEngine(DiagonalMass<DataTypes,TMassType>* _dm, sofa::component::topology::PointData<MassVector>* _data)
-            : topology::TopologyDataEngine<Point,MassVector>(_data), dm(_dm)
+            : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm)
         {}
 
         void applyCreateFunction(PointID pointIndex, TMassType& m, const Point&, const sofa::helper::vector< PointID > &,
                                  const sofa::helper::vector< double > &);
 
-        using topology::TopologyDataEngine<Point,MassVector>::ApplyTopologyChange;
+        using topology::TopologyDataHandler<Point,MassVector>::ApplyTopologyChange;
 
         ///////////////////////// Functions on Points //////////////////////////////////////
         /// Apply removing points.

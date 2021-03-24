@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/TopologyDataEngine.h>
+#include <SofaBaseTopology/TopologyDataHandler.h>
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
@@ -30,7 +30,7 @@ namespace sofa::component::topology
 {
 
 template <typename TopologyElementType, typename VecT>
-TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topologicalData *_topologicalData,
+TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologicalData *_topologicalData,
         sofa::core::topology::BaseMeshTopology *_topology, value_type defaultValue)
     : TopologyHandler()
     , m_topologyData(_topologicalData)
@@ -44,7 +44,7 @@ TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topological
 
 
 template <typename TopologyElementType, typename VecT>
-TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topologicalData* _topologicalData,
+TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologicalData* _topologicalData,
     value_type defaultValue)
     : TopologyHandler()
     , m_topologyData(_topologicalData)
@@ -58,7 +58,7 @@ TopologyDataEngine< TopologyElementType, VecT>::TopologyDataEngine(t_topological
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::init()
+void TopologyDataHandler<TopologyElementType,  VecT>::init()
 {
     // A pointData is by default child of positionSet Data
     //this->linkToPointDataArray();  // already done while creating engine
@@ -76,13 +76,13 @@ void TopologyDataEngine<TopologyElementType,  VecT>::init()
 
 
 template <typename TopologyElementType, typename VecT>
-bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology(sofa::core::topology::BaseMeshTopology *_topology)
+bool TopologyDataHandler<TopologyElementType,  VecT>::registerTopology(sofa::core::topology::BaseMeshTopology *_topology)
 {
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
     if (m_topology == nullptr)
     {
-        msg_info("TopologyDataEngine") <<"Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        msg_info("TopologyDataHandler") <<"Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
         return false;
     }
     else
@@ -93,11 +93,11 @@ bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology(sofa::core
 
 
 template <typename TopologyElementType, typename VecT>
-bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
+bool TopologyDataHandler<TopologyElementType,  VecT>::registerTopology()
 {
     if (m_topology == nullptr)
     {
-        msg_info("TopologyDataEngine") << "Current topology is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        msg_info("TopologyDataHandler") << "Current topology is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
         return false;
     }
     else
@@ -108,7 +108,7 @@ bool TopologyDataEngine<TopologyElementType,  VecT>::registerTopology()
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::handleTopologyChange()
+void TopologyDataHandler<TopologyElementType,  VecT>::handleTopologyChange()
 {
     if (!this->isTopologyDataRegistered() || m_topology == nullptr)
         return;
@@ -121,21 +121,21 @@ void TopologyDataEngine<TopologyElementType,  VecT>::handleTopologyChange()
 
 /// Function to link DataEngine with Data array from topology
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::linkToPointDataArray()
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToPointDataArray()
 {
     if (m_pointsLinked) // avoid second registration
         return;
 
     if (m_topology == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Point Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Point Data Array.";
         return;
     }
 
     sofa::component::topology::PointSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::PointSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology can't be cast as PointSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Point Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as PointSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Point Data Array.";
         return;
     }
 
@@ -145,21 +145,21 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToPointDataArray()
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::linkToEdgeDataArray()
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToEdgeDataArray()
 {
     if (m_edgesLinked) // avoid second registration
         return;
 
     if (m_topology == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Edge Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Edge Data Array.";
         return;
     }
 
     sofa::component::topology::EdgeSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::EdgeSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology can't be cast as EdgeSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Edge Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as EdgeSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Edge Data Array.";
         return;
     }
 
@@ -169,21 +169,21 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToEdgeDataArray()
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::linkToTriangleDataArray()
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToTriangleDataArray()
 {
     if (m_trianglesLinked) // avoid second registration
         return;
 
     if (m_topology == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
         return;
     }
 
     sofa::component::topology::TriangleSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology can't be cast as TriangleSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as TriangleSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
         return;
     }
 
@@ -193,21 +193,21 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToTriangleDataArray()
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::linkToQuadDataArray()
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToQuadDataArray()
 {
     if (m_quadsLinked) // avoid second registration
         return;
 
     if (m_topology == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Quad Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Quad Data Array.";
         return;
     }
 
     sofa::component::topology::QuadSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::QuadSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology can't be cast as QuadSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Quad Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as QuadSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Quad Data Array.";
         return;
     }
 
@@ -217,21 +217,21 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToQuadDataArray()
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::linkToTetrahedronDataArray()
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToTetrahedronDataArray()
 {
     if (m_tetrahedraLinked) // avoid second registration
         return;
 
     if (m_topology == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
         return;
     }
 
     sofa::component::topology::TetrahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TetrahedronSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology can't be cast as TetrahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as TetrahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
         return;
     }
 
@@ -241,21 +241,21 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToTetrahedronDataArray(
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::linkToHexahedronDataArray()
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToHexahedronDataArray()
 {
     if (m_hexahedraLinked) // avoid second registration
         return;
 
     if (m_topology == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
         return;
     }
     
     sofa::component::topology::HexahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::HexahedronSetTopologyContainer*>(m_topology);
     if (_container == nullptr)
     {
-        msg_error("TopologyDataEngine") << "Owner topology can't be cast as HexahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as HexahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
         return;
     }
 
@@ -266,13 +266,13 @@ void TopologyDataEngine<TopologyElementType,  VecT>::linkToHexahedronDataArray()
 
 /// Apply swap between indices elements.
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const EIndicesSwap* event)
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EIndicesSwap* event)
 {
     m_topologyData->swap(event->index[0], event->index[1]);
 }
 /// Apply adding elements.
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const EAdded* event)
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EAdded* event)
 {
     //this->add(event->getNbAddedElements(), event->getElementArray(),
     //    event->ancestorsList, event->coefs);
@@ -282,23 +282,23 @@ void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const E
 
 /// Apply removing elements.
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const ERemoved* event)
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const ERemoved* event)
 {
     m_topologyData->remove(event->getArray());
 }
 
 /// Apply renumbering on elements.
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const ERenumbering* event)
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const ERenumbering* event)
 {
     m_topologyData->renumber(event->getIndexArray());
 }
 
 /// Apply moving elements.
 template <typename TopologyElementType, typename VecT>
-void TopologyDataEngine<TopologyElementType,  VecT>::ApplyTopologyChange(const EMoved* /*event*/)
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EMoved* /*event*/)
 {
-    msg_warning("TopologyDataEngine") << "MOVED topology event not handled on " << ElementInfo::name()
+    msg_warning("TopologyDataHandler") << "MOVED topology event not handled on " << ElementInfo::name()
         << " (it should not even exist!)";
 }
 

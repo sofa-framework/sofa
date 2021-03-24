@@ -136,10 +136,10 @@ public:
     /**
      * @brief New Points creations callback.
      */
-    class PointInfoHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >
+    class PointInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >
     {
     public:
-        PointInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataEngine<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
+        PointInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
 
         void applyCreateFunction(Index pointIndex, PointInfo& m, const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
@@ -150,10 +150,10 @@ public:
     /**
      * @brief New Edges creations callback.
      */
-    class LineInfoHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >
+    class LineInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >
     {
     public:
-        LineInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::EdgeData<helper::vector<LineInfo> >* _data) : topology::TopologyDataEngine<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >(_data), f(_f) {}
+        LineInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::EdgeData<helper::vector<LineInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >(_data), f(_f) {}
 
         void applyCreateFunction(Index edgeIndex, LineInfo& m, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
@@ -164,10 +164,10 @@ public:
     /**
      * @brief New Triangles creations callback.
      */
-    class TriangleInfoHandler : public topology::TopologyDataEngine<core::topology::BaseMeshTopology::Triangle, helper::vector<TriangleInfo> >
+    class TriangleInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, helper::vector<TriangleInfo> >
     {
     public:
-        TriangleInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::TriangleData<helper::vector<TriangleInfo> >* _data) : topology::TopologyDataEngine<core::topology::BaseMeshTopology::Triangle, helper::vector<TriangleInfo> >(_data), f(_f) {}
+        TriangleInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::TriangleData<helper::vector<TriangleInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, helper::vector<TriangleInfo> >(_data), f(_f) {}
 
         void applyCreateFunction(Index triangleIndex, TriangleInfo& m, const core::topology::BaseMeshTopology::Triangle&, const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);

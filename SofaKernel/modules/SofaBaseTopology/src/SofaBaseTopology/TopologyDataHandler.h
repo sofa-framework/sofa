@@ -39,10 +39,9 @@ namespace sofa::component::topology
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class TopologyElementType, class VecT>
-class TopologyDataEngine : public sofa::core::topology::TopologyHandler
+class TopologyDataHandler : public sofa::core::topology::TopologyHandler
 {
 public:
-    //SOFA_CLASS(SOFA_TEMPLATE(TopologyDataEngine,VecT), sofa::core::topology::TopologyHandler);
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
     typedef sofa::core::topology::BaseTopologyData<VecT> t_topologicalData;
@@ -67,12 +66,12 @@ public:
     typedef typename ChangeElementInfo::EMoved_Adding   EMoved_Adding;
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
-    TopologyDataEngine(t_topologicalData* _topologicalData,
+    TopologyDataHandler(t_topologicalData* _topologicalData,
         sofa::core::topology::BaseMeshTopology* _topology, 
         value_type defaultValue = value_type());
 
 
-    TopologyDataEngine(t_topologicalData* _topologicalData,
+    TopologyDataHandler(t_topologicalData* _topologicalData,
         value_type defaultValue = value_type());
 
 public:
