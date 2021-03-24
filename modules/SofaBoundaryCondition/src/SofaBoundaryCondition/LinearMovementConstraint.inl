@@ -142,7 +142,7 @@ void LinearMovementConstraint<DataTypes>::init()
 
         // Initialize functions and parameters
         m_pointHandler = new FCPointHandler(this, &m_indices);
-        m_indices.createTopologicalEngine(_topology, m_pointHandler);
+        m_indices.createTopologyHandler(_topology, m_pointHandler);
         m_indices.registerTopologicalData();        
     }
     else

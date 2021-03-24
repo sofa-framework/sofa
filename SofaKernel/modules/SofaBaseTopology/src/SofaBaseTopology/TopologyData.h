@@ -67,11 +67,11 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
+    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology);
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine);
+    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine);
 
     /// Allow to add additionnal dependencies to others Data.
     void addInputData(sofa::core::objectmodel::BaseData* _data);

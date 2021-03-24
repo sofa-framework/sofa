@@ -376,7 +376,7 @@ void FastTriangularBendingSprings<DataTypes>::init()
     {
         msg_warning() << "No triangles found in linked Topology.";
     }
-    d_edgeSprings.createTopologicalEngine(m_topology,d_edgeHandler);
+    d_edgeSprings.createTopologyHandler(m_topology,d_edgeHandler);
     d_edgeSprings.linkToPointDataArray();
     d_edgeSprings.linkToTriangleDataArray();
     d_edgeSprings.registerTopologicalData();

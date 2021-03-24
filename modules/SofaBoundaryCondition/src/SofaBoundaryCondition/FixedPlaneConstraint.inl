@@ -256,7 +256,7 @@ void FixedPlaneConstraint<DataTypes>::init()
         
         /// Initialize functions and parameters
         m_pointHandler = new FCPointHandler(this, &d_indices);
-        d_indices.createTopologicalEngine(_topology, m_pointHandler);
+        d_indices.createTopologyHandler(_topology, m_pointHandler);
         d_indices.registerTopologicalData();
     }
     else

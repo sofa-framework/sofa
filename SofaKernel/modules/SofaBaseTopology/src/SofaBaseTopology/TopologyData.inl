@@ -41,7 +41,7 @@ TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology)
+void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology)
 {
     this->m_topology = _topology;
 
@@ -64,7 +64,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::cor
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine)
+void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine)
 {
     this->m_topology = _topology;
 
@@ -92,7 +92,7 @@ void TopologyData <TopologyElementType, VecT>::registerTopologicalData()
     if (this->m_topologyHandler)
         this->m_topologyHandler->registerTopology(this->m_topology);
     else if (!this->m_topology)
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologicalEngine method before registerTopologicalData to allow topological changes." ;
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologyHandler method before registerTopologicalData to allow topological changes." ;
 }
 
 template <typename TopologyElementType, typename VecT>
@@ -101,7 +101,7 @@ void TopologyData <TopologyElementType, VecT>::addInputData(sofa::core::objectmo
     if (this->m_topologyHandler)
         this->m_topologyHandler->addInput(_data);
     else if (!this->m_topology)
-        msg_info(this->getOwner()) <<"Warning: TopologyData: " << this->getName() << " has no engine. Use createTopologicalEngine function before addInputData." ;
+        msg_info(this->getOwner()) <<"Warning: TopologyData: " << this->getName() << " has no engine. Use createTopologyHandler function before addInputData." ;
 }
 
 

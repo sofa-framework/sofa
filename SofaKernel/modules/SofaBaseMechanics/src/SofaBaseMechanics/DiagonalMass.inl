@@ -706,7 +706,7 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
     // add the functions to handle topology changes.
     m_pointEngine = new DMassPointEngine(this, &d_vertexMass);
-    d_vertexMass.createTopologicalEngine(m_topology, m_pointEngine);
+    d_vertexMass.createTopologyHandler(m_topology, m_pointEngine);
     if (edgeGeo)
         d_vertexMass.linkToEdgeDataArray();
     if (triangleGeo)
