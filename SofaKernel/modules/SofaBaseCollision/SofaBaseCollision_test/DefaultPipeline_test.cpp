@@ -25,6 +25,9 @@ using std::vector;
 #include <string>
 using std::string;
 
+#include <sofa/core/fwd.h>
+using sofa::core::execparams::defaultInstance;
+
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test;
 
@@ -82,7 +85,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
@@ -106,7 +109,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
@@ -127,7 +130,7 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     //EXPECT_NE( (root.get()), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     DefaultPipeline* clp = dynamic_cast<DefaultPipeline*>(root->getObject("pipeline")) ;
     //ASSERT_NE( (clp), nullptr) ;

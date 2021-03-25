@@ -24,6 +24,7 @@
 #include <SofaBoundaryCondition/ConstantForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/core/MechanicalParams.h>
 
 #include <math.h>
 #include <cassert>

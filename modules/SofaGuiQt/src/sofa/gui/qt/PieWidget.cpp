@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PieWidget.h"
-#include <iostream>
+#include <sofa/gui/qt/PieWidget.h>
 
 #include <QGridLayout>
 #include <QStringList>
@@ -171,6 +170,4 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
 
 }
 
-}
-}
-}
+} // namespace sofa::gui::qt

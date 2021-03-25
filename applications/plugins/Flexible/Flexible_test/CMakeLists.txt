@@ -58,7 +58,11 @@ endif()
 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain CImgPlugin)
+target_link_libraries(${PROJECT_NAME} Flexible SofaTest Sofa.Testing CImgPlugin)
+
+if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
+endif()
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)

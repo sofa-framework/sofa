@@ -40,7 +40,7 @@ using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
@@ -48,9 +48,9 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-
 #include <SofaSimulationGraph/SimpleApi.h>
+
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 namespace sofa {
 
@@ -58,7 +58,8 @@ struct TestLightManager : public BaseTest
 {
     void SetUp() override
     {
-        sofa::component::initSofaBaseMechanics();
+        sofa::component::initSofaBaseMechanics(); // needed to instanciate MechanicalObject
+
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 };
@@ -78,7 +79,7 @@ void checkAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     EXPECT_NE(lm, nullptr) ;

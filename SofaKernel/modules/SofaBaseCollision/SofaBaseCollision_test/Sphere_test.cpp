@@ -22,6 +22,7 @@
 #include <sofa/config.h>
 #include <cmath>
 
+
 #include <vector>
 using std::vector;
 
@@ -45,7 +46,7 @@ using sofa::component::collision::MeshMinProximityIntersection;
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 using sofa::component::collision::MeshNewProximityIntersection ;
 
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 using sofa::core::objectmodel::New;
 using sofa::component::collision::Sphere;
 using sofa::component::collision::SphereCollisionModel ;
@@ -524,7 +525,7 @@ void checkAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* theSphere = root->getTreeNode("Level 1")->getObject("spheremodel") ;
     EXPECT_NE(theSphere, nullptr) ;
@@ -554,7 +555,7 @@ void checkSceneWithVec3MechanicalModel()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* theSphere = root->getTreeNode("Level 1")->getObject("spheremodel") ;
     EXPECT_NE(theSphere, nullptr) ;
@@ -575,7 +576,7 @@ void checkSceneWithRigid3dMechanicalModel()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* theSphere = root->getTreeNode("Level 1")->getObject("spheremodel") ;
     EXPECT_NE(theSphere, nullptr) ;
@@ -597,7 +598,7 @@ void checkGracefulHandlingWhenMechanicalModelIsMissing()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
 }
 

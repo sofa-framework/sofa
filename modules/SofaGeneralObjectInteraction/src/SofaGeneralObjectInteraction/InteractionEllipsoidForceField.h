@@ -26,7 +26,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/MechanicalParams.h>
 
 #include <sofa/helper/types/RGBAColor.h>
 

@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseCollision/CylinderModel.h>
-
-#include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/core/visual/DrawTool.h>
 
 namespace sofa::component::collision
 {
@@ -182,13 +182,14 @@ void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
     p1 += h2 * ax;
     p2 -= h2 * ax;
 
-    vparams->drawTool()->drawCylinder(p2,p1,float(radius(i)),colour);
+    sofa::core::visual::visualparams::getDrawTool(vparams)->drawCylinder(p2,p1,float(radius(i)),colour);
 }
 
 template<class DataTypes>
 void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (vparams->displayFlags().getShowCollisionModels())
+    auto df = sofa::core::visual::visualparams::getDisplayFlags(vparams);
+    if (df.getShowCollisionModels())
     {
 
         for (Index i=0; i<size; i++){
@@ -197,7 +198,7 @@ void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 
     }
 
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && df.getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 }
 

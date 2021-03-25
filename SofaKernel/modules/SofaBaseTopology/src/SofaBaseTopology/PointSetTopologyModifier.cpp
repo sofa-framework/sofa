@@ -27,6 +27,7 @@
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/topology/TopologyEngine.h>
 
 namespace sofa::component::topology
 {
@@ -347,6 +348,26 @@ void PointSetTopologyModifier::renumberPoints(const sofa::helper::vector< PointI
 }
 
 
+void PointSetTopologyModifier::removePoints(sofa::helper::vector< PointID >& indices, const bool removeDOF)
+{
+    sofa::helper::AdvancedTimer::stepBegin("Remove Points");
+
+    sofa::helper::AdvancedTimer::stepBegin("removePointsWarning");
+    removePointsWarning(indices, removeDOF);
+
+    sofa::helper::AdvancedTimer::stepNext("removePointsWarning", "propagateTopologicalChanges");
+    propagateTopologicalChanges();
+
+    sofa::helper::AdvancedTimer::stepNext("propagateTopologicalChanges", "removePointsProcess");
+    removePointsProcess(indices, removeDOF);
+
+    sofa::helper::AdvancedTimer::stepEnd("removePointsProcess");
+
+    sofa::helper::AdvancedTimer::stepEnd("Remove Points");
+}
+
+
+
 void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID> &indices,
         const bool removeDOF)
 {
@@ -415,26 +436,13 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 
     this->propagateTopologicalEngineChanges();
     
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
 
     getContext()->executeVisitor(&a);
 
     // remove the changes we just propagated, so that we don't send them again next time
     m_container->resetTopologyChangeList();
-}
-
-void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
-{
-    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    getContext()->executeVisitor(&a);
-
-    //TODO: temporary code to test topology engine pipeline. Commented by default for the moment
-    //this->propagateTopologicalEngineChanges();
-
 }
 
 
@@ -467,7 +475,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 void PointSetTopologyModifier::propagateStateChanges()
 {
     if (m_container->beginStateChange() == m_container->endStateChange()) return; // nothing to do if no event is stored
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     sofa::simulation::StateChangeVisitor a(params, m_container);
     getContext()->executeVisitor(&a);
 
@@ -479,6 +487,8 @@ void PointSetTopologyModifier::notifyEndingEvent()
 {
     sofa::core::topology::EndingEvent *e=new sofa::core::topology::EndingEvent();
     m_container->addTopologyChange(e);
+
+    propagateTopologicalChanges();
 }
 
 } //namespace sofa::component::topology

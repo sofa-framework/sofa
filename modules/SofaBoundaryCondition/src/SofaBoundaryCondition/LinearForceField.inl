@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BaseVector.h>
-
+#include <sofa/core/MechanicalParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa::component::forcefield

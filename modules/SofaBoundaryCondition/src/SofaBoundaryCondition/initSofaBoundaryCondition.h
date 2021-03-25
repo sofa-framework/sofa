@@ -25,6 +25,6 @@
 namespace sofa::component
 {
 
-void SOFA_SOFABOUNDARYCONDITION_API initBoundaryCondition();
+void SOFA_SOFABOUNDARYCONDITION_API initSofaBoundaryCondition();
 
 } // namespace sofa::component

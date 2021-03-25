@@ -106,7 +106,7 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
 };
 
 // Types to instantiate.
-typedef testing::Types<
+typedef ::testing::Types<
     component::forcefield::TrianglePressureForceField<defaulttype::Vec3Types>
 > TestTypes;
 

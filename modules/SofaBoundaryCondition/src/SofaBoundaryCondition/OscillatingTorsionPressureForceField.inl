@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/types/RGBAColor.h>
+#include <sofa/core/MechanicalParams.h>
 #include <vector>
 #include <set>
 

@@ -45,13 +45,10 @@ struct is_container
 
         typedef typename A::iterator iterator;
         typedef typename A::const_iterator const_iterator;
-        //typedef typename A::value_type value_type;
         return  std::is_same<decltype(pt->begin()),iterator>::value &&
                 std::is_same<decltype(pt->end()),iterator>::value &&
                 std::is_same<decltype(cpt->begin()),const_iterator>::value &&
-                std::is_same<decltype(cpt->end()),const_iterator>::value /*&&
-                std::is_same<decltype(**pi),value_type &>::value &&
-                std::is_same<decltype(*pci),value_type const &>::value;*/;
+                std::is_same<decltype(cpt->end()),const_iterator>::value;
     }
 
     template<typename A>

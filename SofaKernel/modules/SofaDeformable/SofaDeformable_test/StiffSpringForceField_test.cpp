@@ -204,8 +204,8 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
 
 
 // ========= Define the list of types to instanciate.
-//using testing::Types;
-typedef testing::Types<
+//using ::testing::Types;
+typedef ::testing::Types<
 component::interactionforcefield::StiffSpringForceField<defaulttype::Vec2Types>,  // 2D
 component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types>   // 3D
 > TestTypes; // the types to instanciate.

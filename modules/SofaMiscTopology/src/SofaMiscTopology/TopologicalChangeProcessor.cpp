@@ -1303,11 +1303,8 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         ind_ta = ind_tb;
         firstCut=false;
 
-        triangleMod->propagateTopologicalChanges();
         // notify the end for the current sequence of topological change events
         triangleMod->notifyEndingEvent();
-
-        triangleMod->propagateTopologicalChanges();
 
         //update the triangle incision information
         updateTriangleIncisionInformation();

@@ -55,3 +55,8 @@ SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* toBaseContext(Nod
 SOFA_SIMULATION_CORE_API Node* getNodeFrom(sofa::core::objectmodel::Base*);
 SOFA_SIMULATION_CORE_API Node* getNodeFrom(sofa::core::objectmodel::BaseContext*);
 }
+
+namespace sofa::simulation::common
+{
+    class MechanicalOperations;
+}

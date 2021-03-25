@@ -166,7 +166,7 @@ void FixedPlaneConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::removeConstraint(Index index)
 {
-    removeValue(*d_indices.beginEdit(),(unsigned int)index);
+    sofa::helper::removeValue(*d_indices.beginEdit(),(unsigned int)index);
     d_indices.endEdit();
 }
 

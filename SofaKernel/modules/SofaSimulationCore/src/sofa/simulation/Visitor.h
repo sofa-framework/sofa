@@ -30,7 +30,7 @@
 
 #include <string>
 #ifdef SOFA_DUMP_VISITOR_INFO
-#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/core/VecId.h>
 #endif
 
 

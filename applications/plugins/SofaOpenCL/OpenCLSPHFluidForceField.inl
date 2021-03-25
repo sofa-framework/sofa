@@ -120,9 +120,9 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::Me
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    msg_info() << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")";
+    msg_info() << "addDForce(" << mparams->kFactor() << "," << sofa::core::mechanicalparams::bFactor(mparams) << ")";
     const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
-    data.fillParams(this, mparams->kFactor(), mparams->bFactor());
+    data.fillParams(this, mparams->kFactor(), sofa::core::mechanicalparams::bFactor(mparams));
     df.resize(dx.size());
     Grid::Grid* g = m_grid->getGrid();
     data.Kernels_addDForce(
@@ -183,7 +183,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(const core::Me
     const VecDeriv& dx = d_dx.getValue();
     //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
-    data.fillParams(this, mparams->kFactor(), mparams->bFactor());
+    data.fillParams(this, mparams->kFactor(), sofa::core::mechanicalparams::bFactor(mparams));
     df.resize(dx.size());
     Grid::Grid* g = m_grid->getGrid();
     data.Kernels_addDForce(

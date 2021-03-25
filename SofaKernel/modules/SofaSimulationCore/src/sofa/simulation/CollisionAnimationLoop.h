@@ -25,7 +25,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Visitor.h>
@@ -82,7 +82,7 @@ protected:
     /// @{
 
     /// Activate collision pipeline
-    virtual void computeCollision(const core::ExecParams* params = core::ExecParams::defaultInstance());
+    virtual void computeCollision(const core::ExecParams* params = core::execparams::defaultInstance());
 
     /// Activate OdeSolvers
     virtual void integrate(const core::ExecParams* params, SReal dt);

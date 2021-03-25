@@ -22,6 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_RIGIDTYPES_H
 #define SOFA_DEFAULTTYPE_RIGIDTYPES_H
 
+#include <sofa/defaulttype/fwd.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
@@ -38,18 +39,6 @@ namespace sofa
 
 namespace defaulttype
 {
-
-template<sofa::Size N, typename real>
-class RigidDeriv;
-
-template<sofa::Size N, typename real>
-class RigidCoord;
-
-template<sofa::Size N, typename real>
-class RigidMass;
-
-template<sofa::Size N, typename real>
-class StdRigidTypes;
 
 //=============================================================================
 // 3D Rigids
@@ -1828,16 +1817,8 @@ public:
 
 
 
-typedef StdRigidTypes<2,double> Rigid2dTypes;
-typedef RigidMass<2,double> Rigid2dMass;
 template<> inline const char* Rigid2dTypes::Name() { return "Rigid2d"; }
-
-typedef StdRigidTypes<2,float> Rigid2fTypes;
-typedef RigidMass<2,float> Rigid2fMass;
 template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
-
-typedef StdRigidTypes<2,SReal> Rigid2Types;
-typedef RigidMass<2,SReal> Rigid2Mass;
 
 /// \endcond
 

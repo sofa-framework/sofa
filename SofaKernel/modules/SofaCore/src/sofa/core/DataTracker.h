@@ -25,8 +25,10 @@
 #include <functional>
 #include <map>
 #include <vector>
+#include <string>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include "objectmodel/ComponentState.h"
+#include <sofa/core/objectmodel/ComponentState.h>
+
 namespace sofa::core::objectmodel
 {
     class Base;
