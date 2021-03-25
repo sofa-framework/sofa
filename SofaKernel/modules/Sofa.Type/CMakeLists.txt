@@ -27,19 +27,19 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/Ray.h
     ${SOFATYPESRC_ROOT}/RGBAColor.h
     ${SOFATYPESRC_ROOT}/RGBAColor_fwd.h
-    ${SOFATYPESRC_ROOT}/stdtype/fixed_array.h
-    ${SOFATYPESRC_ROOT}/stdtype/fixed_array_algorithms.h
-    ${SOFATYPESRC_ROOT}/stdtype/stable_vector.h
-    ${SOFATYPESRC_ROOT}/stdtype/vector.h
-    ${SOFATYPESRC_ROOT}/stdtype/vector_T.h
-    ${SOFATYPESRC_ROOT}/stdtype/vector_T.inl
-    ${SOFATYPESRC_ROOT}/stdtype/vector_Real.h
-    ${SOFATYPESRC_ROOT}/stdtype/vector_Integral.h
-    ${SOFATYPESRC_ROOT}/stdtype/vector_String.h
-    ${SOFATYPESRC_ROOT}/stdtype/vector_algebra.h
-    ${SOFATYPESRC_ROOT}/stdtype/vector_algorithm.h
-    ${SOFATYPESRC_ROOT}/stdtype/vector_device.h
-    ${SOFATYPESRC_ROOT}/stdtype/SVector.h
+    ${SOFATYPESRC_ROOT}/fixed_array.h
+    ${SOFATYPESRC_ROOT}/fixed_array_algorithms.h
+    ${SOFATYPESRC_ROOT}/stable_vector.h
+    ${SOFATYPESRC_ROOT}/vector.h
+    ${SOFATYPESRC_ROOT}/vector_T.h
+    ${SOFATYPESRC_ROOT}/vector_T.inl
+    ${SOFATYPESRC_ROOT}/vector_Real.h
+    ${SOFATYPESRC_ROOT}/vector_Integral.h
+    ${SOFATYPESRC_ROOT}/vector_String.h
+    ${SOFATYPESRC_ROOT}/vector_algebra.h
+    ${SOFATYPESRC_ROOT}/vector_algorithm.h
+    ${SOFATYPESRC_ROOT}/vector_device.h
+    ${SOFATYPESRC_ROOT}/SVector.h
 )
 
 set(SOURCE_FILES
@@ -52,12 +52,12 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/Material.cpp
     ${SOFATYPESRC_ROOT}/PrimitiveGroup.cpp
     ${SOFATYPESRC_ROOT}/RGBAColor.cpp
-    ${SOFATYPESRC_ROOT}/stdtype/fixed_array.cpp
-    ${SOFATYPESRC_ROOT}/stdtype/vector.cpp
-    ${SOFATYPESRC_ROOT}/stdtype/vector_Real.cpp
-    ${SOFATYPESRC_ROOT}/stdtype/vector_Integral.cpp
-    ${SOFATYPESRC_ROOT}/stdtype/vector_String.cpp
-    ${SOFATYPESRC_ROOT}/stdtype/SVector.cpp
+    ${SOFATYPESRC_ROOT}/fixed_array.cpp
+    ${SOFATYPESRC_ROOT}/vector.cpp
+    ${SOFATYPESRC_ROOT}/vector_Real.cpp
+    ${SOFATYPESRC_ROOT}/vector_Integral.cpp
+    ${SOFATYPESRC_ROOT}/vector_String.cpp
+    ${SOFATYPESRC_ROOT}/SVector.cpp
 )
 
 sofa_find_package(Boost REQUIRED)

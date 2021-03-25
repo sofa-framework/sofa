@@ -19,34 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_STRING_DEFINITION
-#include <sofa/type/stdtype/vector_String.h>
-#include <sofa/type/stdtype/vector_T.inl>
+#define SOFA_HELPER_VECTOR_DEFINITION
+#include <sofa/type/vector.h>
 
-#include <iostream>
 #include <sstream>
 
-
-/// All integral types are considered as extern templates.
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
-/// Output stream
-/// Specialization for writing vectors of unsigned char
-template<>
-SOFA_TYPE_API std::ostream& vector<std::string>::write(std::ostream& os) const
+void SOFA_TYPE_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type)
 {
-    std::string separator = "";
-    os << "[";
-    for(auto& v : (*this))
-    {
-        os << separator << '"' << v << '"';
-        separator = ", ";
-    }
-    os << "]";
-    return os;
+    std::ostringstream oss;
+    oss << "in vector<" << type.name() << "> " << std::hex << (long)vec << std::dec << " size " << size << " : invalid index " << (int)i;
+    throw std::logic_error(oss.str());
 }
 
-} // namespace sofa::type::stdtype
 
-template class SOFA_TYPE_API sofa::type::stdtype::vector<std::string>;
+} // namespace sofa::type

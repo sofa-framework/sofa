@@ -35,7 +35,7 @@
 #define SOFA_VECTOR_CHECK_ACCESS false
 #endif
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
 static constexpr bool isEnabledVectorAccessChecking {SOFA_VECTOR_CHECK_ACCESS};
@@ -110,7 +110,7 @@ public:
     /// Read/write random access
     reference operator[](Size n)
     {
-        if constexpr (sofa::type::stdtype::isEnabledVectorAccessChecking)
+        if constexpr (sofa::type::isEnabledVectorAccessChecking)
         {
             if (n >= this->size())
                 vector_access_failure(this, this->size(), n, typeid(T));
@@ -121,7 +121,7 @@ public:
     /// Read-only random access
     const_reference operator[](Size n) const
     {
-        if constexpr (sofa::type::stdtype::isEnabledVectorAccessChecking)
+        if constexpr (sofa::type::isEnabledVectorAccessChecking)
         {
             if (n >= this->size())
                 vector_access_failure(this, this->size(), n, typeid(T));
@@ -174,4 +174,4 @@ public:
 
 };
 
-} /// namespace sofa::type::stdtype
+} /// namespace sofa::type

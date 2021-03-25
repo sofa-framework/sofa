@@ -20,14 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <boost/container/stable_vector.hpp>
-
-
-namespace sofa::type::stdtype
-{
-
-    template<class T, class A = std::allocator<T>>
-    using stable_vector = boost::container::stable_vector<T,A>;
-
-} // namespace sofa::type::stdtype
+#include <cassert>
+#include <iostream>
+#include <sofa/type/vector_T.h>

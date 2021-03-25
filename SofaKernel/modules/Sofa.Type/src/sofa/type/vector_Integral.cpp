@@ -21,14 +21,14 @@
 ******************************************************************************/
 #define SOFA_HELPER_VECTOR_INTEGRAL_DEFINITION
 
-#include <sofa/type/stdtype/vector_Integral.h>
-#include <sofa/type/stdtype/vector_T.inl>
+#include <sofa/type/vector_Integral.h>
+#include <sofa/type/vector_T.inl>
 
 #include <iostream>
 #include <sstream>
 #include <cstring>
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
 /// Convert the string 's' into an unsigned int. The error are reported in msg & numErrors
@@ -270,15 +270,15 @@ SOFA_TYPE_API std::istream& vector<unsigned char>::read(std::istream& in)
     return in;
 }
 
-} /// namespace sofa::type::stdtype
+} /// namespace sofa::type
 
 
-template class SOFA_TYPE_API sofa::type::stdtype::vector<bool>;
-template class SOFA_TYPE_API sofa::type::stdtype::vector<char>;
-template class SOFA_TYPE_API sofa::type::stdtype::vector<unsigned char>;
-template class SOFA_TYPE_API sofa::type::stdtype::vector<int>;
-template class SOFA_TYPE_API sofa::type::stdtype::vector<unsigned int>;
-template class SOFA_TYPE_API sofa::type::stdtype::vector<long>;
-template class SOFA_TYPE_API sofa::type::stdtype::vector<unsigned long>;
-template class SOFA_TYPE_API sofa::type::stdtype::vector<long long>;
-template class SOFA_TYPE_API sofa::type::stdtype::vector<unsigned long long>;
+template class SOFA_TYPE_API sofa::type::vector<bool>;
+template class SOFA_TYPE_API sofa::type::vector<char>;
+template class SOFA_TYPE_API sofa::type::vector<unsigned char>;
+template class SOFA_TYPE_API sofa::type::vector<int>;
+template class SOFA_TYPE_API sofa::type::vector<unsigned int>;
+template class SOFA_TYPE_API sofa::type::vector<long>;
+template class SOFA_TYPE_API sofa::type::vector<unsigned long>;
+template class SOFA_TYPE_API sofa::type::vector<long long>;
+template class SOFA_TYPE_API sofa::type::vector<unsigned long long>;
