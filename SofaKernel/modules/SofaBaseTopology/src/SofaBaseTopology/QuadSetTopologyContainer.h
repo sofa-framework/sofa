@@ -77,8 +77,6 @@ public:
         return getQuadArray();
     }
 
-    /** \brief Returns a reference to the Data of quads array container. */
-    Data< sofa::helper::vector<Quad> >& getQuadDataArray() {return d_quad;}
 
     /** \brief Returns the quad corresponding to the QuadID i.
      *

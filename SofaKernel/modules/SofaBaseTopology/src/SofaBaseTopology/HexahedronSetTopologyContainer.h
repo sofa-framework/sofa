@@ -104,9 +104,6 @@ public:
         return getHexahedronArray();
     }
 
-    /** \brief Get the Data which contains the array of hexahedra. */
-    Data< sofa::helper::vector<Hexahedron> >& getHexahedronDataArray() {return d_hexahedron;}
-
     /** \brief Get a hexahedron from its index.
      *
      * @param i The index of a hexahedron.
@@ -436,7 +433,7 @@ public:
     /// provides the set of hexahedra.
     Data< sofa::helper::vector<Hexahedron> > d_hexahedron;
 
-protected:	
+protected:
     /// provides the set of edges for each hexahedron.
     sofa::helper::vector<EdgesInHexahedron> m_edgesInHexahedron;
 
