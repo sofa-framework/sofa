@@ -96,10 +96,9 @@ public:
     >
     constexpr fixed_array(const ArgsT... r) noexcept
     {
-        // this->elems = { r... }; // doable if Array was assignable
+        // this->elems = { r... }; // doable if elems was assignable
         std::size_t i = 0;
         ( (this->elems[i++] = r), ...);
-        
     }
 
     // iterator support
@@ -149,33 +148,33 @@ public:
     }
 
     // front() and back()
-    constexpr reference front() noexcept
+    constexpr reference front()
     {
         return this->elems[0];
     }
-    constexpr const_reference front() const noexcept
+    constexpr const_reference front() const
     {
         return this->elems[0];
     }
-    constexpr reference back() noexcept
+    constexpr reference back()
     {
         return this->elems[N-1];
     }
-    constexpr const_reference back() const noexcept
+    constexpr const_reference back() const
     {
         return this->elems[N-1];
     }
 
     // size is constant
-    static size_type size()
+    static size_type size() noexcept
     {
         return N;
     }
-    static bool empty()
+    static bool empty() noexcept
     {
         return false;
     }
-    static size_type max_size()
+    static size_type max_size() noexcept
     {
         return N;
     }
