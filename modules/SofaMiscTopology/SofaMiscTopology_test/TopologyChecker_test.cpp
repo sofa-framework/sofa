@@ -21,8 +21,10 @@
 ******************************************************************************/
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaMiscTopology/TopologyChecker.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
@@ -459,6 +461,225 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
 };
 
 
+struct QuadTopologyChecker_test : TopologyChecker_test
+{
+    QuadTopologyChecker_test() : TopologyChecker_test()
+    {
+        m_fileName = "TopologicalModifiers/RemovingQuad2TriangleProcess.scn";
+    }
+
+
+    QuadSetTopologyContainer* loadTopo()
+    {
+        Node::SPtr root = m_instance.root;
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return nullptr;
+        }
+
+        m_topoNode = root.get()->getChild("Q");
+        if (!m_topoNode)
+        {
+            ADD_FAILURE() << "Error 'Q' Node not found in scene: " << m_fileName << std::endl;
+            return nullptr;
+        }
+
+        QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(m_topoNode->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: QuadSetTopologyContainer not found in 'Q' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        return topoCon;
+    }
+
+
+    bool testValidTopology() override
+    {
+        QuadSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbQuads(), 9);
+        EXPECT_EQ(topoCon->getNbEdges(), 24);
+        EXPECT_EQ(topoCon->getNbPoints(), 16);
+
+        EXPECT_EQ(checker->checkTopology(), true);
+
+        //// to test incise animates the scene at least 1.2s
+        for (int i = 0; i < 40; i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+        EXPECT_EQ(topoCon->getNbQuads(), 7);
+        EXPECT_EQ(topoCon->getNbEdges(), 20);
+        EXPECT_EQ(topoCon->getNbPoints(), 14);
+
+        return checker->checkTopology() == true;
+    }
+
+
+    bool testInvalidContainer() override
+    {
+        QuadSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Quad> > > quads = topoCon->d_quad;
+
+        // mix triangle
+        quads[0][0] = quads[0][1];
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+
+        return checker->checkQuadTopology() == false;
+    }
+
+
+    bool testInvalidQuad2EdgeContainer()
+    {
+        QuadSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Quad> > > quads = topoCon->d_quad;
+
+        // Add triangle without updating cross container
+        quads.push_back(Topology::Quad(0, 2, 4, 8));
+
+        // container should be ok
+        EXPECT_EQ(checker->checkQuadContainer(), true);
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), false);
+        // restore good container
+        quads.resize(quads.size() - 1);
+        EXPECT_MSG_NOEMIT(Error); // reset no emit error for next true negative test
+        EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), true);
+
+
+        // Mix some quad vertices
+        int tmp = quads[0][0];
+        quads[0][0] = quads[4][0];
+        quads[4][0] = tmp;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), false);
+        // restore good container
+        quads[4][0] = quads[0][0];
+        quads[0][0] = tmp;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), true);
+
+        // Mix some quads
+        Topology::Quad tmpT = quads[0];
+        quads[0] = quads[4];
+        quads[4] = tmpT;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), false);
+        // restore good container
+        quads[4] = quads[0];
+        quads[0] = tmpT;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), true);
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Edge> > > edges = topoCon->d_edge;
+        Topology::Edge tmpE = edges[0];
+        edges[0] = edges[10];
+        edges[10] = tmpE;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkTopology(), false);
+
+        return true;
+    }
+
+
+    bool testInvalidQuad2VertexContainer()
+    {
+        QuadSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Quad> > > quads = topoCon->d_quad;
+
+        // Add triangle without updating cross container
+        quads.push_back(Topology::Quad(0, 2, 4, 8));
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkQuadToVertexCrossContainer(), false);
+        // restore good container
+        quads.resize(quads.size() - 1);
+        EXPECT_MSG_NOEMIT(Error); // reset no emit error for next true negative test
+        EXPECT_EQ(checker->checkQuadToVertexCrossContainer(), true);
+
+
+        // Mix some quad vertices
+        int tmp = quads[0][0];
+        quads[0][0] = quads[4][0];
+        quads[4][0] = tmp;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkQuadToVertexCrossContainer(), false);
+        // restore good container
+        quads[4][0] = quads[0][0];
+        quads[0][0] = tmp;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkQuadToVertexCrossContainer(), true);
+
+        // Mix some quads
+        Topology::Quad tmpT = quads[0];
+        quads[0] = quads[4];
+        quads[4] = tmpT;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkQuadToVertexCrossContainer(), false);
+        // restore good container
+        quads[4] = quads[0];
+        quads[0] = tmpT;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkQuadToVertexCrossContainer(), true);
+
+        return true;
+    }
+};
+
+
 
 struct TetrahedronTopologyChecker_test : TopologyChecker_test
 {
@@ -493,6 +714,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
 
         return topoCon;
     }
+
 
     bool testValidTopology() override
     {
@@ -546,40 +768,68 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
 
         sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Tetrahedron> > > tetra = topoCon->d_tetrahedron;
 
-        // Add triangle without updating cross container
-        tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
+        // mix triangle
+        tetra[0][0] = tetra[0][1];
 
         // Topology checher should detect an error
         EXPECT_MSG_EMIT(Error);
-        EXPECT_EQ(checker->checkTopology(), false);
+
+        return checker->checkTetrahedronTopology() == false;
+    }
+
+    bool testInvalidTetrahedron2TriangleContainer()
+    {
+        TetrahedronSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Tetrahedron> > > tetra = topoCon->d_tetrahedron;
+
+        // Add triangle without updating cross container
+        tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
+
+        // container should be ok
+        EXPECT_EQ(checker->checkTetrahedronContainer(), true);
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToTriangleCrossContainer(), false);
         // restore good container
         tetra.resize(tetra.size() - 1);
         EXPECT_MSG_NOEMIT(Error); // reset no emit error for next true negative test
-        EXPECT_EQ(checker->checkTopology(), true);
+        EXPECT_EQ(checker->checkTetrahedronToTriangleCrossContainer(), true);
 
-        // Mix some triangle vertices
+        // Mix some tetrahedron vertices
         int tmp = tetra[0][0];
         tetra[0][0] = tetra[10][0];
         tetra[10][0] = tmp;
         EXPECT_MSG_EMIT(Error);
-        EXPECT_EQ(checker->checkTopology(), false);
+        EXPECT_EQ(checker->checkTetrahedronToTriangleCrossContainer(), false);
         // restore good container
         tetra[10][0] = tetra[0][0];
         tetra[0][0] = tmp;
         EXPECT_MSG_NOEMIT(Error);
-        EXPECT_EQ(checker->checkTopology(), true);
+        EXPECT_EQ(checker->checkTetrahedronToTriangleCrossContainer(), true);
 
         // Mix some triangles
         Topology::Tetrahedron tmpT = tetra[0];
         tetra[0] = tetra[10];
         tetra[10] = tmpT;
         EXPECT_MSG_EMIT(Error);
-        EXPECT_EQ(checker->checkTopology(), false);
+        EXPECT_EQ(checker->checkTetrahedronToTriangleCrossContainer(), false);
         // restore good container
         tetra[10] = tetra[0];
         tetra[0] = tmpT;
         EXPECT_MSG_NOEMIT(Error);
-        EXPECT_EQ(checker->checkTopology(), true);
+        EXPECT_EQ(checker->checkTetrahedronToTriangleCrossContainer(), true);
 
         sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Triangle> > > triangles = topoCon->d_triangle;
         // Mix some triangles
@@ -604,8 +854,395 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         return true;
     }
 
-    bool testInvalidCrossContainer()
+    bool testInvalidTetrahedron2EdgeContainer()
     {
+        TetrahedronSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Tetrahedron> > > tetra = topoCon->d_tetrahedron;
+
+        // Add triangle without updating cross container
+        tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), false);
+        // restore good container
+        tetra.resize(tetra.size() - 1);
+        EXPECT_MSG_NOEMIT(Error); // reset no emit error for next true negative test
+        EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), true);
+
+        // Mix some tetrahedron vertices
+        int tmp = tetra[0][0];
+        tetra[0][0] = tetra[10][0];
+        tetra[10][0] = tmp;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), false);
+        // restore good container
+        tetra[10][0] = tetra[0][0];
+        tetra[0][0] = tmp;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), true);
+
+        // Mix some triangles
+        Topology::Tetrahedron tmpT = tetra[0];
+        tetra[0] = tetra[10];
+        tetra[10] = tmpT;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), false);
+        // restore good container
+        tetra[10] = tetra[0];
+        tetra[0] = tmpT;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), true);
+
+        return true;
+    }
+
+    bool testInvalidTetrahedron2VertexContainer()
+    {
+        TetrahedronSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Tetrahedron> > > tetra = topoCon->d_tetrahedron;
+
+        // Add triangle without updating cross container
+        tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToVertexCrossContainer(), false);
+        // restore good container
+        tetra.resize(tetra.size() - 1);
+        EXPECT_MSG_NOEMIT(Error); // reset no emit error for next true negative test
+        EXPECT_EQ(checker->checkTetrahedronToVertexCrossContainer(), true);
+
+        // Mix some tetrahedron vertices
+        int tmp = tetra[0][0];
+        tetra[0][0] = tetra[10][0];
+        tetra[10][0] = tmp;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToVertexCrossContainer(), false);
+        // restore good container
+        tetra[10][0] = tetra[0][0];
+        tetra[0][0] = tmp;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToVertexCrossContainer(), true);
+
+        // Mix some triangles
+        Topology::Tetrahedron tmpT = tetra[0];
+        tetra[0] = tetra[10];
+        tetra[10] = tmpT;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToVertexCrossContainer(), false);
+        // restore good container
+        tetra[10] = tetra[0];
+        tetra[0] = tmpT;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkTetrahedronToVertexCrossContainer(), true);
+
+        return true;
+    }
+};
+
+
+
+struct HexahedronTopologyChecker_test : TopologyChecker_test
+{
+    HexahedronTopologyChecker_test() : TopologyChecker_test()
+    {
+        m_fileName = "TopologicalModifiers/RemovingHexa2QuadProcess.scn";
+    }
+
+
+    HexahedronSetTopologyContainer* loadTopo()
+    {
+        Node::SPtr root = m_instance.root;
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return nullptr;
+        }
+
+        m_topoNode = root.get()->getChild("H");
+        if (!m_topoNode)
+        {
+            ADD_FAILURE() << "Error 'H' Node not found in scene: " << m_fileName << std::endl;
+            return nullptr;
+        }
+
+        HexahedronSetTopologyContainer* topoCon = dynamic_cast<HexahedronSetTopologyContainer*>(m_topoNode->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: HexahedronSetTopologyContainer not found in 'H' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        return topoCon;
+    }
+
+
+    bool testValidTopology() override
+    {
+        HexahedronSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbHexahedra(), 9);
+        EXPECT_EQ(topoCon->getNbQuads(), 42);
+        EXPECT_EQ(topoCon->getNbEdges(), 64);
+        EXPECT_EQ(topoCon->getNbPoints(), 32);
+
+        EXPECT_EQ(checker->checkTopology(), true);
+
+        // to test incise animates the scene at least 1.2s
+        for (int i = 0; i < 41; i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+        EXPECT_EQ(topoCon->getNbHexahedra(), 5);
+        EXPECT_EQ(topoCon->getNbQuads(), 25);
+        EXPECT_EQ(topoCon->getNbEdges(), 41);
+        EXPECT_EQ(topoCon->getNbPoints(), 22);
+
+        return checker->checkTopology() == true;
+    }
+
+    bool testInvalidContainer() override
+    {
+        HexahedronSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Hexahedron> > > hexahedra = topoCon->d_hexahedron;
+
+        // mix triangle
+        hexahedra[0][0] = hexahedra[0][1];
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+
+        return checker->checkHexahedronTopology() == false;
+    }
+
+    bool testInvalidHexahedron2QuadContainer()
+    {
+        HexahedronSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Hexahedron> > > hexa = topoCon->d_hexahedron;
+
+        // Add triangle without updating cross container
+        hexa.push_back(Topology::Hexahedron(0, 2, 4, 12, 14, 18, 20, 22));
+
+        // container should be ok
+        EXPECT_EQ(checker->checkHexahedronContainer(), true);
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), false);
+        // restore good container
+        hexa.resize(hexa.size() - 1);
+        EXPECT_MSG_NOEMIT(Error); // reset no emit error for next true negative test
+        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), true);
+
+        // Mix some hexahedron vertices
+        int tmp = hexa[0][0];
+        hexa[0][0] = hexa[6][0];
+        hexa[6][0] = tmp;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), false);
+        // restore good container
+        hexa[6][0] = hexa[0][0];
+        hexa[0][0] = tmp;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), true);
+
+        // Mix some triangles
+        Topology::Hexahedron tmpT = hexa[0];
+        hexa[0] = hexa[6];
+        hexa[6] = tmpT;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), false);
+        // restore good container
+        hexa[6] = hexa[0];
+        hexa[0] = tmpT;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), true);
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Quad> > > quads = topoCon->d_quad;
+        // Mix some quads
+        Topology::Quad tmpTri = quads[0];
+        quads[0] = quads[10];
+        quads[10] = tmpTri;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), false);
+        // restore good container
+        quads[10] = quads[0];
+        quads[0] = tmpTri;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), true);
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Edge> > > edges = topoCon->d_edge;
+        Topology::Edge tmpE = edges[0];
+        edges[0] = edges[10];
+        edges[10] = tmpE;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), false);
+
+        return true;
+    }
+
+    bool testInvalidHexahedron2EdgeContainer()
+    {
+        HexahedronSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Hexahedron> > > hexa = topoCon->d_hexahedron;
+
+        // Add triangle without updating cross container
+        hexa.push_back(Topology::Hexahedron(0, 2, 4, 12, 14, 18, 20, 22));
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), false);
+        // restore good container
+        hexa.resize(hexa.size() - 1);
+        EXPECT_MSG_NOEMIT(Error); // reset no emit error for next true negative test
+        EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), true);
+
+        // Mix some hexahedron vertices
+        int tmp = hexa[0][0];
+        hexa[0][0] = hexa[6][0];
+        hexa[6][0] = tmp;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), false);
+        // restore good container
+        hexa[6][0] = hexa[0][0];
+        hexa[0][0] = tmp;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), true);
+
+        // Mix some triangles
+        Topology::Hexahedron tmpT = hexa[0];
+        hexa[0] = hexa[6];
+        hexa[6] = tmpT;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), false);
+        // restore good container
+        hexa[6] = hexa[0];
+        hexa[0] = tmpT;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), true);
+
+        return true;
+    }
+
+    bool testInvalidHexahedron2VertexContainer()
+    {
+        HexahedronSetTopologyContainer* topoCon = loadTopo();
+        if (topoCon == nullptr)
+            return false;
+
+        std::string topoLink = "@" + topoCon->getName();
+        auto obj = sofa::simpleapi::createObject(m_topoNode, "TopologyChecker", {
+                                {"name", "checker"},
+                                {"topology", topoLink}
+            });
+        TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
+        checker->init();
+
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Hexahedron> > > hexa = topoCon->d_hexahedron;
+
+        // Add triangle without updating cross container
+        hexa.push_back(Topology::Hexahedron(0, 2, 4, 12, 14, 18, 20, 22));
+
+        // Topology checher should detect an error
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToVertexCrossContainer(), false);
+        // restore good container
+        hexa.resize(hexa.size() - 1);
+        EXPECT_MSG_NOEMIT(Error); // reset no emit error for next true negative test
+        EXPECT_EQ(checker->checkHexahedronToVertexCrossContainer(), true);
+
+        // Mix some hexahedron vertices
+        int tmp = hexa[0][0];
+        hexa[0][0] = hexa[6][0];
+        hexa[6][0] = tmp;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToVertexCrossContainer(), false);
+        // restore good container
+        hexa[6][0] = hexa[0][0];
+        hexa[0][0] = tmp;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToVertexCrossContainer(), true);
+
+        // Mix some triangles
+        Topology::Hexahedron tmpT = hexa[0];
+        hexa[0] = hexa[6];
+        hexa[6] = tmpT;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToVertexCrossContainer(), false);
+        // restore good container
+        hexa[6] = hexa[0];
+        hexa[0] = tmpT;
+        EXPECT_MSG_NOEMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToVertexCrossContainer(), true);
+
         return true;
     }
 };
@@ -655,17 +1292,79 @@ TEST_F(TriangleTopologyChecker_test, Check_Invalid_Triangle2VertexCrossContainer
 }
 
 
-//
-//
-//TEST_F(TetrahedronTopologyChecker_test, Check_Valid_Containers)
-//{
-//    ASSERT_TRUE(this->testValidTopology());
-//}
-//
-//TEST_F(TetrahedronTopologyChecker_test, Check_Invalid_Containers)
-//{
-//    ASSERT_TRUE(this->testInvalidTopology());
-//}
 
+TEST_F(QuadTopologyChecker_test, Check_Valid_Topology)
+{
+    ASSERT_TRUE(this->testValidTopology());
+}
+
+TEST_F(QuadTopologyChecker_test, Check_Invalid_Containers)
+{
+    ASSERT_TRUE(this->testInvalidContainer());
+}
+
+TEST_F(QuadTopologyChecker_test, Check_Invalid_Quad2EdgeCrossContainer)
+{
+    ASSERT_TRUE(this->testInvalidQuad2EdgeContainer());
+}
+
+TEST_F(QuadTopologyChecker_test, Check_Invalid_Quad2VertexCrossContainer)
+{
+    ASSERT_TRUE(this->testInvalidQuad2VertexContainer());
+}
+
+
+
+TEST_F(TetrahedronTopologyChecker_test, Check_Valid_Topology)
+{
+    ASSERT_TRUE(this->testValidTopology());
+}
+
+TEST_F(TetrahedronTopologyChecker_test, Check_Invalid_Containers)
+{
+    ASSERT_TRUE(this->testInvalidContainer());
+}
+
+TEST_F(TetrahedronTopologyChecker_test, Check_Invalid_Tetrahedron2TriangleCrossContainer)
+{
+    ASSERT_TRUE(this->testInvalidTetrahedron2TriangleContainer());
+}
+
+TEST_F(TetrahedronTopologyChecker_test, Check_Invalid_Tetrahedron2EdgeCrossContainer)
+{
+    ASSERT_TRUE(this->testInvalidTetrahedron2EdgeContainer());
+}
+
+TEST_F(TetrahedronTopologyChecker_test, Check_Invalid_Tetrahedron2VertexCrossContainer)
+{
+    ASSERT_TRUE(this->testInvalidTetrahedron2VertexContainer());
+}
+
+
+
+TEST_F(HexahedronTopologyChecker_test, Check_Valid_Topology)
+{
+    ASSERT_TRUE(this->testValidTopology());
+}
+
+TEST_F(HexahedronTopologyChecker_test, Check_Invalid_Containers)
+{
+    ASSERT_TRUE(this->testInvalidContainer());
+}
+
+TEST_F(HexahedronTopologyChecker_test, Check_Invalid_Hexahedron2QuadCrossContainer)
+{
+    ASSERT_TRUE(this->testInvalidHexahedron2QuadContainer());
+}
+
+TEST_F(HexahedronTopologyChecker_test, Check_Invalid_Hexahedron2EdgeCrossContainer)
+{
+    ASSERT_TRUE(this->testInvalidHexahedron2EdgeContainer());
+}
+
+TEST_F(HexahedronTopologyChecker_test, Check_Invalid_Hexahedron2VertexCrossContainer)
+{
+    ASSERT_TRUE(this->testInvalidHexahedron2VertexContainer());
+}
 
 }// namespace 
