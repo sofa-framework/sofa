@@ -1128,13 +1128,6 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_MSG_NOEMIT(Error);
         EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), true);
 
-        auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
-        Topology::Edge tmpE = edges[0];
-        edges[0] = edges[10];
-        edges[10] = tmpE;
-        EXPECT_MSG_EMIT(Error);
-        EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), false);
-
         return true;
     }
 
@@ -1188,6 +1181,13 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         hexa[0] = tmpT;
         EXPECT_MSG_NOEMIT(Error);
         EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), true);
+
+        auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
+        Topology::Edge tmpE = edges[0];
+        edges[0] = edges[10];
+        edges[10] = tmpE;
+        EXPECT_MSG_EMIT(Error);
+        EXPECT_EQ(checker->checkHexahedronToEdgeCrossContainer(), false);
 
         return true;
     }
