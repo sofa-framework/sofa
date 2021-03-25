@@ -8,6 +8,7 @@ find_package(SofaBoundaryCondition REQUIRED)
 find_package(SofaConstraint REQUIRED)
 find_package(SofaEngine REQUIRED)
 sofa_find_package(image QUIET)
+sofa_find_package(Sofa.GL QUIET)
 sofa_find_package(SofaHighOrderTopology QUIET)
 find_package(Eigen3 REQUIRED)
 
@@ -231,6 +232,10 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image)
+endif()
+
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
 endif()
 
 # TODO: Clean this. We should find_package(MGDiffusion) somehow.

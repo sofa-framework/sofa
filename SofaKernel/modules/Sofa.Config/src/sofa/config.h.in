@@ -23,7 +23,6 @@
 
 #include <sofa/config/sharedlibrary_defines.h>
 #include <sofa/config/build_option_dump_visitor.h>
-#include <sofa/config/build_option_opengl.h>
 #include <sofa/config/build_option_threading.h>
 #include <sofa/config/build_option_bbox.h>
 
@@ -158,6 +157,10 @@ typedef unsigned __int64	uint64_t;
         "Link<> cannot hold BaseData anymore. " \
         "To make a link between Datas use DataLink instead. ")
 
+#define SOFA_ATTRIBUTE_REMOVAL_OF_BASEDATA_OWNERCLASS_ACCESSOR(msg) \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v21.06 (PR#1890)", "v21.12", \
+        "BaseData API has changed. " msg)
 
 #define SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR(msg) \
     SOFA_ATTRIBUTE_DISABLED( \

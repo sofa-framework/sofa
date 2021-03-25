@@ -33,7 +33,6 @@ Visitor::Visitor(const core::ExecParams* p)
     : canAccessSleepingNode(true)
     , params(p)
 {
-    //params = core::MechanicalParams::defaultInstance();
 #ifdef SOFA_DUMP_VISITOR_INFO
     enteringBase=nullptr; infoPrinted=false;
 #endif

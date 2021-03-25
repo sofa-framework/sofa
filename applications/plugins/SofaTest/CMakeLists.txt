@@ -49,7 +49,7 @@ sofa_find_package(SofaComponentAll REQUIRED)
 sofa_find_package(SceneCreator REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentAll SofaMiscForceField SofaMiscMapping SofaMiscFem)
+target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentAll SofaMiscForceField SofaMiscMapping SofaMiscFem Sofa.Testing)
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(

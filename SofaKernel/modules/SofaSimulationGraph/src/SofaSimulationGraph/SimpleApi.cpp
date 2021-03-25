@@ -46,7 +46,7 @@ bool importPlugin(const std::string& name)
 
 void dumpScene(Node::SPtr root)
 {
-    XMLPrintVisitor p(sofa::core::ExecParams::defaultInstance(), std::cout) ;
+    XMLPrintVisitor p(sofa::core::execparams::defaultInstance(), std::cout) ;
     p.execute(root.get()) ;
 }
 

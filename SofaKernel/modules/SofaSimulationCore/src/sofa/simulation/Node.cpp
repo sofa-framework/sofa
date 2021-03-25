@@ -20,8 +20,36 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/Node.h>
+
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/loader/BaseLoader.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualManager.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/Shader.h>
+
+#include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/Mapping.h>
+
 #include <sofa/simulation/Node.inl>
+#include <sofa/simulation/VisitorScheduler.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/AnimateVisitor.h>

@@ -117,10 +117,10 @@ void Mapping<In,Out>::init()
             maskTo = &state->forceMask;
     }
 
-    apply(MechanicalParams::defaultInstance(), VecCoordId::position(), ConstVecCoordId::position());
-    applyJ(MechanicalParams::defaultInstance(), VecDerivId::velocity(), ConstVecDerivId::velocity());
+    apply(mechanicalparams::defaultInstance(), VecCoordId::position(), ConstVecCoordId::position());
+    applyJ(mechanicalparams::defaultInstance(), VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())
-        apply(MechanicalParams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
+        apply(mechanicalparams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
 
 template <class In, class Out>
@@ -224,7 +224,7 @@ void Mapping<In,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivI
 
 
 template <class In, class Out>
-void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ )
+void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams */ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ )
 {
     //applyDJT
 }

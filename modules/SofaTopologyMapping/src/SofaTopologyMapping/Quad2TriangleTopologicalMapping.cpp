@@ -217,9 +217,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::ENDING_EVENT:
         {
-            to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
-            to_tstm->propagateTopologicalChanges();
             break;
         }
 
@@ -259,9 +257,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             }
 
-            to_tstm->addTrianglesProcess(triangles_to_create) ;
-            to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
-            to_tstm->propagateTopologicalChanges();
+            to_tstm->addTriangles(triangles_to_create) ;
             break;
         }
         case core::topology::QUADSREMOVED:
@@ -427,7 +423,6 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-    to_tstm->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("Update Quad2TriangleTopologicalMapping");

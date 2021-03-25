@@ -236,8 +236,8 @@ struct Type2{
 const std::string Type2::sceneName= "CylinderTractionElaston.scn";
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     Type1,
     Type2
 > DataTypes; 

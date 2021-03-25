@@ -256,11 +256,7 @@ void Edge2QuadTopologicalMapping::init()
 
             }
 
-            to_tstm->addQuadsProcess(quads_to_create);
-            to_tstm->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList);
-
-            //to_tstm->notifyEndingEvent();
-            to_tstm->propagateTopologicalChanges();
+            to_tstm->addQuads(quads_to_create);
             Loc2GlobDataVec.endEdit();
 
             // Need to fully init the target topology
@@ -305,9 +301,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                 {
-                    to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
-                    to_tstm->propagateTopologicalChanges();
                     break;
                 }
 
@@ -361,9 +355,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             In2OutMap[k]=out_info;
                         }
 
-                        to_tstm->addQuadsProcess(quads_to_create);
-                        to_tstm->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList) ;
-                        to_tstm->propagateTopologicalChanges();
+                        to_tstm->addQuads(quads_to_create);
                     }
                     break;
                 }
@@ -556,7 +548,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 ++itBegin;
             }
 
-            to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
         }
     }

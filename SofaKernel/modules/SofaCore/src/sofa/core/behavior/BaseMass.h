@@ -24,8 +24,8 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/TopologyTypes.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa::defaulttype { class BaseMatrix; }
 namespace sofa::core::behavior { class MultiMatrixAccessor; }
@@ -80,16 +80,16 @@ public:
 
     /// \brief Perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     ///
-    /// \param mparams \a mparams->dt() is the time step of for temporal discretization.
+    /// \param mparams \a sofa::core::mechanicalparams::dt(mparams) is the time step of for temporal discretization.
     virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) = 0;
 
     /// vMv/2
-    virtual SReal getKineticEnergy(const MechanicalParams* mparams = MechanicalParams::defaultInstance()) const = 0;
+    virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
     /// Mgx
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = MechanicalParams::defaultInstance()) const = 0;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
 
     /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
-    virtual defaulttype::Vector6 getMomentum(const MechanicalParams* mparams = MechanicalParams::defaultInstance()) const = 0;
+    virtual defaulttype::Vector6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
 
     /// @}
 
@@ -116,7 +116,7 @@ public:
     /// Get the matrix relative to the DOF at \a index.
     virtual void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const = 0;
 
-    virtual bool isDiagonal() { return false; }
+    virtual bool isDiagonal() const = 0;
 
     /// Member specifying if the gravity is added separately to the DOFs velocities (in solve method),
     /// or if is added with the other forces(addForceMethod)
