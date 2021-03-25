@@ -21,21 +21,21 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/stdtype/vector.h>
+#include <sofa/type/vector.h>
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
 //======================================================================
-/// Same as type::stdtype::vector, + delimitors on serialization
+/// Same as type::vector, + delimitors on serialization
 //======================================================================
 template<class T>
-class SVector: public type::stdtype::vector<T, type::stdtype::CPUMemoryManager<T> >
+class SVector: public type::vector<T, type::CPUMemoryManager<T> >
 {
 public:
-    using Inherit = type::stdtype::vector<T, type::stdtype::CPUMemoryManager<T> >;
+    using Inherit = type::vector<T, type::CPUMemoryManager<T> >;
 
-    typedef type::stdtype::CPUMemoryManager<T>  Alloc;
+    typedef type::CPUMemoryManager<T>  Alloc;
     /// Size
     typedef typename Inherit::Size Size;
     /// reference to a value (read-write)
@@ -164,4 +164,4 @@ template<>
 std::ostream& SVector<std::string>::write( std::ostream& os ) const;
 
 
-} // namespace sofa::type::stdtype
+} // namespace sofa::type

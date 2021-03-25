@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/stdtype/SVector.h>
+#include <sofa/type/SVector.h>
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
 /// reading specialization for std::string
@@ -133,4 +133,4 @@ SOFA_TYPE_API std::ostream& SVector<std::string>::write( std::ostream& os ) cons
     return os;
 }
 
-} // namespace sofa::type::stdtype
+} // namespace sofa::type

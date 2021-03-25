@@ -163,6 +163,8 @@ public:
         d_massMatrix.getValue().addToBaseMatrix( r.matrix, mFactor, r.offset );
     }
 
+    bool isDiagonal() const override { return false; }
+
     Data<MassMatrix> d_massMatrix; ///< mass matrix
 };
 

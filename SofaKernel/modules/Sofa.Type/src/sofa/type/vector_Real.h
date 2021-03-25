@@ -19,20 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_DEFINITION
-#include <sofa/type/stdtype/vector.h>
+#pragma once
+#include <sofa/type/vector_T.h>
 
-#include <sstream>
-
-namespace sofa::type::stdtype
-{
-
-void SOFA_TYPE_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type)
-{
-    std::ostringstream oss;
-    oss << "in vector<" << type.name() << "> " << std::hex << (long)vec << std::dec << " size " << size << " : invalid index " << (int)i;
-    throw std::logic_error(oss.str());
-}
-
-
-} // namespace sofa::type::stdtype

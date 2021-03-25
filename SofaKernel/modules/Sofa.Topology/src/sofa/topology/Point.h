@@ -22,15 +22,15 @@
 #pragma once
 
 #include <sofa/topology/config.h>
-#include <sofa/type/stdtype/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::topology
 {
 
-    typedef sofa::type::stdtype::vector<sofa::Index> SetIndex;
-    typedef sofa::type::stdtype::vector<sofa::Index> SetIndices;
+    typedef sofa::type::vector<sofa::Index> SetIndex;
+    typedef sofa::type::vector<sofa::Index> SetIndices;
 
     // inline variable (c++17): https://en.cppreference.com/w/cpp/language/inline
-    inline static const sofa::type::stdtype::vector<sofa::Index> InvalidSet;
+    inline static const sofa::type::vector<sofa::Index> InvalidSet;
 
 }

@@ -23,7 +23,6 @@
 
 #include <sofa/geometry/config.h>
 
-#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/geometry/ElementType.h>
 #include <sofa/geometry/Point.h>
 #include <sofa/geometry/Edge.h>

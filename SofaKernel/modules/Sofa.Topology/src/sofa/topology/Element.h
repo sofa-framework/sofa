@@ -23,7 +23,7 @@
 
 #include <sofa/topology/config.h>
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/topology/Point.h>
 
 #include <type_traits>
@@ -32,7 +32,7 @@ namespace sofa::topology
 {
 
 template <typename GeometryElement>
-struct Element : public sofa::type::stdtype::fixed_array<sofa::Index, GeometryElement::NumberOfNodes>
+struct Element : public sofa::type::fixed_array<sofa::Index, GeometryElement::NumberOfNodes>
 {
     constexpr Element() noexcept
     {
@@ -43,7 +43,7 @@ struct Element : public sofa::type::stdtype::fixed_array<sofa::Index, GeometryEl
         , typename = std::enable_if_t < (std::is_convertible_v<ArgsT, sofa::Index> && ...)>
     >
         constexpr Element(ArgsT&&... args) noexcept
-        : sofa::type::stdtype::fixed_array< sofa::Index, GeometryElement::NumberOfNodes >
+        : sofa::type::fixed_array< sofa::Index, GeometryElement::NumberOfNodes >
     { static_cast<sofa::Index>(std::forward< ArgsT >(args))... }
     {
         static_assert(GeometryElement::NumberOfNodes == sizeof...(ArgsT), "Trying to construct the element with an incorrect number of nodes.");
