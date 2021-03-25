@@ -198,7 +198,7 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Edge> > > edges = topoCon->d_edge;
+        auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
         
         // mix edge
         edges[0][0] = edges[0][1];
@@ -224,7 +224,7 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Edge> > > edges = topoCon->d_edge;
+        auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
 
         // Add edges without updating cross container
         edges.push_back(Topology::Edge(0, 10));
@@ -323,7 +323,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Triangle> > > triangles = topoCon->d_triangle;
+        auto triangles = sofa::helper::getWriteAccessor(topoCon->d_triangle);
 
         // mix triangle
         triangles[0][0] = triangles[0][1];
@@ -349,8 +349,8 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Triangle> > > triangles = topoCon->d_triangle;
-
+        auto triangles = sofa::helper::getWriteAccessor(topoCon->d_triangle);
+        
         // Add triangle without updating cross container
         triangles.push_back(Topology::Triangle(0, 10, 100));
 
@@ -390,7 +390,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         EXPECT_MSG_NOEMIT(Error);
         EXPECT_EQ(checker->checkTriangleToEdgeCrossContainer(), true);
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Edge> > > edges = topoCon->d_edge;
+        auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
         Topology::Edge tmpE = edges[0];
         edges[0] = edges[10];
         edges[10] = tmpE;
@@ -415,7 +415,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Triangle> > > triangles = topoCon->d_triangle;
+        auto triangles = sofa::helper::getWriteAccessor(topoCon->d_triangle);
 
         // Add triangle without updating cross container
         triangles.push_back(Topology::Triangle(0, 10, 100));
@@ -545,8 +545,8 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Quad> > > quads = topoCon->d_quad;
-
+        auto quads = sofa::helper::getWriteAccessor(topoCon->d_quad);
+        
         // mix triangle
         quads[0][0] = quads[0][1];
 
@@ -571,7 +571,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Quad> > > quads = topoCon->d_quad;
+        auto quads = sofa::helper::getWriteAccessor(topoCon->d_quad);
 
         // Add triangle without updating cross container
         quads.push_back(Topology::Quad(0, 2, 4, 8));
@@ -612,7 +612,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         EXPECT_MSG_NOEMIT(Error);
         EXPECT_EQ(checker->checkQuadToEdgeCrossContainer(), true);
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Edge> > > edges = topoCon->d_edge;
+        auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
         Topology::Edge tmpE = edges[0];
         edges[0] = edges[10];
         edges[10] = tmpE;
@@ -637,7 +637,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Quad> > > quads = topoCon->d_quad;
+        auto quads = sofa::helper::getWriteAccessor(topoCon->d_quad);
 
         // Add triangle without updating cross container
         quads.push_back(Topology::Quad(0, 2, 4, 8));
@@ -766,8 +766,8 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Tetrahedron> > > tetra = topoCon->d_tetrahedron;
-
+        auto tetra = sofa::helper::getWriteAccessor(topoCon->d_tetrahedron);
+        
         // mix triangle
         tetra[0][0] = tetra[0][1];
 
@@ -791,7 +791,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Tetrahedron> > > tetra = topoCon->d_tetrahedron;
+        auto tetra = sofa::helper::getWriteAccessor(topoCon->d_tetrahedron);
 
         // Add triangle without updating cross container
         tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
@@ -831,7 +831,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_MSG_NOEMIT(Error);
         EXPECT_EQ(checker->checkTetrahedronToTriangleCrossContainer(), true);
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Triangle> > > triangles = topoCon->d_triangle;
+        auto triangles = sofa::helper::getWriteAccessor(topoCon->d_triangle);
         // Mix some triangles
         Topology::Triangle tmpTri = triangles[0];
         triangles[0] = triangles[10];
@@ -844,7 +844,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_MSG_NOEMIT(Error);
         EXPECT_EQ(checker->checkTopology(), true);
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Edge> > > edges = topoCon->d_edge;
+        auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
         Topology::Edge tmpE = edges[0];
         edges[0] = edges[10];
         edges[10] = tmpE;
@@ -868,7 +868,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Tetrahedron> > > tetra = topoCon->d_tetrahedron;
+        auto tetra = sofa::helper::getWriteAccessor(topoCon->d_tetrahedron);
 
         // Add triangle without updating cross container
         tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
@@ -922,7 +922,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Tetrahedron> > > tetra = topoCon->d_tetrahedron;
+        auto tetra = sofa::helper::getWriteAccessor(topoCon->d_tetrahedron);
 
         // Add triangle without updating cross container
         tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
@@ -1050,8 +1050,8 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Hexahedron> > > hexahedra = topoCon->d_hexahedron;
-
+        auto hexahedra = sofa::helper::getWriteAccessor(topoCon->d_hexahedron);
+        
         // mix triangle
         hexahedra[0][0] = hexahedra[0][1];
 
@@ -1115,7 +1115,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_MSG_NOEMIT(Error);
         EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), true);
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Quad> > > quads = topoCon->d_quad;
+        auto quads = sofa::helper::getWriteAccessor(topoCon->d_quad);
         // Mix some quads
         Topology::Quad tmpTri = quads[0];
         quads[0] = quads[10];
@@ -1128,7 +1128,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         EXPECT_MSG_NOEMIT(Error);
         EXPECT_EQ(checker->checkHexahedronToQuadCrossContainer(), true);
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Edge> > > edges = topoCon->d_edge;
+        auto edges = sofa::helper::getWriteAccessor(topoCon->d_edge);
         Topology::Edge tmpE = edges[0];
         edges[0] = edges[10];
         edges[10] = tmpE;

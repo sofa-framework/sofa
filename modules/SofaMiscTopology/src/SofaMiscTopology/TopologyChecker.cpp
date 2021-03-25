@@ -800,7 +800,7 @@ bool TopologyChecker::checkHexahedronToQuadCrossContainer()
                 if (quad[0] == hexahedron[k] || quad[1] == hexahedron[k] || quad[2] == hexahedron[k] || quad[3] == hexahedron[k])
                     cptFound++;
 
-            if (cptFound != 3)
+            if (cptFound != 4)
             {
                 msg_error() << "checkHexahedronTopology failed: quad: " << qId << ": [" << quad << "] not found in hexahedron: " << hexaId << ": " << hexahedron;
                 ret = false;
@@ -976,7 +976,7 @@ void TopologyChecker::handleEvent(sofa::core::objectmodel::Event* event)
 
     if (simulation::AnimateEndEvent::checkEventType(event) && d_eachStep.getValue())
     {
-        
+        checkTopology();
     }
 }
 

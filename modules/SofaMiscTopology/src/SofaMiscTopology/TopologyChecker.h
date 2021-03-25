@@ -151,7 +151,7 @@ public:
 
 
 protected:
-    core::topology::BaseMeshTopology* m_topology;
+    core::topology::BaseMeshTopology::SPtr m_topology;
 
 };
 
