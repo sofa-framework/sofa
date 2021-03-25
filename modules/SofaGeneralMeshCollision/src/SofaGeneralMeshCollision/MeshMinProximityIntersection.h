@@ -24,7 +24,6 @@
 #include <SofaGeneralMeshCollision/config.h>
 
 #include <SofaBaseCollision/MinProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.h>
 #include <SofaMeshCollision/MeshIntTool.h>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
