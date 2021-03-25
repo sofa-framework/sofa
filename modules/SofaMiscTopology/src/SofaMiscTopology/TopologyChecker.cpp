@@ -73,14 +73,11 @@ void TopologyChecker::init()
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-
-
-    checkTopology();
 }
 
 void TopologyChecker::reinit()
 {
-
+    checkTopology();
 }
 
 
@@ -844,6 +841,8 @@ bool TopologyChecker::checkHexahedronToQuadCrossContainer()
         msg_error() << "checkHexahedronTopology failed: found " << hexahedronSet.size() << " hexahedra in m_hexahedraAroundQuad out of " << my_hexahedra.size();
         ret = false;
     }
+
+    return ret;
 }
 
 
