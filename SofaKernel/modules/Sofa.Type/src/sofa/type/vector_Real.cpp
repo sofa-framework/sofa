@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_HELPER_VECTOR_REAL_DEFINITION
+#include <sofa/type/vector_Real.h>
+#include <sofa/type/vector_T.inl>
 
-#include <sofa/type/stable_vector.h>
+template class SOFA_TYPE_API sofa::type::vector<float>;
+template class SOFA_TYPE_API sofa::type::vector<double>;
 
-// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
-// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stable_vector.h")
-
-namespace sofa::helper
-{
-    template<class T, class A = std::allocator<T>>
-    using stable_vector = sofa::type::stable_vector<T, A>;
-
-} // namespace sofa::helper

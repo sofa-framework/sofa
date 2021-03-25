@@ -19,34 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_STRING_DEFINITION
-#include <sofa/type/stdtype/vector_String.h>
-#include <sofa/type/stdtype/vector_T.inl>
+#define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_CPP
 
-#include <iostream>
-#include <sstream>
+#include "QuadBendingFEMForceField.inl"
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <cassert>
 
-
-/// All integral types are considered as extern templates.
-namespace sofa::type::stdtype
+namespace sofa::component::forcefield
 {
 
-/// Output stream
-/// Specialization for writing vectors of unsigned char
-template<>
-SOFA_TYPE_API std::ostream& vector<std::string>::write(std::ostream& os) const
-{
-    std::string separator = "";
-    os << "[";
-    for(auto& v : (*this))
-    {
-        os << separator << '"' << v << '"';
-        separator = ", ";
-    }
-    os << "]";
-    return os;
-}
+using namespace sofa::defaulttype;
 
-} // namespace sofa::type::stdtype
+// Register in the Factory
+int QuadBendingFEMForceFieldClass = core::RegisterObject("Bending Quad finite elements")
+      .add< QuadBendingFEMForceField<Vec3Types> >();
 
-template class SOFA_TYPE_API sofa::type::stdtype::vector<std::string>;
+template class SOFA_SOFAMISCFEM_API QuadBendingFEMForceField<Vec3Types>;
+
+} // namespace sofa::component::forcefield

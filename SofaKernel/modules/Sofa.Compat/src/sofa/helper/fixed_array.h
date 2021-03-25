@@ -21,71 +21,71 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 
 // The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
 // This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
 // (PR #1790)
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/fixed_array.h")
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/fixed_array.h")
 
 namespace sofa::helper
 {
     template<class T, sofa::Size N>
-    using fixed_array = sofa::type::stdtype::fixed_array<T, N>;
+    using fixed_array = sofa::type::fixed_array<T, N>;
 
 
     template<class T>
     inline fixed_array<T, 2> make_array(const T& v0, const T& v1)
     {
-        return sofa::type::stdtype::make_array(v0, v1);
+        return sofa::type::make_array(v0, v1);
     }
 
     template<class T>
     inline fixed_array<T, 3> make_array(const T& v0, const T& v1, const T& v2)
     {
-        return sofa::type::stdtype::make_array(v0, v1, v2);
+        return sofa::type::make_array(v0, v1, v2);
     }
 
     template<class T>
     inline fixed_array<T, 4> make_array(const T& v0, const T& v1, const T& v2, const T& v3)
     {
-        return sofa::type::stdtype::make_array(v0, v1, v2, v3);
+        return sofa::type::make_array(v0, v1, v2, v3);
     }
 
     template<class T>
     inline fixed_array<T, 5> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4)
     {
-        return sofa::type::stdtype::make_array(v0, v1, v2, v3, v4);
+        return sofa::type::make_array(v0, v1, v2, v3, v4);
     }
 
     template<class T>
     inline fixed_array<T, 6> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5)
     {
-        return sofa::type::stdtype::make_array(v0, v1, v2, v3, v4, v5);
+        return sofa::type::make_array(v0, v1, v2, v3, v4, v5);
     }
 
     template<class T>
     inline fixed_array<T, 7> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6)
     {
-        return sofa::type::stdtype::make_array(v0, v1, v2, v3, v4, v5, v6);
+        return sofa::type::make_array(v0, v1, v2, v3, v4, v5, v6);
     }
 
     template<class T>
     inline fixed_array<T, 8> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6, const T& v7)
     {
-        return sofa::type::stdtype::make_array(v0, v1, v2, v3, v4, v5, v6, v7);
+        return sofa::type::make_array(v0, v1, v2, v3, v4, v5, v6, v7);
     }
 
     template<class T>
     inline fixed_array<T, 9> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6, const T& v7, const T& v8)
     {
-        return sofa::type::stdtype::make_array(v0, v1, v2, v3, v4, v5, v6, v7, v8);
+        return sofa::type::make_array(v0, v1, v2, v3, v4, v5, v6, v7, v8);
     }
 
     template<class T>
     inline fixed_array<T, 10> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6, const T& v7, const T& v8, const T& v9)
     {
-        return sofa::type::stdtype::make_array(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9);
+        return sofa::type::make_array(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9);
     }
 
 
