@@ -178,7 +178,7 @@ void generateRigid(Rigid3MassType& mass, type::Vector3& center, io::Mesh *mesh
 
     if( rotation != type::Vector3(0,0,0) ) {
 
-        type::Quaternion q = sofa::helper::Quater<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
+        type::Quat q = sofa::helper::Quater<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
 
         for(size_t i = 0, n = mesh->getVertices().size(); i < n; ++i) {
             mesh->getVertices()[i] = q.rotate( mesh->getVertices()[i] );
@@ -218,7 +218,7 @@ bool generateRigid(Rigid3MassType& mass, type::Vector3& center, const std::strin
 struct GenerateRigidInfo
 {
     type::Matrix3 inertia;
-    type::Quaternion inertia_rotation;
+    type::Quat<SReal> inertia_rotation;
     type::Vector3 inertia_diagonal;
     type::Vector3 com;
     SReal mass;
