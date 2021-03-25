@@ -268,7 +268,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
         if (topoCon == nullptr)
         {
             ADD_FAILURE() << "Error: TriangleSetTopologyContainer not found in 'SquareGravity' Node, in scene: " << m_fileName << std::endl;
-            return false;
+            return nullptr;
         }
 
         return topoCon;
@@ -489,7 +489,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
         if (topoCon == nullptr)
         {
             ADD_FAILURE() << "Error: QuadSetTopologyContainer not found in 'Q' Node, in scene: " << m_fileName << std::endl;
-            return false;
+            return nullptr;
         }
 
         return topoCon;
@@ -709,7 +709,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         if (topoCon == nullptr)
         {
             ADD_FAILURE() << "Error: TetrahedronSetTopologyContainer not found in 'TT' Node, in scene: " << m_fileName << std::endl;
-            return false;
+            return nullptr;
         }
 
         return topoCon;
@@ -993,7 +993,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         if (topoCon == nullptr)
         {
             ADD_FAILURE() << "Error: HexahedronSetTopologyContainer not found in 'H' Node, in scene: " << m_fileName << std::endl;
-            return false;
+            return nullptr;
         }
 
         return topoCon;
