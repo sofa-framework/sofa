@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_WRITESTATE_H
-#define SOFA_COMPONENT_MISC_WRITESTATE_H
+
+#pragma once
+
 #include <SofaExporter/config.h>
 
 #include <sofa/core/State.h>
@@ -123,5 +124,3 @@ namespace sofa
     } // namespace component
 
 } // namespace sofa
-
-#endif
