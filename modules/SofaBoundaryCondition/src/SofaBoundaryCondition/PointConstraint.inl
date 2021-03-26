@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/PointConstraint.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
