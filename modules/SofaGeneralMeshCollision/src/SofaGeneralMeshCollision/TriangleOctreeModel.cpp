@@ -23,10 +23,7 @@
 #include <SofaGeneralMeshCollision/TriangleOctreeModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <vector>
-#include <sofa/helper/system/thread/CTime.h>
 
 namespace sofa::component::topology
 {

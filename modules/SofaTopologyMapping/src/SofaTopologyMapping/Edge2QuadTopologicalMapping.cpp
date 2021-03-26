@@ -34,7 +34,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <cmath>
 
