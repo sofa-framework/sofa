@@ -33,7 +33,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <cmath>
 #include <sofa/gl/gl.h>
 #include <sofa/gl/glu.h>
 #include <sofa/gui/BaseGUI.h>

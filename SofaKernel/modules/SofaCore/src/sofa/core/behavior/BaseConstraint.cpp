@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseConstraintSet.h"
 #include "BaseConstraint.h"
-#include "BaseInteractionConstraint.h"
 
 namespace sofa
 {

@@ -37,7 +37,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <cmath>
-#include <sofa/defaulttype/Vec.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 
