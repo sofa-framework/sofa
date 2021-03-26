@@ -51,7 +51,7 @@ void Element<Object>::setObject(typename Object::SPtr newObject)
 
 /// Get the associated object
 template<class Object>
-core::objectmodel::Base* Element<Object>::getObject()
+sofa::core::objectmodel::Base* Element<Object>::getObject()
 {
     return object.get();
 }
