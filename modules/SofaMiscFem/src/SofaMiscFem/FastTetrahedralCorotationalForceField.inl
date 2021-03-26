@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa::component::forcefield
 {

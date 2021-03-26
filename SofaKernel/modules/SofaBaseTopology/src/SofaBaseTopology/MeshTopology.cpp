@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseTopology/MeshTopology.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <sofa/core/topology/Topology.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/visual/VisualParams.h>
