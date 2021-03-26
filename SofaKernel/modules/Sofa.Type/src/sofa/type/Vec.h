@@ -29,6 +29,7 @@
 #include <limits>
 #include <type_traits>
 #include <sofa/type/fwd.h>
+#include <cmath>
 
 #define EQUALITY_THRESHOLD 1e-6
 
