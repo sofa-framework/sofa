@@ -27,9 +27,6 @@
 
 namespace sofa::component::topology
 {
-	
-const unsigned int verticesInHexahedronArray[2][2][2]=  {{{0,4},{3,7}},{{1,5},{2,6}}};
-
 
 template< class DataTypes>
 NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3> &HexahedronSetGeometryAlgorithms< DataTypes >::getHexahedronNumericalIntegrationDescriptor()

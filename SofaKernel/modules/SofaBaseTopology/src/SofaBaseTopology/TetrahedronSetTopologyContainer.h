@@ -28,6 +28,8 @@ namespace sofa::component::topology
 {
 class TetrahedronSetTopologyModifier;
 
+extern const unsigned int edgesInTetrahedronArray[6][2];
+
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
 class SOFA_SOFABASETOPOLOGY_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
 {

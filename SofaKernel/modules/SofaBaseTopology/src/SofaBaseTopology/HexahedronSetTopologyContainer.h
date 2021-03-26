@@ -49,6 +49,9 @@ namespace sofa::component::topology
 {
 class HexahedronSetTopologyModifier;
 
+extern const unsigned int edgesInHexahedronArray[12][2];
+extern const unsigned int quadsInHexahedronArray[6][4];
+extern const unsigned int verticesInHexahedronArray[2][2][2];
 
 /** a class that stores a set of hexahedra and provides access with adjacent quads, edges and vertices */
 class SOFA_SOFABASETOPOLOGY_API HexahedronSetTopologyContainer : public QuadSetTopologyContainer
