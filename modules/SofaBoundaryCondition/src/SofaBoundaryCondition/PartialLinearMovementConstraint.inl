@@ -114,7 +114,7 @@ void PartialLinearMovementConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::removeIndex(Index index)
 {
-    removeValue(*m_indices.beginEdit(),index);
+    sofa::helper::removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
 }
 
