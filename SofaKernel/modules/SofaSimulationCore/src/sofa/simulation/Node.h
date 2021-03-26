@@ -34,6 +34,108 @@
 namespace sofa::simulation
 {
 
+/// @name Component containers
+/// @{
+/// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
+/// UPDATE: it is now an alias for the Link pointer container
+template < class T, bool strong = false >
+class NodeSequence : public MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)>
+{
+public:
+    typedef MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)> Inherit;
+    typedef T pointed_type;
+    typedef typename Inherit::DestPtr value_type;
+    typedef typename Inherit::const_iterator const_iterator;
+    typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
+    typedef const_iterator iterator;
+    typedef const_reverse_iterator reverse_iterator;
+
+    NodeSequence(const BaseLink::InitLink<Node>& init)
+        : Inherit(init)
+    {
+    }
+
+    value_type operator[](std::size_t i) const
+    {
+        return this->get(i);
+    }
+
+    /// Swap two values in the list. Uses a const_cast to violate the read-only iterators.
+    void swap( iterator a, iterator b )
+    {
+        value_type& wa = const_cast<value_type&>(*a);
+        value_type& wb = const_cast<value_type&>(*b);
+        value_type tmp = *a;
+        wa = *b;
+        wb = tmp;
+    }
+};
+
+/// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
+/// UPDATE: it is now an alias for the Link pointer container
+template < class T, bool duplicate = true >
+class NodeSingle : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
+{
+public:
+    typedef SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)> Inherit;
+    typedef T pointed_type;
+    typedef typename Inherit::DestPtr value_type;
+    typedef typename Inherit::const_iterator const_iterator;
+    typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
+    typedef const_iterator iterator;
+    typedef const_reverse_iterator reverse_iterator;
+
+    NodeSingle(const BaseLink::InitLink<Node>& init)
+        : Inherit(init)
+    {
+    }
+
+    T* operator->() const
+    {
+        return this->get();
+    }
+    T& operator*() const
+    {
+        return *this->get();
+    }
+    operator T*() const
+    {
+        return this->get();
+    }
+};
+
+
+extern template class NodeSequence<Node,true>;
+extern template class NodeSequence<sofa::core::objectmodel::BaseObject,true>;
+extern template class NodeSequence<sofa::core::BehaviorModel>;
+extern template class NodeSequence<sofa::core::BaseMapping>;
+extern template class NodeSequence<sofa::core::behavior::OdeSolver>;
+extern template class NodeSequence<sofa::core::behavior::ConstraintSolver>;
+extern template class NodeSequence<sofa::core::behavior::BaseLinearSolver>;
+extern template class NodeSequence<sofa::core::topology::BaseTopologyObject>;
+extern template class NodeSequence<sofa::core::behavior::BaseForceField>;
+extern template class NodeSequence<sofa::core::behavior::BaseInteractionForceField>;
+extern template class NodeSequence<sofa::core::behavior::BaseProjectiveConstraintSet>;
+extern template class NodeSequence<sofa::core::behavior::BaseConstraintSet>;
+extern template class NodeSequence<sofa::core::objectmodel::ContextObject>;
+extern template class NodeSequence<sofa::core::objectmodel::ConfigurationSetting>;
+extern template class NodeSequence<sofa::core::visual::Shader>;
+extern template class NodeSequence<sofa::core::visual::VisualModel>;
+extern template class NodeSequence<sofa::core::visual::VisualManager>;
+extern template class NodeSequence<sofa::core::CollisionModel>;
+extern template class NodeSequence<sofa::core::objectmodel::BaseObject>;
+
+extern template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
+extern template class NodeSingle<sofa::core::visual::VisualLoop>;
+extern template class NodeSingle<sofa::core::topology::Topology>;
+extern template class NodeSingle<sofa::core::topology::BaseMeshTopology>;
+extern template class NodeSingle<sofa::core::BaseState>;
+extern template class NodeSingle<sofa::core::behavior::BaseMechanicalState>;
+extern template class NodeSingle<sofa::core::BaseMapping>;
+extern template class NodeSingle<sofa::core::behavior::BaseMass>;
+extern template class NodeSingle<sofa::core::collision::Pipeline>;
+
+
 /**
    Implements the object (component) management of the core::Context.
    Contains objects in lists and provides accessors.
@@ -118,117 +220,48 @@ public:
 
     /// @}
 
-    /// @name Component containers
-    /// @{
-    /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
-    /// UPDATE: it is now an alias for the Link pointer container
-    template < class T, bool strong = false >
-    class Sequence : public MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)>
-    {
-    public:
-        typedef MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)> Inherit;
-        typedef T pointed_type;
-        typedef typename Inherit::DestPtr value_type;
-        typedef typename Inherit::const_iterator const_iterator;
-        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
-        typedef const_iterator iterator;
-        typedef const_reverse_iterator reverse_iterator;
+    template<class A, bool B=false>
+    using Sequence = NodeSequence<A,B>;
 
-        Sequence(const BaseLink::InitLink<Node>& init)
-            : Inherit(init)
-        {
-        }
+    template<class A, bool B=true>
+    using Single = NodeSingle<A,B>;
 
-        value_type operator[](std::size_t i) const
-        {
-            return this->get(i);
-        }
 
-        /// Swap two values in the list. Uses a const_cast to violate the read-only iterators.
-        void swap( iterator a, iterator b )
-        {
-            value_type& wa = const_cast<value_type&>(*a);
-            value_type& wb = const_cast<value_type&>(*b);
-            value_type tmp = *a;
-            wa = *b;
-            wb = tmp;
-        }
-    };
+    NodeSequence<Node,true> child;
+    typedef NodeSequence<Node,true>::iterator ChildIterator;
 
-    /// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
-    /// UPDATE: it is now an alias for the Link pointer container
-    template < class T, bool duplicate = true >
-    class Single : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
-    {
-    public:
-        typedef SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)> Inherit;
-        typedef T pointed_type;
-        typedef typename Inherit::DestPtr value_type;
-        typedef typename Inherit::const_iterator const_iterator;
-        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
-        typedef const_iterator iterator;
-        typedef const_reverse_iterator reverse_iterator;
+    NodeSequence<sofa::core::objectmodel::BaseObject,true> object;
+    typedef NodeSequence<sofa::core::objectmodel::BaseObject,true>::iterator ObjectIterator;
+    typedef NodeSequence<sofa::core::objectmodel::BaseObject,true>::reverse_iterator ObjectReverseIterator;
 
-        Single(const BaseLink::InitLink<Node>& init)
-            : Inherit(init)
-        {
-        }
+    NodeSequence<sofa::core::BehaviorModel> behaviorModel;
+    NodeSequence<sofa::core::BaseMapping> mapping;
 
-        T* operator->() const
-        {
-            return this->get();
-        }
-        T& operator*() const
-        {
-            return *this->get();
-        }
-        operator T*() const
-        {
-            return this->get();
-        }
-    };
+    NodeSequence<sofa::core::behavior::OdeSolver> solver;
+    NodeSequence<sofa::core::behavior::ConstraintSolver> constraintSolver;
+    NodeSequence<sofa::core::behavior::BaseLinearSolver> linearSolver;
+    NodeSequence<sofa::core::topology::BaseTopologyObject> topologyObject;
+    NodeSequence<sofa::core::behavior::BaseForceField> forceField;
+    NodeSequence<sofa::core::behavior::BaseInteractionForceField> interactionForceField;
+    NodeSequence<sofa::core::behavior::BaseProjectiveConstraintSet> projectiveConstraintSet;
+    NodeSequence<sofa::core::behavior::BaseConstraintSet> constraintSet;
+    NodeSequence<sofa::core::objectmodel::ContextObject> contextObject;
+    NodeSequence<sofa::core::objectmodel::ConfigurationSetting> configurationSetting;
+    NodeSequence<sofa::core::visual::Shader> shaders;
+    NodeSequence<sofa::core::visual::VisualModel> visualModel;
+    NodeSequence<sofa::core::visual::VisualManager> visualManager;
+    NodeSequence<sofa::core::CollisionModel> collisionModel;
+    NodeSequence<sofa::core::objectmodel::BaseObject> unsorted;
 
-    Sequence<Node,true> child;
-    typedef Sequence<Node,true>::iterator ChildIterator;
-
-    Sequence<sofa::core::objectmodel::BaseObject,true> object;
-    typedef Sequence<sofa::core::objectmodel::BaseObject,true>::iterator ObjectIterator;
-    typedef Sequence<sofa::core::objectmodel::BaseObject,true>::reverse_iterator ObjectReverseIterator;
-
-    Single<sofa::core::behavior::BaseAnimationLoop> animationManager;
-    Single<sofa::core::visual::VisualLoop> visualLoop;
-
-    Sequence<sofa::core::BehaviorModel> behaviorModel;
-    Sequence<sofa::core::BaseMapping> mapping;
-
-    Sequence<sofa::core::behavior::OdeSolver> solver;
-    Sequence<sofa::core::behavior::ConstraintSolver> constraintSolver;
-    Sequence<sofa::core::behavior::BaseLinearSolver> linearSolver;
-
-    Single<sofa::core::topology::Topology> topology;
-    Single<sofa::core::topology::BaseMeshTopology> meshTopology;
-    Sequence<sofa::core::topology::BaseTopologyObject> topologyObject;
-
-    Single<sofa::core::BaseState> state;
-    Single<sofa::core::behavior::BaseMechanicalState> mechanicalState;
-    Single<sofa::core::BaseMapping> mechanicalMapping;
-    Single<sofa::core::behavior::BaseMass> mass;
-    Sequence<sofa::core::behavior::BaseForceField> forceField;
-    Sequence<sofa::core::behavior::BaseInteractionForceField> interactionForceField;
-    Sequence<sofa::core::behavior::BaseProjectiveConstraintSet> projectiveConstraintSet;
-    Sequence<sofa::core::behavior::BaseConstraintSet> constraintSet;
-    Sequence<sofa::core::objectmodel::ContextObject> contextObject;
-    Sequence<sofa::core::objectmodel::ConfigurationSetting> configurationSetting;
-
-    Sequence<sofa::core::visual::Shader> shaders;
-    Sequence<sofa::core::visual::VisualModel> visualModel;
-    Sequence<sofa::core::visual::VisualManager> visualManager;
-
-    Sequence<sofa::core::CollisionModel> collisionModel;
-    Single<sofa::core::collision::Pipeline> collisionPipeline;
-
-    Sequence<sofa::core::objectmodel::BaseObject> unsorted;
-
+    NodeSingle<sofa::core::behavior::BaseAnimationLoop> animationManager;
+    NodeSingle<sofa::core::visual::VisualLoop> visualLoop;
+    NodeSingle<sofa::core::topology::Topology> topology;
+    NodeSingle<sofa::core::topology::BaseMeshTopology> meshTopology;
+    NodeSingle<sofa::core::BaseState> state;
+    NodeSingle<sofa::core::behavior::BaseMechanicalState> mechanicalState;
+    NodeSingle<sofa::core::BaseMapping> mechanicalMapping;
+    NodeSingle<sofa::core::behavior::BaseMass> mass;
+    NodeSingle<sofa::core::collision::Pipeline> collisionPipeline;
     /// @}
 
     /// @name Set/get objects
@@ -535,9 +568,9 @@ public:
     /// @name virtual functions to add/remove some special components direclty in the right Sequence
     /// @{
 
-#define NODE_ADD_IN_SEQUENCE( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
-    virtual void add##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.add(obj); } \
-    virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.remove(obj); }
+#define NODE_DECLARE_SEQUENCE_ACCESSOR( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
+    void add##FUNCTIONNAME( CLASSNAME* obj ) override ; \
+    void remove##FUNCTIONNAME( CLASSNAME* obj ) override ;
 
     /// WARNINGS subtilities:
     /// an InteractioFF is NOT in the FF Sequence
@@ -545,33 +578,33 @@ public:
     /// a Mass is in the FF Sequence
     /// a MeshTopology is in the topology Sequence
 public:
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
-    NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BaseMapping, Mapping, mapping )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::OdeSolver, OdeSolver, solver )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
-    NODE_ADD_IN_SEQUENCE( sofa::core::topology::Topology, Topology, topology )
-    NODE_ADD_IN_SEQUENCE( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
-    NODE_ADD_IN_SEQUENCE( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BaseState, State, state )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseMass, Mass, mass )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseForceField, ForceField, forceField )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
-    NODE_ADD_IN_SEQUENCE( sofa::core::objectmodel::ContextObject, ContextObject, contextObject )
-    NODE_ADD_IN_SEQUENCE( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
-    NODE_ADD_IN_SEQUENCE( sofa::core::visual::Shader, Shader, shaders )
-    NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualModel, VisualModel, visualModel )
-    NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualManager, VisualManager, visualManager )
-    NODE_ADD_IN_SEQUENCE( sofa::core::CollisionModel, CollisionModel, collisionModel )
-    NODE_ADD_IN_SEQUENCE( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::Topology, Topology, topology )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseState, State, state )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMass, Mass, mass )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseForceField, ForceField, forceField )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ContextObject, ContextObject, contextObject )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::Shader, Shader, shaders )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualModel, VisualModel, visualModel )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualManager, VisualManager, visualManager )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, collisionModel )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
 
-#undef NODE_ADD_IN_SEQUENCE
+#undef NODE_DECLARE_SEQUENCE_ACCESSOR
 
     /// @}
 
