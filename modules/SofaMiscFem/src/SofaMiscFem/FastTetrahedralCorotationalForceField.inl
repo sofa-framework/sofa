@@ -314,6 +314,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::computeQRRotation( Mat3x3
 template <class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
 {
+    using namespace sofa::core::topology;
 
     VecDeriv& f        = *(dataF.beginEdit());
     const VecCoord& x  =   dataX.getValue()  ;
@@ -340,7 +341,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
         const core::topology::BaseMeshTopology::Tetrahedron &ta = m_topology->getTetrahedron(i);
         for (j=0; j<6; ++j)
         {
-            dp[j]=x[ta[topology::edgesInTetrahedronArray[j][1]]]-x[ta[topology::edgesInTetrahedronArray[j][0]]];
+            dp[j]=x[ta[edgesInTetrahedronArray[j][1]]]-x[ta[edgesInTetrahedronArray[j][0]]];
         }
 
         if (decompositionMethod==POLAR_DECOMPOSITION)
@@ -398,10 +399,10 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
             dp[j]=tetinfo->rotation*dp[j]-tetinfo->restEdgeVector[j];
 
             // force on first vertex in the rest configuration
-            force[topology::edgesInTetrahedronArray[j][1]]+=tetinfo->linearDfDx[j]*dp[j];
+            force[edgesInTetrahedronArray[j][1]]+=tetinfo->linearDfDx[j]*dp[j];
 
             // force on second vertex in the rest configuration
-            force[topology::edgesInTetrahedronArray[j][0]]-=tetinfo->linearDfDx[j].multTranspose(dp[j]);
+            force[edgesInTetrahedronArray[j][0]]-=tetinfo->linearDfDx[j].multTranspose(dp[j]);
         }
         for (j=0; j<4; ++j)
         {

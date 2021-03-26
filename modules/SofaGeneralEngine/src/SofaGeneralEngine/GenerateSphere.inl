@@ -22,7 +22,7 @@
 #pragma once
 #include "GenerateSphere.h"
 #include <sofa/helper/rmath.h> //M_PI
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa::component::engine
 {
@@ -595,8 +595,8 @@ void GenerateSphere<DataTypes>::doUpdate()
 
 			for (i=0;i<6;++i){
 				Edge e,se;
-				e[0]=(*itt)[topology::edgesInTetrahedronArray[i][0]];
-				e[1]=(*itt)[topology::edgesInTetrahedronArray[i][1]];
+				e[0]=(*itt)[sofa::core::topology::edgesInTetrahedronArray[i][0]];
+				e[1]=(*itt)[sofa::core::topology::edgesInTetrahedronArray[i][1]];
 				if (e[0]>e[1]){
 					se[0]=e[1];se[1]=e[0];
 				} else {

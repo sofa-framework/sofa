@@ -23,7 +23,7 @@
 #include "GenerateCylinder.h"
 #include <sofa/helper/rmath.h> //M_PI
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa::component::engine
 {
@@ -221,8 +221,9 @@ void GenerateCylinder<DataTypes>::doUpdate()
             for (i=0;i<6;++i){
 
                 Edge e,se;
-                e[0]=(*itt)[topology::edgesInTetrahedronArray[i][0]];
-                e[1]=(*itt)[topology::edgesInTetrahedronArray[i][1]];
+                using namespace sofa::core::topology;
+                e[0]=(*itt)[edgesInTetrahedronArray[i][0]];
+                e[1]=(*itt)[edgesInTetrahedronArray[i][1]];
                 if (e[0]>e[1]){
                     se[0]=e[1];se[1]=e[0];
                 } else {

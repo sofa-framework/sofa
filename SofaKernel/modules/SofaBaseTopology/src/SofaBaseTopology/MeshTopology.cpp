@@ -81,6 +81,7 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
         Edge e;
         for (unsigned int j=0; j<6; ++j)
         {
+            using namespace sofa::core::topology;
             unsigned int v1=t[edgesInTetrahedronArray[j][0]];
             unsigned int v2=t[edgesInTetrahedronArray[j][1]];
             // sort vertices in lexicographics order
@@ -912,6 +913,7 @@ void MeshTopology::createEdgesInTetrahedronArray ()
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<6; ++j)
         {
+            using namespace sofa::core::topology;
             EdgeID edgeIndex = getEdgeIndex(t[edgesInTetrahedronArray[j][0]], t[edgesInTetrahedronArray[j][1]]);
             assert(edgeIndex != InvalidID);
             m_edgesInTetrahedron[i][j]=edgeIndex;
@@ -2217,6 +2219,7 @@ int MeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID qu
 MeshTopology::Edge MeshTopology::getLocalEdgesInTetrahedron (const HexahedronID i) const
 {
     assert(i<6);
+    using namespace sofa::core::topology;
     return MeshTopology::Edge (edgesInTetrahedronArray[i][0], edgesInTetrahedronArray[i][1]);
 }
 
