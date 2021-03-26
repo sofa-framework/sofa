@@ -38,89 +38,79 @@
 
 #include <fstream>
 
-namespace sofa
+namespace sofa::component::misc
 {
 
-    namespace component
+/**
+* This component can be used to export the physical simulation result to Blender (http://www.blender.org/) 
+* by replacing an existing cached simulation.
+* This exporter create a sequence of .bphys file containing the simulation state at each frame.
+* These files must be copied (or directly writed) in a blendcache folder created in the same directory 
+* that the blender file.
+*/
+
+// TODO: currently the export only support soft body and hair simulations, clothes, smoke and fluid simulation could be added.
+
+template<class T>
+class SOFA_SOFAEXPORTER_API BlenderExporter: public core::objectmodel::BaseObject
+{
+public:
+    typedef core::objectmodel::BaseObject Inherit;
+    typedef sofa::core::State<T> DataType;
+    typedef typename DataType::VecCoord VecCoord;
+    typedef typename DataType::VecDeriv VecDeriv;
+    typedef typename DataType::Coord Coord;
+    typedef typename DataType::Deriv Deriv;
+    typedef typename DataType::ReadVecDeriv ReadVecDeriv;
+    typedef typename DataType::ReadVecCoord ReadVecCoord;
+
+    typedef enum{SoftBody,Particle,Cloth,Hair}SimulationType;
+
+    SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
+
+    Data < std::string > path; ///< output path
+    Data < std::string > baseName; ///< Base name for the output files
+    Data < int > simulationType; ///< simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)
+    Data < int > simulationStep; ///< save the  simulation result every step frames
+    Data < int > nbPtsByHair; ///< number of element by hair strand
+
+protected:
+
+    typename DataType::SPtr mmodel;
+
+    BlenderExporter();
+
+    ~BlenderExporter() override{}
+
+public:
+
+    static const char* Name(){return "Blender exporter";}
+
+    void init() override;
+
+    void reset() override;
+
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
+
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T2>
+    static bool canCreate(T2*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-
-        namespace misc
+        if (dynamic_cast<DataType*>(context->getState()) == nullptr)
         {
+            arg->logError(std::string("No mechanical state with the datatype '") + T::Name() +
+                          "' found in the context node.");
+            return false;
+        }
+        return BaseObject::canCreate(obj, context, arg);
+    }
 
-            /**
-            * This component can be used to export the physical simulation result to Blender (http://www.blender.org/) 
-            * by replacing an existing cached simulation.
-            * This exporter create a sequence of .bphys file containing the simulation state at each frame.
-            * These files must be copied (or directly writed) in a blendcache folder created in the same directory 
-            * that the blender file.
-            */
+protected:
 
-            // TODO: currently the export only support soft body and hair simulations, clothes, smoke and fluid simulation could be added.
-            
-            template<class T>
-            class SOFA_SOFAEXPORTER_API BlenderExporter: public core::objectmodel::BaseObject
-            {
-            public:
-                typedef core::objectmodel::BaseObject Inherit;
-                typedef sofa::core::State<T> DataType;
-                typedef typename DataType::VecCoord VecCoord;
-                typedef typename DataType::VecDeriv VecDeriv;
-                typedef typename DataType::Coord Coord;
-                typedef typename DataType::Deriv Deriv;
-                typedef typename DataType::ReadVecDeriv ReadVecDeriv;
-                typedef typename DataType::ReadVecCoord ReadVecCoord;
-
-                typedef enum{SoftBody,Particle,Cloth,Hair}SimulationType;
-
-                SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
-
-                Data < std::string > path; ///< output path
-                Data < std::string > baseName; ///< Base name for the output files
-                Data < int > simulationType; ///< simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)
-                Data < int > simulationStep; ///< save the  simulation result every step frames
-                Data < int > nbPtsByHair; ///< number of element by hair strand
-
-            protected:
-
-                typename DataType::SPtr mmodel;
-
-                BlenderExporter();
-
-                ~BlenderExporter() override{}
-
-            public:
-
-                static const char* Name(){return "Blender exporter";}
-
-                void init() override;
-
-                void reset() override;
-
-                void handleEvent(sofa::core::objectmodel::Event* event) override;
-
-                /// Pre-construction check method called by ObjectFactory.
-                /// Check that DataTypes matches the MechanicalState.
-                template<class T2>
-                static bool canCreate(T2*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-                {
-                    if (dynamic_cast<DataType*>(context->getState()) == nullptr)
-                    {
-                        arg->logError(std::string("No mechanical state with the datatype '") + T::Name() +
-                                      "' found in the context node.");
-                        return false;
-                    }
-                    return BaseObject::canCreate(obj, context, arg);
-                }
-
-            protected:
-
-                unsigned frameCounter;
+    unsigned frameCounter;
 
 
-            };
+};
 
-        } // namespace misc
-
-    } // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::misc
