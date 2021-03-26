@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/Topology.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -29,16 +30,11 @@ namespace sofa::component::topology
 
 using namespace std;
 using namespace sofa::defaulttype;
+using namespace sofa::core::topology;
 
 int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container")
         .add< HexahedronSetTopologyContainer >()
         ;
-
-const unsigned int edgesInHexahedronArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
-///convention quads in hexa (orientation interior)
-const unsigned int quadsInHexahedronArray[6][4]= {{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2}, {2,6,7,3}, {0,3,7,4}};
-
-const unsigned int verticesInHexahedronArray[2][2][2]=  {{{0,4},{3,7}},{{1,5},{2,6}}};
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()

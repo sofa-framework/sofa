@@ -245,6 +245,10 @@ struct TopologyElementInfo<Topology::Hexahedron>
 
 extern const unsigned int edgesInTetrahedronArray[6][2];
 
+extern const unsigned int edgesInHexahedronArray[12][2];
+extern const unsigned int quadsInHexahedronArray[6][4];
+extern const unsigned int verticesInHexahedronArray[2][2][2];
+
 
 } // namespace topology
 

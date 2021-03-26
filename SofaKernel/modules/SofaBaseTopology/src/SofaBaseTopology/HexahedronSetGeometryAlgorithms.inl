@@ -23,11 +23,13 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
+#include <sofa/core/topology/Topology.h>
 #include <fstream>
 
 namespace sofa::component::topology
 {
 
+using namespace sofa::core::topology;
 template< class DataTypes>
 NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3> &HexahedronSetGeometryAlgorithms< DataTypes >::getHexahedronNumericalIntegrationDescriptor()
 {

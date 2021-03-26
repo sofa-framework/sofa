@@ -22,7 +22,6 @@
 #include <SofaBaseTopology/MeshTopology.h>
 
 #include <sofa/core/topology/Topology.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
@@ -32,7 +31,7 @@ namespace sofa::component::topology
 {
 
 using helper::vector;
-
+using namespace sofa::core::topology;
 
 MeshTopology::EdgeUpdate::EdgeUpdate(MeshTopology* t)
     :PrimitiveUpdate(t)
@@ -935,6 +934,7 @@ void MeshTopology::createEdgesInHexahedronArray ()
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<12; ++j)
         {
+            using namespace sofa::core::topology;
             EdgeID edgeIndex = getEdgeIndex(h[edgesInHexahedronArray[j][0]], h[edgesInHexahedronArray[j][1]]);
             assert(edgeIndex != InvalidID);
             m_edgesInHexahedron[i][j]=edgeIndex;
