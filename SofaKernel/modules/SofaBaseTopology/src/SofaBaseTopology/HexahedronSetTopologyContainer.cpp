@@ -36,7 +36,7 @@ int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set t
 
 const unsigned int edgesInHexahedronArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
 ///convention quads in hexa (orientation interior)
-const unsigned int quadsInHexahedronArray[6][4]= {{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2},  {2,6,7,3}, {0,3,7,4}};
+const unsigned int quadsInHexahedronArray[6][4]= {{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2}, {2,6,7,3}, {0,3,7,4}};
 
 const unsigned int verticesInHexahedronArray[2][2][2]=  {{{0,4},{3,7}},{{1,5},{2,6}}};
 

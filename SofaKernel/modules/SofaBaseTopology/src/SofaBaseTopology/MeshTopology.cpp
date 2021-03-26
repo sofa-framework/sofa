@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaBaseTopology/MeshTopology.h>
 
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
@@ -72,7 +74,6 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     unsigned int edgeIndex;
 
     const SeqTetrahedra& tetrahedra = topology->getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
-    const unsigned int edgesInTetrahedronArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
     for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
         const Tetra &t=tetrahedra[i];
@@ -108,7 +109,6 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     // should the edgeMap be cleared here ? Sounds strange but it seems that is what was done in previous method.
 
     const SeqHexahedra& hexahedra = topology->getHexahedra(); // do not use seqHexahedra directly as it might not be up-to-date
-    const unsigned int edgeHexahedronDescriptionArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
     // create a temporary map to find redundant edges
 
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
@@ -119,8 +119,8 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
         Edge e;
         for (unsigned int j=0; j<12; ++j)
         {
-            unsigned int v1=h[edgeHexahedronDescriptionArray[j][0]];
-            unsigned int v2=h[edgeHexahedronDescriptionArray[j][1]];
+            unsigned int v1=h[edgesInHexahedronArray[j][0]];
+            unsigned int v2=h[edgesInHexahedronArray[j][1]];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -905,7 +905,6 @@ void MeshTopology::createEdgesInTetrahedronArray ()
     const SeqTetrahedra& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
     m_edgesInTetrahedron.clear();
     m_edgesInTetrahedron.resize(tetrahedra.size());
-    const unsigned int edgesInTetrahedronArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
 
     for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
@@ -927,7 +926,6 @@ void MeshTopology::createEdgesInHexahedronArray ()
     const SeqHexahedra& hexahedra = getHexahedra(); // do not use seqHexahedra directly as it might not be up-to-date
     m_edgesInHexahedron.clear();
     m_edgesInHexahedron.resize(hexahedra.size());
-    const unsigned int edgeHexahedronDescriptionArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
 
     for (unsigned int i = 0; i < hexahedra.size(); ++i)
     {
@@ -935,7 +933,7 @@ void MeshTopology::createEdgesInHexahedronArray ()
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<12; ++j)
         {
-            EdgeID edgeIndex = getEdgeIndex(h[edgeHexahedronDescriptionArray[j][0]], h[edgeHexahedronDescriptionArray[j][1]]);
+            EdgeID edgeIndex = getEdgeIndex(h[edgesInHexahedronArray[j][0]], h[edgesInHexahedronArray[j][1]]);
             assert(edgeIndex != InvalidID);
             m_edgesInHexahedron[i][j]=edgeIndex;
         }
@@ -2219,14 +2217,12 @@ int MeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID qu
 MeshTopology::Edge MeshTopology::getLocalEdgesInTetrahedron (const HexahedronID i) const
 {
     assert(i<6);
-    const unsigned int edgesInTetrahedronArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
     return MeshTopology::Edge (edgesInTetrahedronArray[i][0], edgesInTetrahedronArray[i][1]);
 }
 
 MeshTopology::Edge MeshTopology::getLocalEdgesInHexahedron (const HexahedronID i) const
 {
     assert(i<12);
-    const unsigned int edgesInHexahedronArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
     return MeshTopology::Edge (edgesInHexahedronArray[i][0], edgesInHexahedronArray[i][1]);
 }
 
