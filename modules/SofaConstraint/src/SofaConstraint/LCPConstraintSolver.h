@@ -69,6 +69,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdConstraintSet = true;
     }
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override

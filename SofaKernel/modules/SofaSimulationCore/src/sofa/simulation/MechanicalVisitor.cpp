@@ -42,15 +42,18 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
 {
     Result res = RESULT_CONTINUE;
 
-    for (unsigned i=0; i<node->solver.size() && res!=RESULT_PRUNE; i++ )
+    if (applyFwdOdeSolver)
     {
-        if(testTags(node->solver[i]))
+        for (unsigned i=0; i<node->solver.size() && res!=RESULT_PRUNE; i++ )
         {
-            debug_write_state_before(node->solver[i]);
-            ctime_t t = begin(node, node->solver[i], "fwd");
-            res = this->fwdOdeSolver(ctx, node->solver[i]);
-            end(node, node->solver[i], t);
-            debug_write_state_after(node->solver[i]);
+            if(testTags(node->solver[i]))
+            {
+                debug_write_state_before(node->solver[i]);
+                ctime_t t = begin(node, node->solver[i], "fwd");
+                res = this->fwdOdeSolver(ctx, node->solver[i]);
+                end(node, node->solver[i], t);
+                debug_write_state_after(node->solver[i]);
+            }
         }
     }
 
@@ -69,7 +72,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
                 }
 
                 Result res2 = RESULT_CONTINUE;
-                if(testTags(node->mechanicalMapping))
+                if(applyFwdMechanicalMapping && testTags(node->mechanicalMapping))
                 {
                     debug_write_state_before(node->mechanicalMapping);
                     ctime_t t = begin(node, node->mechanicalMapping, "fwd");
@@ -78,7 +81,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
                     debug_write_state_after(node->mechanicalMapping);
                 }
 
-                if(testTags(node->mechanicalState))
+                if(applyFwdMappedMechanicalState && testTags(node->mechanicalState))
                 {
                     debug_write_state_before(node->mechanicalState);
                     ctime_t t = begin(node, node->mechanicalState, "fwd");
@@ -92,7 +95,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
             }
             else
             {
-                if(testTags(node->mechanicalState))
+                if(applyFwdMechanicalState && testTags(node->mechanicalState))
                 {
                     debug_write_state_before(node->mechanicalState);
                     ctime_t t = begin(node, node->mechanicalState, "fwd");
@@ -111,7 +114,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
             }
 
             Result res2 = RESULT_CONTINUE;
-            if(testTags(node->mechanicalMapping))
+            if(applyFwdMechanicalMapping && testTags(node->mechanicalMapping))
             {
                 debug_write_state_before(node->mechanicalMapping);
                 ctime_t t = begin(node, node->mechanicalMapping, "fwd");
@@ -127,7 +130,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
 
     if (res != RESULT_PRUNE)
     {
-        if (node->mass != nullptr)
+        if (applyFwdMass && node->mass != nullptr)
         {
             if(testTags(node->mass))
             {
@@ -140,28 +143,28 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
         }
     }
 
-    if (res != RESULT_PRUNE)
+    if (applyFwdConstraintSolver && res != RESULT_PRUNE)
     {
         res = for_each_r(this, ctx, node->constraintSolver, &MechanicalVisitor::fwdConstraintSolver);
     }
 
-    if (res != RESULT_PRUNE)
+    if (applyFwdForceField && res != RESULT_PRUNE)
     {
         res = for_each_r(this, ctx, node->forceField, &MechanicalVisitor::fwdForceField);
     }
 
-    if (res != RESULT_PRUNE)
+    if (applyFwdInteractionForceField && res != RESULT_PRUNE)
     {
         res = for_each_r(this, ctx, node->interactionForceField, &MechanicalVisitor::fwdInteractionForceField);
     }
 
 
-    if (res != RESULT_PRUNE)
+    if (applyFwdProjectiveConstraintSet && res != RESULT_PRUNE)
     {
         res = for_each_r(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::fwdProjectiveConstraintSet);
     }
 
-    if (res != RESULT_PRUNE)
+    if (applyFwdConstraintSet && res != RESULT_PRUNE)
     {
         res = for_each_r(this, ctx, node->constraintSet, &MechanicalVisitor::fwdConstraintSet);
     }
@@ -173,9 +176,18 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
 
 void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorContext* ctx)
 {
-    for_each(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::bwdProjectiveConstraintSet);
-    for_each(this, ctx, node->constraintSet, &MechanicalVisitor::bwdConstraintSet);
-    for_each(this, ctx, node->constraintSolver, &MechanicalVisitor::bwdConstraintSolver);
+    if (applyBwdProjectiveConstraintSet)
+    {
+        for_each(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::bwdProjectiveConstraintSet);
+    }
+    if (applyBwdConstraintSet)
+    {
+        for_each(this, ctx, node->constraintSet, &MechanicalVisitor::bwdConstraintSet);
+    }
+    if (applyBwdConstraintSolver)
+    {
+        for_each(this, ctx, node->constraintSolver, &MechanicalVisitor::bwdConstraintSolver);
+    }
 
     if (node->mechanicalState != nullptr)
     {
@@ -185,18 +197,25 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorC
             {
                 if(testTags(node->mechanicalState))
                 {
-                    ctime_t t = begin(node, node->mechanicalState, "bwd");
-                    this->bwdMappedMechanicalState(ctx, node->mechanicalState);
-                    end(node, node->mechanicalState, t);
-                    t = begin(node, node->mechanicalMapping, "bwd");
-                    this->bwdMechanicalMapping(ctx, node->mechanicalMapping);
-                    end(node, node->mechanicalMapping, t);
+                    if (applyBwdMappedMechanicalState)
+                    {
+                        ctime_t t = begin(node, node->mechanicalState, "bwd");
+                        this->bwdMappedMechanicalState(ctx, node->mechanicalState);
+                        end(node, node->mechanicalState, t);
+                    }
+
+                    if (applyBwdMechanicalMapping)
+                    {
+                        ctime_t t = begin(node, node->mechanicalMapping, "bwd");
+                        this->bwdMechanicalMapping(ctx, node->mechanicalMapping);
+                        end(node, node->mechanicalMapping, t);
+                    }
                 }
             }
         }
         else
         {
-            if(testTags(node->mechanicalState))
+            if(applyBwdMechanicalState && testTags(node->mechanicalState))
             {
                 ctime_t t = begin(node, node->mechanicalState, "bwd");
                 this->bwdMechanicalState(ctx, node->mechanicalState);
@@ -206,13 +225,16 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorC
 
     }
 
-    for (unsigned i=0; i<node->solver.size(); i++ )
+    if (applyBwdOdeSolver)
     {
-        if(testTags(node->solver[i]))
+        for (unsigned i = 0; i < node->solver.size(); i++)
         {
-            ctime_t t = begin(node, node->solver[i], "bwd");
-            this->bwdOdeSolver(ctx, node->solver[i]);
-            end(node, node->solver[i], t);
+            if (testTags(node->solver[i]))
+            {
+                ctime_t t = begin(node, node->solver[i], "bwd");
+                this->bwdOdeSolver(ctx, node->solver[i]);
+                end(node, node->solver[i], t);
+            }
         }
     }
 
@@ -865,6 +887,9 @@ MechanicalPropagateOnlyPositionAndVelocityVisitor::MechanicalPropagateOnlyPositi
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
+    applyFwdMechanicalState = true;
+    applyFwdMechanicalMapping = true;
+    applyBwdMechanicalState = true;
 }
 
 Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
@@ -924,6 +949,9 @@ MechanicalPropagateOnlyPositionVisitor::MechanicalPropagateOnlyPositionVisitor(c
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
+    applyFwdMechanicalState = true;
+    applyFwdMechanicalMapping = true;
+    applyBwdMechanicalState = true;
 }
 
 
@@ -991,6 +1019,9 @@ MechanicalPropagateOnlyVelocityVisitor::MechanicalPropagateOnlyVelocityVisitor(
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
+    applyFwdMechanicalState = true;
+    applyFwdMechanicalMapping = true;
+    applyBwdMechanicalState = true;
 }
 
 Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
@@ -1025,6 +1056,7 @@ MechanicalSetPositionAndVelocityVisitor::MechanicalSetPositionAndVelocityVisitor
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
+    applyFwdMechanicalState = true;
 }
 
 Visitor::Result MechanicalSetPositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)

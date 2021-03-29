@@ -49,12 +49,14 @@ namespace simulation
 /** Base class for easily creating new actions for mechanical simulation.
 
 During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node.
-Each component attached to this node is processed using the appropriate method, prefixed by fwd.
+Each component attached to this node is processed using the appropriate method, prefixed by fwd, only if the
+corresponding applyFwd* boolean is true.
 During the second traversal (bottom-up), method processNodeBottomUp(simulation::Node*) is applied to each simulation::Node.
-Each component attached to this node is processed using the appropriate method, prefixed by bwd.
+Each component attached to this node is processed using the appropriate method, prefixed by bwd, only if the
+corresponding applyBwd* boolean is true.
 The default behavior of the fwd* and bwd* is to do nothing.
 Derived actions typically overload these methods to implement the desired processing.
-
+If a derived class overloads these methods, it must usually also set the corresponding applyFwd* and applyBwd* variables to true
 */
 class SOFA_SIMULATION_CORE_API BaseMechanicalVisitor : public Visitor
 {
@@ -141,6 +143,8 @@ public:
         return fwdOdeSolver(ctx->node, solver);
     }
 
+    bool applyFwdOdeSolver { false };
+
     /// Process the ConstraintSolver
     virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* /*solver*/)
     {
@@ -152,6 +156,8 @@ public:
     {
         return fwdConstraintSolver(ctx->node, solver);
     }
+
+    bool applyFwdConstraintSolver { false };
 
     /// Process the BaseMechanicalMapping
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
@@ -165,6 +171,8 @@ public:
         return fwdMechanicalMapping(ctx->node, map);
     }
 
+    bool applyFwdMechanicalMapping { false };
+
     /// Process the BaseMechanicalState if it is mapped from the parent level
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {
@@ -176,6 +184,8 @@ public:
     {
         return fwdMappedMechanicalState(ctx->node, mm);
     }
+
+    bool applyFwdMappedMechanicalState { false };
 
     /// Process the BaseMechanicalState if it is not mapped from the parent level
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
@@ -189,6 +199,8 @@ public:
         return fwdMechanicalState(ctx->node, mm);
     }
 
+    bool applyFwdMechanicalState { false };
+
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* /*mass*/)
     {
@@ -201,18 +213,21 @@ public:
         return fwdMass(ctx->node, mass);
     }
 
+    bool applyFwdMass { false };
+
     /// Process all the BaseForceField
     virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* /*ff*/)
     {
         return RESULT_CONTINUE;
     }
 
-
     /// Process all the BaseForceField
     virtual Result fwdForceField(VisitorContext* ctx, core::behavior::BaseForceField* ff)
     {
         return fwdForceField(ctx->node, ff);
     }
+
+    bool applyFwdForceField { false };
 
     /// Process all the InteractionForceField
     virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff)
@@ -226,17 +241,23 @@ public:
         return fwdInteractionForceField(ctx->node, ff);
     }
 
+    bool applyFwdInteractionForceField { false };
+
     /// Process all the BaseProjectiveConstraintSet
     virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
+    bool applyFwdProjectiveConstraintSet { false };
+
     /// Process all the BaseConstraintSet
     virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* /*c*/)
     {
         return RESULT_CONTINUE;
     }
+
+    bool applyFwdConstraintSet { false };
 
     /// Process all the BaseProjectiveConstraintSet
     virtual Result fwdProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseProjectiveConstraintSet* c)
@@ -256,11 +277,15 @@ public:
         return RESULT_CONTINUE;
     }
 
+    bool applyFwdInteractionProjectiveConstraintSet { false };
+
     /// Process all the InteractionConstraint
     virtual Result fwdInteractionConstraint(simulation::Node* /*node*/, core::behavior::BaseInteractionConstraint* /*c*/)
     {
         return RESULT_CONTINUE;
     }
+
+    bool applyFwdInteractionConstraint { false };
 
     /// Process all the InteractionConstraint
     virtual Result fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseInteractionProjectiveConstraintSet* c);
@@ -294,6 +319,8 @@ public:
     virtual void bwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
     { bwdMechanicalState(ctx->node, mm); }
 
+    bool applyBwdMechanicalState { false };
+
     /// Process the BaseMechanicalState when it is mapped from parent level
     virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
     {}
@@ -301,6 +328,8 @@ public:
     /// Process the BaseMechanicalState when it is mapped from parent level
     virtual void bwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
     { bwdMappedMechanicalState(ctx->node, mm); }
+
+    bool applyBwdMappedMechanicalState { false };
 
     /// Process the BaseMechanicalMapping
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
@@ -310,6 +339,8 @@ public:
     virtual void bwdMechanicalMapping(VisitorContext* ctx, core::BaseMapping* map)
     { bwdMechanicalMapping(ctx->node, map); }
 
+    bool applyBwdMechanicalMapping { false };
+
     /// Process the OdeSolver
     virtual void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
     {}
@@ -317,6 +348,8 @@ public:
     /// Process the OdeSolver
     virtual void bwdOdeSolver(VisitorContext* ctx, core::behavior::OdeSolver* solver)
     { bwdOdeSolver(ctx->node, solver); }
+
+    bool applyBwdOdeSolver { false };
 
     /// Process the ConstraintSolver
     virtual void bwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* /*solver*/)
@@ -326,13 +359,19 @@ public:
     virtual void bwdConstraintSolver(VisitorContext* ctx, core::behavior::ConstraintSolver* solver)
     { bwdConstraintSolver(ctx->node, solver); }
 
+    bool applyBwdConstraintSolver { false };
+
     /// Process all the BaseProjectiveConstraintSet
     virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* /*c*/)
     {}
 
+    bool applyBwdProjectiveConstraintSet { false };
+
     /// Process all the BaseConstraintSet
     virtual void bwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* /*c*/)
     {}
+
+    bool applyBwdConstraintSet { false };
 
     /// Process all the BaseProjectiveConstraintSet
     virtual void bwdProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseProjectiveConstraintSet* c)
@@ -402,6 +441,7 @@ public:
         setReadWriteVectors();
 #endif
         rootData = result;
+        applyFwdMechanicalState = true;
     }
 
     Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
@@ -439,6 +479,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
@@ -490,6 +531,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
     }
 
     bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
@@ -542,6 +585,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
@@ -592,6 +636,9 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyFwdInteractionForceField = true;
     }
 
     bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
@@ -650,6 +697,9 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyFwdInteractionForceField = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -690,6 +740,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
     }
 
     // If mapped or only_mapped is ste, this visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -745,6 +797,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
     }
 
     MechanicalVMultiOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
@@ -801,6 +855,7 @@ public:
         setReadWriteVectors();
 #endif
         rootData = t;
+        applyFwdMechanicalState = true;
     }
 
     Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
@@ -850,6 +905,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
     }
     SReal getResult() const;
 
@@ -897,6 +953,9 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
@@ -947,6 +1006,10 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyFwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -991,6 +1054,10 @@ public:
                                                     sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, bool m)
         : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
     {
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyFwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -1033,6 +1100,10 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMass = true;
+        applyFwdMechanicalMapping = true;
+        applyFwdMappedMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
@@ -1071,6 +1142,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMass = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
@@ -1106,6 +1179,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalMapping = true;
+        applyFwdProjectiveConstraintSet = true;
     }
 
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
@@ -1139,6 +1214,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalMapping = true;
+        applyFwdProjectiveConstraintSet = true;
     }
 
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
@@ -1177,6 +1254,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalMapping = true;
+        applyFwdProjectiveConstraintSet = true;
     }
 
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
@@ -1217,6 +1296,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalMapping = true;
+        applyFwdProjectiveConstraintSet = true;
     }
 
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
@@ -1318,7 +1399,7 @@ public:
 
     MechanicalPropagateOnlyPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
                                                   sofa::core::MultiVecCoordId x = sofa::core::VecId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
-            bool m=true );  
+            bool m=true );
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
@@ -1364,8 +1445,8 @@ class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyVelocityVisitor : public M
 public:
     SReal currentTime;
     sofa::core::MultiVecDerivId v;
-    bool ignoreMask;    
-    
+    bool ignoreMask;
+
     MechanicalPropagateOnlyVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
                                        sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true);
@@ -1450,6 +1531,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -1494,6 +1577,11 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyFwdForceField = true;
+        applyBwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -1541,6 +1629,11 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyFwdForceField = true;
+        applyBwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
     }
     MechanicalComputeDfVisitor(const sofa::core::MechanicalParams* mparams, sofa::core::MultiVecDerivId res, bool accumulate)
         : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
@@ -1548,6 +1641,11 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyFwdForceField = true;
+        applyBwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -1595,6 +1693,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalMapping = true;
     }
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
 
@@ -1642,6 +1741,12 @@ public:
 #endif
         mparamsWithoutStiffness = *mparams;
         mparamsWithoutStiffness.setKFactor(0);
+
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyFwdForceField = true;
+        applyBwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -1680,6 +1785,9 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyFwdConstraintSet = true;
     }
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -1727,6 +1835,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdConstraintSet = true;
+        applyBwdMechanicalMapping = true;
     }
 
     const core::ConstraintParams* constraintParams() const { return cparams; }
@@ -1776,6 +1886,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdConstraintSet = true;
     }
 
     const core::ConstraintParams* constraintParams() const { return cparams; }
@@ -1823,6 +1934,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyBwdMechanicalMapping = true;
     }
 
     const core::ConstraintParams* constraintParams() const { return cparams; }
@@ -1875,6 +1987,9 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyBwdProjectiveConstraintSet = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) override;
@@ -1915,6 +2030,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -1952,6 +2069,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -1990,6 +2109,9 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdOdeSolver = true;
+        applyFwdInteractionForceField = true;
+        applyBwdOdeSolver = true;
     }
     Result fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj) override;
     Result fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField* obj) override;
@@ -2029,6 +2151,9 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyBwdMechanicalMapping = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -2065,6 +2190,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMass = true;
     }
 
     /// Process the BaseMass
@@ -2098,6 +2224,9 @@ public:
     MechanicalPickParticlesVisitor(const sofa::core::ExecParams* mparams, const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, sofa::core::objectmodel::Tag tag = sofa::core::objectmodel::Tag("NoPicking") )
         : BaseMechanicalVisitor(mparams) , rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr), tagNoPicking(tag)
     {
+        applyFwdMechanicalState = true;
+        applyFwdMechanicalMapping = true;
+        applyFwdMappedMechanicalState = true;
     }
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -2137,6 +2266,9 @@ public:
 	MechanicalPickParticlesWithTagsVisitor(const sofa::core::ExecParams* mparams, const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, std::list<sofa::core::objectmodel::Tag> _tags = std::list<sofa::core::objectmodel::Tag>(), bool _mustContainAllTags = false)
 		: BaseMechanicalVisitor(mparams) , rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr), tags(_tags), mustContainAllTags(_mustContainAllTags)
 	{
+        applyFwdMechanicalState = true;
+        applyFwdMechanicalMapping = true;
+        applyFwdMappedMechanicalState = true;
 	}
 
 	Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
@@ -2178,6 +2310,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
     }
 
     Result fwdMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm) override;

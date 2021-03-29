@@ -30,6 +30,8 @@ ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::Con
 ,m_cParams(cParams)
 ,m_lambda(lambda)
 {
+    applyFwdConstraintSet = true;
+    applyBwdMechanicalMapping = true;
 }
 
 Visitor::Result ConstraintStoreLambdaVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)

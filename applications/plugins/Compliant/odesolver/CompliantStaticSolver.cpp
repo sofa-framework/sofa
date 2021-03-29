@@ -284,10 +284,14 @@ public:
     AugmentedLagrangianVisitor(const sofa::core::MechanicalParams* mparams,
                                core::MultiVecId id)
         : MechanicalVisitor(mparams),
-          id(id) { }
+          id(id)
+    {
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+    }
 
     core::MultiVecId id;
-    
+
     Result mstate(simulation::Node* node,
                   core::behavior::BaseMechanicalState* mm) {
 
@@ -296,14 +300,14 @@ public:
 
         if( c ) {
             // TODO project ?
-            
+
             // add force to external force
-            mm->vOp(params, id.getId(mm), core::ConstVecId::force() );            
+            mm->vOp(params, id.getId(mm), core::ConstVecId::force() );
         }
 
         return RESULT_CONTINUE;
     }
-    
+
     Result fwdMappedMechanicalState(simulation::Node* node,
                                             core::behavior::BaseMechanicalState* mm) override {
         return mstate(node, mm);
@@ -317,13 +321,17 @@ public:
 };
 
 
-// somehow setting external force directly does not work 
+// somehow setting external force directly does not work
 class WriteExternalForceVisitor : public simulation::MechanicalVisitor {
 public:
     WriteExternalForceVisitor(const sofa::core::MechanicalParams* mparams,
                               core::MultiVecId id)
         : MechanicalVisitor(mparams),
-          id(id) { }
+          id(id)
+    {
+        applyFwdMappedMechanicalState = true;
+        applyFwdMechanicalState = true;
+    }
 
 
     core::MultiVecId id;

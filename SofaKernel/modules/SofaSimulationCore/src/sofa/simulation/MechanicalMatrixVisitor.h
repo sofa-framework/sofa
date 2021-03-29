@@ -61,7 +61,11 @@ public:
         const core::ExecParams* params, sofa::Size* const _nbRow, sofa::Size* const _nbCol,
         sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
-    {}
+    {
+        applyFwdMechanicalState = true;
+        applyFwdMechanicalMapping = true;
+        applyFwdMappedMechanicalState = true;
+    }
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override
     {
@@ -103,7 +107,9 @@ public:
     MechanicalGetConstraintJacobianVisitor(
         const core::ConstraintParams* cparams, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr)
         : BaseMechanicalVisitor(cparams) , cparams(cparams), J(_J), matrix(_matrix), offset(0)
-    {}
+    {
+        applyFwdMechanicalState = true;
+    }
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override
     {
@@ -153,7 +159,9 @@ public:
         ,vId(v)
         ,matrix(_matrix)
         ,offset(0)
-    {}
+    {
+        applyFwdMechanicalState = true;
+    }
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override
     {
@@ -200,6 +208,8 @@ public:
     MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
         : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
     {
+        applyFwdMechanicalState = true;
+        applyFwdForceField = true;
     }
 
     /// Return a class name for this visitor
@@ -240,6 +250,8 @@ public:
     MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix, const helper::vector<unsigned> & Id)
         : MechanicalVisitor(mparams) ,  matrix(_matrix), subMatrixIndex(Id) //,m(_m),b(_b),k(_k)
     {
+        applyFwdMechanicalState = true;
+        applyFwdForceField = true;
     }
 
     /// Return a class name for this visitor
@@ -275,6 +287,8 @@ public:
     MechanicalApplyProjectiveConstraint_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
         : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
     {
+        applyFwdMechanicalState = true;
+        applyFwdProjectiveConstraintSet = true;
     }
 
     /// Return a class name for this visitor
@@ -286,7 +300,7 @@ public:
         //ms->setOffset(offsetOnExit);
         return RESULT_CONTINUE;
     }
-    
+
     Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override
     {
         if (matrix != nullptr)
@@ -316,6 +330,7 @@ public:
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , src(_src), vect(_vect), matrix(_matrix), offset(0)
     {
+        applyFwdMechanicalState = true;
     }
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
@@ -349,6 +364,7 @@ public:
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
+        applyFwdMechanicalState = true;
     }
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
@@ -384,6 +400,7 @@ public:
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
+        applyFwdMechanicalState = true;
     }
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override

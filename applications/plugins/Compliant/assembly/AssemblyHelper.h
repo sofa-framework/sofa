@@ -212,6 +212,11 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+        applyBwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
+        applyBwdMappedMechanicalState = true;
     }
 
     // reset lambda where there is no compliant FF
@@ -314,6 +319,11 @@ public:
         , propagate(propagate)
     {
         assert(!propagate || clear ); // existing forces must be cleared if propagating
+
+        applyFwdMappedMechanicalState = true;
+        applyFwdMechanicalState = true;
+        applyBwdMechanicalMapping = true;
+        applyBwdProjectiveConstraintSet = true;
     }
 
 
@@ -367,6 +377,10 @@ public:
         : simulation::MechanicalVisitor(mparams)
         , lambda( lambda )
     {
+        applyFwdMappedMechanicalState = true;
+        applyFwdMechanicalState = true;
+        applyBwdMechanicalMapping = true;
+        applyBwdProjectiveConstraintSet = true;
     }
 
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state) override

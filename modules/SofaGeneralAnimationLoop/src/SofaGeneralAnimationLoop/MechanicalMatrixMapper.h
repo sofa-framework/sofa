@@ -50,7 +50,7 @@ public:
         , res(_res)
         , cparams(_cparams)
     {
-
+        applyBwdMechanicalMapping = true;
     }
 
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override

@@ -1109,6 +1109,7 @@ MechanicalGetConstraintResolutionVisitor::MechanicalGetConstraintResolutionVisit
 #ifdef SOFA_DUMP_VISITOR_INFO
   setReadWriteVectors();
 #endif
+    applyFwdConstraintSet = true;
 }
 
 MechanicalGetConstraintResolutionVisitor::Result MechanicalGetConstraintResolutionVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)

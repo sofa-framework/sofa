@@ -78,6 +78,9 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMappedMechanicalState = true;
+        applyBwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
     }
 
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
@@ -141,6 +144,8 @@ public:
         , lambdas( lambdas )
         , invdt( -1.0/dt )
     {
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
     }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
@@ -179,6 +184,11 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdMappedMechanicalState = true;
+        applyFwdForceField = true;
+        applyBwdMechanicalMapping = true;
+        applyBwdMechanicalState = true;
+        applyBwdProjectiveConstraintSet = true;
     }
 
     // TODO how to propagate lambdas without invalidating forces on mapped dofs?

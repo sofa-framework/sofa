@@ -42,7 +42,9 @@ class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
 public:
     MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams)
         : sofa::simulation::MechanicalVisitor(mparams)
-    {}
+    {
+        applyFwdMass = true;
+    }
 
     const defaulttype::Vector6& getMomentum() const { return m_momenta; }
 

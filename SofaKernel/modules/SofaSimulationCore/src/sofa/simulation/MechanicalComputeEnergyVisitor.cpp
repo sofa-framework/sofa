@@ -33,6 +33,8 @@ MechanicalComputeEnergyVisitor::MechanicalComputeEnergyVisitor(const core::Mecha
     , m_kineticEnergy(0.)
     , m_potentialEnergy(0.)
 {
+    applyFwdMass = true;
+    applyFwdForceField = true;
 }
 
 

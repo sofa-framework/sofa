@@ -48,6 +48,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdConstraintSet = true;
     }
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
@@ -78,6 +79,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyFwdConstraintSet = true;
     }
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override;
@@ -113,6 +115,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        applyBwdMechanicalMapping = true;
     }
 
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;

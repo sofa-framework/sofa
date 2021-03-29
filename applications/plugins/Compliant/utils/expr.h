@@ -31,7 +31,10 @@ public:
 
         mapped = true;
         precomp = true;
-        
+
+        applyFwdMechanicalState = true;
+        applyFwdMappedMechanicalState = true;
+
         // TODO more
     }
 
