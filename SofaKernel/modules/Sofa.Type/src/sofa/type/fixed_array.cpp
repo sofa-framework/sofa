@@ -19,58 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define FIXED_ARRAY_CPP
 
-#include <algorithm>
-#include <sofa/type/stdtype/vector_T.h>
+#include <sofa/type/fixed_array.h>
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
-/** Remove the first occurence of a given value.
-    The remaining values are shifted.
-*/
-template<class T1, class T2>
-void remove( T1& v, const T2& elem )
-{
-    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
-    if( e != v.end() )
-    {
-        typename T1::iterator next = e;
-        next++;
-        for( ; next != v.end(); ++e, ++next )
-            *e = *next;
-    }
-    v.pop_back();
-}
 
-/** Remove the first occurence of a given value.
+template class SOFA_TYPE_API fixed_array<float, 2>;
+template class SOFA_TYPE_API fixed_array<double, 2>;
 
-The last value is moved to where the value was found, and the other values are not shifted.
-*/
-template<class T1, class T2>
-void removeValue( T1& v, const T2& elem )
-{
-    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
-    if( e != v.end() )
-    {
-        if (e != v.end()-1)
-            *e = v.back();
-        v.pop_back();
-    }
-}
+template class SOFA_TYPE_API fixed_array<float, 3>;
+template class SOFA_TYPE_API fixed_array<double, 3>;
 
-/// Remove value at given index, replace it by the value at the last index, other values are not changed
-template<class T, class TT>
-void removeIndex( std::vector<T,TT>& v, size_t index )
-{
-    if constexpr(sofa::type::stdtype::isEnabledVectorAccessChecking)
-    {
-        if (index>=v.size())
-            vector_access_failure(&v, v.size(), index, typeid(T));
-    }
-    if (index != v.size()-1)
-        v[index] = v.back();
-    v.pop_back();
-}
+template class SOFA_TYPE_API fixed_array<float, 4>;
+template class SOFA_TYPE_API fixed_array<double, 4>;
 
-} // namespace sofa::type::stdtype
+template class SOFA_TYPE_API fixed_array<float, 5>;
+template class SOFA_TYPE_API fixed_array<double, 5>;
+
+template class SOFA_TYPE_API fixed_array<float, 6>;
+template class SOFA_TYPE_API fixed_array<double, 6>;
+
+template class SOFA_TYPE_API fixed_array<float, 7>;
+template class SOFA_TYPE_API fixed_array<double, 7>;
+
+} // namespace sofa::type
+

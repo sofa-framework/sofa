@@ -23,7 +23,6 @@
 #include <SofaGeneralLinearSolver/MinResLinearSolver.inl>
 
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
 
 namespace sofa::component::linearsolver
 {

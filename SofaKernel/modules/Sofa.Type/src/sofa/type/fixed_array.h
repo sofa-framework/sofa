@@ -57,7 +57,7 @@
 #include <type_traits>
 
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
 template<class T, sofa::Size N>
@@ -508,4 +508,4 @@ extern template class SOFA_TYPE_API fixed_array<float, 7>;
 extern template class SOFA_TYPE_API fixed_array<double, 7>;
 #endif //
 
-} // namespace sofa::type::stdtype
+} // namespace sofa::type

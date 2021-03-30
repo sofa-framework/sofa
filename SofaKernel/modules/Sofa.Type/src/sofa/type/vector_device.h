@@ -43,7 +43,7 @@
 #define DEBUG_OUT_V(a)
 #endif
 
-namespace sofa::type::stdtype
+namespace sofa::type
 {
 
 template <class T, class MemoryManager, class DataTypeInfoManager>
@@ -918,4 +918,4 @@ protected:
 #undef DEBUG_OUT_V
 #endif
 
-} // namespace sofa::type::stdtype
+} // namespace sofa::type

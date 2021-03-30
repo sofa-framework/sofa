@@ -224,6 +224,8 @@ void GenGraphForm::doExport()
     }
     if (filename->text()==QString("")) return;
 
+    filename->setStyleSheet("");
+
     QString dotfile = filename->text();
 
     QString basefile = removeFileExt(dotfile);
@@ -235,7 +237,10 @@ void GenGraphForm::doExport()
     fdot.open(dotfile.toStdString().c_str(), std::ofstream::out | std::ofstream::trunc);
     if (!fdot.is_open())
     {
-        qFatal("Output to %s failed.\n",dotfile.toStdString().c_str());
+        msg_error("GenGraphForm") << "Output to " << dotfile.toStdString() << " failed.";
+        filename->clear();
+        filename->setFocus();
+        filename->setStyleSheet("border: 1px solid red");
         return;
     }
     {

@@ -19,15 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
+#define SOFA_HELPER_VECTOR_REAL_DEFINITION
+#include <sofa/type/vector_Real.h>
+#include <sofa/type/vector_T.inl>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-} // namespace simulation
-
-} // namespace sofa
+template class SOFA_TYPE_API sofa::type::vector<float>;
+template class SOFA_TYPE_API sofa::type::vector<double>;
 

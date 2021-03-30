@@ -25,7 +25,6 @@
 
 #include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
 #include <SofaOpenglVisual/OglShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>

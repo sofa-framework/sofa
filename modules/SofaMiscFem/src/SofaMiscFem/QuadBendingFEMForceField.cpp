@@ -19,15 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
+#define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_CPP
 
-namespace sofa
+#include "QuadBendingFEMForceField.inl"
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::forcefield
 {
 
-namespace simulation
-{
+using namespace sofa::defaulttype;
 
-} // namespace simulation
+// Register in the Factory
+int QuadBendingFEMForceFieldClass = core::RegisterObject("Bending Quad finite elements")
+      .add< QuadBendingFEMForceField<Vec3Types> >();
 
-} // namespace sofa
+template class SOFA_SOFAMISCFEM_API QuadBendingFEMForceField<Vec3Types>;
 
+} // namespace sofa::component::forcefield

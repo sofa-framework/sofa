@@ -21,47 +21,52 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/stdtype/vector.h>
+namespace sofa::component::mapping {
 
-namespace sofa::type::stdtype
+template<typename Model>
+struct CenterOfMassMappingOperation
 {
+    typedef typename Model::VecCoord VecCoord;
+    typedef typename Model::Coord Coord;
+    typedef typename Model::Deriv Deriv;
+    typedef typename Model::VecDeriv VecDeriv;
 
-// -----------------------------------------------------------
-//
-/*! @name linear algebra on standard vectors
+public :
+    static inline const VecCoord *getVecCoord(const Model *m, const sofa::core::VecId id) {
+        return m->getVecCoord(id.index);
+    }
 
-*/
-//
-// -----------------------------------------------------------
-//@{
+    static inline VecDeriv *getVecDeriv(Model *m, const sofa::core::VecId id) { return m->getVecDeriv(id.index); }
 
-/// Dot product of two vectors
-template<class V1, class V2>
-SReal dot( const V1& vector1, const V2& vector2 )
-{
-    assert(vector1.size()==vector2.size());
-    SReal result=0;
-    for(std::size_t i=0; i<vector1.size(); i++)
-        result += vector1[i] * vector2[i];
-    return result;
+    static inline const sofa::core::behavior::BaseMass *fetchMass(const Model *m) {
+        sofa::core::behavior::BaseMass *mass = m->getContext()->getMass();
+        return mass;
+    }
+
+    static inline double computeTotalMass(const Model *model, const sofa::core::behavior::BaseMass *mass) {
+        double result = 0.0;
+        const unsigned int modelSize = static_cast<unsigned int>(model->getSize());
+        for (unsigned int i = 0; i < modelSize; i++) {
+            result += mass->getElementMass(i);
+        }
+        return result;
+    }
+
+    static inline Coord WeightedCoord(const VecCoord *v, const sofa::core::behavior::BaseMass *m) {
+        Coord c;
+        for (unsigned int i = 0; i < v->size(); i++) {
+            c += (*v)[i] * m->getElementMass(i);
+        }
+        return c;
+    }
+
+    static inline Deriv WeightedDeriv(const VecDeriv *v, const sofa::core::behavior::BaseMass *m) {
+        Deriv d;
+        for (unsigned int i = 0; i < v->size(); i++) {
+            d += (*v)[i] * m->getElementMass(i);
+        }
+        return d;
+    }
+};
+
 }
-
-/// Norm of a vector
-template<class V>
-SReal norm( const V& v )
-{
-    return sqrt(dot(v,v));
-}
-
-/// Vector operation: result = ax + y
-template<class V1, class Scalar, class V2, class V3>
-void axpy( V1& result, Scalar a, const V2& x, const V3& y )
-{
-    auto n = x.size();
-    assert(n==y.size());
-    result.resize(n);
-    for(std::size_t i=0; i<n; i++)
-        result[i] = x[i]*a + y[i];
-}
-
-} // namespace sofa::type::stdtype

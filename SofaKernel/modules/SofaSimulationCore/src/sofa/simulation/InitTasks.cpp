@@ -25,13 +25,13 @@ namespace sofa
         Task::MemoryAlloc InitPerThreadDataTask::run()
         {
             
-            core::execparams::defaultInstance();
-            
-            core::constraintparams::defaultInstance();
-            
-            core::mechanicalparams::defaultInstance();
-            
-            core::visual::visualparams::defaultInstance();
+            sofa::core::execparams::defaultInstance();
+
+            sofa::core::constraintparams::defaultInstance();
+
+            sofa::core::mechanicalparams::defaultInstance();
+
+            sofa::core::visual::visualparams::defaultInstance();
             
             {
                 // to solve IdFactory<Base>::getID() problem in AdvancedTimer functions

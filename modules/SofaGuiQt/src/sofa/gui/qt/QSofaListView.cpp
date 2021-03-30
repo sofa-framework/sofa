@@ -32,7 +32,6 @@
 #include <SofaSimulationCommon/xml/BaseElement.h>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/cast.h>
-#include <sofa/simulation/Simulation.h>
 #include <QMenu>
 #include <QtGlobal> // version macro
 #include <QMessageBox>
