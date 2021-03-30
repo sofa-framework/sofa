@@ -1,6 +1,29 @@
 # SOFA Changelog
 
 
+## [v20.12.02](https://github.com/sofa-framework/sofa/tree/v20.12.02)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v20.12.01...v20.12.02)
+
+
+### Bug Fixes
+**Modules**
+- [SofaGeneralExplicitOdeSolver] Fix typo in CentralDifferenceSolver description [#1894](https://github.com/sofa-framework/sofa/pull/1894)
+- [SofaGuiQt] Fix RealGUI: QDesktopWidget header missing for Qt < 5.11 [#1904](https://github.com/sofa-framework/sofa/pull/1904)
+- [SofaGuiQt] Clean QtGLViewer with key events [#1850](https://github.com/sofa-framework/sofa/pull/1850)
+- **[SofaHelper]** Fix out of bounds error [#1868](https://github.com/sofa-framework/sofa/pull/1868)
+
+**Plugins / Projects**
+- [SofaCUDA] change the setTopology method signature [#1843](https://github.com/sofa-framework/sofa/pull/1843)
+
+**Examples / Scenes**
+- [examples] Add missing RequiredPlugin [#1895](https://github.com/sofa-framework/sofa/pull/1895)
+
+
+____________________________________________________________
+
+
+
 ## [v20.12.01](https://github.com/sofa-framework/sofa/tree/v20.12.01)
 
 [Full log](https://github.com/sofa-framework/sofa/compare/v20.12.00...v20.12.01)
