@@ -57,7 +57,11 @@ public:
     }
 
 protected:
-    
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
+    }
     virtual Result fwdMappedMechanicalState(sofa::simulation::Node* node,
                                             sofa::core::behavior::BaseMechanicalState* mm) {
         if(mapped) {
@@ -67,6 +71,10 @@ protected:
         
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     virtual Result fwdMechanicalState(sofa::simulation::Node* node,
                                       sofa::core::behavior::BaseMechanicalState* mm) {
         _delegate->exec(mparams, mm);

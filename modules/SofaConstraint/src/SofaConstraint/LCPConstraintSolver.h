@@ -71,6 +71,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdConstraintSet(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdConstraintSet_impl(node, ctx);
+    }
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override
     {
         if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())

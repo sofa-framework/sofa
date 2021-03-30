@@ -80,6 +80,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
+    }
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
     {
         if( node->forceField.empty() || node->forceField[0]->isCompliance.getValue() )
@@ -87,7 +91,10 @@ public:
         return RESULT_CONTINUE;
     }
 
-
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalMapping_impl(node, ctx);
+    }
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         //       cerr<<"MechanicalComputeForceVisitor::bwdMechanicalMapping "<<map->getName()<<endl;
@@ -102,7 +109,10 @@ public:
 
     }
 
-
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalState_impl(node, ctx);
+    }
     void bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm) override
     {
         mm->forceMask.activate(false);
@@ -142,11 +152,21 @@ public:
         , invdt( -1.0/dt )
     {
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
         mm->resetForce(this->params, res.getId(mm));
         mm->accumulateForce(this->params, res.getId(mm));
         return RESULT_CONTINUE;
+    }
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
     }
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
     {
@@ -181,6 +201,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
+    }
     // TODO how to propagate lambdas without invalidating forces on mapped dofs?
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
@@ -188,7 +212,10 @@ public:
         return RESULT_CONTINUE;
     }
 
-
+    Result processNodeTopDown_fwdForceField(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdForceField_impl(node, ctx);
+    }
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override
     {
         if( ff->isCompliance.getValue() )
@@ -201,7 +228,10 @@ public:
         return RESULT_CONTINUE;
     }
 
-
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalMapping_impl(node, ctx);
+    }
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         ForceMaskActivate( map->getMechFrom() );
@@ -210,11 +240,19 @@ public:
         ForceMaskDeactivate( map->getMechTo() );
     }
 
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalState_impl(node, ctx);
+    }
     void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
         mm->forceMask.activate(false);
     }
 
+    void processNodeBottomUp_bwdProjectiveConstraintSet(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdProjectiveConstraintSet_impl(node, ctx);
+    }
     void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override
     {
         c->projectResponse( this->mparams, res );

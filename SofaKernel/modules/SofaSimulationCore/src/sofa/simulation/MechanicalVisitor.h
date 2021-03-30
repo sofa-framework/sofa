@@ -375,6 +375,121 @@ protected:
     sofa::helper::vector< core::ConstMultiVecId > readVector;
     sofa::helper::vector< core::MultiVecId > writeVector;
 #endif
+
+    virtual Result processNodeTopDown_fwdOdeSolvers(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdOdeSolvers_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdMechanicalMapping_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result processNodeTopDown_fwdMechanicalState(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result processNodeTopDown_fwdMass(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdMass_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result processNodeTopDown_fwdConstraintSolver(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdConstraintSolver_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result processNodeTopDown_fwdForceField(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdForceField_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result processNodeTopDown_fwdInteractionForceField(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdInteractionForceField_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result processNodeTopDown_fwdProjectiveConstraintSet(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdProjectiveConstraintSet_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual Result processNodeTopDown_fwdConstraintSet(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        // return processNodeTopDown_fwdConstraintSet_impl(node, ctx);
+        return RESULT_CONTINUE;
+    }
+
+    virtual void processNodeBottomUp_bwdProjectiveConstraintSet(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        //processNodeBottomUp_bwdProjectiveConstraintSet_impl(node, ctx);
+    }
+
+    virtual void processNodeBottomUp_bwdConstraintSet(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        //processNodeTopDown_bwdConstraintSet_impl(node, ctx);
+    }
+
+    virtual void processNodeBottomUp_bwdConstraintSolver(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        //processNodeBottomUp_bwdConstraintSolver_impl(node, ctx);
+    }
+
+    virtual void processNodeBottomUp_bwdMappedMechanicalState(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        //processNodeBottomUp_bwdMappedMechanicalState_impl(node, ctx);
+    }
+
+    virtual void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        //processNodeBottomUp_bwdMechanicalMapping_impl(node, ctx);
+    }
+
+    virtual void processNodeBottomUp_bwdMechanicalState(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        //processNodeBottomUp_bwdMechanicalState_impl(node, ctx);
+    }
+
+    virtual void processNodeBottomUp_bwdOdeSolver(simulation::Node* /*node*/, VisitorContext* /*ctx*/)
+    {
+        //processNodeBottomUp_bwdOdeSolver_impl(node, ctx);
+    }
+
+protected:
+
+    Result processNodeTopDown_fwdOdeSolvers_impl(simulation::Node* node, VisitorContext* ctx);
+    Result processNodeTopDown_fwdMechanicalMapping_impl(simulation::Node* node, VisitorContext* ctx);
+    Result processNodeTopDown_fwdMappedMechanicalState_impl(simulation::Node* node, VisitorContext* ctx);
+    Result processNodeTopDown_fwdMechanicalState_impl(simulation::Node* node, VisitorContext* ctx);
+    Result processNodeTopDown_fwdMass_impl(simulation::Node* node, VisitorContext* ctx);
+    Result processNodeTopDown_fwdConstraintSolver_impl(simulation::Node* node, VisitorContext* ctx);
+    Result processNodeTopDown_fwdForceField_impl(simulation::Node* node, VisitorContext* ctx);
+    Result processNodeTopDown_fwdInteractionForceField_impl(simulation::Node* node, VisitorContext* ctx);
+    Result processNodeTopDown_fwdProjectiveConstraintSet_impl(simulation::Node* node, VisitorContext* ctx);
+    Result processNodeTopDown_fwdConstraintSet_impl(simulation::Node* node, VisitorContext* ctx);
+    void processNodeBottomUp_bwdProjectiveConstraintSet_impl(simulation::Node* node, VisitorContext* ctx);
+    void processNodeBottomUp_bwdConstraintSet_impl(simulation::Node* node, VisitorContext* ctx);
+    void processNodeBottomUp_bwdConstraintSolver_impl(simulation::Node* node, VisitorContext* ctx);
+    void processNodeBottomUp_bwdMappedMechanicalState_impl(simulation::Node* node, VisitorContext* ctx);
+    void processNodeBottomUp_bwdMechanicalMapping_impl(simulation::Node* node, VisitorContext* ctx);
+    void processNodeBottomUp_bwdMechanicalState_impl(simulation::Node* node, VisitorContext* ctx);
+    void processNodeBottomUp_bwdOdeSolver_impl(simulation::Node* node, VisitorContext* ctx);
 };
 
 class SOFA_SIMULATION_CORE_API MechanicalVisitor : public BaseMechanicalVisitor
@@ -404,6 +519,7 @@ public:
         rootData = result;
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -440,6 +556,8 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -497,6 +615,9 @@ public:
         return false;
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
+
     Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
 
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
@@ -543,6 +664,8 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -599,10 +722,13 @@ public:
         return false;
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
 
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
 
+    Result processNodeTopDown_fwdInteractionForceField(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff) override;
 
     /// Return a class name for this visitor
@@ -651,8 +777,15 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result processNodeTopDown_fwdInteractionForceField(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff) override;
 
     /// Return a class name for this visitor
@@ -704,7 +837,9 @@ public:
     MechanicalVOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
     MechanicalVOpVisitor& setOnlyMapped(bool m = true) { only_mapped = m; return *this; }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
     const char* getClassName() const override { return "MechanicalVOpVisitor";}
@@ -748,6 +883,9 @@ public:
     }
 
     MechanicalVMultiOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
 
     Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
@@ -803,6 +941,7 @@ public:
         rootData = t;
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -853,6 +992,7 @@ public:
     }
     SReal getResult() const;
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -898,8 +1038,14 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -948,6 +1094,12 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
+
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
@@ -992,6 +1144,12 @@ public:
         : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
     {
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
+
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
@@ -1034,7 +1192,11 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMass(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
 
     /// Return a class name for this visitor
@@ -1042,7 +1204,10 @@ public:
     const char* getClassName() const override { return "MechanicalAddMDxVisitor"; }
     virtual std::string getInfos() const override { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
 
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) override;
 
     /// Specify whether this action can be parallelized.
@@ -1072,7 +1237,11 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMass(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
 
     /// Return a class name for this visitor
@@ -1108,7 +1277,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    Result processNodeTopDown_fwdProjectiveConstraintSet(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
@@ -1141,7 +1313,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    Result processNodeTopDown_fwdProjectiveConstraintSet(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
@@ -1179,7 +1354,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    Result processNodeTopDown_fwdProjectiveConstraintSet(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
@@ -1219,7 +1397,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    Result processNodeTopDown_fwdProjectiveConstraintSet(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
@@ -1264,8 +1445,13 @@ public:
     MechanicalPropagateOnlyPositionVisitor( const sofa::core::MechanicalParams* mparams, SReal time=0,
                                         sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), bool m=true);
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1318,10 +1504,15 @@ public:
 
     MechanicalPropagateOnlyPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
                                                   sofa::core::MultiVecCoordId x = sofa::core::VecId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
-            bool m=true );  
+            bool m=true );
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1370,9 +1561,15 @@ public:
                                        sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true);
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
     {
@@ -1411,6 +1608,7 @@ public:
                                             sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(),
                                             sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity());
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -1451,7 +1649,11 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -1495,10 +1697,20 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdForceField(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
+
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
 
@@ -1549,10 +1761,20 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdForceField(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
+
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -1596,6 +1818,8 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
 
     /// Return a class name for this visitor
@@ -1643,10 +1867,20 @@ public:
         mparamsWithoutStiffness = *mparams;
         mparamsWithoutStiffness.setKFactor(0);
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdForceField(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
+
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -1682,8 +1916,13 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdConstraintSet(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1731,8 +1970,10 @@ public:
 
     const core::ConstraintParams* constraintParams() const { return cparams; }
 
+    Result processNodeTopDown_fwdConstraintSet(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c) override;
 
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1780,6 +2021,7 @@ public:
 
     const core::ConstraintParams* constraintParams() const { return cparams; }
 
+    Result processNodeTopDown_fwdConstraintSet(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c) override;
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1827,6 +2069,7 @@ public:
 
     const core::ConstraintParams* constraintParams() const { return cparams; }
 
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
 
     /// Return true to reverse the order of traversal of child nodes
@@ -1876,8 +2119,14 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) override;
+
+    void processNodeBottomUp_bwdProjectiveConstraintSet(simulation::Node* node, VisitorContext* ctx) override;
     void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
@@ -1916,7 +2165,11 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1953,7 +2206,11 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -1991,11 +2248,12 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdOdeSolvers(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj) override;
+
+    Result processNodeTopDown_fwdInteractionForceField(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField* obj) override;
-    void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*obj*/) override
-    {
-    }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -2030,8 +2288,14 @@ public:
         setReadWriteVectors();
 #endif
     }
+
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
 
     /// Return a class name for this visitor
@@ -2067,6 +2331,7 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMass(simulation::Node* node, VisitorContext* ctx) override;
     /// Process the BaseMass
     Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
 
@@ -2100,8 +2365,13 @@ public:
     {
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
@@ -2139,8 +2409,13 @@ public:
 	{
 	}
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
 	Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override;
 	Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
 	Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
 
 	/// Return a class name for this visitor
@@ -2180,7 +2455,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm) override;
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override;
     Result fwdMappedMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor

@@ -152,6 +152,10 @@ class SOFA_SOFACONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public 
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res);
 
+    Result processNodeTopDown_fwdConstraintSet(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdConstraintSet_impl(node, ctx);
+    }
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
 
     /// Return a class name for this visitor

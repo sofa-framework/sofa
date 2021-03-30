@@ -49,9 +49,17 @@ public:
 
     SReal getPotentialEnergy();
 
+    Result processNodeTopDown_fwdMass(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMass_impl(node, ctx);
+    }
     /// Process the BaseMass
     Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
 
+    Result processNodeTopDown_fwdForceField(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdForceField_impl(node, ctx);
+    }
     /// Process the BaseForceField
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* f) override;
 

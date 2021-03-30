@@ -53,6 +53,10 @@ public:
 
     }
 
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalMapping_impl(node, ctx);
+    }
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override
     {
         ctime_t t0 = begin(node, map);

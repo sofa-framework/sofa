@@ -50,6 +50,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdConstraintSet(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdConstraintSet_impl(node, ctx);
+    }
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
@@ -80,6 +84,10 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdConstraintSet(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdConstraintSet_impl(node, ctx);
+    }
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override;
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -115,6 +123,10 @@ public:
 #endif
     }
 
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalMapping_impl(node, ctx);
+    }
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

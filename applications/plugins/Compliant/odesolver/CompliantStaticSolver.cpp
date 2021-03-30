@@ -303,12 +303,20 @@ public:
 
         return RESULT_CONTINUE;
     }
-    
+
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
+    }
     Result fwdMappedMechanicalState(simulation::Node* node,
                                             core::behavior::BaseMechanicalState* mm) override {
         return mstate(node, mm);
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* node,
                                       core::behavior::BaseMechanicalState* mm) override {
         return mstate(node, mm);

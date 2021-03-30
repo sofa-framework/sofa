@@ -34,8 +34,16 @@ class SOFA_SOFACONSTRAINT_API ConstraintStoreLambdaVisitor : public BaseMechanic
 public:
     ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::defaulttype::BaseVector* lambda);
 
+    Result processNodeTopDown_fwdConstraintSet(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdConstraintSet_impl(node, ctx);
+    }
     Visitor::Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
 
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalMapping_impl(node, ctx);
+    }
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 
     bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;

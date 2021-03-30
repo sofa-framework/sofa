@@ -214,6 +214,11 @@ public:
 #endif
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
+
     // reset lambda where there is no compliant FF
     // these reseted lambdas were previously propagated, but were not computed from the last solve
     Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
@@ -235,15 +240,28 @@ public:
         return RESULT_CONTINUE;
     }
 
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
+    }
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
     {
         return fwdMechanicalState( node, mm );
     }
 
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalMapping_impl(node, ctx);
+    }
     // pop-up lamdas without modifying f
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         map->applyJT( this->mparams, lambdas, lambdas );
+    }
+
+    void processNodeBottomUp_bwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalState_impl(node, ctx);
     }
 
     // for all dofs, f += lambda / dt
@@ -256,6 +274,11 @@ public:
 
             mm->vOp( this->params, resid, resid, lambdasid, invdt ); // f += lambda / dt
         }
+    }
+
+    void processNodeBottomUp_bwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMappedMechanicalState_impl(node, ctx);
     }
 
     void bwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override
@@ -317,6 +340,10 @@ public:
     }
 
 
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
+    }
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state) override
     {
         // lambdas should only be present at compliance location
@@ -330,6 +357,10 @@ public:
         return RESULT_CONTINUE;
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state) override
     {
         // compliance cannot be present at independent dof level
@@ -338,12 +369,20 @@ public:
         return RESULT_CONTINUE;
     }
 
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalMapping_impl(node, ctx);
+    }
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         if( propagate )
             map->applyJT(mparams, force, force);
     }
 
+    void processNodeBottomUp_bwdProjectiveConstraintSet(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdProjectiveConstraintSet_impl(node, ctx);
+    }
     void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override
     {
         if( propagate )
@@ -369,6 +408,10 @@ public:
     {
     }
 
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
+    }
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state) override
     {
         if( node->forceField.empty() || !node->forceField[0]->isCompliance.getValue() )
@@ -381,6 +424,10 @@ public:
         return RESULT_CONTINUE;
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state) override
     {
         // compliance cannot be present at independent dof level
@@ -390,11 +437,19 @@ public:
         return RESULT_CONTINUE;
     }
 
+    void processNodeBottomUp_bwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdMechanicalMapping_impl(node, ctx);
+    }
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
     {
         map->applyJT(mparams, lambda, lambda);
     }
 
+    void processNodeBottomUp_bwdProjectiveConstraintSet(simulation::Node* node, VisitorContext* ctx) override
+    {
+        processNodeBottomUp_bwdProjectiveConstraintSet_impl(node, ctx);
+    }
     void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override
     {
         c->projectResponse( mparams, lambda );

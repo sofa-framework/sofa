@@ -46,6 +46,10 @@ public:
 
     const defaulttype::Vector6& getMomentum() const { return m_momenta; }
 
+    Result processNodeTopDown_fwdMass(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMass_impl(node, ctx);
+    }
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
     {

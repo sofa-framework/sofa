@@ -63,6 +63,10 @@ public:
         : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
     {}
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override
     {
         //ms->contributeToMatrixDimension(nbRow, nbCol);
@@ -73,12 +77,20 @@ public:
         return RESULT_CONTINUE;
     }
 
+    Result processNodeTopDown_fwdMechanicalMapping(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalMapping_impl(node, ctx);
+    }
     Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* mm) override
     {
         if (matrix) matrix->addMechanicalMapping(mm);
         return RESULT_CONTINUE;
     }
 
+    Result processNodeTopDown_fwdMappedMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMappedMechanicalState_impl(node, ctx);
+    }
     Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override
     {
         if (matrix) matrix->addMappedMechanicalState(ms);
@@ -105,6 +117,10 @@ public:
         : BaseMechanicalVisitor(cparams) , cparams(cparams), J(_J), matrix(_matrix), offset(0)
     {}
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override
     {
         if (matrix) offset = matrix->getGlobalOffset(ms);
@@ -155,6 +171,10 @@ public:
         ,offset(0)
     {}
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override
     {
         if (matrix) offset = matrix->getGlobalOffset(ms);
@@ -206,12 +226,10 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalAddMBK_ToMatrixVisitor"; }
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/) override
+    Result processNodeTopDown_fwdForceField(simulation::Node* node, VisitorContext* ctx) override
     {
-        //ms->setOffset(offsetOnExit);
-        return RESULT_CONTINUE;
+        return processNodeTopDown_fwdForceField_impl(node, ctx);
     }
-
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override
     {
         if (matrix != nullptr)
@@ -246,12 +264,20 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalAddSubMBK_ToMatrixVisitor"; }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/) override
     {
         //ms->setOffset(offsetOnExit);
         return RESULT_CONTINUE;
     }
 
+    Result processNodeTopDown_fwdForceField(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdForceField_impl(node, ctx);
+    }
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override
     {
         if (matrix != nullptr)
@@ -281,12 +307,20 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const override { return "MechanicalApplyProjectiveConstraint_ToMatrixVisitor"; }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/) override
     {
         //ms->setOffset(offsetOnExit);
         return RESULT_CONTINUE;
     }
-    
+
+    Result processNodeTopDown_fwdProjectiveConstraintSet(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdProjectiveConstraintSet_impl(node, ctx);
+    }
     Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override
     {
         if (matrix != nullptr)
@@ -318,6 +352,10 @@ public:
     {
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
         if (matrix) offset = matrix->getGlobalOffset(mm);
@@ -351,6 +389,10 @@ public:
     {
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
         if (matrix) offset = matrix->getGlobalOffset(mm);
@@ -386,6 +428,10 @@ public:
     {
     }
 
+    Result processNodeTopDown_fwdMechanicalState(simulation::Node* node, VisitorContext* ctx) override
+    {
+        return processNodeTopDown_fwdMechanicalState_impl(node, ctx);
+    }
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override
     {
         if (matrix) offset = matrix->getGlobalOffset(mm);
