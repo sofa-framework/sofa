@@ -52,6 +52,19 @@ else()
     set(DISABLE_PRECOMPILE_HEADERS ON)
 endif()
 
+# Option to accelerate the compilation
+# see https://cmake.org/cmake/help/latest/prop_tgt/UNITY_BUILD.html
+cmake_dependent_option(SOFA_BUILD_WITH_UNITY_BUILD_ENABLED
+    "Compile SOFA using unity build (to accelerate the build process)" OFF
+    "CMAKE_VERSION VERSION_GREATER_EQUAL 3.16" OFF)
+if(SOFA_BUILD_WITH_UNITY_BUILD_ENABLED)
+    message("-- Unity build: enabled (SOFA_BUILD_WITH_UNITY_BUILD_ENABLED is ON).")
+    set(SOFA_UNITY_BUILD_BATCH_SIZE 8)
+else()
+    message("-- Unity build: disabled (SOFA_BUILD_WITH_UNITY_BUILD_ENABLED is OFF or CMake < 3.16).")
+endif()
+
+
 ## Change default install prefix
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
