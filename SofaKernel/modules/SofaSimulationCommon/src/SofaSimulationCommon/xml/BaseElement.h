@@ -41,7 +41,7 @@ enum IncludeNodeType
     INCLUDE_NODE_MERGE, ///< indicating a node that should be merged with its parent, and any child node with the same name as an existing child should be recursively merged
 };
 
-class SOFA_SOFASIMULATIONCOMMON_API BaseElement : public core::objectmodel::BaseObjectDescription
+class SOFA_SOFASIMULATIONCOMMON_API BaseElement : public sofa::core::objectmodel::BaseObjectDescription
 {
 private:
     std::string basefile;
@@ -63,7 +63,7 @@ public:
     virtual const char* getClass() const = 0;
 
     /// Get the associated object
-    core::objectmodel::Base* getObject() override = 0;
+    sofa::core::objectmodel::Base* getObject() override = 0;
 
     /// Get the node instance name
     std::string getName() override
