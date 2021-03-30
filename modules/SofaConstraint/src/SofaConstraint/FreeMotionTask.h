@@ -19,54 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #pragma once
-#include <SofaConstraint/config.h>
 
-#include <sofa/simulation/CollisionAnimationLoop.h>
+#include <sofa/simulation/Task.h>
 
-namespace sofa::core::behavior
-{
-    class ConstraintSolver;
-}
+#include <sofa/simulation/fwd.h>
+#include <sofa/core/fwd.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa::component::animationloop
 {
 
-class SOFA_SOFACONSTRAINT_API FreeMotionAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class FreeMotionTask : public sofa::simulation::CpuTask
 {
 public:
-    SOFA_CLASS(FreeMotionAnimationLoop, sofa::simulation::CollisionAnimationLoop);
+    FreeMotionTask(
+            sofa::simulation::Node* node,
+            const sofa::core::ExecParams* params,
+            const core::ConstraintParams* cparams,
+            SReal dt,
+            sofa::core::MultiVecId pos,
+            sofa::core::MultiVecId freePos,
+            sofa::core::MultiVecDerivId freeVel,
+            simulation::common::MechanicalOperations* mop,
+            sofa::core::objectmodel::BaseContext* context,
+            sofa::simulation::CpuTask::Status* status);
+    ~FreeMotionTask() override = default;
+    sofa::simulation::Task::MemoryAlloc run() final;
 
-public:
-    void step (const sofa::core::ExecParams* params, SReal dt) override;
-    void init() override;
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+private:
+    sofa::simulation::Node* m_node;
+    const sofa::core::ExecParams* m_params;
+    const core::ConstraintParams* m_cparams;
+    SReal m_dt;
 
-    /// Construction method called by ObjectFactory. An animation loop can only
-    /// be created if
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
+    sofa::core::MultiVecId m_pos;
+    sofa::core::MultiVecId m_freePos;
+    sofa::core::MultiVecDerivId m_freeVel;
 
-    Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
-    Data<bool> d_threadSafeVisitor;
-    Data<bool> d_isParallel;
+    simulation::common::MechanicalOperations* m_mop;
 
-protected:
-    FreeMotionAnimationLoop(simulation::Node* gnode);
-    ~FreeMotionAnimationLoop() override ;
-
-    ///< pointer towards a possible ConstraintSolver present in the scene graph
-    sofa::core::behavior::ConstraintSolver *constraintSolver;
-
-    ///< pointer towards a default ConstraintSolver (LCPConstraintSolver) used in case none was found in the scene graph
-    sofa::core::sptr<sofa::core::behavior::ConstraintSolver> defaultSolver;
+    sofa::core::objectmodel::BaseContext* m_context;
 };
 
-} // namespace sofa::component::animationloop
+}
