@@ -43,6 +43,11 @@ sofa_find_package(SofaSparseSolver QUIET) # Soft dependency of PrecomputedWarpPr
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaGeneralLinearSolver SofaSimpleFem)
+
+sofa_configure_unity_build(TARGET ${PROJECT_NAME}
+                           ACTIVATED "${SOFA_BUILD_WITH_UNITY_BUILD_ENABLED}"
+                           BATCHSIZE "${SOFA_UNITY_BUILD_BATCH_SIZE}")
+
 if(SofaSparseSolver_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaSparseSolver)
 endif()

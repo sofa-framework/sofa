@@ -60,6 +60,10 @@ list(APPEND SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaBaseUtils)
 
+sofa_configure_unity_build(TARGET ${PROJECT_NAME}
+                           ACTIVATED "${SOFA_BUILD_WITH_UNITY_BUILD_ENABLED}"
+                           BATCHSIZE "${SOFA_UNITY_BUILD_BATCH_SIZE}")
+
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}

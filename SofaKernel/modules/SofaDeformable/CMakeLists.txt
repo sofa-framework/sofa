@@ -43,6 +43,10 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
 endif()
 
+sofa_configure_unity_build(TARGET ${PROJECT_NAME}
+                           ACTIVATED "${SOFA_BUILD_WITH_UNITY_BUILD_ENABLED}"
+                           BATCHSIZE "${SOFA_UNITY_BUILD_BATCH_SIZE}")
+
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}

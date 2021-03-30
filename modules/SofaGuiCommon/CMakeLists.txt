@@ -57,6 +57,10 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEAD
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction SofaSimulationCommon)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::program_options)
 
+sofa_configure_unity_build(TARGET ${PROJECT_NAME}
+                           ACTIVATED "${SOFA_BUILD_WITH_UNITY_BUILD_ENABLED}"
+                           BATCHSIZE "${SOFA_UNITY_BUILD_BATCH_SIZE}")
+
 if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
     sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
 endif()

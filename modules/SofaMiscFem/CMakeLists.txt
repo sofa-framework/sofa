@@ -81,6 +81,11 @@ sofa_create_package_with_targets(
     RELOCATABLE "plugins"
     )
 
+
+sofa_configure_unity_build(TARGET ${PROJECT_NAME}
+                           ACTIVATED "${SOFA_BUILD_WITH_UNITY_BUILD_ENABLED}"
+                           BATCHSIZE "${SOFA_UNITY_BUILD_BATCH_SIZE}")
+
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
 cmake_dependent_option(SOFAMISCFEM_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)

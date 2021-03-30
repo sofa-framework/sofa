@@ -340,6 +340,9 @@ if(SOFAGUIQT_ENABLE_NODEGRAPH)
     endif()
 endif()
 
+sofa_configure_unity_build(TARGET ${PROJECT_NAME}
+                           ACTIVATED "${SOFA_BUILD_WITH_UNITY_BUILD_ENABLED}"
+                           BATCHSIZE "${SOFA_UNITY_BUILD_BATCH_SIZE}")
 
 # FFMPEG
 if(FFMPEG_EXEC_FOUND)
