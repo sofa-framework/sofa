@@ -40,7 +40,6 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <SofaConstraint/LCPConstraintSolver.h>
 
 namespace sofa::component::animationloop
 {
