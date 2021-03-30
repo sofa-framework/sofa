@@ -175,6 +175,23 @@ macro(sofa_add_application directory app_name)
     sofa_add_generic( ${directory} ${app_name} "Application" DEFAULT_VALUE "${ARGV2}" ${ARGN})
 endmacro()
 
+function(sofa_configure_unity_build)
+    set(optionArgs)
+    set(oneValueArgs TARGET ACTIVATED BATCHSIZE)
+    set(multiValueArgs)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if(${ARG_ACTIVATED})
+        message("-- ${ARG_TARGET}: Unity build activated, batch size ${ARG_BATCHSIZE}.")
+        set_target_properties(${PROJECT_NAME} PROPERTIES
+                              UNITY_BUILD true
+                              UNITY_BUILD_MODE BATCH
+                              UNITY_BUILD_BATCH_SIZE "${ARG_BATCHSIZE}"
+                              )
+    else()
+        message("-- ${ARG_TARGET}: Unity build de-activated.")
+    endif()
+endfunction()
 
 ### External projects management
 # Thanks to http://crascit.com/2015/07/25/cmake-gtest/
