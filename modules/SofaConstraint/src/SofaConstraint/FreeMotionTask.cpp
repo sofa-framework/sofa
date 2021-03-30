@@ -64,10 +64,17 @@ sofa::simulation::Task::MemoryAlloc FreeMotionTask::run()
 //        std::cout << "FreeMotionTask performed" << std::endl;
     }
 
-//    m_mop->projectResponse(m_freeVel);
-//    m_mop->propagateDx(m_freeVel, true);
+    m_mop->projectResponse(m_freeVel);
+    m_mop->propagateDx(m_freeVel, true);
 
-
+    if (m_cparams->constOrder() == sofa::core::ConstraintParams::POS ||
+        m_cparams->constOrder() == sofa::core::ConstraintParams::POS_AND_VEL)
+    {
+        sofa::helper::ScopedAdvancedTimer timer("freePosEqPosPlusFreeVelDt");
+        sofa::simulation::MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(m_params, m_freePos, m_pos, m_freeVel, m_dt);
+        freePosEqPosPlusFreeVelDt.setMapped(true);
+        m_context->executeVisitor(&freePosEqPosPlusFreeVelDt);
+    }
 
     return simulation::Task::Stack;
 }

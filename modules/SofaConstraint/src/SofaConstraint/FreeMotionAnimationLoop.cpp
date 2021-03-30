@@ -223,18 +223,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
         freeMotionTask.run();
 
-        mop.projectResponse(freeVel);
-        mop.propagateDx(freeVel, true);
-
-        if (cparams.constOrder() == sofa::core::ConstraintParams::POS ||
-            cparams.constOrder() == sofa::core::ConstraintParams::POS_AND_VEL)
-        {
-            sofa::helper::ScopedAdvancedTimer timer("freePosEqPosPlusFreeVelDt");
-            sofa::simulation::MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
-            freePosEqPosPlusFreeVelDt.setMapped(true);
-            getContext()->executeVisitor(&freePosEqPosPlusFreeVelDt);
-        }
-
         {
             ScopedAdvancedTimer timer("Collision");
             computeCollision(params);
@@ -268,18 +256,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
             act.execute(getContext());
         }
 
-        taskScheduler->workUntilDone(&freeMotionTaskStatus);
-
-        mop.projectResponse(freeVel);
-        mop.propagateDx(freeVel, true);
-
-        if (cparams.constOrder() == sofa::core::ConstraintParams::POS ||
-            cparams.constOrder() == sofa::core::ConstraintParams::POS_AND_VEL)
         {
-            sofa::helper::ScopedAdvancedTimer timer("freePosEqPosPlusFreeVelDt");
-            sofa::simulation::MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
-            freePosEqPosPlusFreeVelDt.setMapped(true);
-            getContext()->executeVisitor(&freePosEqPosPlusFreeVelDt);
+            ScopedAdvancedTimer timer("WaitFreeMotion");
+            taskScheduler->workUntilDone(&freeMotionTaskStatus);
         }
 
         {
