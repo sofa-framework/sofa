@@ -62,7 +62,7 @@ public:
     Visitor(const sofa::core::ExecParams* params);
     virtual ~Visitor();
 
-    const core::ExecParams* execParams() const { return params; }
+    const sofa::core::ExecParams* execParams() const { return params; }
 
     enum Result { RESULT_CONTINUE, RESULT_PRUNE };
 
@@ -95,11 +95,11 @@ public:
     virtual std::string getInfos() const { return ""; }
 
 #ifdef SOFA_VERBOSE_TRAVERSAL
-    void debug_write_state_before( core::objectmodel::BaseObject* obj ) ;
-    void debug_write_state_after( core::objectmodel::BaseObject* obj ) ;
+    void debug_write_state_before( sofa::core::objectmodel::BaseObject* obj ) ;
+    void debug_write_state_after( sofa::core::objectmodel::BaseObject* obj ) ;
 #else
-    inline void debug_write_state_before( core::objectmodel::BaseObject*  ) {}
-    inline void debug_write_state_after( core::objectmodel::BaseObject*  ) {}
+    inline void debug_write_state_before( sofa::core::objectmodel::BaseObject*  ) {}
+    inline void debug_write_state_after( sofa::core::objectmodel::BaseObject*  ) {}
 #endif
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
@@ -145,20 +145,20 @@ public:
     //method to compare the tags of the objet with the ones of the visitor
     // return true if the object has all the tags of the visitor
     // or if no tag is set to the visitor
-    bool testTags(core::objectmodel::BaseObject* obj);
+    bool testTags(sofa::core::objectmodel::BaseObject* obj);
 
     /// Alias for context->executeVisitor(this)
-    virtual void execute(core::objectmodel::BaseContext* node, bool precomputedOrder=false);
+    virtual void execute(sofa::core::objectmodel::BaseContext* node, bool precomputedOrder=false);
 
-    virtual ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj
+    virtual ctime_t begin(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj
             , const std::string &typeInfo=std::string("type")
                          );
 
-    virtual void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
-    ctime_t begin(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj
+    virtual void end(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0);
+    ctime_t begin(simulation::Visitor::VisitorContext* node, sofa::core::objectmodel::BaseObject* obj
             , const std::string &typeInfo=std::string("type")
                  );
-    void end(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj, ctime_t t0);
+    void end(simulation::Visitor::VisitorContext* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0);
 
     /// Specify whether this visitor can be parallelized.
     virtual bool isThreadSafe() const { return false; }
@@ -185,7 +185,7 @@ public:
 	bool canAccessSleepingNode;
 
 protected:
-    const core::ExecParams* params;
+    const sofa::core::ExecParams* params;
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO

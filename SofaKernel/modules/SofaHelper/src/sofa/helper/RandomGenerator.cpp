@@ -36,8 +36,6 @@
 
 #include "RandomGenerator.h"
 
-#include <cmath>
-
 
 namespace sofa
 {

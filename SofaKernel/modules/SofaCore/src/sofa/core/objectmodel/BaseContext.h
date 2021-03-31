@@ -19,23 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
-#define SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
+#pragma once
 
 #include <sofa/core/fwd.h>
-#include <sofa/simulation/fwd.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
 
-
-
-namespace sofa
+namespace sofa::simulation
 {
+    class Visitor;
+}
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -411,12 +406,4 @@ public:
     friend std::ostream SOFA_CORE_API & operator << (std::ostream& out, const BaseContext& c );
 };
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::core::objectmodel

@@ -43,8 +43,6 @@
 
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/helper/AdvancedTimer.h>
-
 #include <cstdlib>
 #include <cmath>
 #include <algorithm>

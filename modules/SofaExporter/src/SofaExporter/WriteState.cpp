@@ -22,7 +22,6 @@
 #include <SofaExporter/WriteState.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/BaseMapping.h>
 
 namespace sofa

@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include "SceneCheckMissingRequiredPlugin.h"
 
-#include <sofa/version.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/helper/system/PluginManager.h>

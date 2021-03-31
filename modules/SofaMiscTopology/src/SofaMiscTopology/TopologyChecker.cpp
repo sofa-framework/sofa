@@ -83,8 +83,6 @@ void TopologyChecker::reinit()
 
 bool TopologyChecker::checkTopology()
 {
-    msg_info() << "checkTopology TopologyType: " << parseTopologyElementTypeToString(m_topology->getTopologyType());
-
     bool result = false;
     if (m_topology->getTopologyType() == TopologyElementType::HEXAHEDRON)
         result = checkHexahedronTopology();
