@@ -163,7 +163,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::ENDING_EVENT:
         {
             m_outTopoModifier->notifyEndingEvent();
-            m_outTopoModifier->propagateTopologicalChanges();
             break;
         }
         case core::topology::EDGESREMOVED:

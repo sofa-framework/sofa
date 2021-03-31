@@ -28,7 +28,7 @@ namespace simulation
 {
 
 
-MechanicalComputeEnergyVisitor::MechanicalComputeEnergyVisitor(const core::MechanicalParams* mparams)
+MechanicalComputeEnergyVisitor::MechanicalComputeEnergyVisitor(const sofa::core::MechanicalParams* mparams)
     : sofa::simulation::MechanicalVisitor(mparams)
     , m_kineticEnergy(0.)
     , m_potentialEnergy(0.)
@@ -52,13 +52,13 @@ SReal MechanicalComputeEnergyVisitor::getPotentialEnergy()
 
 
 /// Process the BaseMass
-Visitor::Result MechanicalComputeEnergyVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+Visitor::Result MechanicalComputeEnergyVisitor::fwdMass(simulation::Node* /*node*/, sofa::core::behavior::BaseMass* mass)
 {
     m_kineticEnergy += (SReal)mass->getKineticEnergy();
     return RESULT_CONTINUE;
 }
 /// Process the BaseForceField
-Visitor::Result MechanicalComputeEnergyVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* f)
+Visitor::Result MechanicalComputeEnergyVisitor::fwdForceField(simulation::Node* /*node*/, sofa::core::behavior::BaseForceField* f)
 {
     m_potentialEnergy += (SReal)f->getPotentialEnergy();
     return RESULT_CONTINUE;

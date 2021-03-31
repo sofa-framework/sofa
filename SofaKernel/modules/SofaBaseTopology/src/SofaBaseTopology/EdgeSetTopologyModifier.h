@@ -57,9 +57,6 @@ protected:
 public:
     void init() override;
 
-    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    void propagateTopologicalEngineChanges() override;
-
     /** \brief add a set of edges
     @param edges an array of pair of vertex indices describing the edge to be created
     *
@@ -122,7 +119,7 @@ public:
     *
     */
     virtual void removeEdges(const sofa::helper::vector<EdgeID> &edgeIds,
-            const bool removeIsolatedPoints = true, const bool resetTopoChange = true);
+            const bool removeIsolatedPoints = true);
 
     /** \brief Generic method to remove a list of items.
     */
@@ -299,6 +296,10 @@ protected:
     void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
         const sofa::helper::vector<PointID>&/*inv_index*/,
         const bool renumberDOF = true) override;
+
+
+    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
+    void propagateTopologicalEngineChanges() override;
 
 private:
     EdgeSetTopologyContainer* 	m_container;

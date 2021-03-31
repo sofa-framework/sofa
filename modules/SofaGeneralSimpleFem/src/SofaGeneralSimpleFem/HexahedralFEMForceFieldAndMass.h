@@ -73,6 +73,8 @@ public:
     ///// WARNING this method only add diagonal elements in the given matrix !
     void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
+    bool isDiagonal() const override { return _useLumpedMass.getValue(); }
+
     using HexahedralFEMForceFieldT::addKToMatrix;
     using MassT::addKToMatrix;
     ///// WARNING this method only add diagonal elements in the given matrix !

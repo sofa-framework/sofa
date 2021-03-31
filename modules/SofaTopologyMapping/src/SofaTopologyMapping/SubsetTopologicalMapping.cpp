@@ -436,9 +436,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::ENDING_EVENT:
         {
             msg_info() << "[" << count << "]ENDING_EVENT";
-            toPointMod->propagateTopologicalChanges();
             toPointMod->notifyEndingEvent();
-            toPointMod->propagateTopologicalChanges();
             if (!samePoints.getValue())
             {
                 if (pS2D.size() != (unsigned)fromModel->getNbPoints()) msg_error() << "Invalid pointS2D size : " << pS2D.size() << " != " << fromModel->getNbPoints();
@@ -932,7 +930,6 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         ++count;
         ++itBegin;
     }
-    toPointMod->propagateTopologicalChanges();
 }
 
 } //namespace sofa::component::topology

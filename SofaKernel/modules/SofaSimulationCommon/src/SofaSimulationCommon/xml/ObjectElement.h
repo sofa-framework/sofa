@@ -26,7 +26,7 @@
 namespace sofa::simulation::xml
 {
 
-class SOFA_SOFASIMULATIONCOMMON_API ObjectElement : public Element<core::objectmodel::BaseObject>
+class SOFA_SOFASIMULATIONCOMMON_API ObjectElement : public Element<sofa::core::objectmodel::BaseObject>
 {
 public:
     ObjectElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);

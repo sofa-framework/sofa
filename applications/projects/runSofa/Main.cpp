@@ -72,8 +72,6 @@ using sofa::core::objectmodel::BaseNode ;
 using sofa::gui::BatchGUI;
 using sofa::gui::BaseGUI;
 
-#include <sofa/helper/logging/Messaging.h>
-
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
 

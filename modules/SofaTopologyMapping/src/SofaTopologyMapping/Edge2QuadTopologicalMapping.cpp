@@ -34,10 +34,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <cmath>
-#include <sofa/defaulttype/Vec.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -301,9 +299,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                 {
-                    to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
-                    to_tstm->propagateTopologicalChanges();
                     break;
                 }
 
@@ -550,7 +546,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 ++itBegin;
             }
 
-            to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
         }
     }

@@ -23,11 +23,12 @@
 
 #include <sofa/type/config.h>
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 #include <cstdlib>
 #include <functional>
 #include <limits>
 #include <type_traits>
+#include <sofa/type/fwd.h>
 
 #define EQUALITY_THRESHOLD 1e-6
 
@@ -51,8 +52,8 @@ namespace // anonymous
 struct NoInit {};
 constexpr NoInit NOINIT;
 
-template < sofa::Size N, typename ValueType=float>
-class Vec : public sofa::type::stdtype::fixed_array<ValueType,size_t(N)>
+template < sofa::Size N, typename ValueType>
+class Vec : public sofa::type::fixed_array<ValueType,size_t(N)>
 {
 
     static_assert( N > 0, "" );
@@ -296,7 +297,7 @@ public:
         set( v, r1 );
     }
 
-    Vec(const sofa::type::stdtype::fixed_array<ValueType, N>& p)
+    Vec(const sofa::type::fixed_array<ValueType, N>& p)
     {
         for(Size i=0; i<N; i++)
             this->elems[i] = p[i];
@@ -773,7 +774,7 @@ public:
 
 
 /// Same as Vec except the values are not initialized by default
-template <sofa::Size N, typename real=float>
+template <sofa::Size N, typename real>
 class VecNoInit : public Vec<N,real>
 {
 public:
@@ -858,42 +859,6 @@ Vec<N,real> operator*(const float& a, const Vec<N,real>& V)
 {
     return V * a;
 }
-
-typedef Vec<1,float> Vec1f;
-typedef Vec<1,double> Vec1d;
-typedef Vec<1,int> Vec1i;
-typedef Vec<1,unsigned> Vec1u;
-typedef Vec<1,SReal> Vec1;
-
-typedef Vec<2,float> Vec2f;
-typedef Vec<2,double> Vec2d;
-typedef Vec<2,int> Vec2i;
-typedef Vec<2,unsigned> Vec2u;
-typedef Vec<2,SReal> Vec2;
-
-typedef Vec<3,float> Vec3f;
-typedef Vec<3,double> Vec3d;
-typedef Vec<3,int> Vec3i;
-typedef Vec<3,unsigned> Vec3u;
-typedef Vec<3,SReal> Vec3;
-
-typedef Vec<4,float> Vec4f;
-typedef Vec<4,double> Vec4d;
-typedef Vec<4,int> Vec4i;
-typedef Vec<4,unsigned> Vec4u;
-typedef Vec<4,SReal> Vec4;
-
-typedef Vec<6,float> Vec6f;
-typedef Vec<6,double> Vec6d;
-typedef Vec<6,int> Vec6i;
-typedef Vec<6,unsigned> Vec6u;
-typedef Vec<6,SReal> Vec6;
-
-typedef Vec1d Vector1; ///< alias
-typedef Vec2d Vector2; ///< alias
-typedef Vec3d Vector3; ///< alias
-typedef Vec4d Vector4; ///< alias
-typedef Vec6d Vector6; ///< alias
 
 } // namespace sofa::type
 

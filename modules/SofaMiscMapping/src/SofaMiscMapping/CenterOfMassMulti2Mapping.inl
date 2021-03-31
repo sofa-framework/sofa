@@ -22,6 +22,7 @@
 #pragma once
 
 #include <SofaMiscMapping/CenterOfMassMulti2Mapping.h>
+#include <SofaMiscMapping/CenterOfMassMappingOperation.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <algorithm>
@@ -29,56 +30,6 @@
 
 namespace sofa::component::mapping
 {
-
-template < typename Model >
-struct Operation
-{
-    typedef typename Model::VecCoord VecCoord;
-    typedef typename Model::Coord    Coord;
-    typedef typename Model::Deriv    Deriv;
-    typedef typename Model::VecDeriv VecDeriv;
-
-public :
-    static inline const VecCoord* getVecCoord( const Model* m, const sofa::core::VecId id) { return m->getVecCoord(id.index); }
-    static inline VecDeriv* getVecDeriv( Model* m, const sofa::core::VecId id) { return m->getVecDeriv(id.index);}
-
-    static inline const sofa::core::behavior::BaseMass* fetchMass  ( const Model* m)
-    {
-        sofa::core::behavior::BaseMass* mass = m->getContext()->getMass();
-        return mass;
-    }
-    static inline double computeTotalMass( const Model* model, const sofa::core::behavior::BaseMass* mass )
-    {
-        double result = 0.0;
-        const unsigned int modelSize = static_cast<unsigned int>(model->getSize());
-        for (unsigned int i = 0; i < modelSize; i++)
-        {
-            result += mass->getElementMass(i);
-        }
-        return result;
-    }
-
-    static inline Coord WeightedCoord( const VecCoord* v, const sofa::core::behavior::BaseMass* m)
-    {
-        Coord c;
-        for (unsigned int i=0 ; i< v->size() ; i++)
-        {
-            c += (*v)[i] * m->getElementMass(i);
-        }
-        return c;
-    }
-
-    static inline Deriv WeightedDeriv( const VecDeriv* v, const sofa::core::behavior::BaseMass* m)
-    {
-        Deriv d;
-        for (unsigned int i=0 ; i< v->size() ; i++)
-        {
-            d += (*v)[i] * m->getElementMass(i);
-        }
-        return d;
-    }
-};
-
 template< class TIn1, class TIn2, class TOut  >
 void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
         const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
@@ -109,7 +60,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
 
     {
         In1Coord COM;
-        std::transform(inPos1.begin(), inPos1.end(), inputBaseMass1.begin(), inputWeightedCOM1.begin(), Operation< core::State<In1> >::WeightedCoord );
+        std::transform(inPos1.begin(), inPos1.end(), inputBaseMass1.begin(), inputWeightedCOM1.begin(), CenterOfMassMappingOperation< core::State<In1> >::WeightedCoord );
 
         for( iter_coord1 iter = inputWeightedCOM1.begin() ; iter != inputWeightedCOM1.end(); ++iter ) COM += *iter;
         COM *= invTotalMass;
@@ -123,7 +74,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
 
     {
         In2Coord COM;
-        std::transform(inPos2.begin(), inPos2.end(), inputBaseMass2.begin(), inputWeightedCOM2.begin(), Operation< core::State<In2> >::WeightedCoord );
+        std::transform(inPos2.begin(), inPos2.end(), inputBaseMass2.begin(), inputWeightedCOM2.begin(), CenterOfMassMappingOperation< core::State<In2> >::WeightedCoord );
 
         for( iter_coord2 iter = inputWeightedCOM2.begin() ; iter != inputWeightedCOM2.end(); ++iter ) COM += *iter;
         COM *= invTotalMass;
@@ -173,7 +124,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
 
     {
         In1Deriv Velocity;
-        std::transform(inDeriv1.begin(), inDeriv1.end(), inputBaseMass1.begin(), inputWeightedForce1.begin(), Operation< core::State<In1> >::WeightedDeriv );
+        std::transform(inDeriv1.begin(), inDeriv1.end(), inputBaseMass1.begin(), inputWeightedForce1.begin(), CenterOfMassMappingOperation< core::State<In1> >::WeightedDeriv );
 
         for ( iter_deriv1 iter = inputWeightedForce1.begin() ; iter != inputWeightedForce1.end() ; ++iter ) Velocity += *iter;
         Velocity *= invTotalMass;
@@ -187,7 +138,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
 
     {
         In2Deriv Velocity;
-        std::transform(inDeriv2.begin(), inDeriv2.end(), inputBaseMass2.begin(), inputWeightedForce2.begin(), Operation< core::State<In2> >::WeightedDeriv );
+        std::transform(inDeriv2.begin(), inDeriv2.end(), inputBaseMass2.begin(), inputWeightedForce2.begin(), CenterOfMassMappingOperation< core::State<In2> >::WeightedDeriv );
 
         for ( iter_deriv2 iter = inputWeightedForce2.begin() ; iter != inputWeightedForce2.end() ; ++iter ) Velocity += *iter;
         Velocity *= invTotalMass;
@@ -300,10 +251,10 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut>::init()
     inputWeightedCOM2  .resize( this->fromModels2.size() );
     inputWeightedForce2.resize( this->fromModels2.size() );
 
-    std::transform(this->fromModels1.begin(), this->fromModels1.end(), inputBaseMass1.begin(), Operation< core::State<In1> >::fetchMass );
-    std::transform(this->fromModels2.begin(), this->fromModels2.end(), inputBaseMass2.begin(), Operation< core::State<In2> >::fetchMass );
-    std::transform(this->fromModels1.begin(), this->fromModels1.end(), inputBaseMass1.begin(), inputTotalMass1.begin(), Operation< core::State<In1> >::computeTotalMass );
-    std::transform(this->fromModels2.begin(), this->fromModels2.end(), inputBaseMass2.begin(), inputTotalMass2.begin(), Operation< core::State<In2> >::computeTotalMass );
+    std::transform(this->fromModels1.begin(), this->fromModels1.end(), inputBaseMass1.begin(), CenterOfMassMappingOperation< core::State<In1> >::fetchMass );
+    std::transform(this->fromModels2.begin(), this->fromModels2.end(), inputBaseMass2.begin(), CenterOfMassMappingOperation< core::State<In2> >::fetchMass );
+    std::transform(this->fromModels1.begin(), this->fromModels1.end(), inputBaseMass1.begin(), inputTotalMass1.begin(), CenterOfMassMappingOperation< core::State<In1> >::computeTotalMass );
+    std::transform(this->fromModels2.begin(), this->fromModels2.end(), inputBaseMass2.begin(), inputTotalMass2.begin(), CenterOfMassMappingOperation< core::State<In2> >::computeTotalMass );
     invTotalMass = 0.0;
     for ( iter_double iter = inputTotalMass1.begin() ; iter != inputTotalMass1.end() ; ++ iter ) invTotalMass += *iter;
     for ( iter_double iter = inputTotalMass2.begin() ; iter != inputTotalMass2.end() ; ++ iter ) invTotalMass += *iter;

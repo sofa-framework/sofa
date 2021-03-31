@@ -22,6 +22,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/accessor.h>
 #include <fstream>
 
 #include <cstdlib>
@@ -36,6 +37,7 @@ namespace loader
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 MeshLoader::MeshLoader() : BaseLoader()
   , d_positions(initData(&d_positions, "position", "Vertices of the mesh loaded"))

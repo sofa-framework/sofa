@@ -129,9 +129,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::ENDING_EVENT:
         {
             dmsg_info() << "ENDING_EVENT" ;
-            toPointMod->propagateTopologicalChanges();
             toPointMod->notifyEndingEvent();
-            toPointMod->propagateTopologicalChanges();
             break;
         }
 
@@ -208,7 +206,6 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
 
         ++itBegin;
     }
-    toPointMod->propagateTopologicalChanges();
 
     msg_info() << "End: "
                << "    Nb of points of fromModel : " << fromTriangleCon->getNbPoints() << msgendl

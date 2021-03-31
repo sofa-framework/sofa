@@ -22,13 +22,13 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralLoader/MeshOffLoader.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
 
 namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 int MeshOffLoaderClass = core::RegisterObject("Specific mesh loader for Off file format.")
         .add< MeshOffLoader >()
