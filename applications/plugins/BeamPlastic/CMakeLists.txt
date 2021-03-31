@@ -6,7 +6,6 @@ set(BEAMPLASTIC_MINOR_VERSION 1)
 set(BEAMPLASTIC_VERSION ${BEAMPLASTIC_MAJOR_VERSION}.${BEAMPLASTIC_MINOR_VERSION})
 
 set(HEADER_FILES
-	initBeamPlastic.h
 	config.h
 	forceField/BeamPlasticFEMForceField.h
 	forceField/BeamPlasticFEMForceField.inl

@@ -1,4 +1,7 @@
-#include "initBeamPlastic.h"
+#include <BeamPlastic/config.h>
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
 namespace sofa
 {
