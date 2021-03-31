@@ -10,8 +10,8 @@ set(HEADER_FILES
 	config.h
 	forceField/BeamPlasticFEMForceField.h
 	forceField/BeamPlasticFEMForceField.inl
-    forceField/PlasticConstitutiveLaw.h
-    forceField/RambergOsgood.h
+    constitutiveLaw/PlasticConstitutiveLaw.h
+    constitutiveLaw/RambergOsgood.h
 	quadrature/gaussian.h
 	quadrature/quadrature.h
 	PoissonContainer.h

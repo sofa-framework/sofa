@@ -36,9 +36,9 @@
 #include <sofa/simulation/Node.h>
 
 #include "BeamPlasticFEMForceField.h"
-#include "../StiffnessContainer.h"
-#include "../PoissonContainer.h"
-#include "RambergOsgood.h"
+#include <BeamPlastic/StiffnessContainer.h>
+#include <BeamPlastic/PoissonContainer.h>
+#include <BeamPlastic/constitutiveLaw/RambergOsgood.h>
 
 
 namespace sofa::plugin::beamplastic::component::forcefield::_beamplasticfemforcefield_
