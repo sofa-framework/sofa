@@ -24,12 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 
-#include <vector>
-#include <sofa/helper/system/thread/CTime.h>
-
-#include <cmath>
-
-
 namespace sofa::component::collision
 {
 

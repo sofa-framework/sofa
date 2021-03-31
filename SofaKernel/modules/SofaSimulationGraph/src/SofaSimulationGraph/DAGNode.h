@@ -104,7 +104,7 @@ public:
 
     /// Mesh Topology that is relevant for this context
     /// (within it or its parents until a mapping is reached that does not preserve topologies).
-    core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
+    sofa::core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
 
 
     /// Called during initialization to corectly propagate the visual context to the children
@@ -116,7 +116,7 @@ public:
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
     void updateSimulationContext() override;
 
-    static DAGNode::SPtr create(DAGNode*, core::objectmodel::BaseObjectDescription* arg)
+    static DAGNode::SPtr create(DAGNode*, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
         DAGNode::SPtr obj = DAGNode::SPtr();
         obj->parse(arg);
@@ -130,7 +130,7 @@ public:
     Node* findCommonParent( Node* node2 ) override;
 
     /// compute the traversal order from this Node
-    void precomputeTraversalOrder( const core::ExecParams* params ) override;
+    void precomputeTraversalOrder( const sofa::core::ExecParams* params ) override;
 
     virtual void moveChild(BaseNode::SPtr node) override;
 

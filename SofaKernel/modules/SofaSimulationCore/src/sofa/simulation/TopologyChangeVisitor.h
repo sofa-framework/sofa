@@ -34,11 +34,11 @@ class SOFA_SIMULATION_CORE_API TopologyChangeVisitor : public Visitor
 {
 
 public:
-    TopologyChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source);
+    TopologyChangeVisitor(const sofa::core::ExecParams* params, sofa::core::topology::Topology* source);
 
     ~TopologyChangeVisitor() override {}
 
-    virtual void processTopologyChange(simulation::Node* node, core::objectmodel::BaseObject* obj);
+    virtual void processTopologyChange(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;
@@ -52,7 +52,7 @@ public:
     const char* getClassName() const override { return "TopologyChangeVisitor"; }
     std::string getInfos() const override;
 protected:
-    core::topology::Topology* m_source;
+    sofa::core::topology::Topology* m_source;
 };
 
 

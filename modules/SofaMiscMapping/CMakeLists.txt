@@ -19,6 +19,7 @@ list(APPEND HEADER_FILES
     ${SOFAMISCMAPPING_SRC}/BeamLinearMapping.inl
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.h
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.inl
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMappingOperation.h
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.h
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.inl
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMultiMapping.h

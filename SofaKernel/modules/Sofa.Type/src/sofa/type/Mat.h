@@ -24,7 +24,7 @@
 #include <sofa/type/config.h>
 #include <sofa/type/fwd.h>
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/type/Vec.h>
 
 #include <iostream>
@@ -46,13 +46,13 @@ namespace sofa::type
 {
 
 template <sofa::Size L, sofa::Size C, class real>
-class Mat : public stdtype::fixed_array<VecNoInit<C,real>, L>
+class Mat : public fixed_array<VecNoInit<C,real>, L>
 {
 public:
 
     enum { N = L*C };
 
-    typedef typename stdtype::fixed_array<real, N>::size_type Size;
+    typedef typename fixed_array<real, N>::size_type Size;
 
     typedef real Real;
     typedef Vec<C,real> Line;

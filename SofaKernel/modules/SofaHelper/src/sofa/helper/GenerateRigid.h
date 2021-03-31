@@ -178,7 +178,7 @@ void generateRigid(Rigid3MassType& mass, type::Vector3& center, io::Mesh *mesh
 
     if( rotation != type::Vector3(0,0,0) ) {
 
-        type::Quat q = sofa::helper::Quater<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
+        type::Quat q = type::Quat<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
 
         for(size_t i = 0, n = mesh->getVertices().size(); i < n; ++i) {
             mesh->getVertices()[i] = q.rotate( mesh->getVertices()[i] );

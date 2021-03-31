@@ -40,7 +40,7 @@ using namespace sofa::core::topology;
 using namespace sofa::core;
 
 
-TopologyChangeVisitor::TopologyChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source)
+TopologyChangeVisitor::TopologyChangeVisitor(const sofa::core::ExecParams* params, sofa::core::topology::Topology* source)
     : Visitor(params)
     , m_source(source)
 {
@@ -52,7 +52,7 @@ std::string TopologyChangeVisitor::getInfos() const
     return "Topology:" + m_source->getName();
 }
 
-void TopologyChangeVisitor::processTopologyChange(simulation::Node *node, core::objectmodel::BaseObject* obj)
+void TopologyChangeVisitor::processTopologyChange(simulation::Node *node, sofa::core::objectmodel::BaseObject* obj)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment("processTopologyChange");

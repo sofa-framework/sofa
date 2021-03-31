@@ -21,15 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/stdtype/vector.h>
+#include <sofa/type/vector.h>
 
 // The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
 // This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/vector.h")
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/vector.h")
 
 namespace sofa::helper
 {
-    template <class T, class MemoryManager = sofa::type::stdtype::CPUMemoryManager<T> >
-    using vector = sofa::type::stdtype::vector<T, MemoryManager>;
+    template <class T, class MemoryManager = sofa::type::CPUMemoryManager<T> >
+    using vector = sofa::type::vector<T, MemoryManager>;
 
 } // namespace sofa::helper

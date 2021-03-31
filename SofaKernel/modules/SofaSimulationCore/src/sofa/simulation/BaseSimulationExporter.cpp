@@ -49,7 +49,7 @@ BaseSimulationExporter::BaseSimulationExporter() :
   , d_isEnabled( initData(&d_isEnabled, true, "enable", "Enable or disable the component. (default=true)"))
 {
     f_listening.setValue(false) ;
-    d_filename.setPathType(core::objectmodel::PathType::BOTH);
+    d_filename.setPathType(sofa::core::objectmodel::PathType::BOTH);
 }
 
 
