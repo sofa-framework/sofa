@@ -40,19 +40,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FEM_PLASTICCONSTITUTIVELAW_H
-#define SOFA_COMPONENT_FEM_PLASTICCONSTITUTIVELAW_H
+#pragma once
 
-#include "../config.h"
+#include <BeamPlastic/config.h>
 #include <Eigen/Core>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace fem
+namespace sofa::plugin::beamplastic::component::constitutivelaw
 {
 
 template<class DataTypes>
@@ -79,10 +72,4 @@ public:
 
 };
 
-} // namespace fem
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // ifndef SOFA_COMPONENT_FEM_PLASTICCONSTITUTIVELAW_H
+} // namespace sofa::plugin::beamplastic::component::constitutivelaw

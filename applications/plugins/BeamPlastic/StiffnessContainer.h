@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef STIFFNESSCONTAINER_H_
-#define STIFFNESSCONTAINER_H_
-#include "config.h"
+#pragma once
+#include <BeamPlastic/config.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::plugin::beamplastic::component::container
 {
 
 class StiffnessContainer : public virtual sofa::core::objectmodel::BaseObject
@@ -40,10 +33,4 @@ public:
     virtual double getStiffness(unsigned int index) = 0;
 };
 
-}
-
-}
-
-}
-
-#endif /*STIFFNESSCONTAINER_H_*/
+} // namespace sofa::plugin::beamplastic::component::container

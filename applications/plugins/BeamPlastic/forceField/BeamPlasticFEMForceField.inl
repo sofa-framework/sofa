@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_INL
-
+#pragma once
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -42,17 +40,11 @@
 #include "../PoissonContainer.h"
 #include "RambergOsgood.h"
 
-namespace sofa
+
+namespace sofa::plugin::beamplastic::component::forcefield::_beamplasticfemforcefield_
 {
 
-namespace component
-{
-
-namespace forcefield
-{
-
-namespace _beamplasticfemforcefield_
-{
+using sofa::plugin::beamplastic::component::constitutivelaw::RambergOsgood;
 
 template<class DataTypes>
 BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
@@ -144,7 +136,7 @@ void BeamPlasticFEMForceField<DataTypes>::init()
     {
         Real youngModulus = d_youngModulus.getValue();
         Real yieldStress = d_yieldStress.getValue();
-        fem::RambergOsgood<DataTypes> *RambergOsgoodModel = new (fem::RambergOsgood<DataTypes>)(youngModulus, yieldStress);
+        RambergOsgood<DataTypes> *RambergOsgoodModel = new (RambergOsgood<DataTypes>)(youngModulus, yieldStress);
         m_ConstitutiveLaw = RambergOsgoodModel;
         if (this->f_printLog.getValue())
             msg_info() << "The model is " << constitutiveModel;
@@ -2519,12 +2511,4 @@ defaulttype::Quat& BeamPlasticFEMForceField<DataTypes>::beamQuat(int i)
 
 /**************************************************************************/
 
-} // namespace beamplasticforcefield
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_INL
+} // namespace sofa::plugin::beamplastic::component::forcefield::_beamplasticfemforcefield_

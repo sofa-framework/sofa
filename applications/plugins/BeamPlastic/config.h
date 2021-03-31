@@ -19,20 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef BEAMPLASTIC_CONFIG_H
-#define BEAMPLASTIC_CONFIG_H
+#pragma once
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/config.h>
 
-//Cf plugin Compliant, config.h.in
-//#define BEAMPLASTIC_MAJOR_VERSION ${BEAMPLASTIC_MAJOR_VERSION}
-//#define BEAMPLASTIC_MINOR_VERSION ${BEAMPLASTIC_MINOR_VERSION}
+//#define BEAMPLASTIC_VERSION @PROJECT_VERSION@
 
 #ifdef SOFA_BUILD_BEAMPLASTIC
 #   define SOFA_TARGET BeamPlastic
 #   define SOFA_BeamPlastic_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #   define SOFA_BeamPlastic_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 #endif

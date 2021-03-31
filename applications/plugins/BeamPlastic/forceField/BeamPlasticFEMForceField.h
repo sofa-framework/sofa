@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_H
-
+#pragma once
 #include <BeamPlastic/config.h>
 #include <BeamPlastic/initBeamPlastic.h>
 #include "PlasticConstitutiveLaw.h"
@@ -38,23 +36,21 @@
 #include <string>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::plugin::beamplastic::component::container
 {
 class StiffnessContainer;
 class PoissonContainer;
-} // namespace container
+} // namespace sofa::plugin::beamplastic::component::container
 
-namespace forcefield
+namespace sofa::plugin::beamplastic::component::forcefield
 {
 
 namespace _beamplasticfemforcefield_
 {
+
+using sofa::component::topology::TopologyDataHandler;
+using sofa::component::topology::EdgeData;
+using sofa::plugin::beamplastic::component::constitutivelaw::PlasticConstitutiveLaw;
 
 /** \class BeamPlasticFEMForceField
  *  \brief Compute Finite Element forces based on 6D plastic beam elements.
@@ -258,14 +254,14 @@ protected:
         }
     };
 
-    topology::EdgeData< sofa::helper::vector<BeamInfo> > m_beamsData;
+    EdgeData< sofa::helper::vector<BeamInfo> > m_beamsData;
 
-    class BeamFFEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >
+    class BeamFFEdgeHandler : public TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >
     {
     public:
         typedef typename BeamPlasticFEMForceField<DataTypes>::BeamInfo BeamInfo;
-        BeamFFEdgeHandler(BeamPlasticFEMForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<BeamInfo> >* data)
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
+        BeamFFEdgeHandler(BeamPlasticFEMForceField<DataTypes>* ff, EdgeData<sofa::helper::vector<BeamInfo> >* data)
+            :TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, BeamInfo&,
                                  const core::topology::BaseMeshTopology::Edge& e,
@@ -362,7 +358,7 @@ protected:
      * computePlasticModulusFromStress, but the computeConstPlasticModulus
      * method can be used instead.
      */
-    fem::PlasticConstitutiveLaw<DataTypes> *m_ConstitutiveLaw;
+    PlasticConstitutiveLaw<DataTypes> *m_ConstitutiveLaw;
     Data<std::string> d_modelName; ///< name of the model, for specialisation
 
     double computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1>& stressState);
@@ -538,10 +534,4 @@ extern template class SOFA_BeamPlastic_API BeamPlasticFEMForceField<defaulttype:
 
 } // namespace _beamplasticfemforcefield_
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_H
+} // namespace sofa::plugin::beamplastic::component::forcefield

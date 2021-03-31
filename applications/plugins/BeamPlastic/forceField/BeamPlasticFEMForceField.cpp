@@ -25,20 +25,10 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
-{
-
-namespace _beamplasticfemforcefield_
+namespace sofa::plugin::beamplastic::component::forcefield::_beamplasticfemforcefield_
 {
 
 using namespace sofa::defaulttype;
-
 
 // Register in the Factory
 int BeamPlasticFEMForceFieldClass = core::RegisterObject("Stent adaptated beam finite elements")
@@ -47,11 +37,4 @@ int BeamPlasticFEMForceFieldClass = core::RegisterObject("Stent adaptated beam f
 
 template class SOFA_BeamPlastic_API BeamPlasticFEMForceField<Rigid3Types>;
 
-} // namespace _beamplasticfemforcefield_
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::plugin::beamplastic::component::forcefield::_beamplasticfemforcefield_

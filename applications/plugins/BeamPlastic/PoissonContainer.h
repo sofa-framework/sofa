@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef POISSONCONTAINER_
-#define POISSONCONTAINER_
-#include "config.h"
+#pragma once
+#include <BeamPlastic/config.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::plugin::beamplastic::component::container
 {
 
 class PoissonContainer : public virtual sofa::core::objectmodel::BaseObject
@@ -40,11 +33,4 @@ public:
     virtual double getPoisson(unsigned int index) = 0;
 };
 
-}
-
-}
-
-}
-
-
-#endif /*POISSONCONTAINER_*/
+} // namespace sofa::plugin::beamplastic::component::container
