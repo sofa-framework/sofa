@@ -32,7 +32,15 @@ namespace sofa::component::misc
 {
 
 /** 
-*
+* The class TopologyChecker represents a SOFA component which can be added in a scene graph to test a given Topology.
+* The topology component to be tested need to be linked using @sa l_topology. 
+* If the Data @sa d_eachStep is set to true, the topology will be tested at each step using the generic method @sa checkTopology
+* 
+* Otherwise each method can be called manually: 
+* @CheckTopology will call the appropriate Check{TopologyType}Topology then call the lower level of CheckTopology. 
+*   - i.e for a Tetrahedron Topology, CheckTopology with call @sa checkTetrahedronTopology then @sa checkTriangleTopology and finally @sa checkEdgeTopology
+*   - At each level the topology is checked through the main element container and also the cross topology containers
+*   - Each method return a bool and will display msg_error if problems are detected.
 */
 class SOFA_SOFAMISCTOPOLOGY_API TopologyChecker: public core::objectmodel::BaseObject
 {
