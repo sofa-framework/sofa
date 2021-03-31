@@ -275,8 +275,8 @@ const std::string TypePrincipalStretchesMRHexaTest::sceneName= "AssembledSolverM
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     TypeInvariantMRHexaTest,
     TypePrincipalStretchesMRHexaTest
 > DataTypes; 

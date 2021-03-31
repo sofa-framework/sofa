@@ -26,12 +26,13 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
+using sofa::core::execparams::defaultInstance; 
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/testing/NumericTest.h>
 using sofa::helper::testing::NumericTest;
 #include <sofa/simulation/Node.h>
 #include <SofaSimulationGraph/SimpleApi.h>
-
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 #include <sofa/helper/logging/Message.h>
 
@@ -107,7 +108,7 @@ struct BilateralInteractionConstraint_test : public NumericTest<>
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         BilateralInteractionConstraint* constraint = root->getTreeObject<BilateralInteractionConstraint>() ;
         EXPECT_TRUE( constraint != nullptr ) ;
@@ -139,7 +140,7 @@ struct BilateralInteractionConstraint_test : public NumericTest<>
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         return ;
     }
@@ -164,7 +165,7 @@ void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwa
     Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
 }
 
@@ -231,7 +232,7 @@ bool BilateralInteractionConstraint_test<Vec3Types>::test_Vec3ConstrainedPositio
 }
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<Vec3Types
               ,Rigid3dTypes
  //

@@ -24,6 +24,7 @@
 
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa::component::topology

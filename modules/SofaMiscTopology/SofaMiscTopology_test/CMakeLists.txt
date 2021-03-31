@@ -6,14 +6,10 @@ project(SofaMiscTopology_test)
 sofa_find_package(SofaMiscTopology REQUIRED)
 
 set(HEADER_FILES)
-set(SOURCE_FILES ../../empty.cpp)
+set(SOURCE_FILES TopologicalChangeProcessor_test.cpp)
 
-list(APPEND SOURCE_FILES
-TopologicalChangeProcessor_test.cpp
-)
-
-add_definitions("-DSOFAMISCTOPOLOGY_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+add_definitions("-DSOFAMISCTOPOLOGY_TEST_SCENES_DIR=\"${CMAKE_SOURCE_DIR}/examples/Components/topology/TopologicalModifiers\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaMiscTopology)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaMiscTopology)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

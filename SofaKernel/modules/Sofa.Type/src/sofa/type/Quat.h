@@ -97,11 +97,21 @@ public:
         set(0.0,0.0,0.0,1);
     }
 
+    /// Convert the reference frame orientation into an orientation quaternion
     void fromFrame(const Vec3& x, const Vec3&y, const Vec3&z);
+
+    /// Convert a rotation matrix into an orientation quaternion
     void fromMatrix(const Mat3x3 &m);
 
+    /// Convert the quaternion into an orientation matrix
     void toMatrix(Mat3x3 &m) const;
-    void toMatrix(Mat4x4 &m) const;
+
+    SOFA_ATTRIBUTE_CLEANING__QUAT_API("Function toMatrix(mat4x4) will be removed. Use toHomogeneousMatrix() instead")
+    void toMatrix(Mat4x4 &m) const { toHomogeneousMatrix(m); }
+
+    /// Convert the quaternion into an orientation homogeneous matrix
+    /// The homogeneous part is set to 0,0,0,1
+    void toHomogeneousMatrix(Mat4x4 &m) const;
 
     /// Apply the rotation to a given vector
     auto rotate( const Vec3& v ) const -> Vec3;
@@ -121,7 +131,6 @@ public:
     void operator/=(const Real &r);
 
     /// Given two Quats, multiply them together to get a third quaternion.
-
     auto quatVectMult(const Vec3& vect) const -> Quat;
     auto vectQuatMult(const Vec3& vect) const -> Quat;
 
@@ -196,8 +205,7 @@ public:
     /// Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo. vFrom and vTo are assumed to be normalized.
     void setFromUnitVectors(const Vec3& vFrom, const Vec3& vTo);
 
-    // Print the quaternion (C style)
-    [[deprecated("The function print will be removed soon")]]
+    SOFA_ATTRIBUTE_CLEANING__QUAT_API("This function will be removed. use iostream operators instead.")
     void print();
 
     auto slerp(const Quat &q1, Real t) const -> Quat;
@@ -213,6 +221,7 @@ public:
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
     enum { total_size = 4 };
+
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for quaternions)
     enum { spatial_dimensions = 3 };
 };

@@ -159,7 +159,7 @@ struct FixedConstraint_test : public BaseTest
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     defaulttype::Vec1Types,
     defaulttype::Vec2Types,

@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-
+#include <sofa/core/behavior/BaseMass.h>
 #include <fstream>
 #include <sstream>
 

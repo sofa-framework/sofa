@@ -214,7 +214,7 @@ public:
     // df += -2 M dx == K dx
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override
     {
-        m_K.addMult( df, dx, mparams->kFactor()  );
+        m_K.addMult( df, dx, sofa::core::mechanicalparams::kFactor(mparams)  );
     }
 
 

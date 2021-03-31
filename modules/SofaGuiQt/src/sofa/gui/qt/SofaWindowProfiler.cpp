@@ -29,6 +29,7 @@
 #include <QGridLayout>
 #include <QDebug>
 
+#include <sofa/helper/logging/Messaging.h>
 namespace sofa::gui::qt
 {
 using namespace sofa::helper;

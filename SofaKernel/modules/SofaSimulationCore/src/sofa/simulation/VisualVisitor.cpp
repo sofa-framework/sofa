@@ -22,7 +22,10 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/Shader.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 #ifdef DEBUG_DRAW
 #define DO_DEBUG_DRAW true

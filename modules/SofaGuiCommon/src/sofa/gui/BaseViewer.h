@@ -38,6 +38,8 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <SofaGraphComponent/ViewerSetting.h>
 
+#include <sofa/core/visual/VisualParams.h>
+
 //instruments handling
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/simulation/MechanicalVisitor.h>

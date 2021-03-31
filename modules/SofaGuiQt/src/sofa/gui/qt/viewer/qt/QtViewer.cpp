@@ -599,7 +599,7 @@ void QtViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
     glMatrixMode(GL_MODELVIEW);
 
 
-    ColourPickingVisitor cpv(sofa::core::visual::VisualParams::defaultInstance(), code);
+    ColourPickingVisitor cpv(sofa::core::visual::visualparams::defaultInstance(), code);
     cpv.execute( groot.get() );
 
     glMatrixMode(GL_PROJECTION);
@@ -1157,7 +1157,7 @@ void QtViewer::keyPressEvent(QKeyEvent * e)
         if (groot)
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
         }
     }
     else
@@ -1238,7 +1238,7 @@ void QtViewer::mouseMoveEvent(QMouseEvent * e)
             }
 
             sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move,e->x()-savedX,e->y()-savedY);
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             QCursor::setPos(mapToGlobal(QPoint(savedX, savedY)));
         }
     }

@@ -584,9 +584,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
             incision.indexPoint = end_points.back();
 
         // -- STEP 8: Propagating topological events.
-        triangleModifier->propagateTopologicalChanges();
         triangleModifier->notifyEndingEvent();
-        triangleModifier->propagateTopologicalChanges(); // needed?
 
         return true;
     }

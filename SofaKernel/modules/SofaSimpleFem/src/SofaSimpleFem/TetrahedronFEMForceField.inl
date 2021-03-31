@@ -41,6 +41,7 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     : m_topology(nullptr)
     , _indexedElements(nullptr)
     , needUpdateTopology(false)
+    , m_VonMisesColorMap(nullptr)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR), \"polar\" or \"svd\" displacements"))
     , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio [0,0.5["))
@@ -63,7 +64,6 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
     , l_topology(initLink("topology", "link to the tetrahedron topology container"))
-    , m_VonMisesColorMap(nullptr)
 {
     _poissonRatio.setRequired(true);
     _youngModulus.setRequired(true);
@@ -1671,7 +1671,7 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
     unsigned int i;
@@ -1931,7 +1931,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPar
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
-        addKToMatrix(r.matrix, mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()), r.offset);
+        addKToMatrix(r.matrix, sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()), r.offset);
     else dmsg_error() << "The function addKToMatrix found no valid matrix accessor." ;
 }
 

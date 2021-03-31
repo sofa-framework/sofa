@@ -292,7 +292,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int i,j,k;
     int nbTriangles = m_topology->getNbTriangles();

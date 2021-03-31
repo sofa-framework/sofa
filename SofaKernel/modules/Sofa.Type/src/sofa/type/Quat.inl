@@ -790,19 +790,27 @@ void Quat<Real>::toMatrix(Mat<3,3,Real>& m) const
 }
 
 template<class Real>
-void Quat<Real>::toMatrix(Mat<4,4,Real>& m) const
+void Quat<Real>::toHomogeneousMatrix(Mat<4,4,Real>& m) const
 {
     m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
     m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
     m[0][2] = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
+    m[0][3] = 0.0;
 
     m[1][0] = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
     m[1][1] = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
     m[1][2] = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
+    m[1][3] = 0.0;
 
     m[2][0] = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
     m[2][1] = (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
     m[2][2] = (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
+    m[2][3] = 0.0;
+
+    m[3][0] = 0.0f;
+    m[3][1] = 0.0f;
+    m[3][2] = 0.0f;
+    m[3][3] = 1.0f;
 }
 
 /// Apply the rotation to a given vector

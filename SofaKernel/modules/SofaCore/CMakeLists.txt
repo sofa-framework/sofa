@@ -57,6 +57,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/Mass.inl
     ${SRC_ROOT}/behavior/MechanicalState.h
     ${SRC_ROOT}/behavior/MechanicalState.inl
+    ${SRC_ROOT}/behavior/MechanicalMatrix.h
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.h
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.inl
     ${SRC_ROOT}/behavior/MixedInteractionForceField.h
@@ -137,11 +138,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/BaseMeshTopology.h
     ${SRC_ROOT}/topology/BaseTopology.h
     ${SRC_ROOT}/topology/BaseTopologyData.h
-    ${SRC_ROOT}/topology/BaseTopologyEngine.h
     ${SRC_ROOT}/topology/BaseTopologyObject.h
     ${SRC_ROOT}/topology/TopologicalMapping.h
     ${SRC_ROOT}/topology/Topology.h
     ${SRC_ROOT}/topology/TopologyChange.h
+	${SRC_ROOT}/topology/TopologyEngine.h
     ${SRC_ROOT}/topology/TopologyElementHandler.h
     ${SRC_ROOT}/topology/TopologyHandler.h
     ${SRC_ROOT}/visual/DisplayFlags.h
@@ -189,6 +190,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ForceField.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
     ${SRC_ROOT}/behavior/Mass.cpp
+    ${SRC_ROOT}/behavior/MechanicalMatrix.cpp
     ${SRC_ROOT}/behavior/MechanicalState.cpp
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/MixedInteractionForceField.cpp
@@ -244,10 +246,10 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
-    ${SRC_ROOT}/topology/BaseTopologyEngine.cpp
     ${SRC_ROOT}/topology/TopologicalMapping.cpp
     ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
+	${SRC_ROOT}/topology/TopologyEngine.cpp
     ${SRC_ROOT}/topology/TopologyElementHandler.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
     ${SRC_ROOT}/visual/Shader.cpp
@@ -269,7 +271,6 @@ set (COMPAT_HEADER_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
-#target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/BaseContext.h)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)
     message("Adding precompiled header for SofaCore")
@@ -293,4 +294,5 @@ sofa_add_targets_to_package(
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaCore_test)
+    add_subdirectory(SofaCore_simutest)
 endif()

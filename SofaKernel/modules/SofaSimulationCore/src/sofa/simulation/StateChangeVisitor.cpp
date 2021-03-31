@@ -24,6 +24,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {
