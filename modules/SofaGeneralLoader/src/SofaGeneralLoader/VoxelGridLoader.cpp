@@ -23,7 +23,6 @@
 #include <SofaGeneralLoader/VoxelGridLoader.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/io/Image.h>
 #include <sofa/helper/io/ImageRAW.h>
 #include <iostream>
 #include <string>

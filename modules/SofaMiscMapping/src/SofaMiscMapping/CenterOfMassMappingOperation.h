@@ -19,23 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STABLE_VECTOR_H
-#define SOFA_HELPER_STABLE_VECTOR_H
+#pragma once
 
+namespace sofa::component::mapping {
 
-#include <boost/container/stable_vector.hpp>
-
-
-namespace sofa
+template<typename Model>
+struct CenterOfMassMappingOperation
 {
-namespace helper
-{
+    typedef typename Model::VecCoord VecCoord;
+    typedef typename Model::Coord Coord;
+    typedef typename Model::Deriv Deriv;
+    typedef typename Model::VecDeriv VecDeriv;
 
-    template<class T, class A = std::allocator<T>>
-    using stable_vector = boost::container::stable_vector<T,A>;
+public :
+    static inline const VecCoord *getVecCoord(const Model *m, const sofa::core::VecId id) {
+        return m->getVecCoord(id.index);
+    }
 
+    static inline VecDeriv *getVecDeriv(Model *m, const sofa::core::VecId id) { return m->getVecDeriv(id.index); }
 
-} // namespace helper
-} // namespace sofa
+    static inline const sofa::core::behavior::BaseMass *fetchMass(const Model *m) {
+        sofa::core::behavior::BaseMass *mass = m->getContext()->getMass();
+        return mass;
+    }
 
-#endif
+    static inline double computeTotalMass(const Model *model, const sofa::core::behavior::BaseMass *mass) {
+        double result = 0.0;
+        const unsigned int modelSize = static_cast<unsigned int>(model->getSize());
+        for (unsigned int i = 0; i < modelSize; i++) {
+            result += mass->getElementMass(i);
+        }
+        return result;
+    }
+
+    static inline Coord WeightedCoord(const VecCoord *v, const sofa::core::behavior::BaseMass *m) {
+        Coord c;
+        for (unsigned int i = 0; i < v->size(); i++) {
+            c += (*v)[i] * m->getElementMass(i);
+        }
+        return c;
+    }
+
+    static inline Deriv WeightedDeriv(const VecDeriv *v, const sofa::core::behavior::BaseMass *m) {
+        Deriv d;
+        for (unsigned int i = 0; i < v->size(); i++) {
+            d += (*v)[i] * m->getElementMass(i);
+        }
+        return d;
+    }
+};
+
+}

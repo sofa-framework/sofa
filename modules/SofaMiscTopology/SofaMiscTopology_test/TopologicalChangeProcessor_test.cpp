@@ -19,78 +19,364 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 
-#include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <SofaSimulationGraph/SimpleApi.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/helper/system/SetDirectory.h>
-#include <SofaSimulationCommon/SceneLoaderXML.h>
 
-namespace sofa {
+using sofa::helper::testing::BaseSimulationTest;
+
+namespace 
+{
+
+using namespace sofa::component::topology;
+using namespace sofa::simulation;
 
 /**  Test TopologicalChangeProcessor incise process
   */
 
-struct TopologicalChangeProcessor_test: public Sofa_test<>
+struct TopologicalChangeProcessor_test: public BaseSimulationTest
 {
-    // root
-   simulation::Node::SPtr root;
-   /// Simulation
-   simulation::Simulation* simulation;
+    /// Store SceneInstance 
+    BaseSimulationTest::SceneInstance m_instance;
 
-   void SetUp()
-   {
-       sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-       root = simulation::getSimulation()->createNewGraph("root");
+    /// Name of the file to load
+    std::string m_fileName = "";
 
-       // Load the scene from the xml file
-       std::string fileName = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + "IncisionTrianglesProcess.scn";
-       std::cout << fileName.c_str() << std::endl;
-       root = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
+    /// Method use at start to load the scene file    
+    void SetUp()
+    {
+        sofa::simpleapi::importPlugin("SofaComponentAll");
+        // Load the scene from the xml file
+        std::string filePath = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + m_fileName;
+        std::cout << "filePath: " << filePath << std::endl;
+        m_instance = BaseSimulationTest::SceneInstance();
+        // Load scene
+        m_instance.loadSceneFile(filePath);
+        // Init scene
+        m_instance.initScene();
 
-       // Test if root is not null
-       if(!root)
-       {
-           ADD_FAILURE() << "Error while loading the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
-           return;
-       }
+        // Test if root is not null
+        if(!m_instance.root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return;
+        }
+    }
 
-       // Init scene
-       sofa::simulation::getSimulation()->init(root.get());
+    /// Method to really do the test per type of topology change, to be implemented by child classes
+    virtual bool testTopologyChanges() = 0;
 
-       // Test if root is not null
-       if(!root)
-       {
-           ADD_FAILURE() << "Error in init for the scene: " << "IncisionTrianglesProcess.scn" << std::endl;
-           return;
-       }
-   }
-
-   bool TestInciseProcess()
-   {
-       // To test incise animates the scene at least 1.2s
-       for(int i=0;i<50;i++)
-       {
-          sofa::simulation::getSimulation()->animate(root.get(),0.1);
-       }
-
-       return true;
-   }
-
-   /// Unload the scene
-   void TearDown()
-   {
-       if (root!=nullptr)
-           sofa::simulation::getSimulation()->unload(root);
-   }
+    /// Unload the scene
+    void TearDown()
+    {
+        if (m_instance.root !=nullptr)
+            sofa::simulation::getSimulation()->unload(m_instance.root);
+    }
 
 };
 
-TEST_F( TopologicalChangeProcessor_test,Incise)
+
+struct InciseProcessor_test : TopologicalChangeProcessor_test
 {
-    ASSERT_TRUE(this->TestInciseProcess());
+    InciseProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "IncisionTrianglesProcess.scn";
+    }
+
+    bool testTopologyChanges() override
+    {
+        Node::SPtr root = m_instance.root;
+
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TriangleSetTopologyContainer not found in 'SquareGravity' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTriangles(), 1450);
+        EXPECT_EQ(topoCon->getNbEdges(), 2223);
+        EXPECT_EQ(topoCon->getNbPoints(), 774);
+
+        // to test incise animates the scene at least 1.2s
+        for (int i = 0; i < 50; i++)
+        {
+            m_instance.simulate(0.05);
+        }
+
+        EXPECT_EQ(topoCon->getNbTriangles(), 1677);
+        EXPECT_EQ(topoCon->getNbEdges(), 2704);
+        EXPECT_EQ(topoCon->getNbPoints(), 1026);
+
+        return true;
+    }
+};
+
+
+struct RemoveTriangleProcessor_test : TopologicalChangeProcessor_test
+{
+    RemoveTriangleProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "RemovingTrianglesProcess.scn";
+    }
+
+    bool testTopologyChanges() override
+    {
+        Node::SPtr root = m_instance.root;
+
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TriangleSetTopologyContainer not found in 'SquareGravity' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTriangles(), 1450);
+        EXPECT_EQ(topoCon->getNbEdges(), 2223);
+        EXPECT_EQ(topoCon->getNbPoints(), 774);
+
+        //// to test incise animates the scene at least 1.2s
+        for (int i = 0; i < 20; i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+        EXPECT_EQ(topoCon->getNbTriangles(), 145);
+        EXPECT_EQ(topoCon->getNbEdges(), 384);
+        EXPECT_EQ(topoCon->getNbPoints(), 261);
+
+        return true;
+    }
+};
+
+
+struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
+{
+    AddTriangleProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "AddingTrianglesProcess.scn";
+    }
+
+    bool testTopologyChanges() override
+    {
+        Node::SPtr root = m_instance.root;
+
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        Node::SPtr nodeTopo = root.get()->getChild("SquareGravity");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'SquareGravity' Node not found in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TriangleSetTopologyContainer not found in 'SquareGravity' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTriangles(), 0);
+        EXPECT_EQ(topoCon->getNbEdges(), 0);
+        EXPECT_EQ(topoCon->getNbPoints(), 0);
+
+        // to test incise animates the scene at least 1.2s
+        for (int i = 0; i < 100; i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+        EXPECT_EQ(topoCon->getNbTriangles(), 24);
+        EXPECT_EQ(topoCon->getNbEdges(), 42);
+        EXPECT_EQ(topoCon->getNbPoints(), 18);
+
+        return true;
+    }
+};
+
+
+
+struct RemoveTetrahedronProcessor_test : TopologicalChangeProcessor_test
+{
+    RemoveTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "RemovingTetraProcess.scn";
+    }
+
+    bool testTopologyChanges() override
+    {
+        Node::SPtr root = m_instance.root;
+
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        Node::SPtr nodeTopo = root.get()->getChild("TT");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'TT' Node not found in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TetrahedronSetTopologyContainer not found in 'TT' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTetrahedra(), 44);
+        EXPECT_EQ(topoCon->getNbTriangles(), 112);
+        EXPECT_EQ(topoCon->getNbEdges(), 93);
+        EXPECT_EQ(topoCon->getNbPoints(), 26);
+
+
+        for (int i = 0; i < 20; i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+
+        EXPECT_EQ(topoCon->getNbTetrahedra(), 34);
+        EXPECT_EQ(topoCon->getNbTriangles(), 97);
+        EXPECT_EQ(topoCon->getNbEdges(), 86);
+        EXPECT_EQ(topoCon->getNbPoints(), 25);
+
+        return true;
+    }
+};
+
+
+struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
+{
+    AddTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
+    {
+        m_fileName = "AddingTetraProcess.scn";
+    }
+
+    bool testTopologyChanges() override
+    {
+        Node::SPtr root = m_instance.root;
+
+        if (!root)
+        {
+            ADD_FAILURE() << "Error while loading the scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        Node::SPtr nodeTopo = root.get()->getChild("TT");
+        if (!nodeTopo)
+        {
+            ADD_FAILURE() << "Error 'TT' Node not found in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+        TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(nodeTopo->getMeshTopology());
+        if (topoCon == nullptr)
+        {
+            ADD_FAILURE() << "Error: TetrahedronSetTopologyContainer not found in 'TT' Node, in scene: " << m_fileName << std::endl;
+            return false;
+        }
+
+
+        // check topology at start
+        EXPECT_EQ(topoCon->getNbTetrahedra(), 0);
+        EXPECT_EQ(topoCon->getNbTriangles(), 0);
+        EXPECT_EQ(topoCon->getNbEdges(), 0);
+        EXPECT_EQ(topoCon->getNbPoints(), 0);
+
+        for (int i = 0; i < 41; i++)
+        {
+            m_instance.simulate(0.01);
+        }
+
+        EXPECT_EQ(topoCon->getNbTetrahedra(), 8);
+        EXPECT_EQ(topoCon->getNbTriangles(), 24);
+        EXPECT_EQ(topoCon->getNbEdges(), 25);
+        EXPECT_EQ(topoCon->getNbPoints(), 14);
+
+        return true;
+    }
+};
+
+
+TEST_F(RemoveTetrahedronProcessor_test, RemoveTretrahedra)
+{
+    ASSERT_TRUE(this->testTopologyChanges());
 }
 
-}// sofa
+TEST_F(AddTetrahedronProcessor_test, AddTretrahedra)
+{
+    ASSERT_TRUE(this->testTopologyChanges());
+}
+
+
+
+TEST_F(InciseProcessor_test, InciseTriangles)
+{
+    ASSERT_TRUE(this->testTopologyChanges());
+}
+
+TEST_F(AddTriangleProcessor_test, AddTriangles)
+{
+    ASSERT_TRUE(this->testTopologyChanges());
+}
+
+TEST_F(RemoveTriangleProcessor_test, RemoveTriangles)
+{
+    ASSERT_TRUE(this->testTopologyChanges());
+}
+
+
+
+
+}// namespace 

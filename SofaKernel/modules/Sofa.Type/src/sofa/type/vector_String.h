@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <cassert>
-#include <iostream>
-#include <sofa/helper/vector_T.h>
+#include <sofa/type/vector_T.h>
+
+template<> SOFA_TYPE_API std::ostream& sofa::type::vector<std::string>::write(std::ostream& os) const;
+

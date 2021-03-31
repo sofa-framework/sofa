@@ -100,7 +100,7 @@ void PatchTestMovementConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::removeConstraint(Index index)
 {
-    removeValue(*d_indices.beginEdit(),index);
+    sofa::helper::removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();
 }
 

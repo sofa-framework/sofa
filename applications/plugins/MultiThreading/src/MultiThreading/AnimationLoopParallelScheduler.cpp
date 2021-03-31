@@ -43,8 +43,6 @@
 
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/helper/AdvancedTimer.h>
-
 #include <cstdlib>
 #include <cmath>
 #include <algorithm>
@@ -105,10 +103,6 @@ namespace simulation
             _taskScheduler = TaskScheduler::create(schedulerName.getValue().c_str());
         }        
         _taskScheduler->init( mNbThread );
-
-		sofa::core::objectmodel::classidT<sofa::core::behavior::ConstraintSolver>();
-		sofa::core::objectmodel::classidT<sofa::core::behavior::LinearSolver>();
-		sofa::core::objectmodel::classidT<sofa::core::CollisionModel>();
 	}
 
 

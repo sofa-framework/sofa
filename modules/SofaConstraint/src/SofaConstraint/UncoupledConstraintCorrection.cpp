@@ -26,9 +26,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-
-#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseMechanics/UniformMass.h>
 
 namespace sofa::component::constraintset

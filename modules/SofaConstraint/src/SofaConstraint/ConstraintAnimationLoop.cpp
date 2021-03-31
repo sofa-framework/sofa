@@ -29,7 +29,6 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
@@ -45,16 +44,8 @@
 
 #include <sofa/core/behavior/BaseConstraint.h> ///< ConstraintResolution.
 
-#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <cmath>
-
-#include <map>
-#include <string>
-#include <sstream>
-
-#include <chrono>
 #include <thread>
 
 

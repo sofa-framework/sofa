@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_VECTOR_DEVICE_H
-#define SOFA_HELPER_VECTOR_DEVICE_H
+#pragma once
 
-#include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/config.h>
 
 // maximum number of bytes we allow to increase the size when of a vector in a single step when we reserve on the host or device
 #define SOFA_VECTOR_HOST_STEP_SIZE 32768
@@ -45,31 +43,30 @@
 #define DEBUG_OUT_V(a)
 #endif
 
-namespace sofa
+namespace sofa::type
 {
 
-namespace helper
-{
-
-DEBUG_OUT_V(extern SOFA_HELPER_API int cptid;)
-
-template <class T, class MemoryManager>
+template <class T, class MemoryManager, class DataTypeInfoManager>
 class vector_device
 {
 public:
     typedef T      value_type;
     typedef size_t Size;
-    typedef T&     reference;
+    typedef T& reference;
     typedef const T& const_reference;
-    typedef T*     iterator;
+    typedef T* iterator;
     typedef const T* const_iterator;
     typedef typename MemoryManager::device_pointer device_pointer;
     typedef typename MemoryManager::buffer_id_type buffer_id_type;
 
     typedef MemoryManager memory_manager;
+    typedef DataTypeInfoManager datatypeinfo_manager;
+
     template<class T2> struct rebind
     {
-        typedef vector_device<T2, typename memory_manager::template rebind<T2>::other > other;
+        typedef vector_device<T2, 
+            typename memory_manager::template rebind<T2>::other, 
+            typename datatypeinfo_manager::template rebind<T2>::other > other;
     };
 
 protected:
@@ -82,27 +79,29 @@ protected:
     mutable Size      deviceReserveSize;      ///< Desired allocated size
 #endif
     mutable Size      clearSize;  ///< when initializing missing device data, up to where entries should be set to zero ?
-    T*            hostPointer;    ///< Pointer to the data on the CPU side
+    T* hostPointer;    ///< Pointer to the data on the CPU side
     mutable int   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additionnal space may need to be allocated and/or initialized)
     mutable bool  hostIsValid;    ///< True if the data on the CPU is currently valid
     mutable bool  bufferIsRegistered;  ///< True if the buffer is registered with CUDA
     buffer_id_type  bufferObject;   ///< Optionnal associated buffer ID
 
+    inline static int cptid = 0;
+
     enum { ALL_DEVICE_VALID = 0xFFFFFFFF };
 
     DEBUG_OUT_V(int id;)
-    DEBUG_OUT_V(mutable int spaceDebug;)
+        DEBUG_OUT_V(mutable int spaceDebug;)
 
 public:
 
     vector_device()
-        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
+        : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
         , bufferObject(0)
     {
         DEBUG_OUT_V(id = cptid);
         DEBUG_OUT_V(cptid++);
         DEBUG_OUT_V(spaceDebug = 0);
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
         {
             devicePointer[d] = MemoryManager::null();
             deviceAllocSize[d] = 0;
@@ -113,14 +112,14 @@ public:
 #endif
         clearSize = 0;
     }
-    vector_device ( Size n )
-        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
+    vector_device(Size n)
+        : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
         , bufferObject(0)
     {
         DEBUG_OUT_V(id = cptid);
         DEBUG_OUT_V(cptid++);
         DEBUG_OUT_V(spaceDebug = 0);
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
         {
             devicePointer[d] = MemoryManager::null();
             deviceAllocSize[d] = 0;
@@ -130,16 +129,16 @@ public:
         deviceReserveSize = 0;
 #endif
         clearSize = 0;
-        resize ( n );
+        resize(n);
     }
-    vector_device ( const vector_device<T,MemoryManager >& v )
-        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
+    vector_device(const vector_device<T, MemoryManager, DataTypeInfoManager>& v)
+        : vectorSize(0), allocSize(0), hostPointer(nullptr), deviceIsValid(ALL_DEVICE_VALID), hostIsValid(true), bufferIsRegistered(false)
         , bufferObject(0)
     {
         DEBUG_OUT_V(id = cptid);
         DEBUG_OUT_V(cptid++);
         DEBUG_OUT_V(spaceDebug = 0);
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
         {
             devicePointer[d] = MemoryManager::null();
             deviceAllocSize[d] = 0;
@@ -149,7 +148,7 @@ public:
 #ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
         deviceReserveSize = 0;
 #endif
-        *this = v;
+        * this = v;
     }
 
     bool isHostValid() const
@@ -158,7 +157,7 @@ public:
     }
     bool isDeviceValid(unsigned gpu) const
     {
-        return (deviceIsValid & (1<<gpu))!=0;
+        return (deviceIsValid & (1 << gpu)) != 0;
     }
 
     void clear()
@@ -167,29 +166,29 @@ public:
         vectorSize = 0;
         hostIsValid = true;
         deviceIsValid = ALL_DEVICE_VALID;
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
             deviceVectorSize[d] = 0;
         clearSize = 0;
         DEBUG_OUT_V(SPACEM << "clear vector " << std::endl);
     }
 
-    void operator= ( const vector_device<T,MemoryManager >& v )
+    void operator= (const vector_device<T, MemoryManager, DataTypeInfoManager >& v)
     {
         if (&v == this)
         {
             return;
         }
-        DEBUG_OUT_V(SPACEP << "operator=, id is " << v.id << "(" << v.hostIsValid << "," << (v.deviceIsValid&1) << ") " << std::endl);
-        DEBUG_OUT_V(std::cout << v.id << " : " << "(" << v.hostIsValid << "," << (v.deviceIsValid&1) << ") " << ". operator= param " << id << std::endl);
+        DEBUG_OUT_V(SPACEP << "operator=, id is " << v.id << "(" << v.hostIsValid << "," << (v.deviceIsValid & 1) << ") " << std::endl);
+        DEBUG_OUT_V(std::cout << v.id << " : " << "(" << v.hostIsValid << "," << (v.deviceIsValid & 1) << ") " << ". operator= param " << id << std::endl);
 
         Size newSize = v.size();
         clear();
 
-        fastResize ( newSize );
+        fastResize(newSize);
 
-        if ( vectorSize > 0)
+        if (vectorSize > 0)
         {
-            if (v.hostIsValid ) std::copy ( v.hostPointer, v.hostPointer+vectorSize, hostPointer );
+            if (v.hostIsValid) std::copy(v.hostPointer, v.hostPointer + vectorSize, hostPointer);
 
             clearSize = v.clearSize;
             if (v.deviceIsValid)
@@ -201,7 +200,7 @@ public:
                 }
 
                 deviceIsValid = 0; /// we specify that we don't want to copy previous value of the current vector
-                for (int d=0; d<MemoryManager::numDevices(); d++)
+                for (int d = 0; d < MemoryManager::numDevices(); d++)
                 {
                     if (v.isDeviceValid(d) && v.deviceVectorSize[d] > 0)
                     {
@@ -211,13 +210,13 @@ public:
                         if (vectorSize <= v.deviceVectorSize[d])
                         {
                             DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyDeviceToDevice(copy full vector) " << 0 << "->" << vectorSize << std::endl);
-                            MemoryManager::memcpyDeviceToDevice (d, devicePointer[d], v.devicePointer[d], vectorSize*sizeof ( T ) );
+                            MemoryManager::memcpyDeviceToDevice(d, devicePointer[d], v.devicePointer[d], vectorSize * sizeof(T));
                             deviceVectorSize[d] = vectorSize;
                         }
                         else
                         {
                             DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyDeviceToDevice(copy valid vector) " << 0 << "->" << v.deviceAllocSize[d] << std::endl);
-                            MemoryManager::memcpyDeviceToDevice (d, devicePointer[d], v.devicePointer[d], v.deviceVectorSize[d]*sizeof ( T ) );
+                            MemoryManager::memcpyDeviceToDevice(d, devicePointer[d], v.devicePointer[d], v.deviceVectorSize[d] * sizeof(T));
                             deviceVectorSize[d] = v.deviceVectorSize[d];
                         }
                     }
@@ -233,9 +232,9 @@ public:
 
     ~vector_device()
     {
-        if ( hostPointer!=nullptr ) MemoryManager::hostFree ( hostPointer );
+        if (hostPointer != nullptr) MemoryManager::hostFree(hostPointer);
 
-        if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject )
+        if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject)
         {
             unregisterBuffer();
             MemoryManager::bufferFree(bufferObject);
@@ -243,10 +242,10 @@ public:
         }
         else
         {
-            for (int d=0; d<MemoryManager::numDevices(); d++)
+            for (int d = 0; d < MemoryManager::numDevices(); d++)
             {
-                if ( !MemoryManager::isNull(devicePointer[d]) )
-                    MemoryManager::deviceFree(d, (devicePointer[d]) );
+                if (!MemoryManager::isNull(devicePointer[d]))
+                    MemoryManager::deviceFree(d, (devicePointer[d]));
             }
         }
     }
@@ -263,34 +262,34 @@ public:
 
     bool empty() const
     {
-        return vectorSize==0;
+        return vectorSize == 0;
     }
 
-    void reserve (Size s,Size WARP_SIZE=MemoryManager::BSIZE)
+    void reserve(Size s, Size WARP_SIZE = MemoryManager::BSIZE)
     {
-        s = ((s+WARP_SIZE-1 ) / WARP_SIZE) * WARP_SIZE;
+        s = ((s + WARP_SIZE - 1) / WARP_SIZE) * WARP_SIZE;
 #ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
-        if ( s > deviceReserveSize)
+        if (s > deviceReserveSize)
         {
             // we double the reserved size except if the requested size is bigger or if we would allocate more memory than the configured step size
-            if (s <= 2*deviceReserveSize && 2*deviceReserveSize <= s+SOFA_VECTOR_HOST_STEP_SIZE)
+            if (s <= 2 * deviceReserveSize && 2 * deviceReserveSize <= s + SOFA_VECTOR_HOST_STEP_SIZE)
                 deviceReserveSize *= 2;
             else
                 deviceReserveSize = s;
             // always allocate multiples of WARP_SIZE values
-            deviceReserveSize = ((deviceReserveSize+WARP_SIZE-1 ) / WARP_SIZE) * WARP_SIZE;
+            deviceReserveSize = ((deviceReserveSize + WARP_SIZE - 1) / WARP_SIZE) * WARP_SIZE;
         }
 #endif
-        if ( s <= allocSize ) return;
+        if (s <= allocSize) return;
         DEBUG_OUT_V(SPACEP << "reserve " << vectorSize << "->" << s << " (alloc=" << allocSize << ")" << std
-                ::endl);
+            ::endl);
         // we double the reserved size except if the requested size is bigger or if we would allocate more memory than the configured step size
-        if (s <= 2*allocSize && 2*allocSize <= s+SOFA_VECTOR_HOST_STEP_SIZE)
+        if (s <= 2 * allocSize && 2 * allocSize <= s + SOFA_VECTOR_HOST_STEP_SIZE)
             allocSize *= 2;
         else
-            allocSize = s+SOFA_VECTOR_HOST_STEP_SIZE;
+            allocSize = s + SOFA_VECTOR_HOST_STEP_SIZE;
         // always allocate multiples of WARP_SIZE values
-        allocSize = ((allocSize+WARP_SIZE-1 ) / WARP_SIZE) * WARP_SIZE;
+        allocSize = ((allocSize + WARP_SIZE - 1) / WARP_SIZE) * WARP_SIZE;
 
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject)
         {
@@ -301,31 +300,31 @@ public:
 
             MemoryManager::bufferAlloc(&bufferObject, allocSize * sizeof(T), false);
 
-            if ( vectorSize > 0 ) deviceIsValid = 0;
+            if (vectorSize > 0) deviceIsValid = 0;
         }
 
         T* prevHostPointer = hostPointer;
         void* newHostPointer = nullptr;
-        DEBUG_OUT_V(SPACEN<< "MemoryManager::hostAlloc " << allocSize << std::endl);
-        MemoryManager::hostAlloc( &newHostPointer, allocSize*sizeof ( T ) );
+        DEBUG_OUT_V(SPACEN << "MemoryManager::hostAlloc " << allocSize << std::endl);
+        MemoryManager::hostAlloc(&newHostPointer, allocSize * sizeof(T));
         hostPointer = (T*)newHostPointer;
-        if ( vectorSize!=0 && hostIsValid ) std::copy ( prevHostPointer, prevHostPointer+vectorSize, hostPointer );
-        if ( prevHostPointer != nullptr ) MemoryManager::hostFree( prevHostPointer );
+        if (vectorSize != 0 && hostIsValid) std::copy(prevHostPointer, prevHostPointer + vectorSize, hostPointer);
+        if (prevHostPointer != nullptr) MemoryManager::hostFree(prevHostPointer);
         DEBUG_OUT_V(SPACEM << "reserve " << " (alloc=" << allocSize << ")" << std::endl);
     }
 
     /// resize the vector without calling constructors or destructors, and without synchronizing the device and host copy
-    void fastResize ( Size s,Size WARP_SIZE=MemoryManager::BSIZE)
+    void fastResize(Size s, Size WARP_SIZE = MemoryManager::BSIZE)
     {
-        if ( s == vectorSize ) return;
+        if (s == vectorSize) return;
         DEBUG_OUT_V(SPACEP << "fastresize " << vectorSize << "->" << s << " (alloc=" << allocSize << ")" << std::endl);
         reserve(s, WARP_SIZE);
         vectorSize = s;
         if (clearSize > vectorSize) clearSize = vectorSize;
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
             if (deviceVectorSize[d] > vectorSize)
                 deviceVectorSize[d] = vectorSize;
-        if ( !vectorSize )
+        if (!vectorSize)
         {
             // special case when the vector is now empty -> host and device are valid
             deviceIsValid = ALL_DEVICE_VALID;
@@ -334,10 +333,10 @@ public:
         DEBUG_OUT_V(SPACEM << "fastresize " << std::endl);
     }
     /// resize the vector discarding any old values, without calling constructors or destructors, and without synchronizing the device and host copy
-    void recreate( Size s,Size WARP_SIZE=MemoryManager::BSIZE)
+    void recreate(Size s, Size WARP_SIZE = MemoryManager::BSIZE)
     {
         clear();
-        fastResize(s,WARP_SIZE);
+        fastResize(s, WARP_SIZE);
     }
 
     void invalidateDevice()
@@ -358,14 +357,14 @@ public:
 
         deviceIsValid = 0;
         clearSize = 0;
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
         {
-            if (deviceAllocSize[d]>0)   /// if the vector has already been used
+            if (deviceAllocSize[d] > 0)   /// if the vector has already been used
             {
                 DEBUG_OUT_V(SPACEN << "MemoryManager::memsetDevice " << deviceAllocSize[d] << std::endl);
                 allocate(d); /// make sure the size is correct device is not valid so it only resize if necessary
-                MemoryManager::memsetDevice(d, devicePointer[d], v, vectorSize*sizeof(T));
-                deviceIsValid |= 1<<d;
+                MemoryManager::memsetDevice(d, devicePointer[d], v, vectorSize * sizeof(T));
+                deviceIsValid |= 1 << d;
             }
         }
 
@@ -378,37 +377,37 @@ public:
 
     void memsetHost(int v = 0)
     {
-        MemoryManager::memsetHost(hostPointer,v,vectorSize*sizeof(T));
+        MemoryManager::memsetHost(hostPointer, v, vectorSize * sizeof(T));
         clearSize = 0;
         hostIsValid = true;
         deviceIsValid = 0;
     }
 
-    void resize ( Size s,Size WARP_SIZE=MemoryManager::BSIZE)
+    void resize(Size s, Size WARP_SIZE = MemoryManager::BSIZE)
     {
         reserve(s, WARP_SIZE);
-        if ( s == vectorSize ) return;
+        if (s == vectorSize) return;
         DEBUG_OUT_V(SPACEP << "resize " << vectorSize << "->" << s << " (alloc=" << allocSize << ")" << std::endl);
-        if ( s > vectorSize )
+        if (s > vectorSize)
         {
-            if (sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor )   // can use memset instead of constructors
+            if (datatypeinfo_manager::ZeroConstructor)   // can use memset instead of constructors
             {
                 if (hostIsValid)
                 {
-                    DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost (new data) " << (s-vectorSize) << std::endl);
-                    MemoryManager::memsetHost(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
+                    DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost (new data) " << (s - vectorSize) << std::endl);
+                    MemoryManager::memsetHost(hostPointer + vectorSize, 0, (s - vectorSize) * sizeof(T));
                 }
                 clearSize = s;
 #ifndef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
                 size_t deviceReserveSize = allocSize;
 #endif
-                for (int d=0; d<MemoryManager::numDevices(); d++)
+                for (int d = 0; d < MemoryManager::numDevices(); d++)
                 {
                     if (isDeviceValid(d))
                     {
                         if (deviceAllocSize[d] >= deviceReserveSize)
                         {
-                            MemoryManager::memsetDevice(d, MemoryManager::deviceOffset(devicePointer[d], deviceVectorSize[d]), 0, (s-deviceVectorSize[d])*sizeof(T));
+                            MemoryManager::memsetDevice(d, MemoryManager::deviceOffset(devicePointer[d], deviceVectorSize[d]), 0, (s - deviceVectorSize[d]) * sizeof(T));
                             deviceVectorSize[d] = s;
                         }
                         // if the memory allocated on a device is not sufficient, we do not reallocate and memset the new data until it is requested on the device
@@ -421,12 +420,12 @@ public:
             {
                 DEBUG_OUT_V(SPACEN << "ZEROCONST " << std::endl);
                 copyToHost();
-                DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost (new data) " << (s-vectorSize) << std::endl);
-                MemoryManager::memsetHost(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
+                DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost (new data) " << (s - vectorSize) << std::endl);
+                MemoryManager::memsetHost(hostPointer + vectorSize, 0, (s - vectorSize) * sizeof(T));
                 // Call the constructor for the new elements
-                for ( Size i = vectorSize; i < s; i++ ) ::new ( hostPointer+i ) T;
+                for (Size i = vectorSize; i < s; i++) ::new (hostPointer + i) T;
 
-                if ( vectorSize == 0 )   // wait until the transfer is really necessary, as other modifications might follow
+                if (vectorSize == 0)   // wait until the transfer is really necessary, as other modifications might follow
                 {
                     deviceIsValid = 0;
                 }
@@ -434,17 +433,17 @@ public:
                 {
                     if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
 
-                    for (int d=0; d<MemoryManager::numDevices(); d++)
+                    for (int d = 0; d < MemoryManager::numDevices(); d++)
                     {
-                        if (isDeviceValid(d) )
+                        if (isDeviceValid(d))
                         {
                             if (deviceVectorSize[d] == 0) // no data is currently on the device -> we simply invalidate it and the transfer will happen once the data is actually requested
-                                deviceIsValid &= ~(1<<d);
+                                deviceIsValid &= ~(1 << d);
                             else
                             {
                                 allocate(d);
-                                DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyHostToDevice " << vectorSize << "->" << ( s-vectorSize ) << std::endl);
-                                MemoryManager::memcpyHostToDevice(d, MemoryManager::deviceOffset(devicePointer[d], deviceVectorSize[d]), hostPointer+deviceVectorSize[d], ( s-deviceVectorSize[d] ) *sizeof ( T ) );
+                                DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyHostToDevice " << vectorSize << "->" << (s - vectorSize) << std::endl);
+                                MemoryManager::memcpyHostToDevice(d, MemoryManager::deviceOffset(devicePointer[d], deviceVectorSize[d]), hostPointer + deviceVectorSize[d], (s - deviceVectorSize[d]) * sizeof(T));
                                 deviceVectorSize[d] = s;
                             }
                         }
@@ -452,23 +451,23 @@ public:
                 }
             }
         }
-        else if (s < vectorSize && !(defaulttype::DataTypeInfo<T>::SimpleCopy))     // need to call destructors
+        else if (s < vectorSize && !(datatypeinfo_manager::SimpleCopy))     // need to call destructors
         {
             DEBUG_OUT_V(SPACEN << "SIMPLECOPY " << std::endl);
             copyToHost();
             // Call the destructor for the deleted elements
-            for ( Size i = s; i < vectorSize; i++ )
+            for (Size i = s; i < vectorSize; i++)
             {
                 hostPointer[i].~T();
             }
         }
         vectorSize = s;
         if (clearSize > vectorSize) clearSize = vectorSize;
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
             if (deviceVectorSize[d] > vectorSize)
                 deviceVectorSize[d] = vectorSize;
 
-        if ( !vectorSize )   // special case when the vector is now empty -> host and device are valid
+        if (!vectorSize)   // special case when the vector is now empty -> host and device are valid
         {
             deviceIsValid = ALL_DEVICE_VALID;
             hostIsValid = true;
@@ -477,56 +476,56 @@ public:
         DEBUG_OUT_V(SPACEM << "resize " << std::endl);
     }
 
-    void swap ( vector_device<T,MemoryManager>& v )
+    void swap(vector_device<T, MemoryManager, DataTypeInfoManager>& v)
     {
         DEBUG_OUT_V(SPACEP << "swap " << std::endl);
 #define VSWAP(type, var) { type t = var; var = v.var; v.var = t; }
-        VSWAP ( Size, vectorSize );
-        VSWAP ( Size, allocSize );
-        VSWAP ( int, clearSize );
+        VSWAP(Size, vectorSize);
+        VSWAP(Size, allocSize);
+        VSWAP(int, clearSize);
 #ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
-        VSWAP ( int, deviceReserveSize );
+        VSWAP(int, deviceReserveSize);
 #endif
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
         {
-            VSWAP ( void*    , devicePointer[d] );
-            VSWAP ( int    ,  deviceVectorSize[d] );
-            VSWAP ( int    ,  deviceAllocSize[d] );
+            VSWAP(void*, devicePointer[d]);
+            VSWAP(int, deviceVectorSize[d]);
+            VSWAP(int, deviceAllocSize[d]);
         }
-        VSWAP ( T*       , hostPointer );
-        VSWAP ( buffer_id_type, bufferObject );
-        VSWAP ( int      , deviceIsValid );
-        VSWAP ( bool     , hostIsValid );
-        VSWAP ( bool     , bufferIsRegistered );
+        VSWAP(T*, hostPointer);
+        VSWAP(buffer_id_type, bufferObject);
+        VSWAP(int, deviceIsValid);
+        VSWAP(bool, hostIsValid);
+        VSWAP(bool, bufferIsRegistered);
 #undef VSWAP
         DEBUG_OUT_V(SPACEM << "swap " << std::endl);
     }
 
-    const device_pointer deviceReadAt ( int i ,int gpu = MemoryManager::getBufferDevice()) const
+    const device_pointer deviceReadAt(int i, int gpu = MemoryManager::getBufferDevice()) const
     {
-        DEBUG_OUT_V(if (!(deviceIsValid & (1<<gpu))) {SPACEN << "deviceRead" << std::endl;});
+        DEBUG_OUT_V(if (!(deviceIsValid & (1 << gpu))) { SPACEN << "deviceRead" << std::endl; });
         copyToDevice(gpu);
-        return MemoryManager::deviceOffset(devicePointer[gpu],i);
+        return MemoryManager::deviceOffset(devicePointer[gpu], i);
     }
 
-    const device_pointer deviceRead ( int gpu = MemoryManager::getBufferDevice()) const
+    const device_pointer deviceRead(int gpu = MemoryManager::getBufferDevice()) const
     {
-        return deviceReadAt(0,gpu);
+        return deviceReadAt(0, gpu);
     }
 
-    device_pointer deviceWriteAt ( int i ,int gpu = MemoryManager::getBufferDevice())
+    device_pointer deviceWriteAt(int i, int gpu = MemoryManager::getBufferDevice())
     {
-        DEBUG_OUT_V(if (hostIsValid) {SPACEN << "deviceWrite" << std::endl;});
+        DEBUG_OUT_V(if (hostIsValid) { SPACEN << "deviceWrite" << std::endl; });
         copyToDevice(gpu);
-        if(vectorSize>0)
+        if (vectorSize > 0)
             hostIsValid = false;
-        deviceIsValid = 1<<gpu;
-        return MemoryManager::deviceOffset(devicePointer[gpu],i);
+        deviceIsValid = 1 << gpu;
+        return MemoryManager::deviceOffset(devicePointer[gpu], i);
     }
 
-    device_pointer deviceWrite (int gpu = MemoryManager::getBufferDevice())
+    device_pointer deviceWrite(int gpu = MemoryManager::getBufferDevice())
     {
-        return deviceWriteAt(0,gpu);
+        return deviceWriteAt(0, gpu);
     }
 
     const T* hostRead() const
@@ -539,20 +538,20 @@ public:
         return hostWriteAt(0);
     }
 
-    const T* hostReadAt ( int i ) const
+    const T* hostReadAt(int i) const
     {
-        DEBUG_OUT_V(if (!hostIsValid) {SPACEN << "hostRead" << std::endl;});
+        DEBUG_OUT_V(if (!hostIsValid) { SPACEN << "hostRead" << std::endl; });
         copyToHost();
-        return hostPointer+i;
+        return hostPointer + i;
     }
 
-    T* hostWriteAt ( int i )
+    T* hostWriteAt(int i)
     {
-        DEBUG_OUT_V(if (deviceIsValid) {SPACEN << "hostWrite" << std::endl;});
+        DEBUG_OUT_V(if (deviceIsValid) { SPACEN << "hostWrite" << std::endl; });
         copyToHost();
-        if(vectorSize>0)
+        if (vectorSize > 0)
             deviceIsValid = false;
-        return hostPointer+i;
+        return hostPointer + i;
     }
 
     /// Get the Buffer Object ID for reading
@@ -587,67 +586,67 @@ public:
                 copyToDevice(MemoryManager::getBufferDevice());
             unmapBuffer();
             hostIsValid = false;
-            deviceIsValid = 1<<MemoryManager::getBufferDevice();
+            deviceIsValid = 1 << MemoryManager::getBufferDevice();
             return bufferObject;
         }
         else return 0;
     }
 
-    void push_back ( const T& t )
+    void push_back(const T& t)
     {
         Size i = size();
         copyToHost();
         deviceIsValid = 0;
-        fastResize ( i+1 );
-        ::new ( hostPointer+i ) T ( t );
+        fastResize(i + 1);
+        ::new (hostPointer + i) T(t);
     }
 
     void pop_back()
     {
-        if (!empty()) resize ( size()-1 );
+        if (!empty()) resize(size() - 1);
     }
 
-    const T& operator[] ( Size i ) const
+    const T& operator[] (Size i) const
     {
-        checkIndex ( i );
+        checkIndex(i);
         return *hostReadAt(i);
     }
 
-    T& operator[] ( Size i )
+    T& operator[] (Size i)
     {
-        checkIndex ( i );
+        checkIndex(i);
         return *hostWriteAt(i);
     }
 
-    const T* data( ) const
+    const T* data() const
     {
-        checkIndex ( 0 );
+        checkIndex(0);
         return hostReadAt(0);
     }
 
-    T* data( )
+    T* data()
     {
-        checkIndex ( 0 );
+        checkIndex(0);
         return hostWriteAt(0);
     }
 
-    const T& getCached ( Size i ) const
+    const T& getCached(Size i) const
     {
-        checkIndex ( i );
+        checkIndex(i);
         return hostPointer[i];
     }
 
-    const T& getSingle ( Size i ) const
+    const T& getSingle(Size i) const
     {
         copyToHostSingle(i);
         return hostPointer[i];
     }
 
     const_iterator begin() const { return hostRead(); }
-    const_iterator end() const { return hostRead()+size(); }
+    const_iterator end() const { return hostRead() + size(); }
 
     iterator begin() { return hostWrite(); }
-    iterator end() { return hostWrite()+size(); }
+    iterator end() { return hostWrite() + size(); }
 
     iterator erase(iterator position)
     {
@@ -655,10 +654,10 @@ public:
         Size i = position - p0;
         Size n = size();
         if (i >= n) return end();
-        for (Size j=i+1; j<n; ++j)
-            *(p0+(j-1)) = *(p0+j);
-        resize(n-1);
-        return begin()+i;
+        for (Size j = i + 1; j < n; ++j)
+            *(p0 + (j - 1)) = *(p0 + j);
+        resize(n - 1);
+        return begin() + i;
     }
 
     iterator insert(iterator position, const T& x)
@@ -666,35 +665,35 @@ public:
         Size i = position - begin();
         Size n = size();
         if (i > n) i = n;
-        resize(n+1);
+        resize(n + 1);
         iterator p0 = begin();
-        for (Size j=n; j>i; --j)
-            *(p0+j) = *(p0+(j-1));
-        *(p0+i) = x;
-        return p0+i;
+        for (Size j = n; j > i; --j)
+            *(p0 + j) = *(p0 + (j - 1));
+        *(p0 + i) = x;
+        return p0 + i;
     }
 
     /// Output stream
-    inline friend std::ostream& operator<< ( std::ostream& os, const vector_device<T,MemoryManager>& vec )
+    inline friend std::ostream& operator<< (std::ostream& os, const vector_device<T, MemoryManager, DataTypeInfoManager>& vec)
     {
-        if ( vec.size() >0 )
+        if (vec.size() > 0)
         {
-            for ( unsigned int i=0; i<vec.size()-1; ++i ) os<<vec[i]<<" ";
-            os<<vec[vec.size()-1];
+            for (unsigned int i = 0; i < vec.size() - 1; ++i) os << vec[i] << " ";
+            os << vec[vec.size() - 1];
         }
         return os;
     }
 
     /// Input stream
-    inline friend std::istream& operator>> ( std::istream& in, vector_device<T,MemoryManager>& vec )
+    inline friend std::istream& operator>> (std::istream& in, vector_device<T, MemoryManager, DataTypeInfoManager>& vec)
     {
         T t;
         vec.clear();
-        while ( in>>t )
+        while (in >> t)
         {
-            vec.push_back ( t );
+            vec.push_back(t);
         }
-        if ( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        if (in.rdstate() & std::ios_base::eofbit) { in.clear(); }
         return in;
     }
 
@@ -710,18 +709,18 @@ protected:
         {
             DEBUG_OUT_V(SPACEP << "allocate device=" << d << " " << deviceAllocSize[d] << "->" << alloc << std::endl);
             device_pointer prevDevicePointer = devicePointer[d];
-            //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)nullptr)<<"> : reserve("<<s<<")"<<std::endl;
-            MemoryManager::deviceAlloc(d, &devicePointer[d], alloc*sizeof ( T ) );
+
+            MemoryManager::deviceAlloc(d, &devicePointer[d], alloc * sizeof(T));
             deviceAllocSize[d] = alloc;
             if (isDeviceValid(d))
             {
                 if (deviceVectorSize[d] > 0)
                 {
                     DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyDeviceToDevice(copy valid vector) " << 0 << "->" << deviceVectorSize[d] << std::endl);
-                    MemoryManager::memcpyDeviceToDevice (d, devicePointer[d], prevDevicePointer, deviceVectorSize[d]*sizeof ( T ) );
+                    MemoryManager::memcpyDeviceToDevice(d, devicePointer[d], prevDevicePointer, deviceVectorSize[d] * sizeof(T));
                 }
             }
-            if ( !MemoryManager::isNull(prevDevicePointer)) MemoryManager::deviceFree (d, prevDevicePointer );
+            if (!MemoryManager::isNull(prevDevicePointer)) MemoryManager::deviceFree(d, prevDevicePointer);
             deviceAllocSize[d] = alloc;
             DEBUG_OUT_V(SPACEM << "allocate " << std::endl);
         }
@@ -729,8 +728,8 @@ protected:
         {
             if (clearSize > deviceVectorSize[d])
             {
-                DEBUG_OUT_V(SPACEN << "MemoryManager::memsetDevice (clear new data) " << deviceVectorSize[d] << "->" << clearSize-deviceVectorSize[d] << std::endl);
-                MemoryManager::memsetDevice(d,MemoryManager::deviceOffset(devicePointer[d],deviceVectorSize[d]), 0, (clearSize-deviceVectorSize[d])*sizeof(T));
+                DEBUG_OUT_V(SPACEN << "MemoryManager::memsetDevice (clear new data) " << deviceVectorSize[d] << "->" << clearSize - deviceVectorSize[d] << std::endl);
+                MemoryManager::memsetDevice(d, MemoryManager::deviceOffset(devicePointer[d], deviceVectorSize[d]), 0, (clearSize - deviceVectorSize[d]) * sizeof(T));
             }
             deviceVectorSize[d] = vectorSize; // the device now contains a fully valid copy
         }
@@ -738,25 +737,25 @@ protected:
 
     void copyToHost() const
     {
-        if ( hostIsValid ) return;
+        if (hostIsValid) return;
         DEBUG_OUT_V(SPACEP << "copyToHost " << std::endl);
 
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
 
         /// if host is not valid data are valid and allocated on a device
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
         {
             if (isDeviceValid(d))
             {
                 if (deviceVectorSize[d] > 0)
                 {
                     DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyDeviceToHost " << deviceVectorSize[d] << std::endl);
-                    MemoryManager::memcpyDeviceToHost (d, hostPointer, devicePointer[d], deviceVectorSize[d]*sizeof ( T ) );
+                    MemoryManager::memcpyDeviceToHost(d, hostPointer, devicePointer[d], deviceVectorSize[d] * sizeof(T));
                 }
                 if (clearSize > deviceVectorSize[d])
                 {
-                    DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost " << deviceVectorSize[d] << " -> " << clearSize-deviceVectorSize[d] << std::endl);
-                    MemoryManager::memsetHost(hostPointer+deviceVectorSize[d],0,(clearSize-deviceVectorSize[d])*sizeof(T));
+                    DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost " << deviceVectorSize[d] << " -> " << clearSize - deviceVectorSize[d] << std::endl);
+                    MemoryManager::memsetHost(hostPointer + deviceVectorSize[d], 0, (clearSize - deviceVectorSize[d]) * sizeof(T));
                 }
                 hostIsValid = true;
                 break;
@@ -767,7 +766,7 @@ protected:
             if (clearSize > 0)
             {
                 DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost " << 0 << " -> " << clearSize << std::endl);
-                MemoryManager::memsetHost(hostPointer,0,clearSize*sizeof(T));
+                MemoryManager::memsetHost(hostPointer, 0, clearSize * sizeof(T));
             }
             hostIsValid = true;
         }
@@ -782,29 +781,30 @@ protected:
         if (isDeviceValid(d)) return;
         DEBUG_OUT_V(SPACEP << "copyToDevice " << std::endl);
 
-        if ( !hostIsValid ) copyToHost();
+        if (!hostIsValid) copyToHost();
         DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyHostToDevice " << vectorSize << std::endl);
-        MemoryManager::memcpyHostToDevice (d, devicePointer[d], hostPointer, vectorSize*sizeof ( T ) );
-        deviceIsValid |= 1<<d;
+        MemoryManager::memcpyHostToDevice(d, devicePointer[d], hostPointer, vectorSize * sizeof(T));
+        deviceIsValid |= 1 << d;
         deviceVectorSize[d] = vectorSize;
         DEBUG_OUT_V(SPACEM << "copyToDevice " << std::endl);
     }
 
     void copyToHostSingle(Size i) const
     {
-        if ( hostIsValid ) return;
+        if (hostIsValid) return;
         DEBUG_OUT_V(SPACEP << "copyToHostSingle " << std::endl);
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
-        for (int d=0; d<MemoryManager::numDevices(); d++)
+        for (int d = 0; d < MemoryManager::numDevices(); d++)
         {
             if (isDeviceValid(d))
             {
-                if (i<deviceVectorSize[d]) {
+                if (i < deviceVectorSize[d]) {
                     DEBUG_OUT_V(SPACEN << "MemoryManager::memcpyDeviceToHost " << i << std::endl);
-                    MemoryManager::memcpyDeviceToHost(d, ((T*)hostPointer)+i, MemoryManager::deviceOffset(devicePointer[d],i), sizeof ( T ) );
-                } else {
+                    MemoryManager::memcpyDeviceToHost(d, ((T*)hostPointer) + i, MemoryManager::deviceOffset(devicePointer[d], i), sizeof(T));
+                }
+                else {
                     DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost " << i << std::endl);
-                    MemoryManager::memsetHost(((T*)hostPointer)+i,0,sizeof(T));
+                    MemoryManager::memsetHost(((T*)hostPointer) + i, 0, sizeof(T));
                 }
                 break;
             }
@@ -813,12 +813,12 @@ protected:
     }
 
 #ifdef NDEBUG
-    void checkIndex ( Size ) const {}
+    void checkIndex(Size) const {}
 #else
-    void checkIndex ( Size i ) const
+    void checkIndex(Size i) const
     {
         //assert ( i<this->size() );
-        if (i>=this->size())
+        if (i >= this->size())
             vector_access_failure(this, this->size(), i, typeid(T));
     }
 #endif
@@ -862,7 +862,7 @@ protected:
             if (allocSize > 0 && !MemoryManager::isNull(devicePointer[dev]))
             {
                 MemoryManager::bufferUnmapToDevice((device_pointer*)&(devicePointer[dev]), bufferObject);
-                *((device_pointer*) &(devicePointer[dev])) = MemoryManager::null();
+                *((device_pointer*)&(devicePointer[dev])) = MemoryManager::null();
             }
         }
     }
@@ -893,14 +893,14 @@ protected:
                 if (isDeviceValid(dev))
                     copyToDevice(dev);//make sure data is on device MemoryManager::getBufferDevice()
 
-                MemoryManager::bufferAlloc(&bufferObject,allocSize*sizeof(T));
+                MemoryManager::bufferAlloc(&bufferObject, allocSize * sizeof(T));
                 void* prevDevicePointer = devicePointer[dev];
                 devicePointer[dev] = nullptr;
-                if (vectorSize>0 && isDeviceValid(dev))
+                if (vectorSize > 0 && isDeviceValid(dev))
                 {
                     mapBuffer();
                     if (!MemoryManager::isNull(prevDevicePointer))
-                        MemoryManager::memcpyDeviceToDevice( dev, devicePointer[dev], prevDevicePointer, vectorSize*sizeof ( T ) );
+                        MemoryManager::memcpyDeviceToDevice(dev, devicePointer[dev], prevDevicePointer, vectorSize * sizeof(T));
                 }
                 if (!MemoryManager::isNull(prevDevicePointer))
                     MemoryManager::deviceFree(dev, prevDevicePointer);
@@ -918,7 +918,4 @@ protected:
 #undef DEBUG_OUT_V
 #endif
 
-} // namespace helper
-
-} // namespace sofa
-#endif //SOFA_HELPER_VECTOR_DEVICE_H
+} // namespace sofa::type

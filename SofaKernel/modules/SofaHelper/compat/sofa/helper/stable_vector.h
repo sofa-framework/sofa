@@ -19,30 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FIXED_ARRAY_CPP
+#pragma once
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/stable_vector.h>
 
-namespace sofa::type::stdtype
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stable_vector.h")
+
+namespace sofa::helper
 {
+    template<class T, class A = std::allocator<T>>
+    using stable_vector = sofa::type::stable_vector<T, A>;
 
-template class SOFA_TYPE_API fixed_array<float, 2>;
-template class SOFA_TYPE_API fixed_array<double, 2>;
-
-template class SOFA_TYPE_API fixed_array<float, 3>;
-template class SOFA_TYPE_API fixed_array<double, 3>;
-
-template class SOFA_TYPE_API fixed_array<float, 4>;
-template class SOFA_TYPE_API fixed_array<double, 4>;
-
-template class SOFA_TYPE_API fixed_array<float, 5>;
-template class SOFA_TYPE_API fixed_array<double, 5>;
-
-template class SOFA_TYPE_API fixed_array<float, 6>;
-template class SOFA_TYPE_API fixed_array<double, 6>;
-
-template class SOFA_TYPE_API fixed_array<float, 7>;
-template class SOFA_TYPE_API fixed_array<double, 7>;
-
-} // namespace sofa::helper::stdtype
-
+} // namespace sofa::helper

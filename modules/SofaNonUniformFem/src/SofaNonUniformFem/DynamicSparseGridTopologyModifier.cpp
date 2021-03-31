@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaNonUniformFem/DynamicSparseGridTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/TopologyChange.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
 #include <algorithm>
 #include <functional>

@@ -19,34 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_STRING_DEFINITION
-#include <sofa/helper/vector_String.h>
-#include <sofa/helper/vector_T.inl>
+#pragma once
 
-#include <iostream>
-#include <sstream>
+#include <algorithm>
+#include <sofa/type/vector_T.h>
 
-
-/// All integral types are considered as extern templates.
-namespace sofa::helper
+namespace sofa::type
 {
-
-/// Output stream
-/// Specialization for writing vectors of unsigned char
-template<>
-SOFA_HELPER_API std::ostream& vector<std::string>::write(std::ostream& os) const
+/** Remove the first occurence of a given value.
+    The remaining values are shifted.
+*/
+template<class T1, class T2>
+void remove( T1& v, const T2& elem )
 {
-    std::string separator = "";
-    os << "[";
-    for(auto& v : (*this))
+    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
+    if( e != v.end() )
     {
-        os << separator << '"' << v << '"';
-        separator = ", ";
+        typename T1::iterator next = e;
+        next++;
+        for( ; next != v.end(); ++e, ++next )
+            *e = *next;
     }
-    os << "]";
-    return os;
+    v.pop_back();
 }
 
-} // namespace sofa::helper
+/** Remove the first occurence of a given value.
 
-template class SOFA_HELPER_API sofa::helper::vector<std::string>;
+The last value is moved to where the value was found, and the other values are not shifted.
+*/
+template<class T1, class T2>
+void removeValue( T1& v, const T2& elem )
+{
+    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
+    if( e != v.end() )
+    {
+        if (e != v.end()-1)
+            *e = v.back();
+        v.pop_back();
+    }
+}
+
+/// Remove value at given index, replace it by the value at the last index, other values are not changed
+template<class T, class TT>
+void removeIndex( std::vector<T,TT>& v, size_t index )
+{
+    if constexpr(sofa::type::isEnabledVectorAccessChecking)
+    {
+        if (index>=v.size())
+            vector_access_failure(&v, v.size(), index, typeid(T));
+    }
+    if (index != v.size()-1)
+        v[index] = v.back();
+    v.pop_back();
+}
+
+} // namespace sofa::type

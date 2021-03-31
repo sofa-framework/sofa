@@ -84,7 +84,7 @@ void FixedLMConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void FixedLMConstraint<DataTypes>::removeConstraint(Index index)
 {
-    removeValue(*f_indices.beginEdit(),index);
+    sofa::helper::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 

@@ -19,10 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_REAL_DEFINITION
-#include <sofa/helper/vector_Real.h>
-#include <sofa/helper/vector_T.inl>
+#define FIXED_ARRAY_CPP
 
-template class SOFA_HELPER_API sofa::helper::vector<float>;
-template class SOFA_HELPER_API sofa::helper::vector<double>;
+#include <sofa/type/fixed_array.h>
+
+namespace sofa::type
+{
+
+template class SOFA_TYPE_API fixed_array<float, 2>;
+template class SOFA_TYPE_API fixed_array<double, 2>;
+
+template class SOFA_TYPE_API fixed_array<float, 3>;
+template class SOFA_TYPE_API fixed_array<double, 3>;
+
+template class SOFA_TYPE_API fixed_array<float, 4>;
+template class SOFA_TYPE_API fixed_array<double, 4>;
+
+template class SOFA_TYPE_API fixed_array<float, 5>;
+template class SOFA_TYPE_API fixed_array<double, 5>;
+
+template class SOFA_TYPE_API fixed_array<float, 6>;
+template class SOFA_TYPE_API fixed_array<double, 6>;
+
+template class SOFA_TYPE_API fixed_array<float, 7>;
+template class SOFA_TYPE_API fixed_array<double, 7>;
+
+} // namespace sofa::type
 

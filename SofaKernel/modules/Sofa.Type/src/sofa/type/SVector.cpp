@@ -19,12 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SVector.h"
+#include <sofa/type/SVector.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::type
 {
 
 /// reading specialization for std::string
@@ -33,7 +30,7 @@ namespace helper
 ///
 /// Note this is a quick&dirty implementation and it could be improved
 template<>
-SOFA_HELPER_API std::istream& SVector<std::string>::read( std::istream& in )
+SOFA_TYPE_API std::istream& SVector<std::string>::read( std::istream& in )
 {
     this->clear();
 
@@ -43,7 +40,8 @@ SOFA_HELPER_API std::istream& SVector<std::string>::read( std::istream& in )
     if( f == std::string::npos )
     {
         // a '[' must be present
-        msg_error("SVector") << "read : a '[' is expected as beginning marker.";
+        std::cerr << "Error (SVector) " << "read : a '[' is expected as beginning marker." << std::endl;
+        in.setstate(std::ios::failbit);
         return in;
     }
     else
@@ -52,7 +50,8 @@ SOFA_HELPER_API std::istream& SVector<std::string>::read( std::istream& in )
         if( f2!=std::string::npos && f2 < f )
         {
             // the '[' must be the first character
-            msg_error("SVector") << "read : Bad begin character, expected [";
+            std::cerr << "Error (SVector) " << "read : Bad begin character, expected [" << std::endl;
+            in.setstate(std::ios::failbit);
             return in;
         }
     }
@@ -61,7 +60,8 @@ SOFA_HELPER_API std::istream& SVector<std::string>::read( std::istream& in )
     if( e == std::string::npos )
     {
         // a ']' must be present
-        msg_error("SVector") << "read : a ']' is expected as ending marker.";
+        std::cerr << "Error (SVector) " << "read : a ']' is expected as ending marker." << std::endl;
+        in.setstate(std::ios::failbit);
         return in;
     }
     else
@@ -70,7 +70,8 @@ SOFA_HELPER_API std::istream& SVector<std::string>::read( std::istream& in )
         std::size_t e2 = s.find_last_not_of(' ');
         if( e2!=std::string::npos && e2 > e )
         {
-            msg_error("SVector") << "read : Bad end character, expected ]";
+            std::cerr << "Error (SVector) " << "read : Bad end character, expected ]" << std::endl;
+            in.setstate(std::ios::failbit);
             return in;
         }
     }
@@ -88,16 +89,18 @@ SOFA_HELPER_API std::istream& SVector<std::string>::read( std::istream& in )
         std::size_t f2 = s.find_first_of("\"'",f+1);
         if( f2==std::string::npos )
         {
-            msg_error("SVector") << "read : Bad begin string character, expected \" or '";
+            std::cerr << "Error (SVector) " << "read : Bad begin string character, expected \" or '" << std::endl;
             this->clear();
+            in.setstate(std::ios::failbit);
             return in;
         }
 
         std::size_t i2 = s.find_last_of(s[f2],i-1);
         if( i2==std::string::npos )
         {
-            msg_error("SVector") << "read : Bad end string character, expected "<<s[f2];
+            std::cerr << "Error (SVector) " << "read : Bad end string character, expected "<<s[f2] << std::endl;
             this->clear();
+            in.setstate(std::ios::failbit);
             return in;
         }
 
@@ -115,7 +118,7 @@ SOFA_HELPER_API std::istream& SVector<std::string>::read( std::istream& in )
 }
 
 template<>
-SOFA_HELPER_API std::ostream& SVector<std::string>::write( std::ostream& os ) const
+SOFA_TYPE_API std::ostream& SVector<std::string>::write( std::ostream& os ) const
 {
     if ( !this->empty() )
     {
@@ -130,6 +133,4 @@ SOFA_HELPER_API std::ostream& SVector<std::string>::write( std::ostream& os ) co
     return os;
 }
 
-
-}
-}
+} // namespace sofa::type

@@ -29,13 +29,7 @@
 #include <sofa/core/visual/Shader.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 BaseContext::BaseContext()
@@ -214,9 +208,4 @@ void BaseContext::notifyMoveSlave(core::objectmodel::BaseObject* /*previousMaste
 {
 }
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::core::objectmodel

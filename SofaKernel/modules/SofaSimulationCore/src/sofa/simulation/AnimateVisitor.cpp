@@ -28,7 +28,6 @@
 #include <sofa/simulation/CollisionEndEvent.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
-#include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/Node.h>
 
 #include <sofa/helper/AdvancedTimer.h>

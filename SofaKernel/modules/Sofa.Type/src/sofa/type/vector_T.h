@@ -21,14 +21,13 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/type/config.h>
+
 #include <vector>
 #include <string>
 #include <typeinfo>
 #include <istream>
 #include <ostream>
-
-#include <sofa/helper/config.h>
-#include <sofa/helper/MemoryManager.h>
 
 #if !defined(NDEBUG) && !defined(SOFA_NO_VECTOR_ACCESS_FAILURE)
 #define SOFA_VECTOR_CHECK_ACCESS true
@@ -36,23 +35,19 @@
 #define SOFA_VECTOR_CHECK_ACCESS false
 #endif
 
-namespace sofa::helper
+namespace sofa::type
 {
-
-void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type);
-
-/// Convert the string 's' into an unsigned int. The error are reported in msg & numErrors
-/// is incremented.
-int SOFA_HELPER_API getInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors) ;
-
-/// Convert the string 's' into an unsigned int. The error are reported in msg & numErrors
-/// is incremented.
-unsigned int SOFA_HELPER_API getUnsignedInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors) ;
 
 static constexpr bool isEnabledVectorAccessChecking {SOFA_VECTOR_CHECK_ACCESS};
 
+extern void SOFA_TYPE_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type);
+
+// standard vector dont use the CPUMemoryManager given as template
+template <typename T>
+class CPUMemoryManager;
+
 /// Regular vector
-/// Using CPUMemoryManager, it has the same behavior as std::helper with extra conveniences:
+/// Using CPUMemoryManager, it has the same behavior as std::vector with extra conveniences:
 ///  - string serialization (making it usable in Data)
 ///  - operator[] is checking if the index is within the bounds in debug
 template <class T, class MemoryManager = CPUMemoryManager<T>>
@@ -115,7 +110,7 @@ public:
     /// Read/write random access
     reference operator[](Size n)
     {
-        if constexpr (sofa::helper::isEnabledVectorAccessChecking)
+        if constexpr (sofa::type::isEnabledVectorAccessChecking)
         {
             if (n >= this->size())
                 vector_access_failure(this, this->size(), n, typeid(T));
@@ -126,7 +121,7 @@ public:
     /// Read-only random access
     const_reference operator[](Size n) const
     {
-        if constexpr (sofa::helper::isEnabledVectorAccessChecking)
+        if constexpr (sofa::type::isEnabledVectorAccessChecking)
         {
             if (n >= this->size())
                 vector_access_failure(this, this->size(), n, typeid(T));
@@ -176,6 +171,7 @@ public:
     {
         this->resize(n);
     }
+
 };
 
-} /// namespace sofa::helper
+} /// namespace sofa::type

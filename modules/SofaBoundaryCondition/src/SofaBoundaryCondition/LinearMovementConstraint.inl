@@ -100,7 +100,7 @@ void LinearMovementConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::removeIndex(Index index)
 {
-    removeValue(*m_indices.beginEdit(),index);
+    sofa::helper::removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
 }
 
