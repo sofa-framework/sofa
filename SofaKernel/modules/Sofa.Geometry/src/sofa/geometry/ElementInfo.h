@@ -21,20 +21,45 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
-#include <sstream>
+#include <sofa/geometry/config.h>
 
-namespace sofa::defaulttype
+#include <sofa/geometry/ElementType.h>
+#include <sofa/geometry/Point.h>
+#include <sofa/geometry/Edge.h>
+#include <sofa/geometry/Triangle.h>
+#include <sofa/geometry/Quad.h>
+#include <sofa/geometry/Pentahedron.h>
+#include <sofa/geometry/Tetrahedron.h>
+#include <sofa/geometry/Pyramid.h>
+#include <sofa/geometry/Hexahedron.h>
+
+namespace sofa::geometry
 {
 
-template<class T, sofa::Size N>
-struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
+template<typename GeometryElement>
+struct ElementInfo
 {
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
-    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetTypeName() << "," << N << ">"; return o.str(); }
+    static ElementType type()
+    {
+        return ElementType();
+    }
+
+    static const char* name()
+    {
+        return "";
+    }
 };
 
-} /// namespace sofa::defaulttype
 
+#ifndef SOFA_GEOMETRY_ELEMENTINFO_DEFINITION
+extern template struct SOFA_GEOMETRY_API ElementInfo<Point>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Edge>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Triangle>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Quad>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Pentahedron>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Tetrahedron>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Pyramid>;
+extern template struct SOFA_GEOMETRY_API ElementInfo<Hexahedron>;
+#endif
+
+} // namespace sofa::geometry

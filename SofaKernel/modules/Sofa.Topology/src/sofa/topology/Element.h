@@ -21,20 +21,33 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
-#include <sstream>
+#include <sofa/topology/config.h>
 
-namespace sofa::defaulttype
+#include <sofa/type/fixed_array.h>
+#include <sofa/topology/Point.h>
+
+#include <type_traits>
+
+namespace sofa::topology
 {
 
-template<class T, sofa::Size N>
-struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
+template <typename GeometryElement>
+struct Element : public sofa::type::fixed_array<sofa::Index, GeometryElement::NumberOfNodes>
 {
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
-    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetTypeName() << "," << N << ">"; return o.str(); }
+    constexpr Element() noexcept
+    {
+        std::fill(this->begin(), this->end(), sofa::InvalidID);
+    }
+
+    template< typename... ArgsT
+        , typename = std::enable_if_t < (std::is_convertible_v<ArgsT, sofa::Index> && ...)>
+    >
+        constexpr Element(ArgsT&&... args) noexcept
+        : sofa::type::fixed_array< sofa::Index, GeometryElement::NumberOfNodes >
+    { static_cast<sofa::Index>(std::forward< ArgsT >(args))... }
+    {
+        static_assert(GeometryElement::NumberOfNodes == sizeof...(ArgsT), "Trying to construct the element with an incorrect number of nodes.");
+    }
 };
 
-} /// namespace sofa::defaulttype
-
+} // namespace sofa::geometry

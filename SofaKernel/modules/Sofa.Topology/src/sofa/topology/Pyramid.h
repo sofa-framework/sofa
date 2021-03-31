@@ -21,20 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
-#include <sstream>
+#include <sofa/topology/Point.h>
+#include <sofa/topology/Element.h>
 
-namespace sofa::defaulttype
+#include <sofa/geometry/Pyramid.h>
+
+namespace sofa::topology
 {
+    using Pyramid = sofa::topology::Element<sofa::geometry::Pyramid>;
 
-template<class T, sofa::Size N>
-struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
-{
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
-    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetTypeName() << "," << N << ">"; return o.str(); }
-};
-
-} /// namespace sofa::defaulttype
-
+    inline static const Pyramid InvalidPyramid;
+}

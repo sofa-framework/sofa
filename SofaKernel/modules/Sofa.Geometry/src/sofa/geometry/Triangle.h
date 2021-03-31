@@ -21,20 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
-#include <sstream>
+#include <sofa/topology/config.h>
 
-namespace sofa::defaulttype
+namespace sofa::geometry
 {
+    struct Triangle
+    {
+        static const sofa::Size NumberOfNodes = 3;
 
-template<class T, sofa::Size N>
-struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
-{
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
-    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetTypeName() << "," << N << ">"; return o.str(); }
-};
-
-} /// namespace sofa::defaulttype
-
+        Triangle() = default;
+    };
+}

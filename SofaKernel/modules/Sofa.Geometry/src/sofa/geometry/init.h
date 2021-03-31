@@ -21,20 +21,36 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
-#include <sstream>
+#include <sofa/geometry/config.h>
 
-namespace sofa::defaulttype
+#include <string>
+
+namespace sofa::geometry
 {
 
-template<class T, sofa::Size N>
-struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
-{
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
-    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetTypeName() << "," << N << ">"; return o.str(); }
-};
+/// @brief Initialize the Sofa.Geometry library.
+SOFA_GEOMETRY_API void init();
 
-} /// namespace sofa::defaulttype
+/// @brief Return true if and only if the Sofa.Geometry library has been
+/// initialized.
+SOFA_GEOMETRY_API bool isInitialized();
+
+/// @brief Clean up the resources used by the Sofa.Geometry library.
+SOFA_GEOMETRY_API void cleanup();
+
+/// @brief Return true if and only if the Sofa.Geometry library has been cleaned
+/// up.
+SOFA_GEOMETRY_API bool isCleanedUp();
+
+/// @brief Print a warning about a library not being initialized (meant for
+/// internal use).
+SOFA_GEOMETRY_API void printUninitializedLibraryWarning(const std::string& library,
+                                                      const std::string& initFunction);
+
+/// @brief Print a warning about a library not being cleaned up (meant for
+/// internal use).
+SOFA_GEOMETRY_API void printLibraryNotCleanedUpWarning(const std::string& library,
+                                                     const std::string& cleanupFunction);
+
+} // namespace sofa::geometry
 

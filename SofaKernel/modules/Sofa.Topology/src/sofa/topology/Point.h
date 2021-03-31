@@ -21,20 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
-#include <sstream>
+#include <sofa/topology/config.h>
+#include <sofa/type/vector.h>
 
-namespace sofa::defaulttype
+namespace sofa::topology
 {
 
-template<class T, sofa::Size N>
-struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
-{
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
-    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetTypeName() << "," << N << ">"; return o.str(); }
-};
+    typedef sofa::type::vector<sofa::Index> SetIndex;
+    typedef sofa::type::vector<sofa::Index> SetIndices;
 
-} /// namespace sofa::defaulttype
+    // inline variable (c++17): https://en.cppreference.com/w/cpp/language/inline
+    inline static const sofa::type::vector<sofa::Index> InvalidSet;
 
+}

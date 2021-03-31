@@ -21,20 +21,23 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
-#include <sstream>
+#include <sofa/geometry/config.h>
 
-namespace sofa::defaulttype
+namespace sofa::geometry
 {
 
-template<class T, sofa::Size N>
-struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
+/// The enumeration used to give unique identifiers to Topological objects.
+enum class ElementType
 {
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
-    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetTypeName() << "," << N << ">"; return o.str(); }
+    UNKNOWN,
+    POINT,
+    EDGE,
+    TRIANGLE,
+    QUAD,
+    TETRAHEDRON,
+    HEXAHEDRON,
+    PENTAHEDRON,
+    PYRAMID    
 };
 
-} /// namespace sofa::defaulttype
-
+} // namespace sofa::geometry

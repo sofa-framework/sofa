@@ -19,22 +19,70 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/geometry/init.h>
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
-#include <sstream>
+#include <iostream>
 
-namespace sofa::defaulttype
+namespace sofa::geometry
 {
 
-template<class T, sofa::Size N>
-struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
+static bool s_initialized = false;
+static bool s_cleanedUp = false;
+
+SOFA_GEOMETRY_API void init()
 {
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
-    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetTypeName() << "," << N << ">"; return o.str(); }
-};
+    if (!s_initialized)
+    {
+        s_initialized = true;
+    }
+}
 
-} /// namespace sofa::defaulttype
+SOFA_GEOMETRY_API bool isInitialized()
+{
+    return s_initialized;
+}
 
+SOFA_GEOMETRY_API void cleanup()
+{
+    if (!s_cleanedUp)
+    {
+        s_cleanedUp = true;
+    }
+}
+
+SOFA_GEOMETRY_API bool isCleanedUp()
+{
+    return s_cleanedUp;
+}
+
+SOFA_GEOMETRY_API void printUninitializedLibraryWarning(const std::string& library,
+                                                      const std::string& initFunction)
+{
+    std::cerr << "WARNING: " << library << " : the library has not been initialized ("
+              << initFunction << " has never been called, see sofa/geometry/init.h)"
+              << std::endl;
+}
+
+SOFA_GEOMETRY_API void printLibraryNotCleanedUpWarning(const std::string& library,
+                                                     const std::string& cleanupFunction)
+{
+    std::cerr << "WARNING: " << library << " : the library has not been cleaned up ("
+              << cleanupFunction << " has never been called, see sofa/geometry/init.h)"
+              << std::endl;
+}
+
+// Detect missing cleanup() call.
+static const struct CleanupCheck
+{
+    CleanupCheck()
+    {
+
+    }
+    ~CleanupCheck()
+    {
+        if (geometry::isInitialized() && !geometry::isCleanedUp())
+            geometry::printLibraryNotCleanedUpWarning("Sofa.Geometry", "sofa::geometry::cleanup()");
+    }
+} check;
+
+} // namespace sofa::geometry
