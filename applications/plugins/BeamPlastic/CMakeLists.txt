@@ -6,20 +6,20 @@ set(BEAMPLASTIC_MINOR_VERSION 1)
 set(BEAMPLASTIC_VERSION ${BEAMPLASTIC_MAJOR_VERSION}.${BEAMPLASTIC_MINOR_VERSION})
 
 set(HEADER_FILES
-	config.h
-	forceField/BeamPlasticFEMForceField.h
-	forceField/BeamPlasticFEMForceField.inl
+    config.h
+    forceField/BeamPlasticFEMForceField.h
+    forceField/BeamPlasticFEMForceField.inl
     constitutiveLaw/PlasticConstitutiveLaw.h
     constitutiveLaw/RambergOsgood.h
-	quadrature/gaussian.h
-	quadrature/quadrature.h
-	PoissonContainer.h
-	StiffnessContainer.h
+    quadrature/gaussian.h
+    quadrature/quadrature.h
+    PoissonContainer.h
+    StiffnessContainer.h
 )
 
 set(SOURCE_FILES
-	initBeamPlastic.cpp
-	forceField/BeamPlasticFEMForceField.cpp
+    initBeamPlastic.cpp
+    forceField/BeamPlasticFEMForceField.cpp
 )
 
 find_package(SofaFramework REQUIRED)
