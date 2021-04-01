@@ -59,16 +59,11 @@ public:
 
     virtual ~PlasticConstitutiveLaw() {}
 
-
     /* Returns the slope of effective stress VS effective plastic strains, from the stress value */
-    virtual Real getTangentModulusFromStress(const double effStress) {
-        return 0;
-    }
+    virtual Real getTangentModulusFromStress(const double effStress) = 0;
 
     /* Returns the slope of effective stress VS effective plastic strains, from the strain value*/
-    virtual Real getTangentModulusFromStrain(const double effPlasticStrain) {
-        return 0;
-    }
+    virtual Real getTangentModulusFromStrain(const double effPlasticStrain) = 0;
 
 };
 
