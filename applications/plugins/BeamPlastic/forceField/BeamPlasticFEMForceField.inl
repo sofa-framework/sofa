@@ -159,7 +159,7 @@ void BeamPlasticFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::reinit()
 {
-    size_t n = m_indexedElements->size();
+    const size_t n = m_indexedElements->size();
 
     //Initialises the lastPos field with the rest position
     m_lastPos = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
