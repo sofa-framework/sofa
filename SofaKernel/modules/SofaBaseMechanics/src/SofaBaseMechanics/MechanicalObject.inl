@@ -21,19 +21,22 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/MechanicalObject.h>
-
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/behavior/MechanicalState.inl>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
-
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/simulation/Node.h>
+
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/simulation/Visitor.h>
 #endif
 
+#include <algorithm>
 #include <cassert>
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
@@ -72,7 +75,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , externalForces(initData(&externalForces, "externalForce", "externalForces vector of the degrees of freedom"))
     , dx(initData(&dx, "derivX", "dx vector of the degrees of freedom"))
     , xfree(initData(&xfree, "free_position", "free position coordinates of the degrees of freedom"))
-    , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))    
+    , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))
     , c(initData(&c, "constraint", "constraints applied to the degrees of freedom"))
     , m(initData(&m, "mappingJacobian", "mappingJacobian applied to the degrees of freedom"))
     , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))
@@ -138,14 +141,14 @@ MechanicalObject<DataTypes>::MechanicalObject()
     x               .forceSet();
     //  x0              .forceSet();
     v               .forceSet();
-//    dx              .forceSet();
+    //    dx              .forceSet();
     f               .forceSet();
     externalForces  .forceSet();
 
     // there is no need for a common user to watch at these vectors
-//    dx.setDisplayed( false );
-//    freePosition.setDisplayed( false );
-//    freeVelocity.setDisplayed( false );
+    //    dx.setDisplayed( false );
+    //    freePosition.setDisplayed( false );
+    //    freeVelocity.setDisplayed( false );
 
     // do not forget to delete these in the destructor
     //    write(VecDerivId::dforce())->forceSet();
@@ -153,8 +156,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     // What is exactly the need for allocating null vectors?
     // if sofa crashes because of a wrong access to the null vector
     // I would suspect a bug in your algo rather than the need for allocating it
-//    write(VecCoordId::null())->forceSet();
-//    write(VecDerivId::null())->forceSet();
+    //    write(VecCoordId::null())->forceSet();
+    //    write(VecDerivId::null())->forceSet();
 
     // default size is 1
     resize(1);
@@ -173,14 +176,14 @@ MechanicalObject<DataTypes>::~MechanicalObject()
     for(unsigned i=core::VecCoordId::V_FIRST_DYNAMIC_INDEX; i<vectorsCoord.size(); i++)
         if( vectorsCoord[i] != nullptr ) { delete vectorsCoord[i]; vectorsCoord[i]=nullptr; }
     if( vectorsCoord[core::VecCoordId::null().getIndex()] != nullptr )
-        { delete vectorsCoord[core::VecCoordId::null().getIndex()]; vectorsCoord[core::VecCoordId::null().getIndex()] = nullptr; }
+    { delete vectorsCoord[core::VecCoordId::null().getIndex()]; vectorsCoord[core::VecCoordId::null().getIndex()] = nullptr; }
 
     for(unsigned i=core::VecDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsDeriv.size(); i++)
         if( vectorsDeriv[i] != nullptr )  { delete vectorsDeriv[i]; vectorsDeriv[i]=nullptr; }
     if( vectorsDeriv[core::VecDerivId::null().getIndex()] != nullptr )
-        { delete vectorsDeriv[core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = nullptr; }
+    { delete vectorsDeriv[core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = nullptr; }
     if( core::VecDerivId::dforce().getIndex()<vectorsDeriv.size() && vectorsDeriv[core::VecDerivId::dforce().getIndex()] != nullptr )
-        { delete vectorsDeriv[core::VecDerivId::dforce().getIndex()]; vectorsDeriv[core::VecDerivId::dforce().getIndex()] = nullptr; }
+    { delete vectorsDeriv[core::VecDerivId::dforce().getIndex()]; vectorsDeriv[core::VecDerivId::dforce().getIndex()] = nullptr; }
 
     for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
         if( vectorsMatrixDeriv[i] != nullptr )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=nullptr; }
@@ -777,11 +780,10 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
     helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
 
     const sofa::defaulttype::Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
-    for (unsigned int i=0; i<x_wA.size(); i++)
+    for (unsigned int i=0; i<x_wA.size(); ++i)
     {
-        x_wA[i][0] = x_wA[i][0] * s[0];
-        x_wA[i][1] = x_wA[i][1] * s[1];
-        x_wA[i][2] = x_wA[i][2] * s[2];
+        for (unsigned int j=0; j<std::min(3, (int)DataTypes::Coord::total_size); ++j)
+            x_wA[i][j] = x_wA[i][j] * s[j];
     }
 }
 
@@ -1077,25 +1079,25 @@ void MechanicalObject<DataTypes>::init()
     {
         msg_info() << "Initialization with topology " << l_topology->getTypeName() << " " << l_topology->getName() ;
     }
-  
+
     // Make sure the sizes of the vectors and the arguments of the scene matches
     const std::vector<std::pair<const std::string, const Size>> vector_sizes = {
-            {x.getName(),                x.getValue().size()},
-            {v.getName(),                v.getValue().size()},
-            {f.getName(),                f.getValue().size()},
-            {externalForces.getName(),   externalForces.getValue().size()},
-            {dx.getName(),               dx.getValue().size()},
-            {xfree.getName(),            xfree.getValue().size()},
-            {vfree.getName(),            vfree.getValue().size()},
-            {x0.getName(),               x0.getValue().size()},
-            {reset_position.getName(),   reset_position.getValue().size()},
-            {reset_velocity.getName(),   reset_velocity.getValue().size()}
+        {x.getName(),                x.getValue().size()},
+        {v.getName(),                v.getValue().size()},
+        {f.getName(),                f.getValue().size()},
+        {externalForces.getName(),   externalForces.getValue().size()},
+        {dx.getName(),               dx.getValue().size()},
+        {xfree.getName(),            xfree.getValue().size()},
+        {vfree.getName(),            vfree.getValue().size()},
+        {x0.getName(),               x0.getValue().size()},
+        {reset_position.getName(),   reset_position.getValue().size()},
+        {reset_velocity.getName(),   reset_velocity.getValue().size()}
     };
 
     // Get the maximum size of all argument's vectors
     auto maxElement = std::max_element(vector_sizes.begin(), vector_sizes.end(),
-       [] (const std::pair<const std::string, const Size> &a, const std::pair<const std::string, const Size> &b) {
-            return a.second < b.second;
+                                       [] (const std::pair<const std::string, const Size> &a, const std::pair<const std::string, const Size> &b) {
+        return a.second < b.second;
     });
 
     if (maxElement != vector_sizes.end()) {
@@ -1107,7 +1109,7 @@ void MechanicalObject<DataTypes>::init()
 
         // Print a warning if one or more vector don't match the maximum size
         bool allSizeAreEqual = true;
-        for (const std::pair<const std::string, const Size> vector_size : vector_sizes) {
+        for (const std::pair<const std::string, const Size>& vector_size : vector_sizes) {
             const Size& size = vector_size.second;
             if (size > 1 && size != maxSize) {
                 allSizeAreEqual = false;
@@ -1117,7 +1119,7 @@ void MechanicalObject<DataTypes>::init()
 
         if (!allSizeAreEqual) {
             std::string message_warning = "One or more of the state vectors passed as argument don't match the size of the others : ";
-            for (const std::pair<const std::string, const Size> vector_size : vector_sizes) {
+            for (const std::pair<const std::string, const Size>& vector_size : vector_sizes) {
                 const std::string & name = vector_size.first;
                 const Size& size = vector_size.second;
                 if (size <= 1) continue;
@@ -1135,7 +1137,7 @@ void MechanicalObject<DataTypes>::init()
     //case if X0 has been set but not X
     if (read(core::ConstVecCoordId::restPosition())->getValue().size() > x_wA.size())
     {
-        vOp(core::ExecParams::defaultInstance(), core::VecId::position(), core::VecId::restPosition());
+        vOp(core::execparams::defaultInstance(), core::VecId::position(), core::VecId::restPosition());
     }
 
     // the given position and velocity vectors are empty
@@ -1147,7 +1149,7 @@ void MechanicalObject<DataTypes>::init()
         {
             int nbp = l_topology->getNbPoints();
 
-          // copy the last specified velocity to all points
+            // copy the last specified velocity to all points
             if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
             {
                 auto i = v_wA.size();
@@ -1200,9 +1202,9 @@ void MechanicalObject<DataTypes>::init()
     {
         // storing X0 from X
         if( restScale.getValue()!=1 )
-            vOp(core::ExecParams::defaultInstance(), core::VecId::restPosition(), core::ConstVecId::null(), core::VecId::position(), restScale.getValue());
+            vOp(core::execparams::defaultInstance(), core::VecId::restPosition(), core::ConstVecId::null(), core::VecId::position(), restScale.getValue());
         else
-            vOp(core::ExecParams::defaultInstance(), core::VecId::restPosition(), core::VecId::position());
+            vOp(core::execparams::defaultInstance(), core::VecId::restPosition(), core::VecId::position());
     }
 
 
@@ -1228,17 +1230,10 @@ void MechanicalObject<DataTypes>::init()
     f.registerTopologicalData();
 #endif
 
-
-
-    if (rotation2.getValue()[0]!=0.0 || rotation2.getValue()[1]!=0.0 || rotation2.getValue()[2]!=0.0)
-    {
-        this->applyRotation(rotation2.getValue()[0],rotation2.getValue()[1],rotation2.getValue()[2]);
-    }
-
-    if (translation2.getValue()[0]!=0.0 || translation2.getValue()[1]!=0.0 || translation2.getValue()[2]!=0.0)
-    {
-        this->applyTranslation( translation2.getValue()[0],translation2.getValue()[1],translation2.getValue()[2]);
-    }
+    const Vector3& _rotation2 = rotation2.getValue();
+    const Vector3& _translation2 = translation2.getValue();
+    this->applyRotation(_rotation2[0],_rotation2[1],_rotation2[2]);
+    this->applyTranslation(_translation2[0],_translation2[1],_translation2[2]);
 
     m_initialized = true;
 
@@ -1250,14 +1245,13 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
 {
-    if (scale.getValue() != Vector3(1.0,1.0,1.0))
-        this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
+    const Vector3& _scale = scale.getValue();
+    const Vector3& _rotation = rotation.getValue();
+    const Vector3& _translation = translation.getValue();
 
-    if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
-        this->applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);
-
-    if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
-        this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
+    this->applyScale(_scale[0],_scale[1],_scale[2]);
+    this->applyRotation(_rotation[0],_rotation[1],_rotation[2]);
+    this->applyTranslation(_translation[0],_translation[1],_translation[2]);
 }
 
 template <class DataTypes>
@@ -1267,7 +1261,7 @@ void MechanicalObject<DataTypes>::storeResetState()
     if( !isIndependent() ) return;
 
     // Save initial state for reset button
-    vOp(core::ExecParams::defaultInstance(), core::VecId::resetPosition(), core::VecId::position());
+    vOp(core::execparams::defaultInstance(), core::VecId::resetPosition(), core::VecId::position());
 
     // we only store a resetVelocity if the velocity is not zero
     helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::VecDerivId::velocity());
@@ -1280,7 +1274,7 @@ void MechanicalObject<DataTypes>::storeResetState()
         if (!zero) break;
     }
     if (!zero)
-        vOp(core::ExecParams::defaultInstance(), core::VecId::resetVelocity(), core::VecId::velocity());
+        vOp(core::execparams::defaultInstance(), core::VecId::resetVelocity(), core::VecId::velocity());
 }
 
 
@@ -1288,24 +1282,24 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
     // resetting force for every dofs, even mapped ones
-    vOp(core::ExecParams::defaultInstance(), core::VecId::force());
+    vOp(core::execparams::defaultInstance(), core::VecId::force());
 
     if (!reset_position.isSet()) // mapped states are deduced from independent ones
         return;
 
-    vOp(core::ExecParams::defaultInstance(), core::VecId::position(), core::VecId::resetPosition());
+    vOp(core::execparams::defaultInstance(), core::VecId::position(), core::VecId::resetPosition());
 
     if (!reset_velocity.isSet())
     {
-        vOp(core::ExecParams::defaultInstance(), core::VecId::velocity());
+        vOp(core::execparams::defaultInstance(), core::VecId::velocity());
     }
     else
     {
-        vOp(core::ExecParams::defaultInstance(), core::VecId::velocity(), core::VecId::resetVelocity());
+        vOp(core::execparams::defaultInstance(), core::VecId::velocity(), core::VecId::resetVelocity());
     }
 
-    if( xfree.isSet() ) vOp(core::ExecParams::defaultInstance(), core::VecId::freePosition(), core::VecId::position());
-    if( vfree.isSet() ) vOp(core::ExecParams::defaultInstance(), core::VecId::freeVelocity(), core::VecId::velocity());
+    if( xfree.isSet() ) vOp(core::execparams::defaultInstance(), core::VecId::freePosition(), core::VecId::position());
+    if( vfree.isSet() ) vOp(core::execparams::defaultInstance(), core::VecId::freeVelocity(), core::VecId::velocity());
 }
 
 
@@ -2523,8 +2517,8 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > f( *this->write(fid) );
         for (unsigned i = 0; i < f.size(); ++i)
-//          if( this->forceMask.getEntry(i) ) // safe getter or not?
-                f[i] = Deriv();
+            //          if( this->forceMask.getEntry(i) ) // safe getter or not?
+            f[i] = Deriv();
     }
 }
 
@@ -2805,7 +2799,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::green());
             break;
         case 4:
-           vparams->drawTool()->setLightingEnabled(true);
+            vparams->drawTool()->setLightingEnabled(true);
             vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::blue());
             break;
         default:

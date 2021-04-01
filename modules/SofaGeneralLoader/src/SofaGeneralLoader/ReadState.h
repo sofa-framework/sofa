@@ -21,10 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralLoader/config.h>
-
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #if SOFAGENERALLOADER_HAVE_ZLIB
 #include <zlib.h>
@@ -47,6 +48,8 @@ public:
     Data < double > d_shift; ///< shift between times in the file and times when they will be read
     Data < bool > d_loop; ///< set to 'true' to re-read the file when reaching the end
     Data < double > d_scalePos; ///< scale the input mechanical object
+    Data< defaulttype::Vector3 > d_rotation; ///< rotate the input mechanical object
+    Data< defaulttype::Vector3 > d_translation; ///< translate the input mechanical object
 
 protected:
     core::behavior::BaseMechanicalState* mmodel;

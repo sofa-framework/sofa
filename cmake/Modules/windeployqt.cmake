@@ -20,11 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-find_package(Qt5Core REQUIRED)
+if(NOT EXISTS "${_qmake_executable}")
+    if(TARGET Qt5::Core)
+        get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
+    elseif(TARGET Qt6::Core)
+        get_target_property(_qmake_executable Qt6::qmake IMPORTED_LOCATION)
+    endif()
+endif()
+if(NOT EXISTS "${_qmake_executable}")
+    message(SEND_ERROR "Cannot find qmake executable. Find the Qt you need first, or include windeployqt{5,6}.cmake")
+endif()
 
 # Retrieve the absolute path to qmake and then use that path to find
 # the windeployqt binary
-get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
 get_filename_component(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
 find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
 
@@ -37,20 +45,52 @@ endif()
 # Add commands that copy the Qt runtime to the target's output directory after
 # build and install the Qt runtime to the specified directory
 function(windeployqt target build_dir install_dir)
+    set(build_type release)
+    string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+    if(CMAKE_BUILD_TYPE_UPPER STREQUAL "DEBUG")
+        set(build_type debug)
+    endif()
 
     # execute windeployqt in a tmp directory after build
     add_custom_command(TARGET ${target}
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt"
         COMMAND set PATH="${_qt_bin_dir}"
-        COMMAND "${WINDEPLOYQT_EXECUTABLE}" --dir "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" --verbose 0 --no-compiler-runtime --no-translations --no-angle --release --no-opengl-sw "$<TARGET_FILE:${target}>"
+        COMMAND "${WINDEPLOYQT_EXECUTABLE}" --dir "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" --verbose 0 --no-compiler-runtime --no-translations --no-angle --${build_type} --no-opengl-sw "$<TARGET_FILE:${target}>"
         COMMAND if exist "${build_dir}/$<CONFIG>/" (${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" "${build_dir}/$<CONFIG>") else (${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" "${build_dir}")
         )
 
     # copy deployment directory during installation
+    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+            install(
+                DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/"
+                DESTINATION bin/${CONFIG}
+                OPTIONAL
+                COMPONENT applications
+                PATTERN "resources" EXCLUDE
+                PATTERN "translations" EXCLUDE
+                )
+        endforeach()
+    else()
+        install(
+            DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/"
+            DESTINATION bin
+            COMPONENT applications
+            PATTERN "resources" EXCLUDE
+            PATTERN "translations" EXCLUDE
+            )
+    endif()
     install(
-        DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/"
-        DESTINATION ${install_dir}
+        DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/resources/"
+        DESTINATION resources
+        OPTIONAL
+        COMPONENT applications
+        )
+    install(
+        DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/translations/"
+        DESTINATION translations
+        OPTIONAL
         COMPONENT applications
         )
 
@@ -62,11 +102,22 @@ function(windeployqt target build_dir install_dir)
 
     include(InstallRequiredSystemLibraries)
 
-    install(
-        PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
-        DESTINATION ${install_dir}
-        COMPONENT applications
-    )
+    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+            install(
+                PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+                DESTINATION bin/${CONFIG}
+                OPTIONAL
+                COMPONENT applications
+            )
+        endforeach()
+    else()
+        install(
+            PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+            DESTINATION bin
+            COMPONENT applications
+        )
+    endif()
 
     # foreach(lib ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
     #     get_filename_component(filename "${lib}" NAME)

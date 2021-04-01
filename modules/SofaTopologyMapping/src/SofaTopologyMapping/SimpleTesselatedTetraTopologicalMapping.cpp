@@ -224,9 +224,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
 
                     tetrahedraToRemove.clear();
 
-                    from_tstm->propagateTopologicalChanges();
                     from_tstm->notifyEndingEvent();
-                    from_tstm->propagateTopologicalChanges();
                 }
 
                 break;

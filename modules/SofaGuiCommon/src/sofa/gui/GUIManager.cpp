@@ -29,14 +29,12 @@
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 /*STATIC FIELD DEFINITIONS */
@@ -148,7 +146,7 @@ const char* GUIManager::GetValidGUIName()
         }
         else
         {
-            msg_info("GUIManager") << "LastUsedGUI.ini not found; using default GUI.";
+            msg_info("GUIManager") << "lastUsedGUI.ini not found; using default GUI.";
         }
 
         std::list<GUICreator>::iterator it =guiCreators.begin();
@@ -310,8 +308,4 @@ void GUIManager::SaveScreenshot(const char* filename)
 }
 
 
-}
-// namespace gui
-
-}
-// namespace sofa
+} // namespace sofa::gui

@@ -35,10 +35,10 @@
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/core/BaseMapping.h>
 #include <iostream>
 
-#include <sofa/core/ExecParams.h>
-#include <sofa/core/MechanicalParams.h>
+
 #include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
 
@@ -272,7 +272,7 @@ class SOFA_SIMULATION_CORE_API MechanicalApplyProjectiveConstraint_ToMatrixVisit
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
 
-    MechanicalApplyProjectiveConstraint_ToMatrixVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
+    MechanicalApplyProjectiveConstraint_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
         : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
     {
     }

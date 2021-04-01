@@ -22,23 +22,19 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 #define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 
-
+#include <sofa/core/fwd.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/StateMask.h>
-
-
+#include <sofa/defaulttype/fwd.h> /// For BaseMatrix
 
 namespace sofa
 {
 
 namespace core
 {
-
-class ConstraintParams;
 
 namespace behavior
 {

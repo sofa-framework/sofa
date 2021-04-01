@@ -21,12 +21,12 @@
 ******************************************************************************/
 #include "SceneCheckMissingRequiredPlugin.h"
 
-#include <sofa/version.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/helper/system/PluginManager.h>
 
 #include <SofaBaseUtils/RequiredPlugin.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::simulation::_scenechecking_
 {

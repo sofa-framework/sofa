@@ -24,16 +24,15 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>
 #include <set>
-#include <sofa/helper/system/gl.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/simulation/Node.h>
 
 #include "StiffnessContainer.h"
 #include "PoissonContainer.h"
@@ -99,7 +98,8 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::bwdInit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
-    assert(state);
+    if(!state)
+        msg_warning() << "Missing mechanical state";
     m_lastUpdatedStep=-1.0;
 }
 
@@ -273,7 +273,7 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 {
     VecDeriv& df = *(datadF.beginEdit());
     const VecDeriv& dx=datadX.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
 
@@ -538,7 +538,7 @@ template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     defaulttype::BaseMatrix* mat = r.matrix;
 
     if (r)

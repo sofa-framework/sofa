@@ -25,7 +25,6 @@
 
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
-#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
@@ -79,17 +78,13 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
             case core::topology::HEXAHEDRAADDED:
             {
                 const size_t nbHexaAdded = ( static_cast< const HexahedraAdded *>( *changeIt ) )->getNbAddedHexahedra();
-                to_pstm->addPointsProcess(nbHexaAdded);
-                to_pstm->addPointsWarning(nbHexaAdded, true);
-                to_pstm->propagateTopologicalChanges();
+                to_pstm->addPoints(nbHexaAdded, true);
                 break;
             }
             case core::topology::HEXAHEDRAREMOVED:
             {
                 auto tab = ( static_cast< const HexahedraRemoved *>( *changeIt ) )->getArray();
-                to_pstm->removePointsWarning(tab, true);
-                to_pstm->propagateTopologicalChanges();
-                to_pstm->removePointsProcess(tab, true);
+                to_pstm->removePoints(tab, true);
                 break;
             }
             default:

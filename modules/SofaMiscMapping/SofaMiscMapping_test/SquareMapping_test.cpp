@@ -71,13 +71,13 @@ struct SquareMappingTest : public Mapping_test<SquareMapping>
 
 
 // Define the list of types to instanciate.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 component::mapping::SquareMapping<defaulttype::Vec1Types,defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE( SquareMappingTest, DataTypes );
+TYPED_TEST_SUITE( SquareMappingTest, DataTypes );
 
 // test case
 TYPED_TEST( SquareMappingTest , test )

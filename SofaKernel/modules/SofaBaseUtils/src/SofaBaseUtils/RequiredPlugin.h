@@ -52,12 +52,13 @@ public:
 
 protected:
     RequiredPlugin();
-    ~RequiredPlugin() override {}
+    ~RequiredPlugin() override = default;
 
 public:
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
+    /// load a list of plugins requested in Data
     bool loadPlugin();
 
 };

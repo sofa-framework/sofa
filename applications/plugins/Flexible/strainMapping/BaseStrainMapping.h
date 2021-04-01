@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/Simulation.h>
-
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/Mapping.h>
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -276,7 +276,7 @@ public:
     {
         if(BlockType::constant) return;
 
-        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get()].write();
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
         const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
 
@@ -288,12 +288,12 @@ public:
         {
             if( K.compressedMatrix.nonZeros() )
             {
-                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+                K.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
             }
             else // force local assembly
             {
                 updateK( mparams, childForceId );
-                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+                K.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
                 K.resize(0,0); // forgot about this matrix
             }
         }
@@ -304,7 +304,7 @@ public:
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
-                jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
             }
         }
     }
@@ -332,9 +332,10 @@ public:
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override
     {
+        SOFA_UNUSED(mparams);
         if( BlockType::constant /*|| !assemble.getValue()*/ ) { K.resize(0,0); return; }
 
-        const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
+        const OutVecDeriv& childForce = childForceId[this->toModel.get()].read()->getValue();
 
         unsigned int size = this->fromModel->getSize();
         K.resizeBlocks(size,size);

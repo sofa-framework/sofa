@@ -24,11 +24,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-//#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -68,7 +66,6 @@ void MechanicalStateController<DataTypes>::applyController()
     {
         if(mState)
         {
-//			if(mState->read(sofa::core::ConstVecCoordId::freePosition())->getValue())
             {
                 helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::VecCoordId::position());
                 helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());
@@ -92,7 +89,7 @@ void MechanicalStateController<DataTypes>::applyController()
         if (mState)
         {
             helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::VecCoordId::position());
-            mState->vRealloc( sofa::core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
+            mState->vRealloc( sofa::core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
             helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());
 
             unsigned int i = index.getValue();
@@ -115,9 +112,6 @@ void MechanicalStateController<DataTypes>::applyController()
                 x[i].getCenter() += vectrans;
                 x[i].getOrientation() = x[i].getOrientation() * Quat(vx, dx * (Real)0.001);
 
-                //	x0[i].getCenter() += vectrans;
-                //	x0[i].getOrientation() = x0[i].getOrientation() * Quat(vx, dx * (Real)0.001);
-
                 if(xfree.size() > 0)
                 {
                     xfree[i].getCenter() += vectrans;
@@ -134,9 +128,6 @@ void MechanicalStateController<DataTypes>::applyController()
             int dy = eventY - mouseSavedPosY;
             mouseSavedPosX = eventX;
             mouseSavedPosY = eventY;
-
-// 			Real d = sqrt(dx*dx+dy*dy);
-// 			if( dx<0 || dy<0 ) d = -d;
 
             if (mState)
             {
@@ -162,31 +153,12 @@ void MechanicalStateController<DataTypes>::applyController()
         }
     }
 
-
-    sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
-    sofa::simulation::MechanicalProjectPositionAndVelocityVisitor mechaProjectVisitor(core::MechanicalParams::defaultInstance()); mechaProjectVisitor.execute(node);
-    sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
-    sofa::simulation::UpdateMappingVisitor updateVisitor(core::ExecParams::defaultInstance()); updateVisitor.execute(node);
+    auto node = this->getContext();
+    sofa::simulation::MechanicalProjectPositionAndVelocityVisitor mechaProjectVisitor(core::mechanicalparams::defaultInstance()); mechaProjectVisitor.execute(node);
+    sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(core::mechanicalparams::defaultInstance()); mechaVisitor.execute(node);
+    sofa::simulation::UpdateMappingVisitor updateVisitor(core::execparams::defaultInstance()); updateVisitor.execute(node);
 };
 
-
-
-//template <class DataTypes>
-//void MechanicalStateController<DataTypes>::onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *oev)
-//{
-//	//if (oev->getButton())
-//	//{
-//	//		msg_info()<<" Button1 pressed";
-//
-//	//}
-//
-//	device = true;
-//	buttonDevice = oev->getButton();
-//	position = oev->getPosition();
-//	orientation = oev->getOrientation();
-//	applyController();
-//	device = false;
-//}
 
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onBeginAnimationStep(const double /*dt*/)

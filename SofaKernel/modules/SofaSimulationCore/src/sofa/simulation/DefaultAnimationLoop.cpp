@@ -22,6 +22,7 @@
 #include <sofa/simulation/DefaultAnimationLoop.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
@@ -34,6 +35,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>

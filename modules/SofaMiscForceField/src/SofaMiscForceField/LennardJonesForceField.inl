@@ -23,7 +23,6 @@
 
 #include <SofaMiscForceField/LennardJonesForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <cmath>
 #include <iostream>
 
@@ -151,7 +150,7 @@ void LennardJonesForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 {
     VecDeriv& df1 = *d_df.beginEdit();
     const VecDeriv& dx1 = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     df1.resize(dx1.size());

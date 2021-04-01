@@ -192,14 +192,14 @@ namespace sofa {
     };
 
       // Define the list of DataTypes to instantiate
-    using testing::Types;
+    using ::testing::Types;
     typedef Types<
         LinearMapping<Rigid3Types, F331Types>,
         LinearMapping<Rigid3Types, F332Types>
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(RigidLinearDeformationMappings_test, DataTypes);
+    TYPED_TEST_SUITE(RigidLinearDeformationMappings_test, DataTypes);
 
     // test case: polarcorotationalStrainMapping 
     TYPED_TEST( RigidLinearDeformationMappings_test , RigidStrainDeformationPatchTest)

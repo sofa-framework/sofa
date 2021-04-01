@@ -23,6 +23,7 @@
 #define FAKEGUI_H
 
 #include <sofa/gui/BaseGUI.h>
+#include <sofa/simulation/Node.h>
 
 /// this fake GUI is only meant to manage "sendMessage" from python scripts
 class FakeGUI : public sofa::gui::BaseGUI

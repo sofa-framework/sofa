@@ -321,7 +321,7 @@ static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args) {
     }
 
     sofa::helper::GenerateRigidInfo rigid;
-    if( !sofa::helper::generateRigid( rigid, meshFilename, density, Vector3(sx,sy,sz), Vector3(rx,ry,rz) ) )
+    if( !sofa::helper::generateRigid<sofa::defaulttype::Rigid3Mass>( rigid, meshFilename, density, Vector3(sx,sy,sz), Vector3(rx,ry,rz) ) )
         exit(0);
 
     return Py_BuildValue("ddddddddddd",rigid.mass
@@ -878,7 +878,7 @@ static PyObject * Sofa_timerEnd(PyObject* /*self*/, PyObject *args)
 
     node = down_cast<Node>(((PySPtr<Base>*)tempNode)->object->toBaseNode());
 
-    result = AdvancedTimer::end(id, node);
+    result = AdvancedTimer::end(id, node->getTime(), node->getDt());
 
     if(std::string("null").compare(result) == 0)
         Py_RETURN_NONE;

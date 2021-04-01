@@ -28,11 +28,7 @@
 
 #include <iostream>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 SofaMouseManager::SofaMouseManager(QWidget *parent)
     : QDialog(parent)
@@ -153,11 +149,7 @@ void SofaMouseManager::updateOperation( Operation* operation)
     {
     }
     }
-
-
 }
 
-}
-}
-}
+} // namespace sofa::gui::qt
 

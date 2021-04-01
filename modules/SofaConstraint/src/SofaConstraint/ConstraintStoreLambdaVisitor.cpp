@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/behavior/BaseConstraint.h>
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
 
 namespace sofa::simulation

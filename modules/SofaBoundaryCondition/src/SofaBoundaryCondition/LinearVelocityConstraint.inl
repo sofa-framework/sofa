@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/helper/vector_algorithm.h>
 
 
 namespace sofa::component::projectiveconstraintset
@@ -95,7 +96,7 @@ void LinearVelocityConstraint<TDataTypes>::addIndex(Index index)
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::removeIndex(Index index)
 {
-    removeValue(*d_indices.beginEdit(),index);
+    sofa::helper::removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();
 }
 

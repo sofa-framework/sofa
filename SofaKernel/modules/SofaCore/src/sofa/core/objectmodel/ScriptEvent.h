@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_SCRIPTEVENT_H
-#define SOFA_CORE_OBJECTMODEL_SCRIPTEVENT_H
+#pragma once
 
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+
 #include <string>
-#include <sofa/simulation/Node.h>
 
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -48,7 +41,7 @@ public:
     /**
      * @brief Constructor.
      */
-    ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName);
+    ScriptEvent(sofa::core::sptr<sofa::core::objectmodel::BaseNode> sender, const char* eventName);
 
     /**
      * @brief Destructor.
@@ -58,7 +51,7 @@ public:
     /**
      * @brief Get the sender name
      */
-    const sofa::simulation::Node::SPtr getSender(void) const {return m_sender;}
+    const sofa::core::sptr<sofa::core::objectmodel::BaseNode> getSender(void) const;
 
     /**
      * @brief Get the event name
@@ -68,15 +61,9 @@ public:
     inline static const char* GetClassName() { return "ScriptEvent"; }
 private:
 
-    sofa::simulation::Node::SPtr m_sender;
+    sofa::core::sptr<sofa::core::objectmodel::BaseNode> m_sender;
     std::string m_eventName;
 
 };
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_OBJECTMODEL_SCRIPTEVENT_H
+} // namespace sofa::core::objectmodel

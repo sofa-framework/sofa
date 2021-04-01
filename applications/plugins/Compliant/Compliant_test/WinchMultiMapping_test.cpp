@@ -76,13 +76,13 @@ struct WinchMultiMappingTest : public MultiMapping_test<Mapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     sofa::component::mapping::WinchMultiMapping<defaulttype::Vec1dTypes, defaulttype::Vec1dTypes>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(WinchMultiMappingTest, DataTypes);
+TYPED_TEST_SUITE(WinchMultiMappingTest, DataTypes);
 
 TYPED_TEST( WinchMultiMappingTest, test )
 {

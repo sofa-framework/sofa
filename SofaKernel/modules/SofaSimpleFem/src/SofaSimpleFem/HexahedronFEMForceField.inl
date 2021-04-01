@@ -21,9 +21,10 @@
 ******************************************************************************/
 #pragma once
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
-
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/decompose.h>
 
 // WARNING: indices ordering is different than in topology node
@@ -258,7 +259,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 {
     WDataRefVecDeriv _df = v;
     RDataRefVecCoord _dx = x;
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     if (_df.size() != _dx.size())
         _df.resize(_dx.size());
@@ -1131,7 +1132,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 
         Transformation Rot = getElementRotation(e);
 
-        Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+        Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -1195,7 +1196,6 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     typename VecElement::const_iterator it;
     sofa::Index i;
-    std::vector< defaulttype::Vector3 > points[6];
     for(it = this->getIndexedElements()->begin(), i = 0 ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
         Index a = (*it)[0];
@@ -1223,47 +1223,15 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             vparams->drawTool()->enableBlending();
         }
 
-        points[0].push_back(pa);
-        points[0].push_back(pb);
-        points[0].push_back(pc);
-        points[0].push_back(pa);
-        points[0].push_back(pc);
-        points[0].push_back(pd);
-
-        points[1].push_back(pe);
-        points[1].push_back(pf);
-        points[1].push_back(pg);
-        points[1].push_back(pe);
-        points[1].push_back(pg);
-        points[1].push_back(ph);
-
-        points[2].push_back(pc);
-        points[2].push_back(pd);
-        points[2].push_back(ph);
-        points[2].push_back(pc);
-        points[2].push_back(ph);
-        points[2].push_back(pg);
-
-        points[3].push_back(pa);
-        points[3].push_back(pb);
-        points[3].push_back(pf);
-        points[3].push_back(pa);
-        points[3].push_back(pf);
-        points[3].push_back(pe);
-
-        points[4].push_back(pa);
-        points[4].push_back(pd);
-        points[4].push_back(ph);
-        points[4].push_back(pa);
-        points[4].push_back(ph);
-        points[4].push_back(pe);
-
-        points[5].push_back(pb);
-        points[5].push_back(pc);
-        points[5].push_back(pg);
-        points[5].push_back(pb);
-        points[5].push_back(pg);
-        points[5].push_back(pf);
+        std::vector< defaulttype::Vector3 > points[6] =
+        {
+            { pa, pb, pc, pa, pc, pd },
+            { pe, pf, pg, pe, pg, ph },
+            { pc, pd, ph, pc, ph, pg },
+            { pa, pb, pf, pa, pf, pe },
+            { pa, pd, ph, pa, ph, pe },
+            { pb, pc, pg, pb, pg, pf },
+        };
 
         vparams->drawTool()->setLightingEnabled(false);
         vparams->drawTool()->drawTriangles(points[0], sofa::helper::types::RGBAColor(0.7f,0.7f,0.1f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));

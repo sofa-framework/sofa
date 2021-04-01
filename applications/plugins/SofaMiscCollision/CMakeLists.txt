@@ -8,11 +8,11 @@ set(SRC_ROOT src/SofaMiscCollision)
 
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/initMiscCollision.h
+    ${SRC_ROOT}/initSofaMiscCollision.h
     )
 
 set(SOURCE_FILES
-    ${SRC_ROOT}/initMiscCollision.cpp
+    ${SRC_ROOT}/initSofaMiscCollision.cpp
     )
 
 set(EXTRA_FILES
@@ -43,7 +43,6 @@ list(APPEND SOURCE_FILES
     ${SRC_ROOT}/TetrahedronModel.cpp
     ${SRC_ROOT}/TetrahedronRayContact.cpp
     ${SRC_ROOT}/TriangleModelInRegularGrid.cpp
-    ${SRC_ROOT}/TetrahedronBarycentricDistanceLMConstraintContact.cpp
     )
 message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
@@ -57,7 +56,6 @@ endif()
 
 if(SofaDistanceGrid_FOUND)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/FrictionContact_DistanceGrid.cpp)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})

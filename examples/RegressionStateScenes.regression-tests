@@ -1,3 +1,7 @@
+# WARNING: 
+# REGRESSION_TEST DOES NOT SUPPORT DASHES ("-") IN SCENE NAMES.
+# USE UNDERSCORES ("_") INSTEAD.
+
 ### Demo scenes ###
 Demos/TriangleSurfaceCutting.scn 100 1e-4 1 1
 Demos/liver.scn 100 1e-4 1 1
@@ -14,11 +18,12 @@ Components/constraint/FixedConstraint.scn 100 1e-4 0 1
 Components/constraint/FrictionContact.scn 100 1e-4 0 1
 Components/forcefield/BeamFEMForceField.scn 100 1e-4 0 1
 Components/forcefield/FastTriangularBendingSprings.scn 100 1e-4 0 1
+Components/forcefield/QuadBendingFEMForceField.scn 300 1e-4 0 1
 Components/forcefield/TriangularFEMForceFieldOptim.scn 100 1e-4 0 1
 Components/interactionforcefield/InteractionEllipsoidForceField.scn 100 1e-4 0 1
 Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1
 Components/topology/SparseGridTopology.scn 100 1e-4 0 1
 Components/topology/SparseGridRamificationTopology.scn 100 1e-4 0 1
 Components/solver/EulerExplicitSolver.scn 3000 1e-4 0 1
-Components/solver/EulerExplicitSolver-diagonal.scn 3000 1e-4 0 1
+Components/solver/EulerExplicitSolver_diagonal.scn 3000 1e-4 0 1
 Components/solver/EulerImplicitSolver.scn 3000 1e-4 0 1

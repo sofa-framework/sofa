@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaGeneralLoader/ReadState.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::component::misc
 {

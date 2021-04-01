@@ -58,9 +58,8 @@ using sofa::helper::system::FileSystem;
 #include <sofa/gui/GUIManager.h>
 using sofa::gui::GUIManager;
 
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
-#include <sofa/helper/system/gl.h>
 
 using sofa::core::ExecParams ;
 
@@ -72,8 +71,6 @@ using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
 using sofa::gui::BatchGUI;
 using sofa::gui::BaseGUI;
-
-#include <sofa/helper/logging/Messaging.h>
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
@@ -152,7 +149,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-    sofa::gui::initMain();
+    sofa::gui::initSofaGui();
 
     string fileName ;
     bool        startAnim = false;
@@ -481,7 +478,7 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->init(groot.get());
     if( computationTimeAtBegin )
     {
-        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot.get());
+        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
     }
 
     //=======================================

@@ -25,6 +25,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/topology/TopologyEngine.h>
 
 #include <algorithm>
 
@@ -594,7 +595,7 @@ void TetrahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::
     TriangleSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
 
-void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::helper::vector<TetrahedronID> &tetrahedraIds)
+void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::helper::vector<TetrahedronID> &tetrahedraIds, const bool removeIsolatedItems)
 {
     sofa::helper::vector<TetrahedronID> tetrahedraIds_filtered;
     for (size_t i = 0; i < tetrahedraIds.size(); i++)
@@ -617,7 +618,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::helper::vector
 
     // now destroy the old tetrahedra.
     sofa::helper::AdvancedTimer::stepBegin("removeTetrahedraProcess");
-    removeTetrahedraProcess(tetrahedraIds_filtered ,true);
+    removeTetrahedraProcess(tetrahedraIds_filtered , removeIsolatedItems);
     sofa::helper::AdvancedTimer::stepEnd("removeTetrahedraProcess");
 
     m_container->checkTopology();
@@ -629,20 +630,6 @@ void TetrahedronSetTopologyModifier::removeItems(const sofa::helper::vector< Tet
 {
     removeTetrahedra(items);
 }
-
-void TetrahedronSetTopologyModifier::renumberPoints( const sofa::helper::vector<PointID> &index,
-        const sofa::helper::vector<PointID> &inv_index)
-{
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
-}
-
 
 void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 {

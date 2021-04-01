@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include "HexahedralFEMForceField.h"
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/decompose.h>
@@ -181,7 +182,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 {
     helper::WriteAccessor< DataVecDeriv > _v = v;
     const VecCoord& _x = x.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     if( _v.size()!=_x.size() ) _v.resize(_x.size());
 
@@ -596,7 +597,7 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     Index node1, node2;
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
     for(Size e=0 ; e<_topology->getNbHexahedra() ; ++e)

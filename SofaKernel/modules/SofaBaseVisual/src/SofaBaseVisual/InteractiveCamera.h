@@ -23,7 +23,7 @@
 #include <SofaBaseVisual/config.h>
 
 #include <SofaBaseVisual/BaseCamera.h>
-#include <sofa/helper/gl/Trackball.h>
+#include <sofa/helper/visual/Trackball.h>
 
 namespace sofa::core::objectmodel
 {
@@ -55,7 +55,7 @@ private:
     int currentMode;
     bool isMoving;
     int lastMousePosX, lastMousePosY;
-    helper::gl::Trackball currentTrackball;
+    helper::visual::Trackball currentTrackball;
 
     void internalUpdate() override;
 protected:

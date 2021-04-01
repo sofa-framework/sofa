@@ -23,6 +23,8 @@
 #define SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_H
 
 #include <sofa/core/topology/Topology.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/list.h>
 
 namespace sofa
 {
@@ -345,30 +347,13 @@ public:
     virtual bool read(std::istream& in);
 
     /// Output  stream
-    friend std::ostream& operator<< ( std::ostream& out, const TopologyChange* t )
-    {
-        if (t)
-        {
-            t->write(out);
-        }
-        return out;
-    }
+    SOFA_CORE_API friend std::ostream& operator<< ( std::ostream& out, const TopologyChange* t );
 
     /// Input (empty) stream
-    friend std::istream& operator>> ( std::istream& in, TopologyChange*& t )
-    {
-        if (t)
-        {
-            t->read(in);
-        }
-        return in;
-    }
-    
+    SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, TopologyChange*& t );
+
     /// Input (empty) stream
-    friend std::istream& operator>> ( std::istream& in, const TopologyChange*& )
-    {
-        return in;
-    }
+    SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, const TopologyChange*& );
 
 protected:
     TopologyChange( TopologyChangeType changeType = BASE )
@@ -388,8 +373,6 @@ public:
 
     ~EndingEvent() override;
 };
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////   Point Event Implementation   /////////////////////////////////////////
@@ -1508,5 +1491,16 @@ public:
 
 } // namespace sofa
 
+#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_DEFINITION
+namespace std
+{
+    extern template class std::list<const sofa::core::topology::TopologyChange*>;
+}
+namespace sofa::core::objectmodel
+{
+    extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+}
+
+#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
 
 #endif // SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_H

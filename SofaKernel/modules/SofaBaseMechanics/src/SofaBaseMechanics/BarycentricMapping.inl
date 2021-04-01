@@ -44,11 +44,12 @@
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
 #include <sofa/simulation/Simulation.h>
-
 
 namespace sofa::component::mapping
 {
@@ -59,6 +60,7 @@ using sofa::defaulttype::Matrix3;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vec3d;
 using sofa::core::objectmodel::ComponentState;
+using sofa::component::linearsolver::EigenSparseMatrix;
 
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
@@ -84,6 +86,7 @@ static bool is_a(const V * topology) {
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::State<Out>* to, typename Mapper::SPtr mapper)
     : Inherit1 ( from, to )
+    , d_useRestPosition(core::objectmodel::Base::initData(&d_useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
     , d_mapper(initLink("mapper","Internal mapper created depending on the type of topology"), mapper)
     , d_input_topology(initLink("input_topology", "Input topology container (usually the surrounding domain)."))
     , d_output_topology(initLink("output_topology", "Output topology container (usually the immersed domain)."))
@@ -92,11 +95,13 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::S
 {
     if (mapper)
         this->addSlave(mapper.get());
+    internalMatrix = new EigenSparseMatrix<InDataTypes, OutDataTypes>;
 }
 
 template <class TIn, class TOut>
 BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::State<Out>* to, BaseMeshTopology * input_topology )
     : Inherit1 ( from, to )
+    , d_useRestPosition(core::objectmodel::Base::initData(&d_useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
     , d_mapper (initLink("mapper","Internal mapper created depending on the type of topology"))
     , d_input_topology(initLink("input_topology", "Input topology container (usually the surrounding domain)."))
     , d_output_topology(initLink("output_topology", "Output topology container (usually the immersed domain)."))
@@ -106,6 +111,13 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::
         populateTopologies();
         createMapperFromTopology ();
     }
+    internalMatrix = new EigenSparseMatrix<InDataTypes, OutDataTypes>;
+}
+
+template <class TIn, class TOut>
+BarycentricMapping<TIn, TOut>::~BarycentricMapping()
+{
+    delete internalMatrix;
 }
 
 template <class TIn, class TOut>
@@ -264,10 +276,7 @@ void BarycentricMapping<TIn, TOut>::init()
     if (!this->toModel)
         return;
 
-    if (useRestPosition.getValue())
-        d_mapper->init ( ((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
-    else
-        d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+    initMapper();
 
     this->d_componentState.setValue(ComponentState::Valid) ;
 }
@@ -278,10 +287,21 @@ void BarycentricMapping<TIn, TOut>::reinit()
     if ( d_mapper != nullptr )
     {
         d_mapper->clear();
-        d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+        initMapper();
     }
 }
 
+template <class TIn, class TOut>
+void BarycentricMapping<TIn, TOut>::initMapper()
+{
+    if (d_mapper != nullptr && this->toModel != nullptr && this->fromModel != nullptr)
+    {
+        if (d_useRestPosition.getValue())
+            d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
+        else
+            d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+    }
+}
 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * mparams, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in)
@@ -474,12 +494,13 @@ const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::
     const sofa::defaulttype::BaseMatrix* matJ = getJ();
 
     const auto * mat = dynamic_cast<const mat_type*>(matJ);
-    assert( mat );
+    if(mat==nullptr)
+        throw std::runtime_error("Unable to downcast the matrix");
 
-    eigen.copyFrom( *mat );   // woot
+    static_cast<EigenSparseMatrix<InDataTypes, OutDataTypes>*>(internalMatrix)->copyFrom(*mat);
 
     js.resize( 1 );
-    js[0] = &eigen;
+    js[0] = internalMatrix;
     return &js;
 }
 

@@ -52,6 +52,8 @@
 #include <SofaGeneralLinearSolver/CholeskySolver.h>
 #endif
 
+#include <sofa/simulation/Node.h>
+
 
 namespace sofa
 {
@@ -85,7 +87,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::setSystemMBKMatrix(const core::M
     {
         first = false;
         init_mFact = mparams->mFactor();
-        init_bFact = mparams->bFactor();
+        init_bFact = sofa::core::mechanicalparams::bFactor(mparams);
         init_kFact = mparams->kFactor();
         Inherit::setSystemMBKMatrix(mparams);
         loadMatrix(*this->currentGroup->systemMatrix);
@@ -325,10 +327,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     sofa::core::VecDerivId rhId = core::VecDerivId::force();
 
 
-    mstate->vAvail(core::ExecParams::defaultInstance(), lhId);
-    mstate->vAlloc(core::ExecParams::defaultInstance(), lhId);
-    mstate->vAvail(core::ExecParams::defaultInstance(), rhId);
-    mstate->vAlloc(core::ExecParams::defaultInstance(), rhId);
+    mstate->vAvail(core::execparams::defaultInstance(), lhId);
+    mstate->vAlloc(core::execparams::defaultInstance(), lhId);
+    mstate->vAvail(core::execparams::defaultInstance(), rhId);
+    mstate->vAlloc(core::execparams::defaultInstance(), rhId);
     msg_info() << "System: (" << init_mFact << " * M + " << init_bFact << " * B + " << init_kFact << " * K) " << lhId << " = " << rhId ;
     if (linearSolver)
     {
@@ -447,8 +449,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     //Reset the position
     for (unsigned int i=0; i<pos0.size(); i++) pos[i]=pos0[i];
 
-    mstate->vFree(core::ExecParams::defaultInstance(), lhId);
-    mstate->vFree(core::ExecParams::defaultInstance(), rhId);
+    mstate->vFree(core::execparams::defaultInstance(), lhId);
+    mstate->vFree(core::execparams::defaultInstance(), rhId);
 
     usePrecond = true;
 }

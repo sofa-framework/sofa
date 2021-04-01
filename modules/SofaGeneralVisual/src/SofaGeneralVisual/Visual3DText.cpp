@@ -24,8 +24,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sofa/helper/system/gl.h>
 
 
 namespace sofa::component::visualmodel
@@ -62,28 +60,16 @@ void Visual3DText::reinit()
 
 void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
     const defaulttype::Vec3f& pos = d_position.getValue();
     float scale = d_scale.getValue();
 
-    const bool& depthTest = d_depthTest.getValue();
-    if( !depthTest )
-    {
-        glPushAttrib(GL_ENABLE_BIT);
-        glDisable(GL_DEPTH_TEST);
-    }
-
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableDepthTest();
     vparams->drawTool()->setLightingEnabled(true);
-
-
     vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
-
-
-    if( !depthTest )
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace sofa::component::visualmodel

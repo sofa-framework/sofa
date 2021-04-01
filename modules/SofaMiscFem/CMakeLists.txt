@@ -5,11 +5,11 @@ set(SOFAMISCFEM_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAMISCFEM_SRC}/config.h.in
-    ${SOFAMISCFEM_SRC}/initSofaMiscFEM.h
+    ${SOFAMISCFEM_SRC}/initSofaMiscFem.h
     )
 
 set(SOURCE_FILES
-    ${SOFAMISCFEM_SRC}/initSofaMiscFEM.cpp
+    ${SOFAMISCFEM_SRC}/initSofaMiscFem.cpp
     )
 
 list(APPEND HEADER_FILES
@@ -50,18 +50,21 @@ if(Newmat_FOUND)
         ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.inl
         ${SOFAMISCFEM_SRC}/TriangularFEMForceField.h
         ${SOFAMISCFEM_SRC}/TriangularFEMForceField.inl
+	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.h
+	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.inl
         )
     list(APPEND SOURCE_FILES
         ${SOFAMISCFEM_SRC}/PlasticMaterial.cpp
         ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.cpp
         ${SOFAMISCFEM_SRC}/TriangularFEMForceField.cpp
+	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.cpp
         )
 endif()
 
 # Dependencies
 sofa_find_package(Newmat BOTH_SCOPES)
-find_package(SofaBase REQUIRED) 
-find_package(SofaSimpleFem REQUIRED) 
+sofa_find_package(SofaBase REQUIRED) 
+sofa_find_package(SofaSimpleFem REQUIRED) 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaBaseMechanics)

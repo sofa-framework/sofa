@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaOpenglVisual/OglColorMap.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -63,6 +62,7 @@ public:
     Data<Real> d_currentMin; ///< Current min range
     Data<Real> d_currentMax; ///< Current max range
     Data<float> d_shininess; ///< Shininess for rendering point-based data [0,128].  <0 means no specularity
+    Data<Real> d_transparency; ///< Add transparency when we draw triangles (this allows to see inside the volume).
 
     visualmodel::OglColorMap *colorMap;
     core::State<DataTypes> *state;

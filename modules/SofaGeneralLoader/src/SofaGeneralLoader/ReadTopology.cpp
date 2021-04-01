@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaGeneralLoader/ReadTopology.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::component::misc
 {

@@ -211,9 +211,9 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
     helper::ReadAccessor<DataVecCoord> p1 = x;
     helper::ReadAccessor<DataVecCoord> p0 = *getExtPosition();
 
-    msg_info() << this->getName() << " P1 = " << p1;
-    msg_info() << this->getName() << " P0 = " << p0;
-    msg_info() << this->getName() << " F = " << f1;
+    msg_info() << this->getName() << " P1 = " << p1.ref();
+    msg_info() << this->getName() << " P0 = " << p0.ref();
+    msg_info() << this->getName() << " F = " << f1.ref();
 
     if (this->f_printLog.getValue())
         msg_info() << "[" <<  this->getName() << "]: ";
@@ -355,7 +355,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addDForce(const core::Mech
 
     helper::WriteAccessor< DataVecDeriv > df1 = df;
     helper::ReadAccessor< DataVecDeriv > dx1 = dx;
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     for (sofa::Index index = 0; index < m_indices.size(); index++)
     {
@@ -424,7 +424,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     sofa::Index curIndex = 0;
     const int Dimension = Coord::total_size;
@@ -451,7 +451,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     sofa::Index curIndex = 0;
     const sofa::Size Dimension = Coord::total_size;

@@ -57,7 +57,7 @@ void PreassembledMass< DataTypes >::bwdInit()
     if( massMatrix.rows() != massMatrix.cols() || massMatrix.rows()!=(typename MassMatrix::Index)this->mstate->getMatrixSize() )
     {
         // perform assembly
-        core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
+        core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();
         mparams.setKFactor(0);
         mparams.setBFactor(0);
         mparams.setMFactor(1);
@@ -77,10 +77,8 @@ void PreassembledMass< DataTypes >::bwdInit()
 
         if( _instanciationNumber == 0 ) // only the first one (last bwdInit called) will call the mass removal
         {
-    //        std::cerr<<SOFA_CLASS_METHOD<<"removing child masses"<<std::endl;
-
             // visitor to delete child mass
-            RemoveChildMassVisitor removeChildMassVisitor( core::ExecParams::defaultInstance() );
+            RemoveChildMassVisitor removeChildMassVisitor( core::execparams::defaultInstance() );
             this->getContext()->executeVisitor( &removeChildMassVisitor );
 
             typename LinkMassNodes::Container massNodes = l_massNodes.getValue();
@@ -97,7 +95,7 @@ void PreassembledMass< DataTypes >::bwdInit()
     for(typename MassMatrix::Index r=0;r<massMatrix.rows();++r)
         for(typename MassMatrix::Index c=0;c<massMatrix.cols();++c)
             totalmass+=massMatrix.element(r,c);
-    ms_info()<<"total mass: "<<totalmass/this->mstate->getMatrixBlockSize();
+    msg_info()<<"total mass: "<<totalmass/this->mstate->getMatrixBlockSize();
 
     d_massMatrix.endEdit();
 }
@@ -180,10 +178,10 @@ void PreassembledMass< DataTypes >::addGravityToV(const core::MechanicalParams* 
         VecDeriv& v = *d_v.beginEdit();
 
         // gravity
-        Vec3 g ( this->getContext()->getGravity() * (mparams->dt()) );
+        Vec3 g ( this->getContext()->getGravity() * (sofa::core::mechanicalparams::dt(mparams)) );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * (mparams->dt());
+        Deriv hg = theGravity * (sofa::core::mechanicalparams::dt(mparams));
 
         // add weight force
         for (unsigned int i=0; i<v.size(); i++)
@@ -223,7 +221,7 @@ template < class DataTypes >
 void PreassembledMass< DataTypes >::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+    Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
     d_massMatrix.getValue().addToBaseMatrix( r.matrix, mFactor, r.offset );
 }
 

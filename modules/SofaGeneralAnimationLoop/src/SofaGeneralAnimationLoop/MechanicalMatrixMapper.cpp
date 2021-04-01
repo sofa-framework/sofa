@@ -33,11 +33,12 @@ using namespace sofa::defaulttype;
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to map the stiffness (and mass) matrix through a mapping.")
 
-        .add< MechanicalMatrixMapper<Rigid3Types, Rigid3Types> >(true)
-        .add< MechanicalMatrixMapper<Vec3Types, Rigid3Types> >(true)
-        .add< MechanicalMatrixMapper<Vec3Types, Vec3Types> >(true)
-        .add< MechanicalMatrixMapper<Vec1Types, Rigid3Types> >(true)
-        .add< MechanicalMatrixMapper<Vec1Types, Vec1Types> >(true)
+        .add< MechanicalMatrixMapper<Rigid3Types, Rigid3Types> >()
+        .add< MechanicalMatrixMapper<Vec3Types, Rigid3Types> >()
+        .add< MechanicalMatrixMapper<Vec3Types, Vec3Types> >()
+        .add< MechanicalMatrixMapper<Vec1Types, Rigid3Types> >()
+        .add< MechanicalMatrixMapper<Vec1Types, Vec3Types> >()
+        .add< MechanicalMatrixMapper<Vec1Types, Vec1Types> >()
         .add< MechanicalMatrixMapper<Rigid3Types, Vec1Types> >(true)
 
         ;
@@ -47,6 +48,7 @@ template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Rigid3Ty
 template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
 template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec3Types, Vec3Types>;
 template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
+template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec1Types, Vec3Types>;
 template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec1Types, Vec1Types>;
 template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Rigid3Types, Vec1Types> ;
 

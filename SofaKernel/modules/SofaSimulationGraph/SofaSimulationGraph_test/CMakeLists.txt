@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaSimulationGraph_test)
 
-find_package(SofaGTestMain REQUIRED)
-find_package(SofaTest REQUIRED)
-
 set(SOURCE_FILES
     DAG_test.cpp
     DAGNode_test.cpp
@@ -15,6 +12,6 @@ set(SOURCE_FILES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest)
 
 add_test(Name ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

@@ -25,13 +25,12 @@
 #include <sofa/helper/Factory.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/Node.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
-
+#include <sofa/simulation/fwd.h>
 namespace sofa::component::collision
 {
 
@@ -54,7 +53,7 @@ public:
     using Index = sofa::Index;
 
     MCollisionModel* model;
-    simulation::Node::SPtr child;
+    simulation::NodeSPtr child;
     typename MMapping::SPtr mapping;
     typename MMechanicalState::SPtr outmodel;
     Size nbp;
@@ -104,8 +103,8 @@ public:
         if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-            map->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+            map->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         }
     }
 
@@ -114,8 +113,8 @@ public:
         if (mapping != nullptr)
         {
             core::BaseMapping* map = mapping.get();
-            map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
-            map->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::freeVelocity(), core::ConstVecDerivId::freeVelocity());
+            map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            map->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::freeVelocity(), core::ConstVecDerivId::freeVelocity());
         }
     }
 };

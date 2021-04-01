@@ -22,11 +22,12 @@
 #ifndef SOFA_CORE_BEHAVIOR_MASS_INL
 #define SOFA_CORE_BEHAVIOR_MASS_INL
 
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <fstream>
-
 
 namespace sofa
 {
@@ -61,7 +62,7 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fi
 {
     if (mparams)
     {
-            addMDx(mparams, *fid[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), factor);
+            addMDx(mparams, *fid[this->mstate.get()].write(), *mparams->readDx(this->mstate), factor);
     }
 }
 
@@ -77,7 +78,7 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId 
 {
     if(mparams)
     {
-            accFromF(mparams, *aid[this->mstate.get(mparams)].write(), *mparams->readF(this->mstate));
+            accFromF(mparams, *aid[this->mstate.get()].write(), *mparams->readF(this->mstate));
     }
     else msg_error() <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam";
 }
@@ -100,7 +101,7 @@ void Mass<DataTypes>::addDForce(const MechanicalParams*
 #ifndef NDEBUG
     // @TODO Remove
     // Hack to disable warning message
-    mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 #endif
 }
 
@@ -110,7 +111,7 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId 
     this->ForceField<DataTypes>::addMBKdx(mparams, dfId);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
     {
-        addMDx(mparams, *dfId[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
+        addMDx(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
     }
 }
 
@@ -199,7 +200,7 @@ void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams, MultiVecDer
 {
     if(this->mstate)
     {
-        DataVecDeriv& v = *vid[this->mstate.get(mparams)].write();
+        DataVecDeriv& v = *vid[this->mstate.get()].write();
         addGravityToV(mparams, v);
     }
 }

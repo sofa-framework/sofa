@@ -8,10 +8,10 @@ set(SOURCE_FILES
     TetrahedronDiffusionFEMForceField_test.cpp
 )
 
-find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(SofaSimpleFem REQUIRED)
 
 add_definitions("-DSOFASIMPLEFEM_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

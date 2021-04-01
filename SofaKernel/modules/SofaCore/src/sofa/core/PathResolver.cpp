@@ -48,6 +48,18 @@ Base* PathResolver::FindBaseFromPath(const Base* context, const std::string& pat
     return b;
 }
 
+Base* PathResolver::FindBaseFromClassAndPath(const Base* context, const BaseClass* tclass, const std::string& path)
+{
+    if(context==nullptr)
+        return nullptr;
+
+    if(tclass==nullptr)
+        return nullptr;
+
+    Base* b = const_cast<Base*>(context)->findLinkDestClass(tclass, path, nullptr);
+    return b;
+}
+
 BaseData* PathResolver::FindBaseDataFromPath(const BaseData* datacontext, const std::string& path)
 {
     if(datacontext==nullptr)
@@ -78,19 +90,35 @@ bool PathResolver::FindDataLinkDest(Base* context, BaseData*& ptr, const std::st
     return context->findDataLinkDest(ptr, path, link);
 }
 
-void* PathResolver::FindLinkDestClass(Base* context, const BaseClass* destType, const std::string& path, const BaseLink* link)
+Base* PathResolver::FindLinkDestClass(Base* context, const BaseClass* destType, const std::string& path, const BaseLink* link)
 {
     if(context==nullptr)
         return nullptr;
     return context->findLinkDestClass(destType, path, link);
 }
 
-
 bool PathResolver::CheckPath(sofa::core::objectmodel::Base* context, const sofa::core::objectmodel::BaseClass* classType, const std::string& path)
 {
     void* tmp = PathResolver::FindLinkDestClass(context, classType, path, nullptr);
     return tmp != nullptr;
 }
+
+/// Check that a given list of path is valid, that the pointed object exists and is of the right type
+bool PathResolver::CheckPaths(Base *context, const BaseClass* linktype,  const std::string& paths)
+{
+    if (paths.empty())
+        return false;
+    std::istringstream istr( paths.c_str() );
+    std::string path;
+    bool ok = true;
+    while (istr >> path)
+    {
+        ok &= (PathResolver::FindLinkDestClass(context, linktype, path, nullptr) != nullptr);
+    }
+    return ok;
+}
+
+
 
 
 }

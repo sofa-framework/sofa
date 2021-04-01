@@ -19,16 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_MODIFYOBJECT_H
-#define SOFA_GUI_QT_MODIFYOBJECT_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-
+#include <sofa/core/fwd.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #include <QDialog>
@@ -48,14 +44,9 @@
 #include <QVBoxLayout>
 #include <QTextBrowser>
 
+#include <sofa/simulation/fwd.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 class QTransformationWidget;
@@ -135,7 +126,7 @@ public:
 
     void createDialog(core::objectmodel::Base* node);
     void createDialog(core::objectmodel::BaseData* data);
-    bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
+    bool hideData(core::objectmodel::BaseData* data);
     void readOnlyData(QTableWidget *widget, core::objectmodel::BaseData* data);
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
@@ -171,7 +162,7 @@ protected:
     QString parseDataModified();
     void* Id_;
     QTreeWidgetItem* item_;
-    core::objectmodel::Base* node;
+    core::objectmodel::Base* basenode;
     core::objectmodel::BaseData* data_;
     const ModifyObjectFlags dialogFlags_;
 
@@ -198,11 +189,4 @@ protected:
 };
 
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::gui::qt

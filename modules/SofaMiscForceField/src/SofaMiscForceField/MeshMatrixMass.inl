@@ -23,11 +23,11 @@
 
 #include <SofaMiscForceField/MeshMatrixMass.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
@@ -37,7 +37,7 @@
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::mass
 {
@@ -1966,7 +1966,7 @@ void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPa
         defaulttype::Vec3d g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * (typename DataTypes::Real(mparams->dt()));
+        Deriv hg = theGravity * (typename DataTypes::Real(sofa::core::mechanicalparams::dt(mparams)));
 
         for (unsigned int i=0; i<v.size(); i++)
             v[i] += hg;
@@ -1991,7 +1991,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = r.matrix;
-    Real mFactor = Real(mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue()));
+    Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
     if((mat->colSize()) != (defaulttype::BaseMatrix::Index)(m_topology->getNbPoints()*N) || (mat->rowSize()) != (defaulttype::BaseMatrix::Index)(m_topology->getNbPoints()*N))
     {

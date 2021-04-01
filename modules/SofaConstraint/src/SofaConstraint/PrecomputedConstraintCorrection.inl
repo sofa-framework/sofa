@@ -39,8 +39,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Quater.h>
 
-#include <SofaConstraint/LMConstraintSolver.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 #include <fstream>
 #include <sstream>
@@ -263,21 +262,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             return;
         }
 
-        helper::vector< sofa::component::constraintset::LMConstraintSolver* > listLMConstraintSolver;
-        solvernode->get< sofa::component::constraintset::LMConstraintSolver >(&listLMConstraintSolver, core::objectmodel::BaseContext::SearchDown);
-        helper::vector< ConstraintActivation > listConstraintActivation(listLMConstraintSolver.size());
-        for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
-        {
-            listConstraintActivation[i].acc=listLMConstraintSolver[i]->constraintAcc.getValue();
-            listLMConstraintSolver[i]->constraintAcc.setValue(false);
-
-            listConstraintActivation[i].vel=listLMConstraintSolver[i]->constraintVel.getValue();
-            listLMConstraintSolver[i]->constraintVel.setValue(false);
-
-            listConstraintActivation[i].pos=listLMConstraintSolver[i]->constraintPos.getValue();
-            listLMConstraintSolver[i]->constraintPos.setValue(false);
-        }
-
         // Change the solver parameters
         double buf_tolerance = 0, buf_threshold = 0;
         int	   buf_maxIter = 0;
@@ -310,7 +294,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         /// (avoid to have a line of 0 at the top of the matrix)
         if (eulerSolver)
         {
-            eulerSolver->solve(core::ExecParams::defaultInstance(), dt, core::VecCoordId::position(), core::VecDerivId::velocity());
+            eulerSolver->solve(core::execparams::defaultInstance(), dt, core::VecCoordId::position(), core::VecDerivId::velocity());
         }
 
         Deriv unitary_force;
@@ -347,7 +331,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 {
                     fact *= eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
-                    eulerSolver->solve(core::ExecParams::defaultInstance(), dt, core::VecCoordId::position(), core::VecDerivId::velocity());
+                    eulerSolver->solve(core::execparams::defaultInstance(), dt, core::VecCoordId::position(), core::VecDerivId::velocity());
 
                     if (linearSolver)
                         linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
@@ -394,13 +378,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         // Restore position
         for (unsigned int i = 0; i < pos.size(); i++)
             pos[i] = prev_pos[i];
-
-        for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
-        {
-            listLMConstraintSolver[i]->constraintAcc.setValue(listConstraintActivation[i].acc);
-            listLMConstraintSolver[i]->constraintVel.setValue(listConstraintActivation[i].vel);
-            listLMConstraintSolver[i]->constraintPos.setValue(listConstraintActivation[i].pos);
-        }
     }
 
     appCompliance = invM->data;
@@ -623,7 +600,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyMotionCorrection(const sof
 
     const VecDeriv& correction = correction_d.getValue();
 
-    auto dx = sofa::helper::write(dx_d, cparams);
+    auto dx = sofa::helper::getWriteAccessor(dx_d);
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
@@ -656,7 +633,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPositionCorrection(const s
 
     const VecDeriv& correction = correction_d.getValue();
 
-    auto dx = sofa::helper::write(dx_d,cparams);
+    auto dx = sofa::helper::getWriteAccessor(dx_d);
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
@@ -678,7 +655,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const s
     sofa::Data< VecDeriv > &v_d, sofa::Data< VecDeriv > &dv_d, const sofa::Data<VecDeriv>& correction_d)
 {
     const VecDeriv& correction = correction_d.getValue();
-    auto dv = sofa::helper::write(dv_d, cparams);
+    auto dv = sofa::helper::getWriteAccessor(dv_d);
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();

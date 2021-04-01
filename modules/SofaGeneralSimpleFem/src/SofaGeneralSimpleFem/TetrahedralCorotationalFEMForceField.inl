@@ -23,7 +23,6 @@
 #include "TetrahedralCorotationalFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <cassert>
@@ -198,7 +197,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     switch(method)
     {

@@ -13,12 +13,18 @@ set(SOURCE_FILES
     objectmodel/DataFileName_test.cpp
     objectmodel/DataCallback_test.cpp
     objectmodel/DDGNode_test.cpp
+    objectmodel/MultiLink_test.cpp
+    objectmodel/SingleLink_test.cpp
     DataEngine_test.cpp
     TrackedData_test.cpp
     PathResolver_test.cpp
 )
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaCore)
+set(HEADER_FILES
+    objectmodel/BaseLink_test.h
+    )
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaCore)
 
 add_test(NAME SofaCore_test COMMAND SofaCore_test)

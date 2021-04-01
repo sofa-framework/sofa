@@ -23,10 +23,12 @@
 #include <SofaBaseMechanics/DiagonalMass.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/io/XspLoader.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::mass
 {
@@ -668,7 +670,7 @@ void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParam
     const auto N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    Real mFactor = Real(mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue()));
+    Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
     for (unsigned int i=0; i<masses.size(); i++)
         calc(r.matrix, masses[i], r.offset + N*i, mFactor);
 }
@@ -1432,7 +1434,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPara
         sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * typename DataTypes::Real(mparams->dt());
+        Deriv hg = theGravity * typename DataTypes::Real(sofa::core::mechanicalparams::dt(mparams));
 
         for (unsigned int i=0; i<v.size(); i++)
         {

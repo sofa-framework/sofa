@@ -2,8 +2,16 @@
 <!-- MeshSplittingEngine Example -->
 
 <Node name="root" dt="0.1">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaGraphComponent"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaGraphComponent"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMiscMapping'/>
+    <RequiredPlugin pluginName='SofaRigid'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/> 
     
     <VisualStyle displayFlags="showBehavior showVisual" />
     <BackgroundSetting color="1 1 1"/>

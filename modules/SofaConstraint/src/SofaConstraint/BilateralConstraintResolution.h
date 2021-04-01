@@ -24,7 +24,7 @@
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/behavior/BaseConstraint.h>
-
+#include <sofa/core/behavior/ConstraintResolution.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 
@@ -86,7 +86,7 @@ public:
         temp[2][1] = w[line+2][line+1];
         temp[2][2] = w[line+2][line+2];
 
-        invertMatrix(invW, temp);
+        sofa::type::invertMatrix(invW, temp);
 
         if(_f)
         {

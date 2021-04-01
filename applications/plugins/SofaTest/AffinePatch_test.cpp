@@ -22,7 +22,7 @@
 
 #include <SofaTest/Elasticity_test.h>
 #include <sofa/helper/Quater.h>
-#include <sofa/core/ExecParams.h>
+
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -264,13 +264,13 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(AffinePatch_sofa_test, DataTypes);
+TYPED_TEST_SUITE(AffinePatch_sofa_test, DataTypes);
 
 // first test case
 TYPED_TEST( AffinePatch_sofa_test , patchTest2D )

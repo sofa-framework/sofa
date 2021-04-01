@@ -23,12 +23,12 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
@@ -39,19 +39,13 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
 
-#include <sofa/core/ConstraintParams.h>
+
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/core/behavior/BaseConstraint.h> ///< ConstraintResolution.
+
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <cmath>
-
-#include <map>
-#include <string>
-#include <sstream>
-
-#include <chrono>
 #include <thread>
 
 
@@ -481,7 +475,7 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->addComplianceInConstraintSpace(core::ConstraintParams::defaultInstance(), getCP()->getW());
+        cc->addComplianceInConstraintSpace(core::constraintparams::defaultInstance(), getCP()->getW());
     }
 
     sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");

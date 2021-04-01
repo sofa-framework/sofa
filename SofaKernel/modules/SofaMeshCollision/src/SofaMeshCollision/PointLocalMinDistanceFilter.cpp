@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaMeshCollision/LineModel.h>

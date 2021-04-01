@@ -21,14 +21,16 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/UniformMass.h>
-
+#include <sofa/core/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
-
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::mass
 {
@@ -501,9 +503,9 @@ void UniformMass<DataTypes, MassType>::addGravityToV(const MechanicalParams* mpa
         const SReal* g = getContext()->getGravity().ptr();
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
-        Deriv hg = theGravity * Real(mparams->dt());
+        Deriv hg = theGravity * Real(sofa::core::mechanicalparams::dt(mparams));
 
-        dmsg_info()<< " addGravityToV hg = "<<theGravity<<"*"<<mparams->dt()<<"="<<hg ;
+        dmsg_info()<< " addGravityToV hg = "<<theGravity<<"*"<<sofa::core::mechanicalparams::dt(mparams)<<"="<<hg ;
 
         for ( unsigned int i=0; i<v.size(); i++ )
         {
@@ -619,7 +621,7 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
     AddMToMatrixFunctor<Deriv,MassType> calc;
     MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate);
 
-    Real mFactor = Real(mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue()));
+    Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
     for ( unsigned int i=0; i<indices.size(); i++ )

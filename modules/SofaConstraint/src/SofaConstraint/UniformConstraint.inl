@@ -46,8 +46,8 @@ void UniformConstraint<DataTypes>::buildConstraintMatrix(const sofa::core::Const
 
     const auto N = Deriv::size(); // MatrixDeriv is a container of Deriv types.
 
-    auto& jacobian = sofa::helper::write(c).wref();
-    auto  xVec     = sofa::helper::read(x);
+    auto& jacobian = sofa::helper::getWriteAccessor(c).wref();
+    auto  xVec     = sofa::helper::getReadAccessor(x);
 
     m_constraintIndex = cIndex; // we should not have to remember this, it should be available through the API directly.
 
@@ -80,8 +80,8 @@ void computeViolation(DstV& resV, unsigned int constraintIndex, const
 template< class DataTypes >
 void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::ConstraintParams* cParams, sofa::defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
 {
-    auto xfree = sofa::helper::read(x);
-    auto vfree = sofa::helper::read(v);
+    auto xfree = sofa::helper::getReadAccessor(x);
+    auto vfree = sofa::helper::getReadAccessor(v);
     const SReal dt = this->getContext()->getDt();
     const SReal invDt = 1.0 / dt;
 

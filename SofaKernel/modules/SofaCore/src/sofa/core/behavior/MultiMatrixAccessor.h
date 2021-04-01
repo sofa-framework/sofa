@@ -22,8 +22,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 #define SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/BaseMapping.h>
+#include <sofa/core/config.h>
+#include <sofa/core/fwd.h>
+#include <sofa/defaulttype/fwd.h>
 
 namespace sofa
 {
@@ -41,7 +42,7 @@ namespace behavior
 class SOFA_CORE_API MultiMatrixAccessor
 {
 public:
-    using Index = defaulttype::BaseMatrix::Index;
+    using Index = sofa::SignedIndex ;
 
     virtual ~MultiMatrixAccessor();
 

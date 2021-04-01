@@ -31,12 +31,16 @@
 namespace sofa::component::misc
 {
 
+using defaulttype::Vector3;
+
 ReadState::ReadState()
     : d_filename( initData(&d_filename, "filename", "output file name"))
     , d_interval( initData(&d_interval, 0.0, "interval", "time duration between inputs"))
     , d_shift( initData(&d_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , d_loop( initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
+    , d_rotation( initData(&d_rotation, Vector3(0.,0.,0.), "rotation", "rotate the input mechanical object"))
+    , d_translation( initData(&d_translation, Vector3(0.,0.,0.), "translation", "translate the input mechanical object"))
     , mmodel(nullptr)
     , infile(nullptr)
 #if SOFAGENERALLOADER_HAVE_ZLIB
@@ -47,6 +51,9 @@ ReadState::ReadState()
     , loopTime(0)
 {
     this->f_listening.setValue(true);
+    d_scalePos.setGroup("Transformation");
+    d_rotation.setGroup("Transformation");
+    d_translation.setGroup("Transformation");
 }
 
 ReadState::~ReadState()
@@ -223,6 +230,11 @@ void ReadState::processReadState()
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
     bool updated = false;
+
+    const double scale = d_scalePos.getValue();
+    const Vector3& rotation = d_rotation.getValue();
+    const Vector3& translation = d_translation.getValue();
+
     for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
     {
         std::istringstream str(*it);
@@ -230,8 +242,10 @@ void ReadState::processReadState()
         str >> cmd;
         if (cmd == "X=")
         {
-            mmodel->readVec(core::VecId::position(), str);            
-            mmodel->applyScale(d_scalePos.getValue(), d_scalePos.getValue(), d_scalePos.getValue());
+            mmodel->readVec(core::VecId::position(), str);
+            mmodel->applyScale(scale,scale,scale);
+            mmodel->applyRotation(rotation[0],rotation[1],rotation[2]);
+            mmodel->applyTranslation(translation[0],translation[1],translation[2]);
 
             updated = true;
         }
@@ -244,11 +258,11 @@ void ReadState::processReadState()
 
     if (updated)
     {
-        sofa::simulation::MechanicalProjectPositionAndVelocityVisitor action0(core::MechanicalParams::defaultInstance());
+        sofa::simulation::MechanicalProjectPositionAndVelocityVisitor action0(core::mechanicalparams::defaultInstance());
         this->getContext()->executeVisitor(&action0);
-        sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor action1(core::MechanicalParams::defaultInstance());
+        sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor action1(core::mechanicalparams::defaultInstance());
         this->getContext()->executeVisitor(&action1);
-        sofa::simulation::UpdateMappingVisitor action2(core::MechanicalParams::defaultInstance());
+        sofa::simulation::UpdateMappingVisitor action2(core::mechanicalparams::defaultInstance());
         this->getContext()->executeVisitor(&action2);
     }
 }

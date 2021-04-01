@@ -23,6 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/BaseState.h>
 
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
@@ -128,9 +129,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::ENDING_EVENT:
         {
             dmsg_info() << "ENDING_EVENT" ;
-            toPointMod->propagateTopologicalChanges();
             toPointMod->notifyEndingEvent();
-            toPointMod->propagateTopologicalChanges();
             break;
         }
 
@@ -138,9 +137,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const PointsAdded * pAdd = static_cast< const PointsAdded * >( topoChange );
             dmsg_info() << "POINTSADDED : " << pAdd->getNbAddedVertices() ;
-            toPointMod->addPointsProcess(pAdd->getNbAddedVertices());
-            toPointMod->addPointsWarning(pAdd->getNbAddedVertices(), pAdd->ancestorsList, pAdd->coefs, true);
-            toPointMod->propagateTopologicalChanges();
+            toPointMod->addPoints(pAdd->getNbAddedVertices(), pAdd->ancestorsList, pAdd->coefs, true);
             break;
         }
         case core::topology::POINTSREMOVED:
@@ -148,9 +145,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const PointsRemoved *pRem = static_cast< const PointsRemoved * >( topoChange );
             auto tab = pRem->getArray();
             dmsg_info() << "POINTSREMOVED : " << tab.size() ;
-            toPointMod->removePointsWarning(tab, true);
-            toPointMod->propagateTopologicalChanges();
-            toPointMod->removePointsProcess(tab, true);
+            toPointMod->removePoints(tab, true);
             break;
         }
         case core::topology::POINTSRENUMBERING:
@@ -159,9 +154,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const auto &tab = pRenumber->getIndexArray();
             const auto &inv_tab = pRenumber->getinv_IndexArray();
             dmsg_info() << "POINTSRENUMBERING : " << tab.size() ;
-            toPointMod->renumberPointsWarning(tab, inv_tab, true);
-            toPointMod->propagateTopologicalChanges();
-            toPointMod->renumberPointsProcess(tab, inv_tab, true);
+            toPointMod->renumberPoints(tab, inv_tab, true);
             break;
         }
 
@@ -171,9 +164,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toEdgeMod) break;
             const EdgesAdded *eAdd = static_cast< const EdgesAdded * >( topoChange );
             dmsg_info() << "EDGESADDED : " << eAdd->getNbAddedEdges() ;
-            toEdgeMod->addEdgesProcess(eAdd->edgeArray);
-            toEdgeMod->addEdgesWarning(eAdd->getNbAddedEdges(), eAdd->edgeArray, eAdd->edgeIndexArray, eAdd->ancestorsList, eAdd->coefs);
-            toEdgeMod->propagateTopologicalChanges();
+            toEdgeMod->addEdges(eAdd->edgeArray, eAdd->ancestorsList, eAdd->coefs);
             break;
         }
 
@@ -184,9 +175,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( topoChange );
             auto tab = eRem->getArray();
             dmsg_info() << "EDGESREMOVED : " ;
-            toEdgeMod->removeEdgesWarning(tab);
-            toEdgeMod->propagateTopologicalChanges();
-            toEdgeMod->removeEdgesProcess(tab, false);
+            toEdgeMod->removeEdges(tab, false);
             break;
         }
 
@@ -196,9 +185,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toTriangleMod) break;
             const TrianglesAdded *tAdd = static_cast< const TrianglesAdded * >( topoChange );
             dmsg_info() << "TRIANGLESADDED : " << tAdd->getNbAddedTriangles() ;
-            toTriangleMod->addTrianglesProcess(tAdd->triangleArray);
-            toTriangleMod->addTrianglesWarning(tAdd->getNbAddedTriangles(), tAdd->triangleArray, tAdd->triangleIndexArray, tAdd->ancestorsList, tAdd->coefs);
-            toTriangleMod->propagateTopologicalChanges();
+            toTriangleMod->addTriangles(tAdd->triangleArray, tAdd->ancestorsList, tAdd->coefs);
             break;
         }
 
@@ -209,9 +196,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( topoChange );
             auto tab = tRem->getArray();
             dmsg_info() << "TRIANGLESREMOVED : " << tab.size() ;
-            toTriangleMod->removeTrianglesWarning(tab);
-            toTriangleMod->propagateTopologicalChanges();
-            toTriangleMod->removeTrianglesProcess(tab, false);
+            toTriangleMod->removeTriangles(tab, false, false);
             break;
         }
 
@@ -221,7 +206,6 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
 
         ++itBegin;
     }
-    toPointMod->propagateTopologicalChanges();
 
     msg_info() << "End: "
                << "    Nb of points of fromModel : " << fromTriangleCon->getNbPoints() << msgendl

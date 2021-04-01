@@ -24,14 +24,6 @@ endif()
 
 ####################################
 
-## Necessary ones
-
-option(SOFA_BUILD_MINIFLOWVR "Build the miniFlowVR library distributed in the extlibs/ directory." OFF)
-if(SOFA_BUILD_MINIFLOWVR)
-    add_subdirectory(miniFlowVR)
-    list(APPEND EXTLIBS_TARGETS miniFlowVR)
-endif()
-
 foreach(target ${EXTLIBS_TARGETS})
     set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
     set_target_properties(${target} PROPERTIES FOLDER "SofaExtlibs")

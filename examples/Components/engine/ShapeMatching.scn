@@ -1,6 +1,11 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 -1 0" dt="0.05"  >
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
@@ -12,7 +17,7 @@
 		<MeshObjLoader name="loader" filename="mesh/dragon.obj" />
 		<MeshTopology name="topo" src="@loader" />
 		<MechanicalObject name="dofs" src="@loader" scale="1" dz="10" />
-		<UniformMass mass="3" />
+		<UniformMass vertexMass="3" />
 
 		<ClusteringEngine template="Vec3d" name="clustering" radius='1'  number='50' position="@topo.position"/>
 		<ShapeMatching template="Vec3d" name="shapeMatching" iterations='1' position="@dofs.position" cluster="@clustering.cluster"/>
@@ -39,7 +44,7 @@
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
         <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
-        <PointCollisionModel name="FloorLine" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorPoint" simulated="0" moving="0" />
         <MeshObjLoader name="meshLoader_0" filename="mesh/floor3.obj" scale="1.75" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_0" texturename="textures/brushed_metal.bmp" dy="-10" />
     </Node>

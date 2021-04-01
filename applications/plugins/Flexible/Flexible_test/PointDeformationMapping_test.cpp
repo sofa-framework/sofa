@@ -191,7 +191,7 @@ namespace sofa {
     };
 
       // Define the list of DataTypes to instantiate
-    using testing::Types;
+    using ::testing::Types;
     typedef Types<
        LinearMapping<Vec3Types, F321Types>,
        LinearMapping<Vec3Types, F331Types>,
@@ -200,7 +200,7 @@ namespace sofa {
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(PointsDeformationMapping_test, DataTypes);
+    TYPED_TEST_SUITE(PointsDeformationMapping_test, DataTypes);
 
     // test case: polarcorotationalStrainMapping 
     TYPED_TEST( PointsDeformationMapping_test , VecDeformationMappingTest)

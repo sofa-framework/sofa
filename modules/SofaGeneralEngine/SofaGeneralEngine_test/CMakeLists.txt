@@ -23,11 +23,13 @@ list(APPEND SOURCE_FILES
     IndexValueMapper_test.cpp
     JoinPoints_test.cpp
     RandomPointDistributionInSurface_test.cpp
+    Engine_test.cpp
+    TestEngine.cpp
     )
 
-find_package(SofaGeneralEngine REQUIRED)
+sofa_find_package(SofaGeneralEngine REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaGeneralEngine)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaGeneralEngine)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

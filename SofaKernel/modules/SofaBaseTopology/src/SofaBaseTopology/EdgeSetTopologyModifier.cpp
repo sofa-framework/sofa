@@ -25,6 +25,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/topology/TopologyEngine.h>
 
 #include <algorithm>
 #include <utility>
@@ -612,7 +613,7 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<EdgeID> &in
 }
 
 void EdgeSetTopologyModifier::removeEdges(const sofa::helper::vector< EdgeID >& edgeIds,
-        const bool removeIsolatedPoints, const bool resetTopoChange)
+        const bool removeIsolatedPoints)
 {
     sofa::helper::AdvancedTimer::stepBegin("removeEdges");
 
@@ -631,10 +632,8 @@ void EdgeSetTopologyModifier::removeEdges(const sofa::helper::vector< EdgeID >& 
 
     // inform other objects that the edges are going to be removed
     sofa::helper::AdvancedTimer::stepNext ("removeEdgesWarning", "propagateTopologicalChanges");
-    if (resetTopoChange)
-        propagateTopologicalChanges();
-    else
-        propagateTopologicalChangesWithoutReset();
+
+    propagateTopologicalChanges();
 
     // now destroy the old edges.
     sofa::helper::AdvancedTimer::stepNext ("propagateTopologicalChanges", "removeEdgesProcess");
@@ -648,19 +647,6 @@ void EdgeSetTopologyModifier::removeEdges(const sofa::helper::vector< EdgeID >& 
 void EdgeSetTopologyModifier::removeItems(const sofa::helper::vector< EdgeID >& items)
 {
     removeEdges(items);
-}
-
-void EdgeSetTopologyModifier::renumberPoints( const sofa::helper::vector<EdgeID> &index,
-        const sofa::helper::vector<EdgeID> &inv_index)
-{
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index);
-
-    m_container->checkTopology();
 }
 
 void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges)

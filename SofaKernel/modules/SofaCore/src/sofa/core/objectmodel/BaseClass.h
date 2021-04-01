@@ -96,45 +96,38 @@ public:
         return !((*this)==c);
     }
 
-    virtual void* dynamicCast(Base* obj) const = 0;
+    virtual Base* dynamicCast(Base* obj) const = 0;
     virtual bool isInstance(Base* obj) const = 0;
 
     ///////////////////////////////// DEPRECATED //////////////////////////////////////////////////
     /// Helper method to decode the type name
-    //SOFA_BEGIN_DEPRECATION_AS_ERROR
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string decodeFullName(const std::type_info& t);
 
     /// Helper method to decode the type name to a more readable form if possible
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-            "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string decodeTypeName(const std::type_info& t);
 
     /// Helper method to extract the class name (removing namespaces and templates)
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-    "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string decodeClassName(const std::type_info& t);
 
     /// Helper method to extract the namespace (removing class name and templates)
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string decodeNamespaceName(const std::type_info& t);
 
     /// Helper method to extract the template name (removing namespaces and class name)
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-    "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string decodeTemplateName(const std::type_info& t);
 
     /// Helper method to get the type name
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string defaultTypeName(const T* = nullptr)
     {
         return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
     }
-    //SOFA_END_DEPRECATION_AS_ERROR
+
 
 };
 
@@ -143,7 +136,7 @@ class SOFA_CORE_API DeprecatedBaseClass : public BaseClass
 public:
     DeprecatedBaseClass();
 
-    void* dynamicCast(Base*) const override { return nullptr; }
+    Base* dynamicCast(Base*) const override { return nullptr; }
     bool isInstance(Base*) const override { return false; }
 
     static BaseClass* GetSingleton();
@@ -388,11 +381,9 @@ protected:
     }
     ~TClass() override {}
 
-    void* dynamicCast(Base* obj) const override
+    Base* dynamicCast(Base* obj) const override
     {
-        T* ptr = nullptr;
-        T::dynamicCast(ptr, obj);
-        return ptr;
+        return dynamic_cast<T*>(obj);
     }
 
     bool isInstance(Base* obj) const override

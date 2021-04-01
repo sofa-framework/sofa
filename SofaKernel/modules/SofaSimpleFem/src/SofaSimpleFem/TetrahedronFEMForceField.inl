@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
-
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
@@ -41,6 +41,7 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     : m_topology(nullptr)
     , _indexedElements(nullptr)
     , needUpdateTopology(false)
+    , m_VonMisesColorMap(nullptr)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR), \"polar\" or \"svd\" displacements"))
     , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio [0,0.5["))
@@ -54,12 +55,11 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _gatherPt(initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
     , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
     , drawHeterogeneousTetra(initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
-    , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
-    , _computeVonMisesStress(initData(&_computeVonMisesStress,0,"computeVonMisesStress","compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain"))
+    , _computeVonMisesStress(initData(&_computeVonMisesStress,0,"computeVonMisesStress","compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1"))
     , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
     , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
     , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
-    , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
+    , _showStressColorMap(initData(&_showStressColorMap, std::string("Blue to Red"),"showStressColorMap", "Color map used to show stress values"))
     , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
     , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
@@ -1201,7 +1201,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
 
     defaulttype::Mat<3,3,Real> F = A * _initialTransformation[elementIndex];
 
-    if( determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
+    if(defaulttype::determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
     {
         helper::Decompose<Real>::polarDecomposition_stable( F, R_0_2 );
         R_0_2 = R_0_2.multTransposed( _initialRotations[elementIndex] );
@@ -1309,6 +1309,9 @@ TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
     // Need to unaffect a vector to the pointer
     if (m_topology == nullptr && _indexedElements != nullptr)
         delete _indexedElements;
+
+    if (m_VonMisesColorMap != nullptr)
+        delete m_VonMisesColorMap;
 }
 
 
@@ -1327,7 +1330,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
     }
 
-    if (_updateStiffness.getValue())
+    if (_updateStiffness.getValue() || _computeVonMisesStress.getValue())
         this->f_listening.setValue(true);
 
     // ParallelDataThrd is used to build the matrix asynchronusly (when listening = true)
@@ -1497,6 +1500,11 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
         prevMaxStress = -1.0;
         updateVonMisesStress = true;
+
+        if (m_VonMisesColorMap == nullptr)
+        {
+            m_VonMisesColorMap = new helper::ColorMap(256, _showStressColorMap.getValue());
+        }
     }
 
     m_restVolume = 0;
@@ -1593,7 +1601,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
                     matVert[k][l] = X0[ix][l-1];
             }
 
-            invertMatrix(elemShapeFun[i], matVert);
+            defaulttype::invertMatrix(elemShapeFun[i], matVert);
         }
         computeVonMisesStress();
     }
@@ -1663,7 +1671,7 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
     unsigned int i;
@@ -1740,9 +1748,17 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         needUpdateTopology = false;
     }
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    vparams->drawTool()->saveLastState();
+    
+    bool wireframe = false;
+    if (vparams->displayFlags().getShowWireFrame()) {
+        vparams->drawTool()->setPolygonMode(0, true);
+        wireframe = true;
+    }
 
-    const bool edges = (drawAsEdges.getValue() || vparams->displayFlags().getShowWireFrame());
+    vparams->drawTool()->disableLighting();
+
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const VecReal& youngModulus = _youngModulus.getValue();
 
@@ -1763,7 +1779,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     Real minVMN = (Real)1e20, maxVMN = (Real)-1e20;
     helper::ReadAccessor<Data<helper::vector<Real> > > vM =  _vonMisesPerElement;
     helper::ReadAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
-    if (_computeVonMisesStress.getValue() > 0) {
+    if (_computeVonMisesStress.getValue() > 0) 
+    {
         for (size_t i = 0; i < vM.size(); i++) {
             minVM = (vM[i] < minVM) ? vM[i] : minVM;
             maxVM = (vM[i] > maxVM) ? vM[i] : maxVM;
@@ -1777,87 +1794,31 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             maxVMN = (vMN[i] > maxVMN) ? vMN[i] : maxVMN;
         }
 
-        maxVM*=_showStressAlpha.getValue();
-        maxVMN*=_showStressAlpha.getValue();
+        maxVM *= _showStressAlpha.getValue();
+        maxVMN *= _showStressAlpha.getValue();
     }
 
-    vparams->drawTool()->setLightingEnabled(false);
 
-    if (_showVonMisesStressPerNode.getValue()) {
+    if (_showVonMisesStressPerNode.getValue())
+    {
+        if (!_computeVonMisesStress.getValue())
+        {
+            msg_warning() << "Von Mises Stress Per Node can only be displayed if option computeVonMisesStress is set to true";
+        }
+    
         std::vector<sofa::helper::types::RGBAColor> nodeColors(x.size());
         std::vector<defaulttype::Vector3> pts(x.size());
-        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVMN, maxVMN);
+        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
         for (size_t nd = 0; nd < x.size(); nd++) {
             pts[nd] = x[nd];
             nodeColors[nd] = evalColor(vMN[nd]);
         }
         vparams->drawTool()->drawPoints(pts, 10, nodeColors);
     }
-
-    if (edges)
+    
     {
-        std::vector< defaulttype::Vector3 > points[3];
-        typename VecElement::const_iterator it;
-        int i;
-        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-            Coord pa = x[a];
-            Coord pb = x[b];
-            Coord pc = x[c];
-            Coord pd = x[d];
-
-            points[0].push_back(pa);
-            points[0].push_back(pb);
-            points[0].push_back(pc);
-            points[0].push_back(pd);
-
-            points[1].push_back(pa);
-            points[1].push_back(pc);
-            points[1].push_back(pb);
-            points[1].push_back(pd);
-
-            points[2].push_back(pa);
-            points[2].push_back(pd);
-            points[2].push_back(pb);
-            points[2].push_back(pc);
-
-            if(heterogeneous)
-            {
-                float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
-                float fac = col * 0.5f;
-                auto color2 = sofa::helper::types::RGBAColor(col      , 0.5f - fac , 1.0f-col,1.0f);
-                auto color3 = sofa::helper::types::RGBAColor(col      , 1.0f - fac , 1.0f-col,1.0f);
-                auto color4 = sofa::helper::types::RGBAColor(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
-
-                vparams->drawTool()->drawLines(points[0],1,color2 );
-                vparams->drawTool()->drawLines(points[1],1,color3 );
-                vparams->drawTool()->drawLines(points[2],1,color4 );
-
-                for(auto & point : points) point.clear();
-            } else
-            {
-                if (_computeVonMisesStress.getValue() > 0)
-                {
-                    for(auto & point : points) point.clear();
-                }
-            }
-        }
-
-        if(!heterogeneous && _computeVonMisesStress.getValue() == 0)
-        {
-            vparams->drawTool()->drawLines(points[0], 1, sofa::helper::types::RGBAColor(0.0,0.5,1.0,1.0));
-            vparams->drawTool()->drawLines(points[1], 1, sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0));
-            vparams->drawTool()->drawLines(points[2], 1, sofa::helper::types::RGBAColor(0.5,1.0,1.0,1.0));
-        }
-    }
-    else
-    {
-
-        std::vector< defaulttype::Vector3 > points[4];
+        std::vector< defaulttype::Vector3 > points;
+        std::vector< sofa::helper::types::RGBAColor > colorVector;
         typename VecElement::const_iterator it;
         int i;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
@@ -1867,68 +1828,67 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             Index c = (*it)[2];
             Index d = (*it)[3];
             Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
-            Coord pa = (x[a]+center)*(Real)0.666667;
-            Coord pb = (x[b]+center)*(Real)0.666667;
-            Coord pc = (x[c]+center)*(Real)0.666667;
-            Coord pd = (x[d]+center)*(Real)0.666667;
 
-            points[0].push_back(pa);
-            points[0].push_back(pb);
-            points[0].push_back(pc);
+            Coord pa = x[a];
+            Coord pb = x[b];
+            Coord pc = x[c];
+            Coord pd = x[d];
+            if (!wireframe)
+            {
+                pa = (pa + center) * Real(0.6667);
+                pb = (pb + center) * Real(0.6667);
+                pc = (pc + center) * Real(0.6667);
+                pd = (pd + center) * Real(0.6667);
+            }
 
-            points[1].push_back(pb);
-            points[1].push_back(pc);
-            points[1].push_back(pd);
-
-            points[2].push_back(pc);
-            points[2].push_back(pd);
-            points[2].push_back(pa);
-
-            points[3].push_back(pd);
-            points[3].push_back(pa);
-            points[3].push_back(pb);
-
+           
+            // create corresponding colors
+            sofa::helper::types::RGBAColor color[4];
             if(heterogeneous)
             {
                 float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
                 float fac = col * 0.5f;
-                auto color1 = sofa::helper::types::RGBAColor(col      , 0.0f - fac , 1.0f-col,1.0f);
-                auto color2 = sofa::helper::types::RGBAColor(col      , 0.5f - fac , 1.0f-col,1.0f);
-                auto color3 = sofa::helper::types::RGBAColor(col      , 1.0f - fac , 1.0f-col,1.0f);
-                auto color4 = sofa::helper::types::RGBAColor(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
-
-                vparams->drawTool()->drawTriangles(points[0],color1 );
-                vparams->drawTool()->drawTriangles(points[1],color2 );
-                vparams->drawTool()->drawTriangles(points[2],color3 );
-                vparams->drawTool()->drawTriangles(points[3],color4 );
-
-                for(auto & point : points)
-                    point.clear();
-            } else
+                color[0] = sofa::helper::types::RGBAColor(col      , 0.0f - fac , 1.0f-col,1.0f);
+                color[1] = sofa::helper::types::RGBAColor(col      , 0.5f - fac , 1.0f-col,1.0f);
+                color[2] = sofa::helper::types::RGBAColor(col      , 1.0f - fac , 1.0f-col,1.0f);
+                color[3] = sofa::helper::types::RGBAColor(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
+            } 
+            else
             {
-                if (_computeVonMisesStress.getValue() > 0) {
-                    helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVM, maxVM);
+                if (_computeVonMisesStress.getValue() > 0) 
+                {
+                    helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
                     auto col = sofa::helper::types::RGBAColor::fromVec4(evalColor(vM[i]));
-
                     col[3] = 1.0f;
-                    vparams->drawTool()->drawTriangles(points[0],col);
-                    vparams->drawTool()->drawTriangles(points[1],col);
-                    vparams->drawTool()->drawTriangles(points[2],col);
-                    vparams->drawTool()->drawTriangles(points[3],col);
-
-                    for(auto & point : points) point.clear();
+                    color[0] = col;
+                    color[1] = col;
+                    color[2] = col;
+                    color[3] = col;
+                }
+                else
+                {
+                    color[0] = sofa::helper::types::RGBAColor(0.0, 0.0, 1.0, 1.0);
+                    color[1] = sofa::helper::types::RGBAColor(0.0, 0.5, 1.0, 1.0);
+                    color[2] = sofa::helper::types::RGBAColor(0.0, 1.0, 1.0, 1.0);
+                    color[3] = sofa::helper::types::RGBAColor(0.5, 1.0, 1.0, 1.0);
                 }
             }
+
+            // create 4 triangles per tetrahedron with corresponding colors
+            points.insert(points.end(), { pa, pb, pc });
+            colorVector.insert(colorVector.end(), { color[0], color[0], color[0] });
+
+            points.insert(points.end(), { pb, pc, pd });
+            colorVector.insert(colorVector.end(), { color[1], color[1], color[1] });
+
+            points.insert(points.end(), { pc, pd, pa });
+            colorVector.insert(colorVector.end(), { color[2], color[2], color[2] });
+
+            points.insert(points.end(), { pd, pa, pb });
+            colorVector.insert(colorVector.end(), { color[3], color[3], color[3] });
         }
 
-        if(!heterogeneous && _computeVonMisesStress.getValue() == 0)
-        {
-            vparams->drawTool()->drawTriangles(points[0], sofa::helper::types::RGBAColor(0.0,0.0,1.0,1.0));
-            vparams->drawTool()->drawTriangles(points[1], sofa::helper::types::RGBAColor(0.0,0.5,1.0,1.0));
-            vparams->drawTool()->drawTriangles(points[2], sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0));
-            vparams->drawTool()->drawTriangles(points[3], sofa::helper::types::RGBAColor(0.5,1.0,1.0,1.0));
-        }
-
+        vparams->drawTool()->drawTriangles(points, colorVector);
     }
 
     ////////////// AFFICHAGE DES ROTATIONS ////////////////////////
@@ -1962,6 +1922,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->drawLines(points[1], 5, sofa::helper::types::RGBAColor::green());
         vparams->drawTool()->drawLines(points[2], 5, sofa::helper::types::RGBAColor::blue());
     }
+
+    vparams->drawTool()->restoreLastState();
 }
 
 template<class DataTypes>
@@ -1969,7 +1931,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPar
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
-        addKToMatrix(r.matrix, mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()), r.offset);
+        addKToMatrix(r.matrix, sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()), r.offset);
     else dmsg_error() << "The function addKToMatrix found no valid matrix accessor." ;
 }
 
@@ -2598,7 +2560,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     unsigned int i = 0;
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
-        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVM, maxVM);
+        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
         defaulttype::Vec4f col = evalColor(vME[i]);
         Tetrahedron tetra = (*_indexedElements)[i];
 

@@ -20,17 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/MechanicalState.inl>
 
-namespace sofa
+namespace sofa::core::behavior
 {
-
-namespace core
-{
-
-namespace behavior
-{
-
 using namespace sofa::defaulttype;
 
 template class SOFA_CORE_API MechanicalState<Vec3dTypes>;
@@ -39,10 +32,5 @@ template class SOFA_CORE_API MechanicalState<Vec1Types>;
 template class SOFA_CORE_API MechanicalState<Vec6Types>;
 template class SOFA_CORE_API MechanicalState<Rigid3Types>;
 template class SOFA_CORE_API MechanicalState<Rigid2Types>;
-
-
-} // namespace behavior
-
-} // namespace core
 
 } // namespace sofa

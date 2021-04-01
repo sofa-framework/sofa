@@ -23,6 +23,7 @@
 
 #ifdef WIN32
 #include <windows.h>
+#include <shellapi.h>
 #endif
 
 #include <fstream>
@@ -37,13 +38,7 @@
 #include <QRadioButton>
 #include <sofa/simulation/ExportDotVisitor.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 GenGraphForm::GenGraphForm(QWidget *parent)
@@ -229,6 +224,8 @@ void GenGraphForm::doExport()
     }
     if (filename->text()==QString("")) return;
 
+    filename->setStyleSheet("");
+
     QString dotfile = filename->text();
 
     QString basefile = removeFileExt(dotfile);
@@ -240,11 +237,14 @@ void GenGraphForm::doExport()
     fdot.open(dotfile.toStdString().c_str(), std::ofstream::out | std::ofstream::trunc);
     if (!fdot.is_open())
     {
-        qFatal("Output to %s failed.\n",dotfile.toStdString().c_str());
+        msg_error("GenGraphForm") << "Output to " << dotfile.toStdString() << " failed.";
+        filename->clear();
+        filename->setFocus();
+        filename->setStyleSheet("border: 1px solid red");
         return;
     }
     {
-        sofa::simulation::graph::ExportDotVisitor act(sofa::core::ExecParams::defaultInstance(), &fdot);
+        sofa::simulation::graph::ExportDotVisitor act(sofa::core::execparams::defaultInstance(), &fdot);
         act.showNode = this->showNodes->isChecked();
         act.showObject = this->showObjects->isChecked();
         act.showBehaviorModel = this->showBehaviorModels->isChecked();
@@ -485,8 +485,4 @@ std::set<std::string> GenGraphForm::getCurrentFilter()
     return filt;
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

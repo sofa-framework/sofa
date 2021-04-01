@@ -22,65 +22,15 @@
 #pragma once
 
 #include <SofaMiscMapping/CenterOfMassMultiMapping.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <SofaMiscMapping/CenterOfMassMappingOperation.h>
 
-#include <sofa/simulation/Simulation.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <algorithm>
 #include <functional>
 
 namespace sofa::component::mapping
 {
-
-template < typename Model >
-struct Operation
-{
-    typedef typename Model::VecCoord VecCoord;
-    typedef typename Model::Coord    Coord;
-    typedef typename Model::Deriv    Deriv;
-    typedef typename Model::VecDeriv VecDeriv;
-
-public :
-    static inline const VecCoord* getVecCoord( const Model* m, const sofa::core::VecId id) { return m->getVecCoord(id.index); }
-    static inline VecDeriv* getVecDeriv( Model* m, const sofa::core::VecId id) { return m->getVecDeriv(id.index);}
-
-    static inline const sofa::core::behavior::BaseMass* fetchMass  ( const Model* m)
-    {
-        sofa::core::behavior::BaseMass* mass = m->getContext()->getMass();
-        return mass;
-    }
-    static inline double computeTotalMass( const Model* model, const sofa::core::behavior::BaseMass* mass )
-    {
-        double result = 0.0;
-        const unsigned int modelSize = static_cast<unsigned int>(model->getSize());
-        for (unsigned int i = 0; i < modelSize; i++)
-        {
-            result += mass->getElementMass(i);
-        }
-        return result;
-    }
-
-    static inline Coord WeightedCoord( const VecCoord* v, const sofa::core::behavior::BaseMass* m)
-    {
-        Coord c;
-        for (unsigned int i=0 ; i< v->size() ; i++)
-        {
-            c += (*v)[i] * m->getElementMass(i);
-        }
-        return c;
-    }
-
-    static inline Deriv WeightedDeriv( const VecDeriv* v, const sofa::core::behavior::BaseMass* m)
-    {
-        Deriv d;
-        for (unsigned int i=0 ; i< v->size() ; i++)
-        {
-            d += (*v)[i] * m->getElementMass(i);
-        }
-        return d;
-    }
-};
-
 
 template <class TIn, class TOut>
 void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
@@ -100,7 +50,7 @@ void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* 
 
     assert( outPos.size() == 1); // we are dealing with a many to one mapping.
     InCoord COM;
-    std::transform(inPos.begin(), inPos.end(), inputBaseMass.begin(), inputWeightedCOM.begin(), Operation< core::State<In> >::WeightedCoord );
+    std::transform(inPos.begin(), inPos.end(), inputBaseMass.begin(), inputWeightedCOM.begin(), CenterOfMassMappingOperation< core::State<In> >::WeightedCoord );
 
     for( iter_coord iter = inputWeightedCOM.begin() ; iter != inputWeightedCOM.end(); ++iter ) COM += *iter;
     COM *= invTotalMass;
@@ -136,7 +86,7 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams*
     assert( outDeriv.size() == 1 );
 
     InDeriv Velocity;
-    std::transform(inDeriv.begin(), inDeriv.end(), inputBaseMass.begin(), inputWeightedForce.begin(), Operation<In>::WeightedDeriv );
+    std::transform(inDeriv.begin(), inDeriv.end(), inputBaseMass.begin(), inputWeightedForce.begin(), CenterOfMassMappingOperation<In>::WeightedDeriv );
 
     for ( iter_deriv iter = inputWeightedForce.begin() ; iter != inputWeightedForce.end() ; ++iter ) Velocity += *iter;
     Velocity *= invTotalMass;
@@ -210,9 +160,9 @@ void CenterOfMassMultiMapping< TIn, TOut>::init()
     inputWeightedCOM.resize( this->getFromModels().size() );
     inputWeightedForce.resize( this->getFromModels().size() );
 
-    std::transform(this->getFromModels().begin(), this->getFromModels().end(), inputBaseMass.begin(), Operation< core::State<In> >::fetchMass );
+    std::transform(this->getFromModels().begin(), this->getFromModels().end(), inputBaseMass.begin(), CenterOfMassMappingOperation< core::State<In> >::fetchMass );
 
-    std::transform(this->getFromModels().begin(), this->getFromModels().end(), inputBaseMass.begin(), inputTotalMass.begin(), Operation< core::State<In> >::computeTotalMass );
+    std::transform(this->getFromModels().begin(), this->getFromModels().end(), inputBaseMass.begin(), inputTotalMass.begin(), CenterOfMassMappingOperation< core::State<In> >::computeTotalMass );
 
     invTotalMass = 0.0;
     for ( iter_double iter = inputTotalMass.begin() ; iter != inputTotalMass.end() ; ++ iter )

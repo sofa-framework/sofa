@@ -22,7 +22,6 @@
 #pragma once
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
-
 namespace sofa::component::linearsolver {
 
 
@@ -102,14 +101,13 @@ template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
     this->currentMFactor = mparams->mFactor();
-    this->currentBFactor = mparams->bFactor();
+    this->currentBFactor = sofa::core::mechanicalparams::bFactor(mparams);
     this->currentKFactor = mparams->kFactor();
 
     if (!this->frozen)
     {
-        simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
         SReal dim = 0;
-        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
+        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(this->getContext());
         currentGroup->systemSize = Size(dim);
         currentGroup->matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
 
@@ -122,7 +120,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
         currentGroup->matrixAccessor.setupMatrices();
         resizeSystem(currentGroup->matrixAccessor.getGlobalDimension());
         currentGroup->systemMatrix->clear();
-        mops.addMBK_ToMatrix(&(currentGroup->matrixAccessor), mparams->mFactor(), mparams->bFactor(), mparams->kFactor());
+        mops.addMBK_ToMatrix(&(currentGroup->matrixAccessor), mparams->mFactor(), sofa::core::mechanicalparams::bFactor(mparams), mparams->kFactor());
         currentGroup->matrixAccessor.computeGlobalMatrix();
     }
 
@@ -155,7 +153,7 @@ void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(double massFactor, double 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(core::MultiVecDerivId v)
 {
-    executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(core::ExecParams::defaultInstance(), v,
+    executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(core::execparams::defaultInstance(), v,
                                                                          currentGroup->systemRHVector,
                                                                          &(currentGroup->matrixAccessor)) );
 }
@@ -166,7 +164,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(core::MultiVecDerivId 
     currentGroup->solutionVecId = v;
     if (!currentGroup->solutionVecId.isNull())
     {
-        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::ExecParams::defaultInstance(), v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::execparams::defaultInstance(), v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
     }
 }
 
@@ -181,7 +179,7 @@ void MatrixLinearSolver<Matrix,Vector>::solveSystem()
     this->solve(*currentGroup->systemMatrix, *currentGroup->systemLHVector, *currentGroup->systemRHVector);
     if (!currentGroup->solutionVecId.isNull())
     {
-        executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::ExecParams::defaultInstance(), currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+        executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::execparams::defaultInstance(), currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
     }
 }
 
@@ -342,7 +340,7 @@ void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* 
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::core::behavior::MultiVecDeriv force(&vop, core::VecDerivId::force() );
 
-    executeVisitor( simulation::MechanicalMultiVectorPeqBaseVectorVisitor(core::ExecParams::defaultInstance(), force, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
+    executeVisitor( simulation::MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
 }
 
 

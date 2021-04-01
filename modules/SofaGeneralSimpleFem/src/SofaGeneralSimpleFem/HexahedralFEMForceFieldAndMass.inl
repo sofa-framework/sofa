@@ -22,6 +22,7 @@
 #pragma once
 #include "HexahedralFEMForceFieldAndMass.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -266,7 +267,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
     {
         const ElementMass &Me = _elementMasses.getValue()[e];
 
-        Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+        Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -309,7 +310,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::Mechani
         const Element hexa = hexahedra[e];
         const ElementStiffness &Ke = it->stiffness;
 
-        Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+        Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
@@ -359,8 +360,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
         const ElementStiffness &Ke = it->stiffness;
 
         // find index of node 1
-        Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
-        Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+        Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
+        Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
         for ( n1 = 0; n1 < 8; n1++ )
         {
             n2 = n1; /////////// WARNING Changed to compute only diag elements
@@ -407,7 +408,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addGravityToV(const core::Mechan
     {
         VecDeriv& v = *d_v.beginEdit();
 
-        SReal _dt = mparams->dt();
+        SReal _dt = sofa::core::mechanicalparams::dt(mparams);
 
         for (unsigned int i=0; i<_particleMasses.getValue().size(); i++)
         {

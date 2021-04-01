@@ -23,6 +23,7 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
+using sofa::core::execparams::defaultInstance; 
 
 #include <SofaValidation/CompareState.h>
 using sofa::component::misc::CompareStateCreator;
@@ -46,12 +47,12 @@ void Validation::execute(const std::string& directory, const std::string& filena
 
     msg_info("runSofa::Validation") << "reference file: " << refFile;
 
-    CompareStateCreator compareVisitor(ExecParams::defaultInstance());
+    CompareStateCreator compareVisitor(sofa::core::execparams::defaultInstance());
     compareVisitor.setCreateInMapping(true);
     compareVisitor.setSceneName(refFile);
     compareVisitor.execute(node);
 
-    ReadStateActivator v_read(ExecParams::defaultInstance(), true);
+    ReadStateActivator v_read(sofa::core::execparams::defaultInstance(), true);
     v_read.execute(node);
 }
 

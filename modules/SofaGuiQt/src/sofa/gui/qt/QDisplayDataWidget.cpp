@@ -29,17 +29,13 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QValidator>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #define TEXTSIZE_THRESHOLD 45
 
-namespace sofa
-{
+using namespace sofa::core::objectmodel;
 
-using namespace core::objectmodel;
-
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
@@ -320,7 +316,7 @@ void QPoissonRatioWidget::setDataReadOnly(bool readOnly)
 
 void QPoissonRatioWidget::readFromData()
 {
-    double value = this->getData()->virtualGetValue();
+    double value = this->getData()->getValue();
     QString str;
     str.setNum(value);
     lineEdit->setText(str);
@@ -333,7 +329,7 @@ void QPoissonRatioWidget::writeToData()
     double d = lineEdit->text().toDouble(&ok);
     if(ok)
     {
-        this->getData()->virtualSetValue(d);
+        this->getData()->setValue(d);
     }
 }
 
@@ -358,7 +354,4 @@ void QPoissonRatioWidget::changeSliderValue()
 
 helper::Creator<DataWidgetFactory, QPoissonRatioWidget> DWClass_Poissonratio("poissonRatio",false);
 
-} // qt
-} //gui
-} //sofa
-
+} //namespace sofa::gui::qt

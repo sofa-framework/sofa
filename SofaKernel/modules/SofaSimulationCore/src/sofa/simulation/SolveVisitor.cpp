@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -30,7 +30,7 @@ namespace sofa
 namespace simulation
 {
 
-void SolveVisitor::processSolver(simulation::Node* node, core::behavior::OdeSolver* s)
+void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* s)
 {
     sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
     s->solve(params, dt, x, v);

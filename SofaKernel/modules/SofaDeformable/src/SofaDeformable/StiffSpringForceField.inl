@@ -20,7 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaDeformable/StiffSpringForceField.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
@@ -205,8 +208,8 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
-    Real kFactor       =  (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    Real bFactor       =  (Real)mparams->bFactor();
+    Real kFactor       =  (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
+    Real bFactor       =  (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
     const helper::vector<Spring>& springs = this->springs.getValue();
     df1.resize(dx1.size());
@@ -227,7 +230,7 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
     if (this->mstate1 == this->mstate2)
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate1);

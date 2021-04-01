@@ -28,6 +28,8 @@ namespace sofa::component::topology
 {
 class QuadSetTopologyContainer;
 
+template <class DataTypes>
+class QuadSetGeometryAlgorithms;
 
 /**
 * A class that modifies the topology by adding and removing quads
@@ -36,6 +38,9 @@ class SOFA_SOFABASETOPOLOGY_API QuadSetTopologyModifier : public EdgeSetTopology
 {
 public:
     SOFA_CLASS(QuadSetTopologyModifier,EdgeSetTopologyModifier);
+
+    template <class DataTypes>
+    friend class QuadSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::QuadID QuadID;
     typedef core::topology::BaseMeshTopology::Quad Quad;
@@ -52,9 +57,6 @@ protected:
 public:
     void init() override;
 
-    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    void propagateTopologicalEngineChanges() override;
-
     /** \brief add a set of quads
     @param quads an array of vertex indices describing the quads to be created
     */
@@ -70,34 +72,49 @@ public:
             const sofa::helper::vector< sofa::helper::vector< QuadID > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
-
-    /** \brief Sends a message to warn that some quads were added in this topology.
-    *
-    * \sa addQuadsProcess
-    */
-    void addQuadsWarning(const size_t nQuads,
-            const sofa::helper::vector< Quad >& quadsList,
-            const sofa::helper::vector< QuadID >& quadsIndexList);
-
-    /** \brief Sends a message to warn that some quads were added in this topology.
-    *
-    * \sa addQuadsProcess
-    */
-    void addQuadsWarning(const size_t nQuads,
-            const sofa::helper::vector< Quad >& quadsList,
-            const sofa::helper::vector< QuadID >& quadsIndexList,
-            const sofa::helper::vector< sofa::helper::vector< QuadID > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
-
     /** \brief Effectively Add a quad.
     */
     void addQuadProcess(Quad e);
 
+     /** \brief Remove a set  of quads
+    @param quads an array of quad indices to be removed (note that the array is not const since it needs to be sorted)
+    *
+    @param removeIsolatedEdges if true isolated edges are also removed
+    @param removeIsolatedPoints if true isolated vertices are also removed
+    *
+    */
+    virtual void removeQuads(const sofa::helper::vector<QuadID> &quadIds,
+            const bool removeIsolatedEdges,
+            const bool removeIsolatedPoints);
+
+    /** \brief Generic method to remove a list of items.
+    */
+    void removeItems(const sofa::helper::vector< QuadID >& items) override;
+
+protected:
+    /** \brief Sends a message to warn that some quads were added in this topology.
+    *
+    * \sa addQuadsProcess
+    */
+    void addQuadsWarning(const size_t nQuads,
+        const sofa::helper::vector< Quad >& quadsList,
+        const sofa::helper::vector< QuadID >& quadsIndexList);
+
+    /** \brief Sends a message to warn that some quads were added in this topology.
+    *
+    * \sa addQuadsProcess
+    */
+    void addQuadsWarning(const size_t nQuads,
+        const sofa::helper::vector< Quad >& quadsList,
+        const sofa::helper::vector< QuadID >& quadsIndexList,
+        const sofa::helper::vector< sofa::helper::vector< QuadID > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
+
     /** \brief Effectively Add some quads to this topology.
     *
-    	* \sa addQuadsWarning
-    	*/
-    virtual void addQuadsProcess(const sofa::helper::vector< Quad > &quads);
+     * \sa addQuadsWarning
+     */
+    virtual void addQuadsProcess(const sofa::helper::vector< Quad >& quads);
 
     /** \brief Sends a message to warn that some quads are about to be deleted.
     *
@@ -105,7 +122,7 @@ public:
     *
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     */
-    virtual void removeQuadsWarning( sofa::helper::vector<QuadID> &quads);
+    virtual void removeQuadsWarning(sofa::helper::vector<QuadID>& quads);
 
     /** \brief Remove a subset of  quads. Eventually remove isolated edges and vertices
     *
@@ -115,15 +132,16 @@ public:
     * @param removeIsolatedEdges if true isolated edges are also removed
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void removeQuadsProcess( const sofa::helper::vector<QuadID> &indices,
-            const bool removeIsolatedEdges=false,
-            const bool removeIsolatedPoints=false);
+    virtual void removeQuadsProcess(const sofa::helper::vector<QuadID>& indices,
+        const bool removeIsolatedEdges = false,
+        const bool removeIsolatedPoints = false);
+
 
     /** \brief Add some edges to this topology.
     *
     * \sa addEdgesWarning
     */
-    void addEdgesProcess(const sofa::helper::vector< Edge > &edges) override;
+    void addEdgesProcess(const sofa::helper::vector< Edge >& edges) override;
 
     /** \brief Remove a subset of edges
     *
@@ -133,8 +151,9 @@ public:
     * @param removeIsolatedItems if true isolated vertices are also removed
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     */
-    void removeEdgesProcess( const sofa::helper::vector<QuadID> &indices,
-            const bool removeIsolatedItems=false) override;
+    void removeEdgesProcess(const sofa::helper::vector<QuadID>& indices,
+        const bool removeIsolatedItems = false) override;
+
 
     /** \brief Add some points to this topology.
     *
@@ -150,38 +169,21 @@ public:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    void removePointsProcess(const sofa::helper::vector<PointID> &indices,
-            const bool removeDOF = true) override;
+    void removePointsProcess(const sofa::helper::vector<PointID>& indices,
+        const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
     *
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    void renumberPointsProcess( const sofa::helper::vector<PointID>& index,
-            const sofa::helper::vector<PointID>& inv_index,
-            const bool renumberDOF = true) override;
+    void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
+        const sofa::helper::vector<PointID>& inv_index,
+        const bool renumberDOF = true) override;
 
-    /** \brief Remove a set  of quads
-    @param quads an array of quad indices to be removed (note that the array is not const since it needs to be sorted)
-    *
-    @param removeIsolatedEdges if true isolated edges are also removed
-    @param removeIsolatedPoints if true isolated vertices are also removed
-    *
-    */
-    virtual void removeQuads(const sofa::helper::vector<QuadID> &quadIds,
-            const bool removeIsolatedEdges,
-            const bool removeIsolatedPoints);
 
-    /** \brief Generic method to remove a list of items.
-    */
-    void removeItems(const sofa::helper::vector< QuadID >& items) override;
-
-    /** \brief Generic method for points renumbering
-    */
-    void renumberPoints( const sofa::helper::vector<PointID>& index,
-            const sofa::helper::vector<PointID>& inv_index) override;
-
+    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
+    void propagateTopologicalEngineChanges() override;
 
 private:
     QuadSetTopologyContainer* 	m_container;

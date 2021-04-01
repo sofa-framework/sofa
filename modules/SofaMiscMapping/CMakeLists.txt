@@ -19,6 +19,7 @@ list(APPEND HEADER_FILES
     ${SOFAMISCMAPPING_SRC}/BeamLinearMapping.inl
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.h
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.inl
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMappingOperation.h
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.h
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.inl
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMultiMapping.h
@@ -58,9 +59,9 @@ list(APPEND SOURCE_FILES
     ${SOFAMISCMAPPING_SRC}/VoidMapping.cpp
     )
 
-find_package(SofaSimpleFem REQUIRED)
-find_package(SofaRigid REQUIRED) 
-find_package(SofaGeneralSimpleFem REQUIRED)
+sofa_find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(SofaRigid REQUIRED) 
+sofa_find_package(SofaGeneralSimpleFem REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid SofaGeneralSimpleFem)

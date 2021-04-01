@@ -24,14 +24,9 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
 
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/helper/system/thread/CTime.h>
-#include <cmath>
-#include <iostream>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -50,7 +45,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
     last_lcp = lcp;
-    simulation::MechanicalVOpVisitor(core::ExecParams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
+    simulation::MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
 
     msg_info() <<" propagate DXn performed - collision called" ;
 
@@ -285,7 +280,7 @@ void LCPConstraintSolver::init()
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         constraintCorrections[i]->addConstraintSolver(this);
 
-    context = (simulation::Node*) getContext();
+    context = getContext();
 }
 
 void LCPConstraintSolver::cleanup()

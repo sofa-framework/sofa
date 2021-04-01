@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/simulation/Node.h>
 namespace sofa::component::visualmodel
 {
 
@@ -72,7 +72,7 @@ helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulati
 {
     VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
     node->addObject(visualStyle);
-    return helper::write(visualStyle->displayFlags);
+    return helper::getWriteAccessor(visualStyle->displayFlags);
 }
 
 } // namespace sofa::component::visualmodel

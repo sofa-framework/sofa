@@ -106,31 +106,7 @@ protected:
     ~CollisionModel() override {}
 
 public:
-    void bwdInit() override
-    {
-        getColor4f(); //init the color to default value
-        
-        if (l_collElemActiver.get() == nullptr)
-        {
-            myCollElemActiver = CollisionElementActiver::getDefaultActiver();
-            msg_info() << "no CollisionElementActiver found." << this->getName();
-        }
-        else
-        {
-            myCollElemActiver = dynamic_cast<CollisionElementActiver *> (l_collElemActiver.get());
-
-            if (myCollElemActiver == nullptr)
-            {
-                myCollElemActiver = CollisionElementActiver::getDefaultActiver();
-                msg_error() << "no dynamic cast possible for CollisionElementActiver." << this->getName();
-            }
-            else
-            {
-                msg_info() << "CollisionElementActiver named" << l_collElemActiver.get()->getName() << " found !" << this->getName();
-            }
-        }
-
-    }
+    void bwdInit() override;
 
     /// Return true if there are no elements
     bool empty() const
@@ -384,9 +360,7 @@ public:
     const float* getColor4f();
     /// Set a color that can be used to display this CollisionModel
 
-    void setColor4f(const float *c) {
-        color.setValue(sofa::helper::types::RGBAColor(c[0],c[1],c[2],c[3]));
-    }
+    void setColor4f(const float *c);
 
     /// Set of differents parameters
     void setProximity       (const SReal a)        { proximity.setValue(a); }

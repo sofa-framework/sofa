@@ -22,9 +22,8 @@
 #ifndef SOFA_DEFAULTTYPE_VECTYPES_H
 #define SOFA_DEFAULTTYPE_VECTYPES_H
 
+#include <sofa/defaulttype/fwd.h>
 #include <sofa/defaulttype/Vec.h>
-
-#include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/random.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
@@ -32,7 +31,6 @@
 #include <algorithm>
 #include <memory>
 #include <sofa/helper/logging/Messaging.h>
-
 namespace sofa
 {
 
@@ -40,7 +38,7 @@ namespace defaulttype
 {
 
 
-template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
+template<class TCoord, class TDeriv, class TReal>
 class StdVectorTypes
 {
 public:

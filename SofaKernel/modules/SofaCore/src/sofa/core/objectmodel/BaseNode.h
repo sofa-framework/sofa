@@ -30,21 +30,6 @@ namespace sofa
 namespace core
 {
 
-// forward declaration of classes accessible from the node
-namespace behavior
-{
-class BaseAnimationLoop;
-class OdeSolver;
-}
-namespace collision
-{
-class Pipeline;
-}
-namespace visual
-{
-class VisualLoop;
-}
-
 namespace objectmodel
 {
 
@@ -136,7 +121,7 @@ public:
     /// Return the path from this node to the root node
     virtual std::string getRootPath() const;
 
-    void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override = 0;
+    Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override = 0;
 
     /// @}
 

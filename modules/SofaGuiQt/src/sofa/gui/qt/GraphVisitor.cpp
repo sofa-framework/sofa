@@ -31,13 +31,7 @@
 #include <QList>
 
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 typedef sofa::helper::system::thread::CTime CTime;
@@ -365,7 +359,4 @@ QTreeWidgetItem *GraphVisitor::addComment(QTreeWidgetItem *element,QTreeWidgetIt
     return result;
 }
 
-
-}
-}
-}
+} // namespace sofa::gui::qt

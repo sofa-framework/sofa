@@ -26,7 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/helper/polygon_cube_intersection/polygon_cube_intersection.h>
+#include <SofaBaseTopology/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/core/loader/VoxelLoader.h>
 
 #include <fstream>

@@ -40,9 +40,9 @@ list(APPEND SOURCE_FILES
 
     )
 
-find_package(SofaBase REQUIRED) # SofaBaseTopology SofaBaseMechanics
-find_package(SofaSimpleFem REQUIRED)
-find_package(SofaBaseLinearSolver REQUIRED)
+sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology SofaBaseMechanics
+sofa_find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(SofaBaseLinearSolver REQUIRED)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -56,11 +56,3 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     RELOCATABLE "plugins"
 )
-
-# Tests
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-# cmake_dependent_option(SOFAGENERALSIMPLEFEM_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-# if(SOFAGENERALSIMPLEFEM_BUILD_TESTS)
-#     enable_testing()
-#     add_subdirectory(${PROJECT_NAME}_test)
-# endif()

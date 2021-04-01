@@ -1,5 +1,8 @@
 <Node dt="0.005" gravity="0 -10 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralExplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscForceField'/> 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
     <Node>
         <RungeKutta4Solver />
@@ -9,11 +12,11 @@
         <UniformMass name="M1" vertexMass="0.5" />
         <LennardJonesForceField alpha="8" beta="9" p0="-50" d0="1" dmax="4" fmax="2" />
         <!-- The following force fields handle collision with walls and an inclined floor -->
-        <PlaneForceField normal="1 0 0" d="-10" draw="1" />
-        <PlaneForceField normal="-1 0 0" d="-10" draw="1" />
-        <PlaneForceField normal="0.1 1 0" d="-10" draw="1" />
-        <PlaneForceField normal="0 0 1" d="-10" draw="1" />
-        <PlaneForceField normal="0 0 -1" d="-10" draw="0" />
+        <PlaneForceField normal="1 0 0" d="-10" />
+        <PlaneForceField normal="-1 0 0" d="-10"  />
+        <PlaneForceField normal="0.1 1 0" d="-10"  />
+        <PlaneForceField normal="0 0 1" d="-10"  />
+        <PlaneForceField normal="0 0 -1" d="-10" />
         
         <!--
         To have a nice visualization based on MarchingCube, you can uncomment the code below (wiht : <RequiredPlugin name="SofaImplicitField"/>)

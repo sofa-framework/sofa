@@ -26,10 +26,9 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Ray.h>
-#include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
 
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/fwd.h>
 #include <sofa/helper/OptionsGroup.h>
 
 
@@ -41,13 +40,10 @@ class SOFA_SOFABASEVISUAL_API BaseCamera : public core::objectmodel::BaseObject
 public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
-    typedef sofa::core::visual::VisualParams::CameraType CameraType;
     typedef defaulttype::Ray Ray;
     typedef defaulttype::Vector4 Vec4;
     typedef defaulttype::Vector3 Vec3;
     typedef defaulttype::Vector2 Vec2;
-    typedef defaulttype::Matrix3 Mat3;
-    typedef defaulttype::Matrix4 Mat4;
     typedef defaulttype::Quat Quat;
 
     enum Side {LEFT, RIGHT, MONO};

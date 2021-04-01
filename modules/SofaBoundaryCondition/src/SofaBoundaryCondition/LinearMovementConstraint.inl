@@ -24,11 +24,11 @@
 #include <SofaBoundaryCondition/LinearMovementConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/helper/vector_algorithm.h>
 
 
 namespace sofa::component::projectiveconstraintset
@@ -100,7 +100,7 @@ void LinearMovementConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::removeIndex(Index index)
 {
-    removeValue(*m_indices.beginEdit(),index);
+    sofa::helper::removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
 }
 

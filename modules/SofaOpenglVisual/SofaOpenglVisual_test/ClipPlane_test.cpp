@@ -13,18 +13,20 @@ using sofa::core::objectmodel::BaseObject ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-
 #include <SofaSimulationGraph/SimpleApi.h>
+
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 namespace cliplane_test
 {
@@ -43,7 +45,8 @@ class TestClipPlane : public BaseTest {
 public:
     void SetUp() override
     {
-        sofa::component::initSofaBaseMechanics();
+        sofa::component::initSofaBaseMechanics(); // needed to instanciate MechanicalObject
+
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 
@@ -68,7 +71,7 @@ void TestClipPlane::checkClipPlaneValidAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;
@@ -102,7 +105,7 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
     BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;

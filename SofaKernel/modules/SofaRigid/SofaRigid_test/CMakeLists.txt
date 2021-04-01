@@ -7,9 +7,9 @@ set(SOURCE_FILES
     RigidRigidMapping_test.cpp
     QuaternionIntegration_test.cpp)
 
-find_package(SofaRigid REQUIRED)
+sofa_find_package(SofaRigid REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaRigid)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaRigid)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

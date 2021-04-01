@@ -23,8 +23,6 @@
 #include <SofaGraphComponent/SofaDefaultPathSetting.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa::component::configurationsetting
 {

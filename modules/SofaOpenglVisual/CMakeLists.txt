@@ -1,16 +1,13 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaOpenglVisual LANGUAGES CXX)
 
-if(SOFA_NO_OPENGL)
-    message(FATAL_ERROR "SOFA_NO_OPENGL flag prevents from using the SofaOpenglVisual plugin")
-endif()
-
-find_package(SofaBase REQUIRED)
-find_package(SofaSimulation REQUIRED)
+sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
+sofa_find_package(SofaBaseVisual REQUIRED)
+sofa_find_package(Sofa.GL REQUIRED)
 
 set(HEADER_FILES
     src/SofaOpenglVisual/config.h
-    src/SofaOpenglVisual/initOpenGLVisual.h
+    src/SofaOpenglVisual/initSofaOpenglVisual.h
     src/SofaOpenglVisual/ClipPlane.h
     src/SofaOpenglVisual/OglColorMap.h
     src/SofaOpenglVisual/CompositingVisualLoop.h
@@ -45,7 +42,7 @@ set(HEADER_FILES
     src/SofaOpenglVisual/VisualManagerSecondaryPass.h
     )
 set(SOURCE_FILES
-    src/SofaOpenglVisual/initOpenGLVisual.cpp
+    src/SofaOpenglVisual/initSofaOpenglVisual.cpp
     src/SofaOpenglVisual/ClipPlane.cpp
     src/SofaOpenglVisual/OglColorMap.cpp
     src/SofaOpenglVisual/CompositingVisualLoop.cpp
@@ -83,7 +80,8 @@ set(EXTRA_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCore Sofa.GL)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

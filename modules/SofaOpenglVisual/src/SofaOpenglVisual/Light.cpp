@@ -24,7 +24,9 @@
 #include <SofaOpenglVisual/LightManager.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
+
 
 namespace sofa
 {
@@ -437,7 +439,7 @@ void DirectionalLight::drawSource(const core::visual::VisualParams* vparams)
 void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &direction)
 {
     //1-compute bounding box
-    sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
+    sofa::core::visual::VisualParams* vp = sofa::core::visual::visualparams::defaultInstance();
     const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
     Vector3 center = (sceneBBox.minBBox() + sceneBBox.maxBBox()) * 0.5;
     Vector3 posLight = center;
@@ -645,7 +647,7 @@ void PositionalLight::drawLight()
 void PositionalLight::drawSource(const core::visual::VisualParams* /*vparams*/)
 {
     Vector3 sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    sofa::simulation::getSimulation()->computeBBox(sofa::simulation::node::getNodeFrom(this->getContext()), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
     float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
     scale *= 0.01f;
 

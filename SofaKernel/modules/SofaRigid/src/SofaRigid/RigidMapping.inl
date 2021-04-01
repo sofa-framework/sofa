@@ -33,6 +33,7 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/decompose.h>
+#include <sofa/core/MechanicalParams.h>
 
 #include <Eigen/Dense>
 
@@ -362,7 +363,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
     if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
-                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
+                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get()].write();
                   geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
     }
     else
@@ -372,7 +373,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
         {
             updateK( mparams, childForceId );
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
-                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
+                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get()].write();
             geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
             geometricStiffnessMatrix.resize(0,0); // forgot about this matrix
         }
@@ -382,7 +383,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
             assert( !mparams->symmetricMatrix() );
 
             helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
-            helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get(mparams)].write());
+            helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get()].write());
             helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
             InReal kfactor = (InReal)mparams->kFactor();
 
@@ -425,29 +426,22 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
-        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
-
         for (unsigned int ito = 0; ito < numDofs; ito++)
         {
             DPos v;
             DRot omega = DRot();
             bool needToInsert = false;
 
-            for (unsigned int cpt = 0; cpt < points.getValue().size() && colIt != colItEnd; cpt++)
+            for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
             {
-                unsigned int rigidIndex = getRigidIndex( cpt );
-                if( rigidIndex != ito )
-                    continue;
-                if (colIt.index() != cpt)
+                unsigned int rigidIndex = getRigidIndex( colIt.index() );
+                if(rigidIndex != ito)
                     continue;
 
                 needToInsert = true;
                 const Deriv f = colIt.val();
                 v += f;
-                omega += (DRot) cross(rotatedPoints[cpt], f);
-
-                ++colIt;
+                omega += (DRot) cross(rotatedPoints[colIt.index()], f);
             }
 
             if (needToInsert)
@@ -459,7 +453,6 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
             }
         }
     }
-
 
     dmsg_info() << "new J on input  DOFs = " << out ;
 
@@ -573,6 +566,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
+    SOFA_UNUSED(mparams);
     unsigned geomStiff = geometricStiffness.getValue();
 
     if( !geomStiff ) { geometricStiffnessMatrix.resize(0,0); return; }
@@ -585,7 +579,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
     dJ.resize( insize, insize );
     dJ.setZero(); // necessary ?
 
-    const VecDeriv& childForces = childForceId[this->toModel.get(mparams)].read()->getValue();
+    const VecDeriv& childForces = childForceId[this->toModel.get()].read()->getValue();
 
     // sorted in-out
     typedef std::map<unsigned, helper::vector<unsigned> > in_out_type;

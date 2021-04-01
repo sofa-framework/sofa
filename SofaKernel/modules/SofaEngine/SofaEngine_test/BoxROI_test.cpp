@@ -28,7 +28,9 @@ using std::vector;
 using std::string;
 
 #include <gtest/gtest.h>
-using testing::Types;
+using ::testing::Types;
+
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -38,18 +40,19 @@ using namespace sofa::defaulttype;
 #include <SofaEngine/BoxROI.h>
 using sofa::component::engine::BoxROI;
 
+#include <SofaBaseUtils/initSofaBaseUtils.h>
 #include <SofaBaseMechanics/initSofaBaseMechanics.h>
-using sofa::component::initSofaBaseMechanics;
+#include <SofaBaseTopology/initSofaBaseTopology.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation;
 using sofa::simulation::graph::DAGSimulation;
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 using sofa::simulation::setSimulation;
 using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::New;
-using sofa::core::ExecParams;
 using sofa::component::container::MechanicalObject;
 using sofa::defaulttype::Vec3Types;
 
@@ -60,9 +63,10 @@ using sofa::simulation::SceneLoaderXML;
 using sofa::helper::logging::MessageDispatcher;
 
 #include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/helper/testing/BaseTest.h>
 
 template <typename TDataType>
-struct BoxROITest :  public ::testing::Test
+struct BoxROITest :  public sofa::helper::testing::BaseTest
 {
     typedef BoxROI<TDataType> TheBoxROI;
     Simulation* m_simu  {nullptr};
@@ -72,7 +76,10 @@ struct BoxROITest :  public ::testing::Test
 
     void SetUp() override
     {
-        initSofaBaseMechanics();
+        sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
+        sofa::component::initSofaBaseMechanics(); // needed to instanciate MechanicalObject
+        sofa::component::initSofaBaseTopology(); // needed to instanciate TriangleSetTopologyContainer
+
         setSimulation( m_simu = new DAGSimulation() );
         m_root = m_simu->createNewGraph("root");
 
@@ -123,13 +130,11 @@ struct BoxROITest :  public ::testing::Test
                 "</Node>                                                       ";
 
         EXPECT_MSG_EMIT(Error); // Unable to find a MechanicalObject for this component.
-
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.c_str(),
                                                           scene.size());
-
         EXPECT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
         BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");
         EXPECT_NE(boxroi, nullptr);
@@ -159,7 +164,7 @@ struct BoxROITest :  public ::testing::Test
                                                           scene.c_str(),
                                                           scene.size());
         EXPECT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
         TheBoxROI* boxroi = root->getTreeObject<TheBoxROI>();
         EXPECT_NE(boxroi, nullptr);
@@ -182,7 +187,7 @@ struct BoxROITest :  public ::testing::Test
                                                           scene.c_str(),
                                                           scene.size());
         EXPECT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
         TheBoxROI* boxroi = root->getTreeObject<TheBoxROI>();
         EXPECT_NE(boxroi, nullptr);
@@ -205,7 +210,7 @@ struct BoxROITest :  public ::testing::Test
                                                           scene.c_str(),
                                                           scene.size());
         EXPECT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
         BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");
 
         EXPECT_NE(boxroi, nullptr);
@@ -358,7 +363,7 @@ typedef Types<
 
 > DataTypes;
 
-TYPED_TEST_CASE(BoxROITest, DataTypes);
+TYPED_TEST_SUITE(BoxROITest, DataTypes);
 
 
 TYPED_TEST(BoxROITest, attributesTests) {

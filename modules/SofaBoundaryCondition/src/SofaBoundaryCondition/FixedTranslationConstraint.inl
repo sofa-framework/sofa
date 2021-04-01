@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/helper/vector_algorithm.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -87,7 +88,7 @@ void FixedTranslationConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::removeIndex(Index index)
 {
-    removeValue(*f_indices.beginEdit(),index);
+    sofa::helper::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 

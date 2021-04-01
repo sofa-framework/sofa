@@ -23,12 +23,10 @@
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <sofa/helper/Factory.inl>

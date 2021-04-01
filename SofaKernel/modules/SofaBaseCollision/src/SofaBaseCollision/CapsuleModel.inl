@@ -21,10 +21,11 @@
 ******************************************************************************/
 #include <SofaBaseCollision/CapsuleModel.h>
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
+#include <sofa/helper/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
+#include <sofa/defaulttype/Vec.h>
+#include <SofaBaseCollision/CubeModel.h>
 
 namespace sofa::component::collision
 {
@@ -167,32 +168,34 @@ template<class DataTypes>
 void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index index)
 {
     sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
-    vparams->drawTool()->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
+    sofa::core::visual::visualparams::getDrawTool(vparams)->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
 }
 
 template<class DataTypes>
 void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (vparams->displayFlags().getShowCollisionModels())
+    auto df = sofa::core::visual::visualparams::getDisplayFlags(vparams);
+    auto dt = sofa::core::visual::visualparams::getDrawTool(vparams);
+    if (df.getShowCollisionModels())
     {
         sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
-        vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());//maybe ??
-        vparams->drawTool()->setLightingEnabled(true); //Enable lightning
+        dt->setPolygonMode(0,df.getShowWireFrame());//maybe ??
+        dt->setLightingEnabled(true); //Enable lightning
 
         // Check topological modifications
         //const int npoints = _mstate->getSize()/2;
 
         for (Size i=0; i<size; i++){
-            vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
+            dt->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
         }
 
-        vparams->drawTool()->setLightingEnabled(false); //Disable lightning
+        dt->setLightingEnabled(false); //Disable lightning
     }
 
-    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && df.getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
-    vparams->drawTool()->setPolygonMode(0,false);
+    dt->setPolygonMode(0,false);
 }
 
 

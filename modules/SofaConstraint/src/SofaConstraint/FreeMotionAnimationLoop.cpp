@@ -27,7 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/VecId.h>
 
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
@@ -40,7 +40,6 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <SofaConstraint/LCPConstraintSolver.h>
 
 namespace sofa::component::animationloop
 {
@@ -76,7 +75,7 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 
 void FreeMotionAnimationLoop::init()
 {
-    simulation::common::VectorOperations vop(core::ExecParams::defaultInstance(), getContext());
+    simulation::common::VectorOperations vop(core::execparams::defaultInstance(), getContext());
     MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
     MultiVecDeriv df(&vop, core::VecDerivId::dforce()); df.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 

@@ -24,6 +24,7 @@
 
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa::component::topology
@@ -303,13 +304,6 @@ public:
     /// Will change order of vertices in triangle: t[1] <=> t[2]
     void reOrientateTriangle(TriangleID id) override;
 
-    // functions returning border elements. To be moved in a mapping.
-    //virtual const helper::vector <TriangleID>& getTrianglesOnBorder();
-
-    //virtual const helper::vector <EdgeID>& getEdgesOnBorder();
-
-    //virtual const helper::vector <PointID>& getPointsOnBorder();
-
 public:
     typedef helper::vector<defaulttype::Vec<3, SReal > > SeqPoints;
     Data< SeqPoints > seqPoints; ///< List of point positions
@@ -317,10 +311,7 @@ public:
     Data<SeqTriangles> seqTriangles; ///< List of triangle indices
     Data<SeqQuads>       seqQuads; ///< List of quad indices
     Data<SeqTetrahedra>      seqTetrahedra; ///< List of tetrahedron indices
-
-    //SeqHexahedra	   seqHexahedra;
     Data<SeqHexahedra>	   seqHexahedra; ///< List of hexahedron indices
-
     Data<SeqUV>	seqUVs; ///< List of uv coordinates
 
 protected:

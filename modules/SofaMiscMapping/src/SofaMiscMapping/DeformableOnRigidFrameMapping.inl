@@ -24,6 +24,7 @@
 #include <SofaMiscMapping/DeformableOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 namespace sofa::component::mapping
 {
@@ -485,9 +486,9 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
         {
             case core::topology::TRIANGLESADDED:       ///< To notify the end for the current sequence of topological change events
             {
-                core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+                core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
                 if(this->f_applyRestPosition.getValue() )
-                    core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+                    core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
                 break;
             }
             default:

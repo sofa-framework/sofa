@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ExecParams.h>
-#include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa

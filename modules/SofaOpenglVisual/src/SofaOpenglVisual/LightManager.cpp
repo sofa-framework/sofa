@@ -27,10 +27,8 @@ using sofa::core::visual::VisualParams ;
 
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 #include <SofaOpenglVisual/OglTexture.h>
 using sofa::component::visualmodel::OglTexture ;

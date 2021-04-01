@@ -22,9 +22,10 @@
 #ifndef SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
 #define SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
 
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/simulation/fwd.h>
 #include <string>
 #include <iostream>
 #include <sofa/defaulttype/TopologyTypes.h>

@@ -26,6 +26,7 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/MultiMatrix.h>
 
 
 namespace sofa::component::odesolver
@@ -61,7 +62,7 @@ void EulerImplicitSolver::init()
 void EulerImplicitSolver::cleanup()
 {
     // free the locally created vector x (including eventual external mechanical states linked by an InteractionForceField)
-    sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
+    sofa::simulation::common::VectorOperations vop( core::execparams::defaultInstance(), this->getContext() );
     vop.v_free(x.id(), !d_threadSafeVisitor.getValue(), true);
 }
 

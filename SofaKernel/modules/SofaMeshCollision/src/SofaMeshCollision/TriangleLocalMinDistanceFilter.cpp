@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologyData.inl>

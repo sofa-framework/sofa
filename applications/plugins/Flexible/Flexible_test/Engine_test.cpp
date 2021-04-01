@@ -92,7 +92,7 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
 
 
 
-typedef testing::Types<
+typedef ::testing::Types<
 TestDataEngine< component::engine::ComputeDualQuatEngine<defaulttype::Rigid3Types> >
 ,TestDataEngine< component::engine::GaussPointContainer >
 ,TestDataEngine< component::engine::ImageShapeFunctionSelectNode<defaulttype::ImageUC> >
@@ -256,7 +256,7 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE( FlexibleDataEngine_test, TestTypes );
+TYPED_TEST_SUITE( FlexibleDataEngine_test, TestTypes );
 
 // test number of call to DataEngine::update
 TYPED_TEST( FlexibleDataEngine_test, basic_test )

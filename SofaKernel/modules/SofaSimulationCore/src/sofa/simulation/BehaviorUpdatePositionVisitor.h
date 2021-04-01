@@ -22,10 +22,10 @@
 #ifndef SOFA_SIMULATION_BEHAVIORUPDATEPOSITIONACTION_H
 #define SOFA_SIMULATION_BEHAVIORUPDATEPOSITIONACTION_H
 
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/core/BehaviorModel.h>
+#include <sofa/simulation/fwd.h>
 
 namespace sofa
 {

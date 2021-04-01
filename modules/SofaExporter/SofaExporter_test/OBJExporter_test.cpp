@@ -34,11 +34,13 @@ using sofa::core::objectmodel::BaseObject ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
@@ -84,7 +86,7 @@ public:
                                                           scene1.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         sofa::simulation::getSimulation()->animate(root.get(), 0.5);
 
@@ -112,7 +114,7 @@ public:
                                                           scene1.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         for(unsigned int i=0;i<numstep;i++)
         {

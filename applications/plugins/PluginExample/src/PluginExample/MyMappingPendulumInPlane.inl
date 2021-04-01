@@ -25,6 +25,7 @@
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <iostream>
 
 using std::cerr;
@@ -194,7 +195,7 @@ void MyMappingPendulumInPlane<In, Out>::applyDJT(const core::MechanicalParams* m
                                                 core::ConstMultiVecDerivId)
 {
     ReadAccessor<Data<VecOutDeriv> > childForce (*mparams->readF(this->toModel));
-    WriteAccessor<Data<VecInDeriv> > parentForce (*parentForceChangeId[this->fromModel.get(mparams)].write());
+    WriteAccessor<Data<VecInDeriv> > parentForce (*parentForceChangeId[this->fromModel.get()].write());
     ReadAccessor<Data<VecInDeriv> > parentDx (*mparams->readDx(this->fromModel));
     InReal kfactor = (InReal)mparams->kFactor();
 

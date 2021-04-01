@@ -21,19 +21,14 @@
 ******************************************************************************/
 
 #include <sofa/core/objectmodel/ScriptEvent.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 SOFA_EVENT_CPP( ScriptEvent )
 
-ScriptEvent::ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName)
+ScriptEvent::ScriptEvent(sofa::core::sptr<sofa::core::objectmodel::BaseNode> sender, const char* eventName)
     : sofa::core::objectmodel::Event()
     , m_sender(sender)
     , m_eventName(eventName)
@@ -41,14 +36,14 @@ ScriptEvent::ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventN
 
 }
 
+const sofa::core::sptr<sofa::core::objectmodel::BaseNode> ScriptEvent::getSender(void) const
+{
+    return m_sender;
+}
+
 ScriptEvent::~ScriptEvent()
 {
 
 }
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::core::objectmodel
