@@ -268,9 +268,6 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
                 next_enginesLevel.push_back(topoEngine);
                 enginesNames.push_back(topoEngine->getName());
             }
-
-            sofa::core::objectmodel::BaseData* data = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
-            msg_warning_when(data) << "Data alone linked: " << data->getName();
         }
 
         _outs.clear();
