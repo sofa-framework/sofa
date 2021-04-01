@@ -51,22 +51,47 @@ NearestPointROI<DataTypes>::~NearestPointROI()
 template <class DataTypes>
 void NearestPointROI<DataTypes>::init()
 {
-    if(!mstate1 || !mstate2) {
-        msg_error() << "Cannot Initialize without valid objects";
-        //mstate1->set(static_cast<simulation::Node*>(this->getContext())->getMechanicalState());
+    // Test inputs
+    bool success = true;
+    if (mstate1 && !mstate1.get())
+    {
+        msg_error_when(!mstate1.get()) << "Cannot Initialize, mstate1 link is pointing to invalid object!";
+        success = false;
     }
+    else if (!mstate1)
+    {
+        msg_error_when(!mstate1) << "Cannot Initialize, mstate1 link is invalid!";
+        success = false;
+    }
+
+    if (mstate2 && !mstate2.get())
+    {
+        msg_error_when(!mstate2.get()) << "Cannot Initialize, mstate2 link is pointing to invalid object!";
+        success = false;
+    }
+    else if (!mstate2)
+    {
+        msg_error_when(!mstate2) << "Cannot Initialize, mstate2 link is invalid!";
+        success = false;
+    }
+
+    if(!success) {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+
 
     addInput(this->mstate1->findData("rest_position"));
     addInput(this->mstate2->findData("rest_position"));
     addOutput(&f_indices1);
     addOutput(&f_indices2);
-
-    reinit();
 }
 
 template <class DataTypes>
 void NearestPointROI<DataTypes>::reinit()
 {
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     if(f_radius.getValue() <= 0){
         msg_error() << "Radius must be a positive real.";
         return;
@@ -75,6 +100,8 @@ void NearestPointROI<DataTypes>::reinit()
         msg_error() << "2 valid mechanicalobjects are required.";
         return;
     }
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     doUpdate();
 }
 
