@@ -711,10 +711,16 @@ public:
         return true;
     }
 
+    void setMissingValue()
+    {
+        std::cout << " FIX ME " << std::endl;
+    }
+
     void setNoValue()
     {
         std::cout << " FIX ME " << std::endl;
     }
+
     void setReadOnly(bool /*readOnly*/) { }
     void readFromData(const ImagePlanetype& d0) {  if(graphXY) graphXY->readFromData(d0); if(graphXZ) graphXZ->readFromData(d0); if(graphZY) graphZY->readFromData(d0);}
     void writeToData(ImagePlanetype& d) { if(graphXY) graphXY->writeToData(d); if(graphXZ) graphXZ->writeToData(d); if(graphZY) graphZY->writeToData(d);}

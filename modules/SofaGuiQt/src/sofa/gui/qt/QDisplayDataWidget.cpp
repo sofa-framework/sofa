@@ -221,21 +221,29 @@ void QDataSimpleEdit::readFromData()
     QString str = QString( getBaseData()->getValueString().c_str() );
     if(innerWidget_.type == TEXTEDIT)
     {
-        if(!getBaseData()->isRequired() && !getBaseData()->isSet())
-        {
-             innerWidget_.widget.textEdit->setText("<not-set>");
-             return;
-        }
-        innerWidget_.widget.textEdit->setText(str);
+        if(getBaseData()->isRequired())
+            if(getBaseData()->hasDefaultValue())
+                innerWidget_.widget.textEdit->setText(str);
+            else
+                innerWidget_.widget.textEdit->setText("<missing value>");
+        else
+            if(getBaseData()->isSet() || getBaseData()->hasDefaultValue())
+                innerWidget_.widget.textEdit->setText(str);
+            else
+                innerWidget_.widget.textEdit->setText("<no default value>");
     }
     else if(innerWidget_.type == LINEEDIT)
     {
-        if(!getBaseData()->isRequired() && !getBaseData()->isSet())
-        {
-             innerWidget_.widget.lineEdit->setText("<not-set>");
-             return;
-        }
-        innerWidget_.widget.lineEdit->setText(str);
+        if(getBaseData()->isRequired())
+            if(getBaseData()->hasDefaultValue())
+                innerWidget_.widget.lineEdit->setText(str);
+            else
+                innerWidget_.widget.lineEdit->setText("<missing value>");
+        else
+            if(getBaseData()->isSet() || getBaseData()->hasDefaultValue())
+                innerWidget_.widget.lineEdit->setText(str);
+            else
+                innerWidget_.widget.lineEdit->setText("<no default value>");
     }
 }
 

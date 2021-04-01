@@ -453,10 +453,16 @@ public:
         return true;
     }
 
+    void setMissingValue()
+    {
+        std::cout << " FIX ME " << std::endl;
+    }
+
     void setNoValue()
     {
         std::cout << " FIX ME " << std::endl;
     }
+
     void setReadOnly(bool /*readOnly*/) {}
     void readFromData(const T& d0) { settings->readFromData(d0); }
     void writeToData(T& d) {settings->writeToData(d); }

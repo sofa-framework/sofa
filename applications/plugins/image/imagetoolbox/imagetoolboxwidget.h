@@ -133,10 +133,16 @@ public:
         return true;
     }
 
+    void setMissingValue()
+    {
+        std::cout << " FIX ME " << std::endl;
+    }
+
     void setNoValue(){
         std::cout << "NO NO FIXME" << std::endl;
 
     }
+
     void setReadOnly(bool /*readOnly*/) { }
     void readFromData(const ImageToolBoxDataType& d0)
     { 

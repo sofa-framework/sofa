@@ -212,7 +212,6 @@ public:
 
     virtual void readFromData()
     {
-        // !this->getData()->isSet()
         if(this->getData()->isRequired())
             if(this->getData()->hasDefaultValue())
                 container.readFromData(this->getData()->getValue());
@@ -258,12 +257,12 @@ public:
 
     static void setMissingValue(Widget* w)
     {
-        w->setText("<missing>");
+        w->setText("<missing value>");
     }
 
     static void setNoValue(Widget* w)
     {
-        w->setText("<not-set>");
+        w->setText("<no default value>");
     }
 
     static void readFromData(Widget* w, const data_type& d)
@@ -307,7 +306,7 @@ public:
     static void setMissingValue(Widget* w)
     {
         std::cout << "FIX ME" << std::endl;
-        w->setText("<missing>");
+        w->setText("<missing value>");
     }
 
     static void setNoValue(Widget* w)
@@ -622,7 +621,7 @@ public:
         return true;
     }
 
-    static void setMissingValue()
+    void setMissingValue()
     {
         std::cout << " FIX ME " << std::endl;
     }
@@ -632,6 +631,7 @@ public:
     {
         std::cout << " FIX ME " << std::endl;
     }
+
     void setReadOnly(bool readOnly)
     {
         for (sofa::Size y=0; y<L; ++y)

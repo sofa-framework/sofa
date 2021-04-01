@@ -342,10 +342,16 @@ public:
         return true;
     }
 
+    void setMissingValue()
+    {
+        std::cout << " FIX ME " << std::endl;
+    }
+
     void setNoValue()
     {
         std::cout << " FIX ME " << std::endl;
     }
+
     void setReadOnly(bool /*readOnly*/) { }
     void readFromData(const Histotype& d0) {   setting->readFromData(d0); }
     void writeToData(Histotype& d) { setting->writeToData(d); }
