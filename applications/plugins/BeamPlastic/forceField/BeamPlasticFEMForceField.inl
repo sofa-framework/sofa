@@ -47,7 +47,7 @@ using sofa::plugin::beamplastic::component::constitutivelaw::RambergOsgood;
 template<class DataTypes>
 BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
     : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
-    , m_indexedElements(NULL)
+    , m_indexedElements(nullptr)
     , d_poissonRatio(initData(&d_poissonRatio,(Real)0.3f,"poissonRatio","Potion Ratio"))
     , d_youngModulus(initData(&d_youngModulus, (Real)5000, "youngModulus", "Young Modulus"))
     , d_yieldStress(initData(&d_yieldStress,(Real)6.0e8,"yieldStress","yield stress"))
@@ -61,7 +61,7 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
     , d_ySection(initData(&d_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , d_isTimoshenko(initData(&d_isTimoshenko,false,"isTimoshenko","implements a Timoshenko beam model"))
-    , m_edgeHandler(NULL)
+    , m_edgeHandler(nullptr)
 {
     m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
 
@@ -75,7 +75,7 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio,
                                                     bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
                                                     helper::vector<defaulttype::Quat> localOrientations)
     : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
-    , m_indexedElements(NULL)
+    , m_indexedElements(nullptr)
     , d_poissonRatio(initData(&d_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , d_youngModulus(initData(&d_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
     , d_yieldStress(initData(&d_yieldStress, (Real)yieldStress, "yieldStress", "yield stress"))
@@ -89,7 +89,7 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio,
     , d_ySection(initData(&d_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , d_isTimoshenko(initData(&d_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
-    , m_edgeHandler(NULL)
+    , m_edgeHandler(nullptr)
 {
     m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
 
@@ -142,7 +142,7 @@ void BeamPlasticFEMForceField<DataTypes>::init()
     }
 
 
-    if (m_topology==NULL)
+    if (m_topology==nullptr)
     {
         serr << "ERROR(BeamPlasticFEMForceField): object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)."<<sendl;
         return;
