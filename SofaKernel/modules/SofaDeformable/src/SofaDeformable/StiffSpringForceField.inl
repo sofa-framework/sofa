@@ -55,8 +55,6 @@ void StiffSpringForceField<DataTypes>::init()
     {        
         this->trackInternalData(d_indices1);
         this->trackInternalData(d_indices2);
-
-        createSpringsFromInputs();
     }
 
     this->SpringForceField<DataTypes>::init();
@@ -65,10 +63,11 @@ void StiffSpringForceField<DataTypes>::init()
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::doUpdateInternal()
 {
-    if (!d_indices1.isSet() && !d_indices2.isSet()) // nothing to do in this case
-        return;
-
-    createSpringsFromInputs();
+    
+    if (this->hasDataChanged(d_indices1) || this->hasDataChanged(d_indices2))
+    {
+        createSpringsFromInputs();
+    }
 }
 
 
