@@ -13,8 +13,6 @@ set(SOURCE_FILES
     )
 
 list(APPEND HEADER_FILES
-    # AddFramePerformer.h
-    # AddFramePerformer.inl
     ${SOFAUSERINTERACTION_SRC}/InteractionPerformer.h
     ${SOFAUSERINTERACTION_SRC}/MouseInteractor.h
     ${SOFAUSERINTERACTION_SRC}/MouseInteractor.inl
@@ -46,7 +44,6 @@ list(APPEND HEADER_FILES
     )
 
 list(APPEND SOURCE_FILES
-    # AddFramePerformer.cpp
     ${SOFAUSERINTERACTION_SRC}/InteractionPerformer.cpp
     ${SOFAUSERINTERACTION_SRC}/MouseInteractor.cpp
     ${SOFAUSERINTERACTION_SRC}/AddRecordedCameraPerformer.cpp
