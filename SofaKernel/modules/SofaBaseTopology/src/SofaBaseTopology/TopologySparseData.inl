@@ -41,7 +41,7 @@ TopologySparseData <TopologyElementType, VecT>::~TopologySparseData()
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
+void TopologySparseData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler, bool /*deleteHandler*/)
 {
     this->m_topology = _topology;
     if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))

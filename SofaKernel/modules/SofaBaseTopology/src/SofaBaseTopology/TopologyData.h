@@ -77,7 +77,7 @@ public:
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* _topologyHandler, bool deleteHandler = false);
+    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topologyHandler, bool deleteHandler = false);
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
@@ -134,7 +134,7 @@ protected:
 
     typename sofa::component::topology::TopologyDataEngine<VecT>::SPtr m_topologicalEngine;
     sofa::core::topology::BaseMeshTopology* m_topology;
-    sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* m_topologyHandler;
+    sofa::core::topology::TopologyHandler* m_topologyHandler;
 
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*      ) { linkToPointDataArray();       }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*       ) { linkToEdgeDataArray();        }

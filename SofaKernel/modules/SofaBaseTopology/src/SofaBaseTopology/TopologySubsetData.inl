@@ -34,7 +34,7 @@ namespace sofa::component::topology
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
+void TopologySubsetData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler, bool /*deleteHandler*/)
 {
     this->m_topology = _topology;
     if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
