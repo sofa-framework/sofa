@@ -22,12 +22,8 @@
 #ifndef SOFA_CORE_COLLISION_DETECTION_H
 #define SOFA_CORE_COLLISION_DETECTION_H
 
-#include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/CollisionAlgorithm.h>
-#include <sofa/core/collision/Intersection.h>
-#include <vector>
 #include <map>
-#include <algorithm>
 
 namespace sofa
 {
@@ -37,6 +33,8 @@ namespace core
 
 namespace collision
 {
+
+class Intersection;
 
 class Detection : public virtual CollisionAlgorithm
 {
