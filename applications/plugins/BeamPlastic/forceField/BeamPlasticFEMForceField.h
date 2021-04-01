@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <BeamPlastic/config.h>
-#include <BeamPlastic/initBeamPlastic.h>
 #include <BeamPlastic/constitutiveLaw/PlasticConstitutiveLaw.h>
 #include <BeamPlastic/quadrature/gaussian.h>
 #include <BeamPlastic/quadrature/quadrature.h>
