@@ -669,25 +669,25 @@ void MechanicalObject<DataTypes>::resize(const Size size)
 
     if(size>0)
     {
-        {
-            if (d_size.getValue() != static_cast<int>(size))
-                d_size.setValue( size );
-            for (unsigned int i = 0; i < vectorsCoord.size(); i++)
-            {
-                if (vectorsCoord[i] != nullptr && vectorsCoord[i]->isSet())
-                {
-                    vectorsCoord[i]->beginEdit()->resize(size);
-                    vectorsCoord[i]->endEdit();
-                }
-            }
+        if (d_size.getValue() == static_cast<int>(size))
+            return;
 
-            for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
+        d_size.setValue( size );
+        for (unsigned int i = 0; i < vectorsCoord.size(); i++)
+        {
+            if (vectorsCoord[i] != nullptr && vectorsCoord[i]->isSet())
             {
-                if (vectorsDeriv[i] != nullptr && vectorsDeriv[i]->isSet())
-                {
-                    vectorsDeriv[i]->beginEdit()->resize(size);
-                    vectorsDeriv[i]->endEdit();
-                }
+                vectorsCoord[i]->beginEdit()->resize(size);
+                vectorsCoord[i]->endEdit();
+            }
+        }
+
+        for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
+        {
+            if (vectorsDeriv[i] != nullptr && vectorsDeriv[i]->isSet())
+            {
+                vectorsDeriv[i]->beginEdit()->resize(size);
+                vectorsDeriv[i]->endEdit();
             }
         }
         this->forceMask.resize(size);
