@@ -63,7 +63,7 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
     , d_isTimoshenko(initData(&d_isTimoshenko,false,"isTimoshenko","implements a Timoshenko beam model"))
     , m_edgeHandler(nullptr)
 {
-    m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
+    m_edgeHandler = std::unique_ptr<BeamFFEdgeHandler>(new BeamFFEdgeHandler(this, &m_beamsData));
 
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
@@ -91,16 +91,10 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio,
     , d_isTimoshenko(initData(&d_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
     , m_edgeHandler(nullptr)
 {
-    m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
+    m_edgeHandler = std::unique_ptr<BeamFFEdgeHandler>(new BeamFFEdgeHandler(this, &m_beamsData));
 
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
-}
-
-template<class DataTypes>
-BeamPlasticFEMForceField<DataTypes>::~BeamPlasticFEMForceField()
-{
-    if (m_edgeHandler) delete m_edgeHandler;
 }
 
 
@@ -131,8 +125,7 @@ void BeamPlasticFEMForceField<DataTypes>::init()
     {
         Real youngModulus = d_youngModulus.getValue();
         Real yieldStress = d_yieldStress.getValue();
-        RambergOsgood<DataTypes> *RambergOsgoodModel = new (RambergOsgood<DataTypes>)(youngModulus, yieldStress);
-        m_ConstitutiveLaw = RambergOsgoodModel;
+        m_ConstitutiveLaw = std::unique_ptr<RambergOsgood<DataTypes>>(new RambergOsgood<DataTypes>(youngModulus, yieldStress));
         if (this->f_printLog.getValue())
             msg_info() << "The model is " << constitutiveModel;
     }
@@ -157,7 +150,7 @@ void BeamPlasticFEMForceField<DataTypes>::init()
         m_indexedElements = &m_topology->getEdges();
     }
 
-    m_beamsData.createTopologicalEngine(m_topology,m_edgeHandler);
+    m_beamsData.createTopologicalEngine(m_topology, m_edgeHandler.get());
     m_beamsData.registerTopologicalData();
 
     reinit();

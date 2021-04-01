@@ -351,7 +351,7 @@ protected:
      * computePlasticModulusFromStress, but the computeConstPlasticModulus
      * method can be used instead.
      */
-    PlasticConstitutiveLaw<DataTypes> *m_ConstitutiveLaw;
+    std::unique_ptr<PlasticConstitutiveLaw<DataTypes>> m_ConstitutiveLaw;
     Data<std::string> d_modelName; ///< name of the model, for specialisation
 
     double computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1>& stressState);
@@ -476,13 +476,13 @@ protected:
     defaulttype::Quat& beamQuat(int i);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
-    BeamFFEdgeHandler* m_edgeHandler;
+    std::unique_ptr<BeamFFEdgeHandler> m_edgeHandler;
 
     BeamPlasticFEMForceField();
     BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
                         bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
                         helper::vector<defaulttype::Quat> localOrientations);
-    virtual ~BeamPlasticFEMForceField();
+    virtual ~BeamPlasticFEMForceField() = default;
 
 public:
 
