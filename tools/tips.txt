@@ -1,2 +1,0 @@
-To recursively count lines of codes in a directory: 
-find . -name "*.cpp" -o -name "*.h" -o -name "*.inl" | xargs wc -l

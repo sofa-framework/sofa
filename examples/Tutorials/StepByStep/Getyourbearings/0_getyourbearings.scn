@@ -1,8 +1,0 @@
-<Node name="root" dt="0.01">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaGraphComponent"/>
-    
-	<BackgroundSetting color="0 0.16862745098 0.21176470588"/>
-    <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
-    <OglModel name="VisualModel" src="@meshLoader_0" color="red"/>
-</Node>

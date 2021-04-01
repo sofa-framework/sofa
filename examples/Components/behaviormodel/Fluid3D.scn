@@ -1,6 +1,0 @@
-<Node dt="0.04" gravity="0 -10 0">
-    <VisualStyle displayFlags="showForceFields showCollisionModels showMappings" />
-    <RequiredPlugin name='SofaEulerianFluid' />
-
-    <Fluid3D nx="32" ny="32" nz="32" tstart="0" tstop="0" height="20.5" dir="0.5 0 1" />
-</Node>

@@ -1,4 +1,0 @@
-<Node name="Group">
-	<BoxROI name="box_roi" box="0 0 0 1 1 1" drawBoxes="0"/>
-	<FixedConstraint indices="@[-1].indices" />
-</Node>

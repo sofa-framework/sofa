@@ -1,7 +1,0 @@
-<Node name="root">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <Node name="oglModel">
-        <OglShader fragFilename="shaders/toonShading.frag" vertFilename="shaders/toonShading.vert" />
-        <OglModel name="dragon" filename="mesh/dragon.obj" />
-    </Node>
-</Node>

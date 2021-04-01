@@ -1,7 +1,0 @@
-class TopologyModifier
-!!!355888.cpp!!!	init() : void
-		this->getContext()->get(m_topologyContainer);
-!!!356528.cpp!!!	addTopologyChange(in topologyChange : TopologyChange) : void
-		m_topologyContainer->addTopologyChange(topologyChange);
-!!!356656.cpp!!!	addStateChange(in topologyChange : TopologyChange) : void
-		m_topologyContainer->addStateChange(topologyChange);

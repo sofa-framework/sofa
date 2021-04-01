@@ -1,4 +1,0 @@
-<Node name="VisualNode" tags="Visual">
-  <OglModel           name="Visual" filename="file" color="red" translation="0 0 0" rotation="0 0 0" scale3d="0 0 0"/>
-  <BarycentricMapping input="@.." output="@Visual" />
-</Node>

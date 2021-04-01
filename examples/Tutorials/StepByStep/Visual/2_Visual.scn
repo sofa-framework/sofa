@@ -1,9 +1,0 @@
-<Node name="root">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <Node name="DragonVisu">
-        <OglModel name="dragon" filename="mesh/dragon.obj" material="texture Ambient 1 0.0 0.75 0.0 1.0 Diffuse 1 0.2 0.2 0.0 0.9 Specular 1 0.8 0.8 0.8 1.0 Emissive 0 0.25 0.05 0.05 0.0 Shininess 1 25" translation="0 10 2" scale="0.5 0.5 0.5" rotation="90 0 0" />
-    </Node>
-    <Node name="TexturedSofaVisu">
-        <OglModel name="sofa" filename="mesh/canapVM.obj" texturename="textures/snakeskin.png" />
-    </Node>
-</Node>

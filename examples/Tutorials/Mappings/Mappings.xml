@@ -1,6 +1,0 @@
-<Category name="Mappings">
-    <Tutorial name="Rigid" scene="Tutorials/Mappings/TutorialMappingDragonRigid.scn" html="Tutorials/Mappings/TutorialMappingRigid.html" />
-    <Tutorial name="Identity" scene="Tutorials/Mappings/TutorialMappingCubeSurface.scn" html="Tutorials/Mappings/TutorialMappingIdentity.html" />
-    <Tutorial name="Barycentric" scene="Tutorials/Mappings/TutorialMappingLiverBarycentric.scn" html="Tutorials/Mappings/TutorialMappingBarycentric.html" />
-    <Tutorial name="Skinning" scene="Components/mapping/SkinningMapping.scn" html="Tutorials/Mappings/TutorialMappingSkinning.html" />
-</Category>

@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<Node 	name="root" gravity="0 0 0" dt="1"  >
-  <RequiredPlugin pluginName="image"/>
-  <ImageContainer template="ImageUS" name="image" filename="data/knee.hdr"/>
-  <ImageViewer template="ImageUS" name="viewer" src="@image" plane="70 70 70" />
-</Node>

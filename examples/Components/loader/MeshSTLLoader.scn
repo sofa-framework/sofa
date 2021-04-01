@@ -1,8 +1,0 @@
-<!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
-<Node>
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <VisualStyle displayFlags="showVisual" />
-
-    <MeshSTLLoader name="STLLoader" filename="mesh/circle_knot_ascii.stl" printLog="true" flipNormals="0" />
-    <OglModel src="@STLLoader" name="VisualModel" color="red" />
-</Node>

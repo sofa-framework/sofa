@@ -1,4 +1,0 @@
-<Node name="Group">
-	<PlaneROI name="box_roi" plane="-4 3 0 1 2 1 0 0 1 2" drawSize="0"/>
-	<FixedConstraint indices="@[-1].indices" drawSize="0"/>
-</Node>

@@ -1,6 +1,0 @@
-<?xml version='1.0'?>                                               
-<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >        
-        <MakeAlias targetcomponent='MechanicalObject' alias='Mecha'/>    
-        <Mecha name="createdWithAlias" position="1 2 3"/>    
-</Node>                                                             
-

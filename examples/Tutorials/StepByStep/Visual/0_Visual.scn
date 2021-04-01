@@ -1,4 +1,0 @@
-<Node name="root">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <OglModel name="dragon" filename="mesh/dragon.obj" />
-</Node>

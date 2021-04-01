@@ -1,6 +1,0 @@
-class Tag
-!!!340016.cpp!!!	Tag(in s : std::string)
-    if (!s.empty())
-    {
-        id = helper::TagFactory::getID(s);
-    }

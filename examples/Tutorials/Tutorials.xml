@@ -1,9 +1,0 @@
-<SofaTutorial name="Sofa Tutorials">
-  <Tutorial scene="Tutorials/Basic/TutorialBasicCube.scn" name="Basic Cube"/> 
-  <Category name="Step by Step" xml="Tutorials/StepByStep/StepByStep.xml"/>
-  <Category name="Collision" xml="Tutorials/Collision/Collision.xml"/>
-  <Category name="Mappings" xml="Tutorials/Mappings/Mappings.xml"/>
-  <Category name="ForceFields" xml="Tutorials/ForceFields/ForceFields.xml"/>
-  <Category name="OdeSolvers" xml="Tutorials/Solvers/Solvers.xml"/>
-  <Category name="Topologies" xml="Tutorials/Topologies/Topologies.xml"/>
-</SofaTutorial>

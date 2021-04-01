@@ -1,7 +1,0 @@
-<!--Activate SOFA_HAVE_FFMPEG to load a video-->
-<?xml version="1.0"?>
-<Node 	name="root" gravity="0 0 0" dt="1"  >
-  <RequiredPlugin pluginName="image"/>
-  <ImageContainer name="image" filename="data/video.avi"/>
-  <ImageViewer name="viewer" src="@image"  />
-</Node>
