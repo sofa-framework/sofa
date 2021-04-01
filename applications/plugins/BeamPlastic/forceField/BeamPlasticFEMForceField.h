@@ -35,12 +35,6 @@
 #include <string>
 
 
-namespace sofa::plugin::beamplastic::component::container
-{
-class StiffnessContainer;
-class PoissonContainer;
-} // namespace sofa::plugin::beamplastic::component::container
-
 namespace sofa::plugin::beamplastic::component::forcefield
 {
 
@@ -478,9 +472,6 @@ protected:
     Data<bool> d_isTimoshenko;
 
     double m_lastUpdatedStep;
-
-    container::StiffnessContainer* m_stiffnessContainer;
-    container::PoissonContainer* m_poissonContainer;
 
     defaulttype::Quat& beamQuat(int i);
 

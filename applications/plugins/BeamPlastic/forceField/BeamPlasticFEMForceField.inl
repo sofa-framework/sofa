@@ -36,8 +36,6 @@
 #include <sofa/simulation/Node.h>
 
 #include "BeamPlasticFEMForceField.h"
-#include <BeamPlastic/StiffnessContainer.h>
-#include <BeamPlastic/PoissonContainer.h>
 #include <BeamPlastic/constitutiveLaw/RambergOsgood.h>
 
 
@@ -127,9 +125,6 @@ void BeamPlasticFEMForceField<DataTypes>::init()
 
     m_topology = context->getMeshTopology();
 
-    m_stiffnessContainer = context->core::objectmodel::BaseContext::get<container::StiffnessContainer>();
-    m_poissonContainer = context->core::objectmodel::BaseContext::get<container::PoissonContainer>();
-
     // Retrieving the 1D plastic constitutive law model
     std::string constitutiveModel = d_modelName.getValue();
     if (constitutiveModel == "RambergOsgood")
@@ -213,10 +208,8 @@ void BeamPlasticFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     Index b = (*m_indexedElements)[i][1];
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    if (m_stiffnessContainer)
-        stiffness = m_stiffnessContainer->getStiffness(i) ;
-    else
-        stiffness =  d_youngModulus.getValue() ;
+
+    stiffness =  d_youngModulus.getValue();
 
     yieldStress = d_yieldStress.getValue();
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
