@@ -10,13 +10,9 @@ timeout "validations/rayleighDamping_stiffness.scn" "80"
 iterations "validations/damping.scn" "10"
 timeout "validations/damping.scn" "50"
 
-# adding a few python examples
-add "StructuralAPI.py"
-add "contact/soup.py"
-add "contact/friction_simple.py"
-
-# sml examples
-add "bielle_manivelle/scene_sml.py"
-
 # This runs slowly, so compute only a few iterations
 iterations "FEM-donuts.scn" "50"
+
+# IGNORE ALL PYTHON SCENES
+ignore ".*\.py"
+ignore ".*\.pyscn"
