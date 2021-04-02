@@ -182,6 +182,10 @@ option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to Sofa
 add_subdirectory(extlibs)
 
 ### Main Sofa subdirectories
+
+# TODO: add an option once the sofa code has been converted
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
+
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
 
