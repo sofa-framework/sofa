@@ -433,10 +433,10 @@ public:
 	/// force the creation of quads
 	Data<bool>  d_createQuadArray;
 
-protected:
-	/// provides the set of hexahedra.
+    /// provides the set of hexahedra.
     Data< sofa::helper::vector<Hexahedron> > d_hexahedron;
 
+protected:	
     /// provides the set of edges for each hexahedron.
     sofa::helper::vector<EdgesInHexahedron> m_edgesInHexahedron;
 

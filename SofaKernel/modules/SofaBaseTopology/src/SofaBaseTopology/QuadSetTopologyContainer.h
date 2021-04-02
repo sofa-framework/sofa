@@ -300,11 +300,11 @@ protected:
     void cleanQuadTopologyFromDirty();
     const bool& isQuadTopologyDirty() {return m_quadTopologyDirty;}
 
-protected:
-
+public:
     /// provides the set of quads.
     Data< sofa::helper::vector<Quad> > d_quad;
 
+protected:
     /// provides the 4 edges in each quad.
     sofa::helper::vector<EdgesInQuad> m_edgesInQuad;
 
