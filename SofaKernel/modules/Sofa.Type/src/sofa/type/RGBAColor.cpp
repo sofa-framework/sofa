@@ -283,9 +283,14 @@ SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const RGBAColor& v 
 /// @brief enlight a color by a given factor.
 RGBAColor RGBAColor::lighten(const RGBAColor& in, const SReal factor)
 {
-    RGBAColor c = in + ((RGBAColor::white() - clamp(in, 0.0f, 1.0f)) * rclamp(float(factor), 0.0f, 1.0f));
+    RGBAColor c = in + ( (RGBAColor::white() - clamp(in, 0.0f, 1.0f)) * rclamp(float(factor), 0.0f, 1.0f));
     c.a()=1.0;
     return c ;
+}
+
+RGBAColor RGBAColor::operator*(float f) const
+{
+    return RGBAColor(r() * f, g() * f, b() * f, a() * f);
 }
 
 
