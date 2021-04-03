@@ -22,146 +22,286 @@
 #pragma once
 #include <SofaBaseTopology/TopologyDataHandler.h>
 
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <sofa/helper/AdvancedTimer.h>
+
 namespace sofa::component::topology
 {
 
-///////////////////// Private functions on TopologyDataHandler changes /////////////////////////////
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::swap(Index i1,Index i2 )
+TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologicalData *_topologicalData,
+        sofa::core::topology::BaseMeshTopology *_topology, value_type defaultValue)
+    : TopologyHandler()
+    , m_topologyData(_topologicalData)
+    , m_topology(nullptr)
+    , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
+    , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
-    container_type& data = *(m_topologyData->beginEdit());
-    value_type tmp = data[i1];
-    data[i1] = data[i2];
-    data[i2] = tmp;
-    m_topologyData->endEdit();
+    m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
+
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::vector<Index> & index,
-        const sofa::helper::vector< TopologyElementType >& elems,
-        const sofa::helper::vector<sofa::helper::vector<Index> > &ancestors,
-        const sofa::helper::vector<sofa::helper::vector<double> > &coefs,
-        const sofa::helper::vector< AncestorElem >& ancestorElems)
+TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologicalData* _topologicalData,
+    value_type defaultValue)
+    : TopologyHandler()
+    , m_topologyData(_topologicalData)
+    , m_defaultValue(defaultValue) 
+    , m_topology(nullptr)
+    , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
+    , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
-    std::size_t nbElements = index.size();
-    if (nbElements == 0) return;
-    // Using default values
-    container_type& data = *(m_topologyData->beginEdit());
-    std::size_t i0 = data.size();
-    if (i0 != index[0])
+
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::init()
+{
+    // A pointData is by default child of positionSet Data
+    //this->linkToPointDataArray();  // already done while creating engine
+
+    // Name creation
+    if (m_prefix.empty()) m_prefix = "TopologyHandler_";
+    m_data_name = this->m_topologyData->getName();
+    this->addOutput(this->m_topologyData);
+
+    // Register Engine in containter list
+    //if (m_topology)
+    //   m_topology->addTopologyHandler(this);
+    //this->registerTopology(m_topology);
+}
+
+
+template <typename TopologyElementType, typename VecT>
+bool TopologyDataHandler<TopologyElementType,  VecT>::registerTopology(sofa::core::topology::BaseMeshTopology *_topology)
+{
+    m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
+
+    if (m_topology == nullptr)
     {
-        msg_error(this->m_topologyData->getOwner()) << "TopologyDataHandler SIZE MISMATCH in Data "
-            << this->m_topologyData->getName() << ": " << nbElements << " "
-            << core::topology::TopologyElementInfo<TopologyElementType>::name()
-            << " ADDED starting from index " << index[0]
-            << " while vector size is " << i0;
-        i0 = index[0];
+        msg_info("TopologyDataHandler") <<"Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        return false;
     }
-    data.resize(i0+nbElements);
+    else
+        m_topology->addTopologyHandler(this);
 
-    const sofa::helper::vector< Index > empty_vecint;
-    const sofa::helper::vector< double > empty_vecdouble;
+    return true;
+}
 
-    for (Index i = 0; i < nbElements; ++i)
+
+template <typename TopologyElementType, typename VecT>
+bool TopologyDataHandler<TopologyElementType,  VecT>::registerTopology()
+{
+    if (m_topology == nullptr)
     {
-        value_type& t = data[i0+i];
-        this->applyCreateFunction(Index(i0+i), t, elems[i],
-            (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
-            (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
-            (ancestorElems.empty()             ) ? nullptr : &ancestorElems[i]);
+        msg_info("TopologyDataHandler") << "Current topology is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        return false;
     }
-    m_topologyData->endEdit();
+    else
+        m_topology->addTopologyHandler(this);
+
+    return true;
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<Index> &indexList,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs)
+void TopologyDataHandler<TopologyElementType,  VecT>::handleTopologyChange()
 {
-    container_type& data = *(m_topologyData->beginEdit());
+    if (!this->isTopologyDataRegistered() || m_topology == nullptr)
+        return;
 
-    for (std::size_t i = 0; i <indexList.size(); i++)
+    m_topologyData->setDataSetArraySize(m_topology->getNbPoints());
+
+    sofa::core::topology::TopologyHandler::ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
+}
+
+
+/// Function to link DataEngine with Data array from topology
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToPointDataArray()
+{
+    if (m_pointsLinked) // avoid second registration
+        return;
+
+    if (m_topology == nullptr)
     {
-        this->applyDestroyFunction( indexList[i], data[indexList[i]] );
-        this->applyCreateFunction( indexList[i], data[indexList[i]], ancestors[i], coefs[i] );
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Point Data Array.";
+        return;
     }
 
-    m_topologyData->endEdit();
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<Index> &index )
-{
-		
-	container_type& data = *(m_topologyData->beginEdit());
-	if (data.size()>0) 
+    sofa::component::topology::PointSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::PointSetTopologyContainer*>(m_topology);
+    if (_container == nullptr)
     {
-        Index last = Index(data.size() -1);
-
-        for (std::size_t i = 0; i < index.size(); ++i)
-		{
-			this->applyDestroyFunction( index[i], data[index[i]] );
-			this->swap( index[i], last );
-			--last;
-		}
-
-		data.resize( data.size() - index.size() );
-	}
-	m_topologyData->endEdit();
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<Index> &index )
-{
-    container_type& data = *(m_topologyData->beginEdit());
-
-    container_type copy = m_topologyData->getValue(); // not very efficient memory-wise, but I can see no better solution...
-    for (std::size_t i = 0; i < index.size(); ++i)
-        data[i] = copy[ index[i] ];
-
-    m_topologyData->endEdit();
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index> &indexList,
-        const sofa::helper::vector<TopologyElementType> &elems)
-{
-    container_type& data = *(m_topologyData->beginEdit());
-
-    // Recompute data
-    sofa::helper::vector< Index > ancestors;
-    sofa::helper::vector< double >  coefs;
-    coefs.push_back (1.0);
-    ancestors.resize(1);
-
-    for (std::size_t i = 0; i <indexList.size(); i++)
-    {
-        ancestors[0] = indexList[i];
-        this->applyCreateFunction( indexList[i], data[indexList[i]], elems[i], ancestors, coefs );
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as PointSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Point Data Array.";
+        return;
     }
-    m_topologyData->endEdit();
-}
 
+    (_container->getPointDataArray()).addOutput(this);
+    m_pointsLinked = true;
+}
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index> &indices)
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToEdgeDataArray()
 {
-    container_type& data = *(m_topologyData->beginEdit());
+    if (m_edgesLinked) // avoid second registration
+        return;
 
-    for (std::size_t i = 0; i <indices.size(); i++)
-        this->applyDestroyFunction( indices[i], data[indices[i]] );
+    if (m_topology == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Edge Data Array.";
+        return;
+    }
 
-    m_topologyData->endEdit();
+    sofa::component::topology::EdgeSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::EdgeSetTopologyContainer*>(m_topology);
+    if (_container == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as EdgeSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Edge Data Array.";
+        return;
+    }
 
-    // TODO check why this call.
-    //this->remove( indices );
+    (_container->getEdgeDataArray()).addOutput(this);
+    m_edgesLinked = true;
 }
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToTriangleDataArray()
+{
+    if (m_trianglesLinked) // avoid second registration
+        return;
+
+    if (m_topology == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
+        return;
+    }
+
+    sofa::component::topology::TriangleSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer*>(m_topology);
+    if (_container == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as TriangleSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
+        return;
+    }
+
+    (_container->getTriangleDataArray()).addOutput(this);
+    m_trianglesLinked = true;
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToQuadDataArray()
+{
+    if (m_quadsLinked) // avoid second registration
+        return;
+
+    if (m_topology == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Quad Data Array.";
+        return;
+    }
+
+    sofa::component::topology::QuadSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::QuadSetTopologyContainer*>(m_topology);
+    if (_container == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as QuadSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Quad Data Array.";
+        return;
+    }
+
+    (_container->getQuadDataArray()).addOutput(this);
+    m_quadsLinked = true;
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToTetrahedronDataArray()
+{
+    if (m_tetrahedraLinked) // avoid second registration
+        return;
+
+    if (m_topology == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
+        return;
+    }
+
+    sofa::component::topology::TetrahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::TetrahedronSetTopologyContainer*>(m_topology);
+    if (_container == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as TetrahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
+        return;
+    }
+
+    (_container->getTetrahedronDataArray()).addOutput(this);
+    m_tetrahedraLinked = true;
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::linkToHexahedronDataArray()
+{
+    if (m_hexahedraLinked) // avoid second registration
+        return;
+
+    if (m_topology == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
+        return;
+    }
+    
+    sofa::component::topology::HexahedronSetTopologyContainer* _container = dynamic_cast<sofa::component::topology::HexahedronSetTopologyContainer*>(m_topology);
+    if (_container == nullptr)
+    {
+        msg_error("TopologyDataHandler") << "Owner topology can't be cast as HexahedronSetTopologyContainer, Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
+        return;
+    }
+
+    (_container->getHexahedronDataArray()).addOutput(this);
+    m_hexahedraLinked = true;
+}
+
+
+/// Apply swap between indices elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EIndicesSwap* event)
+{
+    m_topologyData->swap(event->index[0], event->index[1]);
+}
+/// Apply adding elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EAdded* event)
+{
+    //this->add(event->getNbAddedElements(), event->getElementArray(),
+    //    event->ancestorsList, event->coefs);
+    m_topologyData->add(event->getIndexArray(), event->getElementArray(),
+        event->ancestorsList, event->coefs, event->ancestorElems);
+}
+
+/// Apply removing elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const ERemoved* event)
+{
+    m_topologyData->remove(event->getArray());
+}
+
+/// Apply renumbering on elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const ERenumbering* event)
+{
+    m_topologyData->renumber(event->getIndexArray());
+}
+
+/// Apply moving elements.
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EMoved* /*event*/)
+{
+    msg_warning("TopologyDataHandler") << "MOVED topology event not handled on " << ElementInfo::name()
+        << " (it should not even exist!)";
+}
+
 
 
 } //namespace sofa::component::topology

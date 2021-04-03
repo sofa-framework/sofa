@@ -140,9 +140,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/BaseTopologyObject.h
     ${SRC_ROOT}/topology/TopologicalMapping.h
     ${SRC_ROOT}/topology/TopologyChange.h
-	${SRC_ROOT}/topology/TopologyEngine.h
-    ${SRC_ROOT}/topology/TopologyElementHandler.h
-    ${SRC_ROOT}/topology/TopologyHandler.h
+	${SRC_ROOT}/topology/TopologyHandler.h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/VisualLoop.h
@@ -247,9 +245,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
     ${SRC_ROOT}/topology/TopologicalMapping.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
-	${SRC_ROOT}/topology/TopologyEngine.cpp
-    ${SRC_ROOT}/topology/TopologyElementHandler.cpp
-    ${SRC_ROOT}/topology/TopologyHandler.cpp
+	${SRC_ROOT}/topology/TopologyHandler.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp

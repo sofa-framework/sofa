@@ -142,10 +142,10 @@ public:
 
 protected:
     /// \brief Function creating the data graph linked to d_point
-    void updateTopologyEngineGraph() override;
+    void updateTopologyHandlerGraph() override;
 
     /// \brief functions to really update the graph of Data/DataEngines linked to the different Data array, using member variable.
-    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, std::list<sofa::core::topology::TopologyEngine *>& my_enginesList);
+    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, std::list<sofa::core::topology::TopologyHandler *>& my_enginesList);
 
 
     /// Use a specific boolean @see m_pointTopologyDirty in order to know if topology Data is dirty or not.
@@ -154,8 +154,8 @@ protected:
     void cleanPointTopologyFromDirty();
     const bool& isPointTopologyDirty() {return m_pointTopologyDirty;}
 
-    /// \brief function to add a topologyEngine to the current list of engines.
-    void addEngineToList(sofa::core::topology::TopologyEngine * _engine);
+    /// \brief function to add a TopologyHandler to the current list of engines.
+    void addEngineToList(sofa::core::topology::TopologyHandler * _engine);
 
     /// \brief functions to display the graph of Data/DataEngines linked to the different Data array, using member variable.
     virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
@@ -172,7 +172,7 @@ protected:
     bool m_pointTopologyDirty;
 
     /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;

@@ -120,16 +120,16 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 
-    class FCPointHandler : public component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, Indices >
+    class FCPointHandler : public component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >
     {
     public:
         typedef typename ProjectDirectionConstraint<DataTypes>::Indices Indices;
         typedef sofa::core::topology::Point Point;
         FCPointHandler(ProjectDirectionConstraint<DataTypes>* _fc, component::topology::PointSubsetData<Indices>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, Indices >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >(_data), fc(_fc) {}
 
 
-        using component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, Indices >::applyDestroyFunction;
+        using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >::applyDestroyFunction;
         void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
 

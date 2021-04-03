@@ -518,7 +518,7 @@ void QuadularBendingSprings<DataTypes>::init()
         msg_warning() << "No Quads found in linked Topology.";
     }
 
-    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.linkToPointDataArray();
     edgeInfo.linkToQuadDataArray();
     edgeInfo.registerTopologicalData();
