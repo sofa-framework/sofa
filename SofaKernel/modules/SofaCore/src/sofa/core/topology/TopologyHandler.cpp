@@ -23,19 +23,6 @@
 #include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#ifdef SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION
-namespace std
-{
-    template class list<const sofa::core::topology::TopologyChange*>;
-}
-
-namespace sofa::core::objectmodel
-{
-template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
-}
-#endif /// SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION
-
-
 namespace sofa::core::topology
 {
 

@@ -25,18 +25,6 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/fwd.h>
 
-#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION
-namespace std
-{
-    extern template class list<const sofa::core::topology::TopologyChange*>;
-}
-namespace sofa::core::objectmodel
-{
-    extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
-}
-
-#endif /// SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION
-
 namespace sofa
 {
 
