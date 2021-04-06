@@ -298,20 +298,16 @@ protected:
 
 #if !defined(SOFA_CORE_MULTIMAPPING_CPP)
 
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec1Types >;
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types >;
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec2Types >;
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types >;
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec1Types >;
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec1Types >;
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec6Types >;
-template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
-
-
-
-
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec1Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec2Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec1Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec1Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec6Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 
 #endif
 
