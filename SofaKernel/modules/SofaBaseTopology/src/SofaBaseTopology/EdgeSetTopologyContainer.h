@@ -136,9 +136,6 @@ public:
      */
     virtual const sofa::helper::vector<Edge>& getEdgeArray();
 
-    /** \brief Returns a reference to the Data of edges array container. */
-    Data< sofa::helper::vector<Edge> >& getEdgeDataArray() {return d_edge;}
-
 
     /** \brief Returns the list of Edge indices around each DOF.
      *

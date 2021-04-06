@@ -67,8 +67,6 @@ public:
      */
     virtual Size getNumberOfElements() const;
 
-    /** \brief Returns a reference to the Data of points array container. */
-    Data<InitTypes::VecCoord>& getPointDataArray() {return d_initPoints;}
 
     /** \brief Set the number of vertices in this topology. */
     void setNbPoints(Size n) override;
