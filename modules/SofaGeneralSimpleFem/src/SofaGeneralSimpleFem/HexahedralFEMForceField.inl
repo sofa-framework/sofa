@@ -141,7 +141,7 @@ void HexahedralFEMForceField<DataTypes>::reinit()
                 _topology->getHexahedron(i),  (const std::vector< Index > )0,
                 (const std::vector< double >)0);
     }
-    hexahedronInfo.createTopologicalEngine(_topology,hexahedronHandler);
+    hexahedronInfo.createTopologyHandler(_topology,hexahedronHandler);
     hexahedronInfo.registerTopologicalData();
     hexahedronInfo.endEdit();
 }

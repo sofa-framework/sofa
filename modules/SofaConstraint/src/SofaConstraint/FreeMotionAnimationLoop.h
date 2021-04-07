@@ -23,7 +23,11 @@
 #include <SofaConstraint/config.h>
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
-#include <SofaConstraint/LCPConstraintSolver.h>
+
+namespace sofa::core::behavior
+{
+    class ConstraintSolver;
+}
 
 namespace sofa::component::animationloop
 {
@@ -50,7 +54,6 @@ public:
         return obj;
     }
 
-    Data<bool> displayTime;
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
     Data<bool> d_threadSafeVisitor;
 
@@ -58,8 +61,11 @@ protected:
     FreeMotionAnimationLoop(simulation::Node* gnode);
     ~FreeMotionAnimationLoop() override ;
 
+    ///< pointer towards a possible ConstraintSolver present in the scene graph
     sofa::core::behavior::ConstraintSolver *constraintSolver;
-    component::constraintset::LCPConstraintSolver::SPtr defaultSolver;
+
+    ///< pointer towards a default ConstraintSolver (LCPConstraintSolver) used in case none was found in the scene graph
+    sofa::core::sptr<sofa::core::behavior::ConstraintSolver> defaultSolver;
 };
 
 } // namespace sofa::component::animationloop

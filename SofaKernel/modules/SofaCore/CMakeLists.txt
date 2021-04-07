@@ -140,9 +140,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/BaseTopologyObject.h
     ${SRC_ROOT}/topology/TopologicalMapping.h
     ${SRC_ROOT}/topology/TopologyChange.h
-	${SRC_ROOT}/topology/TopologyEngine.h
-    ${SRC_ROOT}/topology/TopologyElementHandler.h
-    ${SRC_ROOT}/topology/TopologyHandler.h
+	${SRC_ROOT}/topology/TopologyHandler.h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/VisualLoop.h
@@ -247,9 +245,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
     ${SRC_ROOT}/topology/TopologicalMapping.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
-	${SRC_ROOT}/topology/TopologyEngine.cpp
-    ${SRC_ROOT}/topology/TopologyElementHandler.cpp
-    ${SRC_ROOT}/topology/TopologyHandler.cpp
+	${SRC_ROOT}/topology/TopologyHandler.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp
@@ -260,13 +256,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.cpp
 )
 
-# Compatibility files
-set (COMPATSRC_ROOT "compat/")
-set (COMPAT_HEADER_FILES
-    ${COMPATSRC_ROOT}/sofa/helper/vectorData.h
-    ${COMPATSRC_ROOT}/sofa/helper/vectorLinks.h
-    )
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Topology SofaDefaultType)
 
@@ -274,9 +263,6 @@ if(SOFA_BUILD_WITH_PCH_ENABLED)
     message("Adding precompiled header for SofaCore")
     target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/Data.h)
 endif()
-
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
-source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)

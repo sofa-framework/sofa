@@ -81,7 +81,7 @@ void QuadPressureForceField<DataTypes>::init()
         selectQuadsFromString();
     }
 
-    quadPressureMap.createTopologicalEngine(m_topology);
+    quadPressureMap.createTopologyHandler(m_topology);
     quadPressureMap.registerTopologicalData();
 
     initQuadInformation();

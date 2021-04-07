@@ -53,7 +53,7 @@ class TopologyContainer;
 class TopologicalMapping;
 
 /// Allow topological handle events
-class TopologyEngine;
+class TopologyHandler;
 
 
 /** A class that contains a set of methods that describes the geometry of the object */
@@ -244,34 +244,34 @@ public:
 
     ///@}
 
-    /// TopologyEngine interactions
+    /// TopologyHandler interactions
     ///@{
-    const std::list<TopologyEngine *> &getTopologyEngineList() const { return m_topologyEngineList; }
+    const std::list<TopologyHandler *> &getTopologyHandlerList() const { return m_TopologyHandlerList; }
 
-    /** \brief Adds a TopologyEngine to the list.
+    /** \brief Adds a TopologyHandler to the list.
     */
-    void addTopologyEngine(TopologyEngine* _topologyEngine) override;
+    void addTopologyHandler(TopologyHandler* _TopologyHandler) override;
 
 
-    /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
+    /** \brief Provides an iterator on the first element in the list of TopologyHandler objects.
      */
-    std::list<TopologyEngine *>::const_iterator beginTopologyEngine() const override;
+    std::list<TopologyHandler *>::const_iterator beginTopologyHandler() const override;
 
-    /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
+    /** \brief Provides an iterator on the last element in the list of TopologyHandler objects.
      */
-    std::list<TopologyEngine *>::const_iterator endTopologyEngine() const override;
+    std::list<TopologyHandler *>::const_iterator endTopologyHandler() const override;
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
     */
-    void resetTopologyEngineList();
+    void resetTopologyHandlerList();
 
     ///@}
 
 
 protected:
 
-    virtual void updateTopologyEngineGraph() {}
+    virtual void updateTopologyHandlerGraph() {}
 
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <std::list<const TopologyChange *> >m_changeList;
@@ -280,7 +280,7 @@ protected:
     Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    std::list<TopologyEngine *> m_topologyEngineList;
+    std::list<TopologyHandler *> m_TopologyHandlerList;
 
 public:
 

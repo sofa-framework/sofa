@@ -76,6 +76,9 @@ private:
     static Cylinder* get(const Vector3& len);
 public:
     static void clear() { CylinderMap.clear(); } // need to be called when display list has been created in another opengl context
+
+private:
+    static const int quadricDiscretisation;
 };
 
 } // namespace sofa::gl

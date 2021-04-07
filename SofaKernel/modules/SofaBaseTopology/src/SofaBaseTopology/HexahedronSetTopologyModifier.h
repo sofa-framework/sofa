@@ -200,7 +200,7 @@ protected:
         const bool renumberDOF = true) override;
 
 
-    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
+    /// \brief function to propagate topological change events by parsing the list of TopologyHandlers linked to this topology.
     void propagateTopologicalEngineChanges() override;
 
 private:

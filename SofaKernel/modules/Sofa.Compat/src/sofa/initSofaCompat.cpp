@@ -19,42 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/config.h>
 
-#include <SofaUserInteraction/InteractionPerformer.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <../applications/plugins/frame/Blending.h>
-
-
-namespace sofa::component::collision
+namespace sofa
 {
-using sofa::defaulttype::StdRigidTypes;
 
-template <class DataTypes>
-class AddFramePerformer: public TInteractionPerformer<DataTypes>
+// Sofa.Compat is supposed to be a header-only library
+// But our current CMake framework does not support it (well)
+// This init() forces MSVC to generate a .lib file.
+// once Sofa.Compat becomes a header-only library, this can be deleted.
+SOFA_EXPORT_DYNAMIC_LIBRARY void initSofaCompat()
 {
-    typedef typename sofa::defaulttype::BaseFrameBlendingMapping<true> FBMapping;
-
-public:
-    AddFramePerformer(BaseMouseInteractor *i);
-    ~AddFramePerformer();
-
-    void start();
-    void execute();
-
-};
-
-
-
-#if  !defined(SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP)
-extern template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3Types>;
-
-#endif
-
-
-}
-}
+    ;
 }
 
-#endif
+} // namespace sofa
