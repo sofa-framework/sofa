@@ -97,6 +97,8 @@ public:
         return false;
     }
 
+    RGBAColor operator*(float f) const;
+
     friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
     friend SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 

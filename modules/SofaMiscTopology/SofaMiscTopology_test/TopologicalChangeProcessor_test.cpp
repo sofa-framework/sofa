@@ -51,7 +51,6 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
         sofa::simpleapi::importPlugin("SofaComponentAll");
         // Load the scene from the xml file
         std::string filePath = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + m_fileName;
-        std::cout << "filePath: " << filePath << std::endl;
         m_instance = BaseSimulationTest::SceneInstance();
         // Load scene
         m_instance.loadSceneFile(filePath);
@@ -83,7 +82,7 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
 {
     InciseProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "IncisionTrianglesProcess.scn";
+        m_fileName = "/TopologicalModifiers/IncisionTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -136,7 +135,7 @@ struct RemoveTriangleProcessor_test : TopologicalChangeProcessor_test
 {
     RemoveTriangleProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "RemovingTrianglesProcess.scn";
+        m_fileName = "/TopologicalModifiers/RemovingTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -189,7 +188,7 @@ struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
 {
     AddTriangleProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "AddingTrianglesProcess.scn";
+        m_fileName = "/TopologicalModifiers/AddingTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -243,7 +242,7 @@ struct RemoveTetrahedronProcessor_test : TopologicalChangeProcessor_test
 {
     RemoveTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "RemovingTetraProcess.scn";
+        m_fileName = "/TopologicalModifiers/RemovingTetraProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -299,7 +298,7 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
 {
     AddTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "AddingTetraProcess.scn";
+        m_fileName = "/TopologicalModifiers/AddingTetraProcess.scn";
     }
 
     bool testTopologyChanges() override

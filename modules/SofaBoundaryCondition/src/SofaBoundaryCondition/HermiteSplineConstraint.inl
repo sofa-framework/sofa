@@ -83,7 +83,7 @@ void HermiteSplineConstraint<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         // Initialize functions and parameters for topology data and handler
-        m_indices.createTopologicalEngine(_topology);
+        m_indices.createTopologyHandler(_topology);
         m_indices.registerTopologicalData();
     }
     else

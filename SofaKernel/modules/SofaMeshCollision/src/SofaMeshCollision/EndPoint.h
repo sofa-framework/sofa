@@ -100,19 +100,19 @@ public:
 };
 
 
-struct CompPEndPoint{
-    static double tol(){return (double)(1e-15);}
-
-    bool operator()(const EndPoint * ep1,const EndPoint * ep2)const{
-        if(ep1->value != ep2->value){
+struct CompPEndPoint
+{
+    bool operator()(const EndPoint * ep1,const EndPoint * ep2) const
+    {
+        if(ep1->value != ep2->value)
+        {
             return ep1->value < ep2->value;
         }
-        else if(ep1->boxID() == ep2->boxID()){
+        else if(ep1->boxID() == ep2->boxID())
+        {
             return ep1->min() && ep2->max();
         }
-        else{
-            return ep1->boxID() < ep2->boxID();
-        }
+        return ep1->boxID() < ep2->boxID();
     }
 };
 

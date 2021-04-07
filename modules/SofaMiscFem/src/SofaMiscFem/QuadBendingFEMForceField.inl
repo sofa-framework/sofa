@@ -140,13 +140,13 @@ void QuadBendingFEMForceField<DataTypes>::init()
         msg_warning() << "No quads found in linked Topology.";
     }
     // Create specific handler for QuadData
-    quadInfo.createTopologicalEngine(m_topology, quadHandler);
+    quadInfo.createTopologyHandler(m_topology, quadHandler);
     quadInfo.registerTopologicalData();
 
-    edgeInfo.createTopologicalEngine(m_topology);
+    edgeInfo.createTopologyHandler(m_topology);
     edgeInfo.registerTopologicalData();
 
-    vertexInfo.createTopologicalEngine(m_topology);
+    vertexInfo.createTopologyHandler(m_topology);
     vertexInfo.registerTopologicalData(); 
 
     reinit();

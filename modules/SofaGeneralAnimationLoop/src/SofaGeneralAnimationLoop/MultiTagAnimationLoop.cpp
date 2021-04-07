@@ -131,10 +131,10 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 
     if (!SOFA_NO_UPDATE_BBOX)
     {
-        sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+        sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
         this->gnode->execute<UpdateBoundingBoxVisitor>(params);
-        sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
     }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif

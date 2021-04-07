@@ -70,7 +70,7 @@ namespace polygon_cube_intersection
 
 #define TEST_AGAINST_PARALLEL_PLANES(posbit, negbit, value, limit)	\
 	if (mask & (posbit|negbit)) {					\
-        /*register*/ real temp = value;				\
+        /*register*/ float temp = value;				\
 		if ((mask & posbit) && temp > limit)			\
 			outcode |= posbit;				\
 		else if ((mask & negbit) && temp < -limit)		\
@@ -84,7 +84,7 @@ namespace polygon_cube_intersection
  */
 
 static inline  unsigned long
-face_plane(const real p[3], unsigned long mask)
+face_plane(const float p[3], unsigned long mask)
 {
     /*register*/ unsigned long outcode = 0L;
 
@@ -103,7 +103,7 @@ face_plane(const real p[3], unsigned long mask)
  */
 
 static inline unsigned long
-bevel_2d(const real p[3], unsigned long mask)
+bevel_2d(const float p[3], unsigned long mask)
 {
     /*register*/ unsigned long outcode = 0L;
 
@@ -125,7 +125,7 @@ bevel_2d(const real p[3], unsigned long mask)
  */
 
 static inline unsigned long
-bevel_3d(const real p[3], unsigned long mask)
+bevel_3d(const float p[3], unsigned long mask)
 {
     /*register*/ unsigned long outcode = 0L;
 
@@ -146,7 +146,7 @@ bevel_3d(const real p[3], unsigned long mask)
  */
 
 extern int
-trivial_vertex_tests(int nverts, const real verts[][3],
+trivial_vertex_tests(int nverts, const float verts[][3],
         int already_know_verts_are_outside_cube)
 {
     /*register*/ unsigned long cum_and;  /* cumulative logical ANDs */
@@ -223,8 +223,8 @@ trivial_vertex_tests(int nverts, const real verts[][3],
  * polygon_intersects_cube().
  */
 extern int
-fast_polygon_intersects_cube(int nverts, const real verts[][3],
-        const real polynormal[3],
+fast_polygon_intersects_cube(int nverts, const float verts[][3],
+        const float polynormal[3],
         int already_know_verts_are_outside_cube,
         int already_know_edges_are_outside_cube)
 {

@@ -148,7 +148,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
                 (const std::vector< double >)0);
     }
 
-    tetrahedronInfo.createTopologicalEngine(m_topology,tetrahedronHandler);
+    tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
     tetrahedronInfo.registerTopologicalData();
 
     tetrahedronInfo.endEdit();

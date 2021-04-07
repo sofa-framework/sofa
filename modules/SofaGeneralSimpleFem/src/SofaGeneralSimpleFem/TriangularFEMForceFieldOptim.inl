@@ -118,16 +118,16 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
     }
 
     // Create specific handler for TriangleData
-    d_triangleInfo.createTopologicalEngine(m_topology, triangleInfoHandler);
+    d_triangleInfo.createTopologyHandler(m_topology, triangleInfoHandler);
     d_triangleInfo.registerTopologicalData();
 
-    d_triangleState.createTopologicalEngine(m_topology, triangleStateHandler);
+    d_triangleState.createTopologyHandler(m_topology, triangleStateHandler);
     d_triangleState.registerTopologicalData();
 
-    d_edgeInfo.createTopologicalEngine(m_topology);
+    d_edgeInfo.createTopologyHandler(m_topology);
     d_edgeInfo.registerTopologicalData();
 
-    d_vertexInfo.createTopologicalEngine(m_topology);
+    d_vertexInfo.createTopologyHandler(m_topology);
     d_vertexInfo.registerTopologicalData();
 
     if (m_topology->getNbTriangles()==0 && m_topology->getNbQuads()!=0 )

@@ -43,6 +43,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_Vector.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Vec.h
     ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Topology.h
 
     ${SRC_ROOT}/typeinfo/models/IncompleteTypeInfo.h
     ${SRC_ROOT}/typeinfo/models/BoolTypeInfo.h
@@ -78,24 +79,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_Vector.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_Vec.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.cpp
-)
-
-# Compatibility files
-set (COMPATSRC_ROOT "compat/")
-set(COMPAT_HEADER_FILES
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Vec.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/MatSym.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_Cholesky.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_LU.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.inl
-    ${COMPATSRC_ROOT}/sofa/defaulttype/BoundingBox.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Color.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Frame.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Ray.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/RGBAColor.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Topology.cpp
 )
 
 sofa_find_package(Eigen3 REQUIRED)
@@ -104,11 +88,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEAD
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Type)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
-                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
-source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework

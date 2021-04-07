@@ -62,7 +62,7 @@ void LinearForceField<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
         // Initialize functions and parameters for topology data and handler
-        points.createTopologicalEngine(_topology);
+        points.createTopologyHandler(_topology);
         points.registerTopologicalData();
     }
     else
