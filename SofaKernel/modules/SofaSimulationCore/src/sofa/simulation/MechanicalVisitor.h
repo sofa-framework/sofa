@@ -23,24 +23,16 @@
 #define SOFA_SIMULATION_MECHANICALVISITOR_H
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/VecId.h>
 #include <sofa/core/fwd.h>
+#include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/simulation/BaseMechanicalVisitor.h>
-#include <sofa/core/MechanicalParams.h>
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/BaseMapping.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/ConstraintParams.h>
-
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/map.h>
-#include <iostream>
-#include <functional>
+
+#include <sofa/simulation/BaseMechanicalVisitor.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {

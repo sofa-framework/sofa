@@ -25,7 +25,6 @@
 #include <sofa/core/fwd.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/map.h>
@@ -57,11 +56,6 @@ protected:
 
 public:
     BaseMechanicalVisitor(const sofa::core::ExecParams* params);
-
-//    BaseMechanicalVisitor(const sofa::core::ConstraintParams* params);
-//    BaseMechanicalVisitor(const sofa::core::MechanicalParams* params);
-//    const sofa::core::MechanicalParams* getMechanicalParams() const;
-//    const sofa::core::ConstraintParams* getConstraintParams() const;
 
     /// Return true if this visitor need to read the node-specific data if given
     virtual bool readNodeData() const;

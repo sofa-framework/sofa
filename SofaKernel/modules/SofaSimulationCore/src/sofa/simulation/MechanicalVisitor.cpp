@@ -27,6 +27,10 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/CollisionModel.h>
 #include <iostream>
