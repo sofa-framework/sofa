@@ -86,8 +86,7 @@ public:
     template<size_type NN = N, typename std::enable_if<NN == 1, int>::type = 0>
     explicit constexpr fixed_array(value_type r1) noexcept
     {
-        static_assert(N == 1, "");
-        this->elems[0] = r1;
+        elems[0] = r1;
     }
 
     template<typename... ArgsT,
@@ -96,27 +95,27 @@ public:
     >
     constexpr fixed_array(const ArgsT... r) noexcept
     {
-        // this->elems = { r... }; // doable if elems was assignable
+        // elems = { r... }; // doable if elems was assignable
         std::size_t i = 0;
-        ( (this->elems[i++] = r), ...);
+        ( (elems[i++] = r), ...);
     }
 
     // iterator support
     constexpr iterator begin() noexcept
     {
-        return this->elems;
+        return elems;
     }
     constexpr const_iterator begin() const noexcept
     {
-        return this->elems;
+        return elems;
     }
     constexpr iterator end() noexcept
     {
-        return this->elems+N;
+        return elems+N;
     }
     constexpr const_iterator end() const noexcept
     {
-        return this->elems+N;
+        return elems+N;
     }
 
     // operator[]
@@ -125,44 +124,44 @@ public:
 #ifndef NDEBUG
         assert(i<N && "index in fixed_array must be smaller than size");
 #endif
-        return this->elems[i];
+        return elems[i];
     }
     constexpr const_reference operator[](size_type i) const
     {
 #ifndef NDEBUG
         assert(i<N && "index in fixed_array must be smaller than size");
 #endif
-        return this->elems[i];
+        return elems[i];
     }
 
     // at() with range check
     constexpr reference at(size_type i)
     {
         rangecheck(i);
-        return this->elems[i];
+        return elems[i];
     }
     constexpr const_reference at(size_type i) const
     {
         rangecheck(i);
-        return this->elems[i];
+        return elems[i];
     }
 
     // front() and back()
     constexpr reference front()
     {
-        return this->elems[0];
+        return elems[0];
     }
     constexpr const_reference front() const
     {
-        return this->elems[0];
+        return elems[0];
     }
     constexpr reference back()
     {
-        return this->elems[N-1];
+        return elems[N-1];
     }
     constexpr const_reference back() const
     {
-        return this->elems[N-1];
+        return elems[N-1];
     }
 
     // size is constant
@@ -189,19 +188,19 @@ public:
     // direct access to data
     constexpr const T* data() const noexcept
     {
-        return this->elems;
+        return elems;
     }
 
     /// direct access to array
     constexpr const Array& array() const noexcept
     {
-        return this->elems;
+        return elems;
     }
 
     /// direct access to array
     constexpr Array& array() noexcept
     {
-        return this->elems;
+        return elems;
     }
 
     // assignment with type conversion
@@ -209,7 +208,7 @@ public:
     constexpr fixed_array<T,N>& operator= (const fixed_array<T2,N>& rhs) noexcept
     {
         for (size_type i=0; i<N; i++)
-            this->elems[i] = rhs[i];
+            elems[i] = rhs[i];
         return *this;
     }
 
@@ -217,7 +216,7 @@ public:
     constexpr inline void assign (const T& value) noexcept
     {
         for (size_type i=0; i<N; i++)
-            this->elems[i] = value;
+            elems[i] = value;
     }
 
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
@@ -240,9 +239,9 @@ public:
     {
         for( size_type i=0; i<N; i++ )
         {
-            if( this->elems[i]<v[i] )
+            if( elems[i]<v[i] )
                 return true;  // (*this)<v
-            else if( this->elems[i]>v[i] )
+            else if( elems[i]>v[i] )
                 return false; // (*this)>v
         }
         return false; // (*this)==v
