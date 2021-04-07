@@ -91,7 +91,7 @@ public:
     }
 
     template<typename... ArgsT,
-        typename = std::enable_if_t < (std::is_convertible_v<ArgsT, value_type> && ...)>,
+        typename = std::enable_if_t< (std::is_convertible_v<ArgsT, value_type> && ...) >,
         typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
     >
     constexpr fixed_array(const ArgsT... r) noexcept
