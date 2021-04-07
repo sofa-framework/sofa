@@ -26,8 +26,7 @@
 
 #include <map>
 #include <iostream>
-#include <string>
-
+#include <sstream>
 
 /// adding string serialization to std::map to make it compatible with Data
 /// \todo: refactoring of the containers required

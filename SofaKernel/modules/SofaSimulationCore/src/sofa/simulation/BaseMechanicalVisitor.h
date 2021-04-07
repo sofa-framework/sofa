@@ -28,8 +28,6 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/map.h>
-#include <iostream>
-#include <functional>
 
 namespace sofa::simulation
 {
