@@ -510,9 +510,9 @@ public:
 
 protected:
 
-    void drawElement(int i, std::vector< defaulttype::Vector3 >* gaussPoints,
-                     std::vector< defaulttype::Vector3 >* centrelinePoints,
-                     std::vector<RGBAColor>* colours, const VecCoord& x);
+    void drawElement(int i, std::vector< defaulttype::Vector3 > &gaussPoints,
+                     std::vector< defaulttype::Vector3 > &centrelinePoints,
+                     std::vector<RGBAColor> &colours, const VecCoord& x);
 
     void computeStiffness(int i, Index a, Index b);
 

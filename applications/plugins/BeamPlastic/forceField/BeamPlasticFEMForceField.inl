@@ -878,25 +878,25 @@ void BeamPlasticFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector<defaulttype::Vector3> centrelinePoints[1];
-    std::vector<defaulttype::Vector3> gaussPoints[1];
-    std::vector<RGBAColor> colours[1];
+    std::vector<defaulttype::Vector3> centrelinePoints;
+    std::vector<defaulttype::Vector3> gaussPoints;
+    std::vector<RGBAColor> colours;
 
     for (unsigned int i=0; i<m_indexedElements->size(); ++i)
         drawElement(i, gaussPoints, centrelinePoints, colours, x);
 
     vparams->drawTool()->setPolygonMode(2, true);
     vparams->drawTool()->setLightingEnabled(true);
-    vparams->drawTool()->drawPoints(gaussPoints[0], 3, colours[0]);
-    vparams->drawTool()->drawLines(centrelinePoints[0], 1.0, RGBAColor(0.24f, 0.72f, 0.96f, 1.0f));
+    vparams->drawTool()->drawPoints(gaussPoints, 3, colours);
+    vparams->drawTool()->drawLines(centrelinePoints, 1.0, RGBAColor(0.24f, 0.72f, 0.96f, 1.0f));
     vparams->drawTool()->setLightingEnabled(false);
     vparams->drawTool()->setPolygonMode(0, false);
 }
 
 template<class DataTypes>
-void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* gaussPoints,
-                                                 std::vector< defaulttype::Vector3 >* centrelinePoints,
-                                                 std::vector<RGBAColor>* colours,
+void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 > &gaussPoints,
+                                                 std::vector< defaulttype::Vector3 > &centrelinePoints,
+                                                 std::vector<RGBAColor> &colours,
                                                  const VecCoord& x)
 {
     Index a = (*m_indexedElements)[i][0];
@@ -967,14 +967,14 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
 
         defaulttype::Vec3d beamVec = {u[0]+u1, u[1]+u2, u[2]+u3};
         defaulttype::Vec3d gp = pa + q.rotate(beamVec);
-        gaussPoints[0].push_back(gp);
+        gaussPoints.push_back(gp);
 
         if (pointMechanicalState[gaussPointIt] == ELASTIC)
-            colours[0].push_back({1.0f,0.015f,0.015f,1.0f}); //RED
+            colours.push_back({1.0f,0.015f,0.015f,1.0f}); //RED
         else if (pointMechanicalState[gaussPointIt] == PLASTIC)
-            colours[0].push_back({0.051f,0.15f,0.64f,1.0f}); //BLUE
+            colours.push_back({0.051f,0.15f,0.64f,1.0f}); //BLUE
         else
-            colours[0].push_back({0.078f,0.41f,0.078f,1.0f}); //GREEN
+            colours.push_back({0.078f,0.41f,0.078f,1.0f}); //GREEN
 
         gaussPointIt++; //next Gauss Point
     };
@@ -985,7 +985,7 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
     //****** Centreline ******//
     int nbSeg = m_beamsData.getValue()[i]._nbCentrelineSeg; //number of segments descretising the centreline
 
-    centrelinePoints[0].push_back(pa);
+    centrelinePoints.push_back(pa);
 
     Eigen::Matrix<double, 3, 12> drawN;
     const double L = m_beamsData.getValue()[i]._L;
@@ -997,11 +997,11 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
 
         defaulttype::Vec3d beamVec = {u[0] + (drawPointIt +1)*(L/nbSeg), u[1], u[2]};
         defaulttype::Vec3d clp = pa + q.rotate(beamVec);
-        centrelinePoints[0].push_back(clp); //First time as the end of the former segment
-        centrelinePoints[0].push_back(clp); //Second time as the beginning of the next segment
+        centrelinePoints.push_back(clp); //First time as the end of the former segment
+        centrelinePoints.push_back(clp); //Second time as the beginning of the next segment
     }
 
-    centrelinePoints[0].push_back(pb);
+    centrelinePoints.push_back(pb);
 }
 
 template<class DataTypes>
