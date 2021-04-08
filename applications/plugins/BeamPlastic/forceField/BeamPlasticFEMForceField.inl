@@ -271,12 +271,12 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
     }
     else
     {
-        phiY = (Real)(12.0*_E*_Iy / (kappaZ*_G*_A*L2));
-        phiZ = (Real)(12.0*_E*_Iz / (kappaY*_G*_A*L2));
+        phiY = (12.0*_E*_Iy / (kappaZ*_G*_A*L2));
+        phiZ = (12.0*_E*_Iz / (kappaY*_G*_A*L2));
     }
 
-    double phiYInv = (Real)(1 / (1 + phiY));
-    double phiZInv = (Real)(1 / (1 + phiZ));
+    double phiYInv = (1 / (1 + phiY));
+    double phiZInv = (1 / (1 + phiZ));
 
     _integrationInterval = ozp::quadrature::make_interval(0, -ySection / 2, -zSection / 2, L, ySection / 2, zSection / 2);
 
@@ -655,18 +655,18 @@ template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::computeStiffness(int i, Index, Index)
 {
     Real   phiy, phiz;
-    Real _L = (Real)m_beamsData.getValue()[i]._L;
-    Real _A = (Real)m_beamsData.getValue()[i]._A;
-    Real _nu = (Real)m_beamsData.getValue()[i]._nu;
-    Real _E = (Real)m_beamsData.getValue()[i]._E;
-    Real _Iy = (Real)m_beamsData.getValue()[i]._Iy;
-    Real _Iz = (Real)m_beamsData.getValue()[i]._Iz;
-    Real _G = (Real)m_beamsData.getValue()[i]._G;
-    Real _J = (Real)m_beamsData.getValue()[i]._J;
-    Real L2 = (Real)(_L * _L);
-    Real L3 = (Real)(L2 * _L);
-    Real EIy = (Real)(_E * _Iy);
-    Real EIz = (Real)(_E * _Iz);
+    Real _L = m_beamsData.getValue()[i]._L;
+    Real _A = m_beamsData.getValue()[i]._A;
+    Real _nu = m_beamsData.getValue()[i]._nu;
+    Real _E = m_beamsData.getValue()[i]._E;
+    Real _Iy = m_beamsData.getValue()[i]._Iy;
+    Real _Iz = m_beamsData.getValue()[i]._Iz;
+    Real _G = m_beamsData.getValue()[i]._G;
+    Real _J = m_beamsData.getValue()[i]._J;
+    Real L2 = (_L * _L);
+    Real L3 = (L2 * _L);
+    Real EIy = (_E * _Iy);
+    Real EIz = (_E * _Iz);
 
     // Find shear-deformation parameters
     if (_A == 0)
@@ -676,8 +676,8 @@ void BeamPlasticFEMForceField<DataTypes>::computeStiffness(int i, Index, Index)
     }
     else
     {
-        phiy = (Real)(24.0 * (1.0 + _nu) * _Iz / (_A * L2));
-        phiz = (Real)(24.0 * (1.0 + _nu) * _Iy / (_A * L2));
+        phiy = (24.0 * (1.0 + _nu) * _Iz / (_A * L2));
+        phiz = (24.0 * (1.0 + _nu) * _Iy / (_A * L2));
     }
 
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
@@ -686,14 +686,14 @@ void BeamPlasticFEMForceField<DataTypes>::computeStiffness(int i, Index, Index)
     // Define stiffness matrix 'k' in local coordinates
     k_loc.clear();
     k_loc[6][6] = k_loc[0][0] = _E*_A / _L;
-    k_loc[7][7] = k_loc[1][1] = (Real)(12.0*EIz / (L3*(1.0 + phiy)));
-    k_loc[8][8] = k_loc[2][2] = (Real)(12.0*EIy / (L3*(1.0 + phiz)));
+    k_loc[7][7] = k_loc[1][1] = (12.0*EIz / (L3*(1.0 + phiy)));
+    k_loc[8][8] = k_loc[2][2] = (12.0*EIy / (L3*(1.0 + phiz)));
     k_loc[9][9] = k_loc[3][3] = _G*_J / _L;
-    k_loc[10][10] = k_loc[4][4] = (Real)((4.0 + phiz)*EIy / (_L*(1.0 + phiz)));
-    k_loc[11][11] = k_loc[5][5] = (Real)((4.0 + phiy)*EIz / (_L*(1.0 + phiy)));
+    k_loc[10][10] = k_loc[4][4] = ((4.0 + phiz)*EIy / (_L*(1.0 + phiz)));
+    k_loc[11][11] = k_loc[5][5] = ((4.0 + phiy)*EIz / (_L*(1.0 + phiy)));
 
-    k_loc[4][2] = (Real)(-6.0*EIy / (L2*(1.0 + phiz)));
-    k_loc[5][1] = (Real)(6.0*EIz / (L2*(1.0 + phiy)));
+    k_loc[4][2] = (-6.0*EIy / (L2*(1.0 + phiz)));
+    k_loc[5][1] = (6.0*EIz / (L2*(1.0 + phiy)));
     k_loc[6][0] = -k_loc[0][0];
     k_loc[7][1] = -k_loc[1][1];
     k_loc[7][5] = -k_loc[5][1];
@@ -701,10 +701,10 @@ void BeamPlasticFEMForceField<DataTypes>::computeStiffness(int i, Index, Index)
     k_loc[8][4] = -k_loc[4][2];
     k_loc[9][3] = -k_loc[3][3];
     k_loc[10][2] = k_loc[4][2];
-    k_loc[10][4] = (Real)((2.0 - phiz)*EIy / (_L*(1.0 + phiz)));
+    k_loc[10][4] = ((2.0 - phiz)*EIy / (_L*(1.0 + phiz)));
     k_loc[10][8] = -k_loc[4][2];
     k_loc[11][1] = k_loc[5][1];
-    k_loc[11][5] = (Real)((2.0 - phiy)*EIz / (_L*(1.0 + phiy)));
+    k_loc[11][5] = ((2.0 - phiy)*EIz / (_L*(1.0 + phiy)));
     k_loc[11][7] = -k_loc[5][1];
 
     for (int i = 0; i <= 10; i++)
@@ -765,7 +765,7 @@ void BeamPlasticFEMForceField<DataTypes>::addDForce(const sofa::core::Mechanical
 {
     VecDeriv& df = *(datadF.beginEdit());
     const VecDeriv& dx=datadX.getValue();
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    Real kFactor = sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
 
@@ -788,7 +788,7 @@ template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    Real k = sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     defaulttype::BaseMatrix* mat = r.matrix;
 
     if (r)
@@ -1047,12 +1047,12 @@ void BeamPlasticFEMForceField<DataTypes>::computeBBox(const core::ExecParams* pa
 template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
 {
-    Real _L = (Real)m_beamsData.getValue()[i]._L;
-    Real _yDim = (Real)m_beamsData.getValue()[i]._yDim;
-    Real _zDim = (Real)m_beamsData.getValue()[i]._zDim;
+    Real _L = m_beamsData.getValue()[i]._L;
+    Real _yDim = m_beamsData.getValue()[i]._yDim;
+    Real _zDim = m_beamsData.getValue()[i]._zDim;
 
-    const double E = (Real)m_beamsData.getValue()[i]._E;
-    const double nu = (Real)m_beamsData.getValue()[i]._nu;
+    const double E = m_beamsData.getValue()[i]._E;
+    const double nu = m_beamsData.getValue()[i]._nu;
 
     const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[i]._materialBehaviour;
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
@@ -1096,8 +1096,8 @@ template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::computeMaterialBehaviour(int i, Index a, Index b)
 {
 
-    Real youngModulus = (Real)m_beamsData.getValue()[i]._E;
-    Real poissonRatio = (Real)m_beamsData.getValue()[i]._nu;
+    Real youngModulus = m_beamsData.getValue()[i]._E;
+    Real poissonRatio = m_beamsData.getValue()[i]._nu;
 
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
 
