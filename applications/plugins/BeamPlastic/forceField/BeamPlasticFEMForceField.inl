@@ -634,8 +634,6 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
 template <class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::reset()
 {
-    //serr<<"BeamPlasticFEMForceField<DataTypes>::reset"<<sendl;
-
     for (unsigned i = 0; i < m_prevStresses.size(); ++i)
         for (unsigned j = 0; j < 27; ++j)
             m_prevStresses[i][j] = VoigtTensor2::Zero();
@@ -1729,13 +1727,6 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                     // NtC = (NC)t because of C symmetry
                     vectCep = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN + (2.0 / 3.0)*plasticModulus);
 
-                    // DEBUG : old version
-                    //double mu = E / (2 * (1 + nu)); // Lame coefficient
-                    //VectTensor4 vectCep2 = VectTensor4::Zero();
-                    //vectCep2 = vectC - (1.0 / (1.0 + plasticModulus / (3 * mu)))*vectC*(vectNormal*vectNormal.transpose());
-                    //double diffCep = (vectCep - vectCep2).norm();
-                    //std::cout << "Norme de la difference dans le calcul de Cep : " << diffCep << std::endl;
-
                     Cep = vectToVoigt4(vectCep);
                 }
                 else
@@ -1747,14 +1738,6 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
 
                     VectTensor2 CN = vectC*vectNormal;
                     vectCep = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN);
-
-                    // DEBUG : old version
-                    /*Cgrad = C*gradient;
-                    gradTC = Cgrad.transpose();
-                    Cep = C - (Cgrad*gradTC) / (voigtDotProduct(gradTC, gradient));
-                    VectTensor4 vectCep2 = voigtToVect4(Cep);
-                    double diffCep = (vectCep2 - vectCep).norm();
-                    std::cout << "Norme de la difference dans le calcul de Cep : " << diffCep << std::endl;*/
 
                     Cep = vectToVoigt4(vectCep);
                 }
@@ -1793,15 +1776,6 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                         Eigen::Matrix<double, 1, 9> gradTH = vectGradient.transpose()*H;
                         consistentCep = H - (H*vectGradient*gradTH) / ((gradTH*vectGradient) + plasticModulus);
                         Cep = vectToVoigt4(consistentCep);
-
-                        ////DEBUG : comparison with classic tangent operator
-                        //VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
-                        //VectTensor2 vectNormal = voigtToVect2(normal);
-                        //VectTensor4 vectCep2 = VectTensor4::Zero();
-                        //VectTensor2 CN = vectC*vectNormal;
-                        //vectCep2 = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN + (2.0 / 3.0)*plasticModulus);
-                        //double diffCep = (vectCep2 - consistentCep).norm();
-                        //std::cout << "Norme de la difference dans le calcul de Cep : " << diffCep << std::endl;
                     }
                 }
                 else
@@ -1832,15 +1806,6 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                         Eigen::Matrix<double, 1, 9> gradTH = vectGradient.transpose()*H;
                         consistentCep = H - (H*vectGradient*gradTH) / (gradTH*vectGradient);
                         Cep = vectToVoigt4(consistentCep);
-
-                        ////DEBUG : comparison with classic tangent operator
-                        //VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
-                        //VectTensor2 vectNormal = voigtToVect2(normal);
-                        //VectTensor4 vectCep2 = VectTensor4::Zero();
-                        //VectTensor2 CN = vectC*vectNormal;
-                        //vectCep2 = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN);
-                        //double diffCep = (vectCep2 - consistentCep).norm();
-                        //std::cout << "Norme de la difference dans le calcul de Cep : " << diffCep << std::endl;
                     }
                 } // end if d_isPerfectlyPlastic = true
             } // end if pointMechanicalState[gaussPointIt] == PLASTIC
