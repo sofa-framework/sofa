@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
+#include <sofa/simulation/mechanicalvisitors/MechanicalMatrixVisitor.h>
 
 namespace sofa
 {

@@ -31,7 +31,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/IntegrateEndEvent.h
     ${SRC_ROOT}/LocalStorage.h
     ${SRC_ROOT}/MechanicalComputeEnergyVisitor.h
-    ${SRC_ROOT}/MechanicalMatrixVisitor.h
     ${SRC_ROOT}/MechanicalOperations.h
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
@@ -78,6 +77,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.h
     ${SRC_ROOT}/events/SimulationStartEvent.h
     ${SRC_ROOT}/events/SimulationStopEvent.h
+    ${SRC_ROOT}/mechanicalvisitors/MechanicalMatrixVisitor.h
 )
 
 set(SOURCE_FILES
@@ -102,7 +102,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/InitVisitor.cpp
     ${SRC_ROOT}/IntegrateBeginEvent.cpp
     ${SRC_ROOT}/IntegrateEndEvent.cpp
-    ${SRC_ROOT}/MechanicalMatrixVisitor.cpp
     ${SRC_ROOT}/MechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalVPrintVisitor.cpp
     ${SRC_ROOT}/MechanicalVisitor.cpp
@@ -146,6 +145,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
+    ${SRC_ROOT}/mechanicalvisitors/MechanicalMatrixVisitor.cpp
 )
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     list(APPEND HEADER_FILES
