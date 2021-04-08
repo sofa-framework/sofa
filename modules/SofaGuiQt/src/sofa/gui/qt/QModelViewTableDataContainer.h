@@ -538,7 +538,7 @@ public:
             currentTableNumRows=wTableModel->columnCount();
         else
             currentTableNumRows=wTableModel->rowCount();
-        int rows = wSize->value();
+        int rowSize = wSize->value();
 
         QStringList horizontalHeaders;
         QStringList verticalHeaders;
@@ -574,18 +574,18 @@ public:
         else
             wTableModel->setVerticalHeaderLabels(verticalHeaders);
 
-        if (rows == currentTableNumRows)
+        if (rowSize == currentTableNumRows)
         {
             return;
         }
 
 
         if (FLAGS & TABLE_HORIZONTAL)
-            wTableModel->setColumnCount(rows);
+            wTableModel->setColumnCount(rowSize);
         else
-            wTableModel->setRowCount(rows);
+            wTableModel->setRowCount(rowSize);
 
-        for (int y=currentTableNumRows; y<rows; ++y)
+        for (int y=currentTableNumRows; y<rowSize; ++y)
         {
             const char* h = rhelper::header(d,y);
             if (h && *h)
