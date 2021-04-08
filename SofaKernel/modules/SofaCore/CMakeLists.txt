@@ -258,7 +258,7 @@ set(SOURCE_FILES
 
 sofa_find_package(Sofa.Topology REQUIRED)
 sofa_find_package(SofaHelper REQUIRED)
-sofa_find_package(SofaDefaulttype REQUIRED)
+sofa_find_package(SofaDefaultType REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Topology SofaDefaultType)
