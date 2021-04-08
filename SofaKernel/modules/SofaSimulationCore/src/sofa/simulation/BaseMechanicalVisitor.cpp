@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/mechanicalvisitor/BaseMechanicalVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalVisitor.h>
+#include <sofa/simulation/BaseMechanicalVisitor.h>
 
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
