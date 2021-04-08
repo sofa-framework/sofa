@@ -23,7 +23,6 @@
 #include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/LinearSolver.h>
