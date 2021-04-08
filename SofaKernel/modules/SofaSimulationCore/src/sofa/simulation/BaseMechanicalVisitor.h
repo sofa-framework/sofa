@@ -25,9 +25,7 @@
 #include <sofa/core/fwd.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
-
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/map.h>
 
 namespace sofa::simulation
 {
