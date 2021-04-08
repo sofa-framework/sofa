@@ -13,8 +13,6 @@ set(HEADER_FILES
     constitutiveLaw/RambergOsgood.h
     quadrature/gaussian.h
     quadrature/quadrature.h
-    PoissonContainer.h
-    StiffnessContainer.h
 )
 
 set(SOURCE_FILES
