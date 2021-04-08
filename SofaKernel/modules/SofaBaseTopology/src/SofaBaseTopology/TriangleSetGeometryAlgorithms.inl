@@ -510,7 +510,17 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     const sofa::defaulttype::Vec<3,double> &p) const
 {
     const Triangle &t=this->m_topology->getTriangle(ind_t);
-    return compute3PointsBarycoefs(p, t[0], t[1], t[2]);
+    return compute3PointsBarycoefs(p, t[0], t[1], t[2],false);
+}
+
+// barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
+template<class DataTypes>
+sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleBarycoefs(
+    const TriangleID ind_t,
+    const sofa::defaulttype::Vec<3, double>& p) const
+{
+    const Triangle& t = this->m_topology->getTriangle(ind_t);
+    return compute3PointsBarycoefs(p, t[0], t[1], t[2], true);
 }
 
 // barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)

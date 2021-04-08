@@ -121,6 +121,11 @@ public:
     */
     sofa::helper::vector< double > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::defaulttype::Vec<3,double> &p) const;
 
+    /** \brief Computes barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
+    *
+    */
+    sofa::helper::vector< double > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::defaulttype::Vec<3, double>& p) const;
+
     /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
      *
      */
