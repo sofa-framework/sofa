@@ -21,14 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/geometry/config.h>
 
 namespace sofa::geometry
 {
-    struct Pyramid
-    {
-        static const sofa::Size NumberOfNodes = 5;
 
-        Pyramid() = default;
-    };
-}
+struct Pyramid
+{
+    static const sofa::Size NumberOfNodes = 5;
+
+    Pyramid() = default;
+};
+
+} // namespace sofa::geometry

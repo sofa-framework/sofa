@@ -21,14 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/geometry/config.h>
 
 namespace sofa::geometry
 {
-    struct Point
-    {
-        static const sofa::Size NumberOfNodes = 1;
 
-        Point() = default;
-    };
-}
+struct Point
+{
+    static const sofa::Size NumberOfNodes = 1;
+
+    Point() = default;
+};
+
+} // namespace sofa::geometry

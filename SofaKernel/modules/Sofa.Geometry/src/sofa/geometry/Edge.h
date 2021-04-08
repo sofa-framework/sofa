@@ -25,10 +25,12 @@
 
 namespace sofa::geometry
 {
-    struct Edge
-    {
-        static const sofa::Size NumberOfNodes = 2;
 
-        Edge() = default;
-    };
-}
+struct Edge
+{
+    static const sofa::Size NumberOfNodes = 2;
+
+    Edge() = default;
+};
+
+} // namespace sofa::geometry
