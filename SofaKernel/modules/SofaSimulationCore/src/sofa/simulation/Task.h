@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MultiThreadingTask_h__
-#define MultiThreadingTask_h__
+#pragma once
 
 #include <sofa/simulation/config.h>
 
@@ -28,12 +27,8 @@
 #include <mutex>
 
 
-namespace sofa
+namespace sofa::simulation
 {
-	namespace simulation
-    {
-        
-        
         /** Task class interface    */
         class SOFA_SIMULATION_CORE_API Task
         {
@@ -76,23 +71,14 @@ namespace sofa
             virtual MemoryAlloc run() = 0;
             
             
-            static void* operator new (std::size_t sz)
-            {
-                return _allocator->allocate(sz);
-            }
+            static void* operator new (std::size_t sz);
             
             // when c++14 is available delete the void  operator delete  (void* ptr)
             // and define the void operator delete  (void* ptr, std::size_t sz)
-            static void  operator delete  (void* ptr)
-            {
-                _allocator->free(ptr, 0);
-            }
+            static void  operator delete  (void* ptr);
             
             // only available in c++14.
-            static void operator delete  (void* ptr, std::size_t sz)
-            {
-                _allocator->free(ptr, sz);
-            }
+            static void operator delete  (void* ptr, std::size_t sz);
             
             // no array new and delete operators
             static void* operator new[](std::size_t sz) = delete;
@@ -103,16 +89,14 @@ namespace sofa
             
             virtual Task::Status* getStatus(void) const = 0;
             
-            int getScheduledThread() const { return m_scheduledThread; }
+            int getScheduledThread() const;
             
-            static Task::Allocator* getAllocator() { return _allocator; }
+            static Task::Allocator* getAllocator();
             
-            static void setAllocator(Task::Allocator* allocator) { _allocator = allocator; }
+            static void setAllocator(Task::Allocator* allocator);
             
         protected:
-            
-            //            Task::Status*    m_status;
-            
+
             int m_scheduledThread;
             
         public:
@@ -122,91 +106,4 @@ namespace sofa
             
             static Task::Allocator * _allocator;
         };
-        
-        
-        
-        /**  Base class to implement a CPU task
-         *   all the tasks running on the CPU should inherits from this class
-         */
-        class SOFA_SIMULATION_CORE_API CpuTask : public Task
-        {
-        public:
-            
-            /** CPU Task Status class definition:
-             *  used to synchronize CPU tasks  */
-            class Status : public Task::Status
-            {
-            public:
-                Status() : m_busy(0) {}
-                
-                virtual bool isBusy() const override final
-                {
-                    return (m_busy.load(std::memory_order_relaxed) > 0);
-                }
-                
-                virtual int setBusy(bool busy) override final
-                {
-                    if (busy)
-                    {
-                        return m_busy.fetch_add(1, std::memory_order_relaxed);
-                    }
-                    else
-                    {
-                        return m_busy.fetch_sub(1, std::memory_order_relaxed);
-                    }
-                }
-                
-            private:
-                std::atomic<int> m_busy;
-            };
-            
-            
-            virtual CpuTask::Status* getStatus(void) const override final { return m_status; }
-            
-            
-        public:
-            
-            CpuTask(CpuTask::Status* status, int scheduledThread = -1);
-            
-            virtual ~CpuTask();
-            
-        private:
-            CpuTask::Status*    m_status;
-        };
-        
-        
-        
-        
-        // This task is called once by each thread used by the TasScheduler
-        // this is useful to initialize the thread specific variables
-        class SOFA_SIMULATION_CORE_API ThreadSpecificTask : public CpuTask
-        {
-            
-        public:
-            
-            ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
-            
-            ~ThreadSpecificTask() override;
-            
-            MemoryAlloc run() final;
-            
-            
-        private:
-            
-            virtual bool runThreadSpecific() { return true; }
-            
-            virtual bool runCriticalThreadSpecific() { return true; }
-            
-            
-            std::atomic<int>* m_atomicCounter;
-            std::mutex*     m_threadSpecificMutex;
-        };
-        
-
-	} // namespace simulation
-
-} // namespace sofa
-
-
-
-#endif // MultiThreadingTask_h__
+}
