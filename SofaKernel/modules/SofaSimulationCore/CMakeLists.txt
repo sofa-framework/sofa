@@ -69,7 +69,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/TaskScheduler.h
     ${SRC_ROOT}/DefaultTaskScheduler.h
     ${SRC_ROOT}/Task.h
-    ${SRC_ROOT}/InitTasks.h
     ${SRC_ROOT}/Locks.h
     ${SRC_ROOT}/VisitorAsync.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
@@ -138,7 +137,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/TaskScheduler.cpp
     ${SRC_ROOT}/DefaultTaskScheduler.cpp
     ${SRC_ROOT}/Task.cpp
-    ${SRC_ROOT}/InitTasks.cpp
     ${SRC_ROOT}/events/SimulationInitDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationInitStartEvent.cpp
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
