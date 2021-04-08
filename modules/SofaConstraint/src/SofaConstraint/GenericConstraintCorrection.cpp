@@ -22,11 +22,13 @@
 #define SOFA_COMPONENT_CONSTRAINT_GENERICCONSTRAINTCORRECTION_CPP
 
 #include <SofaConstraint/GenericConstraintCorrection.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalMatrixVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/ConstraintParams.h>
+
 using sofa::core::execparams::defaultInstance; 
 
 namespace sofa::component::constraintset 
