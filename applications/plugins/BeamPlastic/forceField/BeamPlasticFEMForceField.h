@@ -81,13 +81,13 @@ public:
     typedef defaulttype::Vec<3, Real> Vec3;
     typedef sofa::helper::types::RGBAColor RGBAColor;
 
-    /** \enum MechanicalState
+    /** \enum class MechanicalState
      *  \brief Types of mechanical state associated with the (Gauss) integration
      *  points. The POSTPLASTIC state corresponds to points which underwent plastic
      *  deformation, but on which constraints were released so that the plasticity
      *  process stopped.
      */
-    enum MechanicalState {
+    enum class MechanicalState {
         ELASTIC = 0,
         PLASTIC = 1,
         POSTPLASTIC = 2,

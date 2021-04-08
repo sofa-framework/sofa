@@ -102,7 +102,6 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio,
 /*                           INITIALISATION                                  */
 /*****************************************************************************/
 
-
 template <class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::bwdInit()
 {
@@ -620,8 +619,8 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
     // Initialises the plastic indicators
     // NB: each vector (of type helper::fixed_array) contains 27 components,
     // associated with the 27 Gauss points used for reduced integration
-    _pointMechanicalState.assign(ELASTIC);
-    _beamMechanicalState = ELASTIC;
+    _pointMechanicalState.assign(MechanicalState::ELASTIC);
+    _beamMechanicalState = MechanicalState::ELASTIC;
     
     _localYieldStresses.assign(yS);
     _backStresses.assign(VoigtTensor2::Zero()); // TO DO: check if zero is correct
@@ -811,7 +810,7 @@ void BeamPlasticFEMForceField<DataTypes>::addKToMatrix(const sofa::core::Mechani
             bool exploitSymmetry = d_useSymmetricAssembly.getValue();
 
             StiffnessMatrix K0;
-            if (beamMechanicalState == PLASTIC)
+            if (beamMechanicalState == MechanicalState::PLASTIC)
                 K0 = m_beamsData.getValue()[i]._Kt_loc;
             else
             {
@@ -969,9 +968,9 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
         defaulttype::Vec3d gp = pa + q.rotate(beamVec);
         gaussPoints.push_back(gp);
 
-        if (pointMechanicalState[gaussPointIt] == ELASTIC)
+        if (pointMechanicalState[gaussPointIt] == MechanicalState::ELASTIC)
             colours.push_back({1.0f,0.015f,0.015f,1.0f}); //RED
-        else if (pointMechanicalState[gaussPointIt] == PLASTIC)
+        else if (pointMechanicalState[gaussPointIt] == MechanicalState::PLASTIC)
             colours.push_back({0.051f,0.15f,0.64f,1.0f}); //BLUE
         else
             colours.push_back({0.078f,0.41f,0.078f,1.0f}); //GREEN
@@ -1645,7 +1644,7 @@ void BeamPlasticFEMForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
 
     // The stiffness matrix we use depends on the mechanical state of the beam element
 
-    if (beamMechanicalState == PLASTIC)
+    if (beamMechanicalState == MechanicalState::PLASTIC)
         local_dforce = m_beamsData.getValue()[i]._Kt_loc * local_depl;
     else
     {
@@ -1712,7 +1711,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
 
         if (!d_useConsistentTangentOperator.getValue())
         {
-            if (gradient.isZero() || pointMechanicalState[gaussPointIt] != PLASTIC)
+            if (gradient.isZero() || pointMechanicalState[gaussPointIt] != MechanicalState::PLASTIC)
                 Cep = C; //TO DO: is that correct ?
             else
             {
@@ -1745,7 +1744,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
         }
         else // d_useConsistentTangentOperator = true
         {
-            if (pointMechanicalState[gaussPointIt] != PLASTIC)
+            if (pointMechanicalState[gaussPointIt] != MechanicalState::PLASTIC)
                 Cep = C; //TO DO: is that correct ?
             else
             {
@@ -1808,7 +1807,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                         Cep = vectToVoigt4(consistentCep);
                     }
                 } // end if d_isPerfectlyPlastic = true
-            } // end if pointMechanicalState[gaussPointIt] == PLASTIC
+            } // end if pointMechanicalState[gaussPointIt] == MechanicalState::PLASTIC
         } // end if d_useConsistentTangentOperator = true
 
         tangentStiffness += (w1*w2*w3)*beTCBeMult(Be.transpose(), Cep, nu, E);
@@ -2150,7 +2149,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Eige
         computePerfectPlasticStressIncrement(index, gaussPointIt, initialStressPoint, newStressPoint,
             strainIncrement, mechanicalState);
 
-        isPlasticBeam = isPlasticBeam || (mechanicalState == PLASTIC);
+        isPlasticBeam = isPlasticBeam || (mechanicalState == MechanicalState::PLASTIC);
 
         m_prevStresses[index][gaussPointIt] = newStressPoint;
 
@@ -2166,7 +2165,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Eige
     if (!isPlasticBeam)
     {
         MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
-        beamMechanicalState = POSTPLASTIC;
+        beamMechanicalState = MechanicalState::POSTPLASTIC;
     }
     m_beamsData.endEdit();
 
@@ -2221,14 +2220,14 @@ void BeamPlasticFEMForceField<DataTypes>::computePerfectPlasticStressIncrement(i
             newStressPoint = trialStress;
 
             // If the Gauss point was initially plastic, we update its mechanical state
-            if (pointMechanicalState == PLASTIC)
-                pointMechanicalState = POSTPLASTIC;
+            if (pointMechanicalState == MechanicalState::PLASTIC)
+                pointMechanicalState = MechanicalState::POSTPLASTIC;
         }
         else
         {
             // If the Gauss point was initially elastic, we update its mechanical state
-            if (pointMechanicalState == POSTPLASTIC || pointMechanicalState == ELASTIC)
-                pointMechanicalState = PLASTIC;
+            if (pointMechanicalState == MechanicalState::POSTPLASTIC || pointMechanicalState == MechanicalState::ELASTIC)
+                pointMechanicalState = MechanicalState::PLASTIC;
 
             // We then compute the new stress
 
@@ -2314,7 +2313,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Eigen::Matri
         computeHardeningStressIncrement(index, gaussPointIt, initialStressPoint, newStressPoint,
             strainIncrement, mechanicalState);
 
-        isPlasticBeam = isPlasticBeam || (mechanicalState == PLASTIC);
+        isPlasticBeam = isPlasticBeam || (mechanicalState == MechanicalState::PLASTIC);
 
         m_prevStresses[index][gaussPointIt] = newStressPoint;
 
@@ -2330,7 +2329,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Eigen::Matri
     if (!isPlasticBeam)
     {
         MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
-        beamMechanicalState = POSTPLASTIC;
+        beamMechanicalState = MechanicalState::POSTPLASTIC;
     }
     m_beamsData.endEdit();
 
@@ -2383,14 +2382,14 @@ void BeamPlasticFEMForceField<DataTypes>::computeHardeningStressIncrement(int in
         newStressPoint = trialStress;
 
         // If the Gauss point was initially plastic, we update its mechanical state
-        if (pointMechanicalState == PLASTIC)
-            pointMechanicalState = POSTPLASTIC;
+        if (pointMechanicalState == MechanicalState::PLASTIC)
+            pointMechanicalState = MechanicalState::POSTPLASTIC;
     }
     else
     {
         // If the Gauss point was initially elastic, we update its mechanical state
-        if (pointMechanicalState == POSTPLASTIC || pointMechanicalState == ELASTIC)
-            pointMechanicalState = PLASTIC;
+        if (pointMechanicalState == MechanicalState::POSTPLASTIC || pointMechanicalState == MechanicalState::ELASTIC)
+            pointMechanicalState = MechanicalState::PLASTIC;
 
         VoigtTensor2 shiftedTrialStress = trialStress - backStress;
         VoigtTensor2 xiTrial = deviatoricStress(shiftedTrialStress);
