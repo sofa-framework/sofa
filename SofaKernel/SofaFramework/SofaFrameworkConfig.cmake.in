@@ -7,13 +7,10 @@ cmake_minimum_required(VERSION 3.12)
 set(SOFAFRAMEWORK_TARGETS @SOFAFRAMEWORK_TARGETS@)
 
 find_package(Sofa.Config QUIET REQUIRED)
-find_package(Sofa.Type QUIET REQUIRED)
-find_package(Sofa.Geometry QUIET REQUIRED)
-find_package(Sofa.Topology QUIET REQUIRED)
-find_package(SofaHelper QUIET REQUIRED)
-find_package(SofaDefaulttype QUIET REQUIRED)
-find_package(SofaCore QUIET REQUIRED)
-find_package(SofaSimulationCore QUIET REQUIRED)
+
+foreach(target ${SOFAFRAMEWORK_TARGETS})
+	find_package(${target} QUIET REQUIRED)
+endforeach()
 
 foreach(target ${SOFAFRAMEWORK_TARGETS})
     if(NOT TARGET ${target})
