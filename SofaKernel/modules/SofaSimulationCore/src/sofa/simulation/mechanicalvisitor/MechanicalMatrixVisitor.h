@@ -19,10 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MECHANICALMATRIXVISITOR_H
-#define SOFA_SIMULATION_MECHANICALMATRIXVISITOR_H
-
-
+#pragma once
 
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -42,12 +39,8 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa
+namespace sofa::simulation::mechanicalvisitor
 {
-
-namespace simulation
-{
-
 
 /** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
 class SOFA_SIMULATION_CORE_API MechanicalGetMatrixDimensionVisitor : public BaseMechanicalVisitor
@@ -401,8 +394,4 @@ public:
     }
 };
 
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation::mechanicalvisitor
