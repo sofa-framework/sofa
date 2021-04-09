@@ -126,6 +126,10 @@ protected:
             std::stack<TestPair>& internalCells,
             bool selfCollision,
             sofa::core::collision::DetectionOutputVector*& outputs);
+
+private:
+
+    static bool isRangeEmpty(const CollisionIteratorRange& range);
 };
 
 } // namespace sofa::component::collision

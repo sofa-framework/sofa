@@ -237,16 +237,11 @@ void BruteForceDetection::initializeExternalCells(
     const CollisionIteratorRange externalChildren1 = cm1->begin().getExternalChildren();
     const CollisionIteratorRange externalChildren2 = cm2->begin().getExternalChildren();
 
-    const auto isChildrenRangeEmpty = [](const CollisionIteratorRange& children)
-    {
-        return children.first == children.second;
-    };
-
-    const auto addToExternalCells = [&isChildrenRangeEmpty, &externalCells](
+    const auto addToExternalCells = [&externalCells](
             const CollisionIteratorRange& children1,
             const CollisionIteratorRange& children2)
     {
-        if (!isChildrenRangeEmpty(children1) && !isChildrenRangeEmpty(children2))
+        if (!isRangeEmpty(children1) && !isRangeEmpty(children2))
         {
             externalCells.emplace(children1,children2);
         }
@@ -359,9 +354,9 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
 
                     TestPair newInternalTests(it1.getInternalChildren(),it2.getInternalChildren());
                     TestPair newExternalTests(it1.getExternalChildren(),it2.getExternalChildren());
-                    if (newInternalTests.first.first != newInternalTests.first.second)
+                    if (!isRangeEmpty(newInternalTests.first))
                     {
-                        if (newInternalTests.second.first != newInternalTests.second.second)
+                        if (!isRangeEmpty(newInternalTests.second))
                         {
                             internalCells.push(newInternalTests);
                         }
@@ -375,7 +370,7 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                     }
                     else
                     {
-                        if (newInternalTests.second.first != newInternalTests.second.second)
+                        if (!isRangeEmpty(newInternalTests.second))
                         {
                             newInternalTests.first.first = it1;
                             newInternalTests.first.second = it1;
@@ -386,9 +381,9 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                         {
                             // end of both internal tree of elements.
                             // need to test external children
-                            if (newExternalTests.first.first != newExternalTests.first.second)
+                            if (!isRangeEmpty(newExternalTests.first))
                             {
-                                if (newExternalTests.second.first != newExternalTests.second.second)
+                                if (!isRangeEmpty(newExternalTests.second))
                                 {
                                     if (newExternalTests.first.first.getCollisionModel() == finalcm1 && newExternalTests.second.first.getCollisionModel() == finalcm2)
                                     {
@@ -420,7 +415,7 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                                     externalCells.emplace(newExternalTests.first, newInternalTests.second);
                                 }
                             }
-                            else if (newExternalTests.second.first != newExternalTests.second.second)
+                            else if (!isRangeEmpty(newExternalTests.second))
                             {
                                 // only first element has external children
                                 // test them against the first element
@@ -441,6 +436,11 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
             }
         }
     }
+}
+
+bool BruteForceDetection::isRangeEmpty(const CollisionIteratorRange& range)
+{
+    return range.first == range.second;
 }
 
 } // namespace sofa::component::collision
