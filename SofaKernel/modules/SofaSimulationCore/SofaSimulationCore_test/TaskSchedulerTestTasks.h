@@ -3,31 +3,7 @@
 
 namespace sofa
 {
-
-    class SleepTask : public simulation::CpuTask
-    {
-    public:
-        explicit SleepTask(simulation::CpuTask::Status* status) : CpuTask(status) {}
-        ~SleepTask() override = default;
-
-        MemoryAlloc run() final;
-
-        bool m_isTaskDone{ false };
-    };
-
-    class ThreadIdTask : public simulation::CpuTask
-    {
-    public:
-        ThreadIdTask(std::thread::id* id, simulation::CpuTask::Status* status) : CpuTask(status), m_threadId{id} {}
-        ~ThreadIdTask() override = default;
-
-        MemoryAlloc run() final;
-
-        bool m_isTaskDone{ false };
-        std::thread::id* m_threadId { nullptr };
-    };
-
-    // compute recursively the Fibonacci number for input N  O(~1.6 exp(N)) 
+    // compute recursively the Fibonacci number for input N  O(~1.6 exp(N))
     // this is implemented to test the task scheduler generating super lightweight tasks and not for performance
     class FibonacciTask : public simulation::CpuTask
     {

@@ -67,22 +67,4 @@ namespace sofa
         
         return MemoryAlloc::Stack;
     }
-
-
-    Task::MemoryAlloc SleepTask::run()
-    {
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for(20ms);
-        m_isTaskDone = true;
-        return Task::Stack;
-    }
-
-    Task::MemoryAlloc ThreadIdTask::run()
-    {
-        m_isTaskDone = true;
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for(20ms); //add sleep period to simulate the worker thread is busy
-        *m_threadId = std::this_thread::get_id();
-        return Task::Stack;
-    }
 } // namespace sofa
