@@ -69,40 +69,23 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
         return;
 	assert(intersectionMethod != nullptr);
 
+	dmsg_info() << "CollisionModel " << cm->getName() << "(" << cm << ") of class " << cm->getClassName() << " is added in broad phase (" << collisionModels.size() << " collision models)";
+
     // If a box is defined, check that both collision models are inside the box
     // If both models are outside, ignore them
-    if (boxModel)
+    if (boxModel && !intersectWithBoxModel(cm))
     {
-        bool swapModels = false;
-        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, boxModel.get(), swapModels);
-        if (intersector)
-        {
-            core::CollisionModel* cm1 = (swapModels?boxModel.get():cm);
-            core::CollisionModel* cm2 = (swapModels?cm:boxModel.get());
-
-            // Here we assume a single root element is present in both models
-            if (!intersector->canIntersect(cm1->begin(), cm2->begin()))
-                return;
-        }
+        return;
     }
 
-    if (cm->isSimulated() && cm->getLast()->canCollideWith(cm->getLast()))
+    if (doesSelfCollide(cm))
     {
-        // self collision
-        bool swapModels = false;
-        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm, swapModels);
-        if (intersector != nullptr)
-            if (intersector->canIntersect(cm->begin(), cm->begin()))
-            {
-                cmPairs.push_back(std::make_pair(cm, cm));
-            }
+        cmPairs.emplace_back(cm, cm);
     }
 
     // Browse all other collision models to check if there is a potential collision (conservative check)
-    for (sofa::helper::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
+    for (auto* cm2 : collisionModels)
     {
-        core::CollisionModel* cm2 = *it;
-
         // ignore this pair if both are NOT simulated (inactive)
         if (!cm->isSimulated() && !cm2->isSimulated())
         {
@@ -117,18 +100,64 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
         if (intersector == nullptr)
             continue;
 
-        core::CollisionModel* cm1 = (swapModels?cm2:cm);
-        cm2 = (swapModels?cm:cm2);
+        core::CollisionModel* cm1 = cm;
+        if (swapModels)
+        {
+            std::swap(cm1, cm2);
+        }
 
         // Here we assume a single root element is present in both models
         if (intersector->canIntersect(cm1->begin(), cm2->begin()))
         {
-            cmPairs.push_back(std::make_pair(cm1, cm2));
+            cmPairs.emplace_back(cm1, cm2);
         }
     }
     collisionModels.push_back(cm);
 }
 
+bool BruteForceDetection::intersectWithBoxModel(core::CollisionModel *cm) const
+{
+    bool swapModels = false;
+    core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, boxModel.get(), swapModels);
+    if (intersector)
+    {
+        core::CollisionModel* cm1 = (swapModels?boxModel.get():cm);
+        core::CollisionModel* cm2 = (swapModels?cm:boxModel.get());
+
+        // Here we assume a single root element is present in both models
+        return intersector->canIntersect(cm1->begin(), cm2->begin());
+    }
+
+    return true;
+}
+
+bool BruteForceDetection::doesSelfCollide(core::CollisionModel *cm) const
+{
+    if (cm->isSimulated() && cm->getLast()->canCollideWith(cm->getLast()))
+    {
+        // self collision
+        bool swapModels = false;
+        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm, swapModels);
+        if (intersector != nullptr)
+        {
+            return intersector->canIntersect(cm->begin(), cm->begin());
+        }
+    }
+
+    return false;
+}
+
+void BruteForceDetection::beginBroadPhase()
+{
+    core::collision::BroadPhaseDetection::beginBroadPhase();
+    collisionModels.clear();
+}
+
+void BruteForceDetection::endBroadPhase()
+{
+    core::collision::BroadPhaseDetection::endBroadPhase();
+    dmsg_info() << cmPairs.size() << " pairs to investigate in narrow phase";
+}
 
 bool BruteForceDetection::keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2)
 {
@@ -241,13 +270,16 @@ void BruteForceDetection::processExternalCell(const TestPair& root,
                                               bool selfCollision,
                                               sofa::core::collision::DetectionOutputVector*& outputs)
 {
-    const auto& range1 = root.first;
-    const auto& range2 = root.second;
+    const auto& colElementsRange1 = root.first; //range of collision element from the first collision model
+    const auto& colElementsRange2 = root.second; //range of collision element from the second collision model
 
-    if (cm1 != range1.first.getCollisionModel() || cm2 != range2.first.getCollisionModel())//if the CollisionElements do not belong to cm1 and cm2, update cm1 and cm2
+    const auto& collisionModel1 = colElementsRange1.first.getCollisionModel(); //get the first collision model
+    const auto& collisionModel2 = colElementsRange2.first.getCollisionModel(); //get the second collision model
+
+    if (cm1 != collisionModel1 || cm2 != collisionModel2)//if the CollisionElements do not belong to cm1 and cm2, update cm1 and cm2
     {
-        cm1 = range1.first.getCollisionModel();
-        cm2 = range2.first.getCollisionModel();
+        cm1 = collisionModel1;
+        cm2 = collisionModel2;
         if (!cm1 || !cm2) return;
 
         bool swapModels = false;
@@ -290,8 +322,11 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                                               bool selfCollision,
                                               sofa::core::collision::DetectionOutputVector*& outputs)
 {
+    //first collision model
     core::CollisionElementIterator begin1 = root.first.first;
     core::CollisionElementIterator end1 = root.first.second;
+
+    //second collision model
     core::CollisionElementIterator begin2 = root.second.first;
     core::CollisionElementIterator end2 = root.second.second;
 

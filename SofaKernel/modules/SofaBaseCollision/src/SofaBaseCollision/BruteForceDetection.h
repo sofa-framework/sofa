@@ -71,20 +71,33 @@ public:
     void init() override;
     void reinit() override;
 
+    /** \brief In the broad phase, ignores collision with the provided collision model if possible and add pairs of
+     * collision models if in intersection.
+     *
+     * Ignore the collision with the provided collision model if it does not intersect with the box defined in
+     * the Data box when it is defined.
+     * Add the provided collision model to be investigated in the narrow phase in case of self collision.
+     * Check intersection with already added collision models. If it can intersect another collision model, the pair
+     * is added to be further investigated in the narrow phase.
+     */
     void addCollisionModel (core::CollisionModel *cm) override;
+
+    /** \brief In the narrow phase, examine a potential collision between a pair of collision models, which has
+     * been detected in the broad phase.
+     */
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
 
-    void beginBroadPhase() override
-    {
-        core::collision::BroadPhaseDetection::beginBroadPhase();
-        collisionModels.clear();
-    }
+    void beginBroadPhase() override;
+    void endBroadPhase() override;
 
     void draw(const core::visual::VisualParams* /* vparams */) override { }
 
     inline bool needsDeepBoundingTree()const override {return true;}
 
 protected:
+
+    bool intersectWithBoxModel(core::CollisionModel *cm) const;
+    bool doesSelfCollide(core::CollisionModel *cm) const;
 
     static void initializeExternalCells(
             core::CollisionModel *cm1,
