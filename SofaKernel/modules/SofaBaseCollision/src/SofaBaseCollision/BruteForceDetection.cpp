@@ -190,7 +190,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         TestPair root = externalCells.front();
         externalCells.pop();
 
-        processExternalCell(root, finalcm1, finalcm2, intersector, finalintersector, &mirror, externalCells, selfCollision, outputs);
+        processExternalCell(root,
+                            cm1, cm2,
+                            finalcm1, finalcm2,
+                            intersector, finalintersector, &mirror, externalCells, selfCollision, outputs);
     }
 }
 
@@ -227,6 +230,8 @@ void BruteForceDetection::initializeExternalCells(
 }
 
 void BruteForceDetection::processExternalCell(const TestPair& root,
+                                              core::CollisionModel *& cm1,
+                                              core::CollisionModel *& cm2,
                                               core::CollisionModel *finalcm1,
                                               core::CollisionModel *finalcm2,
                                               core::collision::ElementIntersector* intersector,
@@ -236,9 +241,6 @@ void BruteForceDetection::processExternalCell(const TestPair& root,
                                               bool selfCollision,
                                               sofa::core::collision::DetectionOutputVector*& outputs)
 {
-    core::CollisionModel *cm1 {nullptr};
-    core::CollisionModel *cm2 {nullptr};
-
     const auto& range1 = root.first;
     const auto& range2 = root.second;
 
@@ -262,8 +264,10 @@ void BruteForceDetection::processExternalCell(const TestPair& root,
             intersector = mirror;
         }
     }
+
     if (intersector == nullptr)
         return;
+
     std::stack< TestPair > internalCells;
     internalCells.push(root);
 

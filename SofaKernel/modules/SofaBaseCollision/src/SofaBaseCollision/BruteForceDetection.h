@@ -93,6 +93,8 @@ protected:
 
     void processExternalCell(
             const TestPair& root,
+            core::CollisionModel *& cm1,
+            core::CollisionModel *& cm2,
             core::CollisionModel *finalcm1,
             core::CollisionModel *finalcm2,
             core::collision::ElementIntersector* intersector,
