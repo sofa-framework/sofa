@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaMiscCollision/TetrahedronDiscreteIntersection.h>
-#include <sofa/helper/FnDispatcher.inl>
+
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>
