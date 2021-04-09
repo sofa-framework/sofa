@@ -41,7 +41,7 @@ namespace sofa::simulation
         return m_status;
     }
 
-bool CpuTask::Status::isBusy() const
+    bool CpuTask::Status::isBusy() const
     {
         return (m_busy.load(std::memory_order_relaxed) > 0);
     }

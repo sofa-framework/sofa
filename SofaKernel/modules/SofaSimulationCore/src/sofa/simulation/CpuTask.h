@@ -36,7 +36,7 @@ namespace sofa::simulation
 
         /** CPU Task Status class definition:
          *  used to synchronize CPU tasks  */
-        class Status : public Task::Status
+        class SOFA_SIMULATION_CORE_API Status : public Task::Status
         {
         public:
             Status() : m_busy(0) {}
