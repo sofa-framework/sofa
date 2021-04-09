@@ -23,7 +23,6 @@
 #include <SofaUserInteraction/config.h>
 
 #include <SofaBaseCollision/NewProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>

@@ -57,7 +57,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
-    ${SRC_ROOT}/UnitTest.h
     ${SRC_ROOT}/Utils.h
     ${SRC_ROOT}/accessor.h
     ${SRC_ROOT}/decompose.h
@@ -148,7 +147,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
     ${SRC_ROOT}/TagFactory.cpp
-    ${SRC_ROOT}/UnitTest.cpp
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
     ${SRC_ROOT}/init.cpp
