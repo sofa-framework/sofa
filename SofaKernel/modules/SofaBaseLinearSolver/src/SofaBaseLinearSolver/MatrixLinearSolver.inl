@@ -21,8 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalMatrixVisitor.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/RotationMatrix.h>
-
+#include <SofaBaseLinearSolver/DiagonalMatrix.h>
 namespace sofa::component::linearsolver {
 
 

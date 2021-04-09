@@ -22,23 +22,23 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/DiagonalMatrix.h>
-//#include <SofaBaseLinearSolver/RotationMatrix.h>
 
 namespace sofa::component::linearsolver
 {
 
+template<class Real> class SparseMatrix;
+template<class Real> class FullMatrix;
 template<class Real> class RotationMatrix;
+template<class Real> class DiagonalMatrix;
+template<size_t, class Real> class BlockDiagonalMatrix;
+
 
 class MatrixInvertData {};
 
@@ -236,11 +236,6 @@ public:
     void prepareVisitor(simulation::Visitor* v)
     {
         v->setTags(this->getTags());
-    }
-
-    void prepareVisitor(simulation::BaseMechanicalVisitor* v)
-    {
-        prepareVisitor(static_cast<simulation::Visitor*>(v));
     }
 
     template<class T>
