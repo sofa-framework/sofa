@@ -25,15 +25,22 @@
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/core/CollisionElement.h>
-#include <sofa/core/CollisionModel.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/EndPoint.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
-#include <map>
-#include <deque>
-#include <sofa/helper/AdvancedTimer.h>
+
+#include "sofa/helper/ScopedAdvancedTimer.h"
+
+namespace sofa::core::objectmodel
+{
+    class BaseContext;
+}
+
+namespace sofa::core::collision
+{
+    class ElementIntersector;
+}
 
 namespace sofa::component::collision
 {
@@ -49,25 +56,22 @@ class EndPoint;
   */
 class SOFA_SOFAGENERALMESHCOLLISION_API DSAPBox{
 public:
-    DSAPBox(Cube c,EndPoint * mi = nullptr,EndPoint * ma = nullptr) : cube(c),min(mi),max(ma){}
+    explicit DSAPBox(const Cube& c,EndPoint * mi = nullptr,EndPoint * ma = nullptr) : cube(c),min(mi),max(ma){}
 
     void update(int axis,double alarmDist);
 
-    bool overlaps(const DSAPBox & other,int axis,double alarmDist)const;
+    [[nodiscard]]
+    double squaredDistance(const DSAPBox & other) const;
 
-    bool overlaps(const DSAPBox &other,double alarmDist)const;
-
-    bool sqOverlaps(const DSAPBox &other,double squaredAlarmDist)const;
-
-    double squaredDistance(const DSAPBox & other)const;
-
-    double squaredDistance(const DSAPBox & other,int axis)const;
+    /// Compute the squared distance from this to other on a specific axis
+    [[nodiscard]]
+    double squaredDistance(const DSAPBox & other, int axis)const;
 
     void show() const;
 
     Cube cube;
-    EndPoint * min;
-    EndPoint * max;
+    EndPoint * min { nullptr };
+    EndPoint * max { nullptr };
 };
 
 /**
@@ -82,56 +86,92 @@ class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP :
 public:
     SOFA_CLASS2(DirectSAP, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
-    typedef std::vector<EndPoint*> EndPointList;
-
+    typedef sofa::helper::vector<EndPoint*> EndPointList;
     typedef DSAPBox SAPBox;
 
-    //void collidingCubes(std::vector<std::pair<Cube,Cube> > & col_cubes)const;
 private:
-    /**
-      *Returns the axis number which have the greatest variance for the primitive end points.
-      *This axis is used when updating and sorting end points. The greatest variance means
-      *that this axis have the most chance to eliminate a maximum of not overlaping SAPBox pairs
-      *because along this axis, SAPBoxes are the sparsest.
-      */
+
+    /** \brief Returns the axis number which have the greatest variance for the primitive end points.
+     *
+     * This axis is used when updating and sorting end points. The greatest variance means
+     * that this axis have the most chance to eliminate a maximum of not overlaping SAPBox pairs
+     * because along this axis, SAPBoxes are the sparsest.
+     */
     int greatestVarianceAxis()const;
 
-    bool added(core::CollisionModel * cm)const;
+    /// Return true if the collision model has already been added to the list of managed models
+    bool added(core::CollisionModel * cm) const;
 
+    /// Add a collision model to the list of managed models
     void add(core::CollisionModel * cm);
 
     /**
-      *Updates values of end points. These values are coordinates of AABB on axis that maximazes the variance for the AABBs.
+      * Updates values of end points. These values are coordinates of AABB on axis that maximize the variance for the AABBs.
       */
     void update();
 
-    Data<bool> bDraw; ///< enable/disable display of results
+    Data<bool> d_draw; ///< enable/disable display of results
+    Data<bool> d_showOnlyInvestigatedBoxes;
+    Data<int> d_nbPairs; ///< number of pairs of elements sent to narrow phase
+    Data< helper::fixed_array<defaulttype::Vector3,2> > d_box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
-    Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
+    CubeCollisionModel::SPtr m_boxModel;
 
-    CubeCollisionModel::SPtr boxModel;
+    /// Store a permanent list of end points
+    /// The container is a std::list to avoid invalidation of pointers after an insertion
+    std::list<EndPoint> m_endPointContainer;
 
-    std::vector<DSAPBox> _boxes;//boxes
-    EndPointList _end_points;//end points of _boxes
-    int _cur_axis;//the current greatest variance axis
+    sofa::helper::vector<DSAPBox> m_boxes;//boxes
+    sofa::helper::vector<bool> m_isBoxInvestigated;
+    EndPointList m_sortedEndPoints; ///< list of EndPoints dedicated to be sorted. Owner of pointers is m_endPointContainer
+    int m_currentAxis;//the current greatest variance axis
 
-    std::set<core::CollisionModel*> collisionModels;//used to check if a collision model is added
-    std::vector<core::CollisionModel*> _new_cm;//eventual new collision models to  add at a step
+    std::set<core::CollisionModel*> m_collisionModels;//used to check if a collision model is added
+    sofa::helper::vector<core::CollisionModel*> m_newCollisionModels;//eventual new collision models to add at a step
 
-    double _alarmDist;
-    double _alarmDist_d2;
-    double _sq_alarmDist;
+    double m_alarmDist;
+    double m_alarmDist_d2;
+    double m_sq_alarmDist;
+
+    static bool isSquaredDistanceLessThan(const DSAPBox& a, const DSAPBox& b, double threshold);
+
 protected:
     DirectSAP();
 
-    ~DirectSAP() override;
+    ~DirectSAP() override = default;
 
-    std::vector<EndPoint*> _to_del;//EndPoint arrays to delete when deleting DirectSAP
+    struct BoxData
+    {
+        core::CollisionModel* collisionModel { nullptr };
+        sofa::core::objectmodel::BaseContext* context { nullptr };
+        bool isBoxSimulated { false };
+        bool doesBoxSelfCollide { false };
+        sofa::core::CollisionElementIterator collisionElementIterator;
+    };
+    std::vector<BoxData> m_boxData;
+
+    bool isPairFiltered(const BoxData& data0, const BoxData& data1,
+                        const DSAPBox& box0, int boxId1
+                ) const;
+
+    void narrowCollisionDetectionForPair(
+            core::collision::ElementIntersector* intersector,
+            core::CollisionModel *collisionModel0,
+            core::CollisionModel *collisionModel1,
+            core::CollisionElementIterator collisionModelIterator0,
+            core::CollisionElementIterator collisionModelIterator1);
+
+    void createBoxesFromCollisionModels();
+    void cacheData(); /// Cache data into vector to avoid overhead during access
+    void sortEndPoints();
+    void narrowCollisionDetectionFromSortedEndPoints();
+
 public:
-    void setDraw(bool val) { bDraw.setValue(val); }
+    void setDraw(bool val) { d_draw.setValue(val); }
 
     void init() override;
     void reinit() override;
+    void reset() override;
 
     void addCollisionModel (core::CollisionModel *cm) override;
 
@@ -144,11 +184,11 @@ public:
     void endBroadPhase() override;
     void beginNarrowPhase() override;
 
-
     /* for debugging */
-    void draw(const core::visual::VisualParams*) override {}
+    void draw(const core::visual::VisualParams*) override;
 
     inline bool needsDeepBoundingTree()const override {return false;}
+
 };
 
 } // namespace sofa::component::collision

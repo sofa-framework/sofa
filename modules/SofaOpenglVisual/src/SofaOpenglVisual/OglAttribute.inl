@@ -73,7 +73,7 @@ void OglAttribute< size, type, DataTypes>::init()
 
     if (_topology!= nullptr && handleDynamicTopology.getValue())
     {
-        value.createTopologicalEngine(_topology);
+        value.createTopologyHandler(_topology);
         value.registerTopologicalData();
     }
 }

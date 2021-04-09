@@ -21,13 +21,9 @@
 ******************************************************************************/
 #include <SofaGeneralExplicitOdeSolver/CentralDifferenceSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <cmath>
-#include <iostream>
-#include <sofa/helper/system/thread/CTime.h>
 
 namespace sofa::component::odesolver
 {

@@ -98,7 +98,6 @@ using sofa::simulation::SceneLoaderFactory;
 #include <QMessageBox>
 #include <QDockWidget>
 #include <QStatusBar>
-#include <QDockWidget>
 #include <QSettings>
 #include <QMimeData>
 #include <QCompleter>
@@ -132,10 +131,6 @@ using sofa::simulation::SimulationStopEvent;
 
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor;
-
-#include <sofa/helper/system/FileSystem.h>
-using sofa::helper::system::FileSystem;
-
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;

@@ -19,7 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_DEFINITION
+
 #include <sofa/core/topology/TopologyChange.h>
+
+namespace std
+{
+    template class list<const sofa::core::topology::TopologyChange*>;
+}
+
+namespace sofa::core::objectmodel
+{
+    template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+}
 
 namespace sofa
 {

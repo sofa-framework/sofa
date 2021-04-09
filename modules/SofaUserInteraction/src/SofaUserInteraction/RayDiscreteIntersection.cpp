@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaUserInteraction/RayDiscreteIntersection.inl>
-#include <sofa/helper/FnDispatcher.inl>
+
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>
 #include <iostream>

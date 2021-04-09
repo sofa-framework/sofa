@@ -205,10 +205,10 @@ public:
     topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
 
-    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<TriangleInformation> >
+    class TRQSTriangleEngine : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<TriangleInformation> >
     {
     public:
-        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}
+        TRQSTriangleEngine(TriangularFEMForceField<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(Index triangleIndex, TriangleInformation& ,
                 const core::topology::BaseMeshTopology::Triangle & t,
@@ -316,7 +316,7 @@ public:
 
     Data<bool> f_computePrincipalStress; ///< Compute principal stress for each triangle
 
-    TRQSTriangleHandler* triangleHandler;
+    TRQSTriangleEngine* triangleEngine;
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangularFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

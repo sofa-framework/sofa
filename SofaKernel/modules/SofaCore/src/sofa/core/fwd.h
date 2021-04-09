@@ -112,7 +112,7 @@ namespace sofa::core::topology
 class BaseMeshTopology;
 class BaseTopologyObject;
 class Topology;
-class TopologyEngine;
+class TopologyHandler;
 class TopologyChange;
 SOFA_CORE_API std::ostream& operator<< ( std::ostream& out, const sofa::core::topology::TopologyChange* t );
 SOFA_CORE_API std::istream& operator>> ( std::istream& in, sofa::core::topology::TopologyChange*& t );

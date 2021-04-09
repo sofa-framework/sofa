@@ -39,24 +39,26 @@ namespace simulation
 class SOFA_SIMULATION_CORE_API SolveVisitor : public Visitor
 {
 public:
-    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt) : Visitor(params), dt(_dt), x(core::VecCoordId::position()),
-        v(core::VecDerivId::velocity()) {}
+    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt) : Visitor(params), dt(_dt), x(sofa::core::VecCoordId::position()),
+        v(sofa::core::VecDerivId::velocity()) {}
 
     SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free) : Visitor(params), dt(_dt){
-        if(free){
-            x = core::VecCoordId::freePosition();
-            v = core::VecDerivId::freeVelocity();
+        if(free)
+        {
+            x = sofa::core::VecCoordId::freePosition();
+            v = sofa::core::VecDerivId::freeVelocity();
         }
-        else{
-            x = core::VecCoordId::position();
-            v = core::VecDerivId::velocity();
+        else
+        {
+            x = sofa::core::VecCoordId::position();
+            v = sofa::core::VecDerivId::velocity();
         }
     }
 
     SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, sofa::core::MultiVecCoordId X,sofa::core::MultiVecDerivId V) : Visitor(params), dt(_dt),
         x(X),v(V){}
 
-    virtual void processSolver(simulation::Node* node, core::behavior::OdeSolver* b);
+    virtual void processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* b);
     Result processNodeTopDown(simulation::Node* node) override;
 
     /// Specify whether this action can be parallelized.

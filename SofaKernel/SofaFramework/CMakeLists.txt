@@ -5,7 +5,7 @@ project(SofaFramework)
 set(SOFAFRAMEWORK_VERSION "${Sofa_VERSION}")
 
 # Package install include directory
-set(SOFAFRAMEWORK_TARGETS Sofa.Type SofaHelper SofaDefaultType SofaCore SofaSimulationCore)
+set(SOFAFRAMEWORK_TARGETS Sofa.Type Sofa.Topology Sofa.Geometry SofaHelper SofaDefaultType SofaCore SofaSimulationCore)
 
 foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
@@ -13,11 +13,6 @@ foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
         target_compile_options(${TARGET} PUBLIC "-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/tests\"")
     endif()
 endforeach()
-
-if(SOFA_WITH_OPENGL)
-    add_subdirectory(../modules/Sofa.GL ${CMAKE_CURRENT_BINARY_DIR}/Sofa.GL)
-    list(APPEND SOFAFRAMEWORK_TARGETS Sofa.GL)
-endif()
 
 set(SOFAFRAMEWORK_SRC src/SofaFramework)
 set(HEADER_FILES

@@ -23,10 +23,6 @@
 
 #include <SofaGeneralDeformable/TriangularQuadraticSpringsForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
 #include <sofa/defaulttype/VecTypes.h>
 
 

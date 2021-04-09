@@ -19,10 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_H
-#define SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_H
+#pragma once
 
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/fwd.h>
 
 namespace sofa
 {
@@ -33,28 +34,23 @@ namespace core
 namespace topology
 {
 
-typedef Topology::Point            Point;
-typedef Topology::Edge             Edge;
-typedef Topology::Triangle         Triangle;
-typedef Topology::Quad             Quad;
-typedef Topology::Tetrahedron      Tetrahedron;
-typedef Topology::Hexahedron       Hexahedron;
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class SOFA_CORE_API TopologyHandler
+/** A class that will interact on a topological Data */
+class SOFA_CORE_API TopologyHandler : public sofa::core::objectmodel::DDGNode
 {
+protected:
+    TopologyHandler() {}
+
 public:
-    using Index = sofa::Index;
+    virtual void handleTopologyChange() {}
 
-    TopologyHandler() : lastElementIndex(0) {}
+    void update() override;
 
-    virtual ~TopologyHandler() {}
+public:
+    // really need to be a Data??
+    Data <std::list<const TopologyChange *> >m_changeList;
 
-    virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange *>& _topologyChangeEvents, const Size _dataSize);
+
+    virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize);
 
     virtual void ApplyTopologyChange(const core::topology::EndingEvent* /*event*/) {}
 
@@ -140,7 +136,7 @@ public:
     /// Apply renumbering on hexahedron elements.
     virtual void ApplyTopologyChange(const core::topology::HexahedraRenumbering* /*event*/) {}
 
-    // Needed to remove override warnings in TopologyElementHandler
+
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Point>::EMoved_Adding* /*event*/) {}
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Point>::EMoved_Removing* /*event*/) {}
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Edge>::EMoved* /*event*/) {}
@@ -150,28 +146,33 @@ public:
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Hexahedron>::EMoved* /*event*/) {}
 
 
-    virtual bool isTopologyDataRegistered() {return false;}
 
-    /// Swaps values at indices i1 and i2.
-    virtual void swap(Index /*i1*/, Index /*i2*/ ) {}
+    virtual bool isTopologyDataRegistered() { return false; }
 
-    /// Reorder the values.
-    virtual void renumber( const sofa::helper::vector<Index> &/*index*/ ) {}
 
+    size_t getNumberOfTopologicalChanges();
+
+    virtual void linkToPointDataArray() {}
+    virtual void linkToEdgeDataArray() {}
+    virtual void linkToTriangleDataArray() {}
+    virtual void linkToQuadDataArray() {}
+    virtual void linkToTetrahedronDataArray() {}
+    virtual void linkToHexahedronDataArray() {}
+
+    void setNamePrefix(const std::string& s) { m_prefix = s; }
+    std::string getName() { return m_prefix + m_data_name; }
+
+    virtual bool registerTopology();
+    virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
 protected:
-    /// to handle PointSubsetData
-    void setDataSetArraySize(const Index s) { lastElementIndex = s-1; }
-
-    /// to handle properly the removal of items, the container must know the index of the last element
-    Index lastElementIndex;
+    /// use to define engine name.
+    std::string m_prefix;
+    /// use to define data handled name.
+    std::string m_data_name;
 };
-
 
 } // namespace topology
 
-} // namespace core
+} // namespace component
 
 } // namespace sofa
-
-
-#endif // SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_H

@@ -21,22 +21,13 @@
 ******************************************************************************/
 #include "OBJExporter.h"
 
-#include <sstream>
-
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/ExportOBJVisitor.h>
 using sofa::simulation::ExportOBJVisitor ;
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 using sofa::core::objectmodel::KeypressedEvent ;
-
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-using sofa::core::objectmodel::KeyreleasedEvent ;
-
-#include <sofa/helper/system/FileSystem.h>
-using sofa::helper::system::FileSystem ;
 
 namespace sofa
 {

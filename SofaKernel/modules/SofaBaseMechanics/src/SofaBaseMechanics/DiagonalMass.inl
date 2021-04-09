@@ -48,7 +48,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "Display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
-    , m_pointHandler(nullptr)
+    , m_pointEngine(nullptr)
     , l_topology(initLink("topology", "link to the topology container"))
     , m_massTopologyType(TopologyElementType::UNKNOWN)
     , m_topology(nullptr)
@@ -59,20 +59,20 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::~DiagonalMass()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+    if (m_pointEngine)
+        delete m_pointEngine;
 }
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyCreateFunction(PointID, MassType &m, const Point &, const sofa::helper::vector<PointID> &, const sofa::helper::vector<double> &)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyCreateFunction(PointID, MassType &m, const Point &, const sofa::helper::vector<PointID> &, const sofa::helper::vector<double> &)
 {
     m=0;
 }
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyPointDestruction(const sofa::helper::vector<PointID> & pointsRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyPointDestruction(const sofa::helper::vector<PointID> & pointsRemoved)
 {
     helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
     helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -107,10 +107,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyPointDestruction(
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::PointsRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::PointsRemoved* e)
 {
     if(!dm->d_computeMassOnRest.getValue())
-        msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+        msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
     const auto& pointsRemoved = e->getArray();
     applyPointDestruction(pointsRemoved);
@@ -119,13 +119,13 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 
     if(dm->f_printLog.getValue())
     {
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesRemoved";
-        msg_info("DiagonalMassPointHandler")<<"Size of vertexMass: "<< dm->d_vertexMass.getValue().size();
+        msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: EdgesRemoved";
+        msg_info("DiagonalMassPointEngine")<<"Size of vertexMass: "<< dm->d_vertexMass.getValue().size();
     }
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeCreation(const sofa::helper::vector< EdgeID >& edgeAdded,
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyEdgeCreation(const sofa::helper::vector< EdgeID >& edgeAdded,
         const sofa::helper::vector< Edge >& /*elems*/,
         const sofa::helper::vector< sofa::helper::vector< EdgeID > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
@@ -158,7 +158,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeCreation(cons
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeDestruction(const sofa::helper::vector<EdgeID> & edgeRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyEdgeDestruction(const sofa::helper::vector<EdgeID> & edgeRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::EDGE)
     {
@@ -188,7 +188,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeDestruction(c
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::EdgesAdded* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::EdgesAdded* e)
 {
     const auto& edgeIndex = e->getIndexArray();
     const sofa::helper::vector< Edge >& edges = e->getArray();
@@ -198,10 +198,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
     if(dm->edgeGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
         if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesAdded";
+            msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: EdgesAdded";
 
         applyEdgeCreation(edgeIndex, edges, ancestors, coeffs);
         dm->cleanTracker();
@@ -210,17 +210,17 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::EdgesRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::EdgesRemoved* e)
 {
     const auto& edgeRemoved = e->getArray();
 
     if(dm->edgeGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
         if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesRemoved";
+            msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: EdgesRemoved";
 
         applyEdgeDestruction(edgeRemoved);
         dm->cleanTracker();
@@ -230,7 +230,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleCreation(const sofa::helper::vector< TriangleID >& triangleAdded,
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTriangleCreation(const sofa::helper::vector< TriangleID >& triangleAdded,
         const sofa::helper::vector< Triangle >& /*elems*/,
         const sofa::helper::vector< sofa::helper::vector< TriangleID > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
@@ -264,7 +264,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleCreation(
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleDestruction(const sofa::helper::vector<TriangleID > & triangleRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTriangleDestruction(const sofa::helper::vector<TriangleID > & triangleRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
@@ -297,7 +297,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleDestructi
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
     const auto& triangleAdded = e->getIndexArray();
     const sofa::helper::vector< Triangle >& elems = e->getElementArray();
@@ -307,10 +307,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
     if(dm->triangleGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
         if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TrianglesAdded";
+            msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: TrianglesAdded";
 
         applyTriangleCreation(triangleAdded,elems,ancestors,coefs);
         dm->cleanTracker();
@@ -319,17 +319,17 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
 {
     const auto& triangleRemoved = e->getArray();
 
     if(dm->triangleGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
         if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TrianglesRemoved";
+            msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: TrianglesRemoved";
 
         applyTriangleDestruction(triangleRemoved);
         dm->cleanTracker();
@@ -338,7 +338,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronCreation(const sofa::helper::vector< TetrahedronID >& tetrahedronAdded,
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTetrahedronCreation(const sofa::helper::vector< TetrahedronID >& tetrahedronAdded,
         const sofa::helper::vector< Tetrahedron >& /*elems*/,
         const sofa::helper::vector< sofa::helper::vector< TetrahedronID > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
@@ -376,7 +376,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronCreati
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronDestruction(const sofa::helper::vector<TetrahedronID> & tetrahedronRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTetrahedronDestruction(const sofa::helper::vector<TetrahedronID> & tetrahedronRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
@@ -409,7 +409,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronDestru
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TetrahedraAdded* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TetrahedraAdded* e)
 {
     const auto& tetrahedronAdded = e->getIndexArray();
     const sofa::helper::vector< Tetrahedron >& elems = e->getElementArray();
@@ -419,10 +419,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
     if(dm->tetraGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
         if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TetrahedraAdded";
+            msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: TetrahedraAdded";
 
         applyTetrahedronCreation(tetrahedronAdded, elems, ancestors, coefs);
         dm->cleanTracker();
@@ -431,17 +431,17 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TetrahedraRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TetrahedraRemoved* e)
 {
     const auto& tetrahedronRemoved = e->getArray();
 
     if(dm->tetraGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
         if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TetrahedraRemoved";
+            msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: TetrahedraRemoved";
 
         applyTetrahedronDestruction(tetrahedronRemoved);
         dm->cleanTracker();
@@ -450,7 +450,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronCreation(const sofa::helper::vector< HexahedronID >& hexahedronAdded,
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyHexahedronCreation(const sofa::helper::vector< HexahedronID >& hexahedronAdded,
         const sofa::helper::vector< Hexahedron >& /*elems*/,
         const sofa::helper::vector< sofa::helper::vector< HexahedronID > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
@@ -484,7 +484,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronCreatio
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronDestruction(const sofa::helper::vector<HexahedronID> & hexahedronRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyHexahedronDestruction(const sofa::helper::vector<HexahedronID> & hexahedronRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
@@ -514,7 +514,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronDestruc
     }
 }
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::HexahedraAdded* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::HexahedraAdded* e)
 {
     const auto& hexahedronAdded = e->getIndexArray();
     const sofa::helper::vector< Hexahedron >& elems = e->getElementArray();
@@ -524,10 +524,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
     if(dm->hexaGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
         if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: HexahedraAdded";
+            msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: HexahedraAdded";
 
         applyHexahedronCreation(hexahedronAdded,elems,ancestors,coefs);
         dm->cleanTracker();
@@ -536,17 +536,17 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::HexahedraRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::HexahedraRemoved* e)
 {
     const auto& hexahedronRemoved = e->getArray();
 
     if(dm->hexaGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
         if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: HexahedraRemoved";
+            msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: HexahedraRemoved";
 
         applyHexahedronDestruction(hexahedronRemoved);
         dm->cleanTracker();
@@ -705,8 +705,8 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
     // add the functions to handle topology changes.
-    m_pointHandler = new DMassPointHandler(this, &d_vertexMass);
-    d_vertexMass.createTopologicalEngine(m_topology, m_pointHandler);
+    m_pointEngine = new DMassPointEngine(this, &d_vertexMass);
+    d_vertexMass.createTopologyHandler(m_topology, m_pointEngine);
     if (edgeGeo)
         d_vertexMass.linkToEdgeDataArray();
     if (triangleGeo)

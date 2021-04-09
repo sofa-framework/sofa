@@ -35,9 +35,9 @@ class SOFA_SIMULATION_CORE_API StateChangeVisitor : public Visitor
 {
 
 public:
-    StateChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source);
+    StateChangeVisitor(const sofa::core::ExecParams* params, sofa::core::topology::Topology* source);
 
-    virtual void processStateChange(core::behavior::BaseMechanicalState* obj);
+    virtual void processStateChange(sofa::core::behavior::BaseMechanicalState* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
 
@@ -51,7 +51,7 @@ public:
 
 protected:
     bool root;
-    core::topology::Topology* m_source;
+    sofa::core::topology::Topology* m_source;
 };
 
 

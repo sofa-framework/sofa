@@ -20,14 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <map>
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/core/loader/VoxelLoader.h>
 
