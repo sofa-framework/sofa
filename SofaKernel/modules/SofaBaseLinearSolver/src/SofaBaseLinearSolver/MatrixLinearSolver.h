@@ -33,10 +33,12 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
-#include <sofa/core/behavior/RotationMatrix.h>
+//#include <SofaBaseLinearSolver/RotationMatrix.h>
 
 namespace sofa::component::linearsolver
 {
+
+template<class Real> class RotationMatrix;
 
 class MatrixInvertData {};
 

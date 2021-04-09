@@ -30,11 +30,9 @@
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <cmath>
-#include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
-#include <sofa/core/behavior/RotationMatrix.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-
+#include <SofaBaseLinearSolver/RotationMatrix.h>
 #include <map>
 
 namespace sofa
