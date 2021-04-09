@@ -29,6 +29,7 @@ namespace sofa::component::topology
 
 using namespace std;
 using namespace sofa::defaulttype;
+using sofa::core::topology::edgesInTetrahedronArray;
 
 int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set topology container")
         .add< TetrahedronSetTopologyContainer >()
@@ -123,7 +124,6 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
         const Tetrahedron &t = m_tetrahedron[i];
         for (EdgeID j=0; j<6; ++j)
         {
-            using namespace sofa::core::topology;
             const PointID v1 = t[edgesInTetrahedronArray[j][0]];
             const PointID v2 = t[edgesInTetrahedronArray[j][1]];
 
@@ -143,8 +143,6 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
 
 void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
 {
-    using namespace sofa::core::topology;
-
     // first clear potential previous buffer
     clearEdgesInTetrahedron();
 
@@ -215,7 +213,6 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
             const Tetrahedron &t = m_tetrahedron[i];
             for (EdgeID j=0; j<6; ++j)
             {
-                using namespace sofa::core::topology;
                 const PointID v1 = t[edgesInTetrahedronArray[j][0]];
                 const PointID v2 = t[edgesInTetrahedronArray[j][1]];
 
@@ -516,7 +513,6 @@ const sofa::helper::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron>
 TetrahedronSetTopologyContainer::Edge TetrahedronSetTopologyContainer::getLocalEdgesInTetrahedron (const EdgeID i) const
 {
     assert(i<6);
-    using namespace sofa::core::topology;
     return Edge (edgesInTetrahedronArray[i][0], edgesInTetrahedronArray[i][1]);
 }
 

@@ -29,7 +29,7 @@
 namespace sofa::component::topology
 {
 
-using namespace sofa::core::topology;
+using sofa::core::topology::verticesInHexahedronArray;
 template< class DataTypes>
 NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3> &HexahedronSetGeometryAlgorithms< DataTypes >::getHexahedronNumericalIntegrationDescriptor()
 {

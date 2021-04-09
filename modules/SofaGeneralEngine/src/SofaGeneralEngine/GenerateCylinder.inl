@@ -28,6 +28,8 @@
 namespace sofa::component::engine
 {
 
+using sofa::core::topology::edgesInTetrahedronArray;
+
 template <class DataTypes>
 GenerateCylinder<DataTypes>::GenerateCylinder()
     : f_outputTetrahedraPositions ( initData (&f_outputTetrahedraPositions, "output_TetrahedraPosition", "output array of 3d points of tetrahedra mesh") )
@@ -221,7 +223,6 @@ void GenerateCylinder<DataTypes>::doUpdate()
             for (i=0;i<6;++i){
 
                 Edge e,se;
-                using namespace sofa::core::topology;
                 e[0]=(*itt)[edgesInTetrahedronArray[i][0]];
                 e[1]=(*itt)[edgesInTetrahedronArray[i][1]];
                 if (e[0]>e[1]){

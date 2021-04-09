@@ -33,6 +33,8 @@
 namespace sofa::component::forcefield
 {
 
+using sofa::core::topology::edgesInTetrahedronArray;
+
 template< class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
         TetrahedronRestInformation &my_tinfo,
@@ -314,8 +316,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::computeQRRotation( Mat3x3
 template <class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
 {
-    using namespace sofa::core::topology;
-
     VecDeriv& f        = *(dataF.beginEdit());
     const VecCoord& x  =   dataX.getValue()  ;
 

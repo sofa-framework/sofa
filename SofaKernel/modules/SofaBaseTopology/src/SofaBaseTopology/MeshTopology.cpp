@@ -2217,7 +2217,6 @@ int MeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID qu
 MeshTopology::Edge MeshTopology::getLocalEdgesInTetrahedron (const HexahedronID i) const
 {
     assert(i<6);
-    using namespace sofa::core::topology;
     return MeshTopology::Edge (edgesInTetrahedronArray[i][0], edgesInTetrahedronArray[i][1]);
 }
 
