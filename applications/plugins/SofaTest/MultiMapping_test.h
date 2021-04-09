@@ -34,6 +34,7 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/helper/vector.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/MultiMapping.h>
 
 namespace sofa {
