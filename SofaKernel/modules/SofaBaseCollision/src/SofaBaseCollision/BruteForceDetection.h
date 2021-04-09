@@ -27,16 +27,26 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/helper/vector.h>
 
+#include <queue>
+#include <stack>
+
+namespace sofa::core::collision
+{
+    class ElementIntersector;
+}
 
 namespace sofa::component::collision
 {
 
-class CubeCollisionModel;
+class MirrorIntersector;
 
 class SOFA_SOFABASECOLLISION_API BruteForceDetection :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
+    using CollisionIteratorRange = std::pair<core::CollisionElementIterator,core::CollisionElementIterator>;
+    using TestPair = std::pair< CollisionIteratorRange, CollisionIteratorRange >;
+
 public:
     SOFA_CLASS2(BruteForceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
@@ -73,6 +83,34 @@ public:
     void draw(const core::visual::VisualParams* /* vparams */) override { }
 
     inline bool needsDeepBoundingTree()const override {return true;}
+
+protected:
+
+    static void initializeExternalCells(
+            core::CollisionModel *cm1,
+            core::CollisionModel *cm2,
+            std::queue<TestPair>& externalCells);
+
+    void processExternalCell(
+            const TestPair& root,
+            core::CollisionModel *finalcm1,
+            core::CollisionModel *finalcm2,
+            core::collision::ElementIntersector* intersector,
+            core::collision::ElementIntersector* finalintersector,
+            MirrorIntersector* mirror,
+            std::queue<TestPair>& externalCells,
+            bool selfCollision,
+            sofa::core::collision::DetectionOutputVector*& outputs);
+    void processInternalCell(
+            const TestPair& current,
+            core::CollisionModel *finalcm1,
+            core::CollisionModel *finalcm2,
+            core::collision::ElementIntersector* intersector,
+            core::collision::ElementIntersector* finalintersector,
+            std::queue<TestPair>& externalCells,
+            std::stack<TestPair>& internalCells,
+            bool selfCollision,
+            sofa::core::collision::DetectionOutputVector*& outputs);
 };
 
 } // namespace sofa::component::collision
