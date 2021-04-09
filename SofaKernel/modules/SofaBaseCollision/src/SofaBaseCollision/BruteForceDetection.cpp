@@ -353,18 +353,18 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                                 {
                                     if (newExternalTests.first.first.getCollisionModel() == finalcm1 && newExternalTests.second.first.getCollisionModel() == finalcm2)
                                     {
-                                        core::CollisionElementIterator begin1 = newExternalTests.first.first;
-                                        core::CollisionElementIterator end1 = newExternalTests.first.second;
-                                        core::CollisionElementIterator begin2 = newExternalTests.second.first;
-                                        core::CollisionElementIterator end2 = newExternalTests.second.second;
-                                        for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+                                        core::CollisionElementIterator extBegin1 = newExternalTests.first.first;
+                                        core::CollisionElementIterator extEnd1 = newExternalTests.first.second;
+                                        core::CollisionElementIterator extBegin2 = newExternalTests.second.first;
+                                        core::CollisionElementIterator extEnd2 = newExternalTests.second.second;
+                                        for (core::CollisionElementIterator extIt1 = extBegin1; extIt1 != extEnd1; ++extIt1)
                                         {
-                                            for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
+                                            for (core::CollisionElementIterator extIt2 = extBegin2; extIt2 != extEnd2; ++extIt2)
                                             {
-                                                //if (!it1->canCollideWith(it2)) continue;
+                                                //if (!extIt1->canCollideWith(extIt2)) continue;
                                                 // Final collision pair
-                                                if (!selfCollision || it1.canCollideWith(it2))
-                                                    finalintersector->intersect(it1,it2,outputs);
+                                                if (!selfCollision || extIt1.canCollideWith(extIt2))
+                                                    finalintersector->intersect(extIt1,extIt2,outputs);
                                             }
                                         }
                                     }
