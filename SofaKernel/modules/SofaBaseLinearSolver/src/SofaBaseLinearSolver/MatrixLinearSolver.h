@@ -27,7 +27,6 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::linearsolver
@@ -38,7 +37,6 @@ template<class Real> class FullMatrix;
 template<class Real> class RotationMatrix;
 template<class Real> class DiagonalMatrix;
 template<size_t, class Real> class BlockDiagonalMatrix;
-
 
 class MatrixInvertData {};
 
@@ -68,97 +66,11 @@ public:
     }
 };
 
-template<class TVector>
-class MatrixLinearSolverInternalData
-{
-public:
-    typedef typename TVector::Real Real;
-    typedef SparseMatrix<Real> JMatrixType;
-    typedef defaulttype::BaseMatrix ResMatrixType;
-
-    template<typename MReal>
-    JMatrixType * copyJmatrix(SparseMatrix<MReal> * J)
-    {
-        J_local.clear();
-        J_local.resize(J->rowSize(),J->colSize());
-
-        for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LineConstIterator jit1 = J->begin(); jit1 != J->end(); jit1++)
-        {
-            auto l = jit1->first;
-            for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
-            {
-                auto c = i1->first;
-                MReal val = i1->second;
-                J_local.set(l,c,val);
-            }
-        }
-        return &J_local;
-    }
-
-    void projectForceInConstraintSpace(defaulttype::BaseVector* r,const defaulttype::BaseVector* f) {
-        for (typename SparseMatrix<Real>::LineConstIterator jit = J_local.begin(), jitend = J_local.end(); jit != jitend; ++jit) {
-            auto row = jit->first;
-            double force = f->element(row);
-            for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2) {
-                auto col = i2->first;
-                double val = i2->second;
-                r->add(col,val * force);
-            }
-        }
-    }
-
-    JMatrixType * getLocalJ() {
-        return &J_local;
-    }
-
-    JMatrixType * getLocalJ(defaulttype::BaseMatrix * J)
-    {
-        if (JMatrixType * j = dynamic_cast<JMatrixType *>(J))
-        {
-            return j;
-        }
-        else if (SparseMatrix<double> * j = dynamic_cast<SparseMatrix<double> *>(J))
-        {
-            return copyJmatrix(j);
-        }
-        else if (SparseMatrix<float> * j = dynamic_cast<SparseMatrix<float> *>(J))
-        {
-            return copyJmatrix(j);
-        }
-        else
-        {
-            J_local.clear();
-            J_local.resize(J->rowSize(),J->colSize());
-
-            for (typename JMatrixType::Index j=0; j<J->rowSize(); j++)
-            {
-                for (typename JMatrixType::Index i=0; i<J->colSize(); i++)
-                {
-                    J_local.set(j,i,J->element(j,i));
-                }
-            }
-
-            return &J_local;
-        }
-    }
-
-    ResMatrixType * getLocalRes(defaulttype::BaseMatrix * R)
-    {
-        return R;
-    }
-
-
-    void addLocalRes(defaulttype::BaseMatrix * /*R*/)
-    {
-        return ;
-    }
-
-private :
-    JMatrixType J_local;
-};
-
 template<class Matrix, class Vector, class ThreadManager = NoThreadManager>
 class MatrixLinearSolver;
+
+template<class TVector>
+class MatrixLinearSolverInternalData;
 
 template<class Matrix, class Vector>
 class MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinearSolver<Matrix, Vector>
@@ -170,8 +82,8 @@ public:
     typedef NoThreadManager ThreadManager;
     typedef std::list<Index> ListIndex;
     typedef typename Vector::Real Real;
-    typedef typename MatrixLinearSolverInternalData<Vector>::JMatrixType JMatrixType;
-    typedef typename MatrixLinearSolverInternalData<Vector>::ResMatrixType ResMatrixType;
+    typedef SparseMatrix<Real> JMatrixType;
+    typedef defaulttype::BaseMatrix ResMatrixType;
 
     MatrixLinearSolver();
     ~MatrixLinearSolver() override ;
@@ -216,7 +128,7 @@ public:
     Vector* getSystemLHVector() { return currentGroup->systemLHVector; }
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    defaulttype::BaseMatrix* getSystemBaseMatrix() override { return currentGroup->systemMatrix; }
+    defaulttype::BaseMatrix* getSystemBaseMatrix() override;
 
     /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
     const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override { return &currentGroup->matrixAccessor; }
@@ -312,7 +224,7 @@ protected:
     Matrix* createMatrix();
     static void deleteMatrix(Matrix* v);
 
-    MatrixLinearSolverInternalData<Vector> internalData;
+    std::unique_ptr<MatrixLinearSolverInternalData<Vector>> internalData;
     MatrixInvertData * invertData;
 
     virtual MatrixInvertData * createInvertData();
