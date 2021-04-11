@@ -235,7 +235,7 @@ namespace sofa  {
             
             unsigned m_workerThreadCount;
             
-            bool m_workerThreadsIdle;
+            volatile bool m_workerThreadsIdle;
             
             bool m_isClosing;
             
