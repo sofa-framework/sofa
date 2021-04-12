@@ -42,14 +42,6 @@ namespace simulation
 {
 using namespace sofa::core;
 
-Visitor::Result MechanicalGetDimensionVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
-{
-    const std::size_t n = mm->getMatrixSize();
-    *ctx->nodeData += (SReal)n;
-    return RESULT_CONTINUE;
-}
-
-
 Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj)
 {
     SReal nextTime = node->getTime() + dt;

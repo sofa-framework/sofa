@@ -54,37 +54,6 @@ public:
     {}
 };
 
-/** Compute the total number of DOFs */
-class SOFA_SIMULATION_CORE_API MechanicalGetDimensionVisitor : public MechanicalVisitor
-{
-public:
-    MechanicalGetDimensionVisitor(const sofa::core::MechanicalParams* mparams, SReal* result)
-        : MechanicalVisitor(mparams)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-        rootData = result;
-    }
-
-    Result fwdMechanicalState(VisitorContext* ctx, sofa::core::behavior::BaseMechanicalState* mm) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalGetDimensionVisitor";}
-
-    bool writeNodeData() const override
-    {
-        return true;
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
-};
-
 /** Find the first available index for a VecId
 */
 template <sofa::core::VecType vtype>

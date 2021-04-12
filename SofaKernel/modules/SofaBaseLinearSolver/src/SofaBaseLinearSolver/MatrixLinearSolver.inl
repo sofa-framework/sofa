@@ -34,6 +34,9 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVi
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVisitor;
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetDimensionVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalGetDimensionVisitor;
+
 namespace sofa::component::linearsolver
 {
 
@@ -119,7 +122,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
     if (!this->frozen)
     {
         SReal dim = 0;
-        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(this->getContext());
+        simulation::mechanicalvisitor::MechanicalGetDimensionVisitor(mparams, &dim).execute(this->getContext());
         currentGroup->systemSize = Size(dim);
         currentGroup->matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
 
