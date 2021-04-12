@@ -14,7 +14,6 @@ set(SOURCE_FILES
     system/atomic_test.cpp
     #system/thread/CircularQueue_test.cpp
     logging/logging_test.cpp
-    testing/TestMessageHandler_test.cpp
 )
 
 add_subdirectory(system/TestPlugin)
