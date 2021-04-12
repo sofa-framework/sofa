@@ -9,9 +9,6 @@ set(SOFAFRAMEWORK_TARGETS Sofa.Type Sofa.Topology Sofa.Geometry SofaHelper SofaD
 
 foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    if(SOFA_BUILD_TESTS)
-        target_compile_options(${TARGET} PUBLIC "-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/tests\"")
-    endif()
 endforeach()
 
 set(SOFAFRAMEWORK_SRC src/SofaFramework)
