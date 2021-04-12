@@ -20,8 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/core/MultiVecId.h>
-#include <sofa/simulation/MechanicalVisitor.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalVAvailVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVAvailVisitor;
 
 
 #include <sofa/simulation/VelocityThresholdVisitor.h>

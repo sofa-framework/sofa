@@ -54,44 +54,6 @@ public:
     {}
 };
 
-/** Find the first available index for a VecId
-*/
-template <sofa::core::VecType vtype>
-class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor : public BaseMechanicalVisitor
-{
-public:
-    typedef sofa::core::TVecId<vtype,sofa::core::V_WRITE> MyVecId;
-    typedef sofa::core::TMultiVecId<vtype,sofa::core::V_WRITE> MyMultiVecId;
-    typedef std::set<sofa::core::BaseState*> StateSet;
-    MyVecId& v;
-    StateSet states;
-    MechanicalVAvailVisitor( const sofa::core::ExecParams* params, MyVecId& v)
-        : BaseMechanicalVisitor(params), v(v)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalVAvailVisitor"; }
-    virtual std::string getInfos() const override;
-    /// Specify whether this action can be parallelized.
-    bool isThreadSafe() const override
-    {
-        return false;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-        MyMultiVecId mv(v);
-        addReadWriteVector( mv );
-    }
-#endif
-};
-
 
 
 /**
@@ -1838,8 +1800,6 @@ public:
 };
 
 #if !defined(SOFA_SIMULATION_MECHANICALVISITOR_CPP)
-extern template class MechanicalVAvailVisitor<sofa::core::V_COORD>;
-extern template class MechanicalVAvailVisitor<sofa::core::V_DERIV>;
 extern template class MechanicalVAllocVisitor<sofa::core::V_COORD>;
 extern template class MechanicalVAllocVisitor<sofa::core::V_DERIV>;
 extern template class MechanicalVReallocVisitor<sofa::core::V_COORD>;

@@ -108,23 +108,6 @@ std::string  MechanicalVInitVisitor<vtype>::getInfos() const
 }
 
 template< VecType vtype>
-Visitor::Result  MechanicalVAvailVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    mm->vAvail( this->params, v );
-    this->states.insert(mm);
-    return RESULT_CONTINUE;
-}
-
-template< VecType vtype>
-std::string  MechanicalVAvailVisitor<vtype>::getInfos() const
-{
-    std::string name="[" + v.getName() + "]";
-    return name;
-}
-
-
-
-template< VecType vtype>
 Visitor::Result MechanicalVAllocVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     mm->vAlloc(this->params, v.getId(mm) );
@@ -1192,8 +1175,6 @@ std::string MechanicalAccFromFVisitor::getInfos() const
 }
 
 
-template class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor<V_DERIV>;
 template class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor<V_COORD>;
 template class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor<V_DERIV>;
 template class SOFA_SIMULATION_CORE_API MechanicalVReallocVisitor<V_COORD>;
