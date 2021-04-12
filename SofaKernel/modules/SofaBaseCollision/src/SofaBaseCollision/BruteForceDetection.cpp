@@ -346,25 +346,26 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                 //if (self && !it1.canCollideWith(it2)) continue;
                 //if (!it1->canCollideWith(it2)) continue;
 
-                bool b = intersector->canIntersect(it1,it2);
-                if (b)
+                if (intersector->canIntersect(it1,it2))
                 {
                     // Need to test recursively
                     // Note that an element cannot have both internal and external children
 
-                    TestPair newInternalTests(it1.getInternalChildren(),it2.getInternalChildren());
-                    TestPair newExternalTests(it1.getExternalChildren(),it2.getExternalChildren());
+                    TestPair newInternalTests(it1.getInternalChildren(), it2.getInternalChildren());
+                    TestPair newExternalTests(it1.getExternalChildren(), it2.getExternalChildren());
+
                     if (!isRangeEmpty(newInternalTests.first))
                     {
                         if (!isRangeEmpty(newInternalTests.second))
                         {
+                            //both collision elements have internal children. They are added to the list
                             internalCells.push(newInternalTests);
                         }
                         else
                         {
-                            newInternalTests.second.first = it2;
-                            newInternalTests.second.second = it2;
-                            ++newInternalTests.second.second;
+                            //only the first collision element has internal children. The second collision element
+                            //is kept as it is
+                            newInternalTests.second = {it2, it2 + 1};
                             internalCells.push(newInternalTests);
                         }
                     }
@@ -372,9 +373,9 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                     {
                         if (!isRangeEmpty(newInternalTests.second))
                         {
-                            newInternalTests.first.first = it1;
-                            newInternalTests.first.second = it1;
-                            ++newInternalTests.first.second;
+                            //only the second collision element has internal children. The first collision element
+                            //is kept as it is
+                            newInternalTests.first = {it1, it1 + 1};
                             internalCells.push(newInternalTests);
                         }
                         else
