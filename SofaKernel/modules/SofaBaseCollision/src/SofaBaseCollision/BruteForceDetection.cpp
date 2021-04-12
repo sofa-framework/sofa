@@ -268,8 +268,8 @@ void BruteForceDetection::processExternalCell(const TestPair& root,
     const auto& colElementsRange1 = root.first; //range of collision element from the first collision model
     const auto& colElementsRange2 = root.second; //range of collision element from the second collision model
 
-    const auto& collisionModel1 = colElementsRange1.first.getCollisionModel(); //get the first collision model
-    const auto& collisionModel2 = colElementsRange2.first.getCollisionModel(); //get the second collision model
+    auto* collisionModel1 = colElementsRange1.first.getCollisionModel(); //get the first collision model
+    auto* collisionModel2 = colElementsRange2.first.getCollisionModel(); //get the second collision model
 
     if (cm1 != collisionModel1 || cm2 != collisionModel2)//if the CollisionElements do not belong to cm1 and cm2, update cm1 and cm2
     {
@@ -318,10 +318,10 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                                               sofa::core::collision::DetectionOutputVector*& outputs)
 {
     //first collision model
-    core::CollisionElementIterator begin1 = root.first.first;
+    const core::CollisionElementIterator begin1 = root.first.first;
 
     //second collision model
-    core::CollisionElementIterator begin2 = root.second.first;
+    const core::CollisionElementIterator begin2 = root.second.first;
 
     if (begin1.getCollisionModel() == finalcm1 && begin2.getCollisionModel() == finalcm2)
     {
@@ -330,91 +330,122 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
     }
     else
     {
-        core::CollisionElementIterator end1 = root.first.second;
-        core::CollisionElementIterator end2 = root.second.second;
+        visitCollisionElements(root, finalcm1, finalcm2, intersector, finalintersector, externalCells, internalCells, selfCollision, outputs);
+    }
+}
 
-        for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+void BruteForceDetection::visitCollisionElements(const TestPair& root,
+                                                 core::CollisionModel *finalcm1,
+                                                 core::CollisionModel *finalcm2,
+                                                 core::collision::ElementIntersector* intersector,
+                                                 core::collision::ElementIntersector* finalintersector,
+                                                 std::queue<TestPair>& externalCells,
+                                                 std::stack<TestPair>& internalCells,
+                                                 bool selfCollision,
+                                                 sofa::core::collision::DetectionOutputVector*& outputs)
+{
+    const core::CollisionElementIterator begin1 = root.first.first;
+    const core::CollisionElementIterator end1 = root.first.second;
+    const core::CollisionElementIterator begin2 = root.second.first;
+    const core::CollisionElementIterator end2 = root.second.second;
+
+    for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+    {
+        for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
         {
-            for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
+            if (intersector->canIntersect(it1,it2))
             {
-                //if (self && !it1.canCollideWith(it2)) continue;
-                //if (!it1->canCollideWith(it2)) continue;
+                // Need to test recursively
+                // Note that an element cannot have both internal and external children
 
-                if (intersector->canIntersect(it1,it2))
+                TestPair newInternalTests(it1.getInternalChildren(), it2.getInternalChildren());
+                TestPair newExternalTests(it1.getExternalChildren(), it2.getExternalChildren());
+
+                if (!isRangeEmpty(newInternalTests.first))
                 {
-                    // Need to test recursively
-                    // Note that an element cannot have both internal and external children
-
-                    TestPair newInternalTests(it1.getInternalChildren(), it2.getInternalChildren());
-                    TestPair newExternalTests(it1.getExternalChildren(), it2.getExternalChildren());
-
-                    if (!isRangeEmpty(newInternalTests.first))
+                    if (!isRangeEmpty(newInternalTests.second))
                     {
-                        if (!isRangeEmpty(newInternalTests.second))
-                        {
-                            //both collision elements have internal children. They are added to the list
-                            internalCells.push(newInternalTests);
-                        }
-                        else
-                        {
-                            //only the first collision element has internal children. The second collision element
-                            //is kept as it is
-                            newInternalTests.second = {it2, it2 + 1};
-                            internalCells.push(newInternalTests);
-                        }
+                        //both collision elements have internal children. They are added to the list
+                        internalCells.push(std::move(newInternalTests));
                     }
                     else
                     {
-                        if (!isRangeEmpty(newInternalTests.second))
-                        {
-                            //only the second collision element has internal children. The first collision element
-                            //is kept as it is
-                            newInternalTests.first = {it1, it1 + 1};
-                            internalCells.push(newInternalTests);
-                        }
-                        else
-                        {
-                            // end of both internal tree of elements.
-                            // need to test external children
-                            if (!isRangeEmpty(newExternalTests.first))
-                            {
-                                if (!isRangeEmpty(newExternalTests.second))
-                                {
-                                    if (newExternalTests.first.first.getCollisionModel() == finalcm1 && newExternalTests.second.first.getCollisionModel() == finalcm2)
-                                    {
-                                        finalCollisionPairs(newExternalTests, selfCollision, finalintersector, outputs);
-                                    }
-                                    else
-                                    {
-                                        externalCells.push(newExternalTests);
-                                    }
-                                }
-                                else
-                                {
-                                    // only first element has external children
-                                    // test them against the second element
-                                    newExternalTests.second= {it2, it2 + 1};
-                                    externalCells.emplace(newExternalTests.first, newInternalTests.second);
-                                }
-                            }
-                            else if (!isRangeEmpty(newExternalTests.second))
-                            {
-                                // only first element has external children
-                                // test them against the first element
-                                newExternalTests.first = {it1, it1 + 1};
-                                externalCells.emplace(newExternalTests.first, newExternalTests.second);
-                            }
-                            else
-                            {
-                                // No child -> final collision pair
-                                if (!selfCollision || it1.canCollideWith(it2))
-                                    intersector->intersect(it1,it2, outputs);
-                            }
-                        }
+                        //only the first collision element has internal children. The second collision element
+                        //is kept as it is
+                        newInternalTests.second = {it2, it2 + 1};
+                        internalCells.push(std::move(newInternalTests));
+                    }
+                }
+                else
+                {
+                    if (!isRangeEmpty(newInternalTests.second))
+                    {
+                        //only the second collision element has internal children. The first collision element
+                        //is kept as it is
+                        newInternalTests.first = {it1, it1 + 1};
+                        internalCells.push(std::move(newInternalTests));
+                    }
+                    else
+                    {
+                        // end of both internal tree of elements.
+                        // need to test external children
+                        visitExternalChildren(newExternalTests, newInternalTests, it1, it2, finalcm1, finalcm2, intersector, finalintersector, externalCells, selfCollision, outputs);
                     }
                 }
             }
         }
+    }
+}
+
+void BruteForceDetection::visitExternalChildren(const TestPair& externalChildren,
+                                                const TestPair& internalChildren,
+                                                const core::CollisionElementIterator& it1,
+                                                const core::CollisionElementIterator& it2,
+                                                core::CollisionModel *finalcm1,
+                                                core::CollisionModel *finalcm2,
+                                                core::collision::ElementIntersector* intersector,
+                                                core::collision::ElementIntersector* finalintersector,
+                                                std::queue<TestPair>& externalCells,
+                                                bool selfCollision,
+                                                sofa::core::collision::DetectionOutputVector*& outputs)
+{
+    const bool isExtChildrenRangeEmpty1 = isRangeEmpty(externalChildren.first);
+    const bool isExtChildrenRangeEmpty2 = isRangeEmpty(externalChildren.second);
+
+    if (!isExtChildrenRangeEmpty1)
+    {
+        if (!isExtChildrenRangeEmpty2)
+        {
+            const auto* collisionModel1 = externalChildren.first.first.getCollisionModel(); //get the first collision model
+            const auto* collisionModel2 = externalChildren.second.first.getCollisionModel(); //get the second collision model
+
+            if (collisionModel1 == finalcm1 && collisionModel2 == finalcm2)
+            {
+                finalCollisionPairs(externalChildren, selfCollision, finalintersector, outputs);
+            }
+            else
+            {
+                externalCells.push(std::move(externalChildren));
+            }
+        }
+        else
+        {
+            // only first element has external children
+            // test them against the second element
+            externalCells.emplace(externalChildren.first, std::make_pair(it2, it2 + 1));
+        }
+    }
+    else if (!isExtChildrenRangeEmpty2)
+    {
+        // only second element has external children
+        // test them against the first element
+        externalCells.emplace(std::make_pair(it1, it1 + 1), externalChildren.second);
+    }
+    else
+    {
+        // No child -> final collision pair
+        if (!selfCollision || it1.canCollideWith(it2))
+            intersector->intersect(it1,it2, outputs);
     }
 }
 
@@ -423,10 +454,10 @@ void BruteForceDetection::finalCollisionPairs(const TestPair& pair,
                                               core::collision::ElementIntersector* intersector,
                                               sofa::core::collision::DetectionOutputVector*& outputs)
 {
-    core::CollisionElementIterator begin1 = pair.first.first;
-    core::CollisionElementIterator end1 = pair.first.second;
-    core::CollisionElementIterator begin2 = pair.second.first;
-    core::CollisionElementIterator end2 = pair.second.second;
+    const core::CollisionElementIterator begin1 = pair.first.first;
+    const core::CollisionElementIterator end1 = pair.first.second;
+    const core::CollisionElementIterator begin2 = pair.second.first;
+    const core::CollisionElementIterator end2 = pair.second.second;
 
     for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
     {

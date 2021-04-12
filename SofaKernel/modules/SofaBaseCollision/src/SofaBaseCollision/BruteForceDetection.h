@@ -127,6 +127,28 @@ protected:
             bool selfCollision,
             sofa::core::collision::DetectionOutputVector*& outputs);
 
+    void visitCollisionElements(const TestPair& root,
+                                core::CollisionModel *finalcm1,
+                                core::CollisionModel *finalcm2,
+                                core::collision::ElementIntersector* intersector,
+                                core::collision::ElementIntersector* finalintersector,
+                                std::queue<TestPair>& externalCells,
+                                std::stack<TestPair>& internalCells,
+                                bool selfCollision,
+                                sofa::core::collision::DetectionOutputVector*& outputs);
+
+    void visitExternalChildren(const TestPair& externalChildren,
+                               const TestPair& internalChildren,
+                               const core::CollisionElementIterator& it1,
+                               const core::CollisionElementIterator& it2,
+                               core::CollisionModel *finalcm1,
+                               core::CollisionModel *finalcm2,
+                               core::collision::ElementIntersector* intersector,
+                               core::collision::ElementIntersector* finalintersector,
+                               std::queue<TestPair>& externalCells,
+                               bool selfCollision,
+                               sofa::core::collision::DetectionOutputVector*& outputs);
+
     void finalCollisionPairs(const TestPair& pair,
                              bool selfCollision,
                              core::collision::ElementIntersector* intersector,

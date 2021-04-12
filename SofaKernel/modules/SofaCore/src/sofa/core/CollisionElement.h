@@ -258,7 +258,7 @@ public:
     /// Test if this element can collide with another element.
     ///
     /// @see CollisionModel::canCollideWithElement
-    bool canCollideWith(TCollisionElementIterator<Model>& elem)
+    bool canCollideWith(const TCollisionElementIterator<Model>& elem) const
     {
         return ((model != elem.model) || (index < elem.index)) && model->canCollideWithElement(index, elem.model, elem.index);
     }
