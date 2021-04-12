@@ -127,6 +127,11 @@ protected:
             bool selfCollision,
             sofa::core::collision::DetectionOutputVector*& outputs);
 
+    void finalCollisionPairs(const TestPair& pair,
+                             bool selfCollision,
+                             core::collision::ElementIntersector* intersector,
+                             sofa::core::collision::DetectionOutputVector*& outputs);
+
 private:
 
     static bool isRangeEmpty(const CollisionIteratorRange& range);

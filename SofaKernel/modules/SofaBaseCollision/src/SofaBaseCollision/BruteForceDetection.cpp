@@ -319,26 +319,20 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
 {
     //first collision model
     core::CollisionElementIterator begin1 = root.first.first;
-    core::CollisionElementIterator end1 = root.first.second;
 
     //second collision model
     core::CollisionElementIterator begin2 = root.second.first;
-    core::CollisionElementIterator end2 = root.second.second;
 
     if (begin1.getCollisionModel() == finalcm1 && begin2.getCollisionModel() == finalcm2)
     {
         // Final collision pairs
-        for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
-        {
-            for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
-            {
-                if (!selfCollision || it1.canCollideWith(it2))
-                    intersector->intersect(it1,it2,outputs);
-            }
-        }
+        finalCollisionPairs(root, selfCollision, intersector, outputs);
     }
     else
     {
+        core::CollisionElementIterator end1 = root.first.second;
+        core::CollisionElementIterator end2 = root.second.second;
+
         for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
         {
             for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
@@ -388,23 +382,12 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                                 {
                                     if (newExternalTests.first.first.getCollisionModel() == finalcm1 && newExternalTests.second.first.getCollisionModel() == finalcm2)
                                     {
-                                        core::CollisionElementIterator extBegin1 = newExternalTests.first.first;
-                                        core::CollisionElementIterator extEnd1 = newExternalTests.first.second;
-                                        core::CollisionElementIterator extBegin2 = newExternalTests.second.first;
-                                        core::CollisionElementIterator extEnd2 = newExternalTests.second.second;
-                                        for (core::CollisionElementIterator extIt1 = extBegin1; extIt1 != extEnd1; ++extIt1)
-                                        {
-                                            for (core::CollisionElementIterator extIt2 = extBegin2; extIt2 != extEnd2; ++extIt2)
-                                            {
-                                                //if (!extIt1->canCollideWith(extIt2)) continue;
-                                                // Final collision pair
-                                                if (!selfCollision || extIt1.canCollideWith(extIt2))
-                                                    finalintersector->intersect(extIt1,extIt2,outputs);
-                                            }
-                                        }
+                                        finalCollisionPairs(newExternalTests, selfCollision, finalintersector, outputs);
                                     }
                                     else
+                                    {
                                         externalCells.push(newExternalTests);
+                                    }
                                 }
                                 else
                                 {
@@ -435,6 +418,28 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                     }
                 }
             }
+        }
+    }
+}
+
+void BruteForceDetection::finalCollisionPairs(const TestPair& pair,
+                                              bool selfCollision,
+                                              core::collision::ElementIntersector* intersector,
+                                              sofa::core::collision::DetectionOutputVector*& outputs)
+{
+    core::CollisionElementIterator begin1 = pair.first.first;
+    core::CollisionElementIterator end1 = pair.first.second;
+    core::CollisionElementIterator begin2 = pair.second.first;
+    core::CollisionElementIterator end2 = pair.second.second;
+
+    for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+    {
+        for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
+        {
+            //if (!extIt1->canCollideWith(extIt2)) continue;
+            // Final collision pair
+            if (!selfCollision || it1.canCollideWith(it2))
+                intersector->intersect(it1, it2, outputs);
         }
     }
 }
