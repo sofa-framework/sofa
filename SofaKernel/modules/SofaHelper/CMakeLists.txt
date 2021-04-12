@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaHelper)
+project(Sofa.Helper)
 
 # DEPENDENCIES
 # sofa_find_package(Sofa.Type REQUIRED)
@@ -273,6 +273,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 if(JSON_FOUND)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
 endif()
+
+# Create alias
+add_library(SofaHelper ALIAS ${PROJECT_NAME})
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework

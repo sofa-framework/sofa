@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaCore)
+project(Sofa.Core)
 
 set(SRC_ROOT "src/sofa/core")
 
@@ -275,6 +275,9 @@ sofa_add_targets_to_package(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaFramework"
     )
+
+# Create alias
+add_library(SofaCore ALIAS ${PROJECT_NAME})
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaCore_test)
