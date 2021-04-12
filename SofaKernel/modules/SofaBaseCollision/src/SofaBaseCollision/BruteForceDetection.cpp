@@ -393,9 +393,7 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                                 {
                                     // only first element has external children
                                     // test them against the second element
-                                    newExternalTests.second.first = it2;
-                                    newExternalTests.second.second = it2;
-                                    ++newExternalTests.second.second;
+                                    newExternalTests.second= {it2, it2 + 1};
                                     externalCells.emplace(newExternalTests.first, newInternalTests.second);
                                 }
                             }
@@ -403,9 +401,7 @@ void BruteForceDetection::processInternalCell(const TestPair& root,
                             {
                                 // only first element has external children
                                 // test them against the first element
-                                newExternalTests.first.first = it1;
-                                newExternalTests.first.second = it1;
-                                ++newExternalTests.first.second;
+                                newExternalTests.first = {it1, it1 + 1};
                                 externalCells.emplace(newExternalTests.first, newExternalTests.second);
                             }
                             else
