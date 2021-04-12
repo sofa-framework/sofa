@@ -77,7 +77,8 @@ void NearestPointROI<DataTypes>::init()
         success = false;
     }
 
-    if(!success) {
+    if (!success)
+    {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -118,26 +119,14 @@ void NearestPointROI<DataTypes>::reinit()
 template <class DataTypes>
 void NearestPointROI<DataTypes>::doUpdate()
 {
-    if (d_useRestPosition.getValue())
-    {
-        const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
-        const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::restPosition())->getValue();
+    const auto vecCoordId = d_useRestPosition.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+    const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
+    const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
 
-        if (x1.size() == 0 || x2.size() == 0)
-            return;
+    if (x1.size() == 0 || x2.size() == 0)
+        return;
 
-        computeNearestPointMaps(x1, x2);
-    }
-    else
-    {
-        const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-
-        if (x1.size() == 0 || x2.size() == 0)
-            return;
-
-        computeNearestPointMaps(x1, x2);
-    }
+    computeNearestPointMaps(x1, x2);
 }
 
 
@@ -161,7 +150,8 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
     {
         pt2 = x2[i2];
         auto el = std::min_element(std::begin(x1), std::end(x1), cmp);
-        if (dist(*el, pt2) < maxR) {
+        if (dist(*el, pt2) < maxR) 
+        {
             indices1->push_back(std::distance(std::begin(x1), el));
             indices2->push_back(i2);
         }
