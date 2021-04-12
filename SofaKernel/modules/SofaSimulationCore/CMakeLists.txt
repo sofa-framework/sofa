@@ -30,7 +30,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/IntegrateBeginEvent.h
     ${SRC_ROOT}/IntegrateEndEvent.h
     ${SRC_ROOT}/LocalStorage.h
-    ${SRC_ROOT}/MechanicalComputeEnergyVisitor.h
     ${SRC_ROOT}/MechanicalOperations.h
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
@@ -64,7 +63,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/WriteStateVisitor.h
     ${SRC_ROOT}/XMLPrintVisitor.h
     ${SRC_ROOT}/init.h
-    ${SRC_ROOT}/MechanicalGetMomentumVisitor.h
     ${SRC_ROOT}/BaseSimulationExporter.h
     ${SRC_ROOT}/TaskScheduler.h
     ${SRC_ROOT}/DefaultTaskScheduler.h
@@ -78,12 +76,14 @@ set(HEADER_FILES
     ${SRC_ROOT}/events/SimulationStartEvent.h
     ${SRC_ROOT}/events/SimulationStopEvent.h
 
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeEnergyVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMomentumVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMatrixVisitor.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h
 )
 
 set(SOURCE_FILES
@@ -140,7 +140,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/XMLPrintVisitor.cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/fwd.cpp
-    ${SRC_ROOT}/MechanicalComputeEnergyVisitor.cpp
     ${SRC_ROOT}/BaseSimulationExporter.cpp
     ${SRC_ROOT}/TaskScheduler.cpp
     ${SRC_ROOT}/DefaultTaskScheduler.cpp
@@ -151,12 +150,13 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeEnergyVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMatrixVisitor.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.cpp
 )
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     list(APPEND HEADER_FILES

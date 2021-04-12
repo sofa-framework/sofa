@@ -24,10 +24,8 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/defaulttype/Vec.h>
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation::mechanicalvisitor
 {
 
 /**
@@ -72,8 +70,6 @@ public:
 #endif
 
 };
-
-}
 
 }
 

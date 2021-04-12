@@ -25,8 +25,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
-
-#include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 
@@ -178,7 +177,7 @@ void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialE
 {
     kineticEnergy=0;
     potentialEnergy=0;
-    sofa::simulation::MechanicalComputeEnergyVisitor *energyVisitor = new sofa::simulation::MechanicalComputeEnergyVisitor(&mparams);
+    MechanicalComputeEnergyVisitor *energyVisitor = new MechanicalComputeEnergyVisitor(&mparams);
     executeVisitor(energyVisitor);
     kineticEnergy=energyVisitor->getKineticEnergy();
     potentialEnergy=energyVisitor->getPotentialEnergy();

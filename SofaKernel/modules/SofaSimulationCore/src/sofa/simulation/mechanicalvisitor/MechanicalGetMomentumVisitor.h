@@ -19,53 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
-#include <sofa/core/behavior/ForceField.h>
+#ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
+#define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
+
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/defaulttype/Vec.h>
 #include <sofa/core/behavior/BaseMass.h>
 
-namespace sofa
+namespace sofa::simulation::mechanicalvisitor
 {
 
-namespace simulation
+/// Compute the linear and angular momenta
+///
+/// @author Matthieu Nesme, 2015
+///
+class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
 {
+    defaulttype::Vector6 m_momenta;
+
+public:
+    MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams)
+        : sofa::simulation::MechanicalVisitor(mparams)
+    {}
+
+    const defaulttype::Vector6& getMomentum() const { return m_momenta; }
+
+    /// Process the BaseMass
+    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+    {
+        m_momenta += mass->getMomentum();
+        return RESULT_CONTINUE;
+    }
 
 
-MechanicalComputeEnergyVisitor::MechanicalComputeEnergyVisitor(const sofa::core::MechanicalParams* mparams)
-    : sofa::simulation::MechanicalVisitor(mparams)
-    , m_kineticEnergy(0.)
-    , m_potentialEnergy(0.)
-{
-}
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalGetMomentumVisitor"; }
+
+    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false )
+    {
+        m_momenta.clear();
+        sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );
+    }
 
 
-MechanicalComputeEnergyVisitor::~MechanicalComputeEnergyVisitor()
-{
-}
-
-SReal MechanicalComputeEnergyVisitor::getKineticEnergy()
-{
-    return m_kineticEnergy;
-}
-
-SReal MechanicalComputeEnergyVisitor::getPotentialEnergy()
-{
-    return m_potentialEnergy;
-}
-
-
-/// Process the BaseMass
-Visitor::Result MechanicalComputeEnergyVisitor::fwdMass(simulation::Node* /*node*/, sofa::core::behavior::BaseMass* mass)
-{
-    m_kineticEnergy += (SReal)mass->getKineticEnergy();
-    return RESULT_CONTINUE;
-}
-/// Process the BaseForceField
-Visitor::Result MechanicalComputeEnergyVisitor::fwdForceField(simulation::Node* /*node*/, sofa::core::behavior::BaseForceField* f)
-{
-    m_potentialEnergy += (SReal)f->getPotentialEnergy();
-    return RESULT_CONTINUE;
-}
+};
 
 }
 
-}
+#endif
