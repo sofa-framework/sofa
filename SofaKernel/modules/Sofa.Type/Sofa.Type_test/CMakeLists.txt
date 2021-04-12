@@ -8,6 +8,8 @@ set(SOURCE_FILES
     Quater_test.cpp
     SVector_test.cpp
     vector_test.cpp
+    MatTypes_test.cpp
+    VecTypes_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
