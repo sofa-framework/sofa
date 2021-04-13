@@ -19,8 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Compute the mapping geometric stiffness matrices.
+This action must be call before BaseMapping::getK()
+*/
+class SOFA_SIMULATION_CORE_API MechanicalComputeGeometricStiffness : public MechanicalVisitor
+{
+public:
+    sofa::core::ConstMultiVecDerivId childForce;
+    MechanicalComputeGeometricStiffness(const sofa::core::MechanicalParams* mparams, sofa::core::ConstMultiVecDerivId childForce)
+            : MechanicalVisitor(mparams) , childForce(childForce)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override {return "MechanicalComputeGeometricStiffness";}
+    virtual std::string getInfos() const override
+    {
+        std::string name="["+childForce.getName()+"]";
+        return name;
+    }
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+//        addWriteVector(res);
+    }
+#endif
+};
 }

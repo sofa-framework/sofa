@@ -22,7 +22,49 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeForceVisitor.h>
 
+#include <sofa/core/behavior/BaseForceField.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalComputeForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->accumulateForce(this->params, res.getId(mm));
+    return RESULT_CONTINUE;
+}
+
+
+Visitor::Result MechanicalComputeForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->accumulateForce(this->params, res.getId(mm));
+    return RESULT_CONTINUE;
+}
+
+
+Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+{
+    if( !neglectingCompliance || !ff->isCompliance.getValue() ) ff->addForce(this->mparams, res);
+    else ff->updateForceMask(); // compliances must update the force mask too
+    return RESULT_CONTINUE;
+}
+
+void MechanicalComputeForceVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+{
+    if (accumulate)
+    {
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
+
+        map->applyJT(mparams, res, res);
+
+        ForceMaskDeactivate( map->getMechTo() );
+    }
+}
+
+
+void MechanicalComputeForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
+}
 
 }

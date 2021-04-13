@@ -25,4 +25,25 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
+Visitor::Result MechanicalComputeContactForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->accumulateForce(this->params, res.getId(mm));
+    return RESULT_PRUNE;
+}
+
+
+Visitor::Result MechanicalComputeContactForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->accumulateForce(this->params, res.getId(mm));
+    return RESULT_CONTINUE;
+}
+
+
+void MechanicalComputeContactForceVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+{
+    ForceMaskActivate(map->getMechFrom() );
+    ForceMaskActivate(map->getMechTo() );
+    map->applyJT(mparams, res, res);
+    ForceMaskDeactivate(map->getMechTo() );
+}
 }

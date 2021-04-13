@@ -22,7 +22,31 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalResetConstraintVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    // mm->setC(res);
+    mm->resetConstraint(m_cparams);
+    return RESULT_CONTINUE;
+}
+
+
+Visitor::Result MechanicalResetConstraintVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->resetConstraint(m_cparams);
+    return RESULT_CONTINUE;
+}
+
+
+Visitor::Result MechanicalResetConstraintVisitor::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
+{
+    c->resetConstraint();
+    return RESULT_CONTINUE;
+}
 
 }

@@ -22,7 +22,30 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMDxVisitor.h>
 
+#include <sofa/core/behavior/BaseMass.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalAddMDxVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+{
+    mass->addMDx(mparams, res, factor);
+    return RESULT_PRUNE;
+}
+
+Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+{
+    return RESULT_PRUNE;
+}
+
+Visitor::Result MechanicalAddMDxVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    return RESULT_PRUNE;
+}
 
 }

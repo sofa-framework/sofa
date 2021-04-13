@@ -19,8 +19,62 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/BaseMechanicalVisitor.h>
+
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/// Accumulate Jacobian matrices through the mappings up to the independant DOFs
+class SOFA_SIMULATION_CORE_API MechanicalAccumulateMatrixDeriv : public BaseMechanicalVisitor
+{
+public:
+    MechanicalAccumulateMatrixDeriv(const sofa::core::ConstraintParams* _cparams,
+                                    sofa::core::MultiMatrixDerivId _res, bool _reverseOrder = false)
+            : BaseMechanicalVisitor(_cparams)
+            , res(_res)
+            , cparams(_cparams)
+            , reverseOrder(_reverseOrder)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    const sofa::core::ConstraintParams* constraintParams() const { return cparams; }
+
+    void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+
+    /// Return true to reverse the order of traversal of child nodes
+    bool childOrderReversed(simulation::Node* /*node*/) override { return reverseOrder; }
+
+    /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
+    {
+        return false; // !map->isMechanical();
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalAccumulateMatrixDeriv"; }
+
+    bool isThreadSafe() const override
+    {
+        return false;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+    }
+#endif
+
+protected:
+    sofa::core::MultiMatrixDerivId res;
+    const sofa::core::ConstraintParams *cparams;
+    bool reverseOrder;
+};
 }

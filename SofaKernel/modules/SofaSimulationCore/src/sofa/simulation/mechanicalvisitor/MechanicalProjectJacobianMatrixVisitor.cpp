@@ -22,7 +22,20 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h>
 
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalProjectJacobianMatrixVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+{
+    return RESULT_PRUNE;
+}
+
+Visitor::Result MechanicalProjectJacobianMatrixVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+{
+    c->projectJacobianMatrix(mparams, cId);
+    return RESULT_CONTINUE;
+}
 
 }

@@ -19,8 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Accumulate only the contact forces computed in applyContactForce.
+This action is typically called after a MechanicalResetForceVisitor.
+*/
+class SOFA_SIMULATION_CORE_API MechanicalComputeContactForceVisitor : public MechanicalVisitor
+{
+public:
+    sofa::core::MultiVecDerivId res;
+    MechanicalComputeContactForceVisitor(const sofa::core::MechanicalParams* mparams,
+                                         sofa::core::MultiVecDerivId res )
+            : MechanicalVisitor(mparams) , res(res)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { static std::string name= "MechanicalComputeContactForceVisitor["+res.getName()+"]"; return name.c_str(); }
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadWriteVector(res);
+    }
+#endif
+};
 }

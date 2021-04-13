@@ -19,8 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/BaseMechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Get vector size */
+class SOFA_SIMULATION_CORE_API MechanicalVSizeVisitor : public BaseMechanicalVisitor
+{
+public:
+    sofa::core::ConstMultiVecId v;
+    size_t* result;
+
+    MechanicalVSizeVisitor(const sofa::core::ExecParams* params, size_t* result, sofa::core::ConstMultiVecId v)
+            : BaseMechanicalVisitor(params), v(v), result(result)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    Result fwdMechanicalState(simulation::Node*,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node*,sofa::core::behavior::BaseMechanicalState* mm) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalVSizeVisitor";}
+    virtual std::string getInfos() const override
+    {
+        std::string name = "[" + v.getName() + "]";
+        return name;
+    }
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return false;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadVector(v);
+    }
+#endif
+};
 }

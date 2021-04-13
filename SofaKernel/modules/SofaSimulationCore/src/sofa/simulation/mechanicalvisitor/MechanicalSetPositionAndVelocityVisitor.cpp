@@ -25,4 +25,18 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
+MechanicalSetPositionAndVelocityVisitor::MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,
+                                                                                 SReal time, core::MultiVecCoordId x, core::MultiVecDerivId v)
+        : MechanicalVisitor(mparams) , t(time), x(x), v(v)
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+    setReadWriteVectors();
+#endif
+}
+
+Visitor::Result MechanicalSetPositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    return RESULT_CONTINUE;
+}
+
 }

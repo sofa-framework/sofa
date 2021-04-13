@@ -22,7 +22,27 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccFromFVisitor.h>
 
+#include <sofa/core/behavior/BaseMass.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalAccFromFVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    /////<TO REMOVE>
+    /// \todo Check presence of Mass
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+{
+    mass->accFromF(mparams, a);
+    return RESULT_CONTINUE;
+}
+
+std::string MechanicalAccFromFVisitor::getInfos() const
+{
+    std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name;
+}
 
 }

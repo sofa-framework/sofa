@@ -22,7 +22,15 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVDotVisitor.h>
 
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalVDotVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
+{
+    *ctx->nodeData += mm->vDot(this->params, a.getId(mm),b.getId(mm) );
+    return RESULT_CONTINUE;
+}
 
 }

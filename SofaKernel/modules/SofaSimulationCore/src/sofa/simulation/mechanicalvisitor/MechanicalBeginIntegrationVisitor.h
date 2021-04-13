@@ -19,8 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/BaseMechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Visitor used to prepare a time integration step. Typically, does nothing.
+*/
+class SOFA_SIMULATION_CORE_API MechanicalBeginIntegrationVisitor : public BaseMechanicalVisitor
+{
+public:
+    SReal dt;
+    MechanicalBeginIntegrationVisitor (const sofa::core::ExecParams* _params, SReal _dt)
+            : BaseMechanicalVisitor(_params) , dt(_dt)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalBeginIntegrationVisitor"; }
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
+    {
+        return false;
+    }
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+    }
+#endif
+};
 }

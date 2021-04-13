@@ -32,6 +32,9 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
+
 // verify timing
 #include <sofa/helper/system/thread/CTime.h>
 
@@ -193,7 +196,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::accumulateJacobians(const M
     sofa::core::MatrixDerivId Id= sofa::core::MatrixDerivId::mappingJacobian();
     core::objectmodel::BaseContext* context = this->getContext();
     simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-    simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
+    MechanicalResetConstraintVisitor(&cparams).execute(context);
     buildIdentityBlocksInJacobian(l_mechanicalState,Id);
 
     MechanicalAccumulateJacobian(&cparams, core::MatrixDerivId::mappingJacobian()).execute(gnode);
@@ -498,7 +501,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     core::ConstraintParams cparams = core::ConstraintParams(*eparams);
 
     core::objectmodel::BaseContext* context = this->getContext();
-    simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
+    MechanicalResetConstraintVisitor(&cparams).execute(context);
 
     delete timer;
 

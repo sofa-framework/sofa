@@ -22,7 +22,25 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVSizeVisitor.h>
 
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalVSizeVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    core::ConstVecId id = v.getId(mm);
+    if( !id.isNull() )
+        *result += mm->vSize(this->params, id );
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalVSizeVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    core::ConstVecId id = v.getId(mm);
+    if( !id.isNull() )
+        *result += mm->vSize(this->params, id );
+    return RESULT_CONTINUE;
+}
 
 }

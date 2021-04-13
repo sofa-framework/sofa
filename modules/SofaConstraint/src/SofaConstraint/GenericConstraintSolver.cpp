@@ -31,6 +31,21 @@
 #include <algorithm>
 #include <sofa/core/behavior/MultiVec.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
+using sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
+using sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectJacobianMatrixVisitor;
+
 namespace sofa::component::constraintset
 {
 
@@ -44,7 +59,7 @@ using sofa::core::objectmodel::Data;
 template< typename TMultiVecId >
 void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core::ConstraintParams* cParams, const TMultiVecId& vid)
 {
-    simulation::MechanicalVOpVisitor clearVisitor(cParams, vid, core::ConstMultiVecDerivId::null(), core::ConstMultiVecDerivId::null(), 1.0);
+    MechanicalVOpVisitor clearVisitor(cParams, vid, core::ConstMultiVecDerivId::null(), core::ConstMultiVecDerivId::null(), 1.0);
     clearVisitor.setMapped(true);
     ctx->executeVisitor(&clearVisitor);
 }
@@ -204,15 +219,15 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
     sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
-    simulation::MechanicalResetConstraintVisitor(cParams).execute(context);
+    MechanicalResetConstraintVisitor(cParams).execute(context);
     // calling buildConstraintMatrix
-    simulation::MechanicalBuildConstraintMatrix(cParams, cParams->j(), numConstraints).execute(context);
+    MechanicalBuildConstraintMatrix(cParams, cParams->j(), numConstraints).execute(context);
 
-    simulation::MechanicalAccumulateMatrixDeriv(cParams, cParams->j(), reverseAccumulateOrder.getValue()).execute(context);
+    MechanicalAccumulateMatrixDeriv(cParams, cParams->j(), reverseAccumulateOrder.getValue()).execute(context);
 
     // suppress the constraints that are on DOFS currently concerned by projective constraint
     core::MechanicalParams mparams = core::MechanicalParams(*cParams);
-    simulation::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(context);
+    MechanicalProjectJacobianMatrixVisitor(&mparams).execute(context);
 
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);

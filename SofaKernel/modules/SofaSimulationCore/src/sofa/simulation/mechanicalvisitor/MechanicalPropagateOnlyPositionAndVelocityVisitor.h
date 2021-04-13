@@ -19,8 +19,62 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Propagate positions and velocities to all the levels of the hierarchy.
+At each level, the mappings form the parent to the child is applied.
+After the execution of this action, all the (mapped) degrees of freedom are consistent with the independent degrees of freedom.
+This action is typically applied after time integration of the independent degrees of freedom.
+
+Note that this visitor only propagate through the mappings, and does
+not apply projective constraints as was previously done by
+MechanicalPropagatePositionAndVelocityVisitor.
+Use MechanicalProjectPositionAndVelocityVisitor before this visitor if
+projection is needed.
+*/
+class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyPositionAndVelocityVisitor : public MechanicalVisitor
+{
+public:
+    SReal currentTime;
+    sofa::core::MultiVecCoordId x;
+    sofa::core::MultiVecDerivId v;
+    bool ignoreMask;
+
+    MechanicalPropagateOnlyPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
+                                                      sofa::core::MultiVecCoordId x = sofa::core::VecId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
+                                                      bool m=true );
+
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
+    {
+        return false;
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalPropagateOnlyPositionAndVelocityVisitor";}
+    virtual std::string getInfos() const override { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadWriteVector(x);
+        addReadWriteVector(v);
+    }
+#endif
+};
 }

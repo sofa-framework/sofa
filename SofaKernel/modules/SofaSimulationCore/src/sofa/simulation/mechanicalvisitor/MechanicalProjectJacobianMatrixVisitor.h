@@ -19,8 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+class SOFA_SIMULATION_CORE_API MechanicalProjectJacobianMatrixVisitor : public MechanicalVisitor
+{
+public:
+    sofa::core::MultiMatrixDerivId cId;
+    SReal t;
+    MechanicalProjectJacobianMatrixVisitor(const sofa::core::MechanicalParams* mparams,
+                                           sofa::core::MultiMatrixDerivId c = sofa::core::MatrixDerivId::constraintJacobian(), SReal time = 0.0)
+            : MechanicalVisitor(mparams), cId(c), t(time)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseProjectiveConstraintSet* c) override;
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalProjectJacobianMatrixVisitor"; }
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+    }
+#endif
+};
 }

@@ -22,7 +22,33 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVNormVisitor.h>
 
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalVNormVisitor::fwdMechanicalState(VisitorContext* /*ctx*/, core::behavior::BaseMechanicalState* mm)
+{
+    if( l>0 ) accum += mm->vSum(this->params, a.getId(mm), l );
+    else {
+        SReal mmax = mm->vMax(this->params, a.getId(mm) );
+        if( mmax>accum ) accum=mmax;
+    }
+    return RESULT_CONTINUE;
+}
+
+SReal MechanicalVNormVisitor::getResult() const
+{
+    if( l>1 )
+        return exp( log(accum) / l);
+    else return accum;
+}
+
+std::string MechanicalVNormVisitor::getInfos() const
+{
+    std::string name("v= norm(a) with a[");
+    name += a.getName() + "]";
+    return name;
+}
 
 }

@@ -19,8 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/BaseMechanicalVisitor.h>
+
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+class SOFA_SIMULATION_CORE_API MechanicalResetConstraintVisitor : public BaseMechanicalVisitor
+{
+public:
+    //VecId res;
+    MechanicalResetConstraintVisitor(const sofa::core::ConstraintParams* cparams)
+            : BaseMechanicalVisitor(cparams)
+            , m_cparams(cparams)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseConstraintSet* mm) override;
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
+    {
+        return false; // !map->isMechanical();
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalResetConstraintVisitor"; }
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+    }
+#endif
+
+private:
+    const sofa::core::ConstraintParams* m_cparams;
+};
 }

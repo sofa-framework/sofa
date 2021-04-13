@@ -19,8 +19,62 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/BaseMechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Perform a vector operation v=a+b*f
+*/
+class SOFA_SIMULATION_CORE_API MechanicalVOpVisitor : public BaseMechanicalVisitor
+{
+public:
+    sofa::core::MultiVecId v;
+    sofa::core::ConstMultiVecId a;
+    sofa::core::ConstMultiVecId b;
+    SReal f;
+    bool mapped;
+    bool only_mapped;
+    MechanicalVOpVisitor(const sofa::core::ExecParams* params,
+                         sofa::core::MultiVecId v,sofa::core::ConstMultiVecId a = sofa::core::ConstMultiVecId::null(), sofa::core::ConstMultiVecId b = sofa::core::ConstMultiVecId::null(),
+                         SReal f=1.0 )
+            : BaseMechanicalVisitor(params) , v(v), a(a), b(b), f(f), mapped(false), only_mapped(false)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    // If mapped or only_mapped is ste, this visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+
+    MechanicalVOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
+    MechanicalVOpVisitor& setOnlyMapped(bool m = true) { only_mapped = m; return *this; }
+
+    Result fwdMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
+
+    const char* getClassName() const override { return "MechanicalVOpVisitor";}
+    virtual std::string getInfos() const override;
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+    bool readNodeData() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadVector(a);
+        addReadVector(b);
+        addWriteVector(v);
+    }
+#endif
+};
 }

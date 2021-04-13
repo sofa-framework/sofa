@@ -19,8 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
+
+/** Apply the constraints as filters to the given vector.
+This works for simple independent constraints, like maintaining a fixed point.
+*/
+class SOFA_SIMULATION_CORE_API MechanicalApplyConstraintsVisitor : public MechanicalVisitor
+{
+public:
+    sofa::core::MultiVecDerivId res;
+    double **W;
+    MechanicalApplyConstraintsVisitor(const sofa::core::MechanicalParams* mparams,
+                                      sofa::core::MultiVecDerivId res, double **W = nullptr)
+            : MechanicalVisitor(mparams) , res(res), W(W)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* /*mm*/) override;
+    void bwdProjectiveConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseProjectiveConstraintSet* c) override;
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
+    {
+        return false;
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalApplyConstraintsVisitor"; }
+    virtual std::string getInfos() const override { std::string name= "["+res.getName()+"]"; return name; }
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadWriteVector(res);
+    }
+#endif
+};
 
 }

@@ -51,6 +51,27 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectJacobianMatrixVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
+
 
 /// Change that to true if you want to print extra message on this component.
 /// You can eventually link that to an object attribute.
@@ -335,7 +356,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
 
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
     sofa::helper::AdvancedTimer::stepBegin("Free Motion");
-    simulation::MechanicalBeginIntegrationVisitor(params, dt).execute(context);
+    MechanicalBeginIntegrationVisitor(params, dt).execute(context);
 
     ////////////////// (optional) PREDICTIVE CONSTRAINT FORCES ///////////////////////////////////////////////////////////////////////////////////////////
     /// When scheme Correction is used, the constraint forces computed at the previous time-step
@@ -359,8 +380,8 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
         sofa::core::MechanicalParams mparams(*params);
         sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
         mparams.x() = xfree;
-        simulation::MechanicalProjectPositionVisitor(&mparams, 0, xfree ).execute(context);
-        simulation::MechanicalPropagateOnlyPositionVisitor(&mparams, 0, xfree, true ).execute(context);
+        MechanicalProjectPositionVisitor(&mparams, 0, xfree ).execute(context);
+        MechanicalPropagateOnlyPositionVisitor(&mparams, 0, xfree, true ).execute(context);
     }
     sofa::helper::AdvancedTimer::stepEnd  ("Free Motion");
 
@@ -370,7 +391,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
 
     //this is done to set dx to zero in subgraph
     core::MultiVecDerivId dx_id = core::VecDerivId::dx();
-    simulation::MechanicalVOpVisitor(params, dx_id, core::ConstVecId::null(), core::ConstVecId::null(), 1.0 ).setMapped(true).execute(context);
+    MechanicalVOpVisitor(params, dx_id, core::ConstVecId::null(), core::ConstVecId::null(), 1.0 ).setMapped(true).execute(context);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -406,7 +427,7 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
 
 
     core::MechanicalParams mparams = core::MechanicalParams(*params);
-    simulation::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(context);
+    MechanicalProjectJacobianMatrixVisitor(&mparams).execute(context);
 
     /// calling GetConstraintViolationVisitor: each constraint provides its present violation
     /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
@@ -437,7 +458,7 @@ void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(con
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
     // calling resetConstraint on LMConstraints and MechanicalStates
-    simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
+    MechanicalResetConstraintVisitor(&cparams).execute(context);
 
     // calling applyConstraint on each constraint
     MechanicalSetConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), numConstraints).execute(context);
@@ -518,7 +539,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     mop.propagateDx(core::VecDerivId::dx(), true);
 
     // "mapped" x = xfree + dx
-    simulation::MechanicalVOpVisitor(params, core::VecCoordId::position(), core::ConstVecCoordId::freePosition(), core::ConstVecDerivId::dx(), 1.0 ).setOnlyMapped(true).execute(context);
+    MechanicalVOpVisitor(params, core::VecCoordId::position(), core::ConstVecCoordId::freePosition(), core::ConstVecDerivId::dx(), 1.0 ).setOnlyMapped(true).execute(context);
 
     if(!d_schemeCorrection.getValue())
     {
@@ -669,8 +690,8 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
     core::MechanicalParams mparams(*params);
-    simulation::MechanicalProjectPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(this->gnode);
-    simulation::MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::VecCoordId::position(), true).execute(this->gnode);
+    MechanicalProjectPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(this->gnode);
+    MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::VecCoordId::position(), true).execute(this->gnode);
 
 
     /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION
@@ -714,7 +735,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
                    << "<<<<< End display ConstraintAnimationLoop time." ;
     }
 
-    simulation::MechanicalEndIntegrationVisitor endVisitor(params, dt);
+    MechanicalEndIntegrationVisitor endVisitor(params, dt);
     this->gnode->execute(&endVisitor);
     this->gnode->setTime ( startTime + dt );
     this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time

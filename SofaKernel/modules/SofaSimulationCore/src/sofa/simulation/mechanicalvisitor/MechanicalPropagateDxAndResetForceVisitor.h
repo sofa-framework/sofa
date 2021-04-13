@@ -19,8 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Same as MechanicalPropagateDxVisitor followed by MechanicalResetForceVisitor
+*/
+class SOFA_SIMULATION_CORE_API MechanicalPropagateDxAndResetForceVisitor : public MechanicalVisitor
+{
+public:
+    sofa::core::MultiVecDerivId dx,f;
+    bool ignoreMask;
+
+    MechanicalPropagateDxAndResetForceVisitor(const sofa::core::MechanicalParams* mparams,
+                                              sofa::core::MultiVecDerivId dx, sofa::core::MultiVecDerivId f, bool m)
+            : MechanicalVisitor(mparams) , dx(dx), f(f), ignoreMask(m)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalPropagateDxAndResetForceVisitor";}
+    virtual std::string getInfos() const override { std::string name= "dx["+dx.getName()+"] f["+f.getName()+"]"; return name;}
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadWriteVector(dx);
+        addWriteVector(f);
+    }
+#endif
+};
 }

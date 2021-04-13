@@ -35,6 +35,8 @@
 #include <cmath>
 #include <iostream>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 
 using namespace sofa::simulation;
 
@@ -95,7 +97,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     for (int c = 0; c < ncollis; ++c)
     {
         // First we reset the constraints
-        sofa::simulation::MechanicalResetConstraintVisitor(&cparams).execute(this->getContext());
+        MechanicalResetConstraintVisitor(&cparams).execute(this->getContext());
         // Then do collision detection and response creation
         tmpStr << "collision" ;
 

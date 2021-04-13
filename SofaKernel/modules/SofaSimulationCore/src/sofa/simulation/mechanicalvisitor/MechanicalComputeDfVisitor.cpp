@@ -22,7 +22,43 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeDfVisitor.h>
 
+#include <sofa/core/behavior/BaseForceField.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalComputeDfVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /* mm */)
+{
+    //<TO REMOVE>
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalComputeDfVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalComputeDfVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+{
+    if( !ff->isCompliance.getValue() ) ff->addDForce(this->mparams, res);
+    return RESULT_CONTINUE;
+}
+
+void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+{
+    if (accumulate)
+    {
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
+        map->applyJT(mparams, res, res);  // apply material stiffness: variation of force below the mapping
+        if( mparams->kFactor() ) map->applyDJT(mparams, res, res); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
+        ForceMaskDeactivate( map->getMechTo() );
+    }
+}
+
+void MechanicalComputeDfVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
+}
 
 }

@@ -19,8 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+class SOFA_SIMULATION_CORE_API MechanicalProjectVelocityVisitor : public MechanicalVisitor
+{
+public:
+    SReal t;
+    sofa::core::MultiVecDerivId vel;
+    MechanicalProjectVelocityVisitor(const sofa::core::MechanicalParams* mparams , SReal time=0,
+                                     sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity())
+            : MechanicalVisitor(mparams) , t(time),vel(v)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseProjectiveConstraintSet* c) override;
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalProjectVelocityVisitor"; }
+    virtual std::string getInfos() const override
+    {
+        std::string name="["+vel.getName()+"]"; return name;
+    }
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadWriteVector(vel);
+    }
+#endif
+};
 }

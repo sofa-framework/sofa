@@ -19,8 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/BaseMechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Compute the dot product of two vectors */
+class SOFA_SIMULATION_CORE_API MechanicalVDotVisitor : public BaseMechanicalVisitor
+{
+public:
+    sofa::core::ConstMultiVecId a;
+    sofa::core::ConstMultiVecId b;
+    MechanicalVDotVisitor(const sofa::core::ExecParams* params, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, SReal* t)
+            : BaseMechanicalVisitor(params) , a(a), b(b) //, total(t)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+        rootData = t;
+    }
+
+    Result fwdMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalVDotVisitor";}
+    virtual std::string getInfos() const override
+    {
+        std::string name("v= a*b with a[");
+        name += a.getName() + "] and b[" + b.getName() + "]";
+        return name;
+    }
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+    bool writeNodeData() const override
+    {
+        return true;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadVector(a);
+        addReadVector(b);
+    }
+#endif
+};
 }

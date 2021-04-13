@@ -22,7 +22,18 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionVisitor.h>
 
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+Visitor::Result MechanicalProjectPositionVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+{
+    return RESULT_PRUNE;
+}
 
+Visitor::Result MechanicalProjectPositionVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+{
+    c->projectPosition(mparams, pos);
+    return RESULT_CONTINUE;
+}
 }

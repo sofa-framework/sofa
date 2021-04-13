@@ -19,8 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Add dt*mass*Gravity to the velocity
+This is called if the mass wants to be added separately to the mm from the other forces
+*/
+class SOFA_SIMULATION_CORE_API MechanicalAddSeparateGravityVisitor : public MechanicalVisitor
+{
+public:
+    sofa::core::MultiVecDerivId res;
+    MechanicalAddSeparateGravityVisitor(const sofa::core::MechanicalParams* m_mparams,
+                                        sofa::core::MultiVecDerivId res )
+            : MechanicalVisitor(m_mparams) , res(res)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    /// Process the BaseMass
+    Result fwdMass(simulation::Node* /*node*/,sofa::core::behavior::BaseMass* mass) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalAddSeparateGravityVisitor"; }
+    virtual std::string getInfos() const override { std::string name= "["+res.getName()+"]"; return name; }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadWriteVector(res);
+    }
+#endif
+};
 }

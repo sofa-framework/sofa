@@ -22,7 +22,55 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalIntegrationVisitor.h>
 
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateConstraint.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj)
+{
+    SReal nextTime = node->getTime() + dt;
+    MechanicalBeginIntegrationVisitor beginVisitor( this->params, dt );
+    node->execute(&beginVisitor);
+
+    sofa::core::MechanicalParams mparams(*this->params);
+    mparams.setDt(dt);
+
+    {
+        unsigned int constraintId=0;
+        core::ConstraintParams cparams;
+        MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId).execute(node);
+    }
+    obj->solve(params, dt);
+
+    MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,core::VecCoordId::position(),core::VecDerivId::velocity()
+    ).execute( node );
+
+    MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,core::VecCoordId::position(),core::VecDerivId::velocity(), true).execute( node );
+
+    MechanicalEndIntegrationVisitor endVisitor( this->params, dt );
+    node->execute(&endVisitor);
+
+    return RESULT_PRUNE;
+}
+
+Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* obj)
+{
+    core::MultiVecDerivId   ffId      = core::VecDerivId::externalForce();
+    core::MechanicalParams m_mparams(*this->params);
+    m_mparams.setDt(this->dt);
+
+    obj->addForce(&m_mparams, ffId);
+    return RESULT_CONTINUE;
+}
 
 }

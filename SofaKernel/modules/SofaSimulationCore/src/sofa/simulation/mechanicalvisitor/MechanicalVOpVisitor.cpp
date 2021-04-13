@@ -22,7 +22,70 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 
+#include <sofa/core/BaseMapping.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+bool MechanicalVOpVisitor::stopAtMechanicalMapping(simulation::Node *, sofa::core::BaseMapping *map)
+{
+    if (mapped || only_mapped)
+        return false;
+    else
+        return !map->areForcesMapped();
+}
+
+Visitor::Result MechanicalVOpVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
+{
+    if (!only_mapped)
+        mm->vOp(this->params, v.getId(mm) ,a.getId(mm),b.getId(mm),((ctx->nodeData && *ctx->nodeData != 1.0) ? *ctx->nodeData * f : f) );
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalVOpVisitor::fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
+{
+    if (mapped || only_mapped)
+    {
+        mm->vOp(this->params, v.getId(mm) ,a.getId(mm),b.getId(mm),((ctx->nodeData && *ctx->nodeData != 1.0) ? *ctx->nodeData * f : f) );
+    }
+    return RESULT_CONTINUE;
+}
+
+std::string MechanicalVOpVisitor::getInfos() const
+{
+    std::string info="v=";
+    std::string aLabel;
+    std::string bLabel;
+    std::string fLabel;
+
+    std::ostringstream out;
+    out << "f["<<f<<"]";
+    fLabel+= out.str();
+
+    if (!a.isNull())
+    {
+        info+="a";
+        aLabel="a[" + a.getName() + "] ";
+        if (!b.isNull())
+        {
+            info += "+b*f";
+            bLabel += "b[" + b.getName() + "] ";
+        }
+    }
+    else
+    {
+        if (!b.isNull())
+        {
+            info += "b*f";
+            bLabel += "b[" + b.getName() + "] ";
+        }
+        else
+        {
+            info+="zero"; fLabel.clear();
+        }
+    }
+    info += " : with v[" + v.getName() + "] " + aLabel + bLabel + fLabel;
+    return info;
+}
 
 }

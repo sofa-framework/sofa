@@ -25,4 +25,39 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
+Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->resetForce(this->params, f.getId(mm));
+    return RESULT_CONTINUE;
+}
+
+
+Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+{
+    if (!ignoreMask)
+    {
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
+    }
+    map->apply(mparams, x, x);
+    if (!ignoreMask)
+    {
+        ForceMaskDeactivate(map->getMechTo() );
+    }
+
+
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->resetForce(this->params, f.getId(mm));
+    return RESULT_CONTINUE;
+}
+
+void MechanicalPropagateOnlyPositionAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
+}
+
 }

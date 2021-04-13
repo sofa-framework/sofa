@@ -19,8 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Accumulate the product of the mass matrix by a given vector.
+Typically used in implicit integration solved by a Conjugate Gradient algorithm.
+Note that if a dx vector is given, it is used and propagated by the mappings, Otherwise the current value is used.
+*/
+class SOFA_SIMULATION_CORE_API MechanicalAddMDxVisitor : public MechanicalVisitor
+{
+public:
+    sofa::core::MultiVecDerivId res;
+    sofa::core::MultiVecDerivId dx;
+    SReal factor;
+    MechanicalAddMDxVisitor(const sofa::core::MechanicalParams* mparams,
+                            sofa::core::MultiVecDerivId res, sofa::core::MultiVecDerivId dx, SReal factor)
+            : MechanicalVisitor(mparams), res(res), dx(dx), factor(factor)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMass(simulation::Node* /*node*/,sofa::core::behavior::BaseMass* mass) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalAddMDxVisitor"; }
+    virtual std::string getInfos() const override { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
+
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* /*mm*/) override;
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadVector(res);
+    }
+#endif
+};
 }

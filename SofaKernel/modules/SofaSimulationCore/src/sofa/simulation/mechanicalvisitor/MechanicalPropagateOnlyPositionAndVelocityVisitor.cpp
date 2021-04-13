@@ -25,4 +25,40 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
+MechanicalPropagateOnlyPositionAndVelocityVisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor(
+        const sofa::core::MechanicalParams* mparams,
+        SReal time, core::MultiVecCoordId x, core::MultiVecDerivId v, bool m)
+        : MechanicalVisitor(mparams), currentTime(time), x(x), v(v), ignoreMask(m)
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+    setReadWriteVectors();
+#endif
+}
+
+Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+{
+    if (!ignoreMask)
+    {
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
+    }
+    map->apply(mparams, x, x);
+    map->applyJ(mparams, v, v);
+    if (!ignoreMask)
+    {
+        ForceMaskDeactivate( map->getMechTo() );
+    }
+    return RESULT_CONTINUE;
+}
+
+void MechanicalPropagateOnlyPositionAndVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
+}
+
 }

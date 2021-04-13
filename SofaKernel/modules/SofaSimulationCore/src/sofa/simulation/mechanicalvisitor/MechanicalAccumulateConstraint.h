@@ -19,8 +19,62 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/BaseMechanicalVisitor.h>
+
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/// Call each BaseConstraintSet to build the Jacobian matrices and accumulate it through the mappings up to the independant DOFs
+/// @deprecated use MechanicalBuildConstraintMatrix followed by MechanicalAccumulateMatrixDeriv
+class SOFA_SIMULATION_CORE_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
+{
+public:
+    MechanicalAccumulateConstraint(const sofa::core::ConstraintParams* _cparams,
+                                   sofa::core::MultiMatrixDerivId _res, unsigned int &_contactId)
+            : BaseMechanicalVisitor(_cparams)
+            , res(_res)
+            , contactId(_contactId)
+            , cparams(_cparams)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    const sofa::core::ConstraintParams* constraintParams() const { return cparams; }
+
+    Result fwdConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseConstraintSet* c) override;
+
+    void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+
+    /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
+    {
+        return false; // !map->isMechanical();
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalAccumulateConstraint"; }
+
+    bool isThreadSafe() const override
+    {
+        return false;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+    }
+#endif
+
+protected:
+    sofa::core::MultiMatrixDerivId res;
+    unsigned int &contactId;
+    const sofa::core::ConstraintParams *cparams;
+};
 }

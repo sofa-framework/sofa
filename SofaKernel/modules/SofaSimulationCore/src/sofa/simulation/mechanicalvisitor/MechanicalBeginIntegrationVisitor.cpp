@@ -22,7 +22,21 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+Visitor::Result MechanicalBeginIntegrationVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->beginIntegration(dt);
+    return RESULT_CONTINUE;
+}
+
+
+Visitor::Result MechanicalBeginIntegrationVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+    mm->beginIntegration(dt);
+    return RESULT_CONTINUE;
+}
 
 }

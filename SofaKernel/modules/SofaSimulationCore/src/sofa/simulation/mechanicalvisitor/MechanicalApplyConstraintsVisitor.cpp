@@ -22,7 +22,26 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyConstraintsVisitor.h>
 
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+Visitor::Result MechanicalApplyConstraintsVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    return RESULT_CONTINUE;
+}
 
+Visitor::Result MechanicalApplyConstraintsVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    return RESULT_CONTINUE;
+}
+
+void MechanicalApplyConstraintsVisitor::bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+{
+    c->projectResponse(mparams, res);
+    if (W != nullptr)
+    {
+        c->projectResponse(mparams, W);
+    }
+}
 }

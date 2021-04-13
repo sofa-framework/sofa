@@ -22,7 +22,25 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateConstraint.h>
 
+#include <sofa/core/behavior/BaseConstraintSet.h>
+#include <sofa/core/BaseMapping.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
+{
+    ctime_t t0 = begin(node, c);
+    c->buildConstraintMatrix(cparams, res, contactId);
+    end(node, c, t0);
+    return RESULT_CONTINUE;
+}
+
+void MechanicalAccumulateConstraint::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+{
+    ctime_t t0 = begin(node, map);
+    map->applyJT(cparams, res, res);
+    end(node, map, t0);
+}
 
 }

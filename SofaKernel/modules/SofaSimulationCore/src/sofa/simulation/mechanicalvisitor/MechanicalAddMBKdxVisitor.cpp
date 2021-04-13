@@ -22,7 +22,47 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBKdxVisitor.h>
 
+#include <sofa/core/behavior/BaseForceField.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalAddMBKdxVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    return RESULT_CONTINUE;
+}
+
+
+Visitor::Result MechanicalAddMBKdxVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+{
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalAddMBKdxVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+{
+    if( !ff->isCompliance.getValue() )
+        ff->addMBKdx( this->mparams, res);
+    else
+        ff->addMBKdx( &mparamsWithoutStiffness, res);
+    return RESULT_CONTINUE;
+}
+
+void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+{
+    if (accumulate)
+    {
+        ForceMaskActivate(map->getMechFrom() );
+        ForceMaskActivate(map->getMechTo() );
+
+        map->applyJT(mparams, res, res);
+        if( mparams->kFactor() ) map->applyDJT(mparams, res, res);
+        ForceMaskDeactivate( map->getMechTo() );
+    }
+}
+
+void MechanicalAddMBKdxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
+}
 
 }

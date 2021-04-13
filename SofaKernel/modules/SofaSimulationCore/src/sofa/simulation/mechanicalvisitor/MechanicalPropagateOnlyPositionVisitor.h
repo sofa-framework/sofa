@@ -19,8 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
+/** Propagate positions  to all the levels of the hierarchy.
+At each level, the mappings form the parent to the child is applied.
+
+Note that this visitor only propagate through the mappings, and does
+not apply projective constraints as was previously done by
+MechanicalPropagatePositionVisitor.
+Use MechanicalProjectPositionVisitor before this visitor if projection
+is needed.
+*/
+class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyPositionVisitor : public MechanicalVisitor
+{
+public:
+    SReal t;
+    sofa::core::MultiVecCoordId x;
+    bool ignoreMask;
+
+    MechanicalPropagateOnlyPositionVisitor( const sofa::core::MechanicalParams* mparams, SReal time=0,
+                                            sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), bool m=true);
+
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
+    {
+        return false; // !map->isMechanical();
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalPropagateOnlyPositionVisitor";}
+    virtual std::string getInfos() const override
+    {
+        std::string name="x["+x.getName()+"]";
+        if (ignoreMask) name += " Mask DISABLED";
+        else            name += " Mask ENABLED";
+        return name;
+    }
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addReadWriteVector(x);
+    }
+#endif
+};
 }

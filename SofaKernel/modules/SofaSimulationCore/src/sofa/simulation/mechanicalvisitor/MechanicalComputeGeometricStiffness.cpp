@@ -24,5 +24,9 @@
 
 namespace sofa::simulation::mechanicalvisitor
 {
-
+Visitor::Result MechanicalComputeGeometricStiffness::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+{
+    map->updateK( mparams, childForce );
+    return RESULT_CONTINUE;
+}
 }

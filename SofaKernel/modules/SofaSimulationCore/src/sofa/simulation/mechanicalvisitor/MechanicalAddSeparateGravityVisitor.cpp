@@ -22,7 +22,19 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.h>
 
+#include <sofa/core/behavior/BaseMass.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+Visitor::Result MechanicalAddSeparateGravityVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+{
+    if( mass->m_separateGravity.getValue() )
+    {
+        //<TO REMOVE>
+        mass->addGravityToV(this->mparams, res);
+    }
+    return RESULT_CONTINUE;
+}
 
 }

@@ -22,7 +22,16 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 
+#include <sofa/core/BaseMapping.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
+
+void MechanicalAccumulateMatrixDeriv::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+{
+    ctime_t t0 = begin(node, map);
+    map->applyJT(cparams, res, res);
+    end(node, map, t0);
+}
 
 }
