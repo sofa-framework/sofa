@@ -157,6 +157,11 @@ public:
     /** return a pointer to the container of cubature points */
     NumericalIntegrationDescriptor<Real,1> &getEdgeNumericalIntegrationDescriptor();
 
+    bool computeEdgeSegmentIntersection(EdgeID edgeID,
+        const sofa::defaulttype::Vec<3,double>& a,
+        const sofa::defaulttype::Vec<3, double>& b,
+        double &baryCoef);
+
 protected:
     Data<bool> showEdgeIndices; ///< Debug : view Edge indices.
     Data<bool>  d_drawEdges; ///< if true, draw the edges in the topology.

@@ -1481,6 +1481,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 {
                     if((!is_initialized) || (coord_k > coord_kmin))
                     {
+                        std::cout << "yo01" << std::endl;
                         indices.clear();
                         indices.push_back(t[0]);
                         indices.push_back(t[1]);
@@ -1544,6 +1545,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 {
                     if((!is_initialized) || (coord_k > coord_kmin))
                     {
+                        std::cout << "yo12" << std::endl;
                         indices.clear();
                         indices.push_back(t[1]);
                         indices.push_back(t[2]);
@@ -1606,6 +1608,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 {
                     if((!is_initialized) || (coord_k > coord_kmin))
                     {
+                        std::cout << "yo20" << std::endl;
                         indices.clear();
                         indices.push_back(t[2]);
                         indices.push_back(t[0]);
