@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
@@ -45,6 +44,10 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBKdxVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeContactForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 

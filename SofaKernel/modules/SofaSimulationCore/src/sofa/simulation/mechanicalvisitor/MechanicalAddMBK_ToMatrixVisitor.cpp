@@ -19,41 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
-#define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
 
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
+
+#include <sofa/core/behavior/BaseForceField.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/// Compute the linear and angular momenta
-///
-/// @author Matthieu Nesme, 2015
-///
-class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
+MechanicalAddMBK_ToMatrixVisitor::MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams *mparams,
+                                                                   const sofa::core::behavior::MultiMatrixAccessor *_matrix)
+        : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
 {
-    defaulttype::Vector6 m_momenta;
-
-public:
-    MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams);
-
-    const defaulttype::Vector6& getMomentum() const;
-
-    /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
-
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetMomentumVisitor"; }
-
-    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false );
-
-
-};
-
 }
 
-#endif
+Visitor::Result
+MechanicalAddMBK_ToMatrixVisitor::fwdMechanicalState(simulation::Node *, core::behavior::BaseMechanicalState *)
+{
+    //ms->setOffset(offsetOnExit);
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalAddMBK_ToMatrixVisitor::fwdForceField(simulation::Node *, core::behavior::BaseForceField *ff)
+{
+    if (matrix != nullptr)
+    {
+        assert( !ff->isCompliance.getValue() ); // if one day this visitor has to be used with compliance, K from compliance should not be added (by tweaking mparams with kfactor=0)
+        ff->addMBKToMatrix(this->mparams, matrix);
+    }
+
+    return RESULT_CONTINUE;
+}
+
+bool MechanicalAddMBK_ToMatrixVisitor::stopAtMechanicalMapping(simulation::Node *node, core::BaseMapping *map)
+{
+    SOFA_UNUSED(node);
+    return !map->areMatricesMapped();
+}
+}

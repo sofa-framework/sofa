@@ -19,10 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/mechanicalvisitor/MechanicalMatrixVisitor.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.h>
+
+#include <sofa/core/behavior/BaseForceField.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
-} // namespace sofa::simulation::mechanicalvisitor
+MechanicalAddSubMBK_ToMatrixVisitor::MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams *mparams,
+                                                                         const sofa::core::behavior::MultiMatrixAccessor *_matrix,
+                                                                         const helper::vector<unsigned int> &Id)
+        : MechanicalVisitor(mparams) ,  matrix(_matrix), subMatrixIndex(Id) //,m(_m),b(_b),k(_k)
+{
+}
 
+Visitor::Result
+MechanicalAddSubMBK_ToMatrixVisitor::fwdMechanicalState(simulation::Node *, core::behavior::BaseMechanicalState *)
+{
+    //ms->setOffset(offsetOnExit);
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result
+MechanicalAddSubMBK_ToMatrixVisitor::fwdForceField(simulation::Node *, core::behavior::BaseForceField *ff)
+{
+    if (matrix != nullptr)
+    {
+        assert( !ff->isCompliance.getValue() ); // if one day this visitor has to be used with compliance, K from compliance should not be added (by tweaking mparams with kfactor=0)
+        ff->addSubMBKToMatrix(this->mparams, matrix, subMatrixIndex);
+    }
+
+    return RESULT_CONTINUE;
+}
+}

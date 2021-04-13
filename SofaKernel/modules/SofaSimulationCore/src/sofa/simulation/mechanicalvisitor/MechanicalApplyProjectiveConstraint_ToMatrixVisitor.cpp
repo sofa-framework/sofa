@@ -19,41 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
-#define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
 
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
+
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/// Compute the linear and angular momenta
-///
-/// @author Matthieu Nesme, 2015
-///
-class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
+MechanicalApplyProjectiveConstraint_ToMatrixVisitor::MechanicalApplyProjectiveConstraint_ToMatrixVisitor(
+        const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor *_matrix)
+        : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
 {
-    defaulttype::Vector6 m_momenta;
-
-public:
-    MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams);
-
-    const defaulttype::Vector6& getMomentum() const;
-
-    /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
-
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetMomentumVisitor"; }
-
-    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false );
-
-
-};
-
 }
 
-#endif
+Visitor::Result MechanicalApplyProjectiveConstraint_ToMatrixVisitor::fwdMechanicalState(simulation::Node *,
+                                                                                        core::behavior::BaseMechanicalState *)
+{
+    //ms->setOffset(offsetOnExit);
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalApplyProjectiveConstraint_ToMatrixVisitor::fwdProjectiveConstraintSet(simulation::Node *,
+                                                                                                core::behavior::BaseProjectiveConstraintSet *c)
+{
+    if (matrix != nullptr)
+    {
+        c->applyConstraint(this->mparams, matrix);
+    }
+
+    return RESULT_CONTINUE;
+}
+}

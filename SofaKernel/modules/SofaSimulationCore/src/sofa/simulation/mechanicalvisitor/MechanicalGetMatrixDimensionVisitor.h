@@ -19,41 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
-#define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
+#pragma once
 
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/BaseMechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/// Compute the linear and angular momenta
-///
-/// @author Matthieu Nesme, 2015
-///
-class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
+/** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
+class SOFA_SIMULATION_CORE_API MechanicalGetMatrixDimensionVisitor : public BaseMechanicalVisitor
 {
-    defaulttype::Vector6 m_momenta;
-
 public:
-    MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams);
+    sofa::Size* const nbRow;
+    sofa::Size* const nbCol;
+    sofa::core::behavior::MultiMatrixAccessor* matrix;
 
-    const defaulttype::Vector6& getMomentum() const;
+    MechanicalGetMatrixDimensionVisitor(
+            const core::ExecParams* params, sofa::Size* const _nbRow, sofa::Size* const _nbCol,
+            sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr );
 
-    /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override;
 
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* mm) override;
+
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetMomentumVisitor"; }
-
-    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false );
-
+    const char* getClassName() const override { return "MechanicalGetMatrixDimensionVisitor"; }
 
 };
-
 }
-
-#endif

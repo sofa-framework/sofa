@@ -19,41 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
-#define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
+#pragma once
 
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/// Compute the linear and angular momenta
-///
-/// @author Matthieu Nesme, 2015
-///
-class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
+/** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene */
+class SOFA_SIMULATION_CORE_API MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor
 {
-    defaulttype::Vector6 m_momenta;
-
 public:
-    MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams);
+    const sofa::core::behavior::MultiMatrixAccessor* matrix;
 
-    const defaulttype::Vector6& getMomentum() const;
-
-    /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
-
+    MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix );
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetMomentumVisitor"; }
+    const char* getClassName() const override { return "MechanicalAddMBK_ToMatrixVisitor"; }
 
-    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false );
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/) override;
 
+    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
 
+    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 };
-
 }
-
-#endif

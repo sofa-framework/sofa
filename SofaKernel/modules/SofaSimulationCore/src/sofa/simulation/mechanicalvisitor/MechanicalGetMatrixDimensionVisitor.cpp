@@ -19,41 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
-#define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
 
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h>
+
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/// Compute the linear and angular momenta
-///
-/// @author Matthieu Nesme, 2015
-///
-class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
+MechanicalGetMatrixDimensionVisitor::MechanicalGetMatrixDimensionVisitor(const core::ExecParams *params,
+                                                                         sofa::Size *const _nbRow,
+                                                                         sofa::Size *const _nbCol,
+                                                                         sofa::core::behavior::MultiMatrixAccessor *_matrix)
+        : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
+{}
+
+Visitor::Result
+MechanicalGetMatrixDimensionVisitor::fwdMechanicalState(simulation::Node *, core::behavior::BaseMechanicalState *ms)
 {
-    defaulttype::Vector6 m_momenta;
-
-public:
-    MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams);
-
-    const defaulttype::Vector6& getMomentum() const;
-
-    /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
-
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetMomentumVisitor"; }
-
-    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false );
-
-
-};
-
+    //ms->contributeToMatrixDimension(nbRow, nbCol);
+    auto n = ms->getMatrixSize();
+    if (nbRow) *nbRow += n;
+    if (nbCol) *nbCol += n;
+    if (matrix) matrix->addMechanicalState(ms);
+    return RESULT_CONTINUE;
 }
 
-#endif
+Visitor::Result MechanicalGetMatrixDimensionVisitor::fwdMechanicalMapping(simulation::Node *, core::BaseMapping *mm)
+{
+    if (matrix) matrix->addMechanicalMapping(mm);
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalGetMatrixDimensionVisitor::fwdMappedMechanicalState(simulation::Node *,
+                                                                              core::behavior::BaseMechanicalState *ms)
+{
+    if (matrix) matrix->addMappedMechanicalState(ms);
+    return RESULT_CONTINUE;
+}
+}

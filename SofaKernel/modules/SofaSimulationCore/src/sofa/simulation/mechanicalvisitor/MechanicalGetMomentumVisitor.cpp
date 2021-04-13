@@ -19,41 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
-#define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
 
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetMomentumVisitor.h>
+
+#include <sofa/core/behavior/BaseMass.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/// Compute the linear and angular momenta
-///
-/// @author Matthieu Nesme, 2015
-///
-class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
+MechanicalGetMomentumVisitor::MechanicalGetMomentumVisitor(const core::MechanicalParams *mparams)
+        : sofa::simulation::MechanicalVisitor(mparams)
+{}
+
+const defaulttype::Vector6 &MechanicalGetMomentumVisitor::getMomentum() const
+{ return m_momenta; }
+
+Visitor::Result MechanicalGetMomentumVisitor::fwdMass(simulation::Node *, core::behavior::BaseMass *mass)
 {
-    defaulttype::Vector6 m_momenta;
-
-public:
-    MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams);
-
-    const defaulttype::Vector6& getMomentum() const;
-
-    /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);
-
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetMomentumVisitor"; }
-
-    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false );
-
-
-};
-
+    m_momenta += mass->getMomentum();
+    return RESULT_CONTINUE;
 }
 
-#endif
+void MechanicalGetMomentumVisitor::execute(sofa::core::objectmodel::BaseContext *c, bool precomputedTraversalOrder)
+{
+    m_momenta.clear();
+    sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );
+}
+}
