@@ -34,11 +34,8 @@ public:
     SReal dt;
     MechanicalIntegrationVisitor (const sofa::core::ExecParams* m_params, SReal _dt)
             : BaseMechanicalVisitor(m_params) , dt(_dt)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
+
     Result fwdOdeSolver(simulation::Node* node,sofa::core::behavior::OdeSolver* obj) override;
     Result fwdInteractionForceField(simulation::Node*,sofa::core::behavior::BaseInteractionForceField* obj) override;
     void bwdOdeSolver(simulation::Node* /*node*/,sofa::core::behavior::OdeSolver* /*obj*/) override
@@ -54,11 +51,6 @@ public:
     {
         return true;
     }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 };
 
 }

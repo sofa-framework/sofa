@@ -52,12 +52,6 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalPickParticles"; }
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
-
     /// get the closest pickable particle
     void getClosestParticle(sofa::core::behavior::BaseMechanicalState*& mstate, sofa::Index& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
 

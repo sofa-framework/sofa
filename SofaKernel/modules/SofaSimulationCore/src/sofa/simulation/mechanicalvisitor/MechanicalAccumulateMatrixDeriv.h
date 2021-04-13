@@ -38,11 +38,7 @@ public:
             , res(_res)
             , cparams(_cparams)
             , reverseOrder(_reverseOrder)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
 
     const sofa::core::ConstraintParams* constraintParams() const { return cparams; }
 
@@ -65,12 +61,6 @@ public:
     {
         return false;
     }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 
 protected:
     sofa::core::MultiMatrixDerivId res;

@@ -34,11 +34,7 @@ public:
     SReal dt;
     MechanicalEndIntegrationVisitor (const sofa::core::ExecParams* _params, SReal _dt)
             : BaseMechanicalVisitor(_params) , dt(_dt)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
@@ -57,10 +53,5 @@ public:
     {
         return true;
     }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 };
 }

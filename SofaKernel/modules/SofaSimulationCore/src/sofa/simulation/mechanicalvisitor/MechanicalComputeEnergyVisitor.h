@@ -63,12 +63,6 @@ public:
         sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );
     }
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-    virtual void setReadWriteVectors() override
-    {
-    }
-#endif
-
 };
 
 }

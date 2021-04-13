@@ -33,9 +33,6 @@ public:
     MechanicalGetDimensionVisitor(const sofa::core::MechanicalParams* mparams, SReal* result)
             : MechanicalVisitor(mparams)
     {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
         rootData = result;
     }
 
@@ -50,11 +47,6 @@ public:
         return true;
     }
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 };
 
 }

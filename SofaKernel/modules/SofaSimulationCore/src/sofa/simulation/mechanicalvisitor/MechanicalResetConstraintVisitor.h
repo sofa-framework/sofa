@@ -35,11 +35,7 @@ public:
     MechanicalResetConstraintVisitor(const sofa::core::ConstraintParams* cparams)
             : BaseMechanicalVisitor(cparams)
             , m_cparams(cparams)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
 
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
@@ -60,11 +56,6 @@ public:
     {
         return true;
     }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 
 private:
     const sofa::core::ConstraintParams* m_cparams;
