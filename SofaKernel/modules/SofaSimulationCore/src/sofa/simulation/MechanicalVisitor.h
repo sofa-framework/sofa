@@ -56,68 +56,6 @@ public:
 
 
 
-/**
- * Initialize unset MState destVecId vectors with srcVecId vectors value.
- *
- */
-template< sofa::core::VecType vtype >
-class SOFA_SIMULATION_CORE_API MechanicalVInitVisitor : public BaseMechanicalVisitor
-{
-public:
-    typedef sofa::core::TMultiVecId<vtype,sofa::core::V_WRITE> DestMultiVecId;
-    typedef sofa::core::TMultiVecId<vtype,sofa::core::V_READ> SrcMultiVecId;
-
-    DestMultiVecId vDest;
-    SrcMultiVecId vSrc;
-    bool m_propagate;
-
-    /// Default constructor
-    /// \param _vDest output vector
-    /// \param _vSrc input vector
-    /// \param propagate sets to true propagates vector initialization to mapped mechanical states
-    MechanicalVInitVisitor(const sofa::core::ExecParams* params, DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false)
-        : BaseMechanicalVisitor(params)
-        , vDest(_vDest)
-        , vSrc(_vSrc)
-        , m_propagate(propagate)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
-    {
-        return false;
-    }
-
-    Result fwdMechanicalState(simulation::Node* node,sofa::core::behavior::BaseMechanicalState* mm) override;
-
-    Result fwdMappedMechanicalState(simulation::Node* node,sofa::core::behavior::BaseMechanicalState* mm) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override
-    {
-        return "MechanicalVInitVisitor";
-    }
-
-    virtual std::string getInfos() const override;
-
-    /// Specify whether this action can be parallelized.
-    bool isThreadSafe() const override
-    {
-        return false;
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-        addReadVector(vSrc);
-        addWriteVector(vDest);
-    }
-#endif
-};
 
 
 
@@ -1806,8 +1744,6 @@ extern template class MechanicalVReallocVisitor<sofa::core::V_COORD>;
 extern template class MechanicalVReallocVisitor<sofa::core::V_DERIV>;
 extern template class MechanicalVFreeVisitor<sofa::core::V_COORD>;
 extern template class MechanicalVFreeVisitor<sofa::core::V_DERIV>;
-extern template class MechanicalVInitVisitor<sofa::core::V_COORD>;
-extern template class MechanicalVInitVisitor<sofa::core::V_DERIV>;
 #endif
 
 } // namespace simulation

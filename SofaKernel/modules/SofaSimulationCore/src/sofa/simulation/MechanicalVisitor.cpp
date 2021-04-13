@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_SIMULATION_MECHANICALVISITOR_CPP
+
+
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
@@ -81,31 +82,6 @@ Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulatio
     return RESULT_CONTINUE;
 }
 
-template< VecType vtype>
-Visitor::Result MechanicalVInitVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState *mm)
-{
-    mm->vInit(this->params, vDest.getId(mm), vSrc.getId(mm));
-    return RESULT_CONTINUE;
-}
-
-template< VecType vtype>
-Visitor::Result MechanicalVInitVisitor<vtype>::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    if (m_propagate)
-    {
-        mm->vInit(this->params, vDest.getId(mm), vSrc.getId(mm));
-    }
-
-    return RESULT_CONTINUE;
-}
-
-
-template< VecType vtype>
-std::string  MechanicalVInitVisitor<vtype>::getInfos() const
-{
-    std::string name = "[" + vDest.getName() + "]";
-    return name;
-}
 
 template< VecType vtype>
 Visitor::Result MechanicalVAllocVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
@@ -1181,8 +1157,6 @@ template class SOFA_SIMULATION_CORE_API MechanicalVReallocVisitor<V_COORD>;
 template class SOFA_SIMULATION_CORE_API MechanicalVReallocVisitor<V_DERIV>;
 template class SOFA_SIMULATION_CORE_API MechanicalVFreeVisitor<V_COORD>;
 template class SOFA_SIMULATION_CORE_API MechanicalVFreeVisitor<V_DERIV>;
-template class SOFA_SIMULATION_CORE_API MechanicalVInitVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVInitVisitor<V_DERIV>;
 
 
 } // namespace simulation
