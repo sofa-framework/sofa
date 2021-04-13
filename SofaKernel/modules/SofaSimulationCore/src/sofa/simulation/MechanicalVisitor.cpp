@@ -83,107 +83,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulatio
 }
 
 
-template< VecType vtype>
-Visitor::Result MechanicalVAllocVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    mm->vAlloc(this->params, v.getId(mm) );
-    return RESULT_CONTINUE;
-}
 
-
-template< VecType vtype>
-std::string  MechanicalVAllocVisitor<vtype>::getInfos() const
-{
-    std::string name="[" + v.getName() + "]";
-    return name;
-}
-
-template< VecType vtype>
-Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState *mm)
-{
-    mm->vRealloc( this->params, this->getId(mm) );
-    return RESULT_CONTINUE;
-}
-
-template< VecType vtype>
-Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    if (m_propagate)
-    {
-        mm->vRealloc(this->params, this->getId(mm) );
-    }
-
-    return RESULT_CONTINUE;
-}
-
-template< VecType vtype>
-Visitor::Result MechanicalVReallocVisitor<vtype>::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* ff)
-{
-    if (m_interactionForceField)
-    {
-        core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
-        mm->vRealloc( this->params, this->getId(mm) );
-        mm = ff->getMechModel2();
-        mm->vRealloc( this->params, this->getId(mm) );
-    }
-
-    return RESULT_CONTINUE;
-}
-
-template< VecType vtype>
-typename MechanicalVReallocVisitor<vtype>::MyVecId MechanicalVReallocVisitor<vtype>::getId( core::behavior::BaseMechanicalState* mm )
-{
-    MyVecId vid = v->getId(mm);
-    if( vid.isNull() ) // not already allocated
-    {
-        vid = MyVecId(MyVecId::V_FIRST_DYNAMIC_INDEX);
-        mm->vAvail( this->params, vid );
-        v->setId( mm, vid );
-    }
-    return vid;
-}
-
-template< VecType vtype>
-std::string  MechanicalVReallocVisitor<vtype>::getInfos() const
-{
-    std::string name = "[" + v->getName() + "]";
-    return name;
-}
-
-
-template< VecType vtype>
-Visitor::Result MechanicalVFreeVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    mm->vFree( this->params, v.getId(mm) );
-    return RESULT_CONTINUE;
-}
-
-template< VecType vtype>
-Visitor::Result MechanicalVFreeVisitor<vtype>::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    mm->vFree( this->params, v.getId(mm) );
-    return RESULT_CONTINUE;
-}
-
-template< VecType vtype>
-Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* ff)
-{
-    if( interactionForceField )
-    {
-        core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
-        mm->vFree( this->params, v.getId(mm) );
-        mm = ff->getMechModel2();
-        mm->vFree( this->params, v.getId(mm) );
-    }
-    return RESULT_CONTINUE;
-}
-
-template< VecType vtype>
-std::string  MechanicalVFreeVisitor<vtype>::getInfos() const
-{
-    std::string name="[" + v.getName() + "]";
-    return name;
-}
 
 Visitor::Result MechanicalVOpVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
@@ -1151,12 +1051,8 @@ std::string MechanicalAccFromFVisitor::getInfos() const
 }
 
 
-template class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor<V_DERIV>;
-template class SOFA_SIMULATION_CORE_API MechanicalVReallocVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVReallocVisitor<V_DERIV>;
-template class SOFA_SIMULATION_CORE_API MechanicalVFreeVisitor<V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVFreeVisitor<V_DERIV>;
+
+
 
 
 } // namespace simulation

@@ -48,6 +48,9 @@
 
 #include <thread>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
+
 
 /// Change that to true if you want to print extra message on this component.
 /// You can eventually link that to an object attribute.
@@ -609,8 +612,8 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
-    simulation::MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
-    simulation::MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(this->gnode);
+    MechanicalVInitVisitor<core::V_COORD>(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(this->gnode);
+    MechanicalVInitVisitor<core::V_DERIV>(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity()).execute(this->gnode);
 
     if (d_doCollisionsFirst.getValue())
     {

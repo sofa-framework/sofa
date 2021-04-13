@@ -60,148 +60,10 @@ public:
 
 
 
-/** Reserve an auxiliary vector identified by a symbolic constant.
-*/
-template <sofa::core::VecType vtype>
-class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor : public BaseMechanicalVisitor
-{
-public:
-    typedef sofa::core::TMultiVecId<vtype, sofa::core::V_WRITE> MyMultiVecId;
-    MyMultiVecId v;
-    MechanicalVAllocVisitor( const sofa::core::ExecParams* params, MyMultiVecId v )
-        : BaseMechanicalVisitor(params) , v(v)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalVAllocVisitor"; }
-    virtual std::string getInfos() const override;
-    /// Specify whether this action can be parallelized.
-    bool isThreadSafe() const override
-    {
-        return true;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-        addReadWriteVector(v);
-    }
-#endif
-};
-
-
-/**
- * Reserve an auxiliary vector identified by a symbolic constant.
- *
- */
-template< sofa::core::VecType vtype >
-class SOFA_SIMULATION_CORE_API MechanicalVReallocVisitor : public BaseMechanicalVisitor
-{
-public:
-    typedef sofa::core::TMultiVecId<vtype,sofa::core::V_WRITE> DestMultiVecId;
-    typedef sofa::core::TVecId<vtype,sofa::core::V_WRITE> MyVecId;
-
-
-    DestMultiVecId *v;
-    bool m_propagate;
-    bool m_interactionForceField;
-
-    /// Default constructor
-    /// \param _vDest output vector
-    /// \param propagate sets to true propagates vector initialization to mapped mechanical states
-    /// \param interactionForceField sets to true also initializes external mechanical states linked by an interaction force field
-    MechanicalVReallocVisitor(const sofa::core::ExecParams* params, DestMultiVecId *v, bool interactionForceField=false, bool propagate=false)
-        : BaseMechanicalVisitor(params)
-        , v(v)
-        , m_propagate(propagate)
-        , m_interactionForceField(interactionForceField)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
-    {
-        return false;
-    }
-
-    Result fwdMechanicalState(simulation::Node* node,sofa::core::behavior::BaseMechanicalState* mm) override;
-
-    Result fwdMappedMechanicalState(simulation::Node* node,sofa::core::behavior::BaseMechanicalState* mm) override;
-
-    Result fwdInteractionForceField(simulation::Node* node,sofa::core::behavior::BaseInteractionForceField* ff) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override
-    {
-        return "MechanicalVReallocVisitor";
-    }
-
-    virtual std::string getInfos() const override;
-
-    /// Specify whether this action can be parallelized.
-    bool isThreadSafe() const override
-    {
-        return true;
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-        addWriteVector(*v);
-    }
-#endif
-protected:
-
-
-    MyVecId getId(sofa::core::behavior::BaseMechanicalState* mm );
-};
 
 
 
-/** Free an auxiliary vector identified by a symbolic constant */
-template< sofa::core::VecType vtype >
-class SOFA_SIMULATION_CORE_API MechanicalVFreeVisitor : public BaseMechanicalVisitor
-{
-public:
-    typedef sofa::core::TMultiVecId<vtype,sofa::core::V_WRITE> MyMultiVecId;
-    MyMultiVecId v;
-    bool interactionForceField;
-    bool propagate;
 
-    MechanicalVFreeVisitor( const sofa::core::ExecParams* params, MyMultiVecId v, bool interactionForceField=false, bool propagate=false)
-        : BaseMechanicalVisitor(params) , v(v), interactionForceField(interactionForceField), propagate(propagate)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
-    Result fwdInteractionForceField(simulation::Node* node,sofa::core::behavior::BaseInteractionForceField* ff) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalVFreeVisitor"; }
-    virtual std::string getInfos() const override;
-    /// Specify whether this action can be parallelized.
-    bool isThreadSafe() const override
-    {
-        return true;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
-};
 
 /** Perform a vector operation v=a+b*f
 */
@@ -1736,15 +1598,6 @@ public:
     }
 #endif
 };
-
-#if !defined(SOFA_SIMULATION_MECHANICALVISITOR_CPP)
-extern template class MechanicalVAllocVisitor<sofa::core::V_COORD>;
-extern template class MechanicalVAllocVisitor<sofa::core::V_DERIV>;
-extern template class MechanicalVReallocVisitor<sofa::core::V_COORD>;
-extern template class MechanicalVReallocVisitor<sofa::core::V_DERIV>;
-extern template class MechanicalVFreeVisitor<sofa::core::V_COORD>;
-extern template class MechanicalVFreeVisitor<sofa::core::V_DERIV>;
-#endif
 
 } // namespace simulation
 

@@ -87,6 +87,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalVAvailVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalVInitVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVAllocVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVReallocVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVFreeVisitor.h
 )
 
 set(SOURCE_FILES
@@ -163,6 +166,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalVAvailVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalVInitVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVAllocVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVReallocVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVFreeVisitor.cpp
 )
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     list(APPEND HEADER_FILES

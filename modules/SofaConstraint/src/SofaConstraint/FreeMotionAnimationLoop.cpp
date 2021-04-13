@@ -41,6 +41,9 @@
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
+
 namespace sofa::component::animationloop
 {
 
@@ -125,8 +128,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     // We need to initialize them if it's not already done.
     {
         ScopedAdvancedTimer timer("MechanicalVInitVisitor");
-        simulation::MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(gnode);
-        simulation::MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(gnode);
+        MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(gnode);
     }
 
 

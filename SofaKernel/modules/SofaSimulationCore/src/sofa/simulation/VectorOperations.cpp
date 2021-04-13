@@ -24,6 +24,14 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalVAvailVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVAvailVisitor;
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalVAllocVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVAllocVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalVReallocVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVReallocVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalVFreeVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVFreeVisitor;
 
 #include <sofa/simulation/VelocityThresholdVisitor.h>
 #include <sofa/simulation/MechanicalVPrintVisitor.h>
