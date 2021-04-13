@@ -54,17 +54,6 @@ public:
     {}
 };
 
-
-
-
-
-
-
-
-
-
-
-
 /** Perform a vector operation v=a+b*f
 */
 class SOFA_SIMULATION_CORE_API MechanicalVOpVisitor : public BaseMechanicalVisitor
