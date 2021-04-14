@@ -28,7 +28,9 @@
 #include <SofaBaseUtils/InfoComponent.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/Mapping.h>
 #include <sofa/simulation/Node.h>
+
 
 using sofa::component::InfoComponent ;
 

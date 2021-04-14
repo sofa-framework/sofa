@@ -96,7 +96,7 @@ void LinearVelocityConstraint<TDataTypes>::addIndex(Index index)
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::removeIndex(Index index)
 {
-    removeValue(*d_indices.beginEdit(),index);
+    sofa::helper::removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();
 }
 
@@ -140,10 +140,10 @@ void LinearVelocityConstraint<TDataTypes>::init()
 
         // Initialize functions and parameters
         m_pointHandler = new FCPointHandler(this, &d_indices);
-        d_indices.createTopologicalEngine(_topology, m_pointHandler);
+        d_indices.createTopologyHandler(_topology, m_pointHandler);
         d_indices.registerTopologicalData();
 
-        d_coordinates.createTopologicalEngine(_topology);
+        d_coordinates.createTopologyHandler(_topology);
         d_coordinates.registerTopologicalData();
     }
     else

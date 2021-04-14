@@ -7,6 +7,7 @@ using std::endl;
 #include <sofa/helper/system/gl.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/Shader.h>
 
 namespace sofa
 {

@@ -138,7 +138,7 @@ struct TriangleNumericalIntegration_test : public Sofa_test<typename _DataTypes:
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec2Types
 > DataTypes; // the types to instanciate.

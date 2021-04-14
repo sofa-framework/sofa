@@ -231,12 +231,12 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     }
 
     // Edge info
-    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
     // Triangle info
-    triangleInfo.createTopologicalEngine(m_topology,triangleHandler);
+    triangleInfo.createTopologyHandler(m_topology,triangleHandler);
     triangleInfo.registerTopologicalData();
     triangleInfo.endEdit();
 }

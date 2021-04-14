@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -1174,12 +1174,12 @@ void TetrahedronSetTopologyContainer::setTetrahedronTopologyToDirty()
     m_tetrahedronTopologyDirty = true;
 
     // set all engines link to this container to dirty
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        msg_info() << "Tetrahedron Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Tetrahedron Topology Set dirty engine: " << topoEngine->getName();
     }
 }
 
@@ -1188,24 +1188,24 @@ void TetrahedronSetTopologyContainer::cleanTetrahedronTopologyFromDirty()
     m_tetrahedronTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
         if ((*it)->isDirty())
         {
-            msg_warning() << "Tetrahedron Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Tetrahedron Topology update did not clean engine: " << (*it)->getName();
             (*it)->cleanDirty();
         }
     }
 }
 
-void TetrahedronSetTopologyContainer::updateTopologyEngineGraph()
+void TetrahedronSetTopologyContainer::updateTopologyHandlerGraph()
 {
     // calling real update Data graph function implemented once in PointSetTopologyModifier
     this->updateDataEngineGraph(this->d_tetrahedron, this->m_enginesList);
 
     // will concatenate with edges one:
-    TriangleSetTopologyContainer::updateTopologyEngineGraph();
+    TriangleSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
 std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)

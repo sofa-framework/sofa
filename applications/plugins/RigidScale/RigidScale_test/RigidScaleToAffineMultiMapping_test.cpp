@@ -139,7 +139,7 @@ struct RigidScaleToAffineMultiMappingTest  : public Multi2Mapping_test<_MultiMap
 };
 
 // Define the list of types to instantiate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<mapping::RigidScaleToAffineMultiMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types, defaulttype::Affine3Types> > DataTypes; // the types to instantiate.
 
 // Test suite for all the instantiations

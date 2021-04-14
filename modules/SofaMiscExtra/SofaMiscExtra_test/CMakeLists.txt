@@ -10,6 +10,6 @@ set(SOURCE_FILES ../../empty.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_definitions("-DMISC_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

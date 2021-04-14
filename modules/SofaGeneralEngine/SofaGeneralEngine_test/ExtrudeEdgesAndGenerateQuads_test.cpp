@@ -171,7 +171,7 @@ struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes:
     }
 };
 
-using testing::Types;
+using ::testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
 TYPED_TEST_SUITE(ExtrudeEdgesAndGenerateQuads_test, DataTypes);

@@ -1,0 +1,6 @@
+# This runs very slowly, so compute only a few iterations
+iterations "mapping/cageLocalScaling.py" "10"
+timeout "mapping/cageLocalScaling.py" "80"
+
+# RequiredPlugin: "SohusimDev"
+ignore "mapping/bonesWithRigidScaleToAffineMultiMapping.py"

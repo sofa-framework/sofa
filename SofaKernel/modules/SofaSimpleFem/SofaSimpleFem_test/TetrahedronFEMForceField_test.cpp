@@ -137,8 +137,8 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
 };
 
 // ========= Define the list of types to instanciate.
-//using testing::Types;
-typedef testing::Types<
+//using ::testing::Types;
+typedef ::testing::Types<
 component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3Types>
 > TestTypes; // the types to instanciate.
 

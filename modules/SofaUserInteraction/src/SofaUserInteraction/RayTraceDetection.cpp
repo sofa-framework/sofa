@@ -31,6 +31,7 @@
 #include <SofaUserInteraction/RayTraceDetection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/collision/Intersection.h>
 #include <map>
 #include <queue>
 #include <stack>

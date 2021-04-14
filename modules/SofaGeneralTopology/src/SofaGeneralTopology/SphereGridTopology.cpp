@@ -22,7 +22,6 @@
 #include <SofaGeneralTopology/SphereGridTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/rmath.h>
 
 namespace sofa::component::topology
 {

@@ -116,7 +116,7 @@ public:
     /// Get the matrix relative to the DOF at \a index.
     virtual void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const = 0;
 
-    virtual bool isDiagonal() { return false; }
+    virtual bool isDiagonal() const = 0;
 
     /// Member specifying if the gravity is added separately to the DOFs velocities (in solve method),
     /// or if is added with the other forces(addForceMethod)

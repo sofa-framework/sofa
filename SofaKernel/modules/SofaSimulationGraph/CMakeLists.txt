@@ -23,11 +23,6 @@ set(SOURCE_FILES
     ${SOFASIMULATIONGRAPH_SRC}/SimpleApi.cpp
 )
 
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    list(APPEND HEADER_FILES ${SOFASIMULATIONGRAPH_SRC}/testing/BaseSimulationTest.h)
-    list(APPEND SOURCE_FILES ${SOFASIMULATIONGRAPH_SRC}/testing/BaseSimulationTest.cpp)
-endif()
-
 sofa_find_package(SofaSimulationCommon REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

@@ -18,6 +18,7 @@ Components/constraint/FixedConstraint.scn 100 1e-4 0 1
 Components/constraint/FrictionContact.scn 100 1e-4 0 1
 Components/forcefield/BeamFEMForceField.scn 100 1e-4 0 1
 Components/forcefield/FastTriangularBendingSprings.scn 100 1e-4 0 1
+Components/forcefield/QuadBendingFEMForceField.scn 300 1e-4 0 1
 Components/forcefield/TriangularFEMForceFieldOptim.scn 100 1e-4 0 1
 Components/interactionforcefield/InteractionEllipsoidForceField.scn 100 1e-4 0 1
 Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1

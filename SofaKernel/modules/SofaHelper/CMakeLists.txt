@@ -15,10 +15,7 @@ if(SOFAHELPER_HAVE_BOOST_FILESYSTEM
 else()
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
 endif()
-# GTest
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    sofa_find_package(GTest CONFIG BOTH_SCOPES)
-endif()
+
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
@@ -55,13 +52,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/Polynomial_LD.h
     ${SRC_ROOT}/Polynomial_LD.inl
     ${SRC_ROOT}/RandomGenerator.h
-    ${SRC_ROOT}/SVector.h
     ${SRC_ROOT}/SimpleTimer.h
     ${SRC_ROOT}/ScopedAdvancedTimer.h
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
-    ${SRC_ROOT}/UnitTest.h
     ${SRC_ROOT}/Utils.h
     ${SRC_ROOT}/accessor.h
     ${SRC_ROOT}/decompose.h
@@ -94,7 +89,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/rmath.h
     ${SRC_ROOT}/set.h
     ${SRC_ROOT}/fwd.h
-    ${SRC_ROOT}/stable_vector.h
     ${SRC_ROOT}/system/DynamicLibrary.h
     ${SRC_ROOT}/system/FileSystem.h
     ${SRC_ROOT}/system/Locale.h
@@ -113,15 +107,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/thread/thread_specific_ptr.h
     ${SRC_ROOT}/system/FileMonitor.h
     ${SRC_ROOT}/system/FileRepository.h
-    ${SRC_ROOT}/vector.h
-    ${SRC_ROOT}/vector_T.h
-    ${SRC_ROOT}/vector_T.inl
-    ${SRC_ROOT}/vector_Real.h
-    ${SRC_ROOT}/vector_Integral.h
-    ${SRC_ROOT}/vector_String.h
-    ${SRC_ROOT}/vector_algebra.h
-    ${SRC_ROOT}/vector_algorithm.h
-    ${SRC_ROOT}/vector_device.h
     ${SRC_ROOT}/logging/Messaging.h
     ${SRC_ROOT}/logging/Message.h
     ${SRC_ROOT}/logging/ComponentInfo.h
@@ -158,12 +143,10 @@ set(SOURCE_FILES
     ${SRC_ROOT}/OptionsGroup.cpp
     ${SRC_ROOT}/ScopedAdvancedTimer.cpp
     ${SRC_ROOT}/StateMask.cpp
-    ${SRC_ROOT}/SVector.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
     ${SRC_ROOT}/TagFactory.cpp
-    ${SRC_ROOT}/UnitTest.cpp
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
     ${SRC_ROOT}/init.cpp
@@ -196,10 +179,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/thread/debug.cpp
     ${SRC_ROOT}/system/FileRepository.cpp
     ${SRC_ROOT}/set.cpp
-    ${SRC_ROOT}/vector.cpp
-    ${SRC_ROOT}/vector_Real.cpp
-    ${SRC_ROOT}/vector_Integral.cpp
-    ${SRC_ROOT}/vector_String.cpp
     ${SRC_ROOT}/logging/Message.cpp
     ${SRC_ROOT}/logging/MessageDispatcher.cpp
     ${SRC_ROOT}/logging/MessageFormatter.cpp
@@ -225,18 +204,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
 endif()
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    list(APPEND HEADER_FILES
-        ${SRC_ROOT}/testing/BaseTest.h
-        ${SRC_ROOT}/testing/NumericTest.h
-        ${SRC_ROOT}/testing/TestMessageHandler.h
-        )
-    list(APPEND SOURCE_FILES
-        ${SRC_ROOT}/testing/BaseTest.cpp
-        ${SRC_ROOT}/testing/NumericTest.cpp
-        ${SRC_ROOT}/testing/TestMessageHandler.cpp
-        )
-endif()
 if(Boost_THREAD_FOUND)
     list(APPEND HEADER_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.h)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.cpp)
@@ -246,56 +213,15 @@ if(Boost_FILESYSTEM_FOUND)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/system/FileRepository.cpp)
 endif()
 
-# Compatibility files
-set (COMPATSRC_ROOT "compat/")
-set (COMPAT_HEADER_FILES
-    ${COMPATSRC_ROOT}/sofa/core/visual/DrawTool.h
-    ${COMPATSRC_ROOT}/sofa/core/visual/DrawToolGL.h
-    ${COMPATSRC_ROOT}/sofa/helper/system/gl.h
-    ${COMPATSRC_ROOT}/sofa/helper/system/glu.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/template.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Texture.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/FrameBufferObject.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/GLSLShader.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Transformation.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/RAII.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/BasicShapes.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Capture.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/VideoRecorderFFMPEG.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Axis.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.inl
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Color.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
-    ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
-    ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
-    ${COMPATSRC_ROOT}/sofa/helper/Quater.h
-    ${COMPATSRC_ROOT}/sofa/helper/Quater.inl
-    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.h
-    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.inl
-    ${COMPATSRC_ROOT}/sofa/helper/types/RGBAColor.h
-    ${COMPATSRC_ROOT}/sofa/helper/types/RGBAColor_fwd.h
-    ${COMPATSRC_ROOT}/sofa/helper/types/Material.h
-    ${COMPATSRC_ROOT}/sofa/helper/types/PrimitiveGroup.h
-    )
-
-
 sofa_find_package(Sofa.Config REQUIRED)
 
 # LIBRARY
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaSimulationCore/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaCore/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Sofa.Type/src>")
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
-                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/compat>")
-source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
@@ -307,7 +233,7 @@ endif()
 set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
 
 # DEPENDENCY LINKS AND INCLUDE DIRS
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Topology)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config )
 
 # System libs
@@ -338,11 +264,6 @@ if(Boost_FOUND)
         #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
         target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_ALL_DYN_LINK)
     endif()
-endif()
-
-# GTest
-if((SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE) AND GTest_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 endif()
 
 # Eigen (header only)

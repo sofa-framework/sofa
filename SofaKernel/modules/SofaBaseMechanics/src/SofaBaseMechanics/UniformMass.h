@@ -142,7 +142,7 @@ public:
     SReal getElementMass(sofa::Index index) const override;
     void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const override;
 
-    bool isDiagonal() override {return true;}
+    bool isDiagonal() const override {return true;}
 
     void draw(const core::visual::VisualParams* vparams) override;
 

@@ -218,7 +218,7 @@ void PointLocalMinDistanceFilter::init()
         m_pointInfo.endEdit();
 
         pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
-        m_pointInfo.createTopologicalEngine(bmt, pointInfoHandler);
+        m_pointInfo.createTopologyHandler(bmt, pointInfoHandler);
         m_pointInfo.registerTopologicalData();
     }
     if(this->isRigid())

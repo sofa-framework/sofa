@@ -826,7 +826,7 @@ protected:
 template<class VecType>
 void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int algo)
 {
-    data->createTopologicalEngine(m_topology, new VisualModelPointHandler<VecType>(this, data, algo), true);
+    data->createTopologyHandler(m_topology, new VisualModelPointHandler<VecType>(this, data, algo));
     data->registerTopologicalData();
 }
 

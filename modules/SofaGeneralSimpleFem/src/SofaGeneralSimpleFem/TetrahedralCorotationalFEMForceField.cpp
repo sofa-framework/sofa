@@ -23,7 +23,6 @@
 
 #include <SofaGeneralSimpleFem/TetrahedralCorotationalFEMForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
 

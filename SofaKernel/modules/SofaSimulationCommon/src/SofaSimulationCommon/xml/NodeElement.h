@@ -28,7 +28,7 @@
 namespace sofa::simulation::xml
 {
 
-class SOFA_SOFASIMULATIONCOMMON_API NodeElement : public Element<core::objectmodel::BaseNode>
+class SOFA_SOFASIMULATIONCOMMON_API NodeElement : public Element<sofa::core::objectmodel::BaseNode>
 {
 public:
     NodeElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);
@@ -43,7 +43,7 @@ public:
 
     virtual const char* getClass() const;
 
-    typedef Element<core::objectmodel::BaseNode>::Factory Factory;
+    typedef Element<sofa::core::objectmodel::BaseNode>::Factory Factory;
 };
 
 } // namespace sofa::simulation::xml

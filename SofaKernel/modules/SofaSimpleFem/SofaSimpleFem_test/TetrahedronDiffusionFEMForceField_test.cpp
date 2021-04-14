@@ -198,8 +198,8 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
 
 
 // ========= Define the list of types to instanciate.
-//using testing::Types;
-typedef testing::Types<component::forcefield::TetrahedronDiffusionFEMForceField<defaulttype::Vec1Types> > TestTypes; // the types to instanciate.
+//using ::testing::Types;
+typedef ::testing::Types<component::forcefield::TetrahedronDiffusionFEMForceField<defaulttype::Vec1Types> > TestTypes; // the types to instanciate.
 
 
 // ========= Tests to run for each instanciated type

@@ -32,9 +32,6 @@
 namespace sofa::component::mapping
 {
 
-static const SReal s_null_distance_epsilon = 1e-8;
-
-
 template <class TIn, class TOut>
 SquareDistanceMapping<TIn, TOut>::SquareDistanceMapping()
     : Inherit()

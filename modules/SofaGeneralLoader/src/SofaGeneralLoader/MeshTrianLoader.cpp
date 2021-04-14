@@ -26,6 +26,8 @@
 #include <iostream>
 #include <fstream>
 
+using namespace sofa::helper;
+
 namespace sofa::component::loader
 {
 

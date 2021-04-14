@@ -68,7 +68,7 @@ void ParticleSink<DataTypes>::init()
     _topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters for topology data and handler
-    d_fixed.createTopologicalEngine(_topology);
+    d_fixed.createTopologyHandler(_topology);
     d_fixed.registerTopologicalData();
 }
 

@@ -66,7 +66,7 @@ struct NormalizationMappingTest : public Mapping_test<Mapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     component::mapping::NormalizationMapping<defaulttype::Vec3Types>
 > DataTypes; // the types to instanciate.

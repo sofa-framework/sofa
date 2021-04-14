@@ -96,8 +96,8 @@ void MultilevelHexahedronSetTopologyContainer::init()
 
     HexahedronSetTopologyContainer::init();
 
-    _coarseComponents.createTopologicalEngine(this);
-    _fineComponents.createTopologicalEngine(this);
+    _coarseComponents.createTopologyHandler(this);
+    _fineComponents.createTopologyHandler(this);
     // do not register these engines for now...
 
 }

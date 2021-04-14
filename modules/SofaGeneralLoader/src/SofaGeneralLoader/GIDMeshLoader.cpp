@@ -26,6 +26,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralLoader/GIDMeshLoader.h>
 
+using namespace sofa::helper;
+
 namespace sofa::component::loader
 {
 

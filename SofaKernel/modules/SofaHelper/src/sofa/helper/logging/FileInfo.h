@@ -32,16 +32,10 @@
 #include <sofa/helper/config.h>
 #include <sstream>
 #include <set>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 static const char * s_unknownFile = "unknown-file";
@@ -52,7 +46,7 @@ static const char * s_unknownFile = "unknown-file";
 /// instead.
 struct FileInfo
 {
-    typedef boost::shared_ptr<FileInfo> SPtr;
+    typedef std::shared_ptr<FileInfo> SPtr;
 
     const char *filename {nullptr};
     int line             {0};
@@ -90,9 +84,7 @@ static FileInfo::SPtr EmptyFileInfo(new FileInfo(s_unknownFile, 0)) ;
 #define SOFA_FILE_INFO sofa::helper::logging::FileInfo::SPtr(new sofa::helper::logging::FileInfo(__FILE__, __LINE__))
 #define SOFA_FILE_INFO_COPIED_FROM(file,line) sofa::helper::logging::FileInfo::SPtr(new sofa::helper::logging::FileInfoOwningFilename(file,line))
 
-} // logging
-} // helper
-} // sofa
+} // sofa::helper::logging
 
 
 #endif // MESSAGE_H

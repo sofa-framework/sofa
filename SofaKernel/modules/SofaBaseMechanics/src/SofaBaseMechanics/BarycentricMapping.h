@@ -63,7 +63,7 @@ public:
     typedef typename Inherit1::ForceMask ForceMask;
 
 public:
-    Data< bool > useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping    
+    Data< bool > d_useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping    
 
     SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> d_mapper;
     SingleLink<BarycentricMapping<In,Out>,BaseMeshTopology,BaseLink::FLAG_STRONGLINK> d_input_topology;

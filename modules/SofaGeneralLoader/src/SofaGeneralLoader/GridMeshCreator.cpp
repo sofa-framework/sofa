@@ -22,12 +22,12 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralLoader/GridMeshCreator.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 using namespace sofa::core::loader;
 using helper::vector;
 

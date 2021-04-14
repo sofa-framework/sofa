@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 namespace sofa::component::topology
 {
@@ -445,19 +445,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     m_container->resetTopologyChangeList();
 }
 
-void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
-{
-    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    getContext()->executeVisitor(&a);
-
-    //TODO: temporary code to test topology engine pipeline. Commented by default for the moment
-    //this->propagateTopologicalEngineChanges();
-
-}
-
 
 void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 {
@@ -469,12 +456,12 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 
     sofa::helper::AdvancedTimer::stepBegin("PointSetTopologyModifier::propagateTopologicalEngineChanges");
     // get directly the list of engines created at init: case of removing.... for the moment
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
 
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
             topoEngine->update();
@@ -500,6 +487,8 @@ void PointSetTopologyModifier::notifyEndingEvent()
 {
     sofa::core::topology::EndingEvent *e=new sofa::core::topology::EndingEvent();
     m_container->addTopologyChange(e);
+
+    propagateTopologicalChanges();
 }
 
 } //namespace sofa::component::topology

@@ -45,7 +45,7 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-using testing::Types;
+using ::testing::Types;
 
 #include <boost/filesystem.hpp>
 namespace {

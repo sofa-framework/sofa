@@ -32,6 +32,7 @@
 #include <sofa/core/sptr.h>
 
 #include <deque>
+#include <atomic>
 
 #include <sofa/core/objectmodel/ComponentState.h>
 #include <sofa/core/DataTracker.h>

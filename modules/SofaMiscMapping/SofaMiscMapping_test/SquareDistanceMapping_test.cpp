@@ -105,7 +105,7 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 
 
 // Define the list of types to instanciate.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 component::mapping::SquareDistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>
 , component::mapping::SquareDistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>

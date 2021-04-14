@@ -83,7 +83,7 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
         selectTrianglesFromString();
     }
 
-    trianglePressureMap.createTopologicalEngine(m_topology);
+    trianglePressureMap.createTopologyHandler(m_topology);
     trianglePressureMap.registerTopologicalData();
 	
     initTriangleInformation();

@@ -238,7 +238,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
 
     edgeInf.resize(m_topology->getNbEdges());
-    m_edgeInfo.createTopologicalEngine(m_topology);
+    m_edgeInfo.createTopologyHandler(m_topology);
 
     m_edgeInfo.registerTopologicalData();
 
@@ -260,7 +260,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     }
 
     /// set the call back function upon creation of a tetrahedron
-    m_tetrahedronInfo.createTopologicalEngine(m_topology,m_tetrahedronHandler);
+    m_tetrahedronInfo.createTopologyHandler(m_topology,m_tetrahedronHandler);
     m_tetrahedronInfo.registerTopologicalData();
 
     m_tetrahedronInfo.endEdit();

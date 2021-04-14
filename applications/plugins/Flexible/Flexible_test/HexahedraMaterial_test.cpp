@@ -288,8 +288,8 @@ const std::string HexaMaterialTest332Type::sceneName= "HexahedraTractionTest.scn
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     HexaMaterialTest331Type,
     HexaMaterialTest332Type
 

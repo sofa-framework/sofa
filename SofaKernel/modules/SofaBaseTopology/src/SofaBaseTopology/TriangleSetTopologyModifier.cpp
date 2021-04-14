@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
@@ -934,11 +934,11 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
     sofa::helper::AdvancedTimer::stepBegin("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
 
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         if (topoEngine->isDirty())
         {            
             topoEngine->update();

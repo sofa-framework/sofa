@@ -161,7 +161,7 @@ public:
     {
     public:
         /** Internal class used to generate IDs. */
-        class SOFA_HELPER_API IdFactory : public Base
+        class IdFactory : public Base
         {
         protected:
 

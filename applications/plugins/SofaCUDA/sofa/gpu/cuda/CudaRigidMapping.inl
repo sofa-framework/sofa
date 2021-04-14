@@ -72,12 +72,6 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
     translation = in[index.getValue()].getCenter();
     in[index.getValue()].writeRotationMatrix(rotation);
 
-    //for(unsigned int i=0;i<points.size();i++)
-    //{
-    //    rotatedPoints[i] = rotation*points[i];
-    //    out[i] = rotatedPoints[i];
-    //    out[i] += translation;
-    //}
     RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
 
     dOut.endEdit();
@@ -94,12 +88,7 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
     out.recreate(points.size());
     v = getVCenter(in[index.getValue()]);
     omega = getVOrientation(in[index.getValue()]);
-    //for(unsigned int i=0;i<points.size();i++)
-    //{
-    //    // out = J in
-    //    // J = [ I -OM^ ]
-    //    out[i] =  v - cross(rotatedPoints[i],omega);
-    //}
+
     RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
 
     dOut.endEdit();
@@ -138,19 +127,13 @@ void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::apply( co
 
     const VecCoord& points = this->points.getValue();
     Coord translation;
-    Mat rotation;
+    sofa::type::Mat<3,3, defaulttype::Rigid3Types::Real> rotation;
     rotatedPoints.resize(points.size());
     out.recreate(points.size());
 
     translation = in[index.getValue()].getCenter();
     in[index.getValue()].writeRotationMatrix(rotation);
 
-    //for(unsigned int i=0;i<points.size();i++)
-    //{
-    //    rotatedPoints[i] = rotation*points[i];
-    //    out[i] = rotatedPoints[i];
-    //    out[i] += translation;
-    //}
     RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
 
     dOut.endEdit();
@@ -167,12 +150,7 @@ void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJ( c
     out.recreate(points.size());
     v = getVCenter(in[index.getValue()]);
     omega = getVOrientation(in[index.getValue()]);
-    //for(unsigned int i=0;i<points.size();i++)
-    //{
-    //    // out = J in
-    //    // J = [ I -OM^ ]
-    //    out[i] =  v - cross(rotatedPoints[i],omega);
-    //}
+
     RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
 
     dOut.endEdit();
@@ -219,12 +197,6 @@ void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply( 
     translation = in[index.getValue()].getCenter();
     in[index.getValue()].writeRotationMatrix(rotation);
 
-    //for(unsigned int i=0;i<points.size();i++)
-    //{
-    //    rotatedPoints[i] = rotation*points[i];
-    //    out[i] = rotatedPoints[i];
-    //    out[i] += translation;
-    //}
     RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
 
     dOut.endEdit();
@@ -241,12 +213,7 @@ void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ(
     out.recreate(points.size());
     v = getVCenter(in[index.getValue()]);
     omega = getVOrientation(in[index.getValue()]);
-    //for(unsigned int i=0;i<points.size();i++)
-    //{
-    //    // out = J in
-    //    // J = [ I -OM^ ]
-    //    out[i] =  v - cross(rotatedPoints[i],omega);
-    //}
+
     RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
 
     dOut.endEdit();

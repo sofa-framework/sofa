@@ -254,11 +254,11 @@ public:
     /// @{
 
     /// Handle state Changes
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleStateChange() {}
 
     /// Handle state Changes from a given Topology
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleStateChange(core::topology::Topology* t);
 
     ///@}

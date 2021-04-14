@@ -14,3 +14,25 @@ add "PythonMainScriptController.py"
 #add "units.py" # it is pure python file (not a sofa scene) and should be tested in a specific unit test
 # add "variables.py" # this is not a sofa scene, simply a Controller definition called in variables.scn
 # add "Visitor.py"" # this is not a sofa scene, simply a visitor implementation called in Visitor.scn
+
+ignore "PythonAdvancedTimer/poutre_grid_sofa.py"
+
+# ProjectionToLineMapping and ProjectionToPlaneMapping have been removed
+ignore "Components/mapping/ProjectionToLineMapping.py"
+ignore "Components/mapping/ProjectionToPlaneMapping.py"
+
+# Logger test obviously emit errors
+ignore "logger.py"
+
+# Needs PySide
+ignore "console.py"
+
+# TetrahedronSetTopologyAlgorithms has been removed
+ignore "RegularGridFromMesh.py"
+
+# No such file or directory: 'PythonScene2.py'
+ignore "PythonScene2.pyscn"
+
+ignore "BaseContext.py"
+
+

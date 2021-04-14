@@ -52,7 +52,6 @@
 #include <sofa/helper/init.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 

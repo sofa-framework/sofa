@@ -23,6 +23,6 @@ set(SOURCE_FILES
 
 add_definitions("-DSOFABASETOPOLOGY_TEST_RESOURCES_DIR=\"${CMAKE_SOURCE_DIR}/share\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGTestMain SofaTest SofaGeneralLoader)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Testing SofaTest SofaGeneralLoader)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

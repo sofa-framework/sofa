@@ -157,7 +157,7 @@ void BeamFEMForceField<DataTypes>::init()
         }
     }
 
-    m_beamsData.createTopologicalEngine(m_topology,m_edgeHandler);
+    m_beamsData.createTopologyHandler(m_topology,m_edgeHandler);
     m_beamsData.registerTopologicalData();
 
     reinit();

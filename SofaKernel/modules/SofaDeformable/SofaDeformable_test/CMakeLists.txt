@@ -11,6 +11,6 @@ set(SOURCE_FILES
 sofa_find_package(SofaDeformable REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaDeformable)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaDeformable)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

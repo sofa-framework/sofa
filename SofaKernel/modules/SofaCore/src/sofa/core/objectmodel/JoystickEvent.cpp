@@ -23,13 +23,7 @@
 #include <cassert>
 #include <cstring> // for nullptr
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 
@@ -240,8 +234,4 @@ JoystickEvent::ButtonEvent::~ButtonEvent() {}
 JoystickEvent::HatEvent::~HatEvent() {}
 
 
-} // namespace tree
-
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

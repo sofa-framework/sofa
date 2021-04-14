@@ -227,7 +227,7 @@ namespace sofa {
     };
 
     // Define the list of DataTypes to instantiate
-    typedef testing::Types< Vec3Types > DataTypes;
+    typedef ::testing::Types< Vec3Types > DataTypes;
 
     // Test suite for all the instantiations
     TYPED_TEST_SUITE(WriteState_test, DataTypes);

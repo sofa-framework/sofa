@@ -288,8 +288,8 @@ const std::string TetraMaterialTest332Type::sceneName= "TetrahedraTractionTest.s
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     TetraMaterialTest331Type,
     TetraMaterialTest332Type
 

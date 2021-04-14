@@ -10,3 +10,5 @@ ignore "Kinect_capture.scn"
 # and to have launch kinect_capture.scn
 ignore "Kinect_offline.scn"
 
+# File armadillo.mhd NOT FOUND
+ignore "imageAPI.py"

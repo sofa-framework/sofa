@@ -49,12 +49,12 @@ bool MeshTopologyLoader::addMeshtoTopology()
 
     setNbPoints((int)m_mesh->getVertices().size());
 
-    const sofa::helper::vector<Vector3>& vertices = m_mesh->getVertices();
-    const sofa::helper::vector< Topology::Edge > & edges = m_mesh->getEdges();
-    const sofa::helper::vector< Topology::Triangle > & triangles = m_mesh->getTriangles();
-    const sofa::helper::vector< Topology::Quad > & quads = m_mesh->getQuads();
-    const sofa::helper::vector< Topology::Tetrahedron > & tetra = m_mesh->getTetrahedra();
-    const sofa::helper::vector< Topology::Hexahedron > & hexa = m_mesh->getHexahedra();
+    const auto& vertices = m_mesh->getVertices();
+    const auto& edges = m_mesh->getEdges();
+    const auto& triangles = m_mesh->getTriangles();
+    const auto& quads = m_mesh->getQuads();
+    const auto& tetra = m_mesh->getTetrahedra();
+    const auto& hexa = m_mesh->getHexahedra();
 
     for (size_t i = 0; i < vertices.size(); ++i)
         addPoint(vertices[i][0], vertices[i][1], vertices[i][2]);

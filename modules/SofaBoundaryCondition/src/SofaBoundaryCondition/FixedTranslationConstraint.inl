@@ -88,7 +88,7 @@ void FixedTranslationConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::removeIndex(Index index)
 {
-    removeValue(*f_indices.beginEdit(),index);
+    sofa::helper::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 
@@ -112,10 +112,10 @@ void FixedTranslationConstraint<DataTypes>::init()
 
         // Initialize functions and parameters
         m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.createTopologyHandler(_topology, m_pointHandler);
         f_indices.registerTopologicalData();
 
-        f_coordinates.createTopologicalEngine(_topology);
+        f_coordinates.createTopologyHandler(_topology);
         f_coordinates.registerTopologicalData();
     }
     else
