@@ -59,4 +59,12 @@ void MechanicalPropagateOnlyPositionVisitor::bwdMechanicalState(simulation::Node
 {
     mm->forceMask.activate(false);
 }
+
+std::string MechanicalPropagateOnlyPositionVisitor::getInfos() const
+{
+    std::string name="x["+x.getName()+"]";
+    if (ignoreMask) name += " Mask DISABLED";
+    else            name += " Mask ENABLED";
+    return name;
+}
 }

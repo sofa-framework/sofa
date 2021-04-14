@@ -39,4 +39,11 @@ Visitor::Result MechanicalResetForceVisitor::fwdMappedMechanicalState(simulation
     mm->resetForce(this->params, res.getId(mm));
     return RESULT_CONTINUE;
 }
+
+std::string MechanicalResetForceVisitor::getInfos() const
+{
+    std::string name="["+res.getName()+"]";
+    if (onlyMapped) name+= " Only Mapped";
+    return name;
+}
 }

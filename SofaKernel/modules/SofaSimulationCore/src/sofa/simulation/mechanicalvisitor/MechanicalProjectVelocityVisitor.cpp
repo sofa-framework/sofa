@@ -38,4 +38,9 @@ Visitor::Result MechanicalProjectVelocityVisitor::fwdProjectiveConstraintSet(sim
     return RESULT_CONTINUE;
 }
 
+std::string MechanicalProjectVelocityVisitor::getInfos() const
+{
+    std::string name="["+vel.getName()+"]"; return name;
+}
+
 }

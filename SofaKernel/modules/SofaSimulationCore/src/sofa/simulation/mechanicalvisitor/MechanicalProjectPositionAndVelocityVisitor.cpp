@@ -39,4 +39,10 @@ Visitor::Result MechanicalProjectPositionAndVelocityVisitor::fwdProjectiveConstr
     return RESULT_CONTINUE;
 }
 
+std::string MechanicalProjectPositionAndVelocityVisitor::getInfos() const
+{
+    std::string name="x["+pos.getName()+"] v["+vel.getName()+"]";
+    return name;
+}
+
 }

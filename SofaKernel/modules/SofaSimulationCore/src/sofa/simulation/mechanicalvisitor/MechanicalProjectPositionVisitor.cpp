@@ -36,4 +36,9 @@ Visitor::Result MechanicalProjectPositionVisitor::fwdProjectiveConstraintSet(sim
     c->projectPosition(mparams, pos);
     return RESULT_CONTINUE;
 }
+
+std::string MechanicalProjectPositionVisitor::getInfos() const
+{
+    std::string name="["+pos.getName()+"]"; return name;
+}
 }

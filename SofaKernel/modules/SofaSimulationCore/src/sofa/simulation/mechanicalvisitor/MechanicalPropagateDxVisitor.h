@@ -51,22 +51,12 @@ public:
     void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override
-    {
-        if (ignoreFlag)
-            return false;
-        else
-            return !map->areForcesMapped();
-    }
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalPropagateDxVisitor"; }
-    virtual std::string getInfos() const override
-    {
-        std::string name="["+dx.getName()+"]";
-        return name;
-    }
+    std::string getInfos() const override;
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
     {

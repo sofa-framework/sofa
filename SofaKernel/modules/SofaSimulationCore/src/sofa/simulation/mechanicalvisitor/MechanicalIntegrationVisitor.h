@@ -38,9 +38,6 @@ public:
 
     Result fwdOdeSolver(simulation::Node* node,sofa::core::behavior::OdeSolver* obj) override;
     Result fwdInteractionForceField(simulation::Node*,sofa::core::behavior::BaseInteractionForceField* obj) override;
-    void bwdOdeSolver(simulation::Node* /*node*/,sofa::core::behavior::OdeSolver* /*obj*/) override
-    {
-    }
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

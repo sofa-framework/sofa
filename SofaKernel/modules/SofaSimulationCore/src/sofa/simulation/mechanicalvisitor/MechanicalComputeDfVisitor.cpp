@@ -61,4 +61,12 @@ void MechanicalComputeDfVisitor::bwdMechanicalState(simulation::Node* , core::be
     mm->forceMask.activate(false);
 }
 
+std::string MechanicalComputeDfVisitor::getInfos() const
+{
+    std::string name="["+res.getName()+"]";
+    if (accumulate) name+= " Accumulating";
+    else            name+= " Not Accumulating";
+    return name;
+}
+
 }

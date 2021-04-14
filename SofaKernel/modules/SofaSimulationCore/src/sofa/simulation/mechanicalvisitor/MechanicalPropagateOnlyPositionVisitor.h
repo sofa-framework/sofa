@@ -58,13 +58,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalPropagateOnlyPositionVisitor";}
-    virtual std::string getInfos() const override
-    {
-        std::string name="x["+x.getName()+"]";
-        if (ignoreMask) name += " Mask DISABLED";
-        else            name += " Mask ENABLED";
-        return name;
-    }
+    std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override

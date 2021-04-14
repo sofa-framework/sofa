@@ -58,4 +58,18 @@ void MechanicalPropagateDxVisitor::bwdMechanicalState(simulation::Node* , core::
     }
 }
 
+bool MechanicalPropagateDxVisitor::stopAtMechanicalMapping(simulation::Node *, sofa::core::BaseMapping *map)
+{
+    if (ignoreFlag)
+        return false;
+    else
+        return !map->areForcesMapped();
+}
+
+std::string MechanicalPropagateDxVisitor::getInfos() const
+{
+    std::string name="["+dx.getName()+"]";
+    return name;
+}
+
 }

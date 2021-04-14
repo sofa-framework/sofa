@@ -43,4 +43,10 @@ Visitor::Result MechanicalVSizeVisitor::fwdMappedMechanicalState(simulation::Nod
     return RESULT_CONTINUE;
 }
 
+std::string MechanicalVSizeVisitor::getInfos() const
+{
+    std::string name = "[" + v.getName() + "]";
+    return name;
+}
+
 }

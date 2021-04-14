@@ -54,13 +54,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override {return "MechanicalComputeForceVisitor";}
-    virtual std::string getInfos() const override
-    {
-        std::string name=std::string("[")+res.getName()+std::string("]");
-        if (accumulate) name+= " Accumulating";
-        else            name+= " Not Accumulating";
-        return name;
-    }
+    std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override

@@ -57,7 +57,7 @@ public:
     Result fwdMappedMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     const char* getClassName() const override { return "MechanicalVOpVisitor";}
-    virtual std::string getInfos() const override;
+    std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override

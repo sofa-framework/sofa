@@ -33,4 +33,11 @@ Visitor::Result MechanicalVDotVisitor::fwdMechanicalState(VisitorContext* ctx, c
     return RESULT_CONTINUE;
 }
 
+std::string MechanicalVDotVisitor::getInfos() const
+{
+    std::string name("v= a*b with a[");
+    name += a.getName() + "] and b[" + b.getName() + "]";
+    return name;
+}
+
 }

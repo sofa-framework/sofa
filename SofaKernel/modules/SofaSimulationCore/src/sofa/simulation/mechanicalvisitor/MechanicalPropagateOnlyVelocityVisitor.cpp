@@ -62,4 +62,7 @@ void MechanicalPropagateOnlyVelocityVisitor::bwdMechanicalState(simulation::Node
     mm->forceMask.activate(false);
 }
 
+std::string MechanicalPropagateOnlyVelocityVisitor::getInfos() const
+{ std::string name="v["+v.getName()+"]"; return name; }
+
 }

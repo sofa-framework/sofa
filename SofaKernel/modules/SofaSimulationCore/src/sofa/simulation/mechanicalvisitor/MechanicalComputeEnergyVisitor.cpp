@@ -63,4 +63,10 @@ Visitor::Result MechanicalComputeEnergyVisitor::fwdForceField(simulation::Node* 
     return RESULT_CONTINUE;
 }
 
+void MechanicalComputeEnergyVisitor::execute(sofa::core::objectmodel::BaseContext *c, bool precomputedTraversalOrder)
+{
+    m_kineticEnergy = m_potentialEnergy = 0;
+    sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );
+}
+
 }

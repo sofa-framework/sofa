@@ -57,11 +57,7 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalComputeEnergyVisitor"; }
 
-    void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false ) override
-    {
-        m_kineticEnergy = m_potentialEnergy = 0;
-        sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );
-    }
+    void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false ) override;
 
 };
 

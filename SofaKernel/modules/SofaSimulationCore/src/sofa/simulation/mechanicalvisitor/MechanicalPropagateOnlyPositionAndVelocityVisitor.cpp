@@ -61,4 +61,7 @@ void MechanicalPropagateOnlyPositionAndVelocityVisitor::bwdMechanicalState(simul
     mm->forceMask.activate(false);
 }
 
+std::string MechanicalPropagateOnlyPositionAndVelocityVisitor::getInfos() const
+{ std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
+
 }

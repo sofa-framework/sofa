@@ -61,4 +61,10 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMappedMechanicalSt
     mm->resetForce(this->params, f.getId(mm));
     return RESULT_CONTINUE;
 }
+
+std::string MechanicalPropagateDxAndResetForceVisitor::getInfos() const
+{
+    return "dx["+dx.getName()+"] f["+f.getName()+"]";
+}
+
 }

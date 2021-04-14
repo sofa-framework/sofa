@@ -72,7 +72,7 @@ public:
         return "MechanicalVInitVisitor";
     }
 
-    virtual std::string getInfos() const override;
+    std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override

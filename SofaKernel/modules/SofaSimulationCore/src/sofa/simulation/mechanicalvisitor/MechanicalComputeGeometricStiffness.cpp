@@ -29,4 +29,10 @@ Visitor::Result MechanicalComputeGeometricStiffness::fwdMechanicalMapping(simula
     map->updateK( mparams, childForce );
     return RESULT_CONTINUE;
 }
+
+std::string MechanicalComputeGeometricStiffness::getInfos() const
+{
+    std::string name="["+childForce.getName()+"]";
+    return name;
+}
 }

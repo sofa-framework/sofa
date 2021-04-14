@@ -47,11 +47,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalVSizeVisitor";}
-    virtual std::string getInfos() const override
-    {
-        std::string name = "[" + v.getName() + "]";
-        return name;
-    }
+    std::string getInfos() const override;
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
     {
