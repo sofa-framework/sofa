@@ -55,6 +55,7 @@
 #include <cassert>
 #include <iostream>
 #include <type_traits>
+#include <algorithm>
 
 
 namespace sofa::type
