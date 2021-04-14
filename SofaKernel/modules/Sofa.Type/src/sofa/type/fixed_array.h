@@ -52,8 +52,6 @@
 #include <cstddef>
 #include <stdexcept>
 #include <iterator>
-#include <algorithm>
-#include <cmath>
 #include <cassert>
 #include <iostream>
 #include <type_traits>
