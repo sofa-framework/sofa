@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -743,12 +743,12 @@ void QuadSetTopologyContainer::setQuadTopologyToDirty()
     m_quadTopologyDirty = true;
 
     // set all engines link to this container to dirty
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        msg_info() << "Quad Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Quad Topology Set dirty engine: " << topoEngine->getName();
     }
 }
 
@@ -757,24 +757,24 @@ void QuadSetTopologyContainer::cleanQuadTopologyFromDirty()
     m_quadTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
         if ((*it)->isDirty())
         {
-            msg_warning() << "Quad Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Quad Topology update did not clean engine: " << (*it)->getName();
             (*it)->cleanDirty();
         }
     }
 }
 
-void QuadSetTopologyContainer::updateTopologyEngineGraph()
+void QuadSetTopologyContainer::updateTopologyHandlerGraph()
 {
     // calling real update Data graph function implemented once in PointSetTopologyModifier
     this->updateDataEngineGraph(this->d_quad, this->m_enginesList);
 
     // will concatenate with edges one:
-    EdgeSetTopologyContainer::updateTopologyEngineGraph();
+    EdgeSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
 } //namespace sofa::component::topology

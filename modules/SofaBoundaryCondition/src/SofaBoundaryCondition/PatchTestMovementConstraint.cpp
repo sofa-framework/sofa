@@ -25,8 +25,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/simulation/Node.h>
-
 namespace sofa::component::projectiveconstraintset
 {
 

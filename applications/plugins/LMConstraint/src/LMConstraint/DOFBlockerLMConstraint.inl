@@ -97,7 +97,7 @@ void DOFBlockerLMConstraint<DataTypes>::init()
         
         // Initialize functions and parameters
         m_pointHandler = new FCTPointHandler(this, &f_indices);
-        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.createTopologyHandler(_topology, m_pointHandler);
         f_indices.registerTopologicalData();        
     }
     else

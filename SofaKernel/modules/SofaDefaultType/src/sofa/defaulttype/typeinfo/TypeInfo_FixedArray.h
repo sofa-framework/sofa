@@ -24,6 +24,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/defaulttype/config.h>
 #include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
+#include <sstream>
 
 namespace sofa::defaulttype
 {

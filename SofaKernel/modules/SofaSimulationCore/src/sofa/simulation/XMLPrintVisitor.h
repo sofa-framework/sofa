@@ -49,7 +49,7 @@ public:
     template<class Seq>
     void processObjects(Seq& list);
 
-    void processBaseObject(core::objectmodel::BaseObject* obj);
+    void processBaseObject(sofa::core::objectmodel::BaseObject* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;

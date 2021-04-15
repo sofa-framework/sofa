@@ -484,7 +484,7 @@ void TriangularBendingSprings<DataTypes>::init()
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.linkToPointDataArray();
     edgeInfo.linkToTriangleDataArray();
     edgeInfo.registerTopologicalData();

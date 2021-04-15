@@ -32,12 +32,18 @@
 namespace // anonymous
 {
     template<typename real>
-    real rabs(const real r)
+    constexpr real rabs(const real r)
     {
         if constexpr (std::is_signed<real>())
             return std::abs(r);
         else
             return r;
+    }
+
+    template<typename real>
+    constexpr real equalsZero(const real r, const real epsilon = std::numeric_limits<real>::epsilon())
+    {
+        return rabs(r) <= epsilon;
     }
 
 } // anonymous namespace
@@ -837,8 +843,6 @@ inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
     return v;
 }
 
-#define MIN_DETERMINANT  1.0e-100
-
 /// Matrix inversion (general case).
 template<sofa::Size S, class real>
 [[nodiscard]] bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
@@ -872,7 +876,7 @@ template<sofa::Size S, class real>
             }
         }
 
-        if (pivot <= (real) MIN_DETERMINANT)
+        if (equalsZero(pivot))
         {
             return false;
         }
@@ -913,7 +917,7 @@ template<class real>
 {
     real det=determinant(from);
 
-    if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
+    if (equalsZero(det))
     {
         return false;
     }
@@ -937,7 +941,7 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 {
     real det=determinant(from);
 
-    if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
+    if (equalsZero(det))
     {
         return false;
     }
@@ -949,7 +953,6 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 
     return true;
 }
-#undef MIN_DETERMINANT
 
 /// Inverse Matrix considering the matrix as a transformation.
 template<sofa::Size S, class real>

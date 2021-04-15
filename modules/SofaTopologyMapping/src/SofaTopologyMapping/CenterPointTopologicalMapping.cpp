@@ -25,7 +25,6 @@
 
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
-#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>

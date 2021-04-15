@@ -92,7 +92,7 @@ void CGLinearSolver<TMatrix,TVector>::resetSystem()
 template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
-    sofa::helper::ScopedAdvancedTimer("CG-setSystemMBKMatrix");
+    sofa::helper::ScopedAdvancedTimer timer("CG-setSystemMBKMatrix");
     Inherit::setSystemMBKMatrix(mparams);
 }
 

@@ -138,7 +138,7 @@ protected :
     bool isPointInPlane(Coord p);
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_CPP)
 
 extern template class SOFA_SOFABOUNDARYCONDITION_API TrianglePressureForceField<sofa::defaulttype::Vec3Types>;
 

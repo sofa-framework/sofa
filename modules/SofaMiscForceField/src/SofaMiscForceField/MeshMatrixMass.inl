@@ -1041,11 +1041,11 @@ void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers(sofa::core::topol
 {
     // add the functions to handle topology changes for Vertex informations
     m_vertexMassHandler = new VertexMassHandler(this, &d_vertexMassInfo);
-    d_vertexMassInfo.createTopologicalEngine(m_topology, m_vertexMassHandler);
+    d_vertexMassInfo.createTopologyHandler(m_topology, m_vertexMassHandler);
 
     // add the functions to handle topology changes for Edge informations
     m_edgeMassHandler = new EdgeMassHandler(this, &d_edgeMassInfo);
-    d_edgeMassInfo.createTopologicalEngine(m_topology, m_edgeMassHandler);
+    d_edgeMassInfo.createTopologyHandler(m_topology, m_edgeMassHandler);
 
 
     // register engines to the corresponding toplogy containers depending on current topology type

@@ -25,7 +25,6 @@
 #include <sofa/helper/Quater.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sstream>
 
 using namespace sofa::core::loader;
 using namespace sofa::defaulttype;

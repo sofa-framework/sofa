@@ -97,7 +97,7 @@ void ConstantForceField<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
         // Initialize functions and parameters for topology data and handler
-        d_indices.createTopologicalEngine(_topology);
+        d_indices.createTopologyHandler(_topology);
         d_indices.registerTopologicalData();
 
         m_systemSize = _topology->getNbPoints();

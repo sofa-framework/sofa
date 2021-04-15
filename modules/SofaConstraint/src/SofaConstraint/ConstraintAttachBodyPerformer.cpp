@@ -26,7 +26,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
 #include <SofaRigid/JointSpringForceField.inl>
-#include <SofaDeformable/SpringForceField.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 
 

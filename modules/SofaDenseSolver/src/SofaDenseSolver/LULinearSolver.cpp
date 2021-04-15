@@ -23,8 +23,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaDenseSolver/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
 
 namespace sofa::component::linearsolver
 {

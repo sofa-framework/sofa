@@ -27,7 +27,7 @@
 #include <ostream>
 #include <istream>
 #include <string>
-
+#include <cmath>
 
 namespace sofa::type
 {
@@ -96,6 +96,8 @@ public:
             if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return true;
         return false;
     }
+
+    RGBAColor operator*(float f) const;
 
     friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
     friend SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;

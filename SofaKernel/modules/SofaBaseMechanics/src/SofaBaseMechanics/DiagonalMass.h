@@ -89,11 +89,11 @@ public:
     typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
     typedef core::topology::BaseMeshTopology::HexahedronID HexahedronID;
 
-    class DMassPointHandler : public topology::TopologyDataHandler<Point,MassVector>
+    class DMassPointEngine : public topology::TopologyDataHandler<Point,MassVector>
     {
     public:
         typedef typename DiagonalMass<DataTypes,TMassType>::MassVector MassVector;
-        DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, sofa::component::topology::PointData<MassVector>* _data)
+        DMassPointEngine(DiagonalMass<DataTypes,TMassType>* _dm, sofa::component::topology::PointData<MassVector>* _data)
             : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm)
         {}
 
@@ -181,7 +181,7 @@ public:
     Data< float > d_showAxisSize; ///< factor length of the axis displayed (only used for rigids)
     core::objectmodel::DataFileName d_fileMass; ///< an Xsp3.0 file to specify the mass parameters
 
-    DMassPointHandler* m_pointHandler;
+    DMassPointEngine* m_pointEngine;
 
     /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
     int m_initializationProcess;

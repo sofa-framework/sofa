@@ -23,7 +23,6 @@
 #include <sstream>
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/helper/UnitTest.h>
 #include <sofa/helper/vector_algebra.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/BackTrace.h>

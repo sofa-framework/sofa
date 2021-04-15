@@ -24,7 +24,6 @@
 #include <SofaBoundaryCondition/PlaneForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include <limits>
 
 namespace sofa::component::forcefield
 {
