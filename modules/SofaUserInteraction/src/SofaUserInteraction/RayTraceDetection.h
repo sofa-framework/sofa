@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaUserInteraction/config.h>
 
-#include <sofa/core/collision/BroadPhaseDetection.h>
+#include <SofaBaseCollision/BruteForceBroadPhase.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/defaulttype/Vec.h>
@@ -39,14 +39,13 @@ namespace sofa::component::collision
  *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
  *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
-class SOFA_SOFAUSERINTERACTION_API RayTraceDetection :public core::collision::BroadPhaseDetection,
+class SOFA_SOFAUSERINTERACTION_API RayTraceDetection :public BruteForceBroadPhase,
     public core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(RayTraceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(RayTraceDetection, BruteForceBroadPhase, core::collision::NarrowPhaseDetection);
 
 private:
-    sofa::helper::vector < core::CollisionModel * >collisionModels;
     Data < bool > bDraw;
 
 public:
@@ -56,15 +55,6 @@ protected:
     RayTraceDetection ();
 
 public:
-
-    /////////////////////////////
-    /// BROAD PHASE interface ///
-    /////////////////////////////
-
-    void beginBroadPhase() override;
-
-    void addCollisionModel (core::CollisionModel * cm) override;
-
     //////////////////////////////
     /// NARROW PHASE interface ///
     //////////////////////////////
