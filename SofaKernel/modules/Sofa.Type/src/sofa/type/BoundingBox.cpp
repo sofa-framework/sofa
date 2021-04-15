@@ -22,6 +22,7 @@
 #include <sofa/type/BoundingBox.h>
 
 #include <limits>
+#include <algorithm>
 
 namespace sofa::type
 {
