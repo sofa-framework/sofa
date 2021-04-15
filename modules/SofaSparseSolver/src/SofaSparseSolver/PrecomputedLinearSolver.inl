@@ -37,7 +37,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/core/behavior/ODESolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #if SOFASPARSESOLVER_HAVE_CSPARSE
