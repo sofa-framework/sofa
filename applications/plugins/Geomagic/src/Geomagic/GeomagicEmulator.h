@@ -25,7 +25,6 @@
 #include <Geomagic/GeomagicDriver.h>
 
 #include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/InitTasks.h>
 
 
 namespace sofa::component::controller
