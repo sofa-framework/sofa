@@ -3,8 +3,6 @@ project(SofaSparseSolver LANGUAGES CXX)
 
 # Dependencies
 sofa_find_package(SofaBase REQUIRED)
-sofa_find_package(SofaImplicitOdeSolver REQUIRED) 
-sofa_find_package(SofaSimpleFem REQUIRED)
 sofa_find_package(SofaGeneralLinearSolver REQUIRED)
 
 add_subdirectory(extlibs/csparse)
@@ -41,7 +39,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver SofaImplicitOdeSolver SofaSimpleFem)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
 
 sofa_create_package_with_targets(
