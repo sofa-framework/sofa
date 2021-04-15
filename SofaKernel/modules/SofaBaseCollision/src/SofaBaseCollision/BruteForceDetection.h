@@ -133,8 +133,8 @@ protected:
             core::CollisionModel *cm2,
             std::queue<TestPair>& externalCells);
 
-    /// Store data related to two finnest CollisionModel's
-    struct FinnestCollision
+    /// Store data related to two finest CollisionModel's
+    struct FinestCollision
     {
         core::CollisionModel* cm1 { nullptr };
         core::CollisionModel* cm2 { nullptr };
@@ -150,7 +150,7 @@ protected:
                              core::CollisionModel *&cm1,
                              core::CollisionModel *&cm2,
                              core::collision::ElementIntersector *coarseIntersector,
-                             const FinnestCollision &finnest,
+                             const FinestCollision &finest,
                              MirrorIntersector *mirror,
                              std::queue<TestPair> &externalCells,
                              sofa::core::collision::DetectionOutputVector *&outputs) const;
@@ -158,14 +158,14 @@ protected:
     static void
     processInternalCell(const TestPair &internalCell,
                         core::collision::ElementIntersector *coarseIntersector,
-                        const FinnestCollision &finnest,
+                        const FinestCollision &finest,
                         std::queue<TestPair> &externalCells,
                         std::stack<TestPair> &internalCells,
                         sofa::core::collision::DetectionOutputVector *&outputs);
 
     static void visitCollisionElements(const TestPair &root,
                                        core::collision::ElementIntersector *coarseIntersector,
-                                       const FinnestCollision &finnest,
+                                       const FinestCollision &finest,
                                        std::queue<TestPair> &externalCells,
                                        std::stack<TestPair> &internalCells,
                                        sofa::core::collision::DetectionOutputVector *&outputs);
@@ -173,7 +173,7 @@ protected:
     static void
     visitExternalChildren(const core::CollisionElementIterator &it1, const core::CollisionElementIterator &it2,
                           core::collision::ElementIntersector *coarseIntersector,
-                          const FinnestCollision &finnest,
+                          const FinestCollision &finest,
                           std::queue<TestPair> &externalCells,
                           sofa::core::collision::DetectionOutputVector *&outputs);
 
