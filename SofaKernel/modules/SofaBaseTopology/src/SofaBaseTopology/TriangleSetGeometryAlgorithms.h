@@ -249,7 +249,8 @@ public:
         const sofa::defaulttype::Vec<3, double>& b,
         const TriangleID ind_t,
         sofa::helper::vector<PointID>& indices,
-        sofa::helper::vector<double>& baryCoef) const;
+        sofa::helper::vector<double>& baryCoef,
+        sofa::helper::vector<double>& vecCoordKmin) const;
 
     /** \brief Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
      *
