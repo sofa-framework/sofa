@@ -248,11 +248,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalVReallocVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalVSizeVisitor.cpp
 )
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    list(APPEND HEADER_FILES
-        ${SRC_ROOT}/testing/Node_test.h
-        )
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)

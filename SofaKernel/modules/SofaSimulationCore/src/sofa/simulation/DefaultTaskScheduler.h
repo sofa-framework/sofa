@@ -72,36 +72,30 @@ namespace sofa  {
         {
         public:
             
-            WorkerThread(DefaultTaskScheduler* const& taskScheduler, const int index, const std::string& name = "Worker");
+            WorkerThread(DefaultTaskScheduler* const& taskScheduler, int index, const std::string& name = "Worker");
             
             ~WorkerThread();
-            
+
+            /// Return the WorkerThread corresponding to the current thread
             static WorkerThread* getCurrent();
             
             // queue task if there is space, and run it otherwise
             bool addTask(Task* pTask);
             
             void workUntilDone(Task::Status* status);
-            
+
             const Task::Status* getCurrentStatus() const { return m_currentStatus; }
-            
+
             const char* getName() const { return m_name.c_str(); }
             
             int getType() const { return m_type; }
             
-            const std::thread::id getId();
+            const std::thread::id getId() const;
             
             const std::deque<Task*>* getTasksQueue() { return &m_tasks; }
             
             std::uint64_t getTaskCount() { return m_tasks.size(); }
-            
-            int GetWorkerIndex();
-            
-            void* allocate();
-            
-            void free(void* ptr);
-            
-            
+
         private:
             
             bool start(DefaultTaskScheduler* const& taskScheduler);
@@ -169,8 +163,16 @@ namespace sofa  {
         public:
             
             // interface
-            
+
+            /**
+             * Call stop() and start() if not already initialized
+             * @param nbThread
+             */
             virtual void init(const unsigned int nbThread = 0) final;
+
+            /**
+             * Wait and destroy worker threads
+             */
             virtual void stop(void) final;
             virtual unsigned int getThreadCount(void)  const final { return m_threadCount; }
             virtual const char* getCurrentThreadName() override final;
@@ -199,7 +201,10 @@ namespace sofa  {
             void	WaitForWorkersToBeReady();
             
             void	wakeUpWorkers();
-            
+
+            /**
+             * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
+             */
             static unsigned GetHardwareThreadsCount();
             
             WorkerThread* getCurrentThread();
@@ -228,7 +233,14 @@ namespace sofa  {
             DefaultTaskScheduler(const DefaultTaskScheduler&) {}
             
             ~DefaultTaskScheduler() override;
-            
+
+            /**
+             * Create worker threads
+             * If the number of required threads is 0, the number of threads will be equal to the
+             * result of GetHardwareThreadsCount()
+             *
+             * @param NbThread
+             */
             void start(unsigned int NbThread);
             
             bool m_isInitialized;
