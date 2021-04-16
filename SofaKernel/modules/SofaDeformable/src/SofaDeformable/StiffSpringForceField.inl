@@ -36,6 +36,12 @@ template<class DataTypes>
 StiffSpringForceField<DataTypes>::StiffSpringForceField(double ks, double kd)
     : StiffSpringForceField<DataTypes>(nullptr, nullptr, ks, kd)
 {
+    this->addUpdateCallback("updateSprings-ks-kd", { &d_indices1, &d_indices2, &d_length, &this->ks, &this->kd}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        createSpringsFromInputs();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {&this->springs});
 }
 
 template<class DataTypes>
@@ -45,29 +51,27 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1
     , d_indices2(initData(&d_indices2, "indices2", "Indices of the fixed points on the second model"))
     , d_length(initData(&d_length, 0.0, "length", "uniform length of all springs"))
 {
+    this->addUpdateCallback("updateSprings-m1-m2-ks-kd", { &d_indices1, &d_indices2, &d_length, &this->ks, &this->kd}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        createSpringsFromInputs();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {&this->springs});
 }
 
 
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::init()
 {
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+
     if (d_indices1.isSet() && d_indices2.isSet())
-    {        
-        this->trackInternalData(d_indices1);
-        this->trackInternalData(d_indices2);
-    }
-
-    this->SpringForceField<DataTypes>::init();
-}
-
-template<class DataTypes>
-void StiffSpringForceField<DataTypes>::doUpdateInternal()
-{
-    
-    if (this->hasDataChanged(d_indices1) || this->hasDataChanged(d_indices2))
     {
         createSpringsFromInputs();
     }
+    this->SpringForceField<DataTypes>::init();
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
@@ -76,19 +80,20 @@ void StiffSpringForceField<DataTypes>::createSpringsFromInputs()
 {
     if (d_indices1.getValue().size() != d_indices2.getValue().size())
     {
-        msg_error() << "Inputs indices sets sizes are different: d_indices1: " << d_indices1.getValue().size() 
+        msg_error() << "Inputs indices sets sizes are different: d_indices1: " << d_indices1.getValue().size()
             << " | d_indices2 " << d_indices2.getValue().size()
             << " . No springs will be created";
         return;
     }
 
-    msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";    
+    msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
+
     helper::vector<Spring>& _springs = *this->springs.beginEdit();
     _springs.clear();
 
     const SetIndexArray & indices1 = d_indices1.getValue();
     const SetIndexArray & indices2 = d_indices2.getValue();
-    
+
     const SReal& _ks = this->ks.getValue();
     const SReal& _kd = this->kd.getValue();
     const SReal& _length = d_length.getValue();
