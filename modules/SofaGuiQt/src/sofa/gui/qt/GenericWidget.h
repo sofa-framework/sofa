@@ -67,9 +67,9 @@ protected:
 
 }
 
-}
-
+//}
+//
 template<class DATA,class WIDGET>
 using GenericDataWidget=sofa::gui::qt::GenericDataWidget<DATA,WIDGET>;
 
-}
+//}
