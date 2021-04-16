@@ -168,9 +168,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         gnode->execute ( act );
     }
 
-    double time = 0.0;
-    double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
-
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
     dmsg_info() << "updatePos called" ;
@@ -232,9 +229,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     {
         ScopedAdvancedTimer timer("FreeMotion+Collision");
 
-        dmsg_info() << "free motion task added";
-        taskScheduler->addTask(&freeMotionTask);
-
         {
             dmsg_info() << "preCollisionComputation";
             preCollisionComputation(params);
@@ -247,6 +241,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
             act.setTags(this->getTags());
             act.execute(getContext());
         }
+
+        dmsg_info() << "free motion task added";
+        taskScheduler->addTask(&freeMotionTask);
 
         {
             dmsg_info() << "CollisionDetection";
