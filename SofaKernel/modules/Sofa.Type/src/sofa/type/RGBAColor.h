@@ -27,7 +27,7 @@
 #include <ostream>
 #include <istream>
 #include <string>
-
+#include <cmath>
 
 namespace sofa::type
 {
