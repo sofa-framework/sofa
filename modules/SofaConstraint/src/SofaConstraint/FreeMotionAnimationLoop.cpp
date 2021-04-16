@@ -57,7 +57,7 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
     : Inherit1(gnode)
     , m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
-    , d_isParallel(initData(&d_isParallel, true, "parallel", "If true, executes some operations in parallel"))
+    , d_isParallel(initData(&d_isParallel, false, "parallel", "If true, executes free motion and collision detection in parallel"))
     , constraintSolver(nullptr)
     , defaultSolver(nullptr)
 {
