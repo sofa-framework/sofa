@@ -25,9 +25,9 @@
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <iostream>
-#include <sstream>
+#include <fstream>
 #include <string>
+#include <sofa/helper/system/SetDirectory.h>
 
 #include <boost/program_options.hpp>
 
@@ -74,8 +74,18 @@ int BatchGUI::mainLoop()
             if (i != nbIter)
             {
                 sofa::helper::AdvancedTimer::begin("Animate");
+
                 sofa::simulation::getSimulation()->animate(groot.get());
-                sofa::helper::AdvancedTimer::end("Animate");
+
+                const auto timerOutputStr = sofa::helper::AdvancedTimer::end("Animate", groot->getTime(), groot->getDt());
+                if (!timerOutputStr.empty() && timerOutputStr.compare("null") != 0)
+                {
+                    std::string jsonFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.c_str()) + "_" + std::to_string(i) + ".json";
+                    msg_info("BatchGUI") << "Writing " << jsonFilename;
+                    std::ofstream out(jsonFilename);
+                    out << timerOutputStr;
+                    out.close();
+                }
             }
 
             if ( i == nbIter || (nbIter == -1 && i%1000 == 0) )
