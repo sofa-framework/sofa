@@ -32,7 +32,7 @@ namespace sofa::simulation::mechanicalvisitor
 ///
 /// @author Matthieu Nesme, 2015
 ///
-class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
 {
     defaulttype::Vector6 m_momenta;
 
