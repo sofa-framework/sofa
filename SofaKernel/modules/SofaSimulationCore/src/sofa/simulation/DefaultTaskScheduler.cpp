@@ -55,6 +55,7 @@ namespace sofa
             m_isClosing = false;
             
             // init global static thread local var
+            if (_threads.find(std::this_thread::get_id()) == _threads.end())
             {
                 workerThreadIndex = new WorkerThread(this, 0, "Main  ");
                 _threads[std::this_thread::get_id()] = workerThreadIndex;// new WorkerThread(this, 0, "Main  ");
