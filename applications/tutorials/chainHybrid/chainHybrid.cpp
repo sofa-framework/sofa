@@ -56,9 +56,10 @@ using RegularGridSpringForceField3 = sofa::component::interactionforcefield::Reg
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>;
 #include <SofaSimulationGraph/SimpleApi.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
 
 using sofa::core::objectmodel::New;
-
+//
 #include <SceneCreator/SceneCreator.h>
 
 
@@ -206,7 +207,7 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(10,0,0);
         const Deriv3 rotation(0,0,0);
 
-        MechanicalObjectRigid3::SPtr dofRigid = sofa::core::objectmodel::New<MechanicalObjectRigid3>(); dofRigid->setName("Rigid Object");
+        MechanicalObjectRigid3::SPtr dofRigid = sofa::core::objectmodel::New<MechanicalObjectRigid3>(); dofRigid->setName("Rigid_Object");
         dofRigid->setTranslation(translation[0],translation[1],translation[2]);
         dofRigid->setRotation(rotation[0],rotation[1],rotation[2]);
         torusRigid->addObject(dofRigid);
@@ -231,7 +232,12 @@ int main(int argc, char** argv)
     ArgumentParser argParser(argc, argv);
     sofa::gui::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
+
+    //force load SofaComponentAll
+    sofa::component::initSofaComponentAll();
+    //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
+
     sofa::gui::GUIManager::Init(argv[0]);
 
     auto simulation = sofa::simpleapi::createSimulation();

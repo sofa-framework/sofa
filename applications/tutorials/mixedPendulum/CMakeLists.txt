@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(mixedPendulum)
 
 find_package(SofaGui REQUIRED)
-find_package(SofaOpenglVisual REQUIRED)
+find_package(SofaComponentAll REQUIRED)
 
 add_executable(${PROJECT_NAME} mixedPendulum.cpp)
-target_link_libraries(${PROJECT_NAME} SofaGui SofaOpenglVisual)
+target_link_libraries(${PROJECT_NAME} SofaGui SofaComponentAll)
