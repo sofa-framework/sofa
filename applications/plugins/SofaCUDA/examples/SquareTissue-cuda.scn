@@ -24,10 +24,6 @@
         <FixedConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
 
         <TriangularFEMForceFieldOptim name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
-        <!--        
-        <MeshSpringForceField name="Springs" stiffness="1000" damping="0"/>
-        <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" template="CudaVec3f"/>
-        -->
         <TriangleCollisionModel />
         <Node >
             <OglModel name="Visual" color="red" />
