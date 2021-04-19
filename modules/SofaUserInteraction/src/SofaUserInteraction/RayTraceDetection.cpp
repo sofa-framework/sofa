@@ -62,7 +62,6 @@ RayTraceDetection ():bDraw (initData
 {
 }
 
-
 void RayTraceDetection::findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2)
 {
     /*Obtain the CollisionModel at the lowest level, in this case it must be a TriangleOctreeModel */
@@ -236,38 +235,6 @@ void RayTraceDetection::findPairsVolume (CubeCollisionModel * cm1, CubeCollision
 
 }
 
-void RayTraceDetection::addCollisionModel (core::CollisionModel * cm)
-{
-    if (cm->empty ())
-        return;
-    for (sofa::helper::vector < core::CollisionModel * >::iterator it =
-            collisionModels.begin (); it != collisionModels.end (); ++it)
-    {
-        core::CollisionModel * cm2 = *it;
-        if (!cm->isSimulated() && !cm2->isSimulated())
-            continue;
-        if (!cm->canCollideWith (cm2))
-            continue;
-
-        bool swapModels = false;
-        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
-        if (intersector == nullptr)
-            continue;
-
-        core::CollisionModel* cm1 = (swapModels?cm2:cm);
-        cm2 = (swapModels?cm:cm2);
-
-
-        // Here we assume a single root element is present in both models
-        if (intersector->canIntersect (cm1->begin (), cm2->begin ()))
-        {
-
-            cmPairs.push_back (std::make_pair (cm1, cm2));
-        }
-    }
-    collisionModels.push_back (cm);
-}
-
 void RayTraceDetection::addCollisionPair (const std::pair <
         core::CollisionModel *,
         core::CollisionModel * >&cmPair)
@@ -314,8 +281,8 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
                 it2 != outputs->end (); ++it2)
         {
-            vertices.push_back(sofa::defaulttype::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
-            vertices.push_back(sofa::defaulttype::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
+            vertices.push_back(it2->point[0]);
+            vertices.push_back(it2->point[1]);
 
             msg_error() << it2->point[0] << " " << it2->point[0];
 
