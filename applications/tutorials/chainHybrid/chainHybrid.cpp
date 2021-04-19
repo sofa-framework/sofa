@@ -95,7 +95,8 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(2.5,0,0);
         const Deriv3 rotation(90,0,0);
 
-        MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName("FEM Object");
+        MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); 
+        dofFEM->setName("FEM Object");
         dofFEM->setTranslation(translation[0],translation[1],translation[2]);
         dofFEM->setRotation(rotation[0],rotation[1],rotation[2]);
         torusFEM->addObject(dofFEM);
@@ -137,7 +138,8 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(5,0,0);
         const Deriv3 rotation(0,0,0);
 
-        MechanicalObject3::SPtr dofSpring = sofa::core::objectmodel::New<MechanicalObject3>(); dofSpring->setName("Spring Object");
+        MechanicalObject3::SPtr dofSpring = sofa::core::objectmodel::New<MechanicalObject3>(); 
+        dofSpring->setName("Spring Object");
 
         dofSpring->setTranslation(translation[0],translation[1],translation[2]);
         dofSpring->setRotation(rotation[0],rotation[1],rotation[2]);
@@ -169,7 +171,8 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(7.5,0,0);
         const Deriv3 rotation(90,0,0);
 
-        MechanicalObject3::SPtr dofFFD = sofa::core::objectmodel::New<MechanicalObject3>(); dofFFD->setName("FFD Object");
+        MechanicalObject3::SPtr dofFFD = sofa::core::objectmodel::New<MechanicalObject3>(); 
+        dofFFD->setName("FFD Object");
         dofFFD->setTranslation(translation[0],translation[1],translation[2]);
         dofFFD->setRotation(rotation[0],rotation[1],rotation[2]);
         torusFFD->addObject(dofFFD);
@@ -207,7 +210,8 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(10,0,0);
         const Deriv3 rotation(0,0,0);
 
-        MechanicalObjectRigid3::SPtr dofRigid = sofa::core::objectmodel::New<MechanicalObjectRigid3>(); dofRigid->setName("Rigid_Object");
+        MechanicalObjectRigid3::SPtr dofRigid = sofa::core::objectmodel::New<MechanicalObjectRigid3>(); 
+        dofRigid->setName("Rigid_Object");
         dofRigid->setTranslation(translation[0],translation[1],translation[2]);
         dofRigid->setRotation(rotation[0],rotation[1],rotation[2]);
         torusRigid->addObject(dofRigid);
