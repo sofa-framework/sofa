@@ -23,10 +23,11 @@
 
 #include <sofa/gui/qt/DataWidget.h>
 
-namespace sofa::gui::qt {
-
+namespace sofa::gui::qt
+{
 template <class DATA, class WIDGET>
-class GenericDataWidget : public sofa::gui::qt::DataWidget {
+class GenericDataWidget : public sofa::gui::qt::DataWidget
+{
 public:
     typedef DATA MyData;
     typedef WIDGET MyWidget;
@@ -50,13 +51,16 @@ public:
         typename RealObject::MyData* realData = dynamic_cast<typename RealObject::MyData*>(arg.data);
         if (!realData)
             return nullptr;
-        else {
+        else
+        {
             RealObject* obj = new RealObject(arg.parent, arg.name.c_str(), realData);
-            if (!obj->createWidgets()) {
+            if (!obj->createWidgets())
+            {
                 delete obj;
                 obj = nullptr;
             }
-            if (obj) {
+            if (obj)
+            {
                 obj->setDataReadOnly(arg.readOnly);
             }
             return obj;
