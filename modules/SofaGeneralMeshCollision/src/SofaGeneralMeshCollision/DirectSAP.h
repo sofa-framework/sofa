@@ -23,12 +23,13 @@
 
 #include <SofaGeneralMeshCollision/config.h>
 
-#include <sofa/core/collision/BroadPhaseDetection.h>
+#include <SofaBaseCollision/BruteForceBroadPhase.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/EndPoint.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
+#include <unordered_set>
 
 #include "sofa/helper/ScopedAdvancedTimer.h"
 
@@ -80,11 +81,11 @@ public:
   *saving it. But the memory used to save these primitives is created just once, the first time we add CollisionModels.
   */
 class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP :
-    public core::collision::BroadPhaseDetection,
+    public BruteForceBroadPhase,
     public core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(DirectSAP, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(DirectSAP, BruteForceBroadPhase, core::collision::NarrowPhaseDetection);
 
     typedef sofa::helper::vector<EndPoint*> EndPointList;
     typedef DSAPBox SAPBox;
@@ -99,23 +100,14 @@ private:
      */
     int greatestVarianceAxis()const;
 
-    /// Return true if the collision model has already been added to the list of managed models
-    bool added(core::CollisionModel * cm) const;
-
-    /// Add a collision model to the list of managed models
-    void add(core::CollisionModel * cm);
-
     /**
       * Updates values of end points. These values are coordinates of AABB on axis that maximize the variance for the AABBs.
       */
-    void update();
+    void updateBoxes();
 
     Data<bool> d_draw; ///< enable/disable display of results
     Data<bool> d_showOnlyInvestigatedBoxes;
     Data<int> d_nbPairs; ///< number of pairs of elements sent to narrow phase
-    Data< helper::fixed_array<defaulttype::Vector3,2> > d_box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
-
-    CubeCollisionModel::SPtr m_boxModel;
 
     /// Store a permanent list of end points
     /// The container is a std::list to avoid invalidation of pointers after an insertion
@@ -126,7 +118,7 @@ private:
     EndPointList m_sortedEndPoints; ///< list of EndPoints dedicated to be sorted. Owner of pointers is m_endPointContainer
     int m_currentAxis;//the current greatest variance axis
 
-    std::set<core::CollisionModel*> m_collisionModels;//used to check if a collision model is added
+    std::unordered_set<core::CollisionModel*> m_addedCollisionModels;//used to check if a collision model is added
     sofa::helper::vector<core::CollisionModel*> m_newCollisionModels;//eventual new collision models to add at a step
 
     double m_alarmDist;
@@ -140,19 +132,20 @@ protected:
 
     ~DirectSAP() override = default;
 
+    std::unordered_set<core::CollisionModel*> m_broadPhaseCollisionModels;
+
     struct BoxData
     {
-        core::CollisionModel* collisionModel { nullptr };
+        core::CollisionModel* lastCollisionModel {nullptr };
         sofa::core::objectmodel::BaseContext* context { nullptr };
         bool isBoxSimulated { false };
         bool doesBoxSelfCollide { false };
         sofa::core::CollisionElementIterator collisionElementIterator;
+        bool isInBroadPhase { false };
     };
     std::vector<BoxData> m_boxData;
 
-    bool isPairFiltered(const BoxData& data0, const BoxData& data1,
-                        const DSAPBox& box0, int boxId1
-                ) const;
+    bool isPairFiltered(const BoxData &data0, const BoxData &data1, const DSAPBox &box0, int boxId1) const;
 
     void narrowCollisionDetectionForPair(
             core::collision::ElementIntersector* intersector,
@@ -169,26 +162,19 @@ protected:
 public:
     void setDraw(bool val) { d_draw.setValue(val); }
 
-    void init() override;
-    void reinit() override;
     void reset() override;
 
-    void addCollisionModel (core::CollisionModel *cm) override;
-
-    /**
-      *Unuseful methods because all is done in addCollisionModel
-      */
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
-    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
-
-    void endBroadPhase() override;
     void beginNarrowPhase() override;
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
+    void endNarrowPhase() override;
 
     /* for debugging */
     void draw(const core::visual::VisualParams*) override;
 
     inline bool needsDeepBoundingTree()const override {return false;}
 
+    /// Get the result of the broad phase and check if there are some new collision models that was not yet processed
+    void checkNewCollisionModels();
 };
 
 } // namespace sofa::component::collision

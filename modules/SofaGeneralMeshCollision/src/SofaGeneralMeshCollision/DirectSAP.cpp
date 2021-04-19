@@ -75,7 +75,6 @@ DirectSAP::DirectSAP()
     : d_draw(initData(&d_draw, false, "draw", "enable/disable display of results"))
     , d_showOnlyInvestigatedBoxes(initData(&d_showOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
     , d_nbPairs(initData(&d_nbPairs, 0, "nbPairs", "number of pairs of elements sent to narrow phase"))
-    , d_box(initData(&d_box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
     , m_currentAxis(0)
     , m_alarmDist(0)
     , m_alarmDist_d2(0)
@@ -84,57 +83,15 @@ DirectSAP::DirectSAP()
     d_nbPairs.setReadOnly(true);
 }
 
-void DirectSAP::init()
-{
-    reinit();
-}
-
-
-void DirectSAP::reinit()
-{
-    if (d_box.getValue()[0][0] >= d_box.getValue()[1][0])
-    {
-        m_boxModel.reset();
-    }
-    else
-    {
-        if (!m_boxModel) m_boxModel = sofa::core::objectmodel::New<CubeCollisionModel>();
-        m_boxModel->resize(1);
-        m_boxModel->setParentOf(0, d_box.getValue()[0], d_box.getValue()[1]);
-    }
-}
-
 void DirectSAP::reset()
 {
     m_endPointContainer.clear();
     m_boxes.clear();
     m_isBoxInvestigated.clear();
     m_sortedEndPoints.clear();
-    m_collisionModels.clear();
-}
-
-inline bool DirectSAP::added(core::CollisionModel *cm) const
-{
-    assert(cm != nullptr);
-    return m_collisionModels.count(cm->getLast()) >= 1;
-}
-
-inline void DirectSAP::add(core::CollisionModel *cm)
-{
-    assert(cm != nullptr);
-    m_collisionModels.insert(cm->getLast());
-    m_newCollisionModels.push_back(cm->getLast());
-}
-
-void DirectSAP::endBroadPhase()
-{
-    BroadPhaseDetection::endBroadPhase();
-
-    if (m_newCollisionModels.empty())
-        return;
-
-    createBoxesFromCollisionModels();
-    m_newCollisionModels.clear(); //createBoxesFromCollisionModels will be called again iff new collision models are added
+    m_addedCollisionModels.clear();
+    m_newCollisionModels.clear();
+    m_broadPhaseCollisionModels.clear();
 }
 
 void DirectSAP::createBoxesFromCollisionModels()
@@ -153,7 +110,6 @@ void DirectSAP::createBoxesFromCollisionModels()
     }
 
     m_boxes.reserve(m_boxes.size() + totalNbElements);
-
     int cur_boxID = static_cast<int>(m_boxes.size());
 
     for (auto* cm : cube_models)
@@ -185,11 +141,53 @@ void DirectSAP::createBoxesFromCollisionModels()
     m_boxData.resize(m_boxes.size());
 }
 
-void DirectSAP::addCollisionModel(core::CollisionModel *cm)
+void DirectSAP::beginNarrowPhase()
 {
-    assert(cm != nullptr);
-    if(!added(cm))
-        add(cm);
+    NarrowPhaseDetection::beginNarrowPhase();
+    m_broadPhaseCollisionModels.clear();
+}
+
+void DirectSAP::addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
+{
+    m_broadPhaseCollisionModels.insert(cmPair.first);
+    m_broadPhaseCollisionModels.insert(cmPair.second);
+}
+
+void DirectSAP::endNarrowPhase()
+{
+    assert(intersectionMethod != nullptr);
+    m_alarmDist = getIntersectionMethod()->getAlarmDistance();
+    m_sq_alarmDist = m_alarmDist * m_alarmDist;
+    m_alarmDist_d2 = m_alarmDist/2.0;
+
+    checkNewCollisionModels();
+    updateBoxes();
+    cacheData();
+    sortEndPoints();
+    narrowCollisionDetectionFromSortedEndPoints();
+
+    NarrowPhaseDetection::endNarrowPhase();
+}
+
+void DirectSAP::checkNewCollisionModels()
+{
+    helper::ScopedAdvancedTimer scopeTimer("Direct SAP check new cm");
+    for (auto *cm : m_broadPhaseCollisionModels)
+    {
+        auto *last = cm->getLast();
+        assert(last != nullptr);
+        const auto inserstionResult = m_addedCollisionModels.insert(last);
+        if (inserstionResult.second) //insertion success
+        {
+            m_newCollisionModels.emplace_back(last);
+        }
+    }
+
+    if (!m_newCollisionModels.empty()) //if a new collision model has been introduced in this time step
+    {
+        createBoxesFromCollisionModels();
+        m_newCollisionModels.clear(); //createBoxesFromCollisionModels will be called again iff new collision models are added
+    }
 }
 
 int DirectSAP::greatestVarianceAxis() const
@@ -232,8 +230,9 @@ int DirectSAP::greatestVarianceAxis() const
     return 2;
 }
 
-void DirectSAP::update()
+void DirectSAP::updateBoxes()
 {
+    sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP update boxes");
     m_currentAxis = greatestVarianceAxis();
     for (auto& dsapBox : m_boxes)
     {
@@ -264,17 +263,21 @@ bool DirectSAP::isSquaredDistanceLessThan(const DSAPBox &a, const DSAPBox &b, do
 void DirectSAP::cacheData()
 {
     sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP cache");
+
     unsigned int i{ 0 };
     for (const auto& box : m_boxes)
     {
-        auto* collisionModel = box.cube.getCollisionModel()->getLast();
+        auto* cubeCollisionModel = box.cube.getCollisionModel();
+        auto* lastCollisionModel = cubeCollisionModel->getLast();
+        auto* firstCollisionModel = cubeCollisionModel->getFirst();
 
         auto& data = m_boxData[i++];
-        data.collisionModel = collisionModel;
-        data.context = collisionModel->getContext();
-        data.doesBoxSelfCollide = collisionModel->getSelfCollision();
-        data.isBoxSimulated = collisionModel->isSimulated();
+        data.lastCollisionModel = lastCollisionModel;
+        data.context = lastCollisionModel->getContext();
+        data.doesBoxSelfCollide = lastCollisionModel->getSelfCollision();
+        data.isBoxSimulated = lastCollisionModel->isSimulated();
         data.collisionElementIterator = box.cube.getExternalChildren().first;
+        data.isInBroadPhase = (m_broadPhaseCollisionModels.find(firstCollisionModel) != m_broadPhaseCollisionModels.end() );
     }
 }
 
@@ -282,22 +285,6 @@ void DirectSAP::sortEndPoints()
 {
     sofa::helper::ScopedAdvancedTimer scopeTimer("Direct SAP sort");
     std::sort(m_sortedEndPoints.begin(), m_sortedEndPoints.end(), CompPEndPoint());
-}
-
-void DirectSAP::beginNarrowPhase()
-{
-    assert(intersectionMethod != nullptr);
-
-    core::collision::NarrowPhaseDetection::beginNarrowPhase();
-
-    m_alarmDist = getIntersectionMethod()->getAlarmDistance();
-    m_sq_alarmDist = m_alarmDist * m_alarmDist;
-    m_alarmDist_d2 = m_alarmDist/2.0;
-
-    update();
-    cacheData();
-    sortEndPoints();
-    narrowCollisionDetectionFromSortedEndPoints();
 }
 
 void DirectSAP::narrowCollisionDetectionFromSortedEndPoints()
@@ -320,6 +307,14 @@ void DirectSAP::narrowCollisionDetectionFromSortedEndPoints()
     for (auto* endPoint : m_sortedEndPoints)
     {
         assert(endPoint != nullptr);
+
+        const int boxId0 = endPoint->boxID();
+        const BoxData& data0 = m_boxData[boxId0];
+        if (!data0.isInBroadPhase)
+        {
+            continue;
+        }
+
         if (endPoint->max())
         {
             const auto foundIt = activeBoxesIt.find(endPoint->boxID()); // complexity: Constant on average, worst case linear in the size of the container
@@ -333,11 +328,8 @@ void DirectSAP::narrowCollisionDetectionFromSortedEndPoints()
         }
         else //we encounter a min possible intersection between it and active_boxes
         {
-            const int boxId0 = endPoint->boxID();
             const DSAPBox& box0 = m_boxes[boxId0];
-            const BoxData& data0 = m_boxData[boxId0];
-
-            core::CollisionModel *cm0 = data0.collisionModel;
+            core::CollisionModel *cm0 = data0.lastCollisionModel;
             auto collisionElement0 = data0.collisionElementIterator;
 
             for (int boxId1 : activeBoxes)
@@ -346,7 +338,7 @@ void DirectSAP::narrowCollisionDetectionFromSortedEndPoints()
 
                 if (!isPairFiltered(data0, data1, box0, boxId1))
                 {
-                    core::CollisionModel *cm1 = data1.collisionModel;
+                    core::CollisionModel *cm1 = data1.lastCollisionModel;
 
                     bool swapModels = false;
                     core::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(cm0, cm1, swapModels);//find the method for the finnest CollisionModels
@@ -381,7 +373,7 @@ void DirectSAP::narrowCollisionDetectionFromSortedEndPoints()
             activeBoxes.push_back(boxId0);// complexity: Constant
             auto last = activeBoxes.end();
             --last;//iterator the last element of the list
-            activeBoxesIt.insert({boxId0, std::move(last)});// complexity: Average case: O(1), worst case O(size())
+            activeBoxesIt.insert({boxId0, last});// complexity: Average case: O(1), worst case O(size())
         }
     }
 
@@ -389,8 +381,7 @@ void DirectSAP::narrowCollisionDetectionFromSortedEndPoints()
     sofa::helper::AdvancedTimer::valSet("Direct SAP pairs", nbInvestigatedPairs);
 }
 
-bool DirectSAP::isPairFiltered(const BoxData& data0, const BoxData& data1,
-                               const DSAPBox& box0, int boxId1) const
+bool DirectSAP::isPairFiltered(const BoxData &data0, const BoxData &data1, const DSAPBox &box0, int boxId1) const
 {
     if (data0.isBoxSimulated || data1.isBoxSimulated) //is any of the object simulated?
     {
@@ -509,4 +500,5 @@ int DirectSAPClass = core::RegisterObject("Collision detection using sweep and p
         ;
 
 } // namespace sofa::component::collision
+
 
