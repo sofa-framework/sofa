@@ -20,7 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
+
 namespace sofa
 {
 

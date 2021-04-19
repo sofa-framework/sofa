@@ -33,7 +33,7 @@
 #include <SceneCreator/SceneUtils.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-
+#include <sofa/core/behavior/BaseForceField.h>
 
 namespace sofa {
 
