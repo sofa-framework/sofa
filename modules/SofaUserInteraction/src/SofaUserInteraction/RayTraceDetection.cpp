@@ -62,6 +62,11 @@ RayTraceDetection ():bDraw (initData
 {
 }
 
+void RayTraceDetection::beginBroadPhase()
+{
+    core::collision::BroadPhaseDetection::beginBroadPhase();
+    collisionModels.clear();
+}
 
 void RayTraceDetection::findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2)
 {
@@ -240,10 +245,8 @@ void RayTraceDetection::addCollisionModel (core::CollisionModel * cm)
 {
     if (cm->empty ())
         return;
-    for (sofa::helper::vector < core::CollisionModel * >::iterator it =
-            collisionModels.begin (); it != collisionModels.end (); ++it)
+    for (auto* cm2 : collisionModels)
     {
-        core::CollisionModel * cm2 = *it;
         if (!cm->isSimulated() && !cm2->isSimulated())
             continue;
         if (!cm->canCollideWith (cm2))
@@ -257,11 +260,9 @@ void RayTraceDetection::addCollisionModel (core::CollisionModel * cm)
         core::CollisionModel* cm1 = (swapModels?cm2:cm);
         cm2 = (swapModels?cm:cm2);
 
-
         // Here we assume a single root element is present in both models
         if (intersector->canIntersect (cm1->begin (), cm2->begin ()))
         {
-
             cmPairs.push_back (std::make_pair (cm1, cm2));
         }
     }
@@ -314,8 +315,8 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
                 it2 != outputs->end (); ++it2)
         {
-            vertices.push_back(sofa::defaulttype::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
-            vertices.push_back(sofa::defaulttype::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
+            vertices.push_back(it2->point[0]);
+            vertices.push_back(it2->point[1]);
 
             msg_error() << it2->point[0] << " " << it2->point[0];
 
