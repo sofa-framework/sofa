@@ -22,7 +22,6 @@
 #include <SofaGeneralMeshCollision/DirectSAP.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CapsuleModel.h>
-#include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/AdvancedTimer.h>

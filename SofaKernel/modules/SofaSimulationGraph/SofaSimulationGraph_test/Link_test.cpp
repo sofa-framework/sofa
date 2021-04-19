@@ -4,7 +4,7 @@ using sofa::helper::testing::BaseSimulationTest ;
 #include <SofaSimulationGraph/SimpleApi.h>
 using namespace sofa::simpleapi ;
 
-#include <sofa/simulation/testing/Node_test.h>
+#include "Node_test.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;

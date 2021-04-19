@@ -2,6 +2,8 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include "../utils/sparse.h"
 
 #include <Compliant/config.h>

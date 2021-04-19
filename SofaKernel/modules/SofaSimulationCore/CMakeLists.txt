@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/AnimateBeginEvent.h
     ${SRC_ROOT}/AnimateEndEvent.h
     ${SRC_ROOT}/AnimateVisitor.h
+    ${SRC_ROOT}/BaseMechanicalVisitor.h
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.h
     ${SRC_ROOT}/CactusStackStorage.h
     ${SRC_ROOT}/CleanupVisitor.h
@@ -83,6 +84,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/AnimateBeginEvent.cpp
     ${SRC_ROOT}/AnimateEndEvent.cpp
     ${SRC_ROOT}/AnimateVisitor.cpp
+    ${SRC_ROOT}/BaseMechanicalVisitor.cpp
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.cpp
     ${SRC_ROOT}/CactusStackStorage.cpp
     ${SRC_ROOT}/CleanupVisitor.cpp
@@ -145,11 +147,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
 )
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    list(APPEND HEADER_FILES
-        ${SRC_ROOT}/testing/Node_test.h
-        )
-endif()
 
 sofa_find_package(SofaCore REQUIRED)
 
