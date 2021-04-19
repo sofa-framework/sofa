@@ -1,4 +1,5 @@
 import Sofa
+import os.path
 
 from Compliant import Rigid
 
