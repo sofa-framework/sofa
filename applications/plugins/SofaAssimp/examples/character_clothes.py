@@ -2,7 +2,7 @@ import Sofa
 
 from Compliant import Rigid
 
-colladasceneloader_path = Sofa.src_dir() + '/applications/plugins/ColladaSceneLoader'
+colladasceneloader_path = os.path.realpath(__file__ + '../../ColladaSceneLoader').replace('\\', '/')
 mesh_path = colladasceneloader_path + '/Demos/'
 
 scale = 1
