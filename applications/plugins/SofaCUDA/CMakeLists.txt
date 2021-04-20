@@ -371,7 +371,7 @@ endif()
 
 ## SofaCUDANvccFlags.cmake
 # Build tree
-configure_file(SofaCUDANvccFlags.cmake ${CMAKE_BINARY_DIR}/cmake/SofaCUDANvccFlags.cmake COPYONLY)
+configure_file(SofaCUDANvccFlags.cmake ${CMAKE_BINARY_DIR}/lib/cmake/SofaCUDANvccFlags.cmake COPYONLY)
 # Install tree
 install(FILES SofaCUDANvccFlags.cmake DESTINATION lib/cmake/SofaCUDA)
 
