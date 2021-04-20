@@ -24,6 +24,7 @@
 
 #include <SofaSphFluid/config.h>
 #include <SofaSphFluid/ParticleSink.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 
 namespace sofa
 {
@@ -42,6 +43,8 @@ ParticleSink<DataTypes>::ParticleSink()
     , d_planeD1(initData(&d_planeD1, (Real)0, "d1", "plane d coef at which particles are removed"))
     , d_showPlane(initData(&d_showPlane, false, "showPlane", "enable/disable drawing of plane"))
     , d_fixed(initData(&d_fixed, "fixed", "indices of fixed particles"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topoModifier(nullptr)
 {
     this->f_listening.setValue(true);
     Deriv n;
@@ -62,14 +65,30 @@ void ParticleSink<DataTypes>::init()
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
     if (!this->mstate) return;
 
+    // If no topology set, check if one is valid in the node
+    if (l_topology.empty())
+    {
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology) // If topology is found, will check if it is dynamic. Otherwise only mechanical Object should be used.
+    {
+        _topology->getContext()->get(m_topoModifier);
+        if (!m_topoModifier)
+        {
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            msg_error() << "Topology has been found in at component: " << _topology->getName() << " but this topology is not dynamyc. ParticleSink will not be able to remove points.";
+            return;
+        }
+
+        // Initialize functions and parameters for topology data and handler
+        d_fixed.createTopologyHandler(_topology);
+        d_fixed.registerTopologicalData();
+    }
+
     msg_info() << "Normal=" << d_planeNormal.getValue() << " d0=" << d_planeD0.getValue() << " d1=" << d_planeD1.getValue();
-
-    sofa::core::topology::BaseMeshTopology* _topology;
-    _topology = this->getContext()->getMeshTopology();
-
-    // Initialize functions and parameters for topology data and handler
-    d_fixed.createTopologyHandler(_topology);
-    d_fixed.registerTopologicalData();
 }
 
 
@@ -94,13 +113,10 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
     }
     if (!remove.empty())
     {
-        sofa::component::topology::PointSetTopologyModifier* pointMod;
-        this->getContext()->get(pointMod);
-
-        if (pointMod != nullptr)
+        if (m_topoModifier != nullptr)
         {
             msg_info() << "Remove: " << remove.size() << " out of: " << n <<" particles using PointSetTopologyModifier.";
-            pointMod->removePoints(remove);
+            m_topoModifier->removePoints(remove);
         }
         else if(container::MechanicalObject<DataTypes>* object = dynamic_cast<container::MechanicalObject<DataTypes>*>(this->mstate.get()))
         {
