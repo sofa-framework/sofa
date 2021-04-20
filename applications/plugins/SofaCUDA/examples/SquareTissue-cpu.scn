@@ -14,7 +14,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject name="Mo"/>
-	<TriangleSetTopologyContainer name="Triangle_topo" src="@../grid"/>
+        <TriangleSetTopologyContainer name="Triangle_topo" src="@../grid"/>
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass massDensity="0.15" />
