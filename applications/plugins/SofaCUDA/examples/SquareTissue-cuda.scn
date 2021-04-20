@@ -19,7 +19,7 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
         <MechanicalObject name="Mo" template="CudaVec3f"/>
-	<TriangleSetTopologyContainer name="Triangle_topo" src="@../grid"/>
+        <TriangleSetTopologyContainer name="Triangle_topo" src="@../grid"/>
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms template="CudaVec3f" name="GeomAlgo" />	    
         <DiagonalMass massDensity="0.15" template="CudaVec3f,float"/>
