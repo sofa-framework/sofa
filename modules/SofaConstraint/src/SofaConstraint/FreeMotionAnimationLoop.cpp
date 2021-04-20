@@ -40,7 +40,6 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <SofaConstraint/LCPConstraintSolver.h>
 #include <sofa/simulation/TaskScheduler.h>
 #include <SofaConstraint/FreeMotionTask.h>
 #include <sofa/simulation/CollisionVisitor.h>
@@ -162,7 +161,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 #endif
 
     {
-        ScopedAdvancedTimer("AnimateBeginEvent");
+        ScopedAdvancedTimer timer("AnimateBeginEvent");
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
         gnode->execute ( act );
@@ -229,9 +228,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
             constraintSolver->solveConstraint(&cparams, pos, vel);
         }
 
-        MultiVecDeriv dx(&vop, constraintSolver->getDx());
-        mop.projectResponse(dx);
-        mop.propagateDx(dx, true);
+        MultiVecDeriv cdx(&vop, constraintSolver->getDx());
+        mop.projectResponse(cdx);
+        mop.propagateDx(cdx, true);
     }
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(params, dt);
@@ -244,7 +243,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
-        ScopedAdvancedTimer("AnimateEndEvent");
+        ScopedAdvancedTimer timer("AnimateEndEvent");
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );
         gnode->execute ( act );
@@ -289,7 +288,7 @@ void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::
         freeMotionTask.run();
 
         {
-            ScopedAdvancedTimer timer("CollisionDetection");
+            ScopedAdvancedTimer collisionDetectionTimer("CollisionDetection");
             computeCollision(params);
         }
     }
@@ -303,7 +302,7 @@ void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::
         preCollisionComputation(params);
 
         {
-            ScopedAdvancedTimer timer("CollisionReset");
+            ScopedAdvancedTimer collisionResetTimer("CollisionReset");
             CollisionResetVisitor act(params);
             act.setTags(this->getTags());
             act.execute(getContext());
@@ -312,19 +311,19 @@ void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::
         taskScheduler->addTask(&freeMotionTask);
 
         {
-            ScopedAdvancedTimer timer("CollisionDetection");
+            ScopedAdvancedTimer collisionDetectionTimer("CollisionDetection");
             CollisionDetectionVisitor act(params);
             act.setTags(this->getTags());
             act.execute(getContext());
         }
 
         {
-            ScopedAdvancedTimer timer("WaitFreeMotion");
+            ScopedAdvancedTimer waitFreeMotionTimer("WaitFreeMotion");
             taskScheduler->workUntilDone(&freeMotionTaskStatus);
         }
 
         {
-            ScopedAdvancedTimer timer("CollisionResponse");
+            ScopedAdvancedTimer collisionResponseTimer("CollisionResponse");
             CollisionResponseVisitor act(params);
             act.setTags(this->getTags());
             act.execute(getContext());
