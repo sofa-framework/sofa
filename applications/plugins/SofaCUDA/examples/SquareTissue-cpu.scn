@@ -13,9 +13,10 @@
     <Node name="SquareGravity">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        
-        <include href="Objects/TriangleSetTopology.xml" src="@../grid" />
         <MechanicalObject name="Mo"/>
+	<TriangleSetTopologyContainer name="Triangle_topo" src="@../grid"/>
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass massDensity="0.15" />
         <FixedConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
         <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
