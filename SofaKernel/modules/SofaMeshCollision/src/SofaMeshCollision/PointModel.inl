@@ -25,11 +25,10 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
-#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Node.h>
-#include <vector>
+#include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
+#include <SofaBaseCollision/CubeModel.h>
 
 namespace sofa::component::collision
 {

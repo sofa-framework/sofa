@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
+
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -100,7 +100,7 @@ void TriangleLocalMinDistanceFilter::init()
 
     bmt = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-    component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(getContext()->getMechanicalState());
+    auto* mstateVec3d= dynamic_cast<core::behavior::MechanicalState<Vec3Types>*>(getContext()->getMechanicalState());
 
 
     if(mstateVec3d == nullptr)
@@ -212,7 +212,7 @@ void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index
     sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt;
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
+    auto*  mstateVec3d= dynamic_cast<core::behavior::MechanicalState<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
     if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
@@ -242,7 +242,7 @@ void TriangleLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index 
     sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt; // (sofa::core::topology::BaseMeshTopology *)tLMDFilter->getContext()->getTopology();
     lInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
+    auto* mstateVec3d= dynamic_cast<core::behavior::MechanicalState<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
     if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
@@ -271,7 +271,7 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(In
     sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt; // (sofa::core::topology::BaseMeshTopology *)tLMDFilter->getContext()->getTopology();
     tInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
+    auto*  mstateVec3d= dynamic_cast<core::behavior::MechanicalState<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
     if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe

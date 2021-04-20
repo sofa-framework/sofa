@@ -20,10 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaUserInteraction/RayModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <SofaBaseCollision/CubeModel.h>
 
 namespace sofa::component::collision
 {

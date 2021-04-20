@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
@@ -89,7 +88,7 @@ void TriangleCollisionModel<DataTypes>::init()
     bool modelsOk = true;
     if (m_mstate == nullptr)
     {
-        msg_error() << "No MechanicalObject found. TriangleCollisionModel<sofa::defaulttype::Vec3Types> requires a Vec3 Mechanical Model in the same Node.";
+        msg_error() << "No MechanicalState found. TriangleCollisionModel<sofa::defaulttype::Vec3Types> requires a Vec3 MechanicalState in the same Node.";
         modelsOk = false;
     }
 
