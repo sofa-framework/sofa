@@ -3,7 +3,7 @@ import os.path
 
 from Compliant import Rigid
 
-colladasceneloader_path = os.path.realpath(__file__ + '../../ColladaSceneLoader').replace('\\', '/')
+colladasceneloader_path = os.path.realpath( os.path.dirname(__file__) + '../../ColladaSceneLoader' ).replace('\\', '/')
 mesh_path = colladasceneloader_path + '/Demos/'
 
 scale = 1
