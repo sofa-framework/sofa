@@ -1,6 +1,7 @@
 <Node dt="0.005" gravity="0 -10 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName="SofaSphFluid"/>
+    <RequiredPlugin name="SofaSphFluid"/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="Liver">

@@ -3,6 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/> 
     <RequiredPlugin name='SofaSphFluid' />
     <RequiredPlugin name='SofaExplicitOdeSolver'/>
+    <RequiredPlugin name='SofaBoundaryCondition'/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showWireframe" />
 
     <Node name="Particles">
