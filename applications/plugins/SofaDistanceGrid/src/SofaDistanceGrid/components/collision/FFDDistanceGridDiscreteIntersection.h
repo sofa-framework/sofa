@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_COLLISION_FFDDISTANCEGRIDDISCRETEINTERSECTION_H
 #include <SofaDistanceGrid/config.h>
 
-#include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/collision/Intersection.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/PointModel.h>

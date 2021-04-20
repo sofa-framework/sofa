@@ -23,7 +23,7 @@
 
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>
-
+#include <sofa/simulation/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.inl>
 #include <SofaSimulationCommon/xml/NodeElement.h>
@@ -41,7 +41,7 @@ SOFA_SOFASIMULATIONCOMMON_API void init()
 {
     if (!s_initialized)
     {
-        sofa::core::init();
+        sofa::simulation::core::init();
         s_initialized = true;
     }
 }
@@ -55,7 +55,7 @@ SOFA_SOFASIMULATIONCOMMON_API void cleanup()
 {
     if (!s_cleanedUp)
     {
-        sofa::core::cleanup();
+        sofa::simulation::core::cleanup();
         s_cleanedUp = true;
     }
 }
