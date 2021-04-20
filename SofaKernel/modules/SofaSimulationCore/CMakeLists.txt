@@ -150,6 +150,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
 )
 
+sofa_find_package(SofaCore REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
 
@@ -160,12 +162,13 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread" )
 endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaFramework
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaFramework"
-    )
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaSimulationCore_test)
