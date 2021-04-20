@@ -57,11 +57,9 @@ FreeMotionTask::FreeMotionTask(sofa::simulation::Node* node,
 sofa::simulation::Task::MemoryAlloc FreeMotionTask::run()
 {
     {
-//        std::cout << "FreeMotionTask called" << std::endl;
         sofa::helper::ScopedAdvancedTimer timer("FreeMotion");
         simulation::SolveVisitor freeMotion(m_params, m_dt, true);
         m_node->execute(&freeMotion);
-//        std::cout << "FreeMotionTask performed" << std::endl;
     }
 
     m_mop->projectResponse(m_freeVel);
