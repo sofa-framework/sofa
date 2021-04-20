@@ -257,17 +257,17 @@ public:
 };
 
 
-template<>
+template<> SOFA_SOFACONSTRAINT_API
 void BilateralInteractionConstraint<Rigid3Types>::init(){
     unspecializedInit() ;
 }
 
-template<>
+template<> SOFA_SOFACONSTRAINT_API
 void BilateralInteractionConstraint<Rigid3Types>::bwdInit() {
     BilateralInteractionConstraintSpecialization<RigidImpl>::bwdInit(*this);
 }
 
-template<>
+template<> SOFA_SOFACONSTRAINT_API
 void BilateralInteractionConstraint<Rigid3Types>::getConstraintResolution(const ConstraintParams* cParams,
                                                                            std::vector<ConstraintResolution*>& resTab,
                                                                            unsigned int& offset)
@@ -277,7 +277,7 @@ void BilateralInteractionConstraint<Rigid3Types>::getConstraintResolution(const 
                                                                                      d_numericalTolerance.getValue()) ;
 }
 
-template <>
+template <> SOFA_SOFACONSTRAINT_API
 void BilateralInteractionConstraint<Rigid3Types>::buildConstraintMatrix(const ConstraintParams* cParams,
                                                                          DataMatrixDeriv &c1_d,
                                                                          DataMatrixDeriv &c2_d,
@@ -290,7 +290,7 @@ void BilateralInteractionConstraint<Rigid3Types>::buildConstraintMatrix(const Co
 }
 
 
-template <>
+template <> SOFA_SOFACONSTRAINT_API
 void BilateralInteractionConstraint<Rigid3Types>::getConstraintViolation(const ConstraintParams* cParams,
                                                                           BaseVector *v,
                                                                           const DataVecCoord &d_x1, const DataVecCoord &d_x2,
@@ -302,7 +302,7 @@ void BilateralInteractionConstraint<Rigid3Types>::getConstraintViolation(const C
 }
 
 
-template <>
+template <> SOFA_SOFACONSTRAINT_API
 void BilateralInteractionConstraint<Rigid3Types>::getVelocityViolation(BaseVector * /*v*/,
                                                                         const DataVecCoord &/*x1*/,
                                                                         const DataVecCoord &/*x2*/,
@@ -312,7 +312,7 @@ void BilateralInteractionConstraint<Rigid3Types>::getVelocityViolation(BaseVecto
 
 }
 
-template<>
+template<> SOFA_SOFACONSTRAINT_API
 void BilateralInteractionConstraint<defaulttype::Rigid3Types>::addContact(Deriv norm,
                                                                            Coord P, Coord Q, Real contactDistance,
                                                                            int m1, int m2,
