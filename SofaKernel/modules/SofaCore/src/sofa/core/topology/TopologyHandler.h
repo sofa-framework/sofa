@@ -49,6 +49,7 @@ public:
     // really need to be a Data??
     Data <std::list<const TopologyChange *> >m_changeList;
 
+    typedef std::function<void(const core::topology::TopologyChange*)> TopoChange_callback;
 
     virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize);
 
@@ -164,11 +165,16 @@ public:
 
     virtual bool registerTopology();
     virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
+
+    void addCallBack(core::topology::TopologyChangeType type, TopoChange_callback callback);
+
 protected:
     /// use to define engine name.
     std::string m_prefix;
     /// use to define data handled name.
     std::string m_data_name;
+
+    std::map < core::topology::TopologyChangeType, TopoChange_callback> m_callbackMap;
 };
 
 } // namespace topology
