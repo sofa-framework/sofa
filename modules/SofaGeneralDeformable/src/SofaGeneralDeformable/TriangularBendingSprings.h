@@ -60,7 +60,6 @@ public:
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
-    typedef typename topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeInformation> > TriangularBSEdgeHandler;
 
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
@@ -111,6 +110,7 @@ protected:
         }
     };
 
+    typedef typename topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeInformation> > TriangularBSEdgeHandler;
     sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     bool updateMatrix;
