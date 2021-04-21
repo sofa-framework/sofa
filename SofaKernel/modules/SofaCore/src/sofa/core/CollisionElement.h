@@ -82,16 +82,38 @@ public:
         }
     }
 
-    /// Increment this iterator to reference the next element.
-    void operator++()
+    /// Prefix increment this iterator to reference the next element.
+    BaseCollisionElementIterator& operator++()
     {
         next();
+        return *this;
     }
 
-    /// Increment this iterator to reference the next element.
-    void operator++(int)
+    /// Postfix increment this iterator to reference the next element.
+    BaseCollisionElementIterator operator++(int)
     {
+        auto tmp = *this;
         next();
+        return tmp;
+    }
+
+    // Increment this iterator by n elements. Negative numbers are not supported
+    BaseCollisionElementIterator& operator+=(int n)
+    {
+        if (n > 0)
+        {
+            while(n--)
+            {
+                next();
+            }
+        }
+        return *this;
+    }
+
+    BaseCollisionElementIterator operator+(int n) const
+    {
+        auto tmp = *this;
+        return tmp += n;
     }
 
     /// Return the index of the referenced element inside the CollisionModel.
@@ -184,6 +206,19 @@ public:
         return this->model != i.getCollisionModel() || this->index != i.getIndex();
     }
 
+    // Increment this iterator by n elements. Negative numbers are not supported
+    TCollisionElementIterator& operator+=(int n)
+    {
+        BaseCollisionElementIterator::operator+=(n);
+        return *this;
+    }
+
+    TCollisionElementIterator operator+(int n) const
+    {
+        auto tmp = *this;
+        return tmp += n;
+    }
+
     /// Test if this iterator is initialized with a valid CollisionModel.
     /// Note that it does not test if the referenced element inside the CollisionModel is valid.
     bool valid() const
@@ -223,7 +258,7 @@ public:
     /// Test if this element can collide with another element.
     ///
     /// @see CollisionModel::canCollideWithElement
-    bool canCollideWith(TCollisionElementIterator<Model>& elem)
+    bool canCollideWith(const TCollisionElementIterator<Model>& elem) const
     {
         return ((model != elem.model) || (index < elem.index)) && model->canCollideWithElement(index, elem.model, elem.index);
     }
