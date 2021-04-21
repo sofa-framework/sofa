@@ -47,6 +47,7 @@ public:
     void update() override;
 
 public:
+    typedef std::function<void(const core::topology::TopologyChange*)> TopoChange_callback;
 
     virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize);
 
@@ -165,6 +166,8 @@ public:
     */
     virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
 
+    void addCallBack(core::topology::TopologyChangeType type, TopoChange_callback callback);
+
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
     SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2085", "This method has been removed as it is not part of the new topology change design.")
@@ -177,6 +180,7 @@ protected:
     std::string m_data_name;
 
     sofa::core::topology::TopologyContainer* m_topology;
+    std::map < core::topology::TopologyChangeType, TopoChange_callback> m_callbackMap;
 };
 
 } // namespace topology
