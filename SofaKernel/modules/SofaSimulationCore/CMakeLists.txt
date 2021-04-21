@@ -70,6 +70,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/InitTasks.h
     ${SRC_ROOT}/Locks.h
     ${SRC_ROOT}/VisitorAsync.h
+    ${SRC_ROOT}/WorkerThread.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
     ${SRC_ROOT}/events/SimulationInitStartEvent.h
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.h
@@ -189,6 +190,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/DefaultTaskScheduler.cpp
     ${SRC_ROOT}/Task.cpp
     ${SRC_ROOT}/InitTasks.cpp
+    ${SRC_ROOT}/WorkerThread.cpp
     ${SRC_ROOT}/events/SimulationInitDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationInitStartEvent.cpp
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
@@ -249,6 +251,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalVSizeVisitor.cpp
 )
 
+sofa_find_package(SofaCore REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
 
@@ -259,12 +263,13 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread" )
 endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaFramework
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaFramework"
-    )
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaSimulationCore_test)
