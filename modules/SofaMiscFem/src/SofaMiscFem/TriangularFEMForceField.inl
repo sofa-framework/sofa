@@ -319,8 +319,6 @@ void TriangularFEMForceField<DataTypes>::createTriangleInformation(Index triangl
     const sofa::type::vector< Index >&,
     const sofa::type::vector< double >&)
 {
-    std::cout << "Calling TriangularFEMForceField<DataTypes>::createTriangleInfo: " << triangleIndex << std::endl;
-
     Index a = t[0];
     Index b = t[1];
     Index c = t[2];
