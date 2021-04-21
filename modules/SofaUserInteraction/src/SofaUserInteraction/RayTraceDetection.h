@@ -51,28 +51,35 @@ private:
 
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput>    OutputVector;
+
 protected:
     RayTraceDetection ();
+
 public:
+
+    /////////////////////////////
+    /// BROAD PHASE interface ///
+    /////////////////////////////
+
+    void beginBroadPhase() override;
+
+    void addCollisionModel (core::CollisionModel * cm) override;
+
+    //////////////////////////////
+    /// NARROW PHASE interface ///
+    //////////////////////////////
+
+    void addCollisionPair (const std::pair < core::CollisionModel *,
+            core::CollisionModel * >&cmPair) override;
+
+public:
+    void findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2);
+
+    void draw (const core::visual::VisualParams* vparams) override;
     void setDraw (bool val)
     {
         bDraw.setValue (val);
     }
-    void selfCollision (TriangleOctreeModel * cm1);
-    void addCollisionModel (core::CollisionModel * cm) override;
-    void addCollisionPair (const std::pair < core::CollisionModel *,
-            core::CollisionModel * >&cmPair) override;
-
-    void findPairsVolume (CubeCollisionModel * cm1,
-            CubeCollisionModel * cm2);
-
-    void beginBroadPhase() override
-    {
-        core::collision::BroadPhaseDetection::beginBroadPhase();
-        collisionModels.clear();
-    }
-
-    void draw (const core::visual::VisualParams* vparams) override;
 };
 
 } // namespace sofa::component::collision
