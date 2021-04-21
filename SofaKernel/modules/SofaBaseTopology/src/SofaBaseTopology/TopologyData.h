@@ -125,6 +125,12 @@ public:
     SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2086)", "v21.06 (PR#2086)", "This method has been removed as it's mechanism is now automatically done in TopologyHandler.")
     void registerTopologicalData() = delete;
 
+    void applyDestroyFunction(std::function<void(Index, value_type&)> func) { myDestroyFunction = func; }
+    void applyCreateFunction(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::helper::vector< Index >&, const sofa::helper::vector< double >&)> func) { myCreateFunction = func; }
+
+    std::function<void(Index, value_type&)> myDestroyFunction;
+    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::helper::vector< Index >&, const sofa::helper::vector< double >&)> myCreateFunction;
+
 protected:
     sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* m_topologyHandler;
 
