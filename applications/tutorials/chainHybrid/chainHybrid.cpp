@@ -59,7 +59,6 @@ using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMFor
 #include <SofaComponentAll/initSofaComponentAll.h>
 
 using sofa::core::objectmodel::New;
-//
 #include <SceneCreator/SceneCreator.h>
 
 
