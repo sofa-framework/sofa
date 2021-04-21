@@ -29,7 +29,6 @@ using sofa::helper::system::FileSystem;
 #include <sofa/helper/logging/Messaging.h>
 
 using sofa::helper::system::PluginManager;
-using sofa::helper::system::Plugin;
 
 namespace sofa::component::misc
 {
@@ -77,13 +76,14 @@ bool RequiredPlugin::loadPlugin()
     auto loadedPlugins = sofa::helper::getWriteOnlyAccessor(d_loadedPlugins);
     loadedPlugins.clear();
 
-    sofa::helper::system::PluginManager* pluginManager = &sofa::helper::system::PluginManager::getInstance();
-    std::string defaultSuffix = pluginManager->getDefaultSuffix();
+    auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+
+    const std::string defaultSuffix = PluginManager::getDefaultSuffix();
     const helper::vector<helper::fixed_array<std::string,2> >& sMap = d_suffixMap.getValue();
     helper::vector<std::string> suffixVec;
     if (!sMap.empty())
     {
-        std::string skey = (defaultSuffix.empty() ? std::string("!") : defaultSuffix);
+        const std::string skey = (defaultSuffix.empty() ? std::string("!") : defaultSuffix);
         for (std::size_t i = 0; i < sMap.size(); ++i)
         {
             if (sMap[i][0] == skey)
@@ -107,26 +107,21 @@ bool RequiredPlugin::loadPlugin()
 
     helper::vector< std::string > failed;
     std::ostringstream errmsg;
-    for (auto& pluginName : pluginsToLoad)
+    for (const auto& pluginName : pluginsToLoad)
     {
-        const std::string& name = FileSystem::cleanPath( pluginName ); // name is not necessarily a path
-        bool nameLoaded = false;
-        for (auto& suffix : suffixVec)
+        const std::string name = FileSystem::cleanPath( pluginName ); // name is not necessarily a path
+        bool isNameLoaded = false;
+        for (const auto& suffix : suffixVec)
         {
-            if ( pluginManager->pluginIsLoaded(name) )
+            if ( pluginManager.pluginIsLoaded(name) || 
+                 pluginManager.loadPlugin(name, suffix, true, true, &errmsg) )
             {
                 loadedPlugins.push_back(name);
-                nameLoaded = true;
-                if (d_stopAfterFirstSuffixFound.getValue()) break;
-            }
-            else if ( pluginManager->loadPlugin(name, suffix, true, true, &errmsg) )
-            {
-                loadedPlugins.push_back(name);
-                nameLoaded = true;
+                isNameLoaded = true;
                 if (d_stopAfterFirstSuffixFound.getValue()) break;
             }
         }
-        if (!nameLoaded)
+        if (!isNameLoaded)
         {
             failed.push_back(name);
         }
@@ -151,7 +146,7 @@ bool RequiredPlugin::loadPlugin()
                           << "Unable to load optional: " << failed;
         }
     }
-    pluginManager->init();
+    pluginManager.init();
     return !hasFailed;
 }
 

@@ -108,7 +108,7 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 mapping::SubsetMultiMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types>,
 mapping::SubsetMultiMapping<defaulttype::Vec3Types,defaulttype::Vec3Types>

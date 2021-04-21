@@ -22,3 +22,10 @@
 #pragma once
 
 #include <SofaMiscSolver/config.h>
+
+namespace sofa::component
+{
+
+SOFA_SOFAMISCSOLVER_API void initSofaMiscSolver();
+
+} // namespace sofa::component

@@ -6,9 +6,10 @@ set(SRC_ROOT src/SofaPreconditioner)
 # Config
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/initSofaPreconditioner.h
     )
 set(SOURCE_FILES
-    ${SRC_ROOT}/initPreconditioner.cpp
+    ${SRC_ROOT}/initSofaPreconditioner.cpp
     )
 
 # Sources

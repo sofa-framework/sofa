@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/helper/config.h>
-#include <sofa/type/trait/is_container.h>
+#include <sofa/type/trait/is_vector.h>
 
 #include <iosfwd>        ///< Needed to declare the operator<< and >> as deleted.
                          /// Remove it when the operator are completely removed
@@ -251,7 +251,7 @@ public:
 /// Support for std::vector
 template<class VectorLikeType>
 class ReadAccessor<VectorLikeType,
-        typename std::enable_if<sofa::type::trait::is_container<VectorLikeType>::value>::type> : public ReadAccessorVector< VectorLikeType >
+        typename std::enable_if<sofa::type::trait::is_vector<VectorLikeType>::value>::type> : public ReadAccessorVector< VectorLikeType >
 {
 public:
     typedef ReadAccessorVector< VectorLikeType > Inherit;
@@ -261,7 +261,7 @@ public:
 
 template<class VectorLikeType>
 class WriteAccessor<VectorLikeType,
-        typename std::enable_if<sofa::type::trait::is_container<VectorLikeType>::value>::type> : public WriteAccessorVector< VectorLikeType >
+        typename std::enable_if<sofa::type::trait::is_vector<VectorLikeType>::value>::type> : public WriteAccessorVector< VectorLikeType >
 {
 public:
     typedef WriteAccessorVector< VectorLikeType > Inherit;
@@ -271,7 +271,7 @@ public:
 
 template<class VectorLikeType>
 class WriteOnlyAccessor<VectorLikeType,
-        typename std::enable_if<sofa::type::trait::is_container<VectorLikeType>::value>::type> : public WriteAccessorVector< VectorLikeType >
+        typename std::enable_if<sofa::type::trait::is_vector<VectorLikeType>::value>::type> : public WriteAccessorVector< VectorLikeType >
 {
 public:
     typedef WriteAccessorVector< VectorLikeType > Inherit;

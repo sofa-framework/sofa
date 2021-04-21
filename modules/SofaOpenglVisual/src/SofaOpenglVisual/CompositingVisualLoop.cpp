@@ -26,8 +26,6 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/Node.h>
 
-#include <sofa/helper/AdvancedTimer.h>
-
 namespace sofa
 {
 namespace component

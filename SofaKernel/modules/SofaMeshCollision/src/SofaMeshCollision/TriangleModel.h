@@ -27,6 +27,7 @@
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/VecId.h>
 
 namespace sofa::component::collision
 {

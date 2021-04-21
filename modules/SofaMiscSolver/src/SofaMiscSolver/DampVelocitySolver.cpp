@@ -21,12 +21,8 @@
 ******************************************************************************/
 #include <SofaMiscSolver/DampVelocitySolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <cmath>
-#include <iostream>
-
 
 namespace sofa::component::odesolver
 {

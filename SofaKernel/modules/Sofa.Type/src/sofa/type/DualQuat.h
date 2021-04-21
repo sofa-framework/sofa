@@ -38,7 +38,7 @@ namespace // anonymous
 
 } // anonymous namespace
 
-// used to deprecate the constructor with RigidCoord
+// used to "delete" the constructor with RigidCoord
 namespace sofa::defaulttype
 {
     template<unsigned int, typename real2>

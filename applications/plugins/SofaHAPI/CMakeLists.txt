@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaHAPI)
 
+find_package(SofaUserInteraction REQUIRED)
 find_package(SofaHaptics REQUIRED)
 
 set(SOFAHAPI_MAJOR_VERSION 0)
@@ -19,8 +20,6 @@ set(SOURCE_FILES
     SofaHAPIHapticsDevice.cpp
     initSofaHAPI.cpp
 )
-
-find_package(SofaGeneral REQUIRED)
 
 if(NOT TARGET H3DUtil)
     find_package(H3DUtil REQUIRED)

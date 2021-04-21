@@ -28,9 +28,12 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa::component::forcefield
 {
+
+using sofa::core::topology::edgesInTetrahedronArray;
 
 template< class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
@@ -211,14 +214,14 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     helper::vector<Mat3x3>& edgeInf = *(edgeInfo.beginEdit());
     /// prepare to store info in the edge array
     edgeInf.resize(m_topology->getNbEdges());
-    edgeInfo.createTopologicalEngine(m_topology);
+    edgeInfo.createTopologyHandler(m_topology);
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
     helper::vector<Mat3x3>& pointInf = *(pointInfo.beginEdit());
     /// prepare to store info in the point array
     pointInf.resize(m_topology->getNbPoints());
-    pointInfo.createTopologicalEngine(m_topology);
+    pointInfo.createTopologyHandler(m_topology);
     pointInfo.registerTopologicalData();
     pointInfo.endEdit();
 
@@ -238,7 +241,7 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
                 (const helper::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
-    tetrahedronInfo.createTopologicalEngine(m_topology,tetrahedronHandler);
+    tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
     tetrahedronInfo.registerTopologicalData();
     tetrahedronInfo.endEdit();
 
@@ -313,7 +316,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::computeQRRotation( Mat3x3
 template <class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
 {
-
     VecDeriv& f        = *(dataF.beginEdit());
     const VecCoord& x  =   dataX.getValue()  ;
 
@@ -321,7 +323,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
     unsigned int j,k,l;
     int nbTetrahedra=m_topology->getNbTetrahedra();
     int i;
-    const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 
 
     if (updateTopologyInfo)
@@ -425,7 +426,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     dmsg_info() << "[" << this->getName() << "]: calling addDForce " ;
     VecDeriv& df       = *(datadF.beginEdit());
     const VecCoord& dx =   datadX.getValue()  ;
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int j;
     int i;
@@ -498,7 +499,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(const core::
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
-        addKToMatrix(r.matrix, mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()), r.offset);
+        addKToMatrix(r.matrix, sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()), r.offset);
     else
         msg_error() << "addKToMatrix found no valid matrix accessor.";
 }

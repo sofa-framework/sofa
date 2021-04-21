@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/gui/qt/config.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::gui::qt::viewer
 {
@@ -30,7 +29,7 @@ namespace sofa::gui::qt::viewer
 class SOFA_SOFAGUIQT_API VisualModelPolicy
 {
 public:
-	VisualModelPolicy(core::visual::VisualParams* vparams = core::visual::VisualParams::defaultInstance());
+	VisualModelPolicy(core::visual::VisualParams* vparams = core::visual::visualparams::defaultInstance());
 	virtual ~VisualModelPolicy();
     virtual void load() = 0;
     virtual void unload() = 0;

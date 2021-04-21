@@ -22,8 +22,8 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
+#include <sofa/core/fwd.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
@@ -303,17 +303,17 @@ public:
     */
     virtual std::list<const TopologyChange *>::const_iterator endStateChange() const;
 
-    /** \brief Adds a TopologyEngine to the list.
+    /** \brief Adds a TopologyHandler to the list.
     */
-    virtual void addTopologyEngine(TopologyEngine* _topologyEngine);
+    virtual void addTopologyHandler(TopologyHandler* _TopologyHandler);
 
-    /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
+    /** \brief Provides an iterator on the first element in the list of TopologyHandler objects.
     */
-    virtual std::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
+    virtual std::list<TopologyHandler *>::const_iterator beginTopologyHandler() const;
 
-    /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
+    /** \brief Provides an iterator on the last element in the list of TopologyHandler objects.
     */
-    virtual std::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
+    virtual std::list<TopologyHandler *>::const_iterator endTopologyHandler() const;
     /// @}
 
     // functions returning border elements. To be moved in a mapping.
@@ -333,10 +333,6 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
-
-// map of triangles orientation inside a tetrahedron.
-static const unsigned int trianglesOrientationInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0}, {0,2,1}};
-static const unsigned int quadsOrientationInHexahedronArray[6][4]= {{0,3,2,1}, {4,5,6,7}, {0,1,5,4}, {1,2,6,5}, {2,3,7,6}, {3,0,4,7}};
 
 } // namespace topology
 

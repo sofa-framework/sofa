@@ -22,6 +22,7 @@
 #include <sofa/type/BoundingBox.h>
 
 #include <limits>
+#include <algorithm>
 
 namespace sofa::type
 {
@@ -675,4 +676,4 @@ BoundingBox1D BoundingBox1D::getInflate( SReal amount ) const
 }
 
 
-} // namespace sofa::defaulttype
+} // namespace sofa::type

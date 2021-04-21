@@ -179,7 +179,7 @@ void DiagonalCompliance<DataTypes>::addForce(const core::MechanicalParams *, Dat
 template<class DataTypes>
 void DiagonalCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& df,  const DataVecDeriv& dx)
 {
-    Real kfactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kfactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
 
     if( kfactor )
     {
@@ -187,7 +187,7 @@ void DiagonalCompliance<DataTypes>::addDForce(const core::MechanicalParams *mpar
     }
 
     if( damping.getValue().size() > 1 || damping.getValue()[0] > 0 ) {
-        Real bfactor = (Real)mparams->bFactor();
+        Real bfactor = (Real)sofa::core::mechanicalparams::bFactor(mparams);
         matB.addMult( df, dx, bfactor );
     }
 }

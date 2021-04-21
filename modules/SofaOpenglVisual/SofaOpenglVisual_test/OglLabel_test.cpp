@@ -40,15 +40,13 @@ using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <SofaOpenglVisual/OglLabel.h>
 using sofa::component::visualmodel::OglLabel ;
 
 #include <sofa/helper/types/RGBAColor.h>
 using sofa::helper::types::RGBAColor ;
-
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
@@ -57,7 +55,6 @@ class OglLabelTest : public BaseTest
 public:
     void SetUp()
     {
-        sofa::component::initSofaBaseMechanics();
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 
@@ -76,7 +73,7 @@ public:
                                                           scene.str().size()) ;
 
         ASSERT_NE(nullptr, root.get()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
 
         BaseObject* lm = root->getObject("label1") ;
@@ -109,7 +106,7 @@ public:
                                                           scene.str().size()) ;
 
         ASSERT_NE(nullptr, root.get()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* lm = root->getObject("label1") ;
         ASSERT_NE(nullptr, lm) ;
@@ -138,7 +135,7 @@ public:
                                                           scene.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* lm = root->getObject("label1") ;
         ASSERT_NE(lm, nullptr) ;

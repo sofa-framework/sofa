@@ -376,7 +376,7 @@ void FastTriangularBendingSprings<DataTypes>::init()
     {
         msg_warning() << "No triangles found in linked Topology.";
     }
-    d_edgeSprings.createTopologicalEngine(m_topology,d_edgeHandler);
+    d_edgeSprings.createTopologyHandler(m_topology,d_edgeHandler);
     d_edgeSprings.linkToPointDataArray();
     d_edgeSprings.linkToTriangleDataArray();
     d_edgeSprings.registerTopologicalData();
@@ -444,7 +444,7 @@ void FastTriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalPa
     const VecDeriv& dx = d_dx.getValue();
     typename MechanicalState::WriteVecDeriv df(d_df);
     const helper::vector<EdgeSpring>& edgeInf = d_edgeSprings.getValue();
-    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     df.resize(dx.size());
     for(unsigned i=0; i<edgeInf.size(); i++ )
     {

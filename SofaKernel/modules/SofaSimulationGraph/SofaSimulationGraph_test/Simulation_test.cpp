@@ -177,7 +177,7 @@ struct Scene_test: public NumericTest<SReal>
         {
             simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);
             nodeToRemove->detachFromGraph();
-            nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+            nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         }
 
         simulation->animate(root.get());

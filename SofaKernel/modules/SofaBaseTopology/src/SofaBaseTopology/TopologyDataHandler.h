@@ -22,122 +22,155 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/core/topology/TopologyElementHandler.h>
+#include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/core/topology/BaseTopologyData.h>
 
+#include <sofa/core/topology/BaseTopology.h>
+
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::topology
 {
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/** \brief A class for storing topology related data. Automatically manages topology changes.
-*
-* This class is a wrapper of class helper::vector that is made to take care transparently of all topology changes that might
-* happen (non exhaustive list: elements added, removed, fused, renumbered).
-*/
-
 template< class TopologyElementType, class VecT>
-class TopologyDataHandler : public sofa::core::topology::TopologyElementHandler< TopologyElementType >
+class TopologyDataHandler : public sofa::core::topology::TopologyHandler
 {
 public:
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
+    typedef sofa::core::topology::BaseTopologyData<VecT> t_topologicalData;
 
-    /// Size
-    typedef typename container_type::Size Size;
-    /// reference to a value (read-write)
-    typedef typename container_type::reference reference;
-    /// const reference to a value (read only)
-    typedef typename container_type::const_reference const_reference;
-    /// const iterator
-    typedef typename container_type::const_iterator const_iterator;
+    typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
+    typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
 
-    using Index = sofa::Index;
+    typedef core::topology::BaseMeshTopology::Point Point;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
+    typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+    typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
-    typedef sofa::core::topology::TopologyElementHandler< TopologyElementType > Inherit;
-    typedef typename Inherit::AncestorElem AncestorElem;
+    // Event types (EMoved* are not used for all element types, i.e. Point vs others)
+    typedef typename ChangeElementInfo::EIndicesSwap    EIndicesSwap;
+    typedef typename ChangeElementInfo::ERenumbering    ERenumbering;
+    typedef typename ChangeElementInfo::EAdded          EAdded;
+    typedef typename ChangeElementInfo::ERemoved        ERemoved;
+    typedef typename ChangeElementInfo::EMoved          EMoved;
+    typedef typename ChangeElementInfo::EMoved_Removing EMoved_Removing;
+    typedef typename ChangeElementInfo::EMoved_Adding   EMoved_Adding;
+    typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
-protected:
-    sofa::core::topology::BaseTopologyData <VecT>* m_topologyData;
-	value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
+    TopologyDataHandler(t_topologicalData* _topologicalData,
+        sofa::core::topology::BaseMeshTopology* _topology, 
+        value_type defaultValue = value_type());
+
+
+    TopologyDataHandler(t_topologicalData* _topologicalData,
+        value_type defaultValue = value_type());
 
 public:
-    // constructor
-    TopologyDataHandler(sofa::core::topology::BaseTopologyData <VecT>* _topologyData,
-                        value_type defaultValue=value_type())
-        :sofa::core::topology::TopologyElementHandler < TopologyElementType >()
-        , m_topologyData(_topologyData), m_defaultValue(defaultValue) {}
+
+    void init();
+
+    void handleTopologyChange() override;
+
+    bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology) override;
+
+    bool registerTopology() override;
+
+    void registerTopologicalData(t_topologicalData *topologicalData) {m_topologyData = topologicalData;}
+
+
+    /// Function to link DataEngine with Data array from topology
+    void linkToPointDataArray() override;
+    void linkToEdgeDataArray() override;
+    void linkToTriangleDataArray() override;
+    void linkToQuadDataArray() override;
+    void linkToTetrahedronDataArray() override;
+    void linkToHexahedronDataArray() override;
 
     bool isTopologyDataRegistered()
     {
-        if(m_topologyData) return true;
+        if (m_topologyData) return true;
         else return false;
     }
 
+    using TopologyHandler::ApplyTopologyChange;
+
+    /// Apply swap between indices elements.
+    virtual void ApplyTopologyChange(const EIndicesSwap* event) override;
+    /// Apply adding elements.
+    virtual void ApplyTopologyChange(const EAdded* event) override;
+    /// Apply removing elements.
+    virtual void ApplyTopologyChange(const ERemoved* event) override;
+    /// Apply renumbering on elements.
+    virtual void ApplyTopologyChange(const ERenumbering* event) override;
+    /// Apply moving elements.
+    virtual void ApplyTopologyChange(const EMoved* event) override;
+    /// Apply adding function on moved elements.
+    //virtual void ApplyTopologyChange(const EMoved_Adding* event) override;
+    ///// Apply removing function on moved elements.
+    //virtual void ApplyTopologyChange(const EMoved_Removing* event) override;
+
     /** Public fonction to apply creation and destruction functions */
     /// Apply removing current elementType elements
-    virtual void applyDestroyFunction(Index, value_type& ) {}
+    virtual void applyDestroyFunction(Index, value_type&) {}
 
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(Index, value_type& t,
-            const sofa::helper::vector< Index > &,
-            const sofa::helper::vector< double > &) {t = m_defaultValue;}
+        const sofa::helper::vector< Index >&,
+        const sofa::helper::vector< double >&) 
+    {
+        t = m_defaultValue;
+    }
 
     /// WARNING NEED TO UNIFY THIS
     /// Apply adding current elementType elements
-    virtual void applyCreateFunction(Index i, value_type&t , const TopologyElementType& ,
-            const sofa::helper::vector< Index > &ancestors,
-            const sofa::helper::vector< double > &coefs)
+    virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType&,
+        const sofa::helper::vector< Index >& ancestors,
+        const sofa::helper::vector< double >& coefs)
     {
         applyCreateFunction(i, t, ancestors, coefs);
     }
 
-    virtual void applyCreateFunction(Index i, value_type&t , const TopologyElementType& e,
-            const sofa::helper::vector< Index > &ancestors,
-            const sofa::helper::vector< double > &coefs,
-            const AncestorElem* /*ancestorElem*/)
+    virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType& e,
+        const sofa::helper::vector< Index >& ancestors,
+        const sofa::helper::vector< double >& coefs,
+        const AncestorElem* /*ancestorElem*/)
     {
         applyCreateFunction(i, t, e, ancestors, coefs);
     }
-	// update the default value used during creation
-	void setDefaultValue(const value_type &v) {
-		m_defaultValue=v;
-	}
+
+    virtual bool applyTestCreateFunction(Index /*index*/,
+        const sofa::helper::vector< Index >& /*ancestors*/,
+        const sofa::helper::vector< double >& /*coefs*/) {
+        return false;
+    }
+
+    // update the default value used during creation
+    void setDefaultValue(const value_type& v) {
+        m_defaultValue = v;
+    }
 
 protected:
-    /// Swaps values at indices i1 and i2.
-    virtual void swap( Index i1, Index i2 );
+    t_topologicalData* m_topologyData;
+    sofa::core::topology::TopologyContainer* m_topology;
+    value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
 
-    /// Add some values. Values are added at the end of the vector.
-    /// This (new) version gives more information for element indices and ancestry
-    virtual void add( const sofa::helper::vector<Index> & index,
-            const sofa::helper::vector< TopologyElementType >& elems,
-            const sofa::helper::vector< sofa::helper::vector< Index > > &ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
-            const sofa::helper::vector< AncestorElem >& ancestorElems);
 
-    /// Remove the values corresponding to the elements removed.
-    virtual void remove( const sofa::helper::vector<Index> &index );
-
-    /// Reorder the values.
-    virtual void renumber( const sofa::helper::vector<Index> &index );
-
-    /// Move a list of points
-    virtual void move( const sofa::helper::vector<Index> &indexList,
-            const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-
-    /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
-    virtual void addOnMovedPosition(const sofa::helper::vector<Index> &indexList,
-            const sofa::helper::vector< TopologyElementType > & elems);
-
-    /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
-    virtual void removeOnMovedPosition(const sofa::helper::vector<Index> &indices);
-
+public:
+    bool m_pointsLinked;
+    bool m_edgesLinked;
+    bool m_trianglesLinked;
+    bool m_quadsLinked;
+    bool m_tetrahedraLinked;
+    bool m_hexahedraLinked;
 
 };
 

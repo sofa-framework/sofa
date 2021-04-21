@@ -24,6 +24,7 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/decompose.h>
 
 // WARNING: indices ordering is different than in topology node
@@ -258,7 +259,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 {
     WDataRefVecDeriv _df = v;
     RDataRefVecCoord _dx = x;
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     if (_df.size() != _dx.size())
         _df.resize(_dx.size());
@@ -1131,7 +1132,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 
         Transformation Rot = getElementRotation(e);
 
-        Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+        Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {

@@ -63,8 +63,9 @@ elseif (Qt6Core_FOUND)
     # endif()
 endif()
 
+find_package(Sofa.GL QUIET)
 # QtViewer and QGLViewer
-if(NOT SOFA_NO_OPENGL)
+if(Sofa.GL_FOUND)
     # QtViewer
     # TODO: rename SOFAGUI_QTVIEWER into SOFAGUIQT_ENABLE_QTVIEWER
     option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
@@ -84,6 +85,7 @@ if(NOT SOFA_NO_OPENGL)
         endif()
     endif()
 else()
+    message(STATUS "Sofa.GL has not been activated, QtViewer/QGLViewer will be disabled.")
     set(SOFAGUI_QTVIEWER OFF)
     set(SOFAGUI_QGLVIEWER OFF)
 endif()
@@ -234,7 +236,7 @@ if(SOFA_DUMP_VISITOR_INFO)
         )
 endif()
 
-if(NOT SOFA_NO_OPENGL)
+if(Sofa.GL_FOUND)
     list(APPEND HEADER_FILES
         ${SRC_ROOT}/GLPickHandler.h
         ${SRC_ROOT}/viewer/GLBackend.h
@@ -325,7 +327,7 @@ if(SOFA_DUMP_VISITOR_INFO)
     target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml)
 endif()
 
-if(NOT SOFA_NO_OPENGL)
+if(Sofa.GL_FOUND)
     if(SOFAGUI_QGLVIEWER)
         target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
     endif()

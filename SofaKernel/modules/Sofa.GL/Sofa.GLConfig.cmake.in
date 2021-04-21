@@ -3,12 +3,12 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(SOFA.GL_HAVE_GLEW @SOFA.GL_HAVE_GLEW@)
+set(SOFA_GL_HAVE_GLEW @SOFA_GL_HAVE_GLEW@)
 
 find_package(SofaFramework QUIET REQUIRED) # SofaHelper SofaDefaulttype
 find_package(OpenGL QUIET REQUIRED)
 
-if(SOFA.GL_HAVE_GLEW)
+if(SOFA_GL_HAVE_GLEW)
 	find_package(GLEW QUIET REQUIRED)
 endif()
 

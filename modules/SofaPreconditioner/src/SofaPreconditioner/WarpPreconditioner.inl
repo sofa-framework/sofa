@@ -111,7 +111,7 @@ template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
     this->currentMFactor = mparams->mFactor();
-    this->currentBFactor = mparams->bFactor();
+    this->currentBFactor = sofa::core::mechanicalparams::bFactor(mparams);
     this->currentKFactor = mparams->kFactor();
     if (!this->frozen) {
         simulation::common::MechanicalOperations mops(mparams, this->getContext());
@@ -155,7 +155,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         this->currentGroup->systemMatrix->resize(updateSystemSize,updateSystemSize);
         this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
     } else {
-        currentSystemSize = getSystemDimention(sofa::core::MechanicalParams::defaultInstance());
+        currentSystemSize = getSystemDimention(sofa::core::mechanicalparams::defaultInstance());
 
 
         this->currentGroup->systemMatrix->clear();

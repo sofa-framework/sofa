@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.12)
 project(Geomagic VERSION 0.1)
 
 find_package(SofaHaptics REQUIRED)
-find_package(OpenHaptics REQUIRED)
 find_package(SofaOpenglVisual REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
+find_package(SofaLoader REQUIRED)
+
+find_package(OpenHaptics REQUIRED)
 
 if( NOT OPENHAPTICS_FOUND )
     message( SEND_ERROR "OpenHaptics library not found, GeomagicDriver cannot compile")

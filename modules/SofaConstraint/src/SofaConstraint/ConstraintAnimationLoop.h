@@ -22,7 +22,8 @@
 #pragma once
 #include <SofaConstraint/config.h>
 
-#include <sofa/core/ConstraintParams.h>
+
+#include <sofa/helper/map.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>

@@ -32,6 +32,18 @@ using namespace sofa::component::collision;
 namespace sofa::component
 {
 
+void initSofaMeshCollision()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+
+    core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>("Mesh");
+    (void)pMeshNewProximityIntersectors;
+}
+
 extern "C" {
     SOFA_SOFAMESHCOLLISION_API void initExternalModule();
     SOFA_SOFAMESHCOLLISION_API const char* getModuleName();
@@ -43,14 +55,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>("Mesh");
-    (void)pMeshNewProximityIntersectors;
+    initSofaMeshCollision();
 }
 
 const char* getModuleName()

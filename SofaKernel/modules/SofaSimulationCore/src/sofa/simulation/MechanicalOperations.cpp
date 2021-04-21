@@ -25,7 +25,7 @@
 #include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
-#include <sofa/core/ConstraintParams.h>
+
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/behavior/ConstraintSolver.h>

@@ -23,7 +23,7 @@
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/helper/LCPSolver.inl>
-
+#include <sofa/core/VecId.h>
 namespace sofa::component::collision
 {
 

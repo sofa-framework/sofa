@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/gui/config.h>
 #include <sofa/simulation/Visitor.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/fwd.h>
 #include <SofaBaseCollision/fwd.h>
 #include <SofaUserInteraction/MouseInteractor.h>
@@ -63,7 +64,7 @@ public:
     /// the TriangleElement with the given index
 
     ColourPickingVisitor(const core::visual::VisualParams* params, ColourCode Method)
-        :simulation::Visitor(params),vparams(params),method(Method)
+        :simulation::Visitor(sofa::core::visual::visualparams::castToExecParams(params)),vparams(params),method(Method)
     {}
 
     void processCollisionModel(simulation::Node* node, core::CollisionModel* /*o*/);

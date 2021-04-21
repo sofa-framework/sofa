@@ -103,7 +103,7 @@ struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>
 
 };
 
-using testing::Types;
+using ::testing::Types;
 typedef Types<defaulttype::Vector3> DataTypes;
 
 TYPED_TEST_SUITE(DifferenceEngine_test, DataTypes);

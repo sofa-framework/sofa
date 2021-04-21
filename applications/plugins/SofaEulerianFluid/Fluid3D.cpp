@@ -108,7 +108,6 @@ void Fluid3D::updatePosition(SReal dt)
 
 void Fluid3D::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     updateVisual();
     glPushMatrix();
     vec3 center = f_center.getValue();
@@ -229,7 +228,6 @@ void Fluid3D::draw(const core::visual::VisualParams* vparams)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     glPopMatrix();
-#endif /* SOFA_NO_OPENGL */
 }
 
 void Fluid3D::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, int& vindex, int& nindex, int& /*tindex*/)

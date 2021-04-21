@@ -23,14 +23,9 @@
 #include <SofaMiscFem/PlasticMaterial.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::fem::material
 {
-
 
 PlasticMaterial::PlasticMaterial()
 : _poissonRatio(initData(&_poissonRatio,(SReal)0.45,"poissonRatio","Poisson ratio in Hooke's law"))

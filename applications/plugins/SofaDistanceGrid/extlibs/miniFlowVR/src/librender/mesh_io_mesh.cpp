@@ -127,7 +127,11 @@ bool Mesh::loadMesh(const char* filename)
   if (fp==NULL) return false;
   std::cout<<"Loading Mesh file "<<filename<<std::endl;
   int magic = 0;
-  if (fread(&magic, sizeof(int), 1, fp)<=0) return false;
+  if (fread(&magic, sizeof(int), 1, fp) <= 0)
+  {
+      fclose(fp);
+      return false;
+  }
   if (magic == MESH_MAGIC_SWAP)
   {
     std::cout << "File endianness is swapped"<<std::endl;

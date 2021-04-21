@@ -118,16 +118,16 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
     }
 
     // Create specific handler for TriangleData
-    d_triangleInfo.createTopologicalEngine(m_topology, triangleInfoHandler);
+    d_triangleInfo.createTopologyHandler(m_topology, triangleInfoHandler);
     d_triangleInfo.registerTopologicalData();
 
-    d_triangleState.createTopologicalEngine(m_topology, triangleStateHandler);
+    d_triangleState.createTopologyHandler(m_topology, triangleStateHandler);
     d_triangleState.registerTopologicalData();
 
-    d_edgeInfo.createTopologicalEngine(m_topology);
+    d_edgeInfo.createTopologyHandler(m_topology);
     d_edgeInfo.registerTopologicalData();
 
-    d_vertexInfo.createTopologicalEngine(m_topology);
+    d_vertexInfo.createTopologyHandler(m_topology);
     d_vertexInfo.registerTopologicalData();
 
     if (m_topology->getNbTriangles()==0 && m_topology->getNbQuads()!=0 )
@@ -332,7 +332,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
     const VecElement& triangles = m_topology->getTriangles();
     const Real gamma = this->gamma;
     const Real mu = this->mu;
-    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
 
@@ -391,7 +391,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::Mechanic
 {
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
-    const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const unsigned int nbTriangles = m_topology->getNbTriangles();
     const VecElement& triangles = m_topology->getTriangles();
     const Real gamma = this->gamma;

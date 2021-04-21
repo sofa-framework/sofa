@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 #define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 
-
+#include <sofa/core/fwd.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/Vec.h>
@@ -35,8 +35,6 @@ namespace sofa
 
 namespace core
 {
-
-class ConstraintParams;
 
 namespace behavior
 {
@@ -256,11 +254,11 @@ public:
     /// @{
 
     /// Handle state Changes
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleStateChange() {}
 
     /// Handle state Changes from a given Topology
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleStateChange(core::topology::Topology* t);
 
     ///@}

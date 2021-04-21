@@ -90,7 +90,7 @@ protected:
     unsigned m_variableIndex; ///< unique index per node to garanty a unique variablename
 
 public:
-    PythonExporterVisitor(std::ostream& out) : Visitor(sofa::core::ExecParams::defaultInstance()), m_out(out), m_variableIndex(0) {}
+    PythonExporterVisitor(std::ostream& out) : Visitor(sofa::core::execparams::defaultInstance()), m_out(out), m_variableIndex(0) {}
 
     template<class T> void processObject( T obj, const std::string& nodeVariable );
 

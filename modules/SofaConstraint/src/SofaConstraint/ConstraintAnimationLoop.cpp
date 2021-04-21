@@ -29,7 +29,6 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
@@ -40,21 +39,13 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
 
-#include <sofa/core/ConstraintParams.h>
+
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/behavior/BaseConstraint.h> ///< ConstraintResolution.
 
-#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <cmath>
-
-#include <map>
-#include <string>
-#include <sstream>
-
-#include <chrono>
 #include <thread>
 
 
@@ -484,7 +475,7 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->addComplianceInConstraintSpace(core::ConstraintParams::defaultInstance(), getCP()->getW());
+        cc->addComplianceInConstraintSpace(core::constraintparams::defaultInstance(), getCP()->getW());
     }
 
     sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
@@ -744,10 +735,10 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     if (!SOFA_NO_UPDATE_BBOX)
     {
-        sofa::helper::AdvancedTimer::stepBegin("UpdateBBox");
+        sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
         this->gnode->execute<UpdateBoundingBoxVisitor>(params);
-        sofa::helper::AdvancedTimer::stepEnd("UpdateBBox");
     }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("Step");
 #endif

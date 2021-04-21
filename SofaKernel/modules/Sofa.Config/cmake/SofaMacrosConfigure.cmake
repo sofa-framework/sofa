@@ -91,8 +91,12 @@ macro(sofa_create_target TARGETNAME NAMESPACE LIBRARY_PATH INCLUDE_DIRS)
 endmacro()
 
 
-
 macro(sofa_add_generic directory name type)
+    set(optionArgs)
+    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN)
+    set(multiValueArgs)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
         string(TOUPPER ${type}_${name} option)
         string(TOLOWER ${type} type_lower)
@@ -100,12 +104,15 @@ macro(sofa_add_generic directory name type)
         # optional parameter to activate/desactivate the option
         #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION ON)
         set(active OFF)
-        set(optional_argv3 "${ARGV3}")
-        if(optional_argv3)
-            set(active ${optional_argv3})
+        if(ARG_DEFAULT_VALUE)
+            set(active ON)
         endif()
 
-        option(${option} "Build the ${name} ${type_lower}." ${active})
+        if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
+            cmake_dependent_option(${option} "Build the ${name} ${type_lower}." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
+        else()
+            option(${option} "Build the ${name} ${type_lower}." ${active})
+        endif()
         if(${option})
             message("Adding ${type_lower} ${name}")
             add_subdirectory(${directory})
@@ -120,16 +127,6 @@ macro(sofa_add_generic directory name type)
 
             set_target_properties(${target} PROPERTIES FOLDER ${type}s) # IDE folder
             set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
-
-            # Add current target in the internal list only if not present already
-            get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
-            get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
-            if(NOT ${target} IN_LIST _allTargets)
-                set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${target})
-            endif()
-            if(NOT ${option} IN_LIST _allTargetNames)
-                set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
-            endif()
         endif()
     else()
         message("The ${type_lower} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
@@ -137,36 +134,47 @@ macro(sofa_add_generic directory name type)
 endmacro()
 
 macro(sofa_add_collection directory name)
-    sofa_add_generic( ${directory} ${name} "Collection" ${ARGV2} )
+    sofa_add_generic(${directory} ${name} "Collection" DEFAULT_VALUE "${ARGV2}" ${ARGN})
 endmacro()
 
 macro(sofa_add_plugin directory plugin_name)
-    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
+    sofa_add_generic(${directory} ${plugin_name} "Plugin" DEFAULT_VALUE "${ARGV2}" ${ARGN})
+    if(TARGET ${plugin_name})
+        # Add current target in the internal list only if not present already
+        get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
+        get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
+        if(NOT ${plugin_name} IN_LIST _allTargets)
+            set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${target})
+        endif()
+        string(TOUPPER "PLUGIN_${plugin_name}" option)
+        if(NOT ${option} IN_LIST _allTargetNames)
+            set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
+        endif()
+    endif()
 endmacro()
 
 macro(sofa_add_plugin_experimental directory plugin_name)
-    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
-    string(TOUPPER "PLUGIN_${plugin_name}" option)
-    if(${option})
+    sofa_add_plugin(${ARGV})
+    if(TARGET ${plugin_name})
         message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
     endif()
 endmacro()
 
 macro(sofa_add_module directory module_name)
-    sofa_add_generic( ${directory} ${module_name} "Module" ${ARGV2} )
+    sofa_add_generic(${directory} ${module_name} "Module" DEFAULT_VALUE "${ARGV2}" ${ARGN})
 endmacro()
 
 macro(sofa_add_module_experimental directory module_name)
-    sofa_add_generic( ${directory} ${module_name} "Module" ${ARGV2} )
-    string(TOUPPER "MODULE_${module_name}" option)
-    if(${option})
+    sofa_add_module(${ARGV})
+    if(TARGET ${module_name})
         message("-- ${module_name} is an experimental feature, use it at your own risk.")
     endif()
 endmacro()
 
 macro(sofa_add_application directory app_name)
-    sofa_add_generic( ${directory} ${app_name} "Application" ${ARGV2} )
+    sofa_add_generic(${directory} ${app_name} "Application" DEFAULT_VALUE "${ARGV2}" ${ARGN})
 endmacro()
+
 
 ### External projects management
 # Thanks to http://crascit.com/2015/07/25/cmake-gtest/
@@ -182,6 +190,8 @@ endmacro()
 #
 function(sofa_add_generic_external directory name type)
     set(optionArgs FETCH_ONLY)
+    set(oneValueArgs DEFAULT_VALUE WHEN_TO_SHOW VALUE_IF_HIDDEN)
+    set(multiValueArgs)
     cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # Make directory absolute
@@ -197,14 +207,17 @@ function(sofa_add_generic_external directory name type)
 
     # Default value for fetch activation and for plugin activation (if adding a plugin)
     set(active OFF)
-    set(optional_argv3 "${ARGV3}")
-    if(optional_argv3)
-        set(active ${optional_argv3})
+    if(ARG_DEFAULT_VALUE)
+        set(active ON)
     endif()
 
     # Create option
     string(TOUPPER ${PROJECT_NAME}_FETCH_${name} fetch_enabled)
-    option(${fetch_enabled} "Fetch/update ${name} repository." ${active})
+    if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
+        cmake_dependent_option(${fetch_enabled} "Fetch/update ${name} repository." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
+    else()
+        option(${fetch_enabled} "Fetch/update ${name} repository." ${active})
+    endif()
 
     # Setup fetch directory
     set(fetched_dir "${CMAKE_BINARY_DIR}/external_directories/fetched/${name}" )
@@ -254,20 +267,20 @@ function(sofa_add_generic_external directory name type)
     # Add
     if(EXISTS "${directory}/.git" AND IS_DIRECTORY "${directory}/.git")
         configure_file(${directory}/ExternalProjectConfig.cmake.in ${fetched_dir}/CMakeLists.txt)
-        if(NOT ARG_FETCH_ONLY AND "${type}" STREQUAL "Subdirectory")
+        if(NOT ARG_FETCH_ONLY AND "${type}" STREQUAL "External subdirectory")
             add_subdirectory("${directory}")
-        elseif(NOT ARG_FETCH_ONLY AND "${type}" STREQUAL "Plugin")
+        elseif(NOT ARG_FETCH_ONLY AND "${type}" STREQUAL "External plugin")
             sofa_add_plugin("${name}" "${name}" ${active})
         endif()
     endif()
 endfunction()
 
 function(sofa_add_subdirectory_external directory name)
-    sofa_add_generic_external(${directory} ${name} "Subdirectory" ${ARGN})
+    sofa_add_generic_external(${directory} ${name} "External subdirectory" DEFAULT_VALUE "${ARGV2}" ${ARGN})
 endfunction()
 
 function(sofa_add_plugin_external directory name)
-    sofa_add_generic_external(${directory} ${name} "Plugin" ${ARGN})
+    sofa_add_generic_external(${directory} ${name} "External plugin" DEFAULT_VALUE "${ARGV2}" ${ARGN})
 endfunction()
 
 
@@ -337,6 +350,9 @@ macro(sofa_find_package name)
 
     string(TOUPPER ${name} name_upper)
     string(TOUPPER ${PROJECT_NAME} project_upper)
+    string(REPLACE "." "_" name_upper "${name_upper}")
+    string(REPLACE "." "_" project_upper "${project_upper}")
+
     set(scopes "") # nothing = current scope only
     if(ARG_BOTH_SCOPES)
         set(scopes "BOTH_SCOPES")
@@ -370,12 +386,14 @@ endmacro()
 # It eases deps management, especially on Windows with the WinDepPack.
 macro(sofa_set_targets_release_only)
     foreach(target ${ARGN})
-        if(TARGET ${target})
-            set_target_properties(${target} PROPERTIES
-                MAP_IMPORTED_CONFIG_MINSIZEREL Release
-                MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
-                MAP_IMPORTED_CONFIG_DEBUG Release
-                )
+        if(NOT TARGET ${target})
+            message("sofa_set_targets_release_only: ${target} is not a target")
+            continue()
         endif()
+        set_target_properties(${target} PROPERTIES
+            MAP_IMPORTED_CONFIG_MINSIZEREL Release
+            MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
+            MAP_IMPORTED_CONFIG_DEBUG Release
+            )
     endforeach()
 endmacro()

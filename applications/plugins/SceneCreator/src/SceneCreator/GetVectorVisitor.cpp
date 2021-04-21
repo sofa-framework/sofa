@@ -32,7 +32,7 @@
 #include "GetVectorVisitor.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/Node.h>
-
+#include <sofa/core/behavior/BaseMechanicalState.h>
 namespace sofa
 {
 

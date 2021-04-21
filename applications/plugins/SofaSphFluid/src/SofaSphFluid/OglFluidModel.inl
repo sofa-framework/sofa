@@ -61,7 +61,7 @@ void OglFluidModel<DataTypes>::initVisual()
     const VecCoord& vertices = m_positions.getValue();
 
     // should set a fixed size, or update FBO size if the window is resized
-    sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+    sofa::core::visual::VisualParams* vparams = sofa::core::visual::visualparams::defaultInstance();
     const int width = vparams->viewport()[2];
     const int height = vparams->viewport()[3];
 

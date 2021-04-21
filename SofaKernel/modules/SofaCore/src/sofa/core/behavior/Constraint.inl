@@ -23,6 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_CONSTRAINT_INL
 
 #include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa
 {

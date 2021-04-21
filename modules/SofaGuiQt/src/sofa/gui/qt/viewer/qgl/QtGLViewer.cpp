@@ -33,7 +33,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <cmath>
 #include <sofa/gl/gl.h>
 #include <sofa/gl/glu.h>
 #include <sofa/gui/BaseGUI.h>
@@ -541,7 +540,7 @@ void QtGLViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 
 
 
-    ColourPickingVisitor cpv(sofa::core::visual::VisualParams::defaultInstance(), code);
+    ColourPickingVisitor cpv(sofa::core::visual::visualparams::defaultInstance(), code);
     cpv.execute(groot.get());
 
     glMatrixMode(GL_PROJECTION);
@@ -846,7 +845,7 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         if (groot)
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
         }
     }
     else  // control the GUI
@@ -942,7 +941,7 @@ void QtGLViewer::wheelEvent(QWheelEvent* e)
 #else
             sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel, e->angleDelta().y());
 #endif
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
+            groot->propagateEvent(core::execparams::defaultInstance(), &me);
         }
     }
     else

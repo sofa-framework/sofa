@@ -23,6 +23,7 @@
 
 #include "UniformVelocityDampingForceField.h"
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::forcefield
 {
@@ -53,7 +54,7 @@ void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::Mechanic
 
     if( !d_implicit.getValue() ) return;
 
-    Real bfactor = (Real)mparams->bFactor();
+    Real bfactor = (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
     if( bfactor )
     {

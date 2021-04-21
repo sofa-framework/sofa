@@ -25,4 +25,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAGENERALTOPOLOGY_API void initSofaGeneralTopology();
+
 } // namespace sofa::component

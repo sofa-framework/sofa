@@ -21,10 +21,12 @@ set(README_FILES README_AssimpPlugin.txt)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
 ### Dependencies
-find_package(SofaBase REQUIRED)
-find_package(SofaGeneral REQUIRED)
-find_package(Assimp REQUIRED)
-
+sofa_find_package(Assimp REQUIRED)
+sofa_find_package(SofaLoader REQUIRED)
+sofa_find_package(SofaOpenglVisual REQUIRED)
+sofa_find_package(SofaBoundaryCondition REQUIRED)
+sofa_find_package(SofaGeneralRigid REQUIRED)
+sofa_find_package(SofaMeshCollision REQUIRED)
 sofa_find_package(image QUIET)
 sofa_find_package(Flexible QUIET)
 

@@ -24,6 +24,8 @@
 
 #include "CudaTetrahedronFEMForceField.h"
 #include <SofaSimpleFem/TetrahedronFEMForceField.inl>
+#include <sofa/core/MechanicalParams.h>
+
 namespace sofa
 {
 
@@ -873,7 +875,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 { \
     VecDeriv& df = *d_df.beginEdit(); \
     const VecDeriv& dx = d_dx.getValue(); \
-    data.addDForce(this, df, dx, mparams->kFactor(), mparams->bFactor()); \
+    data.addDForce(this, df, dx, mparams->kFactor(), sofa::core::mechanicalparams::bFactor(mparams)); \
     d_df.endEdit(); \
 } \
     template<> inline void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \

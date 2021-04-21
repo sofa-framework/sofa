@@ -23,14 +23,14 @@
 
 #include "SquareDistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/MechanicalState.inl>
 
 namespace sofa::component::mapping
 {
-
-static const SReal s_null_distance_epsilon = 1e-8;
-
 
 template <class TIn, class TOut>
 SquareDistanceMapping<TIn, TOut>::SquareDistanceMapping()

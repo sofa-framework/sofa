@@ -23,6 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_INL
 
 #include "MixedInteractionForceField.h"
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {

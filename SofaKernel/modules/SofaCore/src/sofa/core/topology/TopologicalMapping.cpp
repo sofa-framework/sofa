@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/topology/TopologicalMapping.h>
-#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::core::topology
 {

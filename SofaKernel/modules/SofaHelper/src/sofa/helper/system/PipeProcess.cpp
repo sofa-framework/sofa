@@ -312,7 +312,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
                 {
                     int n = BUFSIZE-nfill[i];
                     if (n> STEPSIZE) n = STEPSIZE;
-                    n = read(fds[i][0], buf[i]+nfill[i], n);
+                    n = ::read(fds[i][0], buf[i]+nfill[i], n);
 
                     if (n == 0)
                     {

@@ -32,9 +32,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
 
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <SofaConstraint/LMConstraintSolver.h>
@@ -185,9 +183,7 @@ Node::SPtr createHouseOfCards(Node::SPtr root,  unsigned int size, SReal distanc
 int main(int argc, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
+    sofa::component::initSofaComponentAll();
     sofa::gui::initMain();
 
     unsigned int sizeHouseOfCards=4;

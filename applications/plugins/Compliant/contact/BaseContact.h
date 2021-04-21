@@ -127,7 +127,7 @@ public:
         {
             // should only be called when keepAlive
             delta_node->setActive( false );
-//            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), false);
+//            simulation::DeactivationVisitor v(sofa::core::execparams::defaultInstance(), false);
 //            node->executeVisitor(&v);
             return; // keeping contact alive imposes a call with a null DetectionOutput
         }
@@ -209,7 +209,7 @@ public:
             create_node();
         } else {
             delta_node->setActive( true );
-//            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), true);
+//            simulation::DeactivationVisitor v(sofa::core::execparams::defaultInstance(), true);
 //            node->executeVisitor(&v);
          	update_node();
         }

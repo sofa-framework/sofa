@@ -32,7 +32,12 @@ define_property(TARGET
 
 include(SofaMacros)
 
-set(SOFA_NO_OPENGL "@SOFA_NO_OPENGL@")
+set(SOFA_WITH_OPENGL "@SOFA_WITH_OPENGL@")
+if(SOFA_WITH_OPENGL)
+    set(SOFA_NO_OPENGL FALSE) # Deprecated, use SOFA_WITH_OPENGL instead
+else()
+    set(SOFA_NO_OPENGL TRUE) # Deprecated, use SOFA_WITH_OPENGL instead
+endif()
 set(SOFA_USE_MASK "@SOFA_USE_MASK@")
 
 set(SOFA_WITH_DEVTOOLS "@SOFA_WITH_DEVTOOLS@")

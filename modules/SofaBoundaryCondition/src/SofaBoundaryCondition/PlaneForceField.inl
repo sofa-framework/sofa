@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>
 #include <sofa/helper/accessor.h>
@@ -179,7 +180,7 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
 
     df1.resize(dx1.size());
-    const Real fact = (Real)(-this->d_stiffness.getValue() * mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
+    const Real fact = (Real)(-this->d_stiffness.getValue() * sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()));
     DPos planeN = d_planeNormal.getValue();
 
     for (unsigned int i=0; i<this->m_contacts.size(); i++)
@@ -196,7 +197,7 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
     if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    const Real fact = (Real)(-this->d_stiffness.getValue()*mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
+    const Real fact = (Real)(-this->d_stiffness.getValue()*sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()));
     Deriv normal;
     DataTypes::setDPos(normal, d_planeNormal.getValue());
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);

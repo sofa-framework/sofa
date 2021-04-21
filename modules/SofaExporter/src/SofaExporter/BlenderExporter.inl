@@ -49,7 +49,7 @@ namespace sofa
             template<class T>
             void BlenderExporter<T>::init()
             {
-                mmodel = Inherit::searchLocal<DataType>();
+                mmodel = getContext()->template get<DataType>(sofa::core::objectmodel::BaseContext::SearchDirection::Local);
                 if(mmodel == nullptr)
                     msg_error()<<"Initialization failed!";
                 Inherit::init();

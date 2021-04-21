@@ -38,7 +38,7 @@ void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
         {
             simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext());
             child->detachFromGraph();
-            child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+            child->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
             child.reset(); //delete child;
             mapping = nullptr;
         }

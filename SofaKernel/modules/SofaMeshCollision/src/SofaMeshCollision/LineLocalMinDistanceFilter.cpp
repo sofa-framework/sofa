@@ -207,7 +207,7 @@ void LineLocalMinDistanceFilter::init()
         m_pointInfo.endEdit();
 
         pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
-        m_pointInfo.createTopologicalEngine(bmt, pointInfoHandler);
+        m_pointInfo.createTopologyHandler(bmt, pointInfoHandler);
         m_pointInfo.registerTopologicalData();
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
@@ -215,7 +215,7 @@ void LineLocalMinDistanceFilter::init()
         m_lineInfo.endEdit();
 
         lineInfoHandler = new LineInfoHandler(this,&m_lineInfo);
-        m_lineInfo.createTopologicalEngine(bmt, lineInfoHandler);
+        m_lineInfo.createTopologyHandler(bmt, lineInfoHandler);
         m_lineInfo.registerTopologicalData();
     }
 }

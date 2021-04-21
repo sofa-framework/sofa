@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/GUIEvent.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 SOFA_EVENT_CPP( GUIEvent )
@@ -44,8 +38,4 @@ GUIEvent::~GUIEvent()
 
 }
 
-} // namespace tree
-
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

@@ -26,5 +26,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAGENERALANIMATIONLOOP_API void initSofaGeneralAnimationLoop();
 
 } // namespace sofa::component

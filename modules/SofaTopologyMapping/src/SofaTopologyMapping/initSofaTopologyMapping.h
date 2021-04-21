@@ -26,5 +26,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFATOPOLOGYMAPPING_API void initSofaTopologyMapping();
 
 } //namespace sofa::component

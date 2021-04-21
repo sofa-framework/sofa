@@ -91,7 +91,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
      * v is really P'v1
      */
 
-    const core::ExecParams* params = core::ExecParams::defaultInstance();
+    const core::ExecParams* params = core::execparams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, A, x, b);
     Vector* r1 =  vtmp.createTempVector();
     Vector* r2 =  vtmp.createTempVector();

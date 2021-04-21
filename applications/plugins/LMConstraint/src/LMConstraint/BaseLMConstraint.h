@@ -24,6 +24,7 @@
 
 #include <LMConstraint/config.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa
 {

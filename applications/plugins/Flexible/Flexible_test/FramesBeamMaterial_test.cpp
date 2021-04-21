@@ -227,8 +227,8 @@ struct BeamType{
 const std::string BeamType::sceneName= "FramesBeamTractionTest.scn";
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     BeamType
 > DataTypes; 
 

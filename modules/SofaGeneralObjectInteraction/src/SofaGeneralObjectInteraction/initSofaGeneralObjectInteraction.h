@@ -25,4 +25,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAGENERALOBJECTINTERACTION_API void initSofaGeneralObjectInteraction();
+
 } //namespace sofa::component

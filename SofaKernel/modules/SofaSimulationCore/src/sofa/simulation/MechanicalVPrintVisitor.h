@@ -25,7 +25,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <iostream>
 
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
 

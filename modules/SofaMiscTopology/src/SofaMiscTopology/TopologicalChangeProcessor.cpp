@@ -23,7 +23,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
@@ -33,7 +32,6 @@
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/simulation/Simulation.h>
 
@@ -1303,11 +1301,8 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         ind_ta = ind_tb;
         firstCut=false;
 
-        triangleMod->propagateTopologicalChanges();
         // notify the end for the current sequence of topological change events
         triangleMod->notifyEndingEvent();
-
-        triangleMod->propagateTopologicalChanges();
 
         //update the triangle incision information
         updateTriangleIncisionInformation();

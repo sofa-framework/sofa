@@ -369,10 +369,10 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addGravityToV(
         VecDeriv& v = *d_v.beginEdit();
 
         // gravity
-        Vec3d g ( this->getContext()->getGravity() * (mparams->dt()) );
+        Vec3d g ( this->getContext()->getGravity() * sofa::core::mechanicalparams::dt(mparams) );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * (mparams->dt());
+        Deriv hg = theGravity * sofa::core::mechanicalparams::dt(mparams);
 
         // add weight force
         for (unsigned int i=0; i<v.size(); i++)
@@ -410,7 +410,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(c
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     BaseMatrix* m = r.matrix;
 
-    Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+    Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
 
     for (unsigned int xi = 0; xi < m_massMatrix.getRowIndex().size(); ++xi)
     {

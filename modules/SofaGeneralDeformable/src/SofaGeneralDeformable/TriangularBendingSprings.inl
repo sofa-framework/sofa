@@ -484,7 +484,7 @@ void TriangularBendingSprings<DataTypes>::init()
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.linkToPointDataArray();
     edgeInfo.linkToTriangleDataArray();
     edgeInfo.registerTopologicalData();
@@ -659,7 +659,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     size_t nbEdges=m_topology->getNbEdges();
     const EdgeInformation *einfo;

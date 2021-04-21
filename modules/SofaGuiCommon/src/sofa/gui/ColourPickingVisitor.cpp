@@ -22,10 +22,11 @@
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
-#if SOFAGUICOMMON_HAVE_SOFA_GL
+#include <sofa/core/visual/VisualParams.h>
+#if SOFAGUICOMMON_HAVE_SOFA_GL == 1
 #include <sofa/gl/gl.h>
 #include <sofa/gl/BasicShapes.h>
-#endif // SOFAGUICOMMON_HAVE_SOFA_GL
+#endif // SOFAGUICOMMON_HAVE_SOFA_GL  == 1
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 namespace sofa::gui
@@ -104,7 +105,7 @@ void ColourPickingVisitor::processCollisionModel(simulation::Node*  node , core:
 
 void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> * tmodel)
 {
-#if SOFAGUICOMMON_HAVE_SOFA_GL
+#if SOFAGUICOMMON_HAVE_SOFA_GL  == 1
     using namespace sofa::core::collision;
     using namespace sofa::defaulttype;
     glDisable(GL_LIGHTING);
@@ -160,12 +161,12 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
     default: assert(false);
     }
     vparams->drawTool()->drawTriangles(points,normals,colours);
-#endif // SOFAGUICOMMON_HAVE_SOFA_GL
+#endif // SOFAGUICOMMON_HAVE_SOFA_GL  == 1
 }
 
 void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types> * smodel)
 {
-#if SOFAGUICOMMON_HAVE_SOFA_GL
+#if SOFAGUICOMMON_HAVE_SOFA_GL  == 1
     typedef Sphere::Coord Coord;
 
     if( method == ENCODE_RELATIVEPOSITION ) return; // we pick the center of the sphere.
@@ -206,7 +207,7 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
 
         glPopMatrix();
     }
-#endif // SOFAGUICOMMON_HAVE_SOFA_GL
+#endif // SOFAGUICOMMON_HAVE_SOFA_GL  == 1
 }
 
 } // namespace sofa::gui

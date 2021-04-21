@@ -229,7 +229,7 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
             sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move, deplX, deplY);
             deplX = 0;
             deplY = 0;
-            getContext()->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+            getContext()->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
         }
 
         //Pedals Value
@@ -241,12 +241,12 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
                 if (currentPedalState == LEFT_PEDAL)
                 {
                     sofa::core::objectmodel::KeypressedEvent ev(p_key1.getValue());
-                    this->getContext()->propagateEvent(core::ExecParams::defaultInstance(), &ev);
+                    this->getContext()->propagateEvent(core::execparams::defaultInstance(), &ev);
                 }
                 else
                 {
                     sofa::core::objectmodel::KeypressedEvent ev(p_key2.getValue());
-                    this->getContext()->propagateEvent(core::ExecParams::defaultInstance(), &ev);
+                    this->getContext()->propagateEvent(core::execparams::defaultInstance(), &ev);
                 }
             }
         }
@@ -257,12 +257,12 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
                 if (oldPedalState == LEFT_PEDAL)
                 {
                     sofa::core::objectmodel::KeyreleasedEvent ev(p_key1.getValue());
-                    this->getContext()->propagateEvent(core::ExecParams::defaultInstance(), &ev);
+                    this->getContext()->propagateEvent(core::execparams::defaultInstance(), &ev);
                 }
                 else
                 {
                     sofa::core::objectmodel::KeyreleasedEvent ev(p_key2.getValue());
-                    this->getContext()->propagateEvent(core::ExecParams::defaultInstance(), &ev);
+                    this->getContext()->propagateEvent(core::execparams::defaultInstance(), &ev);
                 }
             }
         }

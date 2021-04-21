@@ -56,8 +56,8 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 
     SReal lastVelocity = 0;
 
-    simulation::MechanicalProjectPositionAndVelocityVisitor projectPositionAndVelocityVisitor( sofa::core::MechanicalParams::defaultInstance() );
-    simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor propagatePositionAndVelocityVisitor( sofa::core::MechanicalParams::defaultInstance() );
+    simulation::MechanicalProjectPositionAndVelocityVisitor projectPositionAndVelocityVisitor( sofa::core::mechanicalparams::defaultInstance() );
+    simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor propagatePositionAndVelocityVisitor( sofa::core::mechanicalparams::defaultInstance() );
 
     unsigned i=0;
     std::stringstream tmpStr;

@@ -22,3 +22,10 @@
 #pragma once
 
 #include <SofaMiscTopology/config.h>
+
+namespace sofa::component
+{
+
+SOFA_SOFAMISCTOPOLOGY_API void initSofaMiscTopology();
+
+} // namespace sofa::component

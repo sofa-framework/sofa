@@ -3,7 +3,8 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaGeneral REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
+find_package(SofaHaptics REQUIRED)
 find_package(HAPI REQUIRED)
 find_package(H3DUtil REQUIRED)
 

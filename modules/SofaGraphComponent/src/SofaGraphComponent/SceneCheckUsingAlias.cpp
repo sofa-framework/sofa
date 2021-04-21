@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include "SceneCheckUsingAlias.h"
 
-#include <sofa/version.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/helper/ComponentChange.h>

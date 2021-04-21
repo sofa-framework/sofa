@@ -24,6 +24,7 @@
 #include <SofaBoundaryCondition/EdgePressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <vector>
 #include <set>
@@ -95,7 +96,7 @@ void EdgePressureForceField<DataTypes>::init()
     }
 
     // init edgesubsetData engine
-    edgePressureMap.createTopologicalEngine(m_topology);
+    edgePressureMap.createTopologyHandler(m_topology);
     edgePressureMap.registerTopologicalData();
 
     if (dmin.getValue()!=dmax.getValue())

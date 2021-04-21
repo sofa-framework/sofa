@@ -170,10 +170,10 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
         return;
     }
 
-    triangleInfo.createTopologicalEngine(m_topology,triangleHandler);
+    triangleInfo.createTopologyHandler(m_topology,triangleHandler);
     triangleInfo.registerTopologicalData();
 
-    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.registerTopologicalData();
 
     if (m_topology->getNbTriangles()==0)
@@ -292,7 +292,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int i,j,k;
     int nbTriangles = m_topology->getNbTriangles();

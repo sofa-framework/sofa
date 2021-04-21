@@ -44,7 +44,7 @@ void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()
     if (child!=nullptr)
     {
         child->detachFromGraph();
-        child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        child->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         child.reset();
     }
 }

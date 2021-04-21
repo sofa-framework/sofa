@@ -359,7 +359,4 @@ QTreeWidgetItem *GraphVisitor::addComment(QTreeWidgetItem *element,QTreeWidgetIt
     return result;
 }
 
-
-}
-}
-}
+} // namespace sofa::gui::qt

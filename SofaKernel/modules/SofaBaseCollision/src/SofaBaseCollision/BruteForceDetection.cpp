@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseCollision/BruteForceDetection.h>
 
-#include <SofaBaseCollision/CubeModel.h>
+#include <SofaBaseCollision/MirrorIntersector.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -46,10 +46,6 @@ BruteForceDetection::BruteForceDetection()
 {
 }
 
-BruteForceDetection::~BruteForceDetection()
-{
-}
-
 void BruteForceDetection::init()
 {
     reinit();
@@ -71,8 +67,9 @@ void BruteForceDetection::reinit()
 
 void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 {
-    if (cm->empty())
+    if (cm == nullptr || cm->empty())
         return;
+	assert(intersectionMethod != nullptr);
 
     // If a box is defined, check that both collision models are inside the box
     // If both models are outside, ignore them
@@ -137,15 +134,8 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 
 bool BruteForceDetection::keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2)
 {
-    if (!cm1->canCollideWith(cm2) || !cm2->canCollideWith(cm1))
-    {
-        return false;
-    }
-
-    return true;
+	return cm1->canCollideWith(cm2) && cm2->canCollideWith(cm1);
 }
-
-
 
 void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
 {    
@@ -163,7 +153,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     core::CollisionModel *finalcm1 = cm1->getLast();//get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = cm2->getLast();
 
-    std::string msg = "BruteForceDetection addCollisionPair: " + finalcm1->getName() + " - " + finalcm2->getName();
+    const std::string msg = "BruteForceDetection addCollisionPair: " + finalcm1->getName() + " - " + finalcm2->getName();
     sofa::helper::ScopedAdvancedTimer bfTimer(msg);
     
     bool swapModels = false;
@@ -172,9 +162,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         return;
     if (swapModels)
     {
-        core::CollisionModel* tmp;
-        tmp = cm1; cm1 = cm2; cm2 = tmp;
-        tmp = finalcm1; finalcm1 = finalcm2; finalcm2 = tmp;
+		std::swap(cm1, cm2);
+		std::swap(finalcm1, finalcm2);
     }
 
     const bool self = (finalcm1->getContext() == finalcm2->getContext());
@@ -238,7 +227,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
 
             if (swapModels)
             {
-                mirror.intersector = intersector; intersector = &mirror;
+                mirror.intersector = intersector;
+                intersector = &mirror;
             }
         }
         if (intersector == nullptr)

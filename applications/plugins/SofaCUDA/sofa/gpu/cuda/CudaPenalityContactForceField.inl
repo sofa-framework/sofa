@@ -177,7 +177,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::Mechanical
     const VecDeriv& dx1 = d_dx1.getValue();
     VecDeriv& df2 = *d_df2.beginEdit();
     const VecDeriv& dx2 = d_dx2.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
@@ -217,7 +217,7 @@ SReal PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const core::
 //template<>
 void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+#if SOFACUDA_HAVE_SOFA_GL == 1
     if (!((this->mstate1 == this->mstate2)?  vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
@@ -263,7 +263,7 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
         }
         glEnd();
     }
-#endif // SOFA_NO_OPENGL
+#endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
 } // namespace interactionforcefield

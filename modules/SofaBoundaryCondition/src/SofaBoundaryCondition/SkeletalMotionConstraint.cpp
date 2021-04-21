@@ -23,7 +23,6 @@
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa::component::projectiveconstraintset
 {

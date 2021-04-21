@@ -61,25 +61,6 @@ public:
     */
     void addEdgeProcess(Edge e);
 
-    /** \brief Add some edges to this topology.
-    *
-    * \sa addEdgesWarning
-    */
-    virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges) override;
-
-    /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
-    *
-    * Elements corresponding to these edges are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the edges are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeEdgesWarning
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    *
-    * @param removeIsolatedItems if true isolated vertices are also removed
-    */
-    virtual void removeEdgesProcess(const sofa::helper::vector<Index> &indices, const bool removeIsolatedItems = false) override;
-
     using EdgeSetTopologyModifier::removeEdges;
     /** \brief Remove a set  of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
@@ -137,6 +118,26 @@ public:
     virtual void splitEdges( sofa::helper::vector<Index> &indices,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
             const bool removeIsolatedPoints = true) override;
+protected:
+    /** \brief Add some edges to this topology.
+    *
+    * \sa addEdgesWarning
+    */
+    virtual void addEdgesProcess(const sofa::helper::vector< Edge >& edges) override;
+
+    /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
+    *
+    * Elements corresponding to these edges are removed form the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the edges are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeEdgesWarning
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    *
+    * @param removeIsolatedItems if true isolated vertices are also removed
+    */
+    virtual void removeEdgesProcess(const sofa::helper::vector<Index>& indices, const bool removeIsolatedItems = false) override;
+
 
 private:
     ManifoldEdgeSetTopologyContainer* 	m_container;

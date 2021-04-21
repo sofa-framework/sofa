@@ -49,8 +49,8 @@ void ConstraintAttachBodyPerformer<DataTypes>::start()
     ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
     sofa::core::BaseMapping *mapping;
     this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply(core::MechanicalParams::defaultInstance());
-    mapping->applyJ(core::MechanicalParams::defaultInstance());
+    mapping->apply(core::mechanicalparams::defaultInstance());
+    mapping->applyJ(core::mechanicalparams::defaultInstance());
     m_constraint->init();
     this->interactor->setMouseAttached(true);
 }
@@ -62,8 +62,8 @@ void ConstraintAttachBodyPerformer<DataTypes>::execute()
 {
     sofa::core::BaseMapping *mapping;
     this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->apply(core::MechanicalParams::defaultInstance());
-    mapping->applyJ(core::MechanicalParams::defaultInstance());
+    mapping->apply(core::mechanicalparams::defaultInstance());
+    mapping->applyJ(core::mechanicalparams::defaultInstance());
     this->interactor->setMouseAttached(true);
 }
 

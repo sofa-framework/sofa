@@ -216,7 +216,7 @@ public:
 
 
     /// Constructor, initializing all VecIds to default values, implicit and energy flags to false
-    ConstraintParams(const sofa::core::ExecParams& p = *sofa::core::ExecParams::defaultInstance());
+    ConstraintParams(const sofa::core::ExecParams& p = *sofa::core::execparams::defaultInstance());
 
     /// Get the default MechanicalParams, to be used to provide a default values for method parameters
     static const ConstraintParams* defaultInstance();

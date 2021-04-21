@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/types/RGBAColor.h>

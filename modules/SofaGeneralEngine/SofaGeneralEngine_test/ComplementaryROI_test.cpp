@@ -109,7 +109,7 @@ struct ComplementaryROI_test : public Sofa_test<typename _DataTypes::Real>,
 
 };
 
-using testing::Types;
+using ::testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
 TYPED_TEST_SUITE(ComplementaryROI_test, DataTypes);

@@ -25,4 +25,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAGENERALSIMPLEFEM_API void initSofaGeneralSimpleFem();
+
 } // namespace sofa::component

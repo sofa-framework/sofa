@@ -24,6 +24,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {
@@ -31,12 +32,12 @@ namespace sofa
 namespace simulation
 {
 
-StateChangeVisitor::StateChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source)
+StateChangeVisitor::StateChangeVisitor(const sofa::core::ExecParams* params, sofa::core::topology::Topology* source)
     : Visitor(params), root(true), m_source(source)
 {
 }
 
-void StateChangeVisitor::processStateChange(core::behavior::BaseMechanicalState* obj)
+void StateChangeVisitor::processStateChange(sofa::core::behavior::BaseMechanicalState* obj)
 {
     obj->handleStateChange(m_source);
 }

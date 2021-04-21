@@ -146,9 +146,9 @@ public:
         this->getContext()->get(bmapping);
         if (bmapping ) /// do not call addKToMatrix since the object is mapped
             return;
-        if (mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) != 0.0 )
+        if (sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue()) != 0.0 )
             this->addKToMatrix(mparams, matrix);
-        if (mparams->bFactor() != 0.0)
+        if (sofa::core::mechanicalparams::bFactor(mparams) != 0.0)
             this->addBToMatrix(mparams, matrix);
     }
 

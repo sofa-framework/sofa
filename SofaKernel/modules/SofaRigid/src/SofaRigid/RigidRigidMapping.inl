@@ -30,6 +30,7 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 
+#include <sofa/core/MechanicalParams.h>
 #include <cstring>
 
 namespace sofa::component::mapping
@@ -747,5 +748,12 @@ void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
         vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), sizes);
     }
 }
+
+template <class TIn, class TOut>
+bool RigidRigidMapping<TIn, TOut>::getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMechanicalMappings(); }
+
+template <class TIn, class TOut>
+bool RigidRigidMapping<TIn, TOut>::getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMechanicalMappings(); }
+
 
 } // namespace sofa::component::mapping

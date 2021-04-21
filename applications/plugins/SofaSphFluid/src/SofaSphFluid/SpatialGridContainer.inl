@@ -30,9 +30,12 @@
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/helper/system/gl.h>
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+#if SOFASPHFLUID_HAVE_SOFA_GL == 1
+#include <sofa/gl/gl.h>
+#endif // SOFASPHFLUID_HAVE_SOFA_GL == 1
 
 namespace sofa
 {
@@ -545,7 +548,7 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<Index>* old2new, help
 template<class DataTypes>
 void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
 {
-#ifndef SOFA_NO_OPENGL
+#if SOFASPHFLUID_HAVE_SOFA_GL == 1
     const float cscale = (float)(cellWidth);
     const float gscale = (float)(cellWidth*GRIDDIM);
     glBegin(GL_LINES);
@@ -657,7 +660,7 @@ void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
         }
     }
     glEnd();
-#endif /* SOFA_NO_OPENGL */
+#endif // SOFASPHFLUID_HAVE_SOFA_GL == 1
 }
 
 template<class DataTypes>

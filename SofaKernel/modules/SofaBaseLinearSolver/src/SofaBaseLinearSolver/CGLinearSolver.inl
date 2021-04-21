@@ -92,7 +92,7 @@ void CGLinearSolver<TMatrix,TVector>::resetSystem()
 template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
-    sofa::helper::ScopedAdvancedTimer("CG-setSystemMBKMatrix");
+    sofa::helper::ScopedAdvancedTimer timer("CG-setSystemMBKMatrix");
     Inherit::setSystemMBKMatrix(mparams);
 }
 
@@ -108,7 +108,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     simulation::Visitor::printNode("VectorAllocation");
 #endif
 
-    const core::ExecParams* params = core::ExecParams::defaultInstance();
+    const core::ExecParams* params = core::execparams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
     Vector& p = *vtmp.createTempVector();
     Vector& q = *vtmp.createTempVector();

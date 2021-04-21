@@ -137,7 +137,7 @@ void AngularSpringForceField<DataTypes>::addDForce(const core::MechanicalParams*
     sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
 
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     for (sofa::Index i=0; i<indices.getValue().size(); i++)
         getVOrientation(df1[indices.getValue()[i]]) -=  getVOrientation(dx1[indices.getValue()[i]]) * (i < this->k.size() ? this->k[i] : this->k[0]) * kFactor ;
@@ -151,7 +151,7 @@ void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     sofa::Index curIndex = 0;
     for (sofa::Index index = 0; index < indices.getValue().size(); index++)

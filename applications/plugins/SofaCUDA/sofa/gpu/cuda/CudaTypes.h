@@ -45,17 +45,30 @@ namespace gpu
 namespace cuda
 {
 
+template<typename T>
+struct DataTypeInfoManager
+{
+    template<class T2> struct rebind
+    {
+        typedef DataTypeInfoManager<T2> other;
+    };
+
+    static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
+    static const bool SimpleCopy = sofa::defaulttype::DataTypeInfo<T>::SimpleCopy;
+};
+
 template<class T>
-class CudaVector : public helper::vector_device<T,CudaMemoryManager<T> >
+class CudaVector : public helper::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
 {
 public :
+    using Inherit = helper::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
     typedef size_t Size;
 
-    CudaVector() : helper::vector_device<T,CudaMemoryManager<T> >() {}
+    CudaVector() : Inherit() {}
 
-    CudaVector(Size n) : helper::vector_device<T,CudaMemoryManager<T> >(n) {}
+    CudaVector(Size n) : Inherit(n) {}
 
-    CudaVector(const helper::vector_device<T,CudaMemoryManager< T > >& v) : helper::vector_device<T,CudaMemoryManager<T> >(v) {}
+    CudaVector(const Inherit& v) : Inherit(v) {}
 
 };
 

@@ -40,12 +40,12 @@ using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-using testing::Types;
+using ::testing::Types;
 
 #include <boost/filesystem.hpp>
 namespace {
@@ -88,7 +88,7 @@ public:
                                                           scene1.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         sofa::simulation::getSimulation()->animate(root.get(), 0.5);
 
@@ -120,7 +120,7 @@ public:
                                                           scene1.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         for(unsigned int i=0;i<numstep;i++)
         {

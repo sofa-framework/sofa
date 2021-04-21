@@ -26,7 +26,6 @@
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/core/MechanicalParams.h>
 
 
 namespace sofa::component::interactionforcefield

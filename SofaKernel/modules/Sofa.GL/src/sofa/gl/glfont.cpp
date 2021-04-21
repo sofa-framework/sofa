@@ -146,9 +146,4 @@ void glfntWriteBitmap(float x,float y,char *s)
 
 
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::gl

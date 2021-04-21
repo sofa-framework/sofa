@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -28,16 +30,13 @@ namespace sofa::component::topology
 
 using namespace std;
 using namespace sofa::defaulttype;
+using sofa::core::topology::edgesInHexahedronArray;
+using sofa::core::topology::quadsInHexahedronArray;
+using sofa::core::topology::verticesInHexahedronArray;
 
 int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container")
         .add< HexahedronSetTopologyContainer >()
         ;
-
-const unsigned int edgesInHexahedronArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
-///convention quads in hexa (orientation interior)
-const unsigned int quadsInHexahedronArray[6][4]= {{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2},  {2,6,7,3}, {0,3,7,4}};
-
-const unsigned int verticesInHexahedronArray[2][2][2]=  {{{0,4},{3,7}},{{1,5},{2,6}}};
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
@@ -1194,12 +1193,12 @@ void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
     m_hexahedronTopologyDirty = true;
 
     // set all engines link to this container to dirty
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->getName();
     }
 }
 
@@ -1208,24 +1207,24 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
     m_hexahedronTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
         if ((*it)->isDirty())
         {
-            msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->getName();
             (*it)->cleanDirty();
         }
     }
 }
 
-void HexahedronSetTopologyContainer::updateTopologyEngineGraph()
+void HexahedronSetTopologyContainer::updateTopologyHandlerGraph()
 {
     // calling real update Data graph function implemented once in PointSetTopologyModifier
     this->updateDataEngineGraph(this->d_hexahedron, this->m_enginesList);
 
     // will concatenate with edges one:
-    QuadSetTopologyContainer::updateTopologyEngineGraph();
+    QuadSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
 } //namespace sofa::component::topology

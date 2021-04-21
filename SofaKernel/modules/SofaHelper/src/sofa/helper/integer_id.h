@@ -25,6 +25,9 @@
 #include <sofa/helper/config.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
+#include <sofa/helper/BackTrace.h>
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Factory.h>
 #include <limits>
 
 namespace sofa
@@ -203,7 +206,12 @@ public:
 
 };
 
-void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type, const char* tindex);
+void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type, const char* tindex)
+{
+    msg_error("vector") << "in vector<" << gettypename(type) << ", integer_id<" << tindex << "> > " << std::hex << (long)vec << std::dec << " size " << size << " : invalid index " << (int)i;
+    BackTrace::dump();
+    assert(i < size);
+}
 
 template <class T, class TIndex, bool CheckIndices =
 #ifdef SOFA_VECTOR_ACCESS_FAILURE

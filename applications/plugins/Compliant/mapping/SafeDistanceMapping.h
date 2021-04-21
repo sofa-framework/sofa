@@ -296,7 +296,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override
     {
 
-#ifndef SOFA_NO_OPENGL
+#if COMPLIANT_HAVE_SOFA_GL
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
         SReal scale = d_showObjectScale.getValue();
@@ -327,7 +327,7 @@ public:
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
-#endif /* SOFA_NO_OPENGL */
+#endif /* COMPLIANT_HAVE_SOFA_GL */
     }
 
     virtual void updateForceMask() override
@@ -628,7 +628,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override
     {
 
-#ifndef SOFA_NO_OPENGL
+#if COMPLIANT_HAVE_SOFA_GL
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
         SReal scale = d_showObjectScale.getValue();
@@ -660,7 +660,7 @@ public:
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
-#endif /* SOFA_NO_OPENGL */
+#endif /* COMPLIANT_HAVE_SOFA_GL */
     }
 
     virtual void updateForceMask() override

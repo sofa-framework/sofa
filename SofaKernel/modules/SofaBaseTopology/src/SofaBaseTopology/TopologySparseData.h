@@ -22,11 +22,8 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/core/topology/BaseTopologyData.h>
-#include <SofaBaseTopology/TopologyEngine.h>
-#include <SofaBaseTopology/TopologySparseDataHandler.h>
-
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <SofaBaseTopology/TopologyData.h>
+#include <SofaBaseTopology/TopologyDataHandler.h>
 
 namespace sofa::component::topology
 {
@@ -36,7 +33,7 @@ namespace sofa::component::topology
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class TopologyElementType, class VecT>
-class TopologySparseDataImpl : public sofa::core::topology::BaseTopologyData<VecT>
+class TopologySparseData : public sofa::component::topology::TopologyData<TopologyElementType, VecT>
 {
 
 public:
@@ -51,53 +48,19 @@ public:
     typedef typename container_type::const_reference const_reference;
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
+    typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
+    typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
+    typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
     using Index = sofa::Index;
 
 
     /// Constructor
-    TopologySparseDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : sofa::core::topology::BaseTopologyData< VecT >(data),
-          m_topologicalEngine(nullptr),
-          m_topology(nullptr),
-          m_topologyHandler(nullptr),
-          m_isConcerned(false)
+    TopologySparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+        : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
+        , m_isConcerned(false)
     {}
 
-    virtual ~TopologySparseDataImpl();
-
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topologyHandler);
-
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
-
-    /// Allow to add additionnal dependencies to others Data.
-    void addInputData(sofa::core::objectmodel::BaseData* _data);
-
-    /// Function to link the topological Data with the engine and the current topology. And init everything.
-    /// This function should be used at the end of the all declaration link to this Data while using it in a component.
-    void registerTopologicalData();
-
-
-    value_type& operator[](int i)
-    {
-        container_type& data = *(this->beginEdit());
-        value_type& result = data[i];
-        this->endEdit();
-        return result;
-    }
-
-
-    /// Link Data to topology arrays
-    void linkToPointDataArray();
-    void linkToEdgeDataArray();
-    void linkToTriangleDataArray();
-    void linkToQuadDataArray();
-    void linkToTetrahedronDataArray();
-    void linkToHexahedronDataArray();
 
     void setMap2Elements(const sofa::helper::vector<Index> _map2Elements)
     {
@@ -123,111 +86,66 @@ public:
     }
 
 
+    /// Swaps values at indices i1 and i2.
+    void swap(Index i1, Index i2) override;
+
+    //using core::topology::TopologyDataHandler< TopologyElementType >::add;
+    /// Add some values. Values are added at the end of the vector.
+    void add(sofa::Size nbElements,
+        const sofa::helper::vector< TopologyElementType >&,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+    void add(sofa::Size nbElements,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+
+    void add(const sofa::helper::vector<Index>& index,
+        const sofa::helper::vector< TopologyElementType >& elems,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+        const sofa::helper::vector< AncestorElem >& ancestorElems) override;
+
+    /// Remove the values corresponding to the Edges removed.
+    void remove(const sofa::helper::vector<Index>& index) override;
+
+    /// Reorder the values.
+    void renumber(const sofa::helper::vector<Index>& index) override;
+
+    /// Move a list of points
+    void move(const sofa::helper::vector<Index>& indexList,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs) override;
+
+    /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    void addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
+        const sofa::helper::vector< TopologyElementType >& elems) override;
+
+    /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    void removeOnMovedPosition(const sofa::helper::vector<Index>& indices) override;
+
+
+
+
+
 protected:
-
-    virtual void createTopologyHandler() {}
-
     // same size as SparseData but contain id of element link to each data[]
     sofa::helper::vector<Index> m_map2Elements;
 
-    typename sofa::component::topology::TopologyEngineImpl<VecT>::SPtr m_topologicalEngine;
-    sofa::core::topology::BaseMeshTopology* m_topology;
-    sofa::component::topology::TopologySparseDataHandler<TopologyElementType,VecT>* m_topologyHandler;
-
     bool m_isConcerned;
-
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*      ) { linkToPointDataArray();       }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*       ) { linkToEdgeDataArray();        }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*   ) { linkToTriangleDataArray();    }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*       ) { linkToQuadDataArray();        }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*) { linkToTetrahedronDataArray(); }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron* ) { linkToHexahedronDataArray();  }
-
 };
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////   Point Topology Data Implementation   /////////////////////////////////////
+//////////////////////////////   Element Topology Data Implementation   ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template< class VecT >
-class PointSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Point, VecT>
-{
-public:
-    PointSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Point, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Edge Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class EdgeSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Edge, VecT>
-{
-public:
-    EdgeSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Edge, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Triangle Topology Data Implementation   ///////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TriangleSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>
-{
-public:
-    TriangleSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Quad Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class QuadSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Quad, VecT>
-{
-public:
-    QuadSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Quad, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   Tetrahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TetrahedronSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>
-{
-public:
-    TetrahedronSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Hexahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class HexahedronSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>
-{
-public:
-    HexahedronSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>(data)
-    {}
-};
+template< class VecT > using PointSparseData = TopologySparseData<core::topology::BaseMeshTopology::Point, VecT>;
+template< class VecT > using EdgeSparseData = TopologySparseData<core::topology::BaseMeshTopology::Edge, VecT>;
+template< class VecT > using TriangleSparseData = TopologySparseData<core::topology::BaseMeshTopology::Triangle, VecT>;
+template< class VecT > using QuadSparseData = TopologySparseData<core::topology::BaseMeshTopology::Quad, VecT>;
+template< class VecT > using TetrahedronSparseData = TopologySparseData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
+template< class VecT > using HexahedronSparseData = TopologySparseData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
 
 } //namespace sofa::component::topology

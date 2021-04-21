@@ -68,7 +68,7 @@ public:
  *
  *  It should be used as a temporary object. For example :
  *  \code
- *    core::RegisterTemplateAlias Vec3Alias("Vec3", "Vec3d");
+ *    defaulttype::RegisterTemplateAlias Vec3Alias("Vec3", "Vec3d");
  *  \endcode
  *
  */

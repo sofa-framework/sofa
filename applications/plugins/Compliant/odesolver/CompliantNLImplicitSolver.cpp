@@ -54,7 +54,7 @@ void CompliantNLImplicitSolver::cleanup() {
     CompliantImplicitSolver::cleanup();
 
     // free temporary multivecs
-    sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
+    sofa::simulation::common::VectorOperations vop( core::execparams::defaultInstance(), this->getContext() );
     vop.v_free( _x0.id() );
     vop.v_free( _v0.id(), false, true );
     vop.v_free( _f0.id() );

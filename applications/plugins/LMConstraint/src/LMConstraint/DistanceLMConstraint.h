@@ -23,7 +23,7 @@
 #include <LMConstraint/config.h>
 
 #include <sofa/core/VecId.h>
-#include <sofa/core/ConstraintParams.h>
+
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <LMConstraint/LMConstraint.h>

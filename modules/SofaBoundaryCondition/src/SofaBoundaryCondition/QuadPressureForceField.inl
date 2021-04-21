@@ -81,7 +81,7 @@ void QuadPressureForceField<DataTypes>::init()
         selectQuadsFromString();
     }
 
-    quadPressureMap.createTopologicalEngine(m_topology);
+    quadPressureMap.createTopologyHandler(m_topology);
     quadPressureMap.registerTopologicalData();
 
     initQuadInformation();
@@ -116,7 +116,7 @@ void QuadPressureForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     //Todo
 
     //Remove warning
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     (void)kFactor;
 
     return;

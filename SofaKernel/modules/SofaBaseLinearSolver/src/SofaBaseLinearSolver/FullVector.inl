@@ -23,6 +23,8 @@
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/BackTrace.h>
 
 namespace sofa::component::linearsolver
 {
@@ -31,7 +33,11 @@ template<typename Real>
 void FullVector<Real>::checkIndex(Index n) const
 {
     if (n >= cursize)
-        sofa::helper::vector_access_failure(this, cursize, n, typeid(*this));
+    {
+        msg_error("FullVector") << "in vector<" << sofa::helper::gettypename(typeid(*this)) << "> " << std::hex << (long)this << std::dec << " size " << cursize << " : invalid index " << (int)n;
+        sofa::helper::BackTrace::dump();
+        assert(n < cursize);
+    }
 }
 
 template<typename Real>

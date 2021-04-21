@@ -3,8 +3,8 @@ project(image VERSION 0.1)
 
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneralVisual REQUIRED)
-find_package(Sofa.GL REQUIRED)
 
+sofa_find_package(Sofa.GL QUIET)
 sofa_find_package(SofaGuiQt QUIET)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(Newmat REQUIRED)
@@ -117,9 +117,14 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_IMAGE")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaBase Sofa.GL SofaGeneralVisual CImgPlugin)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaBase SofaGeneralVisual CImgPlugin)
 target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 target_link_libraries(${PROJECT_NAME} newmat)
+
+
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GL)    
+endif()
 
 if(FREENECT_FOUND)
     target_link_libraries(${PROJECT_NAME} freenect freenect_sync)

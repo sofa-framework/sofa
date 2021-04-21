@@ -87,7 +87,7 @@ struct UniformStiffness_test : public ForceField_test<_UniformStiffness>
 
 // ========= Define the list of types to instanciate.
 //using testing::Types;
-typedef testing::Types<
+typedef ::testing::Types<
 component::forcefield::UniformStiffness<defaulttype::Vec1Types>
 > TestTypes; // the types to instanciate.
 

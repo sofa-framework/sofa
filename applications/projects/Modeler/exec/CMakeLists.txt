@@ -8,8 +8,8 @@ else()
     set(RC_FILES "sofa.rc")
 endif()
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
-find_package(SofaSimulation REQUIRED)
+sofa_find_package(Qt5 COMPONENTS Core REQUIRED)
+sofa_find_package(SofaComponentAll REQUIRED)
 
 if(Qt5Core_FOUND)
     message("Modeler executable: Using Qt5")
@@ -17,6 +17,6 @@ if(Qt5Core_FOUND)
 endif()
 
 add_executable(${PROJECT_NAME} Main.cpp ${RC_FILES} ${RESOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaModeler SofaBase SofaCommon SofaGeneral SofaMisc SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} SofaModeler SofaComponentAll SofaSimulationGraph)
 
 sofa_install_targets(SofaModeler Modeler "Modeler")

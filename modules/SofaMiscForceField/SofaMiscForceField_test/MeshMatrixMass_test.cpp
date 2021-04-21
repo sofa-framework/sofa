@@ -20,8 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaMiscForceField/MeshMatrixMass.h>
-
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -152,7 +151,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -191,7 +190,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -224,7 +223,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -257,7 +256,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -295,7 +294,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -328,7 +327,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -362,7 +361,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -398,7 +397,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -430,7 +429,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -462,7 +461,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -495,7 +494,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -527,7 +526,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -563,7 +562,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -597,7 +596,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -641,7 +640,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -686,7 +685,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -725,7 +724,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -763,7 +762,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -807,7 +806,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -845,7 +844,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -884,7 +883,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -926,7 +925,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -964,7 +963,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1002,7 +1001,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1040,7 +1039,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1077,7 +1076,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1119,7 +1118,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
@@ -1159,7 +1158,7 @@ public:
                                                           scene.size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;

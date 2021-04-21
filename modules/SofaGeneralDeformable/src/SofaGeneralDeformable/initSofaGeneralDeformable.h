@@ -26,4 +26,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAGENERALDEFORMABLE_API void initSofaGeneralDeformable();
+
 } // namespace sofa::component

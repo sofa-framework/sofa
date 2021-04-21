@@ -25,16 +25,8 @@
 namespace sofa::gl
 {
 
-SOFA_HELPER_API void glfntInit(void);
-SOFA_HELPER_API void glfntWriteBitmap(float x,float y,char *s);
-SOFA_HELPER_API void glfntClose(void);
+SOFA_GL_API void glfntInit(void);
+SOFA_GL_API void glfntWriteBitmap(float x,float y,char *s);
+SOFA_GL_API void glfntClose(void);
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

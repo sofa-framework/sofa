@@ -22,3 +22,11 @@
 #pragma once
 
 #include <SofaMiscEngine/config.h>
+
+namespace sofa::component
+{
+
+SOFA_SOFAMISCENGINE_API void initSofaMiscEngine();
+
+} // namespace sofa::component
+

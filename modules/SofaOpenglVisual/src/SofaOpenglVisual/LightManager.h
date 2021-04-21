@@ -26,7 +26,6 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <SofaOpenglVisual/Light.h>
 #include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/types/RGBAColor.h>
 

@@ -35,7 +35,7 @@ namespace sofa::simulation::_scenechecking_
 class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckerVisitor : public Visitor
 {
 public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance()) ;
+    SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance()) ;
     ~SceneCheckerVisitor() override;
 
     void validate(Node* node) ;

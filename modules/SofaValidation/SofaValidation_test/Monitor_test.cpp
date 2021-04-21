@@ -154,7 +154,7 @@ struct Monitor_test : public sofa::Sofa_test<>
 
         root = SceneLoaderXML::loadFromMemory("MonitorTest", scene.c_str(),
                                               scene.size());
-        root->init(sofa::core::ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
         std::string s = "/node/monitor";
         Monitor<Rigid3Types>* ptr = nullptr;

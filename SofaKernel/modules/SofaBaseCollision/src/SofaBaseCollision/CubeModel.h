@@ -96,7 +96,7 @@ public:
     void setLeafCube(Index cubeIndex, Index childIndex);
     void setLeafCube(Index cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
 
-    Size getNumberCells() { return Size(elems.size());}
+    Size getNumberCells() const { return Size(elems.size());}
 
     void getBoundingTree ( sofa::helper::vector< std::pair< sofa::defaulttype::Vector3, sofa::defaulttype::Vector3> > &bounding )
     {

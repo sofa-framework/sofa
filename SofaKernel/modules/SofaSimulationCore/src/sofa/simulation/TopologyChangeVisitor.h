@@ -23,7 +23,6 @@
 #define SOFA_SIMULATION_TREE_TOPOLOGYCHANGEACTION_H
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/topology/Topology.h>
 
 namespace sofa
 {
@@ -31,16 +30,15 @@ namespace sofa
 namespace simulation
 {
 
-
 class SOFA_SIMULATION_CORE_API TopologyChangeVisitor : public Visitor
 {
 
 public:
-    TopologyChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source);
+    TopologyChangeVisitor(const sofa::core::ExecParams* params, sofa::core::topology::Topology* source);
 
     ~TopologyChangeVisitor() override {}
 
-    virtual void processTopologyChange(simulation::Node* node, core::objectmodel::BaseObject* obj);
+    virtual void processTopologyChange(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;
@@ -52,13 +50,9 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getCategoryName() const override { return "topologyChange"; }
     const char* getClassName() const override { return "TopologyChangeVisitor"; }
-    virtual std::string getInfos() const override { return "Topology:" + m_source->getName(); }
-
+    std::string getInfos() const override;
 protected:
-    /// Flag to know the number of iterations of the overloaded method processNodeTopDown
-    //simulation::Node* root;
-
-    core::topology::Topology* m_source;
+    sofa::core::topology::Topology* m_source;
 };
 
 

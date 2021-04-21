@@ -28,7 +28,6 @@
 #include <sofa/simulation/CollisionEndEvent.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
-#include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/Node.h>
 
 #include <sofa/helper/AdvancedTimer.h>
@@ -69,7 +68,7 @@ void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior:
     sofa::helper::AdvancedTimer::stepBegin("InteractionFF",obj);
 
     MultiVecDerivId   ffId      = VecDerivId::externalForce();
-    MechanicalParams mparams; // = MechanicalParams::defaultInstance();
+    MechanicalParams mparams;
     mparams.setDt(this->dt);
     obj->addForce(&mparams, ffId);
 

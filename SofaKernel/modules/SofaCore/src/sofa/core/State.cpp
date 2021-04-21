@@ -21,6 +21,8 @@
 ******************************************************************************/
 #define SOFA_CORE_STATE_CPP
 #include <sofa/core/State.inl>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {

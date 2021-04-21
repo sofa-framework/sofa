@@ -21,9 +21,15 @@
 ******************************************************************************/
 #pragma once
 #include <SofaConstraint/BilateralInteractionConstraint.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/core/ConstraintParams.h>
 #include <algorithm> // for std::min
 
 namespace sofa::component::constraintset::bilateralinteractionconstraint

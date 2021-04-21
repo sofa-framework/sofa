@@ -24,7 +24,6 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
 
@@ -42,7 +41,7 @@ class SOFA_SIMULATION_CORE_API MechanicalComputeEnergyVisitor : public sofa::sim
     SReal m_potentialEnergy;
 
 public:
-    MechanicalComputeEnergyVisitor(const core::MechanicalParams* mparams);
+    MechanicalComputeEnergyVisitor(const sofa::core::MechanicalParams* mparams);
 
     ~MechanicalComputeEnergyVisitor() override;
 
@@ -51,10 +50,10 @@ public:
     SReal getPotentialEnergy();
 
     /// Process the BaseMass
-    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
+    Result fwdMass(simulation::Node* /*node*/, sofa::core::behavior::BaseMass* mass) override;
 
     /// Process the BaseForceField
-    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* f) override;
+    Result fwdForceField(simulation::Node* /*node*/, sofa::core::behavior::BaseForceField* f) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

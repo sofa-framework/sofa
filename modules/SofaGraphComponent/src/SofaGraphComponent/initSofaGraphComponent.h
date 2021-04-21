@@ -26,6 +26,6 @@
 namespace sofa::component
 {
 
-void SOFA_SOFAGRAPHCOMPONENT_API initGraphComponent();
+void SOFA_SOFAGRAPHCOMPONENT_API initSofaGraphComponent();
 
 } // namespace sofa::component

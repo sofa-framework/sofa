@@ -29,7 +29,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <vector>
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa::component::interactionforcefield

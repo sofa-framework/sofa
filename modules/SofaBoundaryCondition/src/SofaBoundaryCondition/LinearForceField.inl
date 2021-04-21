@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BaseVector.h>
-
+#include <sofa/core/MechanicalParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa::component::forcefield
@@ -62,7 +62,7 @@ void LinearForceField<DataTypes>::init()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
         // Initialize functions and parameters for topology data and handler
-        points.createTopologicalEngine(_topology);
+        points.createTopologyHandler(_topology);
         points.registerTopologicalData();
     }
     else

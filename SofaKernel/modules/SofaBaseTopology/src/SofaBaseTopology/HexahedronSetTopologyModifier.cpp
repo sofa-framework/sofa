@@ -24,6 +24,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 #include <algorithm>
 
@@ -35,9 +36,6 @@ int HexahedronSetTopologyModifierClass = core::RegisterObject("Hexahedron set to
 using namespace std;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
-
-const unsigned int edgesInHexahedronArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
-
 
 void HexahedronSetTopologyModifier::init()
 {
@@ -615,11 +613,11 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isHexahedronTopologyDirty()) // hexahedron Data has not been touched
         return QuadSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
 
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
             topoEngine->update();

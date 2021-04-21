@@ -23,22 +23,16 @@
 #define SOFA_SIMULATION_MECHANICALVISITOR_H
 
 #include <sofa/simulation/Visitor.h>
+#include <sofa/core/fwd.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+#include <sofa/simulation/BaseMechanicalVisitor.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/BaseMapping.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintSet.h>
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/map.h>
-#include <iostream>
-#include <functional>
 
 namespace sofa
 {
@@ -46,347 +40,16 @@ namespace sofa
 namespace simulation
 {
 
-/** Base class for easily creating new actions for mechanical simulation.
-
-During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node.
-Each component attached to this node is processed using the appropriate method, prefixed by fwd.
-During the second traversal (bottom-up), method processNodeBottomUp(simulation::Node*) is applied to each simulation::Node.
-Each component attached to this node is processed using the appropriate method, prefixed by bwd.
-The default behavior of the fwd* and bwd* is to do nothing.
-Derived actions typically overload these methods to implement the desired processing.
-
-*/
-class SOFA_SIMULATION_CORE_API BaseMechanicalVisitor : public Visitor
-{
-
-protected:
-    simulation::Node* root; ///< root node from which the visitor was executed
-    SReal* rootData; ///< data for root node
-
-    virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
-    virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
-
-public:
-
-    BaseMechanicalVisitor(const core::ExecParams* params)
-        : Visitor(params)
-		, root(nullptr), rootData(nullptr)
-    {
-		// mechanical visitors shouldn't be able to acess a sleeping node, only visual visitor should
-		canAccessSleepingNode = false;
-	}
-
-    /// Return true if this visitor need to read the node-specific data if given
-    virtual bool readNodeData() const
-    { return false; }
-
-    /// Return true if this visitor need to write to the node-specific data if given
-    virtual bool writeNodeData() const
-    { return false; }
-
-    virtual void setNodeData(simulation::Node* /*node*/, SReal* nodeData, const SReal* parentData)
-    {
-        *nodeData = (parentData == nullptr) ? 0.0 : *parentData;
-    }
-
-    virtual void addNodeData(simulation::Node* /*node*/, SReal* parentData, const SReal* nodeData)
-    {
-        if (parentData)
-            *parentData += *nodeData;
-    }
-
-    static inline void ForceMaskActivate( const helper::vector<core::behavior::BaseMechanicalState*>& v )
-    {
-        std::for_each( v.begin(), v.end(), [](core::behavior::BaseMechanicalState* m) {
-            m->forceMask.activate(true);
-        });
-    }
-
-    static inline void ForceMaskDeactivate( const helper::vector<core::behavior::BaseMechanicalState*>& v)
-    {
-        std::for_each( v.begin(), v.end(), [](core::behavior::BaseMechanicalState* m) {
-            m->forceMask.activate(false);
-        });
-    }
-
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalVisitor"; }
-
-    /**@name Forward processing
-    Methods called during the forward (top-down) traversal of the data structure.
-    Method processNodeTopDown(simulation::Node*) calls the fwd* methods in the order given here. When there is a mapping, it is processed first, then method fwdMappedMechanicalState is applied to the BaseMechanicalState.
-    When there is no mapping, the BaseMechanicalState is processed first using method fwdMechanicalState.
-    Then, the other fwd* methods are applied in the given order.
-    */
-    ///@{
-
-    /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    Result processNodeTopDown(simulation::Node* node) override;
-
-    /// Parallel version of processNodeTopDown.
-    /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
-    Result processNodeTopDown(simulation::Node* node, LocalStorage* stack) override;
-
-    /// Process the OdeSolver
-    virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process the OdeSolver
-    virtual Result fwdOdeSolver(VisitorContext* ctx, core::behavior::OdeSolver* solver)
-    {
-        return fwdOdeSolver(ctx->node, solver);
-    }
-
-    /// Process the ConstraintSolver
-    virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* /*solver*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process the ConstraintSolver
-    virtual Result fwdConstraintSolver(VisitorContext* ctx, core::behavior::ConstraintSolver* solver)
-    {
-        return fwdConstraintSolver(ctx->node, solver);
-    }
-
-    /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process the BaseMechanicalMapping
-    virtual Result fwdMechanicalMapping(VisitorContext* ctx, core::BaseMapping* map)
-    {
-        return fwdMechanicalMapping(ctx->node, map);
-    }
-
-    /// Process the BaseMechanicalState if it is mapped from the parent level
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process the BaseMechanicalState if it is mapped from the parent level
-    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
-    {
-        return fwdMappedMechanicalState(ctx->node, mm);
-    }
-
-    /// Process the BaseMechanicalState if it is not mapped from the parent level
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process the BaseMechanicalState if it is not mapped from the parent level
-    virtual Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
-    {
-        return fwdMechanicalState(ctx->node, mm);
-    }
-
-    /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* /*mass*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process the BaseMass
-    virtual Result fwdMass(VisitorContext* ctx, core::behavior::BaseMass* mass)
-    {
-        return fwdMass(ctx->node, mass);
-    }
-
-    /// Process all the BaseForceField
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* /*ff*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-
-    /// Process all the BaseForceField
-    virtual Result fwdForceField(VisitorContext* ctx, core::behavior::BaseForceField* ff)
-    {
-        return fwdForceField(ctx->node, ff);
-    }
-
-    /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff)
-    {
-        return fwdForceField(node, ff);
-    }
-
-    /// Process all the InteractionForceField
-    virtual Result fwdInteractionForceField(VisitorContext* ctx, core::behavior::BaseInteractionForceField* ff)
-    {
-        return fwdInteractionForceField(ctx->node, ff);
-    }
-
-    /// Process all the BaseProjectiveConstraintSet
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* /*c*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process all the BaseConstraintSet
-    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* /*c*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process all the BaseProjectiveConstraintSet
-    virtual Result fwdProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseProjectiveConstraintSet* c)
-    {
-        return fwdProjectiveConstraintSet(ctx->node, c);
-    }
-
-    /// Process all the BaseConstraintSet
-    virtual Result fwdConstraintSet(VisitorContext* ctx, core::behavior::BaseConstraintSet* c)
-    {
-        return fwdConstraintSet(ctx->node, c);
-    }
-
-    /// Process all the InteractionConstraint
-    virtual Result fwdInteractionProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseInteractionProjectiveConstraintSet* /*c*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(simulation::Node* /*node*/, core::behavior::BaseInteractionConstraint* /*c*/)
-    {
-        return RESULT_CONTINUE;
-    }
-
-    /// Process all the InteractionConstraint
-    virtual Result fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseInteractionProjectiveConstraintSet* c);
-
-    /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::behavior::BaseInteractionConstraint* c);
-
-    ///@}
-
-    /**@name Backward processing
-    Methods called during the backward (bottom-up) traversal of the data structure.
-    Method processNodeBottomUp(simulation::Node*) calls the bwd* methods.
-    When there is a mapping, method bwdMappedMechanicalState is applied to the BaseMechanicalState.
-    When there is no mapping, the BaseMechanicalState is processed using method bwdMechanicalState.
-    Finally, the mapping (if any) is processed using method bwdMechanicalMapping.
-    */
-    ///@{
-
-    /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
-    void processNodeBottomUp(simulation::Node* node) override;
-
-    /// Parallel version of processNodeBottomUp.
-    /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
-    void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack) override;
-
-    /// Process the BaseMechanicalState when it is not mapped from parent level
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {}
-
-    /// Process the BaseMechanicalState when it is not mapped from parent level
-    virtual void bwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
-    { bwdMechanicalState(ctx->node, mm); }
-
-    /// Process the BaseMechanicalState when it is mapped from parent level
-    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {}
-
-    /// Process the BaseMechanicalState when it is mapped from parent level
-    virtual void bwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
-    { bwdMappedMechanicalState(ctx->node, mm); }
-
-    /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {}
-
-    /// Process the BaseMechanicalMapping
-    virtual void bwdMechanicalMapping(VisitorContext* ctx, core::BaseMapping* map)
-    { bwdMechanicalMapping(ctx->node, map); }
-
-    /// Process the OdeSolver
-    virtual void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*solver*/)
-    {}
-
-    /// Process the OdeSolver
-    virtual void bwdOdeSolver(VisitorContext* ctx, core::behavior::OdeSolver* solver)
-    { bwdOdeSolver(ctx->node, solver); }
-
-    /// Process the ConstraintSolver
-    virtual void bwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* /*solver*/)
-    {}
-
-    /// Process the ConstraintSolver
-    virtual void bwdConstraintSolver(VisitorContext* ctx, core::behavior::ConstraintSolver* solver)
-    { bwdConstraintSolver(ctx->node, solver); }
-
-    /// Process all the BaseProjectiveConstraintSet
-    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* /*c*/)
-    {}
-
-    /// Process all the BaseConstraintSet
-    virtual void bwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* /*c*/)
-    {}
-
-    /// Process all the BaseProjectiveConstraintSet
-    virtual void bwdProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseProjectiveConstraintSet* c)
-    { bwdProjectiveConstraintSet(ctx->node, c); }
-
-    /// Process all the BaseConstraintSet
-    virtual void bwdConstraintSet(VisitorContext* ctx, core::behavior::BaseConstraintSet* c)
-    { bwdConstraintSet(ctx->node, c); }
-
-    ///@}
-
-
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    const char* getCategoryName() const override
-    {
-        return "animate";
-    }
-
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
-    {
-        return !map->areForcesMapped();
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj, const std::string &info=std::string("type")) override;
-    void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0) override;
-#endif
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    virtual void setReadWriteVectors() {}
-    virtual void addReadVector(core::ConstMultiVecId id) {  readVector.push_back(id);  }
-    virtual void addWriteVector(core::MultiVecId id) {  writeVector.push_back(id);  }
-    virtual void addReadWriteVector(core::MultiVecId id) {  readVector.push_back(core::ConstMultiVecId(id)); writeVector.push_back(id);  }
-    void printReadVectors(core::behavior::BaseMechanicalState* mm);
-    void printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
-    void printWriteVectors(core::behavior::BaseMechanicalState* mm);
-    void printWriteVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
-protected:
-    sofa::helper::vector< core::ConstMultiVecId > readVector;
-    sofa::helper::vector< core::MultiVecId > writeVector;
-#endif
-};
-
 class SOFA_SIMULATION_CORE_API MechanicalVisitor : public BaseMechanicalVisitor
 {
 
 protected:
-    const core::MechanicalParams* mparams;
+    const sofa::core::MechanicalParams* mparams;
 
 public:
 
-    MechanicalVisitor(const core::MechanicalParams* m_mparams)
-        : BaseMechanicalVisitor(m_mparams)
+    MechanicalVisitor(const sofa::core::MechanicalParams* m_mparams)
+        : BaseMechanicalVisitor(sofa::core::mechanicalparams::castToExecParams(m_mparams))
         , mparams(m_mparams)
     {}
 };
@@ -395,7 +58,7 @@ public:
 class SOFA_SIMULATION_CORE_API MechanicalGetDimensionVisitor : public MechanicalVisitor
 {
 public:
-    MechanicalGetDimensionVisitor(const core::MechanicalParams* mparams, SReal* result)
+    MechanicalGetDimensionVisitor(const sofa::core::MechanicalParams* mparams, SReal* result)
         : MechanicalVisitor(mparams)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -404,7 +67,7 @@ public:
         rootData = result;
     }
 
-    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(VisitorContext* ctx, sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -433,14 +96,14 @@ public:
     typedef std::set<sofa::core::BaseState*> StateSet;
     MyVecId& v;
     StateSet states;
-    MechanicalVAvailVisitor( const core::ExecParams* params, MyVecId& v)
+    MechanicalVAvailVisitor( const sofa::core::ExecParams* params, MyVecId& v)
         : BaseMechanicalVisitor(params), v(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -481,7 +144,7 @@ public:
     /// \param _vDest output vector
     /// \param _vSrc input vector
     /// \param propagate sets to true propagates vector initialization to mapped mechanical states
-    MechanicalVInitVisitor(const core::ExecParams* params, DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false)
+    MechanicalVInitVisitor(const sofa::core::ExecParams* params, DestMultiVecId _vDest, SrcMultiVecId _vSrc = SrcMultiVecId::null(), bool propagate=false)
         : BaseMechanicalVisitor(params)
         , vDest(_vDest)
         , vSrc(_vSrc)
@@ -492,14 +155,14 @@ public:
 #endif
     }
 
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false;
     }
 
-    Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* node,sofa::core::behavior::BaseMechanicalState* mm) override;
 
-    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* node,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -536,14 +199,14 @@ class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor : public BaseMechanicalVi
 public:
     typedef sofa::core::TMultiVecId<vtype, sofa::core::V_WRITE> MyMultiVecId;
     MyMultiVecId v;
-    MechanicalVAllocVisitor( const core::ExecParams* params, MyMultiVecId v )
+    MechanicalVAllocVisitor( const sofa::core::ExecParams* params, MyMultiVecId v )
         : BaseMechanicalVisitor(params) , v(v)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -583,7 +246,7 @@ public:
     /// \param _vDest output vector
     /// \param propagate sets to true propagates vector initialization to mapped mechanical states
     /// \param interactionForceField sets to true also initializes external mechanical states linked by an interaction force field
-    MechanicalVReallocVisitor(const core::ExecParams* params, DestMultiVecId *v, bool interactionForceField=false, bool propagate=false)
+    MechanicalVReallocVisitor(const sofa::core::ExecParams* params, DestMultiVecId *v, bool interactionForceField=false, bool propagate=false)
         : BaseMechanicalVisitor(params)
         , v(v)
         , m_propagate(propagate)
@@ -594,16 +257,16 @@ public:
 #endif
     }
 
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false;
     }
 
-    Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* node,sofa::core::behavior::BaseMechanicalState* mm) override;
 
-    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* node,sofa::core::behavior::BaseMechanicalState* mm) override;
 
-    Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff) override;
+    Result fwdInteractionForceField(simulation::Node* node,sofa::core::behavior::BaseInteractionForceField* ff) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -629,7 +292,7 @@ public:
 protected:
 
 
-    MyVecId getId( core::behavior::BaseMechanicalState* mm );
+    MyVecId getId(sofa::core::behavior::BaseMechanicalState* mm );
 };
 
 
@@ -651,9 +314,9 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* ff) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdInteractionForceField(simulation::Node* node,sofa::core::behavior::BaseInteractionForceField* ff) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -693,7 +356,7 @@ public:
     }
 
     // If mapped or only_mapped is ste, this visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override
     {
         if (mapped || only_mapped)
             return false;
@@ -704,8 +367,8 @@ public:
     MechanicalVOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
     MechanicalVOpVisitor& setOnlyMapped(bool m = true) { only_mapped = m; return *this; }
 
-    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     const char* getClassName() const override { return "MechanicalVOpVisitor";}
     virtual std::string getInfos() const override;
@@ -737,7 +400,7 @@ public:
 class SOFA_SIMULATION_CORE_API MechanicalVMultiOpVisitor : public BaseMechanicalVisitor
 {
 public:
-    typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    typedef sofa::core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     bool mapped;
     MechanicalVMultiOpVisitor(const sofa::core::ExecParams* params, const VMultiOp& o)
         : BaseMechanicalVisitor(params), mapped(false), ops(o)
@@ -749,8 +412,8 @@ public:
 
     MechanicalVMultiOpVisitor& setMapped(bool m = true) { mapped = m; return *this; }
 
-    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     const char* getClassName() const override { return "MechanicalVMultiOpVisitor"; }
     virtual std::string getInfos() const override;
@@ -803,7 +466,7 @@ public:
         rootData = t;
     }
 
-    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -853,7 +516,7 @@ public:
     }
     SReal getResult() const;
 
-    Result fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -898,12 +561,12 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override
     {
         if (ignoreFlag)
             return false;
@@ -948,10 +611,10 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -992,10 +655,10 @@ public:
         : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
     {
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1034,16 +697,16 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMass(simulation::Node* /*node*/,sofa::core::behavior::BaseMass* mass) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalAddMDxVisitor"; }
     virtual std::string getInfos() const override { std::string name="dx["+dx.getName()+"] in res[" + res.getName()+"]"; return name; }
 
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* /*mm*/) override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -1072,13 +735,13 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMass(simulation::Node* /*node*/,sofa::core::behavior::BaseMass* mass) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalAccFromFVisitor"; }
-    virtual std::string getInfos() const override { std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name; }
+    virtual std::string getInfos() const override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -1108,8 +771,8 @@ public:
 #endif
     }
 
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
     /// Return a class name for this visitor
@@ -1141,8 +804,8 @@ public:
 #endif
     }
 
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
     /// Return a class name for this visitor
@@ -1179,8 +842,8 @@ public:
 #endif
     }
 
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
     /// Return a class name for this visitor
@@ -1219,8 +882,8 @@ public:
 #endif
     }
 
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    Result fwdProjectiveConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseProjectiveConstraintSet* c) override;
 
 
     /// Return a class name for this visitor
@@ -1264,12 +927,12 @@ public:
     MechanicalPropagateOnlyPositionVisitor( const sofa::core::MechanicalParams* mparams, SReal time=0,
                                         sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), bool m=true);
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -1320,12 +983,12 @@ public:
                                                   sofa::core::MultiVecCoordId x = sofa::core::VecId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true );  
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false;
     }
@@ -1370,11 +1033,11 @@ public:
                                        sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true);
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -1411,7 +1074,7 @@ public:
                                             sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(),
                                             sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity());
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1451,8 +1114,8 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1495,11 +1158,11 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
-    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdForceField(simulation::Node* /*node*/,sofa::core::behavior::BaseForceField* ff) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
 
     /// Return a class name for this visitor
@@ -1549,11 +1212,11 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
-    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdForceField(simulation::Node* /*node*/,sofa::core::behavior::BaseForceField* ff) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1596,7 +1259,7 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1643,11 +1306,11 @@ public:
         mparamsWithoutStiffness = *mparams;
         mparamsWithoutStiffness.setKFactor(0);
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
-    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdForceField(simulation::Node* /*node*/,sofa::core::behavior::BaseForceField* ff) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1682,12 +1345,12 @@ public:
 #endif
     }
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseConstraintSet* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -1729,14 +1392,14 @@ public:
 #endif
     }
 
-    const core::ConstraintParams* constraintParams() const { return cparams; }
+    const sofa::core::ConstraintParams* constraintParams() const { return cparams; }
 
-    Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c) override;
+    Result fwdConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseConstraintSet* c) override;
 
-    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -1778,12 +1441,12 @@ public:
 #endif
     }
 
-    const core::ConstraintParams* constraintParams() const { return cparams; }
+    const sofa::core::ConstraintParams* constraintParams() const { return cparams; }
 
-    Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c) override;
+    Result fwdConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseConstraintSet* c) override;
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -1825,15 +1488,15 @@ public:
 #endif
     }
 
-    const core::ConstraintParams* constraintParams() const { return cparams; }
+    const sofa::core::ConstraintParams* constraintParams() const { return cparams; }
 
-    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
 
     /// Return true to reverse the order of traversal of child nodes
     bool childOrderReversed(simulation::Node* /*node*/) override { return reverseOrder; }
 
     /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false; // !map->isMechanical();
     }
@@ -1876,11 +1539,11 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) override;
-    void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* /*mm*/) override;
+    void bwdProjectiveConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseProjectiveConstraintSet* c) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false;
     }
@@ -1916,14 +1579,14 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalBeginIntegrationVisitor"; }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false;
     }
@@ -1953,15 +1616,15 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalEndIntegrationVisitor"; }
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
         return false;
     }
@@ -1991,9 +1654,9 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj) override;
-    Result fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField* obj) override;
-    void bwdOdeSolver(simulation::Node* /*node*/, core::behavior::OdeSolver* /*obj*/) override
+    Result fwdOdeSolver(simulation::Node* node,sofa::core::behavior::OdeSolver* obj) override;
+    Result fwdInteractionForceField(simulation::Node*,sofa::core::behavior::BaseInteractionForceField* obj) override;
+    void bwdOdeSolver(simulation::Node* /*node*/,sofa::core::behavior::OdeSolver* /*obj*/) override
     {
     }
 
@@ -2030,9 +1693,9 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -2068,7 +1731,7 @@ public:
     }
 
     /// Process the BaseMass
-    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
+    Result fwdMass(simulation::Node* /*node*/,sofa::core::behavior::BaseMass* mass) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -2100,9 +1763,9 @@ public:
     {
     }
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -2115,7 +1778,7 @@ public:
 #endif
 
     /// get the closest pickable particle
-    void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, sofa::Index& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
+    void getClosestParticle(sofa::core::behavior::BaseMechanicalState*& mstate, sofa::Index& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
 
 
 };
@@ -2139,9 +1802,9 @@ public:
 	{
 	}
 
-	Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-	Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map) override;
-	Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
+	Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+	Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
+	Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
 	/// Return a class name for this visitor
 	/// Only used for debugging / profiling purposes
@@ -2154,12 +1817,12 @@ public:
 #endif
 
 	/// get the closest pickable particle
-	void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
+	void getClosestParticle(sofa::core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
 
 private:
 
     // this function checks if the component must be included in the pick process according to its tags
-    bool isComponentTagIncluded(const core::behavior::BaseMechanicalState* mm);
+    bool isComponentTagIncluded(const sofa::core::behavior::BaseMechanicalState* mm);
 
 };
 
@@ -2180,8 +1843,8 @@ public:
 #endif
     }
 
-    Result fwdMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMechanicalState(simulation::Node*,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMappedMechanicalState(simulation::Node*,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

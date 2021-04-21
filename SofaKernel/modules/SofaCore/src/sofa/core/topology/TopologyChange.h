@@ -23,6 +23,8 @@
 #define SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_H
 
 #include <sofa/core/topology/Topology.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/list.h>
 
 namespace sofa
 {
@@ -371,8 +373,6 @@ public:
 
     ~EndingEvent() override;
 };
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////   Point Event Implementation   /////////////////////////////////////////
@@ -1491,5 +1491,16 @@ public:
 
 } // namespace sofa
 
+#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_DEFINITION
+namespace std
+{
+    extern template class std::list<const sofa::core::topology::TopologyChange*>;
+}
+namespace sofa::core::objectmodel
+{
+    extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+}
+
+#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
 
 #endif // SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_H

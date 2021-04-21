@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_MERGEVISUALMODELS_H
 #define SOFA_COMPONENT_ENGINE_MERGEVISUALMODELS_H
 
-#include "initOpenGLVisual.h"
+#include <SofaOpenglVisual/config.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>

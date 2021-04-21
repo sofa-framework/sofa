@@ -463,7 +463,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(const core::Mech
             const SReal* g = this->getContext()->getGravity().ptr();
             Deriv theGravity;
             T::set( theGravity, (Real)g[0], (Real)g[1], (Real)g[2]);
-            Deriv hg = theGravity * (mparams->dt());
+            Deriv hg = theGravity * (sofa::core::mechanicalparams::dt(mparams));
             for (unsigned int i=0; i<v.size(); i++)
             {
                 v[i] += hg;

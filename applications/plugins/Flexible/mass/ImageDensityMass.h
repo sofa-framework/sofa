@@ -150,7 +150,7 @@ public:
 
     void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const override;
 
-    bool isDiagonal() override { return false; }
+    bool isDiagonal() const override { return f_lumping.getValue() == DIAGONAL_LUMPING; }
 
     void draw(const core::visual::VisualParams* vparams) override;
 

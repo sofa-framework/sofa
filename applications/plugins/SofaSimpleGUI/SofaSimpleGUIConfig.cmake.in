@@ -5,6 +5,7 @@
 
 find_package(SofaGeneral REQUIRED)
 find_package(Eigen3 QUIET REQUIRED)
+find_package(Sofa.GL QUIET REQUIRED)
 
 if(NOT TARGET SofaSimpleGUI)
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaSimpleGUITargets.cmake")

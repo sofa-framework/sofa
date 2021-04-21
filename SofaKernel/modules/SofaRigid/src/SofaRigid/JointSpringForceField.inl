@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaRigid/JointSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <fstream>
 
 namespace sofa::component::interactionforcefield
@@ -342,7 +343,7 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     helper::vector<Spring>& springs = *d_springs.beginEdit();
     for (sofa::Index i=0; i<springs.size(); i++)

@@ -25,4 +25,6 @@
 namespace sofa::component
 {
 
+SOFA_SOFAMESHCOLLISION_API void initSofaMeshCollision();
+
 } // namespace sofa::component

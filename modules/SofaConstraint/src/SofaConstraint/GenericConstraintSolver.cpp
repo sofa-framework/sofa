@@ -125,7 +125,7 @@ void GenericConstraintSolver::init()
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         constraintCorrections[i]->addConstraintSolver(this);
     context = getContext();
-    simulation::common::VectorOperations vop(sofa::core::ExecParams::defaultInstance(), this->getContext());
+    simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
         lambda.realloc(&vop,false,true);
@@ -146,7 +146,7 @@ void GenericConstraintSolver::cleanup()
             constraintCorrections[i]->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
-    simulation::common::VectorOperations vop(sofa::core::ExecParams::defaultInstance(), this->getContext());
+    simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     vop.v_free(m_lambdaId, false, true);
     vop.v_free(m_dxId, false, true);
     core::behavior::ConstraintSolver::cleanup();

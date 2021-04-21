@@ -77,8 +77,6 @@ public:
         return getQuadArray();
     }
 
-    /** \brief Returns a reference to the Data of quads array container. */
-    Data< sofa::helper::vector<Quad> >& getQuadDataArray() {return d_quad;}
 
     /** \brief Returns the quad corresponding to the QuadID i.
      *
@@ -291,7 +289,7 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_quad
-    void updateTopologyEngineGraph() override;
+    void updateTopologyHandlerGraph() override;
 
 
     /// Use a specific boolean @see m_quadTopologyDirty in order to know if topology Data is dirty or not.
@@ -300,11 +298,11 @@ protected:
     void cleanQuadTopologyFromDirty();
     const bool& isQuadTopologyDirty() {return m_quadTopologyDirty;}
 
-protected:
-
+public:
     /// provides the set of quads.
     Data< sofa::helper::vector<Quad> > d_quad;
 
+protected:
     /// provides the 4 edges in each quad.
     sofa::helper::vector<EdgesInQuad> m_edgesInQuad;
 
@@ -319,7 +317,7 @@ protected:
     bool m_quadTopologyDirty;
 
     /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;

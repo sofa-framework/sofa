@@ -22,7 +22,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralLoader/StringMeshCreator.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa::component::loader
 {

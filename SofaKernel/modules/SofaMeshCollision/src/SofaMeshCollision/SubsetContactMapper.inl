@@ -34,7 +34,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::cleanup()
     if (child!=nullptr)
     {
         child->detachFromGraph();
-        child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        child->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         child.reset();
     }
 }
@@ -128,8 +128,8 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::update()
             needInit = false;
         }
         core::BaseMapping* map = mapping.get();
-        map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-        map->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+        map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+        map->applyJ(core::mechanicalparams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
     }
 }
 
@@ -145,7 +145,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::updateXfree()
         }
 
         core::BaseMapping* map = mapping.get();
-        map->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+        map->apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
     }
 }
 

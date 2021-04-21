@@ -292,7 +292,7 @@ void GearSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mp
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     //const helper::vector<Spring>& springs = this->springs.getValue();
     helper::vector<Spring>& springs = *this->springs.beginEdit();

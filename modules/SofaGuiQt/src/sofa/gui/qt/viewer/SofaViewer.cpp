@@ -279,7 +279,7 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
         sofa::core::objectmodel::MouseEvent mouseEvent(
             sofa::core::objectmodel::MouseEvent::Reset);
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
         [[fallthrough]];
     }
     default:
@@ -292,7 +292,7 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
     {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
     }
 
 }
@@ -316,7 +316,7 @@ void SofaViewer::wheelEvent(QWheelEvent *e)
 
     getQWidget()->update();
     if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
+        groot->propagateEvent(core::execparams::defaultInstance(), &me);
 }
 
 void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
@@ -328,7 +328,7 @@ void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
 
     getQWidget()->update();
     if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
+        groot->propagateEvent(core::execparams::defaultInstance(), &me);
 }
 
 void SofaViewer::mousePressEvent ( QMouseEvent * e)
@@ -354,7 +354,7 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
 
     getQWidget()->update();
     if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
+        groot->propagateEvent(core::execparams::defaultInstance(), mEvent);
 }
 
 void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
@@ -381,7 +381,7 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
 
     getQWidget()->update();
     if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
+        groot->propagateEvent(core::execparams::defaultInstance(), mEvent);
 }
 
 bool SofaViewer::mouseEvent(QMouseEvent *e)

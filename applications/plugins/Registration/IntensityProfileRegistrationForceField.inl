@@ -425,7 +425,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addDForce(con
 {
     sofa::helper::WriteAccessor< DataVecDeriv > df = _df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx = _dx;
-    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue())  * this->ks.getValue() ;
+    Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue())  * this->ks.getValue() ;
     if(!k) return;
 
     if(this->useAnisotropicStiffness.getValue())
@@ -439,7 +439,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addDForce(con
 template<class DataTypes,class ImageTypes>
 void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addKToMatrix(const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) * this->ks.getValue();
+    Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()) * this->ks.getValue();
     if(!k) return;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix *mat = mref.matrix;

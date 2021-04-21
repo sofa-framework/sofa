@@ -317,7 +317,7 @@ void PolynomialSpringsForceField<DataTypes>::addDForce(const core::MechanicalPar
 
     msg_info() << "[" <<  this->getName() << "]: addDforce";
 
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     for (unsigned int index = 0; index < m_firstObjectIndices.size(); index++)
     {
         const JacobianMatrix& jacobMatrix = m_differential[index];
@@ -402,7 +402,7 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
 
     sofa::helper::AdvancedTimer::stepBegin("restShapeSpringAddKToMatrix");
 
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     unsigned int firstIndex = 0;
     unsigned int secondIndex = 0;
 
@@ -467,7 +467,7 @@ void PolynomialSpringsForceField<DataTypes>::addSubKToMatrix(const core::Mechani
                                                              const sofa::core::behavior::MultiMatrixAccessor* matrix,
                                                              const helper::vector<unsigned>& addSubIndex)
 {
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     unsigned int firstIndex = 0;
     unsigned int secondIndex = 0;
 

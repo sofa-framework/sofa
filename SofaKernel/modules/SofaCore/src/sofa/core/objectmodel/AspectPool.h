@@ -23,7 +23,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_ASPECTPOOL_H
 #define SOFA_CORE_OBJECTMODEL_ASPECTPOOL_H
 
-#include <sofa/core/ExecParams.h>
+#include <sofa/core/config.h>
 #include <sofa/helper/system/thread/CircularQueue.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/sptr.h>

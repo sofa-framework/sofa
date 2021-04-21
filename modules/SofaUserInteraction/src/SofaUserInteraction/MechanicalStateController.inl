@@ -89,7 +89,7 @@ void MechanicalStateController<DataTypes>::applyController()
         if (mState)
         {
             helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::VecCoordId::position());
-            mState->vRealloc( sofa::core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
+            mState->vRealloc( sofa::core::mechanicalparams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
             helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());
 
             unsigned int i = index.getValue();
@@ -154,9 +154,9 @@ void MechanicalStateController<DataTypes>::applyController()
     }
 
     auto node = this->getContext();
-    sofa::simulation::MechanicalProjectPositionAndVelocityVisitor mechaProjectVisitor(core::MechanicalParams::defaultInstance()); mechaProjectVisitor.execute(node);
-    sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
-    sofa::simulation::UpdateMappingVisitor updateVisitor(core::ExecParams::defaultInstance()); updateVisitor.execute(node);
+    sofa::simulation::MechanicalProjectPositionAndVelocityVisitor mechaProjectVisitor(core::mechanicalparams::defaultInstance()); mechaProjectVisitor.execute(node);
+    sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(core::mechanicalparams::defaultInstance()); mechaVisitor.execute(node);
+    sofa::simulation::UpdateMappingVisitor updateVisitor(core::execparams::defaultInstance()); updateVisitor.execute(node);
 };
 
 

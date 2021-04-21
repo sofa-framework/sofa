@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/types/RGBAColor.h>
+#include <sofa/core/MechanicalParams.h>
 #include <vector>
 #include <set>
 
@@ -94,7 +95,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::init()
     origVecFromCenter.resize( numPts );
     origCenter.resize( numPts );
 
-    trianglePressureMap.createTopologicalEngine(m_topology);
+    trianglePressureMap.createTopologyHandler(m_topology);
     trianglePressureMap.registerTopologicalData();
 
     initTriangleInformation();

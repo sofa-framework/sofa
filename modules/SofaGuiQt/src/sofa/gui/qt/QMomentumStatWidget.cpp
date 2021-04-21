@@ -37,7 +37,7 @@ QMomentumStatWidget::QMomentumStatWidget( QWidget* parent, simulation::Node* nod
     setCurve( 4, "Angular Y", Qt::magenta );
     setCurve( 5, "Angular Z", Qt::yellow );
 
-    m_momentumVisitor = new simulation::MechanicalGetMomentumVisitor(core::MechanicalParams::defaultInstance());
+    m_momentumVisitor = new simulation::MechanicalGetMomentumVisitor(core::mechanicalparams::defaultInstance());
 }
 
 QMomentumStatWidget::~QMomentumStatWidget()

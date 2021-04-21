@@ -336,7 +336,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
             (const sofa::helper::vector<sofa::helper::vector<double> >)0
                                       );
 
-    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.linkToTriangleDataArray();
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
@@ -380,7 +380,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
     size_t nbEdges=m_topology->getNbEdges();

@@ -92,7 +92,7 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
 
 
 
-typedef testing::Types<
+typedef ::testing::Types<
 TestDataEngine< component::engine::ComputeDualQuatEngine<defaulttype::Rigid3Types> >
 ,TestDataEngine< component::engine::GaussPointContainer >
 ,TestDataEngine< component::engine::ImageShapeFunctionSelectNode<defaulttype::ImageUC> >

@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.12)
 project(Compliant VERSION 0.1)
 
+sofa_find_package(SofaSimulationGraph REQUIRED)
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
 find_package(SofaGuiQt QUIET)
 sofa_find_package(SofaPython QUIET)
+sofa_find_package(Sofa.GL QUIET)
 
 # Previous Eigen versions have a critical bug (v.noalias()+=w does not work in some situations)
 find_package(Eigen3 3.2.5 REQUIRED)
@@ -274,6 +276,10 @@ endif()
 
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaPython)
+endif()
+
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
 endif()
 
 if(SOFA_BUILD_TESTS)

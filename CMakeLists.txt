@@ -155,11 +155,6 @@ endif()
 
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    # Enable testing features of cmake, like the add_test() command.
-    enable_testing()
-    add_subdirectory(extlibs/gtest)
-endif()
 
 ## Active or not the use of ccache
 option(SOFA_USE_CCACHE "Compile using ccache optimization" OFF)
@@ -187,11 +182,15 @@ option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to Sofa
 add_subdirectory(extlibs)
 
 ### Main Sofa subdirectories
+
+# TODO: add an option once the sofa code has been converted
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
+
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
+
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    # Depends on SofaSimulation
-    add_subdirectory(tools/SofaGTestMain)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Testing)
 endif()
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
@@ -245,11 +244,6 @@ endif()
 
 ## Plugins
 add_subdirectory(applications/plugins)
-
-if(SOFA_BUILD_TESTS)
-    # Tests for all the modules, written using SofaTest.
-    add_subdirectory(tests)
-endif()
 
 ## Applications
 add_subdirectory(applications/projects)

@@ -25,4 +25,6 @@
 namespace sofa::component
 {
 
+void SOFA_SOFASIMPLEFEM_API initSofaSimpleFem();
+
 } //namespace sofa::component::forcefield

@@ -182,7 +182,7 @@ void VectorSpringForceField<DataTypes>::init()
         if(m_topology)
         {
             edgeHandler = new EdgeDataHandler(this,&springArray);
-            springArray.createTopologicalEngine(m_topology,edgeHandler);
+            springArray.createTopologyHandler(m_topology,edgeHandler);
             springArray.registerTopologicalData();
         }
     }
@@ -324,7 +324,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     VecDeriv&        df2 = *data_df2.beginEdit();
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
-    Real kFactor       =  Real(mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
+    Real kFactor       =  Real(sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()));
 
     Deriv dforce,d;
 

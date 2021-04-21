@@ -22,6 +22,7 @@
 #pragma once
 
 #include "DiagonalVelocityDampingForceField.h"
+#include <sofa/core/MechanicalParams.h>
 
 
 namespace sofa::component::forcefield

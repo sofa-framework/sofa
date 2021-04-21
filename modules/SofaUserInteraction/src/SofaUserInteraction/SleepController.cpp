@@ -137,7 +137,7 @@ void SleepController::init()
 
     // Find all nodes with the flag "canChangeSleepingState"
     StatesThatCanSleep tempStates;
-    GetStatesThatCanSleep(core::ExecParams::defaultInstance(), tempStates).execute(getContext()->getRootContext());
+    GetStatesThatCanSleep(core::execparams::defaultInstance(), tempStates).execute(getContext()->getRootContext());
 
     // Find the corresponding template in each mechanical state we are monitoring
     for (unsigned int i = 0, nbStates = tempStates.size(); i < nbStates; ++i)
@@ -289,7 +289,7 @@ void SleepController::updateTimeSinceWakeUp()
 
 void SleepController::updateSleepStatesRecursive()
 {
-    UpdateAllSleepStates(core::ExecParams::defaultInstance()).execute(getContext()->getRootContext());
+    UpdateAllSleepStates(core::execparams::defaultInstance()).execute(getContext()->getRootContext());
 }
 
 void SleepController::collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs)

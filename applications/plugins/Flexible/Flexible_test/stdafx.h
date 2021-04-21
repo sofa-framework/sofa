@@ -7,7 +7,7 @@
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ExecParams.h>
+
 
 #include <SceneCreator/SceneCreator.h>
 #include <SofaTest/Sofa_test.h>

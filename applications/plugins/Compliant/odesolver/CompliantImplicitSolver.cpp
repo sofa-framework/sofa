@@ -146,14 +146,14 @@ using namespace core::behavior;
         if( !lagrange.id().isNull() )
         {
             // warning, vop.v_clear would only clear independent dofs
-            simulation::MechanicalVOpVisitor clearVisitor(core::ExecParams::defaultInstance(), lagrange.id(), core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0);
+            simulation::MechanicalVOpVisitor clearVisitor(core::execparams::defaultInstance(), lagrange.id(), core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0);
             clearVisitor.only_mapped = true;
             send( clearVisitor, false );
         }
     }
 
     void CompliantImplicitSolver::cleanup() {
-        sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
+        sofa::simulation::common::VectorOperations vop( core::execparams::defaultInstance(), this->getContext() );
         vop.v_free( lagrange.id(), false, true );
         vop.v_free( _ck.id(), false, true );
         vop.v_free( _acc.id() );

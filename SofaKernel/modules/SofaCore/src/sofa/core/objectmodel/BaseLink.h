@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASELINK_H
 
 #include <sofa/core/config.h>
-#include <sofa/core/ExecParams.h>
+#include <sofa/core/fwd.h>
 #include <string>
 
 namespace sofa

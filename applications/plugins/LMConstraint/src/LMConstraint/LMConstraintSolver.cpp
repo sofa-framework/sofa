@@ -23,6 +23,7 @@
 #include <LMConstraint/LMConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/BaseMass.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -51,7 +52,7 @@ LMConstraintSolver::LMConstraintSolver()
     , graphGSError( initData(&graphGSError,"graphGSError","Graph of residuals at each iteration") )
     , traceKineticEnergy( initData( &traceKineticEnergy, false, "traceKineticEnergy", "Trace the evolution of the Kinetic Energy throughout the solution of the system"))
     , graphKineticEnergy( initData(&graphKineticEnergy,"graphKineticEnergy","Graph of the kinetic energy of the system") )
-    , LMConstraintVisitor( sofa::core::ExecParams::defaultInstance() )
+    , LMConstraintVisitor( sofa::core::execparams::defaultInstance() )
 {
     graphGSError.setGroup("Statistics");
     graphGSError.setWidget("graph");

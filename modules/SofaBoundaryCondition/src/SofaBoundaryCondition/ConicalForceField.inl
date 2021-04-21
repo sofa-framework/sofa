@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/core/MechanicalParams.h>
 #include <cassert>
 #include <iostream>
 
@@ -136,7 +137,7 @@ void ConicalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams*
     VecDeriv& df1 = *(datadF.beginEdit());
     const VecCoord& dx1=datadX.getValue();
 
-    const Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     df1.resize(dx1.size());
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)

@@ -30,21 +30,6 @@ namespace sofa
 namespace core
 {
 
-// forward declaration of classes accessible from the node
-namespace behavior
-{
-class BaseAnimationLoop;
-class OdeSolver;
-}
-namespace collision
-{
-class Pipeline;
-}
-namespace visual
-{
-class VisualLoop;
-}
-
 namespace objectmodel
 {
 

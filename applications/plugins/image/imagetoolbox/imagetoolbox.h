@@ -1,7 +1,3 @@
-#ifndef IMAGETOOLBOX_H
-#define IMAGETOOLBOX_H
-
-
 /******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
@@ -23,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#ifndef IMAGETOOLBOX_H
+#define IMAGETOOLBOX_H
 
 #include <image/image_gui/config.h>
 #include <image/ImageTypes.h>
 #include <image/VectorVis.h>
 
 #include <sofa/helper/io/Image.h>
-#include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <SofaBaseVisual/VisualModelImpl.h>

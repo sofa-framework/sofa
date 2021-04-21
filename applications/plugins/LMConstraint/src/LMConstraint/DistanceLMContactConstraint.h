@@ -25,7 +25,7 @@
 #include <LMConstraint/ContactDescription.h>
 
 #include <sofa/core/VecId.h>
-#include <sofa/core/ConstraintParams.h>
+
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Node.h>

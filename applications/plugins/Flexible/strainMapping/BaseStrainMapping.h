@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/Simulation.h>
-
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/Mapping.h>
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -288,12 +288,12 @@ public:
         {
             if( K.compressedMatrix.nonZeros() )
             {
-                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+                K.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
             }
             else // force local assembly
             {
                 updateK( mparams, childForceId );
-                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+                K.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
                 K.resize(0,0); // forgot about this matrix
             }
         }
@@ -304,7 +304,7 @@ public:
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
-                jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
             }
         }
     }

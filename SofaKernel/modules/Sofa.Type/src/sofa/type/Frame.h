@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/config.h>
+#include <sofa/type/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
@@ -38,7 +38,7 @@ The product F1F2 can be seen as a frame displacement F1 starting from the refere
 
 \author Francois Faure, INRIA-UJF, 2006
 */
-class SOFA_DEFAULTTYPE_API Frame
+class SOFA_TYPE_API Frame
 {
 public:
     typedef Vec<3,SReal> Vec3;

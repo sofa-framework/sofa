@@ -21,7 +21,6 @@
 ******************************************************************************/
 
 #include "AbstractTypeInfo.h"
-#include "TypeInfoRegistry.h"
 
 namespace sofa::defaulttype
 {
