@@ -19,18 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/simulation/CpuTask.h>
 
-#include <sofa/geometry/config.h>
+#include <thread>
 
-namespace sofa::geometry
+
+namespace sofa::simulation
 {
+    CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
+    : Task(scheduledThread)
+    , m_status(status)
+    {
+    }
 
-struct Tetrahedron
-{
-    static const sofa::Size NumberOfNodes = 4;
+    CpuTask::~CpuTask()
+    {
+    }
 
-    Tetrahedron() = default;
-};
+    CpuTask::Status *CpuTask::getStatus(void) const
+    {
+        return m_status;
+    }
 
-} // namespace sofa::geometry
+    bool CpuTask::Status::isBusy() const
+    {
+        return (m_busy.load(std::memory_order_relaxed) > 0);
+    }
+
+    int CpuTask::Status::setBusy(bool busy)
+    {
+        if (busy)
+        {
+            return m_busy.fetch_add(1, std::memory_order_relaxed);
+        }
+        else
+        {
+            return m_busy.fetch_sub(1, std::memory_order_relaxed);
+        }
+    }
+}

@@ -28,9 +28,12 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa::component::forcefield
 {
+
+using sofa::core::topology::edgesInTetrahedronArray;
 
 template< class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
@@ -313,7 +316,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::computeQRRotation( Mat3x3
 template <class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
 {
-
     VecDeriv& f        = *(dataF.beginEdit());
     const VecCoord& x  =   dataX.getValue()  ;
 
@@ -321,7 +323,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
     unsigned int j,k,l;
     int nbTetrahedra=m_topology->getNbTetrahedra();
     int i;
-    const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 
 
     if (updateTopologyInfo)
