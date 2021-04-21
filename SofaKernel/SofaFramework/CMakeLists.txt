@@ -17,11 +17,6 @@ set(SOFAFRAMEWORK_MODULES
 
 foreach(module ${SOFAFRAMEWORK_MODULES})
     add_subdirectory(../modules/${module} ${CMAKE_CURRENT_BINARY_DIR}/${module})
-    if(SOFA_BUILD_TESTS)
-        target_compile_options(${module} PUBLIC "-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/tests\"")
-    endif()
-
-    set_target_properties(${module} PROPERTIES FOLDER SofaFramework) # IDE folder
 endforeach()
 
 set(SOFAFRAMEWORK_SRC src/SofaFramework)
