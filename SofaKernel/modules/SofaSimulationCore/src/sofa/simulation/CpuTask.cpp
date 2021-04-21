@@ -19,45 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef InitTasks_h__
-#define InitTasks_h__
-
 #include <sofa/simulation/CpuTask.h>
 
-namespace sofa
+#include <thread>
+
+
+namespace sofa::simulation
 {
-    namespace simulation
+    CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
+    : Task(scheduledThread)
+    , m_status(status)
     {
-        
-        using namespace sofa;
-        
-        
-        
-        class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public CpuTask
+    }
+
+    CpuTask::~CpuTask()
+    {
+    }
+
+    CpuTask::Status *CpuTask::getStatus(void) const
+    {
+        return m_status;
+    }
+
+    bool CpuTask::Status::isBusy() const
+    {
+        return (m_busy.load(std::memory_order_relaxed) > 0);
+    }
+
+    int CpuTask::Status::setBusy(bool busy)
+    {
+        if (busy)
         {
-            
-        public:
-            
-            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
-            
-            ~InitPerThreadDataTask() override;
-            
-            MemoryAlloc run() override;
-            
-        private:
-            
-            std::mutex*	 IdFactorygetIDMutex;
-            std::atomic<int>* _atomicCounter;
-        };
-        
-        
-        // thread storage initialization
-        SOFA_SIMULATION_CORE_API void initThreadLocalData();
-        
-        
-        
-    } // namespace simulation
-
-} // namespace sofa
-
-#endif // InitTasks_h__
+            return m_busy.fetch_add(1, std::memory_order_relaxed);
+        }
+        else
+        {
+            return m_busy.fetch_sub(1, std::memory_order_relaxed);
+        }
+    }
+}
