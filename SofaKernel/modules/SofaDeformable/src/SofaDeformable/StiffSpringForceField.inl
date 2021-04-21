@@ -36,12 +36,6 @@ template<class DataTypes>
 StiffSpringForceField<DataTypes>::StiffSpringForceField(double ks, double kd)
     : StiffSpringForceField<DataTypes>(nullptr, nullptr, ks, kd)
 {
-    this->addUpdateCallback("updateSprings-ks-kd", { &d_indices1, &d_indices2, &d_length, &this->ks, &this->kd}, [this](const core::DataTracker& t)
-    {
-        SOFA_UNUSED(t);
-        createSpringsFromInputs();
-        return sofa::core::objectmodel::ComponentState::Valid;
-    }, {&this->springs});
 }
 
 template<class DataTypes>
@@ -51,7 +45,7 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1
     , d_indices2(initData(&d_indices2, "indices2", "Indices of the fixed points on the second model"))
     , d_length(initData(&d_length, 0.0, "length", "uniform length of all springs"))
 {
-    this->addUpdateCallback("updateSprings-m1-m2-ks-kd", { &d_indices1, &d_indices2, &d_length, &this->ks, &this->kd}, [this](const core::DataTracker& t)
+    this->addUpdateCallback("updateSprings", { &d_indices1, &d_indices2, &d_length, &this->ks, &this->kd}, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
         createSpringsFromInputs();
