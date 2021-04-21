@@ -93,6 +93,8 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::helper::vector
     auto *taskScheduler = sofa::simulation::TaskScheduler::getInstance();
     assert(taskScheduler != nullptr);
 
+    sofa::simulation::CpuTask::Status status;
+
     {
         ScopedAdvancedTimer createTasksTimer("TasksCreation");
 
@@ -111,7 +113,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::helper::vector
             {
                 last = m_pairs.end();
             }
-            m_tasks.emplace_back(&m_status, first, last, intersectionMethod);
+            m_tasks.emplace_back(&status, first, last, intersectionMethod);
             taskScheduler->addTask(&m_tasks.back());
             first += nbElements;
             last += nbElements;
@@ -120,7 +122,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::helper::vector
 
     {
         ScopedAdvancedTimer waitTimer("ParallelTasks");
-        taskScheduler->workUntilDone(&m_status);
+        taskScheduler->workUntilDone(&status);
     }
 
     for (const auto& task : m_tasks)

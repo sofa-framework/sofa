@@ -24,7 +24,7 @@
 #include <MultiThreading/config.h>
 
 #include <SofaBaseCollision/BruteForceBroadPhase.h>
-#include <sofa/simulation/Task.h>
+#include <sofa/simulation/CpuTask.h>
 
 namespace sofa::core::collision
 {
@@ -52,7 +52,6 @@ protected:
     ~ParallelBruteForceBroadPhase() override = default;
 
     std::vector<BruteForcePairTest> m_tasks;
-    sofa::simulation::CpuTask::Status m_status;
 
 public:
     using Pair = std::pair<FirstLastCollisionModel, FirstLastCollisionModel>;
