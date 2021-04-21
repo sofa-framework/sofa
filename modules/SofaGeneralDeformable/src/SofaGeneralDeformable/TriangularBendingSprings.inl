@@ -67,7 +67,7 @@ void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type
 
         unsigned int nb_activated = 0;
 
-        const typename DataTypes::VecCoord& restPosition=mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         type::vector<EdgeInformation>& edgeData = *(edgeInfo.beginEdit());
 
@@ -166,7 +166,7 @@ void TriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::t
 
         //unsigned int u,v;
 
-        const typename DataTypes::VecCoord& restPosition=mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         type::vector<EdgeInformation>& edgeData = *(edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<triangleRemoved.size(); ++i)
