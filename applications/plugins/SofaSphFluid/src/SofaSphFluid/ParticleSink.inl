@@ -79,7 +79,7 @@ void ParticleSink<DataTypes>::init()
         if (!m_topoModifier)
         {
             sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            msg_error() << "Topology has been found in at component: " << _topology->getName() << " but this topology is not dynamyc. ParticleSink will not be able to remove points.";
+            msg_error() << "Topology component has been found in Node at: " << _topology->getName() << " but this topology is not dynamic. ParticleSink will not be able to remove points.";
             return;
         }
 
