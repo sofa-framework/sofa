@@ -126,10 +126,10 @@ public:
     void registerTopologicalData() = delete;
 
     void applyDestroyFunction(std::function<void(Index, value_type&)> func) { myDestroyFunction = func; }
-    void applyCreateFunction(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::helper::vector< Index >&, const sofa::helper::vector< double >&)> func) { myCreateFunction = func; }
+    void applyCreateFunction(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> func) { myCreateFunction = func; }
 
     std::function<void(Index, value_type&)> myDestroyFunction;
-    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::helper::vector< Index >&, const sofa::helper::vector< double >&)> myCreateFunction;
+    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> myCreateFunction;
 
 protected:
     sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* m_topologyHandler;
