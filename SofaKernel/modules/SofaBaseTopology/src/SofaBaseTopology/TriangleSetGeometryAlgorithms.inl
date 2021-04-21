@@ -1780,7 +1780,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 {
                     if ((!is_initialized_01) || (coord_k > coord_kmin))
                     {
-                        //indices.clear();
                         indices.push_back(t[0]);
                         indices.push_back(t[1]);
                         baryCoef = coord_t;
@@ -1849,7 +1848,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 {
                     if ((!is_initialized_12) || (coord_k > coord_kmin))
                     {
-                        //indices.clear();
                         indices.push_back(t[1]);
                         indices.push_back(t[2]);
                         baryCoef = coord_t;
@@ -1917,7 +1915,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 {
                     if ((!is_initialized_20) || (coord_k > coord_kmin))
                     {
-                        //indices.clear();
                         indices.push_back(t[2]);
                         indices.push_back(t[0]);
                         baryCoef = coord_t;
@@ -1930,8 +1927,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 }
                 is_validated = is_validated || is_initialized_20;
             }
-
-
         }
         else
         {
