@@ -72,10 +72,10 @@ if(Sofa.Compat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Compat)
 endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaFramework
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaFramework"
-    )
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
