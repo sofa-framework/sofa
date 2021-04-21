@@ -21,14 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/geometry/config.h>
 
 namespace sofa::geometry
 {
-    struct Quad
-    {
-        static const sofa::Size NumberOfNodes = 4;
 
-        Quad() = default;
-    };
-}
+struct Quad
+{
+    static const sofa::Size NumberOfNodes = 4;
+
+    Quad() = default;
+};
+
+} // namespace sofa::geometry

@@ -26,6 +26,7 @@
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/helper/map.h>
 
 namespace sofa::component::constraintset
 {

@@ -26,9 +26,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
 #include <sofa/helper/types/RGBAColor.h>
-#include <sstream>
 #include <typeinfo>
-#include <sofa/helper/logging/Messaging.h>
 #include "AbstractTypeInfo.h"
 #include "typeinfo/DataTypeInfoDynamicWrapper.h"
 #include "typeinfo/DataTypeInfo.h"
