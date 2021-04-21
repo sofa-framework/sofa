@@ -19,45 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef InitTasks_h__
-#define InitTasks_h__
+#pragma once
 
-#include <sofa/simulation/CpuTask.h>
+#include <sofa/simulation/config.h>
 
-namespace sofa
+#include <sofa/simulation/Task.h>
+
+namespace sofa::simulation
 {
-    namespace simulation
+    /**  Base class to implement a CPU task
+     *   all the tasks running on the CPU should inherits from this class
+     */
+    class SOFA_SIMULATION_CORE_API CpuTask : public Task
     {
-        
-        using namespace sofa;
-        
-        
-        
-        class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public CpuTask
+    public:
+
+        /** CPU Task Status class definition:
+         *  used to synchronize CPU tasks  */
+        class SOFA_SIMULATION_CORE_API Status : public Task::Status
         {
-            
         public:
-            
-            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
-            
-            ~InitPerThreadDataTask() override;
-            
-            MemoryAlloc run() override;
-            
+            Status() : m_busy(0) {}
+
+            bool isBusy() const override final;
+
+            int setBusy(bool busy) override final;
+
         private:
-            
-            std::mutex*	 IdFactorygetIDMutex;
-            std::atomic<int>* _atomicCounter;
+            std::atomic<int> m_busy;
         };
-        
-        
-        // thread storage initialization
-        SOFA_SIMULATION_CORE_API void initThreadLocalData();
-        
-        
-        
-    } // namespace simulation
 
-} // namespace sofa
 
-#endif // InitTasks_h__
+        CpuTask::Status* getStatus(void) const override final;
+
+
+    public:
+
+        CpuTask(CpuTask::Status* status, int scheduledThread = -1);
+
+        virtual ~CpuTask();
+
+    private:
+        CpuTask::Status* m_status;
+    };
+
+}

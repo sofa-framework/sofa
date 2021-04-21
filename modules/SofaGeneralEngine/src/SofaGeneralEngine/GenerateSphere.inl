@@ -22,6 +22,7 @@
 #pragma once
 #include "GenerateSphere.h"
 #include <sofa/helper/rmath.h> //M_PI
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa::component::engine
 {
@@ -105,7 +106,6 @@ static unsigned int icosahedron_edge_vertex[30][2]=
 //  {15,19},{15,16},{16,17},{17,18},{18,19},
 //  {13,15},{11,19},{14,16},{7,17},{9,18}};
 
-const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 const unsigned int adjacentVerticesToEdges[6][2] = {{2,3}, {1,3}, {1,2}, {0,3}, {0,2}, {0,1}};
 
 template <class DataTypes>
@@ -595,8 +595,8 @@ void GenerateSphere<DataTypes>::doUpdate()
 
 			for (i=0;i<6;++i){
 				Edge e,se;
-				e[0]=(*itt)[edgesInTetrahedronArray[i][0]];
-				e[1]=(*itt)[edgesInTetrahedronArray[i][1]];
+				e[0]=(*itt)[sofa::core::topology::edgesInTetrahedronArray[i][0]];
+				e[1]=(*itt)[sofa::core::topology::edgesInTetrahedronArray[i][1]];
 				if (e[0]>e[1]){
 					se[0]=e[1];se[1]=e[0];
 				} else {

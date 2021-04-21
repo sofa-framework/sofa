@@ -7,6 +7,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/simulation/TaskScheduler.h>
+
+#include <thread>
 
 namespace sofa
 {

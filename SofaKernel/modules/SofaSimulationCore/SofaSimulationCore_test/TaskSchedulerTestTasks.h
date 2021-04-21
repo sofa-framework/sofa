@@ -1,5 +1,4 @@
-#include <sofa/simulation/Task.h>
-#include <thread>
+#include <sofa/simulation/CpuTask.h>
 
 namespace sofa
 {
