@@ -205,6 +205,13 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::helper::vector
             if (this->m_topologyHandler) {
                 this->m_topologyHandler->applyDestroyFunction(index[i], data[index[i]]);
             }
+
+            if (myDestroyFunction)
+            {
+                std::cout << "apply myDestroyFunction" << std::endl;
+                myDestroyFunction(index[i], data[index[i]]);
+            }
+
             this->swap(index[i], last);
             --last;
         }
@@ -251,7 +258,14 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
                     (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
                     (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
                     (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
-        
+            
+            if (myCreateFunction)
+            {
+                std::cout << "apply myCreateFunction" << std::endl;
+                myCreateFunction(Index(i0 + i), t, elems[i],
+                    (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
+                    (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i]);
+            }
         }
     }
     this->endEdit();
