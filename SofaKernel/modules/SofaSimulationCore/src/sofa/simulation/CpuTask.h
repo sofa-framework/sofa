@@ -21,16 +21,46 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/geometry/config.h>
+#include <sofa/simulation/config.h>
 
-namespace sofa::geometry
+#include <sofa/simulation/Task.h>
+
+namespace sofa::simulation
 {
+    /**  Base class to implement a CPU task
+     *   all the tasks running on the CPU should inherits from this class
+     */
+    class SOFA_SIMULATION_CORE_API CpuTask : public Task
+    {
+    public:
 
-struct Tetrahedron
-{
-    static const sofa::Size NumberOfNodes = 4;
+        /** CPU Task Status class definition:
+         *  used to synchronize CPU tasks  */
+        class SOFA_SIMULATION_CORE_API Status : public Task::Status
+        {
+        public:
+            Status() : m_busy(0) {}
 
-    Tetrahedron() = default;
-};
+            bool isBusy() const override final;
 
-} // namespace sofa::geometry
+            int setBusy(bool busy) override final;
+
+        private:
+            std::atomic<int> m_busy;
+        };
+
+
+        CpuTask::Status* getStatus(void) const override final;
+
+
+    public:
+
+        CpuTask(CpuTask::Status* status, int scheduledThread = -1);
+
+        virtual ~CpuTask();
+
+    private:
+        CpuTask::Status* m_status;
+    };
+
+}
