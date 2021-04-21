@@ -24,6 +24,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <unordered_map>
 
 namespace sofa::component::collision
 {
