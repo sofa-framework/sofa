@@ -16,7 +16,7 @@ set(SOFAFRAMEWORK_MODULES
     )
 
 foreach(module ${SOFAFRAMEWORK_MODULES})
-    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${module})
+    add_subdirectory(../modules/${module} ${CMAKE_CURRENT_BINARY_DIR}/${module})
 endforeach()
 
 set(SOFAFRAMEWORK_SRC src/SofaFramework)
