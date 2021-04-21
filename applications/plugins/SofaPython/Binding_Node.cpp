@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
