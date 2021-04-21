@@ -48,15 +48,8 @@ protected:
 
 private:
 
-    /// vector of accumulated CollisionModel's when the collision pipeline asks
-    /// to add a CollisionModel in BruteForceBroadPhase::addCollisionModel
-    /// This vector is emptied at each time step in BruteForceBroadPhase::beginBroadPhase
-    sofa::helper::vector<core::CollisionModel*> m_collisionModels;
-
     ///< if not empty, objects that do not intersect this bounding-box will be ignored
     Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box;
-
-    CubeCollisionModel::SPtr boxModel;
 
 public:
     void init() override;
@@ -75,15 +68,29 @@ public:
      */
     void addCollisionModel (core::CollisionModel *cm) override;
 
-protected:
+    static bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
 
-    virtual bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
+protected:
 
     /// Return true if the provided CollisionModel can collide with itself
     bool doesSelfCollide(core::CollisionModel *cm) const;
 
     /// Return true if the provided CollisionModel intersect boxModel, false otherwise
     bool intersectWithBoxModel(core::CollisionModel *cm) const;
+
+    CubeCollisionModel::SPtr boxModel;
+
+    struct FirstLastCollisionModel
+    {
+        core::CollisionModel* firstCollisionModel { nullptr };
+        core::CollisionModel* lastCollisionModel { nullptr };
+        FirstLastCollisionModel(core::CollisionModel* a, core::CollisionModel* b) : firstCollisionModel(a), lastCollisionModel(b) {}
+    };
+
+    /// vector of accumulated CollisionModel's when the collision pipeline asks
+    /// to add a CollisionModel in BruteForceBroadPhase::addCollisionModel
+    /// This vector is emptied at each time step in BruteForceBroadPhase::beginBroadPhase
+    sofa::helper::vector<FirstLastCollisionModel> m_collisionModels;
 };
 
 }
