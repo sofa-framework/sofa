@@ -43,6 +43,8 @@ void ParallelBruteForceBroadPhase::init()
 {
     BruteForceBroadPhase::init();
 
+    // initialize the thread pool
+
     auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
     assert(taskScheduler != nullptr);
     if (taskScheduler->getThreadCount() < 1)
@@ -125,6 +127,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::helper::vector
         taskScheduler->workUntilDone(&status);
     }
 
+    // Merge the output of the tasks
     for (const auto& task : m_tasks)
     {
         cmPairs.insert(cmPairs.end(), task.m_intersectingPairs.begin(), task.m_intersectingPairs.end());
@@ -143,6 +146,8 @@ BruteForcePairTest::BruteForcePairTest(sofa::simulation::CpuTask::Status *status
 
 sofa::simulation::Task::MemoryAlloc BruteForcePairTest::run()
 {
+    assert(m_intersectionMethod != nullptr);
+
     auto it = m_first;
     while(it != m_last)
     {

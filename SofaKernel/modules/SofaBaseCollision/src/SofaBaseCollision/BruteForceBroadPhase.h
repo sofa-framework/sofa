@@ -35,7 +35,7 @@ namespace sofa::component::collision
  * that need to be checked for intersection. The algorithm output is a list of pairs of objects that can potentially
  * be in intersection. This list is then used as an input for a narrow phase algorithm.
  * In this algorithm, all possible pairs of objects are tested (brute force test). If there are n objects, there will be
- * n^2 tests. The tests are based on the bounding volume of the objects, usually an axis-aligned bounding box.
+ * n^2/2 tests. The tests are based on the bounding volume of the objects, usually an axis-aligned bounding box.
  */
 class SOFA_SOFABASECOLLISION_API BruteForceBroadPhase : public core::collision::BroadPhaseDetection
 {
@@ -80,10 +80,16 @@ protected:
 
     CubeCollisionModel::SPtr boxModel;
 
+    /// A data structure to store a pair of collision models
+    /// They both describe the same object
     struct FirstLastCollisionModel
     {
+        /// First collision model in the hierarchy of collision models of an object. Usually a bounding box
         core::CollisionModel* firstCollisionModel { nullptr };
+
+        // Last collision model in the hierarchy of collision models of an object. Holding more details than a bounding box
         core::CollisionModel* lastCollisionModel { nullptr };
+
         FirstLastCollisionModel(core::CollisionModel* a, core::CollisionModel* b) : firstCollisionModel(a), lastCollisionModel(b) {}
     };
 
