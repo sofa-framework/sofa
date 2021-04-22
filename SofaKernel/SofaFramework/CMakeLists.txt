@@ -9,10 +9,10 @@ set(SOFAFRAMEWORK_MODULES
     Sofa.Type
     Sofa.Topology
     Sofa.Geometry 
-    SofaHelper
-    SofaDefaultType
-    SofaCore
-    SofaSimulationCore
+    Sofa.Helper
+    Sofa.DefaultType
+    Sofa.Core
+    Sofa.SimulationCore
     )
 
 # Temporary: to remove once the folders have been renamed
