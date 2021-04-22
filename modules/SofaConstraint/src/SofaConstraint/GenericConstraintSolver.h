@@ -28,6 +28,9 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/helper/map.h>
 
+#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/InitTasks.h>
+
 namespace sofa::component::constraintset
 {
 
@@ -105,6 +108,7 @@ public:
     Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
     Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
     Data<bool> unbuilt; ///< Compliance is not fully built
+    Data<bool> d_multithreading; ///< Compliances built concurrently
     Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors; ///< Sum of the constraints' errors at each iteration
     Data<std::map < std::string, sofa::helper::vector<double> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
@@ -145,6 +149,32 @@ protected:
     double time;
     double timeTotal;
     double timeScale;
+
+private:
+
+    class ComputeComplianceTask : public simulation::CpuTask
+    {
+    public:
+        ComputeComplianceTask(simulation::CpuTask::Status* status): CpuTask(status) {}
+        ~ComputeComplianceTask() override {}
+
+        MemoryAlloc run() final {
+            cc->addComplianceInConstraintSpace(&cparams, &W);
+            return MemoryAlloc::Stack;
+        }
+
+        void set(core::behavior::BaseConstraintCorrection* _cc, core::ConstraintParams _cparams, int dim){
+            cc = _cc;
+            cparams = _cparams;
+            W.resize(dim,dim);
+        }
+
+    private:
+        core::behavior::BaseConstraintCorrection* cc;
+        sofa::component::linearsolver::LPtrFullMatrix<double> W;
+        core::ConstraintParams cparams;
+        friend class GenericConstraintSolver;
+    };
 };
 
 

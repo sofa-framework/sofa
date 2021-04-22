@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/config.h>
+
 #include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
 
@@ -88,7 +90,7 @@ TEST(UtilsTest, readBasicIniFile_nonexistentFile)
 
 TEST(UtilsTest, readBasicIniFile)
 {
-    const std::string path = std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/UtilsTest.ini";
+    const std::string path = std::string(SOFA_TESTING_RESOURCES_DIR) + "/UtilsTest.ini";
     std::map<std::string, std::string> values = Utils::readBasicIniFile(path);
     EXPECT_EQ(3u, values.size());
     EXPECT_EQ(1u, values.count("a"));
