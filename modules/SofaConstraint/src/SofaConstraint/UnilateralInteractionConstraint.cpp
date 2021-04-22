@@ -22,7 +22,6 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP
 #include <SofaConstraint/UnilateralInteractionConstraint.inl>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::constraintset
