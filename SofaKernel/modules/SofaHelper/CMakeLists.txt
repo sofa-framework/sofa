@@ -214,14 +214,11 @@ if(Boost_FILESYSTEM_FOUND)
 endif()
 
 sofa_find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Type REQUIRED)
+sofa_find_package(Sofa.Topology REQUIRED)
 
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaSimulationCore/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaCore/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Sofa.Type/src>")
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
@@ -233,8 +230,8 @@ endif()
 set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
 
 # DEPENDENCY LINKS AND INCLUDE DIRS
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Topology)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config )
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Topology)
 
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -274,15 +271,13 @@ if(JSON_FOUND)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
 endif()
 
-# Create alias
-add_library(SofaHelper ALIAS ${PROJECT_NAME})
-
 sofa_add_targets_to_package(
-    PACKAGE_NAME SofaFramework
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaFramework"
-    )
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaHelper_test)
