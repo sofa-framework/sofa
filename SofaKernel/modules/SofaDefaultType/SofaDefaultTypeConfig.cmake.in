@@ -3,7 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaHelper QUIET REQUIRED)
+find_package(Sofa.Helper QUIET REQUIRED)
 find_package(Eigen3 QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

@@ -257,11 +257,11 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Sofa.Topology REQUIRED)
-sofa_find_package(SofaHelper REQUIRED)
-sofa_find_package(SofaDefaultType REQUIRED)
+sofa_find_package(Sofa.Helper REQUIRED)
+sofa_find_package(Sofa.DefaultType REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Topology SofaDefaultType)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Topology Sofa.DefaultType)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)
     message("Adding precompiled header for SofaCore")

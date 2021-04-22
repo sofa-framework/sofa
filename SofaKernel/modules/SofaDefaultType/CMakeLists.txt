@@ -82,11 +82,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_Topology.cpp
 )
 
-sofa_find_package(SofaHelper REQUIRED)
+sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Type)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Type)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
 
@@ -97,9 +97,6 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
-
-# Create alias
-add_library(SofaDefaultType ALIAS ${PROJECT_NAME})
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaDefaultType_test)

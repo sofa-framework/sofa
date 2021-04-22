@@ -152,10 +152,10 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
 )
 
-sofa_find_package(SofaCore REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
 
 # is this a compiler/linker version specific problem?
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
