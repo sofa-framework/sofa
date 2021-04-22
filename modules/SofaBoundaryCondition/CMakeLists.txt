@@ -122,13 +122,12 @@ list(APPEND SOURCE_FILES
     ${SOFABOUNDARYCONDITION_SRC}/ProjectToPointConstraint.cpp
     ${SOFABOUNDARYCONDITION_SRC}/ProjectDirectionConstraint.cpp
     )
-
-sofa_find_package(SofaBase REQUIRED) # SofaBaseMechanics  
+    
 sofa_find_package(SofaEigen2Solver REQUIRED)
 sofa_find_package(SofaBaseTopology REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseMechanics)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaEigen2Solver)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
