@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/config.h>
+
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vectorData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -131,13 +133,13 @@ struct DataFileNameVector_test: public ::testing::Test
 
 TEST_F(DataFileNameVector_test , setValueAsString_spaces )
 {
-    dataFileNameVector.setValueAsString( "['"+std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    dataFileNameVector.setValueAsString( "['"+std::string(SOFA_TESTING_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(SOFA_TESTING_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 
 TEST_F(DataFileNameVector_test , read_spaces )
 {
-    dataFileNameVector.read( "['" + std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    dataFileNameVector.read( "['" + std::string(SOFA_TESTING_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(SOFA_TESTING_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 

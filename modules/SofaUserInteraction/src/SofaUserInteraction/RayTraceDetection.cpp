@@ -281,8 +281,8 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
                 it2 != outputs->end (); ++it2)
         {
-            vertices.push_back(it2->point[0]);
-            vertices.push_back(it2->point[1]);
+            vertices.push_back(sofa::defaulttype::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
+            vertices.push_back(sofa::defaulttype::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
 
             msg_error() << it2->point[0] << " " << it2->point[0];
 
