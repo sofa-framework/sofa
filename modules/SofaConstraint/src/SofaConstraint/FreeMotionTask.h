@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <sofa/simulation/Task.h>
+#include <sofa/simulation/CpuTask.h>
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/fwd.h>
