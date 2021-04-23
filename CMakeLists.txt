@@ -27,7 +27,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 
-## Change default install prefix
+## Change default install component and prefix
+set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME applications)
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif()
