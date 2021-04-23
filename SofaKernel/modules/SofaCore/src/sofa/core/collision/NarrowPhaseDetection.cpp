@@ -98,4 +98,4 @@ void NarrowPhaseDetection::changeInstanceNP(Instance inst)
     m_outputsMap.swap(m_storedOutputsMap[inst]);
 }
 
-}
+} // namespace sofa::core::collision

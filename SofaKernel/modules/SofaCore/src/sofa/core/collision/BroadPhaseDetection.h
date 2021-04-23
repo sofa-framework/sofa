@@ -67,4 +67,4 @@ protected:
     void changeInstanceBP(Instance inst) override;
 };
 
-}
+} // namespace sofa::core::collision

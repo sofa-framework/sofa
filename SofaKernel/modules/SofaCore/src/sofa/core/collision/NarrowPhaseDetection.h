@@ -80,4 +80,4 @@ protected:
     size_t m_primitiveTestCount; // used only for statistics purpose
 };
 
-} // namespace sofa
+} // namespace sofa::core::collision

@@ -56,4 +56,5 @@ void BroadPhaseDetection::changeInstanceBP(Instance inst)
     storedCmPairs[instance].swap(cmPairs);
     cmPairs.swap(storedCmPairs[inst]);
 }
-}
+
+} // namespace sofa::core::collision
