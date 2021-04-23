@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_NARROWPHASEDETECTION_H
-#define SOFA_COMPONENT_COLLISION_NARROWPHASEDETECTION_H
+#pragma once
 
 #include <sofa/core/collision/Detection.h>
 #include <sofa/core/collision/DetectionOutput.h>
@@ -82,5 +81,3 @@ protected:
 };
 
 } // namespace sofa
-
-#endif

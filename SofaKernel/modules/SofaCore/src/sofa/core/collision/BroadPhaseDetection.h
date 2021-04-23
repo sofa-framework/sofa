@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_BROADPHASEDETECTION_H
-#define SOFA_CORE_COLLISION_BROADPHASEDETECTION_H
+#pragma once
 
 #include <sofa/core/collision/Detection.h>
 #include <sofa/helper/vector.h>
@@ -69,4 +68,3 @@ protected:
 };
 
 }
-#endif
