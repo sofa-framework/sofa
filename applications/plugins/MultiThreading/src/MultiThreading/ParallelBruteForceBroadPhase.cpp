@@ -92,20 +92,31 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::helper::vector
     m_pairs.clear();
     BroadPhaseDetection::addCollisionModels(v);
 
+    if (m_pairs.empty())
+    {
+        return;
+    }
+
     auto *taskScheduler = sofa::simulation::TaskScheduler::getInstance();
     assert(taskScheduler != nullptr);
+
+    if (taskScheduler->getThreadCount() == 0)
+    {
+        msg_error() << "Task scheduler not correctly initialized";
+        return;
+    }
 
     sofa::simulation::CpuTask::Status status;
 
     {
         ScopedAdvancedTimer createTasksTimer("TasksCreation");
 
-        m_tasks.clear();
+        const auto nbPairs = static_cast<unsigned int>(m_pairs.size());
 
-        const auto nbThreads = taskScheduler->getThreadCount();
+        const auto nbThreads = std::min(taskScheduler->getThreadCount(), nbPairs);
         m_tasks.reserve(nbThreads);
 
-        const auto nbElements = m_pairs.size() / nbThreads;
+        const auto nbElements = nbPairs / nbThreads;
         auto first = m_pairs.begin();
         auto last = first + nbElements;
 
@@ -132,6 +143,8 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::helper::vector
     {
         cmPairs.insert(cmPairs.end(), task.m_intersectingPairs.begin(), task.m_intersectingPairs.end());
     }
+
+    m_tasks.clear();
 }
 
 BruteForcePairTest::BruteForcePairTest(sofa::simulation::CpuTask::Status *status,
