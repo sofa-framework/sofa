@@ -4,14 +4,19 @@ project(SofaFramework)
 # Version
 set(SOFAFRAMEWORK_VERSION "${Sofa_VERSION}")
 
-# Package install include directory
-set(SOFAFRAMEWORK_TARGETS Sofa.Type Sofa.Topology Sofa.Geometry SofaHelper SofaDefaultType SofaCore SofaSimulationCore)
+# Modules
+set(SOFAFRAMEWORK_MODULES
+    Sofa.Type
+    Sofa.Topology
+    Sofa.Geometry 
+    SofaHelper
+    SofaDefaultType
+    SofaCore
+    SofaSimulationCore
+    )
 
-foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
-    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    if(SOFA_BUILD_TESTS)
-        target_compile_options(${TARGET} PUBLIC "-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/tests\"")
-    endif()
+foreach(module ${SOFAFRAMEWORK_MODULES})
+    add_subdirectory(../modules/${module} ${CMAKE_CURRENT_BINARY_DIR}/${module})
 endforeach()
 
 set(SOFAFRAMEWORK_SRC src/SofaFramework)
@@ -24,7 +29,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_TARGETS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_MODULES})
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

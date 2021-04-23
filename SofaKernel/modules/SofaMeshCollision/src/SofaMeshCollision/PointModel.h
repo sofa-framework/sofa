@@ -23,10 +23,10 @@
 #include <SofaMeshCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <SofaMeshCollision/fwd.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <SofaMeshCollision/fwd.h>
 
 namespace sofa::component::collision
 {

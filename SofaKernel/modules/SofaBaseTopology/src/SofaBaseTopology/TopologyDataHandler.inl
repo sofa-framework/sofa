@@ -270,6 +270,13 @@ void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const 
 {
     m_topologyData->swap(event->index[0], event->index[1]);
 }
+
+template<class TopologyElementType, class VecT>
+bool TopologyDataHandler<TopologyElementType, VecT>::isTopologyDataRegistered()
+{
+    return m_topologyData != nullptr;
+}
+
 /// Apply adding elements.
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EAdded* event)

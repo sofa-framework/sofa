@@ -23,14 +23,13 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
+#include <sofa/core/topology/Topology.h>
 #include <fstream>
 
 namespace sofa::component::topology
 {
-	
-const unsigned int verticesInHexahedronArray[2][2][2]=  {{{0,4},{3,7}},{{1,5},{2,6}}};
 
-
+using sofa::core::topology::verticesInHexahedronArray;
 template< class DataTypes>
 NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3> &HexahedronSetGeometryAlgorithms< DataTypes >::getHexahedronNumericalIntegrationDescriptor()
 {

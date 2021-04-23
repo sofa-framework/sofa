@@ -19,47 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "UnitTest.h"
-#include <ctime>
-#include <iostream>
+#include <sofa/simulation/CpuTask.h>
 
-namespace sofa
+#include <thread>
+
+
+namespace sofa::simulation
 {
-
-namespace helper
-{
-
-
-UnitTest::UnitTest( std::string testName, VerbosityLevel verb )
-{
-    name = testName;
-    verbose = verb;
-}
-
-bool UnitTest::checkIf( bool testSucceeded, std::string testDescription, unsigned& ntests, unsigned& nerr)
-{
-    ntests++;
-    if( !testSucceeded ) nerr++;
-    if( testSucceeded )
+    CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
+    : Task(scheduledThread)
+    , m_status(status)
     {
-        sout()  << "---- SUCCESS of : " << testDescription << std::endl;
     }
-    else
+
+    CpuTask::~CpuTask()
     {
-        serr() <<  "==== FAILURE of : " << testDescription << std::endl;
     }
-    return testSucceeded;
+
+    CpuTask::Status *CpuTask::getStatus(void) const
+    {
+        return m_status;
+    }
+
+    bool CpuTask::Status::isBusy() const
+    {
+        return (m_busy.load(std::memory_order_relaxed) > 0);
+    }
+
+    int CpuTask::Status::setBusy(bool busy)
+    {
+        if (busy)
+        {
+            return m_busy.fetch_add(1, std::memory_order_relaxed);
+        }
+        else
+        {
+            return m_busy.fetch_sub(1, std::memory_order_relaxed);
+        }
+    }
 }
-
-void UnitTest::initClass()
-{
-    srand( (unsigned int)time(nullptr) ); // initialize the random number generator using the current time
-}
-
-
-
-
-} // namespace helper
-
-} // namespace sofa
-
