@@ -24,8 +24,6 @@
 
 #include <SofaBaseCollision/BruteForceBroadPhase.h>
 #include <SofaBaseCollision/BVHNarrowPhase.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <sofa/helper/vector.h>
 
 namespace sofa::component::collision
 {

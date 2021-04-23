@@ -21,16 +21,10 @@
 ******************************************************************************/
 #include <SofaBaseCollision/BruteForceDetection.h>
 
-#include <SofaBaseCollision/MirrorIntersector.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::collision
 {
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace collision;
 
 int BruteForceDetectionClass = core::RegisterObject("Combination of brute force broad phase and BVH narrow phase collision detection")
         .add< BruteForceDetection >()
@@ -40,6 +34,5 @@ BruteForceDetection::BruteForceDetection()
     : BruteForceBroadPhase()
     , BVHNarrowPhase()
 {}
-
 
 } // namespace sofa::component::collision
