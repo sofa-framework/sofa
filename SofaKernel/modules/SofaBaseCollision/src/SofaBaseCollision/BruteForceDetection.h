@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseCollision/config.h>
 
-#include <sofa/core/collision/BroadPhaseDetection.h>
+#include <SofaBaseCollision/BruteForceBroadPhase.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/helper/vector.h>
@@ -41,7 +41,7 @@ namespace sofa::component::collision
 class MirrorIntersector;
 
 class SOFA_SOFABASECOLLISION_API BruteForceDetection :
-    public core::collision::BroadPhaseDetection,
+    public BruteForceBroadPhase,
     public core::collision::NarrowPhaseDetection
 {
     /// Range defined by two iterators in a container of CollisionElement
@@ -54,49 +54,14 @@ class SOFA_SOFABASECOLLISION_API BruteForceDetection :
     using TestPair = std::pair< CollisionIteratorRange, CollisionIteratorRange >;
 
 public:
-    SOFA_CLASS2(BruteForceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
-
-private:
-
-    /// vector of accumulated CollisionModel's when the collision pipeline asks
-    /// to add a CollisionModel in BruteForceDetection::addCollisionModel
-    /// This vector is emptied at each time step in BruteForceDetection::beginBroadPhase
-    sofa::helper::vector<core::CollisionModel*> collisionModels;
-
-    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
-
-    CubeCollisionModel::SPtr boxModel;
-
+    SOFA_CLASS2(BruteForceDetection, BruteForceBroadPhase, core::collision::NarrowPhaseDetection);
 
 protected:
     BruteForceDetection();
 
     ~BruteForceDetection() override = default;
 
-    virtual bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
-
 public:
-
-    void init() override;
-    void reinit() override;
-
-    //////////////////////////////
-    /// BROAD PHASE interface ///
-    //////////////////////////////
-
-    /** \brief In the broad phase, ignores collision with the provided collision model if possible and add pairs of
-     * collision models if in intersection.
-     *
-     * Ignore the collision with the provided collision model if it does not intersect with the box defined in
-     * the Data box when it is defined.
-     * Add the provided collision model to be investigated in the narrow phase in case of self collision.
-     * Check intersection with already added collision models. If it can intersect another collision model, the pair
-     * is added to be further investigated in the narrow phase.
-     */
-    void addCollisionModel(core::CollisionModel *cm) override;
-
-    void beginBroadPhase() override;
-    void endBroadPhase() override;
 
     //////////////////////////////
     /// NARROW PHASE interface ///
@@ -117,12 +82,6 @@ public:
     inline bool needsDeepBoundingTree() const override { return true; }
 
 protected:
-
-    /// Return true if the provided CollisionModel intersect boxModel, false otherwise
-    bool intersectWithBoxModel(core::CollisionModel *cm) const;
-
-    /// Return true if the provided CollisionModel can collide with itself
-    bool doesSelfCollide(core::CollisionModel *cm) const;
 
     /// Return true if both collision models belong to the same object, false otherwise
     static bool isSelfCollision(core::CollisionModel* cm1, core::CollisionModel* cm2);
