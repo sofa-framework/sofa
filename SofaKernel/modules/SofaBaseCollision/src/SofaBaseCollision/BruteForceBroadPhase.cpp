@@ -28,7 +28,7 @@
 namespace sofa::component::collision
 {
 
-int BruteForceBroadPhaseClass = core::RegisterObject("Collision detection using extensive pair-wise tests")
+int BruteForceBroadPhaseClass = core::RegisterObject("Broad phase collision detection using extensive pair-wise tests")
         .add< BruteForceBroadPhase >()
 ;
 
