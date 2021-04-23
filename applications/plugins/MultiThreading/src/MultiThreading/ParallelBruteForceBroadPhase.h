@@ -71,7 +71,7 @@ protected:
 /**
  * @brief Task meant to be executed in parallel, and performing pair-wise collision tests
  */
-class SOFA_SOFABASECOLLISION_API BruteForcePairTest : public sofa::simulation::CpuTask
+class SOFA_MULTITHREADING_PLUGIN_API BruteForcePairTest : public sofa::simulation::CpuTask
 {
     using PairIterator = std::vector<ParallelBruteForceBroadPhase::FirstLastCollisionModelPair>::const_iterator;
 
