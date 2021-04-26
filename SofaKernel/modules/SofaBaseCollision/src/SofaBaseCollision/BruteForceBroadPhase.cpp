@@ -86,15 +86,18 @@ void BruteForceBroadPhase::addCollisionModel (core::CollisionModel *cm)
     core::CollisionModel* finalCollisionModel = cm->getLast();
 
     // Browse all other collision models to check if there is a potential collision (conservative check)
-    for (auto* cm2 : m_collisionModels)
+    for (const auto& model : m_collisionModels)
     {
+        auto* cm2 = model.firstCollisionModel;
+        auto* finalCm2 = model.lastCollisionModel;
+
         // ignore this pair if both are NOT simulated (inactive)
         if (!cm->isSimulated() && !cm2->isSimulated())
         {
             continue;
         }
 
-        if (!keepCollisionBetween(finalCollisionModel, cm2->getLast()))
+        if (!keepCollisionBetween(finalCollisionModel, finalCm2))
             continue;
 
         bool swapModels = false;
@@ -117,7 +120,7 @@ void BruteForceBroadPhase::addCollisionModel (core::CollisionModel *cm)
     }
 
     //accumulate CollisionModel's in a vector so the next CollisionModel can be tested against all previous ones
-    m_collisionModels.push_back(cm);
+    m_collisionModels.emplace_back(cm, finalCollisionModel);
 }
 
 bool BruteForceBroadPhase::keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2)
