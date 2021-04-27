@@ -40,7 +40,7 @@
 #include <limits>
 #include <set>
 #include <iterator>
-#include <sofa/helper/gl/Color.h>
+#include <sofa/gl/Color.h>
 
 using std::cerr;
 using std::endl;
@@ -426,7 +426,7 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
                 for ( unsigned int j = 0; j < 3; j++)
                 {
                     const unsigned int& indexP = t[i][j];
-                    sofa::helper::gl::Color::setHSVA(dists[indexP]*240./max,1.,.8,1.);
+                    sofa::gl::Color::setHSVA(dists[indexP]*240./max,1.,.8,1.);
                     glVertex3d(x[indexP][0],x[indexP][1],x[indexP][2]);
                 }
             }
@@ -439,7 +439,7 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
             glBegin( GL_POINTS);
             for (unsigned int i=0; i<dists.size(); i++)
             {
-                sofa::helper::gl::Color::setHSVA(dists[i]*240./max,1.,.8,1.);
+                sofa::gl::Color::setHSVA(dists[i]*240./max,1.,.8,1.);
                 glVertex3d(x[i][0],x[i][1],x[i][2]);
             }
             glEnd();
