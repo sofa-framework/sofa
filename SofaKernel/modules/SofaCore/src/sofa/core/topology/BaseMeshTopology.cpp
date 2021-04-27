@@ -372,20 +372,6 @@ std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChan
 }
 
 
-std::list<TopologyHandler *>::const_iterator BaseMeshTopology::beginTopologyHandler() const
-{
-    msg_error() << "beginTopologyHandler() not supported.";
-    std::list<TopologyHandler *>::const_iterator l;
-    return l;
-}
-
-
-std::list<TopologyHandler *>::const_iterator BaseMeshTopology::endTopologyHandler() const
-{
-    msg_error() << "endTopologyHandler() not supported.";
-    std::list<TopologyHandler *>::const_iterator l;
-    return l;
-}
 
 void BaseMeshTopology::addTopologyHandler(TopologyHandler* _TopologyHandler)
 {
