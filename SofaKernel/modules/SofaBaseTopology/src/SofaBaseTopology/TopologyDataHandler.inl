@@ -34,13 +34,11 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
         sofa::core::topology::BaseMeshTopology *_topology, value_type defaultValue)
     : TopologyHandler()
     , m_topologyData(_topologicalData)
-    , m_topology(nullptr)
     , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
     , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
     SOFA_UNUSED(defaultValue);
-    m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
-
+    m_topology = dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 }
 
 
@@ -49,7 +47,6 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
     value_type defaultValue)
     : TopologyHandler()
     , m_topologyData(_topologicalData)
-    , m_topology(nullptr)
     , m_defaultValue(defaultValue)
     , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
     , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
@@ -73,38 +70,6 @@ void TopologyDataHandler<TopologyElementType,  VecT>::init()
     //if (m_topology)
     //   m_topology->addTopologyHandler(this);
     //this->registerTopology(m_topology);
-}
-
-
-template <typename TopologyElementType, typename VecT>
-bool TopologyDataHandler<TopologyElementType,  VecT>::registerTopology(sofa::core::topology::BaseMeshTopology *_topology)
-{
-    m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
-
-    if (m_topology == nullptr)
-    {
-        msg_info("TopologyDataHandler") <<"Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
-        return false;
-    }
-    else
-        m_topology->addTopologyHandler(this);
-
-    return true;
-}
-
-
-template <typename TopologyElementType, typename VecT>
-bool TopologyDataHandler<TopologyElementType,  VecT>::registerTopology()
-{
-    if (m_topology == nullptr)
-    {
-        msg_info("TopologyDataHandler") << "Current topology is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
-        return false;
-    }
-    else
-        m_topology->addTopologyHandler(this);
-
-    return true;
 }
 
 

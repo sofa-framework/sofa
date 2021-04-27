@@ -80,10 +80,6 @@ public:
 
     void handleTopologyChange() override;
 
-    bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology) override;
-
-    bool registerTopology() override;
-
     void registerTopologicalData(t_topologicalData *topologicalData) {m_topologyData = topologicalData;}
 
 
@@ -156,7 +152,6 @@ public:
 
 protected:
     t_topologicalData* m_topologyData;
-    sofa::core::topology::TopologyContainer* m_topology;
     value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
 
 
