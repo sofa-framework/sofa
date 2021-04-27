@@ -289,6 +289,9 @@ public:
     SOFA_SOFABASETOPOLOGY_API friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
     SOFA_SOFABASETOPOLOGY_API friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
 
+    /// \brief function to add a TopologyHandler to the current list of engines.
+    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
+
 protected:
     /** \brief Creates the EdgeSet array.
      *
