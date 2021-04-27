@@ -58,9 +58,6 @@ void BVHNarrowPhase::addCollisionPair(const std::pair<core::CollisionModel*, cor
 
     const bool selfCollision = isSelfCollision(finestCollisionModel1, finestCollisionModel2);
 
-    const std::string timerName = "BVHNarrowPhase addCollisionPair: " + finestCollisionModel1->getName() + " - " + finestCollisionModel2->getName();
-    sofa::helper::ScopedAdvancedTimer bfTimer(timerName);
-
     bool swapModels = false;
     core::collision::ElementIntersector* finestIntersector = intersectionMethod->findIntersector(finestCollisionModel1, finestCollisionModel2, swapModels);//find the method for the finest CollisionModels
     if (finestIntersector == nullptr)
