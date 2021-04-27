@@ -122,16 +122,6 @@ std::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateC
     return (m_stateChangeList.getValue()).begin();
 }
 
-std::list<TopologyHandler *>::const_iterator TopologyContainer::endTopologyHandler() const
-{
-    return m_TopologyHandlerList.end();
-}
-
-std::list<TopologyHandler *>::const_iterator TopologyContainer::beginTopologyHandler() const
-{
-    return m_TopologyHandlerList.begin();
-}
-
 void TopologyContainer::resetTopologyChangeList()
 {
     std::list<const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());

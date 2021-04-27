@@ -306,14 +306,6 @@ public:
     /** \brief Adds a TopologyHandler to the list.
     */
     virtual void addTopologyHandler(TopologyHandler* _TopologyHandler);
-
-    /** \brief Provides an iterator on the first element in the list of TopologyHandler objects.
-    */
-    virtual std::list<TopologyHandler *>::const_iterator beginTopologyHandler() const;
-
-    /** \brief Provides an iterator on the last element in the list of TopologyHandler objects.
-    */
-    virtual std::list<TopologyHandler *>::const_iterator endTopologyHandler() const;
     /// @}
 
     // functions returning border elements. To be moved in a mapping.
