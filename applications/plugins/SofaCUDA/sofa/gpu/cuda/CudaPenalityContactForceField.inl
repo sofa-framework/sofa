@@ -24,7 +24,7 @@
 
 #include "CudaPenalityContactForceField.h"
 #include <SofaObjectInteraction/PenalityContactForceField.inl>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 namespace sofa
 {
@@ -241,8 +241,8 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
             glColor4f(1,0,0,1);
         else
             glColor4f(0,1,0,1);
-        helper::gl::glVertexT(p1[i]); //c.m1]);
-        helper::gl::glVertexT(p2[i]); //c.m2]);
+        sofa::gl::glVertexT(p1[i]); //c.m1]);
+        sofa::gl::glVertexT(p2[i]); //c.m2]);
     }
     glEnd();
 
@@ -255,11 +255,11 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
             sofa::defaulttype::Vec4f c = contacts[i];
             Coord norm(c[0],c[1],c[2]); norm.normalize();
             Coord p = p1[i] - norm*0.1;
-            helper::gl::glVertexT(p1[i]);
-            helper::gl::glVertexT(p);
+            sofa::gl::glVertexT(p1[i]);
+            sofa::gl::glVertexT(p);
             p = p2[i] + norm*0.1;
-            helper::gl::glVertexT(p2[i]);
-            helper::gl::glVertexT(p);
+            sofa::gl::glVertexT(p2[i]);
+            sofa::gl::glVertexT(p);
         }
         glEnd();
     }

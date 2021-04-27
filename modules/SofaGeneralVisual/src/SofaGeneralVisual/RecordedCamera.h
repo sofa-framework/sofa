@@ -23,7 +23,7 @@
 #include <SofaGeneralVisual/config.h>
 
 #include <SofaBaseVisual/BaseCamera.h>
-#include <sofa/helper/gl/Trackball.h>
+#include <sofa/helper/visual/Trackball.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
 namespace sofa::component::visualmodel
@@ -58,7 +58,7 @@ private:
     int currentMode;
     bool isMoving;
     int lastMousePosX, lastMousePosY;
-    helper::gl::Trackball currentTrackball;
+    sofa::helper::visual::Trackball currentTrackball;
 
     void moveCamera_rotation();
     void moveCamera_translation();

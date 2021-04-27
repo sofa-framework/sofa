@@ -27,10 +27,10 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/types/RGBAColor.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/core/visual/VisualModel.h>
 
-#include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/gl/FrameBufferObject.h>
 #include <SofaOpenglVisual/OglShader.h>
 
 namespace sofa
@@ -63,9 +63,9 @@ protected:
     GLint m_lightID;
     GLuint m_shadowTexWidth, m_shadowTexHeight;
 
-    std::unique_ptr<helper::gl::FrameBufferObject> m_shadowFBO;
-    std::unique_ptr<helper::gl::FrameBufferObject> m_blurHFBO;
-    std::unique_ptr<helper::gl::FrameBufferObject> m_blurVFBO;
+    std::unique_ptr<sofa::gl::FrameBufferObject> m_shadowFBO;
+    std::unique_ptr<sofa::gl::FrameBufferObject> m_blurHFBO;
+    std::unique_ptr<sofa::gl::FrameBufferObject> m_blurVFBO;
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER;
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER;
     static const std::string PATH_TO_BLUR_TEXTURE_VERTEX_SHADER;

@@ -25,7 +25,7 @@
 #include "OglTetrahedralModel.h"
 
 #include <sstream>
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/GLSLShader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>

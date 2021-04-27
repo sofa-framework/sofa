@@ -25,7 +25,7 @@
 
 #include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/visual/VisualManager.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/gl/FrameBufferObject.h>
 #include <SofaOpenglVisual/OglShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -56,7 +56,7 @@ protected:
     bool checkMultipass(sofa::core::objectmodel::BaseContext* con);
     bool multiPassEnabled;
 
-    std::unique_ptr<helper::gl::FrameBufferObject> fbo;
+    std::unique_ptr<sofa::gl::FrameBufferObject> fbo;
     bool prerendered;
 
     GLint passWidth;
@@ -82,7 +82,7 @@ public:
 
     virtual bool isPrerendered() {return prerendered;}
 
-    virtual helper::gl::FrameBufferObject& getFBO() {return *fbo;}
+    virtual sofa::gl::FrameBufferObject& getFBO() {return *fbo;}
     bool hasFilledFbo();
     std::string getOutputName();
 };

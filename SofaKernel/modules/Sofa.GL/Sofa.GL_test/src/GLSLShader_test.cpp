@@ -92,11 +92,11 @@ TEST(GLSLShader_test, GLSLShader_SetFiles)
 TEST(GLSLShader_test, GLSLShader_SetStrings)
 {
     gl::GLSLShader glshader;
-    std::string vs = sofa::helper::gl::shader::testvs;
-    std::string fs = sofa::helper::gl::shader::testfs;
-    std::string gs = sofa::helper::gl::shader::testgs;
-    std::string tcs = sofa::helper::gl::shader::testtcs;
-    std::string tes = sofa::helper::gl::shader::testtes;
+    std::string vs = sofa::gl::shader::testvs;
+    std::string fs = sofa::gl::shader::testfs;
+    std::string gs = sofa::gl::shader::testgs;
+    std::string tcs = sofa::gl::shader::testtcs;
+    std::string tes = sofa::gl::shader::testtes;
     glshader.SetVertexShaderFromString(vs);
     glshader.SetFragmentShaderFromString(fs);
 #ifdef GL_GEOMETRY_SHADER_EXT
