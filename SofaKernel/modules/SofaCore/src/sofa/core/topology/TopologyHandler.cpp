@@ -36,6 +36,12 @@ size_t TopologyHandler::getNumberOfTopologicalChanges()
 //////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+TopologyHandler::TopologyHandler()
+    : m_topology(nullptr)
+{
+    
+}
+
 void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize)
 {
     SOFA_UNUSED(_dataSize);
@@ -124,15 +130,17 @@ void TopologyHandler::update()
     sofa::helper::AdvancedTimer::stepEnd(msg.c_str());
 }
 
-bool TopologyHandler::registerTopology()
-{
-    return false;
-}
-
 bool TopologyHandler::registerTopology(sofa::core::topology::BaseMeshTopology* _topology)
 {
-    SOFA_UNUSED(_topology);
-    return false;
+    m_topology = dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
+
+    if (m_topology == nullptr)
+    {
+        msg_info("TopologyHandler") << "Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        return false;
+    }
+
+    return true;
 }
 
 } // namespace sofa
