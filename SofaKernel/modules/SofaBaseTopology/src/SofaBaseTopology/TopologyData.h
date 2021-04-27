@@ -117,7 +117,7 @@ public:
         const sofa::helper::vector< TopologyElementType >& elems,
         const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
-        const sofa::helper::vector< AncestorElem >& ancestorElems);
+        const sofa::helper::vector< AncestorElem >& ancestorElems) override;
 
     /// Reorder the values.
     void renumber(const sofa::helper::vector<Index>& index) override;
