@@ -575,6 +575,12 @@ void EdgeSetTopologyContainer::updateTopologyHandlerGraph()
 
     // will concatenate with points one:
     PointSetTopologyContainer::updateTopologyHandlerGraph();
+
+}
+
+void EdgeSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler)
+{
+    this->m_enginesList.push_back(_TopologyHandler);
 }
 
 

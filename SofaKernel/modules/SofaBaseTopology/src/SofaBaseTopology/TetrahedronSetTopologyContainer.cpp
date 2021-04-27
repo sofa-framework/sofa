@@ -1208,6 +1208,11 @@ void TetrahedronSetTopologyContainer::updateTopologyHandlerGraph()
     TriangleSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
+void TetrahedronSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler)
+{
+    this->m_enginesList.push_back(_TopologyHandler);
+}
+
 std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
 {
     helper::ReadAccessor< Data< sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
