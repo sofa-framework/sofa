@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/DataEngine.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/fwd.h>
 
@@ -38,7 +39,7 @@ namespace topology
 class SOFA_CORE_API TopologyHandler : public sofa::core::objectmodel::DDGNode
 {
 protected:
-    TopologyHandler() {}
+    TopologyHandler();
 
 public:
     virtual void handleTopologyChange() {}
@@ -162,13 +163,17 @@ public:
     void setNamePrefix(const std::string& s) { m_prefix = s; }
     std::string getName() { return m_prefix + m_data_name; }
 
-    virtual bool registerTopology();
+    /** Function to link the topological Data with the engine and the current topology. And init everything.
+    * This function should be used at the end of the all declaration link to this Data while using it in a component.
+    */
     virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
 protected:
     /// use to define engine name.
     std::string m_prefix;
     /// use to define data handled name.
     std::string m_data_name;
+
+    sofa::core::topology::TopologyContainer* m_topology;
 };
 
 } // namespace topology
