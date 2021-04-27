@@ -312,6 +312,8 @@ public:
     /** \brief Returns the type of the topology */
 	sofa::core::topology::TopologyElementType getTopologyType() const override {return core::topology::TopologyElementType::HEXAHEDRON;}
 
+    /// \brief function to add a TopologyHandler to the current list of engines.
+    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
 
 protected:
 

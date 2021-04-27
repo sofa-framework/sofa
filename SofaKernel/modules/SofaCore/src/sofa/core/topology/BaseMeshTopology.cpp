@@ -372,13 +372,6 @@ std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChan
 }
 
 
-
-void BaseMeshTopology::addTopologyHandler(TopologyHandler* _TopologyHandler)
-{
-    msg_error() << "addTopologyHandler() not supported.";
-    (void)_TopologyHandler;
-}
-
 Topology::EdgeID BaseMeshTopology::getEdgeIndex(PointID, PointID)
 {
     msg_error() << "getEdgeIndex() not supported.";

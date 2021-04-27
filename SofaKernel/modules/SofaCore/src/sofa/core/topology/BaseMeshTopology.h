@@ -304,9 +304,6 @@ public:
     */
     virtual std::list<const TopologyChange *>::const_iterator endStateChange() const;
 
-    /** \brief Adds a TopologyHandler to the list.
-    */
-    virtual void addTopologyHandler(TopologyHandler* _TopologyHandler);
     /// @}
 
     // functions returning border elements. To be moved in a mapping.
