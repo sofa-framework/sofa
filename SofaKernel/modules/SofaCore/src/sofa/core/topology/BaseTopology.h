@@ -253,14 +253,6 @@ public:
     void addTopologyHandler(TopologyHandler* _TopologyHandler) override;
 
 
-    /** \brief Provides an iterator on the first element in the list of TopologyHandler objects.
-     */
-    std::list<TopologyHandler *>::const_iterator beginTopologyHandler() const override;
-
-    /** \brief Provides an iterator on the last element in the list of TopologyHandler objects.
-     */
-    std::list<TopologyHandler *>::const_iterator endTopologyHandler() const override;
-
     /** \brief Free each Topology changes in the list and remove them from the list
     *
     */
@@ -269,8 +261,7 @@ public:
     ///@}
 
 
-protected:
-
+public:
     virtual void updateTopologyHandlerGraph() {}
 
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
