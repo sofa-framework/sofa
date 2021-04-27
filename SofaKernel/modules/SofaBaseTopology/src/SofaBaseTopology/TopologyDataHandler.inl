@@ -106,6 +106,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToPointDataArray()
     }
 
     _container->d_initPoints.addOutput(this);
+    _container->addTopologyHandler(this);
     m_pointsLinked = true;
 }
 
@@ -130,6 +131,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToEdgeDataArray()
     }
 
     _container->d_edge.addOutput(this);
+    _container->addTopologyHandler(this);
     m_edgesLinked = true;
 }
 
@@ -154,6 +156,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToTriangleDataArray()
     }
 
     _container->d_triangle.addOutput(this);
+    _container->addTopologyHandler(this);
     m_trianglesLinked = true;
 }
 
@@ -178,6 +181,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToQuadDataArray()
     }
 
     _container->d_quad.addOutput(this);
+    _container->addTopologyHandler(this);
     m_quadsLinked = true;
 }
 
@@ -202,6 +206,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToTetrahedronDataArray
     }
 
     _container->d_tetrahedron.addOutput(this);
+    _container->addTopologyHandler(this);
     m_tetrahedraLinked = true;
 }
 
@@ -226,6 +231,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToHexahedronDataArray(
     }
 
     _container->d_hexahedron.addOutput(this);
+    _container->addTopologyHandler(this);
     m_hexahedraLinked = true;
 }
 
