@@ -23,5 +23,3 @@
 #include <sofa/gui/qt/config.h>
 
 SOFA_DEPRECATED_HEADER(v21.06, "sofa/gui/qt/config.h")
-
-#endif
