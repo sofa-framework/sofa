@@ -19,13 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralMeshCollision/DirectSAP.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+
+#include <SofaGeneralMeshCollision/config.h>
+
+#include <SofaBaseCollision/CubeModel.h>
 
 namespace sofa::component::collision
 {
-    int DirectSAPClass = core::RegisterObject("Collision detection using sweep and prune")
-        .add< DirectSAP >();
-} // namespace sofa::component::collision
 
+class EndPoint;
 
+/**
+ * SAPBox is a simple bounding box. It contains a Cube which contains only one final
+ * CollisionElement and pointers to min and max EndPoints. min and max end points
+ * are respectively min and max coordinates of the cube on a coordinate axis.
+ * min and max are updated with the method update(int i), so min and max have
+ * min/max values on the i-th axis after the method update(int i).
+ */
+class SOFA_SOFAGENERALMESHCOLLISION_API DSAPBox
+{
+public:
+    explicit DSAPBox(const Cube &c, EndPoint *mi = nullptr, EndPoint *ma = nullptr) : cube(c), min(mi), max(ma)
+    {}
+
+    void update(int axis, double alarmDist);
+
+    [[nodiscard]]
+    double squaredDistance(const DSAPBox &other) const;
+
+    /// Compute the squared distance from this to other on a specific axis
+    [[nodiscard]]
+    double squaredDistance(const DSAPBox &other, int axis) const;
+
+    void show() const;
+
+    Cube cube;
+    EndPoint *min{nullptr};
+    EndPoint *max{nullptr};
+};
+
+}
