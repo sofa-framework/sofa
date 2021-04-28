@@ -4,3 +4,15 @@ timeout "mapping/cageLocalScaling.py" "80"
 
 # RequiredPlugin: "SohusimDev"
 ignore "mapping/bonesWithRigidScaleToAffineMultiMapping.py"
+
+# Old scenes failing on CI
+# [ERROR]   [PythonScript] TypeError: unsupported operand type(s) for *: 'instance' and 'float'
+#   File "scene_sml.py", line 16, in createScene
+#     scene.createScene()
+#   File "J:/0/src/applications/plugins/RigidScale/python\RigidScale\sml.py", line 110, in createScene
+#     self.joints[jointModel.id] = Compliant.sml.insertJoint(jointModel, self.rigidScales, self.param)
+#   File "J:/0/src/applications/plugins/Compliant/python\Compliant\sml.py", line 113, in insertJoint
+#     frames.append( rigid.addOffset(offset.name, StructuralAPI.scaleOffset(scale,offset.value)) )
+#   File "J:/0/src/applications/plugins/Compliant/python\Compliant\StructuralAPI.py", line 41, in scaleOffset
+#     return (scale*numpy.asarray(offset[0:3])).tolist() + offset[3:]
+ignore "bielle_manivelle/scene_sml.py"

@@ -16,7 +16,7 @@ namespace sofa
         // the TaskScheduler::_schedulers must be initialized before any call to TaskScheduler::registerScheduler
         std::map<std::string, std::function<TaskScheduler*()> > TaskScheduler::_schedulers;
         std::string TaskScheduler::_currentSchedulerName;
-        std::unique_ptr<TaskScheduler> TaskScheduler::_currentScheduler = nullptr;
+        TaskScheduler* TaskScheduler::_currentScheduler = nullptr;
         
         // register default task scheduler
         const bool DefaultTaskScheduler::isRegistered = TaskScheduler::registerScheduler(DefaultTaskScheduler::name(), &DefaultTaskScheduler::create);
@@ -27,7 +27,7 @@ namespace sofa
             // is already the current scheduler
             std::string nameStr(name);
             if (!nameStr.empty() && _currentSchedulerName == name)
-                return _currentScheduler.get();
+                return _currentScheduler;
             
             auto iter = _schedulers.find(name);
             if (iter == _schedulers.end())
@@ -40,17 +40,17 @@ namespace sofa
             
             if (_currentScheduler != nullptr)
             {
-                _currentScheduler.reset();
+                delete _currentScheduler;
             }
             
             TaskSchedulerCreatorFunction& creatorFunc = iter->second;
-            _currentScheduler = std::unique_ptr<TaskScheduler>(creatorFunc());
+            _currentScheduler = creatorFunc();
             
             _currentSchedulerName = iter->first;
             
             Task::setAllocator(_currentScheduler->getTaskAllocator());
             
-            return _currentScheduler.get();
+            return _currentScheduler;
         }
         
         
@@ -68,7 +68,7 @@ namespace sofa
                 _currentScheduler->init();
             }
             
-            return _currentScheduler.get();
+            return _currentScheduler;
         }
         
         

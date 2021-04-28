@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaExporter LANGUAGES CXX)
 
-sofa_find_package(SofaBaseVisual REQUIRED)
+sofa_find_package(SofaFramework REQUIRED)
 sofa_find_package(ZLIB REQUIRED)
 
 set(SRC_ROOT src/SofaExporter)
@@ -46,7 +46,7 @@ list(APPEND SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     sofa_install_libraries(TARGETS ZLIB::ZLIB)

@@ -1,8 +1,9 @@
 <?xml version="1.0" ?>
 <Node dt="0.01" gravity="0 -10 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName="SofaSphFluid"/>
-    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name="SofaSphFluid"/>
+    <RequiredPlugin name='SofaExplicitOdeSolver'/>
+    <RequiredPlugin name='SofaBoundaryCondition'/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <Node name="Less_pressure">
