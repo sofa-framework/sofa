@@ -27,6 +27,7 @@
 #include <sofa/helper/map_ptr_stable_compare.h>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 namespace sofa
 {
