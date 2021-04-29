@@ -14,6 +14,10 @@ set(HEADER_FILES
     ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.inl
     ${PLUGIN_CGAL_SRC_DIR}/Refine2DMesh.h
     ${PLUGIN_CGAL_SRC_DIR}/Refine2DMesh.inl
+    ${PLUGIN_CGAL_SRC_DIR}/PoissonSurfaceReconstruction.h
+    ${PLUGIN_CGAL_SRC_DIR}/FrontSurfaceReconstruction.h
+    ${PLUGIN_CGAL_SRC_DIR}/UpsamplePointCloud.h
+    ${PLUGIN_CGAL_SRC_DIR}/BooleanOperations.h
     )
 set(SOURCE_FILES
     ${PLUGIN_CGAL_SRC_DIR}/initCGALPlugin.cpp
@@ -22,6 +26,10 @@ set(SOURCE_FILES
     ${PLUGIN_CGAL_SRC_DIR}/TriangularConvexHull3D.cpp
     ${PLUGIN_CGAL_SRC_DIR}/CylinderMesh.cpp
     ${PLUGIN_CGAL_SRC_DIR}/Refine2DMesh.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/PoissonSurfaceReconstruction.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/FrontSurfaceReconstruction.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/UpsamplePointCloud.cpp
+    ${PLUGIN_CGAL_SRC_DIR}/BooleanOperations.cpp
     )
 set(README_FILES CGALPlugin.txt)
 
@@ -51,7 +59,7 @@ if(CGAL_VERSION VERSION_GREATER 4.9) # if CGAL >= 4.10
 endif()
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon Sofa.GL)
 target_link_libraries(${PROJECT_NAME} PUBLIC CGAL::CGAL)
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image CGAL::CGAL_ImageIO)

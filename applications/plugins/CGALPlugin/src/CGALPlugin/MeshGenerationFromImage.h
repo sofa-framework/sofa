@@ -36,7 +36,7 @@
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/refine_mesh_3.h>
 #include <CGAL/Image_3.h>
-#include <CGAL/Weighted_point.h>
+#include <CGAL/Weighted_point_3.h>
 
 #include <CImgPlugin/CImgData.h>
 
