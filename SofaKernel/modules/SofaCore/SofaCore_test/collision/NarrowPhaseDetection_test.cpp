@@ -39,9 +39,12 @@ class DummyDetectionOutputVector : public DetectionOutputVector
 public:
     void clear() override { m_size = 0; }
     unsigned int size() const override { return m_size;}
-    explicit DummyDetectionOutputVector(unsigned int size, bool* isDestroyed) : m_size(size), m_isDestroyed(isDestroyed)
+    DummyDetectionOutputVector(unsigned int size, bool* isDestroyed) : m_size(size), m_isDestroyed(isDestroyed)
     {
-        *m_isDestroyed = false;
+        if (m_isDestroyed)
+        {
+            *m_isDestroyed = false;
+        }
     }
 
     ~DummyDetectionOutputVector() override
