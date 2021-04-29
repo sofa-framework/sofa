@@ -27,6 +27,8 @@
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/simulation/VisitorExecuteFunc.h>
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {

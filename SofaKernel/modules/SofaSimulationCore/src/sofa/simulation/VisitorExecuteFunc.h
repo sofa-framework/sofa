@@ -25,7 +25,6 @@
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa
 {
@@ -64,10 +63,6 @@ protected:
     void prepareVisitor( sofa::simulation::Visitor* v)
     {
         v->setTags( ctx.getTags() );
-    }
-    void prepareVisitor( sofa::simulation::BaseMechanicalVisitor* mv)
-    {
-        prepareVisitor( (sofa::simulation::Visitor*)mv );
     }
 };
 }

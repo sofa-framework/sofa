@@ -74,7 +74,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
-    ${SRC_ROOT}/behavior/RotationMatrix.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
     ${SRC_ROOT}/collision/CollisionAlgorithm.h
@@ -140,7 +139,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/BaseTopologyObject.h
     ${SRC_ROOT}/topology/TopologicalMapping.h
     ${SRC_ROOT}/topology/TopologyChange.h
-	${SRC_ROOT}/topology/TopologyHandler.h
+    ${SRC_ROOT}/topology/TopologyHandler.h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/VisualLoop.h
