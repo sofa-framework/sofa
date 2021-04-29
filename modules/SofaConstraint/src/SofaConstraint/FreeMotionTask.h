@@ -19,13 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralMeshCollision/DirectSAP.h>
-#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::collision
+#pragma once
+
+#include <sofa/simulation/CpuTask.h>
+
+#include <sofa/simulation/fwd.h>
+#include <sofa/core/fwd.h>
+#include <sofa/core/MultiVecId.h>
+
+namespace sofa::component::animationloop
 {
-    int DirectSAPClass = core::RegisterObject("Collision detection using sweep and prune")
-        .add< DirectSAP >();
-} // namespace sofa::component::collision
 
+class FreeMotionTask : public sofa::simulation::CpuTask
+{
+public:
+    FreeMotionTask(
+            sofa::simulation::Node* node,
+            const sofa::core::ExecParams* params,
+            const core::ConstraintParams* cparams,
+            SReal dt,
+            sofa::core::MultiVecId pos,
+            sofa::core::MultiVecId freePos,
+            sofa::core::MultiVecDerivId freeVel,
+            simulation::common::MechanicalOperations* mop,
+            sofa::core::objectmodel::BaseContext* context,
+            sofa::simulation::CpuTask::Status* status);
+    ~FreeMotionTask() override = default;
+    sofa::simulation::Task::MemoryAlloc run() final;
 
+private:
+    sofa::simulation::Node* m_node;
+    const sofa::core::ExecParams* m_params;
+    const core::ConstraintParams* m_cparams;
+    SReal m_dt;
+
+    sofa::core::MultiVecId m_pos;
+    sofa::core::MultiVecId m_freePos;
+    sofa::core::MultiVecDerivId m_freeVel;
+
+    simulation::common::MechanicalOperations* m_mop;
+
+    sofa::core::objectmodel::BaseContext* m_context;
+};
+
+}

@@ -19,13 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralMeshCollision/DirectSAP.h>
-#include <sofa/core/ObjectFactory.h>
+#include <SofaGeneralMeshCollision/DSAPBox.h>
+#include <SofaMeshCollision/EndPoint.h>
 
 namespace sofa::component::collision
 {
-    int DirectSAPClass = core::RegisterObject("Collision detection using sweep and prune")
-        .add< DirectSAP >();
-} // namespace sofa::component::collision
 
+void DSAPBox::update(int axis, double alarmDist)
+{
+    min->value = (cube.minVect())[axis] - alarmDist;
+    max->value = (cube.maxVect())[axis] + alarmDist;
+}
 
+double DSAPBox::squaredDistance(const DSAPBox &other) const
+{
+    double dist2 = 0;
+
+    for (int axis = 0; axis < 3; ++axis)
+    {
+        dist2 += squaredDistance(other, axis);
+    }
+
+    return dist2;
+}
+
+double DSAPBox::squaredDistance(const DSAPBox &other, int axis) const
+{
+    const defaulttype::Vector3 &min0 = this->cube.minVect();
+    const defaulttype::Vector3 &max0 = this->cube.maxVect();
+    const defaulttype::Vector3 &min1 = other.cube.minVect();
+    const defaulttype::Vector3 &max1 = other.cube.maxVect();
+
+    if (min0[axis] > max1[axis])
+    {
+        return std::pow(min0[axis] - max1[axis], 2);
+    }
+
+    if (min1[axis] > max0[axis])
+    {
+        return std::pow(min1[axis] - max0[axis], 2);
+    }
+
+    return 0;
+}
+}

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaDefaultType)
+project(Sofa.DefaultType)
 
 set(SRC_ROOT "src/sofa/defaulttype")
 
@@ -82,11 +82,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_Topology.cpp
 )
 
-sofa_find_package(SofaHelper REQUIRED)
+sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Type)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Type)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
 
