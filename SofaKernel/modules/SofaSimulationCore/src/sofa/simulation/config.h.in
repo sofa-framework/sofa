@@ -19,18 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_CORE_CONFIG_H
-#define SOFA_SIMULATION_CORE_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
 #define SOFA_HAVE_DAG
 
-#ifdef SOFA_BUILD_SIMULATION_CORE
-#  define SOFA_TARGET SofaSimulationCore
+#ifdef SOFA_BUILD_SOFA_SIMULATIONCORE
+#  define SOFA_TARGET @PROJECT_NAME@
 #  define SOFA_SIMULATION_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_SIMULATION_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 #endif

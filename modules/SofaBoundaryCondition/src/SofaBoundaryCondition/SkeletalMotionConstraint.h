@@ -23,7 +23,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/SVector.h>
 #include <type_traits>
 
@@ -45,7 +45,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(SkeletalMotionConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
     typedef TDataTypes DataTypes;
     typedef sofa::core::behavior::ProjectiveConstraintSet<TDataTypes> TProjectiveConstraintSet;
-    typedef component::container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;

@@ -30,6 +30,10 @@
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
 #include <algorithm>
 #include <sofa/core/behavior/MultiVec.h>
+#include <sofa/simulation/DefaultTaskScheduler.h>
+
+#include <thread>
+#include <functional>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
@@ -75,6 +79,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , allVerified( initData(&allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
     , schemeCorrection( initData(&schemeCorrection, false, "schemeCorrection", "Apply new scheme where compliance is progressively corrected"))
     , unbuilt(initData(&unbuilt, false, "unbuilt", "Compliance is not fully built"))
+    , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
     , computeGraphs(initData(&computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
     , graphErrors( initData(&graphErrors,"graphErrors","Sum of the constraints' errors at each iteration"))
     , graphConstraints( initData(&graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
@@ -121,6 +126,8 @@ GenericConstraintSolver::GenericConstraintSolver()
 
 GenericConstraintSolver::~GenericConstraintSolver()
 {
+    if(d_multithreading.getValue())
+        simulation::TaskScheduler::getInstance()->stop();
 }
 
 void GenericConstraintSolver::init()
@@ -151,6 +158,9 @@ void GenericConstraintSolver::init()
         dx.realloc(&vop,false,true);
         m_dxId = dx.id();
     }
+
+    if(d_multithreading.getValue())
+        simulation::TaskScheduler::getInstance()->init();
 }
 
 void GenericConstraintSolver::cleanup()
@@ -306,13 +316,54 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
         msg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
 
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
-        {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-            if (!cc->isActive()) continue;
-            sofa::helper::AdvancedTimer::stepBegin("Object name: " + cc->getName());
-            cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
-            sofa::helper::AdvancedTimer::stepEnd("Object name: " + cc->getName());
+        if(d_multithreading.getValue()){
+
+            simulation::TaskScheduler* taskScheduler = simulation::TaskScheduler::getInstance();
+            simulation::CpuTask::Status status;
+
+            helper::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
+            sofa::Index nbTasks = constraintCorrections.size();
+            tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
+            sofa::Index dim = current_cp->W.rowSize();
+
+            for (sofa::Index i=0; i<nbTasks; i++)
+            {
+                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+                if (!cc->isActive())
+                    continue;
+
+                tasks[i].set(cc, *cParams, dim);
+                taskScheduler->addTask(&tasks[i]);
+            }
+            taskScheduler->workUntilDone(&status);
+
+            auto & W = current_cp->W;
+
+            // Accumulate the contribution of each constraints
+            // into the system's compliant matrix W
+            for (sofa::Index i = 0; i < nbTasks; i++) {
+                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+                if (!cc->isActive())
+                    continue;
+
+                const auto & Wi = tasks[i].W;
+
+                for (sofa::Index j = 0; j < dim; ++j)
+                    for (sofa::Index l = 0; l < dim; ++l)
+                        W.add(j, l, Wi.element(j,l));
+            }
+
+        } else {
+            for (unsigned int i=0; i<constraintCorrections.size(); i++)
+            {
+                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+                if (!cc->isActive())
+                    continue;
+
+                sofa::helper::AdvancedTimer::stepBegin("Object name: "+cc->getName());
+                cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
+                sofa::helper::AdvancedTimer::stepEnd("Object name: "+cc->getName());
+            }
         }
 
         sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");

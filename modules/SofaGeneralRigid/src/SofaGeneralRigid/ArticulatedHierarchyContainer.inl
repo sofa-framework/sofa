@@ -19,10 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
+
 #include <SofaGeneralRigid/ArticulatedHierarchyContainer.h>
+
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
 
@@ -224,11 +226,11 @@ void ArticulatedHierarchyContainer::init ()
 
         buildCenterArticulationsTree(joint, 0, "Root", articulationCenters.get());
 
-        component::container::MechanicalObject<defaulttype::Vec1Types>* mm1 = dynamic_cast<component::container::MechanicalObject<defaulttype::Vec1Types>*>(context->getMechanicalState());
+        auto* mm1 = dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec1Types>*>(context->getMechanicalState());
         mm1->resize(id);
 
         context = (context->child.begin())->get();
-        component::container::MechanicalObject<defaulttype::RigidTypes>* mm2 = dynamic_cast<component::container::MechanicalObject<defaulttype::RigidTypes>*>(context->getMechanicalState());
+        auto* mm2 = dynamic_cast<core::behavior::MechanicalState<defaulttype::RigidTypes>*>(context->getMechanicalState());
         mm2->resize(joint->getNumJoints()+1);
     }
     else

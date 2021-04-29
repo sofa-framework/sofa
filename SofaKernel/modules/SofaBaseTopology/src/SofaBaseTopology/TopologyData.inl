@@ -43,6 +43,11 @@ TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology)
 {
+    if (_topology == nullptr)
+    {
+        msg_error(this->getOwner()) << "Topology used to register this TopologyData: " << this->getName() << " is invalid. TopologyData won't be registered.";
+        return;
+    }
     this->m_topology = _topology;
 
     // Create Topology engine
@@ -66,6 +71,12 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine)
 {
+    if (_topology == nullptr)
+    {
+        msg_error(this->getOwner()) << "Topology used to register this TopologyData: " << this->getName() << " is invalid. TopologyData won't be registered.";
+        return;
+    }
+
     this->m_topology = _topology;
 
     // Set Topology engine

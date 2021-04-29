@@ -95,11 +95,7 @@ public:
     void linkToTetrahedronDataArray() override;
     void linkToHexahedronDataArray() override;
 
-    bool isTopologyDataRegistered()
-    {
-        if (m_topologyData) return true;
-        else return false;
-    }
+    bool isTopologyDataRegistered() override;
 
     using TopologyHandler::ApplyTopologyChange;
 

@@ -40,6 +40,9 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/TaskScheduler.h>
+#include <SofaConstraint/FreeMotionTask.h>
+#include <sofa/simulation/CollisionVisitor.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
@@ -67,6 +70,7 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
     : Inherit1(gnode)
     , m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
+    , d_isParallel(initData(&d_isParallel, false, "parallel", "If true, executes free motion and collision detection in parallel"))
     , constraintSolver(nullptr)
     , defaultSolver(nullptr)
 {
@@ -90,8 +94,12 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 void FreeMotionAnimationLoop::init()
 {
     simulation::common::VectorOperations vop(core::execparams::defaultInstance(), getContext());
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
-    MultiVecDeriv df(&vop, core::VecDerivId::dforce()); df.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx());
+    dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+
+    MultiVecDeriv df(&vop, core::VecDerivId::dforce());
+    df.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
     getContext()->get(constraintSolver, core::objectmodel::BaseContext::SearchDown);
     if (constraintSolver == nullptr && defaultSolver != nullptr)
@@ -105,11 +113,28 @@ void FreeMotionAnimationLoop::init()
     {
         defaultSolver.reset();
     }
+
+    auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    assert(taskScheduler != nullptr);
+    if (d_isParallel.getValue())
+    {
+        if (taskScheduler->getThreadCount() < 1)
+        {
+            taskScheduler->init(0);
+            msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
+        }
+        else
+        {
+            msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
+        }
+    }
 }
 
 
 void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
+    dmsg_info() << "################### step begin ###################";
+
     if (dt == 0)
         dt = gnode->getDt();
 
@@ -130,12 +155,12 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     cparams.setLambda(constraintSolver->getLambda());
     cparams.setOrder(m_solveVelocityConstraintFirst.getValue() ? core::ConstraintParams::VEL : core::ConstraintParams::POS_AND_VEL);
 
-    {
-        MultiVecDeriv dx(&vop, core::VecDerivId::dx());
-        dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
-        MultiVecDeriv df(&vop, core::VecDerivId::dforce());
-        df.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
-    }
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx());
+    dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+
+    MultiVecDeriv df(&vop, core::VecDerivId::dforce());
+    df.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
     {
@@ -161,7 +186,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     {
         ScopedAdvancedTimer timer("UpdatePosition");
-        BehaviorUpdatePositionVisitor beh(params, dt);        
+        BehaviorUpdatePositionVisitor beh(params, dt);
         gnode->execute(&beh);
     }
 
@@ -199,32 +224,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         getContext()->executeVisitor(&geometricStiffnessVisitor);
     }
 
-    // Free Motion
-    {
-        ScopedAdvancedTimer timer("FreeMotion");
-        simulation::SolveVisitor freeMotion(params, dt, true);
-        gnode->execute(&freeMotion);
-    }
-
-    
-    mop.projectResponse(freeVel);
-    mop.propagateDx(freeVel, true);
-
-    if (cparams.constOrder() == core::ConstraintParams::POS ||
-        cparams.constOrder() == core::ConstraintParams::POS_AND_VEL)
-    {
-        ScopedAdvancedTimer timer("freePosEqPosPlusFreeVelDt");
-        MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
-        freePosEqPosPlusFreeVelDt.setMapped(true);
-        getContext()->executeVisitor(&freePosEqPosPlusFreeVelDt);
-    }
-    dmsg_info() << " SolveVisitor for freeMotion performed" ;
-
-    // Collision detection and response creation
-    {
-        ScopedAdvancedTimer timer("Collision");
-        computeCollision(params);
-    }
+    FreeMotionAndCollisionDetection(params, cparams, dt, pos, freePos, freeVel, &mop);
 
     // Solve constraints
     if (constraintSolver)
@@ -241,9 +241,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
             constraintSolver->solveConstraint(&cparams, pos, vel);
         }
 
-        MultiVecDeriv dx(&vop, constraintSolver->getDx());
-        mop.projectResponse(dx);
-        mop.propagateDx(dx, true);
+        MultiVecDeriv cdx(&vop, constraintSolver->getDx());
+        mop.projectResponse(cdx);
+        mop.propagateDx(cdx, true);
     }
 
     MechanicalEndIntegrationVisitor endVisitor(params, dt);
@@ -283,6 +283,67 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     simulation::Visitor::printCloseNode("Step");
 #endif
 
+}
+
+void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::ExecParams* params,
+                                                              const core::ConstraintParams& cparams, SReal dt,
+                                                              sofa::core::MultiVecId pos,
+                                                              sofa::core::MultiVecId freePos,
+                                                              sofa::core::MultiVecDerivId freeVel,
+                                                              simulation::common::MechanicalOperations* mop)
+{
+    sofa::simulation::CpuTask::Status freeMotionTaskStatus;
+    FreeMotionTask freeMotionTask(gnode, params, &cparams, dt, pos, freePos, freeVel, mop, getContext(), &freeMotionTaskStatus);
+    if (!d_isParallel.getValue())
+    {
+        ScopedAdvancedTimer timer("FreeMotion+CollisionDetection");
+
+        freeMotionTask.run();
+
+        {
+            ScopedAdvancedTimer collisionDetectionTimer("CollisionDetection");
+            computeCollision(params);
+        }
+    }
+    else
+    {
+        ScopedAdvancedTimer timer("FreeMotion+CollisionDetection");
+
+        auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+        assert(taskScheduler != nullptr);
+
+        preCollisionComputation(params);
+
+        {
+            ScopedAdvancedTimer collisionResetTimer("CollisionReset");
+            CollisionResetVisitor act(params);
+            act.setTags(this->getTags());
+            act.execute(getContext());
+        }
+
+        taskScheduler->addTask(&freeMotionTask);
+
+        {
+            ScopedAdvancedTimer collisionDetectionTimer("CollisionDetection");
+            CollisionDetectionVisitor act(params);
+            act.setTags(this->getTags());
+            act.execute(getContext());
+        }
+
+        {
+            ScopedAdvancedTimer waitFreeMotionTimer("WaitFreeMotion");
+            taskScheduler->workUntilDone(&freeMotionTaskStatus);
+        }
+
+        {
+            ScopedAdvancedTimer collisionResponseTimer("CollisionResponse");
+            CollisionResponseVisitor act(params);
+            act.setTags(this->getTags());
+            act.execute(getContext());
+        }
+
+        postCollisionComputation(params);
+    }
 }
 
 int FreeMotionAnimationLoopClass = core::RegisterObject(R"(
