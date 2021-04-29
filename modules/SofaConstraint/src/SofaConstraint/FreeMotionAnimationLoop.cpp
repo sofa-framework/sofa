@@ -165,6 +165,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     // We need to initialize them if it's not already done.
     {
         ScopedAdvancedTimer timer("MechanicalVInitVisitor");
+        MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(gnode);
         MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(gnode);
     }
 
