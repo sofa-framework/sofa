@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaSimulationCore)
+project(Sofa.SimulationCore)
 
 set(SRC_ROOT "src/sofa/simulation")
 
@@ -152,10 +152,10 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
 )
 
-sofa_find_package(SofaCore REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
 
 # is this a compiler/linker version specific problem?
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -171,6 +171,9 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+# Create alias
+add_library(SofaSimulationCore ALIAS ${PROJECT_NAME})
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaSimulationCore_test)

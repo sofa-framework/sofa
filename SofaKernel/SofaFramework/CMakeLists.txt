@@ -9,13 +9,24 @@ set(SOFAFRAMEWORK_MODULES
     Sofa.Type
     Sofa.Topology
     Sofa.Geometry 
-    SofaHelper
-    SofaDefaultType
-    SofaCore
-    SofaSimulationCore
+    Sofa.Helper
+    Sofa.DefaultType
+    Sofa.Core
+    Sofa.SimulationCore
     )
 
-foreach(module ${SOFAFRAMEWORK_MODULES})
+# Temporary: to remove once the folders have been renamed
+set(SOFAFRAMEWORK_LEGACYMODULES 
+    Sofa.Type 
+    Sofa.Topology 
+    Sofa.Geometry 
+    SofaHelper 
+    SofaDefaultType 
+    SofaCore 
+    SofaSimulationCore
+)
+
+foreach(module ${SOFAFRAMEWORK_LEGACYMODULES})
     add_subdirectory(../modules/${module} ${CMAKE_CURRENT_BINARY_DIR}/${module})
 endforeach()
 
@@ -38,3 +49,10 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     )
+
+# Create aliases to support compatibility, starting from v21.06
+# These aliases will be deleted in v21.12
+add_library(SofaHelper ALIAS Sofa.Helper)
+add_library(SofaDefaultType ALIAS Sofa.DefaultType)
+add_library(SofaCore ALIAS Sofa.Core)
+add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)

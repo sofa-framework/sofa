@@ -94,6 +94,12 @@ protected:
     std::string filename;
     static signed int nbIter;
     static std::string nbIterInp;
+
+    /// Return true if the timer output string has a json string and the timer is setup to output json
+    static bool canExportJson(const std::string& timerOutputStr, const std::string& timerId);
+
+    /// Export a text file (with json extension) containing the timer output string
+    void exportJson(const std::string& timerOutputStr, int iterationNumber) const;
 };
 
 } // namespace sofa::gui
