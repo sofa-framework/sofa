@@ -60,8 +60,6 @@ private:
     };
 
 public:
-//    typedef sofa::helper::map_ptr_stable_compare< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
-//    typedef std::map< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
     typedef std::unordered_map< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector*, CollisionModelPairHash> DetectionOutputMap;
 
 protected:
