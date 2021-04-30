@@ -31,6 +31,13 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
+
 namespace sofa::component::controller
 {
 
@@ -154,8 +161,8 @@ void MechanicalStateController<DataTypes>::applyController()
     }
 
     auto node = this->getContext();
-    sofa::simulation::MechanicalProjectPositionAndVelocityVisitor mechaProjectVisitor(core::mechanicalparams::defaultInstance()); mechaProjectVisitor.execute(node);
-    sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(core::mechanicalparams::defaultInstance()); mechaVisitor.execute(node);
+    MechanicalProjectPositionAndVelocityVisitor mechaProjectVisitor(core::mechanicalparams::defaultInstance()); mechaProjectVisitor.execute(node);
+    MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(core::mechanicalparams::defaultInstance()); mechaVisitor.execute(node);
     sofa::simulation::UpdateMappingVisitor updateVisitor(core::execparams::defaultInstance()); updateVisitor.execute(node);
 };
 

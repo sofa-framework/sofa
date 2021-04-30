@@ -30,6 +30,9 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/helper/logging/Messaging.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
+
 namespace sofa::component::animationloop {
 
 FreeMotionTask::FreeMotionTask(sofa::simulation::Node* node,
@@ -69,7 +72,7 @@ sofa::simulation::Task::MemoryAlloc FreeMotionTask::run()
         m_cparams->constOrder() == sofa::core::ConstraintParams::POS_AND_VEL)
     {
         sofa::helper::ScopedAdvancedTimer timer("freePosEqPosPlusFreeVelDt");
-        sofa::simulation::MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(m_params, m_freePos, m_pos, m_freeVel, m_dt);
+        MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(m_params, m_freePos, m_pos, m_freeVel, m_dt);
         freePosEqPosPlusFreeVelDt.setMapped(true);
         m_context->executeVisitor(&freePosEqPosPlusFreeVelDt);
     }

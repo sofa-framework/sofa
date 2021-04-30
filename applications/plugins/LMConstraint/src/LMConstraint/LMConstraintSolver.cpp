@@ -37,6 +37,24 @@
 #include <Eigen/LU>
 #include <Eigen/QR>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateDxVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectJacobianMatrixVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyVelocityVisitor;
+
 namespace sofa::component::constraintset
 {
 
@@ -145,7 +163,7 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
         if (!constraintAcc.getValue()) return false;
         if (needPriorStatePropagation(orderState))
         {
-            simulation::MechanicalPropagateDxVisitor propagateState(&mparams, core::VecDerivId(vid), false, false);
+            MechanicalPropagateDxVisitor propagateState(&mparams, core::VecDerivId(vid), false, false);
             propagateState.execute(this->getContext());
         }
         // calling writeConstraintEquations
@@ -154,7 +172,7 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
 
         msg_info() << "prepareStates for accelerations";
 
-        simulation::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(this->getContext());
+        MechanicalProjectJacobianMatrixVisitor(&mparams).execute(this->getContext());
 #ifdef SOFA_DUMP_VISITOR_INFO
         arg.push_back(std::make_pair("Order", "Acceleration"));
 #endif
@@ -165,11 +183,11 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
 
         msg_info() << "prepareStates for velocities";
 
-        simulation::MechanicalProjectVelocityVisitor projectState(&mparams, this->getContext()->getTime(), core::VecDerivId(vid));
+        MechanicalProjectVelocityVisitor projectState(&mparams, this->getContext()->getTime(), core::VecDerivId(vid));
         projectState.execute(this->getContext());
         if (needPriorStatePropagation(orderState))
         {
-            simulation::MechanicalPropagateOnlyVelocityVisitor propagateState(&mparams, 0.0, core::VecDerivId(vid),false);
+            MechanicalPropagateOnlyVelocityVisitor propagateState(&mparams, 0.0, core::VecDerivId(vid),false);
             propagateState.execute(this->getContext());
         }
 
@@ -177,7 +195,7 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
         LMConstraintVisitor.setOrder(orderState);
         LMConstraintVisitor.setTags(getTags()).execute(this->getContext());
 
-        simulation::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(this->getContext());
+        MechanicalProjectJacobianMatrixVisitor(&mparams).execute(this->getContext());
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         arg.push_back(std::make_pair("Order", "Velocity"));
@@ -189,11 +207,11 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
         if (!constraintPos.getValue()) return false;
         msg_info() << "prepareStates for positions";
 
-        simulation::MechanicalProjectPositionVisitor projectPos(&mparams, this->getContext()->getTime(), core::VecCoordId(vid));
+        MechanicalProjectPositionVisitor projectPos(&mparams, this->getContext()->getTime(), core::VecCoordId(vid));
         projectPos.execute(this->getContext());
         if (needPriorStatePropagation(orderState))
         {
-            simulation::MechanicalPropagateOnlyPositionVisitor propagateState(&mparams, 0.0, core::VecCoordId(vid), false);
+            MechanicalPropagateOnlyPositionVisitor propagateState(&mparams, 0.0, core::VecCoordId(vid), false);
             propagateState.execute(this->getContext());
         }
 

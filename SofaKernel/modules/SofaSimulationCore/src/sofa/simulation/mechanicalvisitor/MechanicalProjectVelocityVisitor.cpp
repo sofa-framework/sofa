@@ -19,53 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/BaseMass.h>
 
-namespace sofa
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectVelocityVisitor.h>
+
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+
+namespace sofa::simulation::mechanicalvisitor
 {
 
-namespace simulation
+Visitor::Result MechanicalProjectVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
 {
-
-
-MechanicalComputeEnergyVisitor::MechanicalComputeEnergyVisitor(const sofa::core::MechanicalParams* mparams)
-    : sofa::simulation::MechanicalVisitor(mparams)
-    , m_kineticEnergy(0.)
-    , m_potentialEnergy(0.)
-{
+    return RESULT_PRUNE;
 }
 
-
-MechanicalComputeEnergyVisitor::~MechanicalComputeEnergyVisitor()
+Visitor::Result MechanicalProjectVelocityVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {
-}
-
-SReal MechanicalComputeEnergyVisitor::getKineticEnergy()
-{
-    return m_kineticEnergy;
-}
-
-SReal MechanicalComputeEnergyVisitor::getPotentialEnergy()
-{
-    return m_potentialEnergy;
-}
-
-
-/// Process the BaseMass
-Visitor::Result MechanicalComputeEnergyVisitor::fwdMass(simulation::Node* /*node*/, sofa::core::behavior::BaseMass* mass)
-{
-    m_kineticEnergy += (SReal)mass->getKineticEnergy();
-    return RESULT_CONTINUE;
-}
-/// Process the BaseForceField
-Visitor::Result MechanicalComputeEnergyVisitor::fwdForceField(simulation::Node* /*node*/, sofa::core::behavior::BaseForceField* f)
-{
-    m_potentialEnergy += (SReal)f->getPotentialEnergy();
+    c->projectVelocity(mparams, vel);
     return RESULT_CONTINUE;
 }
 
+std::string MechanicalProjectVelocityVisitor::getInfos() const
+{
+    std::string name="["+vel.getName()+"]"; return name;
 }
 
 }

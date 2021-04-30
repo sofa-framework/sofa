@@ -35,6 +35,15 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/behavior/BaseForceField.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeDfVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalComputeDfVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetForceVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeForceVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalComputeForceVisitor;
+
 namespace sofa {
 
 
@@ -169,9 +178,9 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         sofa::simulation::getSimulation()->init(this->node.get());
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        simulation::MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());
+        MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());
         node->execute(resetForce);
-        simulation::MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
+        MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
         this->node->execute(computeForce);
 
         // check force
@@ -245,7 +254,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         dof->vRealloc( &mparams, core::VecDerivId::dx()); // dx is not allocated by default
         typename DOF::WriteVecDeriv wdx = dof->writeDx();
         copyToData ( wdx, dX );
-        simulation::MechanicalComputeDfVisitor computeDf( &mparams, core::VecDerivId::force() );
+        MechanicalComputeDfVisitor computeDf( &mparams, core::VecDerivId::force() );
         node->execute(computeDf);
         VecDeriv dF;
         copyFromData( dF, dof->readForces() );

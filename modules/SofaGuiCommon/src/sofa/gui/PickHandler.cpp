@@ -35,6 +35,12 @@
 
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPickParticlesVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPickParticlesVisitor;
+
 #include <iostream>
 #include <limits>
 
@@ -278,8 +284,8 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
 
     mouseCollision->getRay(0).setOrigin( position+orientation*interaction->mouseInteractor->getDistanceFromMouse() );
     mouseCollision->getRay(0).setDirection( orientation );
-    simulation::MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::position(), true).execute(mouseCollision->getContext());
-    simulation::MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::freePosition(), true).execute(mouseCollision->getContext());
+    MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::position(), true).execute(mouseCollision->getContext());
+    MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::freePosition(), true).execute(mouseCollision->getContext());
 
     if (needToCastRay())
     {
@@ -452,7 +458,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
     BodyPicked result;
     // Look for particles hit by this ray
 //  msg_info()<<"PickHandler::findCollisionUsingBruteForce" << std::endl;
-    simulation::MechanicalPickParticlesVisitor picker(sofa::core::execparams::defaultInstance(), origin, direction, maxLength, 0 );
+    MechanicalPickParticlesVisitor picker(sofa::core::execparams::defaultInstance(), origin, direction, maxLength, 0 );
     //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //sofa::simulation::getSimulation()->getContext()->toBaseNode();
 
     if (rootNode) picker.execute(rootNode->getContext());

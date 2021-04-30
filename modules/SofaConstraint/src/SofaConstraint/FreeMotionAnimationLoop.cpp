@@ -44,12 +44,26 @@
 #include <SofaConstraint/FreeMotionTask.h>
 #include <sofa/simulation/CollisionVisitor.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeGeometricStiffness.h>
+using sofa::simulation::mechanicalvisitor::MechanicalComputeGeometricStiffness;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
+
 namespace sofa::component::animationloop
 {
 
 using namespace core::behavior;
 using namespace sofa::simulation;
-using helper::system::thread::CTime;
 using sofa::helper::ScopedAdvancedTimer;
 
 FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
@@ -151,8 +165,8 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     // We need to initialize them if it's not already done.
     {
         ScopedAdvancedTimer timer("MechanicalVInitVisitor");
-        simulation::MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(gnode);
-        simulation::MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(gnode);
+        MechanicalVInitVisitor< core::V_COORD >(params, core::VecCoordId::freePosition(), core::ConstVecCoordId::position(), true).execute(gnode);
+        MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(gnode);
     }
 
 
@@ -192,7 +206,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
 
     // MechanicalBeginIntegrationVisitor
-    simulation::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
+    MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
     gnode->execute(&beginVisitor);
 
     dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
@@ -200,14 +214,14 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     // Mapping geometric stiffness coming from previous lambda.
     {
         ScopedAdvancedTimer timer("lambdaMultInvDt");
-        simulation::MechanicalVOpVisitor lambdaMultInvDt(params, cparams.lambda(), sofa::core::ConstMultiVecId::null(), cparams.lambda(), 1.0 / dt);
+        MechanicalVOpVisitor lambdaMultInvDt(params, cparams.lambda(), sofa::core::ConstMultiVecId::null(), cparams.lambda(), 1.0 / dt);
         lambdaMultInvDt.setMapped(true);
         getContext()->executeVisitor(&lambdaMultInvDt);
     }
 
     {
         ScopedAdvancedTimer timer("MechanicalComputeGeometricStiffness");
-        simulation::MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
+        MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
         getContext()->executeVisitor(&geometricStiffnessVisitor);
     }
 
@@ -233,7 +247,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         mop.propagateDx(cdx, true);
     }
 
-    simulation::MechanicalEndIntegrationVisitor endVisitor(params, dt);
+    MechanicalEndIntegrationVisitor endVisitor(params, dt);
     gnode->execute(&endVisitor);
 
     mop.projectPositionAndVelocity(pos, vel);

@@ -47,7 +47,9 @@
 #include <chrono>
 
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
 #include <sofa/helper/rmath.h>
 
@@ -468,7 +470,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
                 if (node != nullptr)
                 {
-                    sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
+                    MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
                     sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
                 }
             }
