@@ -37,8 +37,8 @@ using sofa::helper::system::SetDirectory;
 namespace sofa::gui::hRecorder
 {
 
-GLsizei HeadlessRecorder::width = 1920;
-GLsizei HeadlessRecorder::height = 1080;
+GLsizei HeadlessRecorder::s_width = 1920;
+GLsizei HeadlessRecorder::s_height = 1080;
 int HeadlessRecorder::recordTimeInSeconds = 5;
 unsigned int HeadlessRecorder::fps = 60;
 std::string HeadlessRecorder::fileName = "tmp";
@@ -120,9 +120,9 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
                                 "filename", "(only HeadLessRecorder) name of the file");
     argumentParser->addArgument(boost::program_options::value<int>(&recordTimeInSeconds)->default_value(5),
                                 "recordTime", "(only HeadLessRecorder) seconds of recording, video or pictures of the simulation");
-    argumentParser->addArgument(boost::program_options::value<GLsizei>(&width)->default_value(1920),
+    argumentParser->addArgument(boost::program_options::value<GLsizei>(&s_width)->default_value(1920),
                                 "width", "(only HeadLessRecorder) video or picture width");
-    argumentParser->addArgument(boost::program_options::value<GLsizei>(&height)->default_value(1080),
+    argumentParser->addArgument(boost::program_options::value<GLsizei>(&s_height)->default_value(1080),
                                 "height", "(only HeadLessRecorder) video or picture height");
     argumentParser->addArgument(boost::program_options::value<unsigned int>(&fps)->default_value(60),
                                 "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
@@ -180,8 +180,8 @@ BaseGUI* HeadlessRecorder::CreateGUI(const char* name, sofa::simulation::Node::S
 
     /* create temporary pbuffer */
     int pbuffer_attribs[] = {
-        GLX_PBUFFER_WIDTH, width,
-        GLX_PBUFFER_HEIGHT, height,
+        GLX_PBUFFER_WIDTH, s_width,
+        GLX_PBUFFER_HEIGHT, s_height,
         None
     };
     GLXPbuffer pbuf = glXCreatePbuffer(m_display, fbc[0], pbuffer_attribs);
@@ -285,13 +285,13 @@ void HeadlessRecorder::initializeGL(void)
         // color render buffer
         glGenRenderbuffers(1, &rbo_color);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo_color);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, width, height);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, s_width, s_height);
         glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rbo_color);
 
         /* Depth renderbuffer. */
         glGenRenderbuffers(1, &rbo_depth);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, s_width, s_height);
         glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
         glReadBuffer(GL_COLOR_ATTACHMENT0);
 
@@ -320,7 +320,7 @@ int HeadlessRecorder::mainLoop()
     parseRecordingModeOption();
 
     if(currentCamera)
-        currentCamera->setViewport(width, height);
+        currentCamera->setViewport(s_width, s_height);
     calcProjection();
 
     if (!saveAsVideo && !saveAsScreenShot)
@@ -446,22 +446,22 @@ void HeadlessRecorder::calcProjection()
     double yNear = 0.35 * vparams->zNear();
     //offset = 0.001 * vparams->zNear(); // for foreground and background planes
 
-    if ((height != 0) && (width != 0))
+    if ((s_height != 0) && (s_width != 0))
     {
-        if (height > width)
+        if (s_height > s_width)
         {
             xFactor = 1.0;
-            yFactor = (double) height / (double) width;
+            yFactor = (double) s_height / (double) s_width;
         }
         else
         {
-            xFactor = (double) width / (double) height;
+            xFactor = (double) s_width / (double) s_height;
             yFactor = 1.0;
         }
     }
-    vparams->viewport() = sofa::helper::make_array(0, 0, width, height);
+    vparams->viewport() = sofa::helper::make_array(0, 0, s_width, s_height);
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, s_width, s_height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
@@ -472,7 +472,7 @@ void HeadlessRecorder::calcProjection()
     //zBackground = -vparams->zFar() + offset;
 
     if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
-        gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
+        gluPerspective(currentCamera->getFieldOfView(), (double) s_width / (double) s_height, vparams->zNear(), vparams->zFar());
     else
     {
         float ratio = static_cast<float>( vparams->zFar() / (vparams->zNear() * 20) );
@@ -638,7 +638,7 @@ void HeadlessRecorder::initVideoRecorder()
     //m_videorecorder = std::unique_ptr<VideoRecorderFFmpeg>(new VideoRecorderFFmpeg(fps, width, height, videoFilename.c_str(), AV_CODEC_ID_H264));
     //std::string codec = "yuv420p";
     std::string codec = "yuv444p";
-    m_videorecorder.init(ffmpeg_exec_path, videoFilename, width, height, fps, bitrate, codec);
+    m_videorecorder.init(ffmpeg_exec_path, videoFilename, s_width, s_height, fps, bitrate, codec);
     //m_videorecorder->start();
     requestVideoRecorderInit = false;
 }

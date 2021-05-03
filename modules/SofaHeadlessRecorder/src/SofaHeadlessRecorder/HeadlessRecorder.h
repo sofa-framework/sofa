@@ -124,7 +124,8 @@ private:
     helper::types::RGBAColor m_backgroundColor;
 
 
-    static GLsizei width, height;
+    static GLsizei s_height;
+    static GLsizei s_width;
     static unsigned int fps;
     static std::string fileName;
     static bool saveAsScreenShot, saveAsVideo;
