@@ -107,9 +107,9 @@ private:
     sofa::gl::VideoRecorderFFMPEG m_videorecorder;
     int m_nFrames;
 
-    GLuint fbo;
-    GLuint rbo_color, rbo_depth;
-    double lastProjectionMatrix[16];
+    GLuint fbo{};
+    GLuint rbo_color{}, rbo_depth{};
+    double lastProjectionMatrix[16]{};
     bool initTexturesDone;
     bool initVideoRecorder;
     sofa::gl::Capture m_screencapture;
