@@ -70,7 +70,6 @@ public:
     void step();
     void redraw() override;
     void resetView();
-    void saveView();
     void initializeGL();
     void paintGL();
     void setScene(sofa::simulation::NodeSPtr scene, const char* filename=NULL, bool temporaryFile=false) override;
