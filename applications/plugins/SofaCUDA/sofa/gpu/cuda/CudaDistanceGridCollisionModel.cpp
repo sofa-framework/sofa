@@ -23,7 +23,7 @@
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/helper/rmath.h>
 #include <SofaBaseCollision/CubeModel.h>
 #if SOFACUDA_HAVE_MINIFLOWVR
@@ -686,7 +686,7 @@ void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams*
         m = elems[index].rotation;
         m.transpose();
         m[3] = Vector4(elems[index].translation,1.0);
-        helper::gl::glMultMatrix(m.ptr());
+        sofa::gl::glMultMatrix(m.ptr());
     }
 
     CudaDistanceGrid* grid = getGrid(index);

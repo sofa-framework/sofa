@@ -445,7 +445,7 @@ void CuboidMesh<DataTypes>::draw()
             //std::cout << "draw vertices" << std::endl;
             glColor3f(1.0, 0.0, 0.0);
             for(unsigned i = 0; i < m_nbVertices; ++i)
-                sofa::helper::gl::glVertexT(points[i]);
+                sofa::gl::glVertexT(points[i]);
         }
         if(debug & (1<<1))//2
         {
@@ -455,7 +455,7 @@ void CuboidMesh<DataTypes>::draw()
             unsigned begin = m_nbVertices;
             unsigned end = m_nbVertices + m_nbCenters;
             for(unsigned i = begin; i < end; ++i)
-                sofa::helper::gl::glVertexT(points[i]);
+                sofa::gl::glVertexT(points[i]);
         }
         if(debug & (1<<2))//4
         {
@@ -465,7 +465,7 @@ void CuboidMesh<DataTypes>::draw()
             unsigned begin = m_nbVertices + m_nbCenters;
             unsigned end = m_nbVertices + m_nbCenters + m_nbBdVertices;
             for(unsigned i = begin; i < end; ++i)
-                sofa::helper::gl::glVertexT(points[i]);
+                sofa::gl::glVertexT(points[i]);
         }
         if(debug & (1<<3))//8
         {
@@ -475,7 +475,7 @@ void CuboidMesh<DataTypes>::draw()
             unsigned begin = m_nbVertices + m_nbCenters + m_nbBdVertices;
             unsigned end = m_nbVertices + m_nbCenters + m_nbBdVertices + m_nbBdCenters;
             for(unsigned i = begin; i < end; ++i)
-                sofa::helper::gl::glVertexT(points[i]);
+                sofa::gl::glVertexT(points[i]);
         }
         glEnd();
         glPointSize(1);
@@ -498,8 +498,8 @@ void CuboidMesh<DataTypes>::draw()
                 {
                     for(int k = j+1; k < 4; ++k)
                     {
-                        sofa::helper::gl::glVertexT(points[tetras[i][j]]);
-                        sofa::helper::gl::glVertexT(points[tetras[i][k]]);
+                        sofa::gl::glVertexT(points[tetras[i][j]]);
+                        sofa::gl::glVertexT(points[tetras[i][k]]);
                     }
                 }
             }
@@ -512,8 +512,8 @@ void CuboidMesh<DataTypes>::draw()
                 {
                     for(int k = j+1; k < 4; ++k)
                     {
-                        sofa::helper::gl::glVertexT(points[tetras[i][j]]);
-                        sofa::helper::gl::glVertexT(points[tetras[i][k]]);
+                        sofa::gl::glVertexT(points[tetras[i][j]]);
+                        sofa::gl::glVertexT(points[tetras[i][k]]);
                     }
                 }
             }
@@ -526,8 +526,8 @@ void CuboidMesh<DataTypes>::draw()
                 {
                     for(int k = j+1; k < 4; ++k)
                     {
-                        sofa::helper::gl::glVertexT(points[tetras[i][j]]);
-                        sofa::helper::gl::glVertexT(points[tetras[i][k]]);
+                        sofa::gl::glVertexT(points[tetras[i][j]]);
+                        sofa::gl::glVertexT(points[tetras[i][k]]);
                     }
                 }
             }

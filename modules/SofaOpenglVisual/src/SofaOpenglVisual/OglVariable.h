@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <SofaOpenglVisual/OglShader.h>
 
 namespace sofa
