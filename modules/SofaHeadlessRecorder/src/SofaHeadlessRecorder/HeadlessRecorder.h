@@ -30,7 +30,7 @@
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <signal.h>
+#include <csignal>
 
 #include <iostream>
 #include <chrono>
