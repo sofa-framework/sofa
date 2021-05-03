@@ -50,6 +50,11 @@
 #include <sofa/gl/VideoRecorderFFMPEG.h>
 #include <sofa/gl/Capture.h>
 
+namespace sofa::gl
+{
+    class Texture;
+}
+
 namespace sofa::gui::hRecorder
 {
 
@@ -79,6 +84,7 @@ public:
     virtual sofa::simulation::Node* currentSimulation() override;
     virtual int closeGUI() override;
     virtual void setViewerResolution(int width, int height) override;
+    virtual void setBackgroundColor(const sofa::helper::types::RGBAColor& color) override;
 
     // Needed for the registration
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
@@ -97,6 +103,8 @@ private:
     void drawScene();
     void calcProjection();
 
+    void initVideoRecorder();
+
     VisualParams* vparams;
     DrawToolGL   drawTool;
 
@@ -111,8 +119,10 @@ private:
     GLuint rbo_color{}, rbo_depth{};
     double lastProjectionMatrix[16]{};
     bool initTexturesDone;
-    bool initVideoRecorder;
+    bool requestVideoRecorderInit;
     sofa::gl::Capture m_screencapture;
+    helper::types::RGBAColor m_backgroundColor;
+
 
     static GLsizei width, height;
     static unsigned int fps;

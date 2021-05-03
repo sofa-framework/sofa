@@ -28,6 +28,7 @@ using sofa::helper::system::SetDirectory;
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/gl/Texture.h>
 
 #include <boost/program_options.hpp>
 #include <thread>
@@ -68,7 +69,8 @@ HeadlessRecorder::HeadlessRecorder()
     : groot(nullptr)
     , m_nFrames(0)
     , initTexturesDone(false)
-    , initVideoRecorder(true)
+    , requestVideoRecorderInit(true)
+    , m_backgroundColor{0,0,0,0}
 {
     vparams = core::visual::VisualParams::defaultInstance();
     vparams->drawTool() = &drawTool;
@@ -500,7 +502,7 @@ void HeadlessRecorder::calcProjection()
 
 void HeadlessRecorder::paintGL()
 {
-    glClearColor(0.0f,0.0f,0.0f,0.0f);
+    glClearColor(m_backgroundColor.r(), m_backgroundColor.g(), m_backgroundColor.b(), m_backgroundColor.a());
     glClearDepth(1.0);
     drawScene();
 }
@@ -605,28 +607,8 @@ void HeadlessRecorder::record()
     }
     else if (saveAsVideo)
     {
-        if (initVideoRecorder)
-        {
-            std::string ffmpeg_exec_path = "";
-            const std::string ffmpegIniFilePath = Utils::getSofaPathTo("etc/SofaHeadlessRecorder.ini");
-            std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(ffmpegIniFilePath);
-            if (iniFileValues.find("FFMPEG_EXEC_PATH") != iniFileValues.end())
-            {
-                // get absolute path of FFMPEG executable
-                ffmpeg_exec_path = SetDirectory::GetRelativeFromProcess( iniFileValues["FFMPEG_EXEC_PATH"].c_str() );
-            }
-
-            std::string videoFilename = fileName;
-            int bitrate = 100000000;
-            videoFilename.append(".avi");
-            //videoFilename.append(".mp4");
-            //m_videorecorder = std::unique_ptr<VideoRecorderFFmpeg>(new VideoRecorderFFmpeg(fps, width, height, videoFilename.c_str(), AV_CODEC_ID_H264));
-            //std::string codec = "yuv420p";
-            std::string codec = "yuv444p";
-            m_videorecorder.init(ffmpeg_exec_path, videoFilename, width, height, fps, bitrate, codec);
-            //m_videorecorder->start();
-            initVideoRecorder = false;
-        }
+        if (requestVideoRecorderInit)
+            initVideoRecorder();
         if (canRecord()) {
             //m_videorecorder->encodeFrame();
             m_videorecorder.addFrame();
@@ -637,5 +619,35 @@ void HeadlessRecorder::record()
     }
 }
 
-} // namespace sofa
+// See also GLBackend::initRecorder
+void HeadlessRecorder::initVideoRecorder()
+{
+    std::string ffmpeg_exec_path = "";
+    const std::string ffmpegIniFilePath = Utils::getSofaPathTo("etc/SofaHeadlessRecorder.ini");
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(ffmpegIniFilePath);
+    if (iniFileValues.find("FFMPEG_EXEC_PATH") != iniFileValues.end())
+    {
+        // get absolute path of FFMPEG executable
+        ffmpeg_exec_path = SetDirectory::GetRelativeFromProcess( iniFileValues["FFMPEG_EXEC_PATH"].c_str() );
+    }
+
+    std::string videoFilename = fileName;
+    int bitrate = 100000000;
+    videoFilename.append(".avi");
+    //videoFilename.append(".mp4");
+    //m_videorecorder = std::unique_ptr<VideoRecorderFFmpeg>(new VideoRecorderFFmpeg(fps, width, height, videoFilename.c_str(), AV_CODEC_ID_H264));
+    //std::string codec = "yuv420p";
+    std::string codec = "yuv444p";
+    m_videorecorder.init(ffmpeg_exec_path, videoFilename, width, height, fps, bitrate, codec);
+    //m_videorecorder->start();
+    requestVideoRecorderInit = false;
+}
+
+void HeadlessRecorder::setBackgroundColor(const helper::types::RGBAColor &color)
+{
+    m_backgroundColor = color;
+    glClearColor(m_backgroundColor.r(), m_backgroundColor.g(), m_backgroundColor.b(), m_backgroundColor.a());
+}
+
+} // namespace sofa::gui::hRecorder
 
