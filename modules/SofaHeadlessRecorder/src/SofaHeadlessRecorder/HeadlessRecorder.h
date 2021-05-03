@@ -55,8 +55,6 @@ namespace sofa::gui::hRecorder
 
 enum class RecordMode { wallclocktime, simulationtime, timeinterval };
 
-class VideoRecorderFFmpeg;
-
 class HeadlessRecorder : public sofa::gui::BaseGUI
 {
 
