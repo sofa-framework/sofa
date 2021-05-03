@@ -344,7 +344,7 @@ int HeadlessRecorder::mainLoop()
             if(m_nFrames % fps == 0)
             {
                 end = std::chrono::system_clock::now();
-                int elapsed_milliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
+                const auto elapsed_milliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
                 msg_info("HeadlessRecorder") << "Encoding : " << m_nFrames/fps << " seconds. Encoding time : " << elapsed_milliSeconds << " ms";
                 start = std::chrono::system_clock::now();
             }
