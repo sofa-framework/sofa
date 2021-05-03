@@ -602,12 +602,15 @@ void HeadlessRecorder::setViewerResolution(int width, int height)
 // -----------------------------------------------------------------
 void HeadlessRecorder::record()
 {
-
     if (saveAsScreenShot)
     {
-        std::string pngFilename = fileName + std::to_string(m_nFrames) + ".png" ;
+        std::stringstream ss;
+        ss << std::setw(8) << std::setfill('0') << m_nFrames;
+
+        std::string pngFilename = fileName + ss.str() + ".png" ;
         m_screencapture.saveScreen(pngFilename, 0);
-    } else if (saveAsVideo)
+    }
+    else if (saveAsVideo)
     {
         if (initVideoRecorder)
         {
