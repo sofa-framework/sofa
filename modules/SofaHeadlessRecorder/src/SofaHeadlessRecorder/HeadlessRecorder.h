@@ -50,13 +50,7 @@
 #include <sofa/gl/VideoRecorderFFMPEG.h>
 #include <sofa/gl/Capture.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace hRecorder
+namespace sofa::gui::hRecorder
 {
 
 enum class RecordMode { wallclocktime, simulationtime, timeinterval };
@@ -133,10 +127,6 @@ private:
     static RecordMode recordType;
     static float skipTime;
 };
-
-} // namespace hRecorder
-
-} // namespace gui
 
 } // namespace sofa
 
