@@ -33,13 +33,7 @@ using sofa::helper::system::SetDirectory;
 #include <thread>
 #include <chrono>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace hRecorder
+namespace sofa::gui::hRecorder
 {
 
 GLsizei HeadlessRecorder::width = 1920;
@@ -643,10 +637,6 @@ void HeadlessRecorder::record()
         }
     }
 }
-
-} // namespace hRecorder
-
-} // namespace gui
 
 } // namespace sofa
 
