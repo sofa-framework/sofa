@@ -63,7 +63,7 @@ public:
     typedef sofa::core::visual::DrawToolGL   DrawToolGL;
 
     HeadlessRecorder();
-    ~HeadlessRecorder();
+    ~HeadlessRecorder() override;
 
     int mainLoop() override;
 
