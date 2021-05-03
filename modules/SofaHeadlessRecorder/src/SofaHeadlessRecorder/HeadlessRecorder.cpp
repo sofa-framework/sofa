@@ -302,11 +302,11 @@ void HeadlessRecorder::initializeGL(void)
     //resetView();
 }
 
-bool HeadlessRecorder::canRecord()
+bool HeadlessRecorder::canRecord() const
 {
     if(recordUntilStopAnimate)
     {
-        return currentSimulation() && currentSimulation()->getContext()->getAnimate();
+        return groot != nullptr && groot->getContext()->getAnimate();
     }
     return static_cast<float>(m_nFrames)/static_cast<float>(fps) <= recordTimeInSeconds;
 }
@@ -368,7 +368,7 @@ int HeadlessRecorder::mainLoop()
     return 0;
 }
 
-bool HeadlessRecorder::keepFrame()
+bool HeadlessRecorder::keepFrame() const
 {
     switch(recordType)
     {

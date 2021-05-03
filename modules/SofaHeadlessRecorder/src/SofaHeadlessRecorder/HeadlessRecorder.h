@@ -90,8 +90,8 @@ public:
 
 private:
     void record();
-    bool canRecord();
-    bool keepFrame();
+    bool canRecord() const;
+    bool keepFrame() const;
 
     void displayOBJs();
     void drawScene();
