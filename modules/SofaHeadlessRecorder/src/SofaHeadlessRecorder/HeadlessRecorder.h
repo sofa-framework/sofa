@@ -72,7 +72,7 @@ public:
     void resetView();
     void initializeGL();
     void paintGL();
-    void setScene(sofa::simulation::NodeSPtr scene, const char* filename=NULL, bool temporaryFile=false) override;
+    void setScene(sofa::simulation::NodeSPtr scene, const char* filename=nullptr, bool temporaryFile=false) override;
     void newView();
 
     // Virtual from BaseGUI
@@ -81,7 +81,7 @@ public:
     virtual void setViewerResolution(int width, int height) override;
 
     // Needed for the registration
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
     static void parseRecordingModeOption();
 
