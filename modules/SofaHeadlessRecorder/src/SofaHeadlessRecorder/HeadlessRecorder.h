@@ -50,11 +50,6 @@
 #include <sofa/gl/VideoRecorderFFMPEG.h>
 #include <sofa/gl/Capture.h>
 
-namespace sofa::gl
-{
-    class Texture;
-}
-
 namespace sofa::gui::hRecorder
 {
 
