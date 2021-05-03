@@ -110,7 +110,6 @@ private:
     GLuint fbo;
     GLuint rbo_color, rbo_depth;
     double lastProjectionMatrix[16];
-    double lastModelviewMatrix[16];
     bool initTexturesDone;
     bool initVideoRecorder;
     sofa::gl::Capture m_screencapture;
