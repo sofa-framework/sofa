@@ -19,52 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/core/collision/Detection.h>
-#include <sofa/helper/vector.h>
+#include <sofa/core/collision/BroadPhaseDetection.h>
 
 namespace sofa::core::collision
 {
 
-/**
- * @brief given a set of root collision models, computes potentially colliding pairs.
- */
-class SOFA_CORE_API BroadPhaseDetection : virtual public Detection
+void BroadPhaseDetection::beginBroadPhase()
 {
-public:
-    SOFA_ABSTRACT_CLASS(BroadPhaseDetection, Detection);
+    cmPairs.clear();
+}
 
-    using CollisionModelPair = std::pair<core::CollisionModel*, core::CollisionModel*>;
-protected:
-    /// Destructor
-    ~BroadPhaseDetection() override = default;
-public:
-    /// Clear all the potentially colliding pairs detected in the previous simulation step
-    virtual void beginBroadPhase();
+void BroadPhaseDetection::addCollisionModels(const sofa::helper::vector<core::CollisionModel *>& v)
+{
+    for (auto* collisionModel : v)
+    {
+        addCollisionModel(collisionModel);
+    }
+}
 
-    /// Add a new collision model to the set of root collision models managed by this class
-    virtual void addCollisionModel(core::CollisionModel *cm) = 0;
+void BroadPhaseDetection::endBroadPhase()
+{
+}
 
-    /// Add a list of collision models to the set of root collision models managed by this class
-    virtual void addCollisionModels(const sofa::helper::vector<core::CollisionModel *>& v);
+auto BroadPhaseDetection::getCollisionModelPairs() -> sofa::helper::vector<CollisionModelPair>&
+{
+    return cmPairs;
+}
 
-    /// Actions to accomplish when the broadPhase is finished. By default do nothing.
-    virtual void endBroadPhase();
+auto BroadPhaseDetection::getCollisionModelPairs() const -> const sofa::helper::vector<CollisionModelPair>&
+{
+    return cmPairs;
+}
 
-    /// Get the potentially colliding pairs detected
-    sofa::helper::vector<CollisionModelPair>& getCollisionModelPairs();
-    const sofa::helper::vector<CollisionModelPair>& getCollisionModelPairs() const;
-
-    /// Returns true because it needs a deep bounding tree i.e. a depth that can be superior to 1.
-    inline virtual bool needsDeepBoundingTree()const{return true;}
-protected:
-
-    /// Potentially colliding pairs
-    sofa::helper::vector< CollisionModelPair > cmPairs;
-    std::map<Instance,sofa::helper::vector< CollisionModelPair > > storedCmPairs;
-
-    void changeInstanceBP(Instance inst) override;
-};
+void BroadPhaseDetection::changeInstanceBP(Instance inst)
+{
+    storedCmPairs[instance].swap(cmPairs);
+    cmPairs.swap(storedCmPairs[inst]);
+}
 
 } // namespace sofa::core::collision
