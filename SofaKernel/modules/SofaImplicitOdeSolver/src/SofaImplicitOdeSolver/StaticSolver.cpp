@@ -122,7 +122,8 @@ void StaticSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
     sofa::core::behavior::OdeSolver::parse(arg) ;
 }
 
-void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) {
+void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+{
     using namespace sofa::helper::logging;
     using namespace std::chrono;
 
@@ -191,7 +192,8 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
     p_squared_increment_norms.clear();
     p_squared_increment_norms.reserve(max_number_of_newton_iterations);
 
-    if (print_log) {
+    if (print_log)
+    {
         info << "======= Starting static ODE solver =======\n";
         info << "Time step                  : " << this->getTime() << "\n";
         info << "Context                    : " << dynamic_cast<const sofa::simulation::Node *>(context)->getPathName() << "\n";
@@ -229,9 +231,11 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
     // Compute the initial residual
     R_squared_norm = force.dot(force);
 
-    if (absolute_residual_tolerance_threshold > 0 && R_squared_norm <= absolute_squared_residual_threshold) {
+    if (absolute_residual_tolerance_threshold > 0 && R_squared_norm <= absolute_squared_residual_threshold)
+    {
         converged = true;
-        if (print_log) {
+        if (print_log)
+        {
             info << "The ODE has already reached an equilibrium state."
                  << std::scientific
                  << "The residual's ratio |R| is " << std::setw(12) << std::sqrt(R_squared_norm)
@@ -244,7 +248,8 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
     // #                          Newton iterations                              #
     // ###########################################################################
 
-    while (! converged && n_it < max_number_of_newton_iterations) {
+    while (! converged && n_it < max_number_of_newton_iterations)
+    {
         ScopedAdvancedTimer step_timer ("NewtonStep");
         t = steady_clock::now();
 
@@ -297,7 +302,8 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
         // The rest of the step is only necessary when doing more than one Newton iteration. Otherwise, we will
         // waste computation time to reassemble the residual and compute the norms for a convergence that will
         // never happen (we will always reach the maximum number of iterations, which is 1)
-        if (max_number_of_newton_iterations == 1) {
+        if (max_number_of_newton_iterations == 1)
+        {
             converged = true; // Not really, but we won't warn about divergence when it is always the case
             diverged = false;
             break;
@@ -318,7 +324,8 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
             // Residual norm
             R_squared_norm = force.dot(force);
 
-            if (n_it == 1) {
+            if (n_it == 1)
+            {
                 R0_squared_norm = R_squared_norm;
                 R_previous_squared_norm = R0_squared_norm;
             }
@@ -337,13 +344,14 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
         {
             auto iteration_time = duration_cast<nanoseconds>(steady_clock::now() - t).count();
 
-            if (print_log) {
+            if (print_log)
+            {
                 info << "Newton iteration #" << std::left << std::setw(5) << n_it
                      << std::scientific
-                     << "  |R| = " << std::setw(12) << std::sqrt(R_squared_norm)
-                     << "  |R|/|R0| = " << std::setw(12) << std::sqrt(R_squared_norm / R0_squared_norm)
-                     << "  |du| = " << std::setw(12) << std::sqrt(dx_squared_norm)
-                     << "  |du| / |U| = " << std::setw(12) << std::sqrt(dx_squared_norm / U_squared_norm)
+                     << "  |R| = "        << std::setw(12) << std::sqrt(R_squared_norm)
+                     << "  |R|/|R0| = "   << std::setw(12) << (R0_squared_norm < epsilon*epsilon ? 0 : std::sqrt(R_squared_norm / R0_squared_norm))
+                     << "  |du| = "       << std::setw(12) << std::sqrt(dx_squared_norm)
+                     << "  |du| / |U| = " << std::setw(12) << (U_squared_norm < epsilon*epsilon  ? 0 : std::sqrt(dx_squared_norm / U_squared_norm))
                      << std::defaultfloat;
                 info << "  Time = " << iteration_time / 1000 / 1000 << " ms";
                 info << "\n";
@@ -352,17 +360,22 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
 
         // Part VII. Check for convergence/divergence
         {
-            if (std::isnan(R_squared_norm) || std::isnan(dx_squared_norm) || U_squared_norm < epsilon*epsilon) {
+            if (std::isnan(R_squared_norm) || std::isnan(dx_squared_norm) || U_squared_norm < epsilon*epsilon)
+            {
                 diverged = true;
-                if (print_log) {
+                if (print_log)
+                {
                     info << "[DIVERGED]";
-                    if (std::isnan(R_squared_norm)) {
+                    if (std::isnan(R_squared_norm))
+                    {
                         info << " The residual's ratio |R| is NaN.";
                     }
-                    if (std::isnan(dx_squared_norm)) {
+                    if (std::isnan(dx_squared_norm))
+                    {
                         info << " The correction's ratio |du| is NaN.";
                     }
-                    if (U_squared_norm < epsilon) {
+                    if (U_squared_norm < epsilon)
+                    {
                         info << " The correction's ratio |du|/|U| is NaN (|U| is zero).";
                     }
                     info << "\n";
@@ -370,41 +383,51 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
                 break;
             }
 
-            if (absolute_correction_tolerance_threshold > 0 && dx_squared_norm < absolute_squared_correction_threshold) {
+            if (absolute_correction_tolerance_threshold > 0 && dx_squared_norm < absolute_squared_correction_threshold)
+            {
                 converged = true;
-                if (print_log) {
+                if (print_log)
+                {
                     info  << "[CONVERGED] The correction's norm |du| = " << std::sqrt(dx_squared_norm) << " is smaller than the threshold of " << absolute_correction_tolerance_threshold << ".\n";
                 }
                 break;
             }
 
-            if (relative_correction_tolerance_threshold > 0 && dx_squared_norm < relative_squared_correction_threshold*U_squared_norm) {
+            if (relative_correction_tolerance_threshold > 0 && dx_squared_norm < relative_squared_correction_threshold*U_squared_norm)
+            {
                 converged = true;
-                if (print_log) {
+                if (print_log)
+                {
                     info  << "[CONVERGED] The correction's ratio |du|/|U| = " << std::sqrt(dx_squared_norm/U_squared_norm) << " is smaller than the threshold of " << relative_correction_tolerance_threshold << ".\n";
                 }
                 break;
             }
 
-            if (absolute_residual_tolerance_threshold > 0 && R_squared_norm < absolute_squared_residual_threshold) {
+            if (absolute_residual_tolerance_threshold > 0 && R_squared_norm < absolute_squared_residual_threshold)
+            {
                 converged = true;
-                if (print_log) {
+                if (print_log)
+                {
                     info << "[CONVERGED] The residual's norm |R| = " << std::sqrt(R_squared_norm) << " is smaller than the threshold of " << absolute_residual_tolerance_threshold << ".\n";
                 }
                 break;
             }
 
-            if (relative_residual_tolerance_threshold > 0 && R_squared_norm < relative_squared_residual_tolerance_threshold*R0_squared_norm) {
+            if (relative_residual_tolerance_threshold > 0 && R_squared_norm < relative_squared_residual_tolerance_threshold*R0_squared_norm)
+            {
                 converged = true;
-                if (print_log) {
+                if (print_log)
+                {
                     info << "[CONVERGED] The residual's ratio |R|/|R0| = " << std::sqrt(R_squared_norm/R0_squared_norm) << " is smaller than the threshold of " << relative_residual_tolerance_threshold << ".\n";
                 }
                 break;
             }
 
-            if (should_diverge_when_residual_is_growing && R_squared_norm > R_previous_squared_norm) {
+            if (should_diverge_when_residual_is_growing && R_squared_norm > R_previous_squared_norm)
+            {
                 diverged = true;
-                if (print_log) {
+                if (print_log)
+                {
                     info << "[DIVERGED] The current residual norm |R| = " << std::sqrt(R_squared_norm)
                          << " is greater than at the previous Newton iteration (" << std::sqrt(R_previous_squared_norm) << ").\n";
                 }
@@ -417,8 +440,10 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
 
     n_it--; // Reset to the actual index of the last iteration completed
 
-    if (! converged && ! diverged && n_it == (max_number_of_newton_iterations-1)) {
-        if (print_log) {
+    if (! converged && ! diverged && n_it == (max_number_of_newton_iterations-1))
+    {
+        if (print_log)
+        {
             info << "[DIVERGED] The number of Newton iterations reached the maximum of " << max_number_of_newton_iterations << " iterations" << ".\n";
         }
     }
