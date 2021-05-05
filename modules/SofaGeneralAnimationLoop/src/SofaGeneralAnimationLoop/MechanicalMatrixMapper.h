@@ -49,9 +49,7 @@ public:
         : simulation::BaseMechanicalVisitor(_cparams)
         , res(_res)
         , cparams(_cparams)
-    {
-
-    }
+    {}
 
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override
     {
@@ -73,12 +71,6 @@ public:
     {
         return false; // !map->isMechanical();
     }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 
 protected:
     core::MultiMatrixDerivId res;

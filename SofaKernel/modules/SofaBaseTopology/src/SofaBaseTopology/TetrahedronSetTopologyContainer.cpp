@@ -29,12 +29,12 @@ namespace sofa::component::topology
 
 using namespace std;
 using namespace sofa::defaulttype;
+using sofa::core::topology::edgesInTetrahedronArray;
 
 int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set topology container")
         .add< TetrahedronSetTopologyContainer >()
         ;
 
-const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 ///convention triangles in tetra (orientation interior)
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()

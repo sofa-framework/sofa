@@ -25,6 +25,7 @@
 #include <SofaBaseCollision/OBBIntTool.h>
 #include <SofaBaseCollision/CapsuleIntTool.h>
 #include <SofaSimulationGraph/DAGNode.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 using namespace sofa::PrimitiveCreationTest;
 using namespace sofa::defaulttype;

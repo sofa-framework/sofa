@@ -24,7 +24,7 @@
 
 #include "CudaSPHFluidForceField.h"
 #include <SofaSphFluid/SPHFluidForceField.inl>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa
@@ -262,7 +262,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::Vis
         {
             glColor3f(f-1,0,2-f);
         }
-        helper::gl::glVertexT(x[i]);
+        sofa::gl::glVertexT(x[i]);
     }
     glEnd();
     glPointSize(1);

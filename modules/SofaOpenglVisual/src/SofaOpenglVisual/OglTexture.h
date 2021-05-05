@@ -26,8 +26,8 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/gl/template.h>
+#include <sofa/gl/Texture.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <SofaOpenglVisual/OglShader.h>
 
@@ -74,7 +74,7 @@ protected:
     sofa::core::objectmodel::DataFileName cubemapFilenameNegY;
     sofa::core::objectmodel::DataFileName cubemapFilenameNegZ;
 
-    helper::gl::Texture* texture;
+    sofa::gl::Texture* texture;
     helper::io::Image* img;
 
 public:

@@ -23,8 +23,8 @@
 
 #include <sofa/config.h>
 
-#ifdef SOFA_BUILD_CORE
-#  define SOFA_TARGET   SofaCore
+#ifdef SOFA_BUILD_SOFA_CORE
+#  define SOFA_TARGET @PROJECT_NAME@
 #  define SOFA_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY

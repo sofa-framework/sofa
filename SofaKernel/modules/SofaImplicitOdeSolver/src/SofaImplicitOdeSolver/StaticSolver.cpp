@@ -27,10 +27,13 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 
 #include <iomanip>
 #include <chrono>
 #include <memory>
+
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
 namespace sofa::component::odesolver
 {
@@ -292,7 +295,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
 
             // Propagate positions to mapped mechanical objects, for example, identity mappings, barycentric mappings, ...
             // This will call the methods apply and applyJ on every mechanical mappings.
-            sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor(&mechanical_parameters).execute(context);
+            MechanicalPropagateOnlyPositionAndVelocityVisitor(&mechanical_parameters).execute(context);
         }
 
         // At this point, we completed one iteration, increment the counter.

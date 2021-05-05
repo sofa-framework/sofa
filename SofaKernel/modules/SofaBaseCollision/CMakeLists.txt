@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${SOFABASECOLLISION_SRC}/BaseContactMapper.h
     ${SOFABASECOLLISION_SRC}/BaseIntTool.h
     ${SOFABASECOLLISION_SRC}/BaseProximityIntersection.h
+    ${SOFABASECOLLISION_SRC}/BruteForceBroadPhase.h
     ${SOFABASECOLLISION_SRC}/BruteForceDetection.h
     ${SOFABASECOLLISION_SRC}/CapsuleIntTool.h
     ${SOFABASECOLLISION_SRC}/CapsuleIntTool.inl
@@ -51,6 +52,7 @@ set(SOURCE_FILES
     ${SOFABASECOLLISION_SRC}/BaseContactMapper.cpp
     ${SOFABASECOLLISION_SRC}/BaseIntTool.cpp
     ${SOFABASECOLLISION_SRC}/BaseProximityIntersection.cpp
+    ${SOFABASECOLLISION_SRC}/BruteForceBroadPhase.cpp
     ${SOFABASECOLLISION_SRC}/BruteForceDetection.cpp
     ${SOFABASECOLLISION_SRC}/CapsuleIntTool.cpp
     ${SOFABASECOLLISION_SRC}/CapsuleModel.cpp

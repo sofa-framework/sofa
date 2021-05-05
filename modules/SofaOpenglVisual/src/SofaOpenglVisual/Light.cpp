@@ -196,12 +196,12 @@ void Light::initVisual()
     computeShadowMapSize();
     //Shadow part
     //Shadow texture init
-    m_shadowFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
-                new helper::gl::FrameBufferObject(true, true, true));
-    m_blurHFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
-                new helper::gl::FrameBufferObject(false,false,true));
-    m_blurVFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
-                new helper::gl::FrameBufferObject(false,false,true));
+    m_shadowFBO = std::unique_ptr<sofa::gl::FrameBufferObject>(
+                new sofa::gl::FrameBufferObject(true, true, true));
+    m_blurHFBO = std::unique_ptr<sofa::gl::FrameBufferObject>(
+                new sofa::gl::FrameBufferObject(false,false,true));
+    m_blurVFBO = std::unique_ptr<sofa::gl::FrameBufferObject>(
+                new sofa::gl::FrameBufferObject(false,false,true));
     m_depthShader = sofa::core::objectmodel::New<OglShader>();
     m_blurShader = sofa::core::objectmodel::New<OglShader>();
 

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_NARROWPHASEDETECTION_H
-#define SOFA_COMPONENT_COLLISION_NARROWPHASEDETECTION_H
+#pragma once
 
 #include <sofa/core/collision/Detection.h>
 #include <sofa/core/collision/DetectionOutput.h>
@@ -28,20 +27,13 @@
 #include <vector>
 #include <map>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 /**
-* @brief Given a set of potentially colliding pairs of models, compute set of contact points
-*/
-
-class NarrowPhaseDetection : virtual public Detection
+ * @brief Given a set of potentially colliding pairs of models, compute set of contact points
+ */
+class SOFA_CORE_API NarrowPhaseDetection : virtual public Detection
 {
 public:
     SOFA_ABSTRACT_CLASS(NarrowPhaseDetection, Detection);
@@ -53,76 +45,21 @@ protected:
     ~NarrowPhaseDetection() override { }
 public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
-    virtual void beginNarrowPhase()
-    {
-        for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); it++)
-        {
-            DetectionOutputVector *do_vec = (it->second);
-
-            if (do_vec != nullptr)
-                do_vec->clear();
-        }
-    }
+    virtual void beginNarrowPhase();
 
     /// Add a new potentially colliding pairs of models
     virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;
 
     /// Add a new list of potentially colliding pairs of models
-    virtual void addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
-    {
-        for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
-            addCollisionPair(*it);
+    virtual void addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v);
 
-        // m_outputsMap should just be filled in addCollisionPair function
-        m_primitiveTestCount = m_outputsMap.size();
-    }
+    virtual void endNarrowPhase();
 
-    virtual void endNarrowPhase()
-    {
-        DetectionOutputMap::iterator it = m_outputsMap.begin();
-        
-        while (it != m_outputsMap.end())
-        {
-            DetectionOutputVector *do_vec = (it->second);
+    size_t getPrimitiveTestCount() const;
 
-            if (!do_vec || do_vec->empty())
-            {
-                /// @todo Optimization
-                DetectionOutputMap::iterator iterase = it;
-				++it;
-				m_outputsMap.erase(iterase);
-                if (do_vec) do_vec->release();
-            }
-            else
-            {
-                ++it;
-            }
-        }
-    }
+    const DetectionOutputMap& getDetectionOutputs() const;
 
-    //sofa::helper::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
-
-    size_t getPrimitiveTestCount() const { return m_primitiveTestCount; }
-
-    const DetectionOutputMap& getDetectionOutputs() const
-    {
-        return m_outputsMap;
-    }
-
-    DetectionOutputVector*& getDetectionOutputs(CollisionModel *cm1, CollisionModel *cm2)
-    {
-        std::pair< CollisionModel*, CollisionModel* > cm_pair = std::make_pair(cm1, cm2);
-
-        DetectionOutputMap::iterator it = m_outputsMap.find(cm_pair);
-
-        if (it == m_outputsMap.end())
-        {
-            // new contact
-            it = m_outputsMap.insert( std::make_pair(cm_pair, static_cast< DetectionOutputVector * >(0)) ).first;
-        }
-
-        return it->second;
-    }
+    DetectionOutputVector*& getDetectionOutputs(CollisionModel *cm1, CollisionModel *cm2);
 
     //Returns true if the last narrow phase detected no collision, to use after endNarrowPhase.
     inline bool zeroCollision()const{
@@ -132,11 +69,7 @@ public:
 protected:
     bool _zeroCollision;//true if the last narrow phase detected no collision, to use after endNarrowPhase
 
-    void changeInstanceNP(Instance inst) override
-    {
-        m_storedOutputsMap[instance].swap(m_outputsMap);
-        m_outputsMap.swap(m_storedOutputsMap[inst]);
-    }
+    void changeInstanceNP(Instance inst) override;
 
 protected:
     std::map<Instance, DetectionOutputMap> m_storedOutputsMap;
@@ -147,10 +80,4 @@ protected:
     size_t m_primitiveTestCount; // used only for statistics purpose
 };
 
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

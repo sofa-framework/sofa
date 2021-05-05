@@ -1,12 +1,11 @@
 <Node dt="0.01" gravity="0 -20 0.0" >
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName="SofaSphFluid"/>
-
+    <RequiredPlugin name="SofaSphFluid"/>
+    <RequiredPlugin name='SofaBoundaryCondition'/>
+    <RequiredPlugin name='SofaExplicitOdeSolver'/>
     <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideCollisionModels" />
-        
 
     <Node name="SPH" >
-
         <EulerExplicitSolver symplectic="1" />
         <RegularGridTopology nx="5" ny="400" nz="5" xmin="-3.0" xmax="0" ymin="-3" ymax="36" zmin="-3.0" zmax="0" />
         <MechanicalObject name="MModel" />
@@ -21,6 +20,7 @@
         <PlaneForceField normal="0 0 1" d="-10" />
         <PlaneForceField normal="0 0 -1" d="-10" />
     </Node>
+    
     <Node name="Fluid" >            
         <OglFluidModel template="Vec3d" position="@../SPH/MModel.position" 
             debugFBO="9"

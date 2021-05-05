@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <map>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -382,12 +382,12 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
             for( unsigned int i=0; i<tripoints.size()-1; ++i)
             {
-                helper::gl::glTexCoordT(intersections[0].second);
-                helper::gl::glVertexT(intersections[0].first);
-                helper::gl::glTexCoordT(intersections[tripoints[i]].second);
-                helper::gl::glVertexT(intersections[tripoints[i]].first);
-                helper::gl::glTexCoordT(intersections[tripoints[i+1]].second);
-                helper::gl::glVertexT(intersections[tripoints[i+1]].first);
+                sofa::gl::glTexCoordT(intersections[0].second);
+                sofa::gl::glVertexT(intersections[0].first);
+                sofa::gl::glTexCoordT(intersections[tripoints[i]].second);
+                sofa::gl::glVertexT(intersections[tripoints[i]].first);
+                sofa::gl::glTexCoordT(intersections[tripoints[i+1]].second);
+                sofa::gl::glVertexT(intersections[tripoints[i+1]].first);
             }
 
             ++itcell;

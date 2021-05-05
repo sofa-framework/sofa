@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/RAII.h>
+#include <sofa/gl/RAII.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -616,7 +616,7 @@ bool OglModel::loadTexture(const std::string& filename)
     helper::io::Image *img = helper::io::Image::Create(filename);
     if (!img)
         return false;
-    tex = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
+    tex = new sofa::gl::Texture(img, true, true, false, srgbTexturing.getValue());
     return true;
 }
 
@@ -658,7 +658,7 @@ bool OglModel::loadTextures()
             result = false;
             continue;
         }
-        helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
+        sofa::gl::Texture * text = new sofa::gl::Texture(img, true, true, false, srgbTexturing.getValue());
         materialTextureIdMap.insert(std::pair<int, int>(*i,textures.size()));
         textures.push_back( text );
     }

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaCore)
+project(Sofa.Core)
 
 set(SRC_ROOT "src/sofa/core")
 
@@ -198,8 +198,10 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/fwd.cpp
+    ${SRC_ROOT}/collision/BroadPhaseDetection.cpp
     ${SRC_ROOT}/collision/Contact.cpp
     ${SRC_ROOT}/collision/Intersection.cpp
+    ${SRC_ROOT}/collision/NarrowPhaseDetection.cpp
     ${SRC_ROOT}/collision/Pipeline.cpp
     ${SRC_ROOT}/init.cpp    
     ${SRC_ROOT}/fwd.cpp
@@ -257,11 +259,11 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Sofa.Topology REQUIRED)
-sofa_find_package(SofaHelper REQUIRED)
-sofa_find_package(SofaDefaultType REQUIRED)
+sofa_find_package(Sofa.Helper REQUIRED)
+sofa_find_package(Sofa.DefaultType REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Topology SofaDefaultType)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Topology Sofa.DefaultType)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)
     message("Adding precompiled header for SofaCore")
@@ -280,6 +282,9 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+# Create alias
+add_library(SofaCore ALIAS ${PROJECT_NAME})
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaCore_test)

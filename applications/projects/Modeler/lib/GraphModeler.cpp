@@ -39,6 +39,8 @@
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
 #include <QMenu>
 #include <QMessageBox>
 #include <QHeaderView>
@@ -927,7 +929,7 @@ void GraphModeler::saveComponents()
 void GraphModeler::saveComponents(helper::vector<QTreeWidgetItem*> items, const std::string &file)
 {
     std::ofstream out(file.c_str());
-    simulation::XMLPrintVisitor print(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, out);
+    simulation::XMLPrintVisitor print(sofa::core::execparams::defaultInstance() /* PARAMS FIRST */, out);
     print.setLevel(1);
     out << "<Node name=\"Group\">\n";
     for (unsigned int i=0; i<items.size(); ++i)

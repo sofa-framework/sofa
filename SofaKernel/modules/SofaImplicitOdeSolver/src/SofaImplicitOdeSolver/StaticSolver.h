@@ -23,7 +23,6 @@
 #include <SofaImplicitOdeSolver/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
 #include <sofa/core/behavior/MultiVec.h>
 
 namespace sofa::component::odesolver

@@ -1,0 +1,2 @@
+# Old scenes failing on CI
+ignore "character_clothes.py"

@@ -25,8 +25,8 @@
 
 #include <vector>
 #include <string>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/gl/template.h>
+#include <sofa/gl/Texture.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
@@ -83,7 +83,7 @@ protected:
     Data<sofa::helper::OptionsGroup> destFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed
     GLenum blendEq, sfactor, dfactor;
 
-    helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
+    sofa::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     size_t oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
@@ -101,7 +101,7 @@ protected:
     virtual void pushTransformMatrix(float* matrix) { glPushMatrix(); glMultMatrixf(matrix); }
     virtual void popTransformMatrix() { glPopMatrix(); }
 
-    std::vector<helper::gl::Texture*> textures;
+    std::vector<sofa::gl::Texture*> textures;
 
     std::map<int, int> materialTextureIdMap; //link between a material and a texture
 
@@ -132,12 +132,12 @@ public:
     bool isUseTriangles()	{ return useTriangles; }
     bool isUseQuads()	{ return useQuads; }
 
-    helper::gl::Texture* getTex() const	{ return tex; }
+    sofa::gl::Texture* getTex() const	{ return tex; }
     GLuint getVbo()	{ return vbo;	}
     GLuint getIboEdges() { return iboEdges; }
     GLuint getIboTriangles() { return iboTriangles; }
     GLuint getIboQuads()    { return iboQuads; }
-    const std::vector<helper::gl::Texture*>& getTextures() const { return textures;	}
+    const std::vector<sofa::gl::Texture*>& getTextures() const { return textures;	}
 
     void createVertexBuffer();
     void createEdgesIndicesBuffer();

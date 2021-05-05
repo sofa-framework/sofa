@@ -37,7 +37,7 @@ namespace component
 namespace visualmodel
 {
 
-using namespace helper::gl;
+using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 

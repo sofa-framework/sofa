@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 using namespace sofa::simulation;
@@ -34,6 +34,12 @@ using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
 #include "Binding_Node.h"
 #include "Binding_Link.h"

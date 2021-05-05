@@ -25,6 +25,12 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
+
 #include <cstring>
 #include <sstream>
 
@@ -258,9 +264,9 @@ void ReadState::processReadState()
 
     if (updated)
     {
-        sofa::simulation::MechanicalProjectPositionAndVelocityVisitor action0(core::mechanicalparams::defaultInstance());
+        MechanicalProjectPositionAndVelocityVisitor action0(core::mechanicalparams::defaultInstance());
         this->getContext()->executeVisitor(&action0);
-        sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor action1(core::mechanicalparams::defaultInstance());
+        MechanicalPropagateOnlyPositionAndVelocityVisitor action1(core::mechanicalparams::defaultInstance());
         this->getContext()->executeVisitor(&action1);
         sofa::simulation::UpdateMappingVisitor action2(core::mechanicalparams::defaultInstance());
         this->getContext()->executeVisitor(&action2);

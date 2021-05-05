@@ -185,6 +185,7 @@ void WorkerThread::workUntilDone(Task::Status *status)
     if (m_taskScheduler->m_mainTaskStatus == status)
     {
         m_taskScheduler->m_mainTaskStatus = nullptr;
+        m_taskScheduler->m_workerThreadsIdle = true;
     }
 }
 
