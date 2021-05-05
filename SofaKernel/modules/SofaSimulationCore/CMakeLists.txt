@@ -31,8 +31,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/IntegrateBeginEvent.h
     ${SRC_ROOT}/IntegrateEndEvent.h
     ${SRC_ROOT}/LocalStorage.h
-    ${SRC_ROOT}/MechanicalComputeEnergyVisitor.h
-    ${SRC_ROOT}/MechanicalMatrixVisitor.h
     ${SRC_ROOT}/MechanicalOperations.h
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
@@ -66,7 +64,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/WriteStateVisitor.h
     ${SRC_ROOT}/XMLPrintVisitor.h
     ${SRC_ROOT}/init.h
-    ${SRC_ROOT}/MechanicalGetMomentumVisitor.h
     ${SRC_ROOT}/BaseSimulationExporter.h
     ${SRC_ROOT}/TaskScheduler.h
     ${SRC_ROOT}/DefaultTaskScheduler.h
@@ -80,6 +77,59 @@ set(HEADER_FILES
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.h
     ${SRC_ROOT}/events/SimulationStartEvent.h
     ${SRC_ROOT}/events/SimulationStopEvent.h
+
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBKdxVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMDxVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyConstraintsVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalBuildConstraintMatrix.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeContactForceVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeDfVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeEnergyVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeForceVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeGeometricStiffness.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalEndIntegrationVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetDimensionVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMomentumVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrationVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPickParticlesVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPickParticlesWithTagsVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectPositionVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectVelocityVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateDxAndResetForceVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateDxVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalResetConstraintVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalResetForceVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalSetPositionAndVelocityVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVAllocVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVAvailVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVDotVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVFreeVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVInitVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVMultiOpVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVNormVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVOpVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVReallocVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVSizeVisitor.h
 )
 
 set(SOURCE_FILES
@@ -105,7 +155,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/InitVisitor.cpp
     ${SRC_ROOT}/IntegrateBeginEvent.cpp
     ${SRC_ROOT}/IntegrateEndEvent.cpp
-    ${SRC_ROOT}/MechanicalMatrixVisitor.cpp
     ${SRC_ROOT}/MechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalVPrintVisitor.cpp
     ${SRC_ROOT}/MechanicalVisitor.cpp
@@ -138,7 +187,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/XMLPrintVisitor.cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/fwd.cpp
-    ${SRC_ROOT}/MechanicalComputeEnergyVisitor.cpp
     ${SRC_ROOT}/BaseSimulationExporter.cpp
     ${SRC_ROOT}/TaskScheduler.cpp
     ${SRC_ROOT}/DefaultTaskScheduler.cpp
@@ -150,6 +198,59 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
+
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBKdxVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMDxVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyConstraintsVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalBeginIntegrationVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalBuildConstraintMatrix.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeContactForceVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeDfVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeEnergyVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeForceVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeGeometricStiffness.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalEndIntegrationVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetDimensionVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMomentumVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrationVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPickParticlesVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPickParticlesWithTagsVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectPositionVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectVelocityVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateDxAndResetForceVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateDxVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalResetConstraintVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalResetForceVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalSetPositionAndVelocityVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVAllocVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVAvailVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVDotVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVFreeVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVInitVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVMultiOpVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVNormVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVOpVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVReallocVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalVSizeVisitor.cpp
 )
 
 sofa_find_package(Sofa.Core REQUIRED)

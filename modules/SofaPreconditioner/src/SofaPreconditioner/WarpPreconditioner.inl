@@ -32,7 +32,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
 
 #include <iostream>
 #include <cmath>

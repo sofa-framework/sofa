@@ -47,8 +47,8 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
-#include <sofa/helper/gl/Capture.h>
+#include <sofa/gl/VideoRecorderFFMPEG.h>
+#include <sofa/gl/Capture.h>
 
 namespace sofa
 {
@@ -113,7 +113,7 @@ private:
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
-    sofa::helper::gl::VideoRecorderFFMPEG m_videorecorder;
+    sofa::gl::VideoRecorderFFMPEG m_videorecorder;
     int m_nFrames;
 
     GLuint fbo;
@@ -122,7 +122,7 @@ private:
     double lastModelviewMatrix[16];
     bool initTexturesDone;
     bool initVideoRecorder;
-    sofa::helper::gl::Capture m_screencapture;
+    sofa::gl::Capture m_screencapture;
 
     static GLsizei width, height;
     static unsigned int fps;

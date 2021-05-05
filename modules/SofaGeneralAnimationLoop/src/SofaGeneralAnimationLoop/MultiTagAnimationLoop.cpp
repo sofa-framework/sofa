@@ -35,6 +35,8 @@
 #include <cmath>
 #include <iostream>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 
 using namespace sofa::simulation;
 
@@ -96,7 +98,7 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
         this->addTag (*it);
 
         dmsg_info() << "begin constraints reset" ;
-        sofa::simulation::MechanicalResetConstraintVisitor(&cparams).execute(this->getContext());
+        MechanicalResetConstraintVisitor(&cparams).execute(this->getContext());
         dmsg_info() << "end constraints reset" ;
 
         dmsg_info() << "begin collision for tag: "<< *it ;

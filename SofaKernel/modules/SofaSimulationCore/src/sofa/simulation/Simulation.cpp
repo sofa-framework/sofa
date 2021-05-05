@@ -66,6 +66,12 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
+
 namespace sofa
 {
 

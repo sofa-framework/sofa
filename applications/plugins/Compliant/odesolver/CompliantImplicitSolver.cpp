@@ -7,6 +7,18 @@
 #include <Compliant/utils/scoped.h>
 #include <Compliant/numericalsolver/KKTSolver.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeGeometricStiffness.h>
+using sofa::simulation::mechanicalvisitor::MechanicalComputeGeometricStiffness;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
 namespace sofa {
 namespace component {
 namespace odesolver {
@@ -146,7 +158,7 @@ using namespace core::behavior;
         if( !lagrange.id().isNull() )
         {
             // warning, vop.v_clear would only clear independent dofs
-            simulation::MechanicalVOpVisitor clearVisitor(core::execparams::defaultInstance(), lagrange.id(), core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0);
+            MechanicalVOpVisitor clearVisitor(core::execparams::defaultInstance(), lagrange.id(), core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0);
             clearVisitor.only_mapped = true;
             send( clearVisitor, false );
         }
@@ -196,7 +208,7 @@ using namespace core::behavior;
         }
 
         // computing mapping geometric stiffnesses based on child force stored in f
-        simulation::MechanicalComputeGeometricStiffness gsvis( &sop.mparams(), f );
+        MechanicalComputeGeometricStiffness gsvis( &sop.mparams(), f );
         send( gsvis );
     }
 
@@ -204,9 +216,9 @@ using namespace core::behavior;
 
     void CompliantImplicitSolver::propagate(const core::MechanicalParams* params)
     {
-        simulation::MechanicalProjectPositionAndVelocityVisitor project( params );
+        MechanicalProjectPositionAndVelocityVisitor project( params );
         send( project );
-        simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor bob( params );
+        MechanicalPropagateOnlyPositionAndVelocityVisitor bob( params );
         send( bob );
     }
 

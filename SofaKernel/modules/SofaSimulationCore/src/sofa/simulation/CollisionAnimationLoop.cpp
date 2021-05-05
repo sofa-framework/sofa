@@ -38,6 +38,9 @@
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalIntegrationVisitor;
+
 #include <cstdlib>
 #include <cmath>
 

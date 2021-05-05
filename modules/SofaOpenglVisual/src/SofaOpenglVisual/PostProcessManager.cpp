@@ -81,7 +81,7 @@ void PostProcessManager::initVisual()
         GLint windowWidth = viewport[2];
         GLint windowHeight = viewport[3];
 
-        fbo = std::unique_ptr<helper::gl::FrameBufferObject>(new helper::gl::FrameBufferObject());
+        fbo = std::unique_ptr<sofa::gl::FrameBufferObject>(new sofa::gl::FrameBufferObject());
         fbo->init(windowWidth, windowHeight);
 
 

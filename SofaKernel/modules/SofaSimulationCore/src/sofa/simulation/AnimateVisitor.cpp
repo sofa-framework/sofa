@@ -32,6 +32,24 @@
 
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateConstraint.h>
+using sofa::simulation::mechanicalvisitor::MechanicalAccumulateConstraint;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
+
 using namespace sofa::core;
 
 namespace sofa
@@ -150,7 +168,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         {
             unsigned int constraintId=0;
             core::ConstraintParams cparams;
-            simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(),constraintId).execute(node);
+            MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(),constraintId).execute(node);
         }
 
         for( unsigned i=0; i<node->solver.size(); i++ )

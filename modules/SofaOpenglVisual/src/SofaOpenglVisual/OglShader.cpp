@@ -112,7 +112,7 @@ void OglShader::init()
 
     for (unsigned int i=0 ; i<nshaders ; i++)
     {
-        shaderVector[i] = new sofa::helper::gl::GLSLShader();
+        shaderVector[i] = new sofa::gl::GLSLShader();
         if (!vertFilename.getValue().empty())
         {
             shaderVector[i]->SetVertexShaderFileName(vertFilename.getFullPath(std::min(i,(unsigned int)vertFilename.getValue().size()-1)));
@@ -150,7 +150,7 @@ void OglShader::reinit()
 void OglShader::initVisual()
 {
 
-    if (!sofa::helper::gl::GLSLShader::InitGLSL())
+    if (!sofa::gl::GLSLShader::InitGLSL())
     {
         msg_error() << "InitGLSL failed";
         return;

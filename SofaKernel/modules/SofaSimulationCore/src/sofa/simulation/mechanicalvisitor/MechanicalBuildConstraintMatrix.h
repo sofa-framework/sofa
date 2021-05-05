@@ -19,56 +19,49 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
-#define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
+#pragma once
 
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/behavior/BaseMass.h>
-namespace sofa
+#include <sofa/simulation/BaseMechanicalVisitor.h>
+
+#include <sofa/core/ConstraintParams.h>
+
+namespace sofa::simulation::mechanicalvisitor
 {
 
-namespace simulation
+/// Call each BaseConstraintSet to build the Jacobian matrices
+class SOFA_SIMULATION_CORE_API MechanicalBuildConstraintMatrix : public BaseMechanicalVisitor
 {
-
-/// Compute the linear and angular momenta
-///
-/// @author Matthieu Nesme, 2015
-///
-class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
-{
-    defaulttype::Vector6 m_momenta;
-
 public:
-    MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams)
-        : sofa::simulation::MechanicalVisitor(mparams)
+    MechanicalBuildConstraintMatrix(const sofa::core::ConstraintParams* _cparams,
+                                    sofa::core::MultiMatrixDerivId _res, unsigned int &_contactId)
+            : BaseMechanicalVisitor(_cparams)
+            , res(_res)
+            , contactId(_contactId)
+            , cparams(_cparams)
     {}
 
-    const defaulttype::Vector6& getMomentum() const { return m_momenta; }
+    const sofa::core::ConstraintParams* constraintParams() const { return cparams; }
 
-    /// Process the BaseMass
-    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+    Result fwdConstraintSet(simulation::Node* /*node*/,sofa::core::behavior::BaseConstraintSet* c) override;
+
+    /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
     {
-        m_momenta += mass->getMomentum();
-        return RESULT_CONTINUE;
+        return false; // !map->isMechanical();
     }
-
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalGetMomentumVisitor"; }
+    const char* getClassName() const override { return "MechanicalBuildConstraintMatrix"; }
 
-    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false )
+    bool isThreadSafe() const override
     {
-        m_momenta.clear();
-        sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );
+        return false;
     }
 
-
+protected:
+    sofa::core::MultiMatrixDerivId res;
+    unsigned int &contactId;
+    const sofa::core::ConstraintParams *cparams;
 };
-
 }
-
-}
-
-#endif

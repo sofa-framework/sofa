@@ -22,7 +22,7 @@
 #pragma once
 
 #include <CGALPlugin/CylinderMesh.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #define MAX(a,b) ( (a)>(b) ? (a):(b))

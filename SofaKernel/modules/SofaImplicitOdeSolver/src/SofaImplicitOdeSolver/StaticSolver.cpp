@@ -27,6 +27,9 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/MultiMatrix.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
+
 namespace sofa::component::odesolver
 {
 
@@ -152,7 +155,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
             // Propagate positions to mapped nodes: taken from AnimateVisitor::processNodeTopDown executed by the animation loop
             // calls apply, applyJ
             sofa::core::MechanicalParams mp;
-            sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor(&mp).execute(
+            MechanicalPropagateOnlyPositionAndVelocityVisitor(&mp).execute(
                 this->getContext()); // propagate the changes to mappings below
 
             // Compute addForce, in mapped: addForce + applyJT (vec)
