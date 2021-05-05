@@ -26,6 +26,7 @@
 #include <sofa/helper/map_ptr_stable_compare.h>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 namespace sofa::core::collision
 {
@@ -35,10 +36,23 @@ namespace sofa::core::collision
  */
 class SOFA_CORE_API NarrowPhaseDetection : virtual public Detection
 {
+
+
 public:
     SOFA_ABSTRACT_CLASS(NarrowPhaseDetection, Detection);
 
-    typedef sofa::helper::map_ptr_stable_compare< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
+private:
+
+    struct CollisionModelPairHash
+    {
+        std::size_t operator()(const std::pair< core::CollisionModel*, core::CollisionModel* >& p) const
+        {
+            return (std::hash<CollisionModel*>()(p.first)) ^ (std::hash<CollisionModel*>()(p.second) << 32);
+        }
+    };
+
+public:
+    typedef std::unordered_map< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector*, CollisionModelPairHash> DetectionOutputMap;
 
 protected:
     /// Destructor
@@ -78,6 +92,8 @@ protected:
     DetectionOutputMap m_outputsMap;
 
     size_t m_primitiveTestCount; // used only for statistics purpose
+
+
 };
 
 } // namespace sofa::core::collision
