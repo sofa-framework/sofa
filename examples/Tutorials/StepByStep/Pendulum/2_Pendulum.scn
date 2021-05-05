@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 -9.81" dt="0.01">
 
-    <RequiredPlugin pluginName='SofaExplicitOdeSolver'/> <!-- EulerExplicitSolver -->
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/> <!-- FixedConstraint -->
-    <RequiredPlugin pluginName='SofaOpenglVisual'/> <!-- OglGrid -->
+    <RequiredPlugin name='SofaExplicitOdeSolver'/> <!-- EulerExplicitSolver -->
+    <RequiredPlugin name='SofaBoundaryCondition'/> <!-- FixedConstraint -->
+    <RequiredPlugin name='SofaOpenglVisual'/> <!-- OglGrid -->
 
     <OglGrid/>
     <OglSceneFrame/>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 -9.81" dt="0.01">
 
-    <RequiredPlugin pluginName='SofaExplicitOdeSolver'/> <!-- EulerExplicitSolver -->
+    <RequiredPlugin name='SofaExplicitOdeSolver'/> <!-- EulerExplicitSolver -->
 
     <VisualStyle displayFlags="showBehavior" />
     <EulerExplicitSolver name="Explicit Euler Solver" />
