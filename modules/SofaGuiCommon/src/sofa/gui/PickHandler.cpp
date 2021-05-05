@@ -24,14 +24,9 @@
 #include <SofaUserInteraction/ComponentMouseInteraction.h>
 #include <SofaUserInteraction/RayContact.h>
 
-#include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/collision/Pipeline.h>
-
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
 
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
