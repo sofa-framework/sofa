@@ -31,7 +31,6 @@
 #include <SofaMeshCollision/RigidContactMapper.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
-#include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
 
 

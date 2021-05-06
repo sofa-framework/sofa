@@ -27,8 +27,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/simulation/fwd.h>
 namespace sofa::component::collision
