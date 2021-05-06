@@ -29,7 +29,7 @@ using sofa::helper::system::SetDirectory;
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 
-#include <boost/program_options.hpp>
+#include <sofa/gui/ArgumentParser.h>
 #include <thread>
 #include <chrono>
 
