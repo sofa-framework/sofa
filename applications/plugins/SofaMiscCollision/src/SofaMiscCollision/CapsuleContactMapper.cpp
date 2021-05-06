@@ -26,12 +26,12 @@
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
+#include <SofaConstraint/FrictionContact.inl>
 
 using namespace sofa::core::collision;
 
 namespace sofa::component::collision
 {
-
 
 ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleContactMapperClass("default", true);
 ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > RigidCapsuleContactMapperClass("default", true);
