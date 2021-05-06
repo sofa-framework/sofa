@@ -30,7 +30,7 @@ using Coord3 = sofa::defaulttype::Vector3;
 using VecCoord3 = sofa::helper::vector<Coord3>;
 #include <sofa/gui/GUIManager.h>
 #include <SofaGui/initSofaGui.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
 
@@ -74,7 +74,7 @@ using sofa::simulation::Node;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    ArgumentParser argParser(argc, argv);
+    sofa::gui::ArgumentParser argParser(argc, argv);
     sofa::gui::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
 
