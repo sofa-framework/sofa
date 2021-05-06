@@ -39,18 +39,18 @@ list(APPEND HEADER_FILES
     ${SRC_ROOT}/TetrahedronDiscreteIntersection.h
     ${SRC_ROOT}/TetrahedronModel.h
     ${SRC_ROOT}/TriangleModelInRegularGrid.h
+    ${SRC_ROOT}/CapsuleContactMapper.h
+    ${SRC_ROOT}/OBBContactMapper.h
     )
 
 list(APPEND SOURCE_FILES
     ${SRC_ROOT}/BarycentricStickContact.cpp
     ${SRC_ROOT}/CapsuleIntersection.cpp
     ${SRC_ROOT}/CapsuleContact.cpp
-    ${SRC_ROOT}/CapsuleContactMapper.h
     ${SRC_ROOT}/CapsuleContactMapper.cpp
     ${SRC_ROOT}/DefaultCollisionGroupManager.cpp
     ${SRC_ROOT}/OBBIntersection.cpp
     ${SRC_ROOT}/OBBContact.cpp
-    ${SRC_ROOT}/OBBContactMapper.h
     ${SRC_ROOT}/OBBContactMapper.cpp
     ${SRC_ROOT}/RayTriangleVisitor.cpp
     ${SRC_ROOT}/RuleBasedContactManager.cpp

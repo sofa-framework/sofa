@@ -83,7 +83,6 @@ public:
     bool testIntersection(Capsule&, Triangle&) { return true; }
     bool testIntersection(Capsule&, Line&) { return true; }
 
-protected:
     NewProximityIntersection* intersection;
 
 };
