@@ -19,14 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaMiscCollision/OBBContactMapper.h>
 #include <SofaMiscCollision/CapsuleContactMapper.h>
 #include <SofaMeshCollision/BarycentricPenalityContact.inl>
 #include <SofaConstraint/FrictionContact.inl>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
 
 using namespace sofa::core::collision;
 
