@@ -19,19 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP
+#pragma once
+#include <SofaMiscCollision/config.h>
+
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
-#include <sofa/helper/Factory.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <SofaBaseCollision/OBBModel.h>
+
+using namespace sofa::core::collision;
 
 namespace sofa::component::collision
 {
 
-using namespace defaulttype;
 
-ContactMapperCreator< ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleContactMapperClass("default",true);
+template <class TVec3Types>
+class SOFA_MISC_COLLISION_API ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > : public RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > {
+public:
+    sofa::Index addPoint(const typename TVec3Types::Coord& P, sofa::Index index, typename TVec3Types::Real& r)
+    {
+        const typename TVec3Types::Coord& cP = P - this->model->center(index);
+        const defaulttype::Quaternion& ori = this->model->orientation(index);
 
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+        return RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >::addPoint(ori.inverseRotate(cP), index, r);
+    }
+};
 
-} //namespace sofa::component::collision
+#if !defined(SOFA_SOFAMISCCOLLISION_OBBCONTACTMAPPER_CPP)
+extern template class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
+#endif // 
+
+} // namespace sofa::component::collision

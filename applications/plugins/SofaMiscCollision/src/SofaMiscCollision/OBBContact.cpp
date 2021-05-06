@@ -19,9 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMeshCollision/BarycentricPenalityContact.inl>
-#include <SofaConstraint/FrictionContact.inl>
 #include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/CylinderModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/BarycentricPenalityContact.inl>
+#include <SofaMiscCollision/OBBContactMapper.h>
+#include <SofaConstraint/FrictionContact.inl>
 
 using namespace sofa::core::collision;
 
@@ -38,6 +42,5 @@ Creator<Contact::Factory, FrictionContact<OBBCollisionModel<sofa::defaulttype::R
 Creator<Contact::Factory, FrictionContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > SphereOBBFrictionContactClass("FrictionContact", true);
 Creator<Contact::Factory, FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > TriangleOBBFrictionContactClass("FrictionContact", true);
 Creator<Contact::Factory, FrictionContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RigidSphereOBBFrictionContactClass("FrictionContact", true);
-Creator<Contact::Factory, FrictionContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RigidCapsuleOBBFrictionContactClass("FrictionContact", true);
 
 } // namespace sofa::component::collision

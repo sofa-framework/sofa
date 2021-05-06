@@ -19,12 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaConstraint/FrictionContact.inl>
+#define SOFA_SOFAMISCCOLLISION_OBBCONTACTMAPPER_CPP
+#include <SofaMiscCollision/OBBContactMapper.h>
+
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaBaseCollision/OBBModel.h>
 
 using namespace sofa::core::collision;
 
 namespace sofa::component::collision
 {
+
+ContactMapperCreator< ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > OBBContactMapperClass("default", true);
+template class  ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 
 } // namespace sofa::component::collision
