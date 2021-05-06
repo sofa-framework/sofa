@@ -53,23 +53,8 @@ DiscreteIntersection::DiscreteIntersection()
 
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,     SphereCollisionModel<sofa::defaulttype::Vec3Types>,       DiscreteIntersection> (this);
 
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,SphereCollisionModel<sofa::defaulttype::Vec3Types>, DiscreteIntersection> (this);
-
-    intersectors.add<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>,DiscreteIntersection>(this);
-    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>,DiscreteIntersection>(this);
-
     intersectors.add<RigidSphereModel,RigidSphereModel,DiscreteIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel,DiscreteIntersection>(this);
-    intersectors.add<RigidSphereModel,OBBCollisionModel<sofa::defaulttype::Rigid3Types>,DiscreteIntersection>(this);
-
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,SphereCollisionModel<sofa::defaulttype::Vec3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>,DiscreteIntersection>(this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,RigidSphereModel,DiscreteIntersection>(this);
 
 	IntersectorFactory::getInstance()->addIntersectors(this);
 }
