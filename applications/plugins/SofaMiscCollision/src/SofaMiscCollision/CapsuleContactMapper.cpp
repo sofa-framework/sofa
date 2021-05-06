@@ -19,41 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaConstraint/FrictionContact.inl>
+#include <SofaBaseCollision/CapsuleModel.h>
 
-#include <SofaGeneralMeshCollision/config.h>
-
-#include <sofa/core/collision/Intersection.h>
-
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaMeshCollision/MeshIntTool.h>
+using namespace sofa::core::collision;
 
 namespace sofa::component::collision
 {
-
-class SOFA_SOFAGENERALMESHCOLLISION_API MeshDiscreteIntersection : public core::collision::BaseIntersector
-{
-
-    typedef DiscreteIntersection::OutputVector OutputVector;
-
-public:
-    MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
-
-    bool testIntersection(Triangle&, Line&);
-    template<class T> bool testIntersection(TSphere<T>&, Triangle&);
-
-    int computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts);
-    template<class T> int computeIntersection(TSphere<T>&, Triangle&, OutputVector*);
-
-protected:
-
-    DiscreteIntersection* intersection;
-
-};
 
 } // namespace sofa::component::collision

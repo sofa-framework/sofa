@@ -44,8 +44,12 @@ list(APPEND HEADER_FILES
 list(APPEND SOURCE_FILES
     ${SRC_ROOT}/BarycentricStickContact.cpp
     ${SRC_ROOT}/CapsuleIntersection.cpp
+    ${SRC_ROOT}/CapsuleContact.cpp
+    ${SRC_ROOT}/CapsuleContactMapper.cpp
     ${SRC_ROOT}/DefaultCollisionGroupManager.cpp
     ${SRC_ROOT}/OBBIntersection.cpp
+    ${SRC_ROOT}/OBBContact.cpp
+    ${SRC_ROOT}/OBBContactMapper.cpp
     ${SRC_ROOT}/RayTriangleVisitor.cpp
     ${SRC_ROOT}/RuleBasedContactManager.cpp
     ${SRC_ROOT}/SolverMerger.cpp

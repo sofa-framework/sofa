@@ -26,11 +26,7 @@
 #include <sofa/core/collision/Intersection.inl>
 
 #include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/BaseIntTool.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
 
 namespace sofa::core::collision
 {

@@ -25,7 +25,6 @@
 
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <SofaMeshCollision/MeshIntTool.h>
-#include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
@@ -50,8 +49,6 @@ public:
     bool testIntersection(Line&, Line&);
     bool testIntersection(Triangle&, Point&);
     template<class T> bool testIntersection(Triangle&, TSphere<T>&);
-    bool testIntersection(Capsule&,Triangle&);
-    bool testIntersection(Capsule&,Line&);
 
     int computeIntersection(Point&, Point&, OutputVector*);        
     template<class T> int computeIntersection(TSphere<T>&, Point&, OutputVector*);
@@ -60,8 +57,6 @@ public:
     int computeIntersection(Line&, Line&, OutputVector*);
     int computeIntersection(Triangle&, Point&, OutputVector*);
     template<class T> int computeIntersection(Triangle&, TSphere<T>&, OutputVector*);
-    int computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts);
-    int computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts);
 
 protected:
 

@@ -80,6 +80,9 @@ public:
         return BaseIntTool::testIntersection(e1, e2, intersection->getAlarmDistance());
     }
 
+    bool testIntersection(Capsule&, Triangle&) { return true; }
+    bool testIntersection(Capsule&, Line&) { return true; }
+
 protected:
     NewProximityIntersection* intersection;
 
