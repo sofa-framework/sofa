@@ -150,6 +150,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
     MultiVecCoord x(&vop, xResult );
     MultiVecDeriv force( &vop, sofa::core::VecDerivId::force() );
     MultiVecDeriv dx( &vop, sofa::core::VecDerivId::dx() );
+    dx.realloc( &vop , true, true);
     U.realloc( &vop );
     U.clear();
     dx.clear();
