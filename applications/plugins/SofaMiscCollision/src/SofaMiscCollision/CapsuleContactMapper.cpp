@@ -26,7 +26,6 @@
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
-#include <SofaConstraint/FrictionContact.inl>
 
 using namespace sofa::core::collision;
 
