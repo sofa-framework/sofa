@@ -32,15 +32,17 @@ namespace sofa::component::collision
 template < class TCollisionModel, class DataTypes >
 void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
-    if (mapping != nullptr)
+    if (mapping != nullptr && model != nullptr)
     {
-        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-        if (parent!=nullptr)
+        auto* modelContext = model->getContext();
+        if (dynamic_cast<simulation::Node*>(modelContext) != nullptr)
         {
-            simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext());
-            child->detachFromGraph();
-            child->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
-            child.reset();
+            if (simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext()))
+            {
+                child->detachFromGraph();
+                child->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
+                child.reset();
+            }
             mapping.reset();
         }
     }

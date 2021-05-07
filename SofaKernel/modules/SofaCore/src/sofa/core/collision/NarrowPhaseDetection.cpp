@@ -79,6 +79,9 @@ auto NarrowPhaseDetection::getDetectionOutputs() const -> const DetectionOutputM
 
 DetectionOutputVector*& NarrowPhaseDetection::getDetectionOutputs(CollisionModel *cm1, CollisionModel *cm2)
 {
+    msg_error_when(cm1 == nullptr) << "Requested a collision detection result with nullptr first collision model";
+    msg_error_when(cm2 == nullptr) << "Requested a collision detection result with nullptr second collision model";
+
     std::pair< CollisionModel*, CollisionModel* > cm_pair = std::make_pair(cm1, cm2);
 
     DetectionOutputMap::iterator it = m_outputsMap.find(cm_pair);
