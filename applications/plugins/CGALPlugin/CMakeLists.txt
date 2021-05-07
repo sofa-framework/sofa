@@ -28,7 +28,6 @@ set(README_FILES CGALPlugin.txt)
 # Dependencies
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulationCommon REQUIRED)
-find_package(Sofa.GL REQUIRED)
 find_package(CGAL REQUIRED)
 message(STATUS "CGAL VERSION = ${CGAL_VERSION}")
 
@@ -52,7 +51,7 @@ if(CGAL_VERSION VERSION_GREATER 4.9) # if CGAL >= 4.10
 endif()
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon Sofa.GL)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon)
 target_link_libraries(${PROJECT_NAME} PUBLIC CGAL::CGAL)
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image CGAL::CGAL_ImageIO)
