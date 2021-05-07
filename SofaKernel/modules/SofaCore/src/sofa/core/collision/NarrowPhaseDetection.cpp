@@ -86,7 +86,7 @@ DetectionOutputVector*& NarrowPhaseDetection::getDetectionOutputs(CollisionModel
     if (it == m_outputsMap.end())
     {
         // new contact
-        it = m_outputsMap.insert( std::make_pair(cm_pair, static_cast< DetectionOutputVector * >(0)) ).first;
+        it = m_outputsMap.insert( std::make_pair(cm_pair, nullptr) ).first;
     }
 
     return it->second;
