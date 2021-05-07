@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
-#define SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
+#pragma once
 #include <SofaMiscCollision/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
@@ -28,29 +27,31 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/helper/FnDispatcher.h>
 
-
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
+/// A structure containing pointers to an ODE solver, a linear solver and a constraint solver
+/// Any could be nullptr
 struct SolverSet
 {
-    SolverSet(core::behavior::OdeSolver::SPtr o=nullptr,core::behavior::BaseLinearSolver::SPtr l=nullptr,core::behavior::ConstraintSolver::SPtr c=nullptr):
-        odeSolver(o),linearSolver(l),constraintSolver(c)
-    {}
+    explicit SolverSet(core::behavior::OdeSolver::SPtr o = nullptr,
+                       core::behavior::BaseLinearSolver::SPtr l = nullptr,
+                       core::behavior::ConstraintSolver::SPtr c = nullptr);
 
     core::behavior::OdeSolver::SPtr odeSolver;
     core::behavior::BaseLinearSolver::SPtr linearSolver;
     core::behavior::ConstraintSolver::SPtr constraintSolver;
 };
 
+/// Helper class aiming at creating a common ODE solver, linear solver and constraint solver, based on
+/// a pair of ODE solvers
+/// The rules of creating the common solvers depends on the type of the provided ODE solvers (see SolverMerger()).
+/// For example: EulerImplicitSolver + EulerExplicitSolver -> EulerImplicitSolver
 class SOFA_MISC_COLLISION_API SolverMerger
 {
 public:
+
+    /// Static function to call to create a common solver set based on a pair of ODE solvers
     static SolverSet merge(core::behavior::OdeSolver* solver1, core::behavior::OdeSolver* solver2);
 
     template<typename SolverType1, typename SolverType2, SolverSet (*F)(SolverType1&,SolverType2&),bool symmetric> static void addDispatcher()
@@ -67,8 +68,4 @@ protected:
     SolverMerger ();
 };
 
-}
-}
-}
-
-#endif
+} //namespace sofa::component::collision
