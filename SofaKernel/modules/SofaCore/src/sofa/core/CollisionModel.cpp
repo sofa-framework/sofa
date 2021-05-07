@@ -114,12 +114,13 @@ CollisionModel::CollisionModel()
     , color(initData(&color, sofa::helper::types::RGBAColor(1,0,0,1), "color", "color used to display the collision model if requested"))
     , group(initData(&group,"group","IDs of the groups containing this model. No collision can occur between collision models included in a common group (e.g. allowing the same object to have multiple collision models)"))
     , size(0)
-    , numberOfContacts(0)
+    , numberOfContacts(initData(&numberOfContacts, (Size)0, "numberOfContacts", "Number of collision models this collision model is currently attached to"))
     , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
     , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
     , userData(nullptr)
     , l_collElemActiver(initLink("collisionElementActiver", "CollisionElementActiver component that activates or deactivates collision element(s) during execution"))
 {
+    numberOfContacts.setReadOnly(true);
 }
 
 /// Set the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
