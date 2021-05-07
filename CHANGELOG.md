@@ -1,6 +1,29 @@
 # SOFA Changelog
 
 
+## [v20.12.03](https://github.com/sofa-framework/sofa/tree/v20.12.03)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v20.12.02...v20.12.03)
+
+
+### Bug Fixes
+**Architecture**
+- [CMake] Set CMake install default component [#2037](https://github.com/sofa-framework/sofa/pull/2037)
+
+**Modules**
+- [SofaBoundaryCondition] Fix export keywords [#1984](https://github.com/sofa-framework/sofa/pull/1984)
+- [SofaGuiQt] Fix Expand node [#2069](https://github.com/sofa-framework/sofa/pull/2069)
+- **[SofaHelper]** Fix export keywords [#1984](https://github.com/sofa-framework/sofa/pull/1984)
+- [SofaMiscCollision] Fix config.in cmake file for export [#2052](https://github.com/sofa-framework/sofa/pull/2052)
+- **[SofaSimulationCore]** Broken URL [#2011](https://github.com/sofa-framework/sofa/pull/2011)
+
+**Plugins / Projects**
+- [Geomagic] Fix Geomagic plugin compilation  [#2033](https://github.com/sofa-framework/sofa/pull/2033)
+
+
+____________________________________________________________
+
+
 ## [v20.12.02](https://github.com/sofa-framework/sofa/tree/v20.12.02)
 
 [Full log](https://github.com/sofa-framework/sofa/compare/v20.12.01...v20.12.02)
