@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node name="root">
+<Node name="root" gravity="0 -9.81 0">
     <RequiredPlugin name="SofaGeneralDeformable"/>
     <RequiredPlugin name="SofaMiscCollision"/>
     <RequiredPlugin name="SofaImplicitOdeSolver"/>
@@ -19,7 +19,7 @@
     <Node name="Cube1">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
-        <MechanicalObject/>
+        <MechanicalObject name="mechanicalObject"/>
         <UniformMass totalMass="30"/>
         <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0"/>

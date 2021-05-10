@@ -28,6 +28,9 @@ using sofa::component::collision::DefaultCollisionGroupManager;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/defaulttype/VecTypes.h>
+
 namespace sofa
 {
 
@@ -70,8 +73,26 @@ bool DefaultCollisionGroupManager_test::combineSingleObject()
 
     sofa::simulation::getSimulation()->init(root.get());
 
-    // objects are already in intersection: one stime step is enough to trigger the action of the DefaultCollisionGroupManager
-    sofa::simulation::getSimulation()->animate(root.get(),0.001);
+    // run 200 time steps
+    // objectives:
+    // 1) The simulation does not crash
+    // 2) Collision prevents the cube to fall through the floor
+    for (unsigned int i = 0; i < 200; ++i)
+    {
+        sofa::simulation::getSimulation()->animate(root.get(), 0.01);
+    }
+
+    auto* baseObject = root->getTreeNode("Cube1")->getObject("mechanicalObject");
+    EXPECT_NE(baseObject, nullptr);
+
+    auto* mechanicalObject = dynamic_cast<sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(baseObject);
+    EXPECT_NE(mechanicalObject, nullptr);
+
+    const auto position = mechanicalObject->readPositions();
+    EXPECT_FALSE(position.empty());
+
+    // Check that the position of the first DOF is not below the floor
+    EXPECT_GT(position->front().y(), -15.);
 
     return true;
 }
