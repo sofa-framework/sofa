@@ -60,7 +60,7 @@ protected:
     void createGroup(core::collision::Contact* contact,
                      int& groupIndex,
                      std::map<simulation::Node*, simulation::Node::SPtr >& mergedGroups,
-                     sofa::helper::vector< simulation::Node::SPtr >& contactGroup,
+                     std::map<core::collision::Contact*, simulation::Node::SPtr>& contactGroup,
                      sofa::helper::vector< simulation::Node::SPtr >& removedGroup);
 
 private:

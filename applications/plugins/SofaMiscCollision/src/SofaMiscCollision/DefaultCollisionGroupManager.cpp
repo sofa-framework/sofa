@@ -75,9 +75,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
     // Map storing group merging history
     std::map<simulation::Node*, simulation::Node::SPtr > mergedGroups;
-    sofa::helper::vector< simulation::Node::SPtr > contactGroup;
     sofa::helper::vector< simulation::Node::SPtr > removedGroup;
-    contactGroup.reserve(contacts.size());
+    std::map<Contact*, simulation::Node::SPtr> contactGroup;
 
     for (const auto& contact : contacts)
     {
@@ -85,11 +84,10 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     }
 
     // now that the groups are final, attach contacts' response
-    for(unsigned int i = 0; i < contacts.size(); i++)
+    for (const auto& [contact, g] : contactGroup)
     {
-        Contact* contact = contacts[i].get();
-        simulation::Node::SPtr group = contactGroup[i];
-        while (group!=nullptr && mergedGroups.find(group.get())!=mergedGroups.end())
+        simulation::Node::SPtr group = g;
+        while (group != nullptr && mergedGroups.find(group.get()) != mergedGroups.end())
             group = mergedGroups[group.get()];
         if (group!=nullptr)
             contact->createResponse(group.get());
@@ -108,13 +106,13 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
     // finally recreate group vector
     groups.clear();
-    std::copy(contactGroup.begin(), contactGroup.end(), std::back_inserter(groups));
+    std::transform(contactGroup.begin(), contactGroup.end(), std::back_inserter(groups), [](const auto& g){return g.second;});
 }
 
 void DefaultCollisionGroupManager::createGroup(core::collision::Contact* contact,
                                                int& groupIndex,
                                                std::map<simulation::Node*, simulation::Node::SPtr >& mergedGroups,
-                                               sofa::helper::vector< simulation::Node::SPtr >& contactGroup,
+                                               std::map<core::collision::Contact*, simulation::Node::SPtr>& contactGroup,
                                                sofa::helper::vector< simulation::Node::SPtr >& removedGroup)
 {
     core::CollisionModel* cm_1 = contact->getCollisionModels().first;
@@ -187,7 +185,7 @@ void DefaultCollisionGroupManager::createGroup(core::collision::Contact* contact
                         // both ODE solver nodes are already in the same collision group
                         groupMap[group1Iter->first] = group1Iter->second;
                         groupMap[group2Iter->first] = group2Iter->second;
-                        contactGroup.push_back(collGroup);
+                        contactGroup[contact] = collGroup;
                         return;
                     }
 
@@ -274,7 +272,7 @@ void DefaultCollisionGroupManager::createGroup(core::collision::Contact* contact
             }
         }
     }
-    contactGroup.push_back(collGroup);
+    contactGroup[contact] = collGroup;
 }
 
 
