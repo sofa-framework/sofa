@@ -13,6 +13,7 @@ set(HEADER_FILES
     src/MultiThreading/MeanComputation.h
     src/MultiThreading/MeanComputation.inl
     src/MultiThreading/ParallelBruteForceBroadPhase.h
+    src/MultiThreading/ParallelBVHNarrowPhase.h
     )
 
 set(SOURCE_FILES
@@ -23,6 +24,7 @@ set(SOURCE_FILES
     src/MultiThreading/DataExchange.cpp
     src/MultiThreading/MeanComputation.cpp
     src/MultiThreading/ParallelBruteForceBroadPhase.cpp
+    src/MultiThreading/ParallelBVHNarrowPhase.cpp
     )
 
 find_package(SofaMiscMapping REQUIRED)
