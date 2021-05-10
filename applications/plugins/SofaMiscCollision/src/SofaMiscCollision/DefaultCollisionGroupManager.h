@@ -19,22 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
-#define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
+#pragma once
 #include <SofaMiscCollision/config.h>
 
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/CleanupVisitor.h>
+#include <sofa/simulation/Node.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class SOFA_MISC_COLLISION_API DefaultCollisionGroupManager : public core::collision::CollisionGroupManager
@@ -59,9 +53,15 @@ protected:
 
     void changeInstance(Instance inst) override;
 
-    void clearCollisionGroup(simulation::NodeSPtr group);
+    static void clearCollisionGroup(simulation::NodeSPtr group);
 
     std::map<Instance,GroupMap> storedGroupSet;
+
+    void createGroup(core::collision::Contact* contact,
+                     int& groupIndex,
+                     std::map<simulation::Node*, simulation::Node::SPtr >& mergedGroups,
+                     sofa::helper::vector< simulation::Node::SPtr >& contactGroup,
+                     sofa::helper::vector< simulation::Node::SPtr >& removedGroup);
 
 private:
     DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;
@@ -70,10 +70,4 @@ private:
 
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

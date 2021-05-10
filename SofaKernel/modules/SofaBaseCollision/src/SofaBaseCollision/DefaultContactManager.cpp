@@ -26,7 +26,6 @@
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/collision/Pipeline.h>
-#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::component::collision
 {
@@ -115,8 +114,6 @@ void DefaultContactManager::changeInstance(Instance inst)
 
 void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
 {
-    sofa::helper::ScopedAdvancedTimer timer("CreateContacts");
-
     Size nbContacts = 0;
 
     // First iterate on the collision detection outputs and look for existing or new contacts

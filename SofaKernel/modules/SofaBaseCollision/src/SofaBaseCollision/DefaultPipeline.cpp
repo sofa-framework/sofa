@@ -90,19 +90,23 @@ void DefaultPipeline::doCollisionReset()
     msg_info_when(d_doPrintInfoMessage.getValue())
             << "DefaultPipeline::doCollisionReset" ;
 
-    core::objectmodel::BaseContext* scene = getContext();
     // clear all contacts
     if (contactManager!=nullptr)
     {
         const helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
-        for (helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
+        for (const auto& contact : contacts)
         {
-            (*it)->removeResponse();
+            if (contact != nullptr)
+            {
+                contact->removeResponse();
+            }
         }
     }
+
     // clear all collision groups
     if (groupManager!=nullptr)
     {
+        core::objectmodel::BaseContext* scene = getContext();
         groupManager->clearGroups(scene);
     }
 }
@@ -220,7 +224,9 @@ void DefaultPipeline::doCollisionResponse()
     msg_info_when(d_doPrintInfoMessage.getValue())
         << "Create Contacts "<<contactManager->getName() ;
 
+    sofa::helper::AdvancedTimer::stepBegin("CreateContacts");
     contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
+    sofa::helper::AdvancedTimer::stepEnd("CreateContacts");
 
     // finally we start the creation of collisionGroup
 
@@ -229,29 +235,33 @@ void DefaultPipeline::doCollisionResponse()
     // First we remove all contacts with non-simulated objects and directly add them
     helper::vector<Contact::SPtr> notStaticContacts;
 
-    for (helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
+    sofa::helper::AdvancedTimer::stepBegin("CreateStaticObjectsResponse");
+    for (const auto& contact : contacts)
     {
-        Contact::SPtr c = *it;
-        if (!c->getCollisionModels().first->isSimulated())
+        const auto& collisionModels = contact->getCollisionModels();
+        if (collisionModels.first != nullptr && !collisionModels.first->isSimulated())
         {
-            c->createResponse(c->getCollisionModels().second->getContext());
+            contact->createResponse(collisionModels.second->getContext());
         }
-        else if (!c->getCollisionModels().second->isSimulated())
+        else if (collisionModels.second != nullptr && !collisionModels.second->isSimulated())
         {
-            c->createResponse(c->getCollisionModels().first->getContext());
+            contact->createResponse(collisionModels.first->getContext());
         }
         else
-            notStaticContacts.push_back(c);
+            notStaticContacts.push_back(contact);
     }
+    sofa::helper::AdvancedTimer::stepEnd("CreateStaticObjectsResponse");
 
     if (groupManager==nullptr)
     {
+        ScopedAdvancedTimer createResponseTimer("CreateMovingObjectsResponse");
+
         msg_info_when(d_doPrintInfoMessage.getValue())
             << "Linking all contacts to Scene" ;
 
-        for (helper::vector<Contact::SPtr>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); ++it)
+        for (const auto& contact : notStaticContacts)
         {
-            (*it)->createResponse(scene);
+            contact->createResponse(scene);
         }
     }
     else
