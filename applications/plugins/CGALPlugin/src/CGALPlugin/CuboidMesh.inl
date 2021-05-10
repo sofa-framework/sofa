@@ -39,6 +39,7 @@ CuboidMesh<DataTypes>::CuboidMesh()
     , m_height(initData(&m_height, 50.0, "height", "height"))
     , m_number(initData(&m_number, 5, "interval", "number of intervals"))
     , m_convex(initData(&m_convex, false, "convex", "make convex boundary"))
+    , m_drawScale(initData(&m_height, 1.0, "drawScale", "Draw scale"))
     , m_viewPoints(initData(&m_viewPoints, true, "viewPoints", "Display Points"))
     , m_viewTetras(initData(&m_viewTetras, true, "viewTetras", "Display Tetrahedra"))
     , m_points(initData(&m_points, "outputPoints", "Points"))
@@ -431,55 +432,46 @@ void CuboidMesh<DataTypes>::orientate()
 }
 
 template <class DataTypes>
-void CuboidMesh<DataTypes>::draw()
+void CuboidMesh<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using Color = sofa::helper::types::RGBAColor;
     if (m_viewPoints.getValue())
     {
-        glDisable(GL_LIGHTING);
         helper::ReadAccessor< Data< VecCoord > > points = m_points;
-        glPointSize(8);
-        glBegin(GL_POINTS);
         if(debug & 1)//1
         {
             //vertices
             //std::cout << "draw vertices" << std::endl;
-            glColor3f(1.0, 0.0, 0.0);
             for(unsigned i = 0; i < m_nbVertices; ++i)
-                sofa::gl::glVertexT(points[i]);
+                vparams->drawTool()->drawPoint(points[i], m_drawScale.getValue(), Color::green());
         }
         if(debug & (1<<1))//2
         {
             //centers
             //std::cout << "draw centers" << std::endl;
-            glColor3f(1.0, 1.0, 0.0);
             unsigned begin = m_nbVertices;
             unsigned end = m_nbVertices + m_nbCenters;
             for(unsigned i = begin; i < end; ++i)
-                sofa::gl::glVertexT(points[i]);
+                vparams->drawTool()->drawPoint(points[i], m_drawScale.getValue(), Color::yellow());
         }
         if(debug & (1<<2))//4
         {
             //centers
             //std::cout << "draw bdVertices" << std::endl;
-            glColor3f(1.0, 0.0, 0.0);
             unsigned begin = m_nbVertices + m_nbCenters;
             unsigned end = m_nbVertices + m_nbCenters + m_nbBdVertices;
             for(unsigned i = begin; i < end; ++i)
-                sofa::gl::glVertexT(points[i]);
+                vparams->drawTool()->drawPoint(points[i], m_drawScale.getValue(), Color::red());
         }
         if(debug & (1<<3))//8
         {
             //bdCenters_i
             //std::cout << "draw bdCenters" << std::endl;
-            glColor3f(1.0, 1.0, 0.0);
             unsigned begin = m_nbVertices + m_nbCenters + m_nbBdVertices;
             unsigned end = m_nbVertices + m_nbCenters + m_nbBdVertices + m_nbBdCenters;
             for(unsigned i = begin; i < end; ++i)
-                sofa::gl::glVertexT(points[i]);
+                vparams->drawTool()->drawPoint(points[i], m_drawScale.getValue(), Color::white());
         }
-        glEnd();
-        glPointSize(1);
-        glEnable(GL_LIGHTING);
     }
 
     if (m_viewTetras.getValue())
@@ -487,9 +479,6 @@ void CuboidMesh<DataTypes>::draw()
         helper::ReadAccessor< Data< VecCoord > > points = m_points;
         helper::ReadAccessor< Data< SeqTetrahedra > > tetras = m_tetras;
 
-        glDisable(GL_LIGHTING);
-        glColor3f(1.0, 1.0, 1.0);
-        glBegin(GL_LINES);
         if(debug & 1<<5)//32
         {
             for(unsigned i = 0; i < m_nbTetras_i; ++i)
@@ -498,8 +487,7 @@ void CuboidMesh<DataTypes>::draw()
                 {
                     for(int k = j+1; k < 4; ++k)
                     {
-                        sofa::gl::glVertexT(points[tetras[i][j]]);
-                        sofa::gl::glVertexT(points[tetras[i][k]]);
+                        vparams->drawTool()->drawLine(points[tetras[i][j]], points[tetras[i][k]], Color::white());
                     }
                 }
             }
@@ -512,8 +500,7 @@ void CuboidMesh<DataTypes>::draw()
                 {
                     for(int k = j+1; k < 4; ++k)
                     {
-                        sofa::gl::glVertexT(points[tetras[i][j]]);
-                        sofa::gl::glVertexT(points[tetras[i][k]]);
+                        vparams->drawTool()->drawLine(points[tetras[i][j]], points[tetras[i][k]], Color::white());
                     }
                 }
             }
@@ -526,14 +513,11 @@ void CuboidMesh<DataTypes>::draw()
                 {
                     for(int k = j+1; k < 4; ++k)
                     {
-                        sofa::gl::glVertexT(points[tetras[i][j]]);
-                        sofa::gl::glVertexT(points[tetras[i][k]]);
+                        vparams->drawTool()->drawLine(points[tetras[i][j]], points[tetras[i][k]], Color::white());
                     }
                 }
             }
         }
-        glEnd();
-        glEnable(GL_LIGHTING);
     }
 }
 

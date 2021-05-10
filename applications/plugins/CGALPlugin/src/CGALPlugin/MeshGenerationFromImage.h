@@ -26,6 +26,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <CImgPlugin/CImgData.h>
+
 #include <CGAL/version.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Mesh_triangulation_3.h>
@@ -36,9 +38,7 @@
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/refine_mesh_3.h>
 #include <CGAL/Image_3.h>
-#include <CGAL/Weighted_point.h>
-
-#include <CImgPlugin/CImgData.h>
+#include <CGAL/Weighted_point_3.h>
 
 //CGAL
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
