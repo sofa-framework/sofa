@@ -61,7 +61,8 @@ protected:
                      int& groupIndex,
                      std::map<simulation::Node*, simulation::Node::SPtr >& mergedGroups,
                      std::map<core::collision::Contact*, simulation::Node::SPtr>& contactGroup,
-                     sofa::helper::vector< simulation::Node::SPtr >& removedGroup);
+                     sofa::helper::vector< simulation::Node::SPtr >& removedGroup,
+                     sofa::helper::vector< core::collision::Contact* >& stationaryContacts);
 
 private:
     DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;

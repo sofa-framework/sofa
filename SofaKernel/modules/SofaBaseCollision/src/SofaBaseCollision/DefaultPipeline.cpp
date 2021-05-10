@@ -37,6 +37,8 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer ;
 
+#include <sofa/helper/AdvancedTimer.h>
+
 
 namespace sofa::component::collision
 {
@@ -219,7 +221,11 @@ void DefaultPipeline::doCollisionResponse()
 {
     core::objectmodel::BaseContext* scene = getContext();
     // then we start the creation of contacts
-    if (contactManager==nullptr) return; // can't go further
+    if (contactManager==nullptr)
+    {
+        msg_warning() << "Cannot compute collision response without a ContactManager";
+        return; // can't go further
+    }
 
     msg_info_when(d_doPrintInfoMessage.getValue())
         << "Create Contacts "<<contactManager->getName() ;

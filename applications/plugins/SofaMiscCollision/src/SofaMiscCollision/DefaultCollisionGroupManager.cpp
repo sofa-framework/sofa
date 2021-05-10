@@ -78,9 +78,19 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     sofa::helper::vector< simulation::Node::SPtr > removedGroup;
     std::map<Contact*, simulation::Node::SPtr> contactGroup;
 
+    //list of contacts considered stationary: one of the collision model has no associated ODE solver (= stationary)
+    //for stationary contacts, no need to combine nodes into a single ODE solver
+    sofa::helper::vector< Contact* > stationaryContacts;
+
     for (const auto& contact : contacts)
     {
-        createGroup(contact.get(), groupIndex, mergedGroups, contactGroup, removedGroup);
+        createGroup(contact.get(), groupIndex, mergedGroups, contactGroup, removedGroup, stationaryContacts);
+    }
+
+    // create contact response for stationary contacts
+    for (auto* contact : stationaryContacts)
+    {
+        contact->createResponse(scene);
     }
 
     // now that the groups are final, attach contacts' response
@@ -113,7 +123,8 @@ void DefaultCollisionGroupManager::createGroup(core::collision::Contact* contact
                                                int& groupIndex,
                                                std::map<simulation::Node*, simulation::Node::SPtr >& mergedGroups,
                                                std::map<core::collision::Contact*, simulation::Node::SPtr>& contactGroup,
-                                               sofa::helper::vector< simulation::Node::SPtr >& removedGroup)
+                                               sofa::helper::vector< simulation::Node::SPtr >& removedGroup,
+                                               sofa::helper::vector< core::collision::Contact* >& stationaryContacts)
 {
     core::CollisionModel* cm_1 = contact->getCollisionModels().first;
     core::CollisionModel* cm_2 = contact->getCollisionModels().second;
@@ -125,6 +136,7 @@ void DefaultCollisionGroupManager::createGroup(core::collision::Contact* contact
     {
         // one of the object does not have an associated ODE solver
         // this can happen for stationary objects
+        stationaryContacts.push_back(contact);
         return;
     }
 
