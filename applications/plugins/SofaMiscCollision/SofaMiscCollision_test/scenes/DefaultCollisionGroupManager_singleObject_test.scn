@@ -1,4 +1,15 @@
 <?xml version="1.0"?>
+<!--
+This scene is a simulation of a falling cube on a funnel.
+The cube starts already in intersection with the funnel.
+The collision prevents the cube falling through the funnel.
+
+This scene is controlled with a group manager.
+However, only one simulated object (= the cube) is present in the scene. It means
+the group manager has no group task to do, but still has to create the contact
+response. The scene should work with or without the group manager.
+-->
+
 <Node name="root" gravity="0 -9.81 0">
     <RequiredPlugin name="SofaGeneralDeformable"/>
     <RequiredPlugin name="SofaMiscCollision"/>
@@ -45,6 +56,11 @@
 
     </Node>
 
+    <!--
+    The following object is stationary: it does not move
+    It is not defined in the Data 'simulated' of the collision models, meaning
+    the contact response will be controlled by the group manager.
+    -->
     <Node name="Floor">
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
         <MeshTopology src="@loader"/>
