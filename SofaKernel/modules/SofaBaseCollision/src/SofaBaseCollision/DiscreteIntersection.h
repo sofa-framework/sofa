@@ -44,16 +44,35 @@ public:
     core::collision::IntersectorMap intersectors;
     typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
 
-    template <class Elem1,class Elem2>
-    int computeIntersection(Elem1 & e1,Elem2 & e2,OutputVector* contacts){
-        return BaseIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
+    //Generic case
+    template <class Elem1, class Elem2>
+    bool testIntersection(Elem1& e1, Elem2& e2)
+    {
+        return BaseIntTool::testIntersection(e1, e2, this->getAlarmDistance());
     }
 
-    template <class Elem1,class Elem2>
-    bool testIntersection(Elem1& e1,Elem2& e2){
-        return BaseIntTool::testIntersection(e1,e2,this->getAlarmDistance());
+    template <class Elem1, class Elem2>
+    int computeIntersection(Elem1& e1, Elem2& e2, OutputVector* contacts)
+    {
+        return BaseIntTool::computeIntersection(e1, e2, e1.getProximity() + e2.getProximity() + getAlarmDistance(), e1.getProximity() + e2.getProximity() + getContactDistance(), contacts);
     }
 };
+
+
+// specializations
+// Cube
+template <> bool DiscreteIntersection::testIntersection<Cube,Cube>(Cube& sph1, Cube& sph2);
+template <> int DiscreteIntersection::computeIntersection<Cube, Cube>(Cube& sph1, Cube& sph2, OutputVector* contacts);
+
+//Sphere
+template <> bool DiscreteIntersection::testIntersection<Sphere, Sphere>(Sphere& sph1, Sphere& sph2);
+template <> int DiscreteIntersection::computeIntersection<Sphere, Sphere>(Sphere& sph1, Sphere& sph2, OutputVector* contacts);
+template <> bool DiscreteIntersection::testIntersection<RigidSphere, RigidSphere>(RigidSphere& sph1, RigidSphere& sph2);
+template <> int DiscreteIntersection::computeIntersection<RigidSphere, RigidSphere>(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+template <> bool DiscreteIntersection::testIntersection<Sphere, RigidSphere>(Sphere& sph1, RigidSphere& sph2);
+template <> int DiscreteIntersection::computeIntersection<Sphere, RigidSphere>(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+template <> bool DiscreteIntersection::testIntersection<RigidSphere, Sphere>(RigidSphere& sph1, Sphere& sph2);
+template <> int DiscreteIntersection::computeIntersection<RigidSphere, Sphere>(RigidSphere& sph1, Sphere& sph2, OutputVector* contacts);
 
 } // namespace sofa::component::collision
 
