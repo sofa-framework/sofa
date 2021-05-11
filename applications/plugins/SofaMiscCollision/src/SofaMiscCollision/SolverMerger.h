@@ -32,7 +32,7 @@ namespace sofa::component::collision
 
 /// A structure containing pointers to an ODE solver, a linear solver and a constraint solver
 /// Any could be nullptr
-struct SolverSet
+struct SOFA_MISC_COLLISION_API SolverSet
 {
     explicit SolverSet(core::behavior::OdeSolver::SPtr o = nullptr,
                        core::behavior::BaseLinearSolver::SPtr l = nullptr,
