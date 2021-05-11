@@ -44,6 +44,7 @@ public:
     core::collision::IntersectorMap intersectors;
     typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
 
+    //Intersectors
     //Generic case
     template <class Elem1, class Elem2>
     bool testIntersection(Elem1& e1, Elem2& e2)
@@ -61,8 +62,8 @@ public:
 
 // specializations
 // Cube
-template <> bool DiscreteIntersection::testIntersection<Cube,Cube>(Cube& sph1, Cube& sph2);
-template <> int DiscreteIntersection::computeIntersection<Cube, Cube>(Cube& sph1, Cube& sph2, OutputVector* contacts);
+template <> bool DiscreteIntersection::testIntersection<Cube,Cube>(Cube& cube1, Cube& cube2);
+template <> int DiscreteIntersection::computeIntersection<Cube, Cube>(Cube& cube1, Cube& cube2, OutputVector* contacts);
 
 //Sphere
 template <> bool DiscreteIntersection::testIntersection<Sphere, Sphere>(Sphere& sph1, Sphere& sph2);

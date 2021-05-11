@@ -29,7 +29,6 @@
 #include <sofa/core/collision/Intersection.inl>
 #include <iostream>
 #include <algorithm>
-#include <SofaBaseCollision/BaseIntTool.h>
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
@@ -63,6 +62,7 @@ void MinProximityIntersection::init()
 {
     intersectors.add<CubeCollisionModel, CubeCollisionModel, MinProximityIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection>(this);
+
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 

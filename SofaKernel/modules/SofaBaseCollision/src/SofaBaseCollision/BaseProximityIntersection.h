@@ -51,6 +51,10 @@ public:
 
     /// Sets the contact distance (if useProximity() is false, the contact distance is equal to 0)
     void setContactDistance(SReal v) override { contactDistance.setValue(v); }
+
+    // Intersectors
+    bool testIntersection(Cube& cube1, Cube& cube2);
+    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
 };
 
 } // namespace sofa::component::collision
