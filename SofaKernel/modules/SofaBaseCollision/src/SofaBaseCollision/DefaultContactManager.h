@@ -107,7 +107,7 @@ protected:
     /// Create contacts if it has not been created before
     void createNewContacts(const DetectionOutputMap &outputsMap, Size &nbContact);
 
-    void removeInactiveContacts(const DetectionOutputMap &outputsMap, Size nbContact);
+    void removeInactiveContacts(const DetectionOutputMap &outputsMap, Size& nbContact);
 
     /// compute and set the number of contacts attached to each collision model
     /// The number of contacts corresponds to the number of collision models

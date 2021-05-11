@@ -195,7 +195,7 @@ void DefaultContactManager::createNewContacts(const core::collision::ContactMana
 
 void
 DefaultContactManager::removeInactiveContacts(const core::collision::ContactManager::DetectionOutputMap &outputsMap,
-                                              Size nbContact)
+                                              Size& nbContact)
 {
     for (ContactMap::iterator contactIt = contactMap.begin(), contactItEnd = contactMap.end();
          contactIt != contactItEnd;)

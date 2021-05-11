@@ -81,7 +81,7 @@ void DefaultPipeline::checkDataValues()
 {
     if(d_depth.getValue() < 0)
     {
-        msg_warning() << "Invalid value 'depth'="<<d_depth.getValue() << "." << msgendl
+        msg_warning() << "Invalid value 'depth'=" << d_depth.getValue() << "." << msgendl
                       << "Replaced with the default value = 6." ;
         d_depth.setValue(6) ;
     }

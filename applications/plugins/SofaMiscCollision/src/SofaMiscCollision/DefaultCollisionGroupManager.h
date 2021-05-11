@@ -26,7 +26,7 @@
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/CleanupVisitor.h>
 #include <sofa/simulation/Node.h>
-
+#include <SofaMiscCollision/SolverMerger.h>
 
 namespace sofa::component::collision
 {
@@ -36,9 +36,7 @@ class SOFA_MISC_COLLISION_API DefaultCollisionGroupManager : public core::collis
 public:
     SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
 
-    typedef std::map<simulation::Node*, simulation::Node*> GroupMap; 
-    // this map stores the deformable object node and its collision group <deformable object node*, collison group node*>
-    GroupMap groupMap; 
+
 
 public:
     void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
@@ -47,6 +45,16 @@ public:
 protected:
     DefaultCollisionGroupManager();
     ~DefaultCollisionGroupManager() override;
+
+    using GroupMap = std::map<simulation::Node*, simulation::Node*>;
+
+    /// Keys are Nodes associated to a collision model which have been reorganized so two collision models in contact
+    /// are under the same Node with a single solver.
+    /// Values are Nodes in which the Node in key has been merged
+    GroupMap groupMap;
+
+    /// Map used in case a Node has been merged into another Node
+    using MergeGroupsMap = std::map<simulation::Node*, simulation::Node*>;
 
     //Find the node containing the ode solver used to animate the mechanical model associated to the collision model
     virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
@@ -59,16 +67,39 @@ protected:
 
     void createGroup(core::collision::Contact* contact,
                      int& groupIndex,
-                     std::map<simulation::Node*, simulation::Node::SPtr >& mergedGroups,
+                     MergeGroupsMap& mergedGroups,
                      std::map<core::collision::Contact*, simulation::Node::SPtr>& contactGroup,
                      sofa::helper::vector< simulation::Node::SPtr >& removedGroup,
                      sofa::helper::vector< core::collision::Contact* >& stationaryContacts);
+
+    /// Move all objects from one node to another
+    static void moveAllObjects(simulation::Node::SPtr sourceNode, simulation::Node::SPtr destinationNode);
+
+    /// Move all children from one node to another
+    static void moveAllChildren(simulation::Node::SPtr sourceNode, simulation::Node::SPtr destinationNode);
+
+    /// Get the ODE solver, the linear solver and the constraint solver in a node
+    static void getSolverSet(simulation::Node::SPtr node, sofa::component::collision::SolverSet& outSolverSet);
+
+    /// Remove the ODE solver, the linear solver and the constraint solver in a node
+    static void removeSolverSetFromNode(simulation::Node::SPtr node, sofa::component::collision::SolverSet& solverSet);
+
+    /// Destroy the instances of a set containing an ODE solver, a linear solver and a constraint solver
+    static void destroySolvers(sofa::component::collision::SolverSet& solverSet);
+
+    /// Add the ODE solver, the linear solver and the constraint solver into a node
+    /// Also initializes the solvers
+    static void addSolversToNode(simulation::Node::SPtr node, sofa::component::collision::SolverSet& solverSet);
+
+    /// Given a Node node, search if it has been merged into another Node. Returns the Node in which node has been merged
+    simulation::Node* getNodeFromMergedGroups(simulation::Node* node, const MergeGroupsMap& mergedGroups);
 
 private:
     DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;
     DefaultCollisionGroupManager& operator=(const DefaultCollisionGroupManager& n) ;
 
-
+    /// In the loop where it is called, this function returns true if currentGroup == firstGroup, i.e. when the loop is endless
+    bool checkEndlessLoop(const MergeGroupsMap& mergedGroups, simulation::Node* firstGroup, simulation::Node* currentGroup);
 };
 
 } // namespace sofa::component::collision
