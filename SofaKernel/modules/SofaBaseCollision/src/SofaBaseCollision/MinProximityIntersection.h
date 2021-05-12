@@ -49,6 +49,16 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    bool testIntersection(Cube& cube1, Cube& cube2);
+    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
+
+    bool testIntersection(Sphere& sph1, Sphere& sph2);
+    int computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts);
+    bool testIntersection(Sphere& sph1, RigidSphere& sph2);
+    int computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+    bool testIntersection(RigidSphere& sph1, RigidSphere& sph2);
+    int computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+
 private:
     SReal mainAlarmDistance;
     SReal mainContactDistance;

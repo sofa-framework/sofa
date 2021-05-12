@@ -57,6 +57,41 @@ public:
     {
         return BaseIntTool::computeIntersection(e1, e2, e1.getProximity() + e2.getProximity() + getAlarmDistance(), e1.getProximity() + e2.getProximity() + getContactDistance(), contacts);
     }
+
+protected:
+
+    template<class SphereType1, class SphereType2>
+    bool testIntersectionSphere(SphereType1& sph1, SphereType2& sph2, const SReal alarmDist)
+    {
+        const auto r = sph1.r() + sph2.r() + alarmDist;
+        return (sph1.center() - sph2.center()).norm2() <= r * r;
+    }
+
+    template<class SphereType1, class SphereType2>
+    int computeIntersectionSphere(SphereType1& sph1, SphereType2& sph2, DiscreteIntersection::OutputVector* contacts, const SReal alarmDist, const SReal contactDist)
+    {
+        SReal r = sph1.r() + sph2.r();
+        SReal myAlarmDist = alarmDist + r;
+        defaulttype::Vector3 dist = sph2.center() - sph1.center();
+        SReal norm2 = dist.norm2();
+
+        if (norm2 > myAlarmDist * myAlarmDist)
+            return 0;
+
+        contacts->resize(contacts->size() + 1);
+        DetectionOutput* detection = &*(contacts->end() - 1);
+        SReal distSph1Sph2 = helper::rsqrt(norm2);
+        detection->normal = dist / distSph1Sph2;
+        detection->point[0] = sph1.getContactPointByNormal(-detection->normal);
+        detection->point[1] = sph2.getContactPointByNormal(detection->normal);
+
+        detection->value = distSph1Sph2 - r - contactDist;
+        detection->elem.first = sph1;
+        detection->elem.second = sph2;
+        detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
+
+        return 1;
+    }
 };
 
 
@@ -72,8 +107,6 @@ template <> bool DiscreteIntersection::testIntersection<RigidSphere, RigidSphere
 template <> int DiscreteIntersection::computeIntersection<RigidSphere, RigidSphere>(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts);
 template <> bool DiscreteIntersection::testIntersection<Sphere, RigidSphere>(Sphere& sph1, RigidSphere& sph2);
 template <> int DiscreteIntersection::computeIntersection<Sphere, RigidSphere>(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts);
-template <> bool DiscreteIntersection::testIntersection<RigidSphere, Sphere>(RigidSphere& sph1, Sphere& sph2);
-template <> int DiscreteIntersection::computeIntersection<RigidSphere, Sphere>(RigidSphere& sph1, Sphere& sph2, OutputVector* contacts);
 
 } // namespace sofa::component::collision
 

@@ -55,6 +55,7 @@ public:
     // Intersectors
     bool testIntersection(Cube& cube1, Cube& cube2);
     int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
+
 };
 
 } // namespace sofa::component::collision

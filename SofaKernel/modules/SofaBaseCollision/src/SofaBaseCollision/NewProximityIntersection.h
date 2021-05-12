@@ -33,15 +33,52 @@ public:
     SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
 
     Data<bool> useLineLine; ///< Line-line collision detection enabled
-protected:
-    NewProximityIntersection();
-public:
 
     typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
 
     void init() override;
 
     static inline int doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id);
+
+
+    bool testIntersection(Cube& cube1, Cube& cube2);
+    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
+
+    bool testIntersection(Sphere& sph1, Sphere& sph2);
+    int computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts);
+    bool testIntersection(Sphere& sph1, RigidSphere& sph2);
+    int computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+    bool testIntersection(RigidSphere& sph1, RigidSphere& sph2);
+    int computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+
+protected:
+    NewProximityIntersection();
+
+    template<class SphereType1, class SphereType2>
+    bool testIntersectionSphere(SphereType1& sph1, SphereType2& sph2, const SReal alarmDist)
+    {
+        OutputVector contacts;
+        const double alarmDist2 = alarmDist + sph1.r() + sph2.r();
+        int n = doIntersectionPointPoint(alarmDist2 * alarmDist2, sph1.center(), sph2.center(), &contacts, -1);
+        return n > 0;
+    }
+
+    template<class SphereType1, class SphereType2>
+    int computeIntersectionSphere(SphereType1& sph1, SphereType2& sph2, DiscreteIntersection::OutputVector* contacts, const SReal alarmDist, const SReal contactDist)
+    {
+        const double alarmDist2 = alarmDist + sph1.r() + sph2.r();
+        int n = doIntersectionPointPoint(alarmDist2 * alarmDist2, sph1.center(), sph2.center(), contacts, (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex());
+        if (n > 0)
+        {
+            const double contactDist2 = contactDist + sph1.r() + sph2.r();
+            for (OutputVector::iterator detection = contacts->end() - n; detection != contacts->end(); ++detection)
+            {
+                detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(sph1, sph2);
+                detection->value -= contactDist2;
+            }
+        }
+        return n;
+    }
 
 };
 

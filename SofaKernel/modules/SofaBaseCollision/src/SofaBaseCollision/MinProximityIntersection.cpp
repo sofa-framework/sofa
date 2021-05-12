@@ -62,13 +62,23 @@ void MinProximityIntersection::init()
 {
     intersectors.add<CubeCollisionModel, CubeCollisionModel, MinProximityIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection>(this);
-
+    intersectors.add<RigidSphereModel,RigidSphereModel, MinProximityIntersection> (this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MinProximityIntersection>(this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 
 	BaseProximityIntersection::init();
 }
 
+bool MinProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+{
+    return BaseProximityIntersection::testIntersection(cube1, cube2);
+}
+
+int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
+{
+    return BaseProximityIntersection::testIntersection(cube1, cube2);
+}
 
 bool MinProximityIntersection::getUseSurfaceNormals(){
     return useSurfaceNormals.getValue();
@@ -78,6 +88,45 @@ void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowCollisionModels())
         return;
+}
+
+bool MinProximityIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
+{
+    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+    return DiscreteIntersection::testIntersectionSphere(sph1, sph2, alarmDist);
+}
+
+int MinProximityIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
+{
+    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
+    return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
+}
+
+bool MinProximityIntersection::testIntersection(Sphere& sph1, RigidSphere& sph2)
+{
+    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+    return DiscreteIntersection::testIntersectionSphere(sph1, sph2, alarmDist);
+}
+
+int MinProximityIntersection::computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts)
+{
+    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
+    return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
+}
+
+bool MinProximityIntersection::testIntersection(RigidSphere& sph1, RigidSphere& sph2)
+{
+    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+    return DiscreteIntersection::testIntersectionSphere(sph1, sph2, alarmDist);
+}
+
+int MinProximityIntersection::computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts)
+{
+    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
+    return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
 }
 
 } // namespace sofa::component::collision
