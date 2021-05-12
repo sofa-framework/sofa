@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <SofaBase/initSofaBase.h>
+
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest;
 
@@ -50,6 +52,8 @@ private:
 
 void DefaultCollisionGroupManager_test::onSetUp()
 {
+    sofa::component::initSofaBase();
+
     static const std::string sceneFilename = std::string(SOFAMISCCOLLISION_TEST_SCENES_DIR)
             + "/DefaultCollisionGroupManager_singleObject_test.scn";
 
