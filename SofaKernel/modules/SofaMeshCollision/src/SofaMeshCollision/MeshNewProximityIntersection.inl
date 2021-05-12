@@ -290,6 +290,15 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
     return 1;
 }
 
+template <class T>
+bool MeshNewProximityIntersection::testIntersection(TSphere<T>& e1, Point& e2)
+{
+    OutputVector contacts;
+    const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
+    int n = intersection->doIntersectionPointPoint(alarmDist * alarmDist, e1.center(), e2.p(), &contacts, -1);
+    return n > 0;
+}
+
 template<class T>
 int MeshNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2, OutputVector* contacts)
 {
@@ -307,6 +316,16 @@ int MeshNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
     return n;
 }
 
+template <class T>
+bool MeshNewProximityIntersection::testIntersection(Line& e1, TSphere<T>& e2)
+{
+    SOFA_UNUSED(e1);
+    SOFA_UNUSED(e2);
+
+    msg_warning(intersection) << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere).";
+    return true;
+}
+
 template<class T>
 int MeshNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, OutputVector* contacts)
 {
@@ -322,6 +341,16 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, 
         }
     }
     return n;
+}
+
+template <class T>
+bool MeshNewProximityIntersection::testIntersection(Triangle& e1, TSphere<T>& e2)
+{
+    SOFA_UNUSED(e1);
+    SOFA_UNUSED(e2);
+
+    msg_warning(intersection) << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere).";
+    return true;
 }
 
 template<class T>
