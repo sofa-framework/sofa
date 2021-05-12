@@ -27,18 +27,41 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
 
-#include <SofaBaseCollision/IntrUtility3.inl>
-
 namespace sofa::component::collision
 {
 
 inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, const defaulttype::Vector3& /*n*/, bool /*useNormal*/)
 {  
-    defaulttype::Vector3 p,q;
-    IntrUtil<SReal>::segNearestPoints(p1,p2,q1,q2,p,q);
+    const auto AB = p2 - p1;
+    const auto CD = q2 - q1;
+    const auto AC = q1 - p1;
+    type::Matrix2 A;
+    type::Vector2 b;
+    A[0][0] = AB * AB;
+    A[1][1] = CD * CD;
+    A[0][1] = A[1][0] = -CD * AB;
+    b[0] = AB * AC;
+    b[1] = -CD * AC;
+    const double det = type::determinant(A);
 
-    defaulttype::Vector3 pq = q-p;
-    SReal norm2 = pq.norm2();
+    double alpha = 0.5;
+    double beta = 0.5;
+
+    if (det < -0.000000000001 || det > 0.000000000001)
+    {
+        alpha = (b[0] * A[1][1] - b[1] * A[0][1]) / det;
+        beta = (b[1] * A[0][0] - b[0] * A[1][0]) / det;
+
+        if (alpha < 0.000001 || alpha > 0.999999 || beta < 0.000001 || beta > 0.999999)
+            return 0;
+    }
+
+    type::Vector3 p,q;
+    p = p1 + AB * alpha;
+    q = q1 + CD * beta;
+
+    auto pq = q-p;
+    auto norm2 = pq.norm2();
 
     if (norm2 >= dist2)
         return 0;
@@ -56,11 +79,22 @@ inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, con
 
 inline int MeshNewProximityIntersection::doIntersectionLinePoint(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
-    defaulttype::Vector3 p;
-    p = IntrUtil<SReal>::nearestPointOnSeg(p1,p2,q);
+    const auto AB = p2 - p1;
+    const auto AQ = q - p1;
+    double A;
+    double b;
+    A = AB * AB;
+    b = AQ * AB;
 
-    defaulttype::Vector3 pq = q-p;
-    SReal norm2 = pq.norm2();
+    double alpha = 0.5;
+
+    alpha = b / A;
+    if (alpha < 0.0) alpha = 0.0;
+    else if (alpha > 1.0) alpha = 1.0;
+
+    auto p = p1 + AB * alpha;
+    auto pq = q-p;
+    auto norm2 = pq.norm2();
     if (norm2 >= dist2)
         return 0;
 
