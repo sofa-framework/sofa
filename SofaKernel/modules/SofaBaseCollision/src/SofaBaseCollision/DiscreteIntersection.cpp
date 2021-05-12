@@ -25,9 +25,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/BaseIntTool.h>
-
 namespace sofa::core::collision
 {
     template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
@@ -46,9 +43,7 @@ int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionC
 DiscreteIntersection::DiscreteIntersection()
 {
     intersectors.add<CubeCollisionModel,       CubeCollisionModel,         DiscreteIntersection> (this);
-
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,     SphereCollisionModel<sofa::defaulttype::Vec3Types>,       DiscreteIntersection> (this);
-
     intersectors.add<RigidSphereModel,RigidSphereModel,DiscreteIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, DiscreteIntersection> (this);
 
@@ -61,7 +56,6 @@ ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* 
     return intersectors.get(object1, object2, swapModels);
 }
 
-template<>
 bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
 {
     const SReal alarmDist = this->getAlarmDistance();
@@ -88,7 +82,6 @@ bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
     return true;
 }
 
-template<>
 int DiscreteIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
 {
     SOFA_UNUSED(cube1);
@@ -98,38 +91,32 @@ int DiscreteIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVe
     return 0;
 }
 
-template <> 
-bool DiscreteIntersection::testIntersection<Sphere, Sphere>(Sphere& sph1, Sphere& sph2)
+bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
 {
     return testIntersectionSphere(sph1, sph2, this->getAlarmDistance());
 }
 
-template <> 
-int DiscreteIntersection::computeIntersection<Sphere, Sphere>(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
+int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
 {
     return computeIntersectionSphere(sph1, sph2, contacts, this->getAlarmDistance(), this->getContactDistance());
 }
 
-template <> 
-bool DiscreteIntersection::testIntersection<RigidSphere, RigidSphere>(RigidSphere& sph1, RigidSphere& sph2)
+bool DiscreteIntersection::testIntersection(RigidSphere& sph1, RigidSphere& sph2)
 {
     return testIntersectionSphere(sph1, sph2, this->getAlarmDistance());
 }
 
-template <> 
-int DiscreteIntersection::computeIntersection<RigidSphere, RigidSphere>(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts)
+int DiscreteIntersection::computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts)
 {
     return computeIntersectionSphere(sph1, sph2, contacts, this->getAlarmDistance(), this->getContactDistance());
 }
 
-template <> 
-bool DiscreteIntersection::testIntersection<Sphere, RigidSphere>(Sphere& sph1, RigidSphere& sph2)
+bool DiscreteIntersection::testIntersection(Sphere& sph1, RigidSphere& sph2)
 {
     return testIntersectionSphere(sph1, sph2, this->getAlarmDistance());
 }
 
-template <> 
-int DiscreteIntersection::computeIntersection<Sphere, RigidSphere>(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts)
+int DiscreteIntersection::computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts)
 {
     return computeIntersectionSphere(sph1, sph2, contacts, this->getAlarmDistance(), this->getContactDistance());
 }

@@ -25,9 +25,7 @@
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/MeshIntTool.h>
-#include <SofaBaseCollision/IntrUtility3.h>
-#include <SofaBaseCollision/BaseIntTool.h>
+#include <SofaMeshCollision/PointModel.h>
 
 namespace sofa::component::collision
 {
