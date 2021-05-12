@@ -30,6 +30,11 @@ foreach(module ${SOFAFRAMEWORK_LEGACYMODULES})
     add_subdirectory(../modules/${module} ${CMAKE_CURRENT_BINARY_DIR}/${module})
 endforeach()
 
+# add subprojects into a IDE folder called SofaFramework
+foreach(module ${SOFAFRAMEWORK_MODULES})
+    set_target_properties(${module} PROPERTIES FOLDER SofaFramework) # IDE folder
+endforeach()
+
 set(SOFAFRAMEWORK_SRC src/SofaFramework)
 set(HEADER_FILES
     ${SOFAFRAMEWORK_SRC}/config.h.in

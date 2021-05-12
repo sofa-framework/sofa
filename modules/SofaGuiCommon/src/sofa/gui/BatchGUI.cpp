@@ -20,17 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "BatchGUI.h"
-#include <sofa/simulation/Simulation.h>
+
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/helper/system/thread/CTime.h>
-#include <fstream>
-#include <iomanip>
-#include <string>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/gui/ArgumentParser.h>
 
 #include <boost/program_options.hpp>
+
+#include <fstream>
+#include <string>
+#include <iomanip>
 
 namespace sofa::gui
 {

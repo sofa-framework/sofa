@@ -31,7 +31,7 @@ using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Rigid3Mass;
 #include <sofa/gui/GUIManager.h>
 #include <SofaGui/initSofaGui.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/Node.h>
@@ -232,7 +232,7 @@ Node *createChainHybrid(Node *root)
 
 int main(int argc, char** argv)
 {
-    ArgumentParser argParser(argc, argv);
+    sofa::gui::ArgumentParser argParser(argc, argv);
     sofa::gui::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
 

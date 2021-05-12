@@ -31,9 +31,6 @@
 #include <thread>
 #include <chrono>
 
-#include <chrono>
-#include <thread>
-
 namespace sofa::component::controller
 {
     
