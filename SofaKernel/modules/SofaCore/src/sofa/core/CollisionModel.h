@@ -135,13 +135,13 @@ public:
     /// Get the number of contacts attached to the collision model
     Size getNumberOfContacts() const
     {
-        return numberOfContacts.getValue();
+        return d_numberOfContacts.getValue();
     }
 
     /// Set the number of contacts attached to the collision model
     void setNumberOfContacts(Size i)
     {
-        numberOfContacts.setValue(i);
+        d_numberOfContacts.setValue(i);
     }
 
     /// Set the number of elements.
@@ -413,7 +413,7 @@ protected:
     Size size;
 
     /// number of contacts attached to the collision model
-    Data<Size> numberOfContacts;
+    Data<Size> d_numberOfContacts;
 
     /// Pointer to the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
     SingleLink<CollisionModel,CollisionModel,BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> previous;
