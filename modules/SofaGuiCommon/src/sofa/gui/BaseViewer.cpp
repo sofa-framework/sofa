@@ -26,6 +26,8 @@
 #include <sofa/helper/Factory.inl>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
+#include <SofaGraphComponent/ViewerSetting.h>
+#include <SofaBaseVisual/InteractiveCamera.h>
 
 namespace sofa::gui
 {

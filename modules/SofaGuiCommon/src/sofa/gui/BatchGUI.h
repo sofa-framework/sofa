@@ -23,13 +23,13 @@
 
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/simulation/fwd.h>
-#include <sofa/helper/ArgumentParser.h>
 #include <string>
-
-using sofa::helper::ArgumentParser;
+#include <sstream>
 
 namespace sofa::gui
 {
+
+class ArgumentParser;
 
 class SOFA_SOFAGUICOMMON_API BatchGUI : public BaseGUI
 {

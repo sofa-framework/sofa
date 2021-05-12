@@ -30,7 +30,7 @@ using sofa::helper::system::SetDirectory;
 #include <sofa/simulation/Node.h>
 #include <sofa/gl/Texture.h>
 
-#include <boost/program_options.hpp>
+#include <sofa/gui/ArgumentParser.h>
 #include <thread>
 #include <chrono>
 

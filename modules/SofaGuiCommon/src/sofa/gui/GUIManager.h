@@ -20,19 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/fwd.h>
 #include <sofa/gui/config.h>
+
+#include <sofa/simulation/fwd.h>
+
 #include <vector>
 #include <string>
 #include <list>
 
-using sofa::helper::ArgumentParser;
 
 namespace sofa::gui
 {
-class BaseGUI;
 
+class BaseGUI;
+class ArgumentParser;
 
 class SOFA_SOFAGUICOMMON_API GUIManager
 {

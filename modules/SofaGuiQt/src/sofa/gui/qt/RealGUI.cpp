@@ -142,7 +142,7 @@ using sofa::gui::qt::DocBrowser;
 
 using sofa::core::ExecParams;
 
-#include <boost/program_options.hpp>
+#include <sofa/gui/ArgumentParser.h>
 
 
 #ifdef SOFA_PML
@@ -813,7 +813,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 
     if( currentSimulation() ) this->unloadScene();
 
-    const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
+    const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();
     mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
     simulation::getSimulation()->init ( mSimulation.get() );
