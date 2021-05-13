@@ -27,6 +27,9 @@
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 
+#include <unordered_map>
+#include <typeindex>
+
 namespace sofa::component::collision
 {
 
@@ -53,10 +56,23 @@ public:
     void execute();
     void draw(const core::visual::VisualParams* vparams);
 
+    using GetFixationPointsOnModelFunction = std::function<bool(sofa::core::sptr<sofa::core::CollisionModel>, const Index, helper::vector<Index>&, Coord&)>;
+    using PairModelFunction = std::pair<sofa::core::sptr<sofa::core::CollisionModel>, GetFixationPointsOnModelFunction>;
+    template<typename TCollisionModel>
+    static int RegisterSupportedModel(GetFixationPointsOnModelFunction func)
+    {
+        std::cout << "RegisterSupportedModel: " << typeid(TCollisionModel).name() << std::endl;
+        s_mapSupportedModels[std::type_index(typeid(TCollisionModel))] = PairModelFunction(sofa::core::objectmodel::New<TCollisionModel>(), func);
+
+        return 1;
+    }
+
 protected:
     MouseContainer* getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint);
 
     std::vector< simulation::Node * > fixations;
+
+    static std::unordered_map<std::type_index, PairModelFunction > s_mapSupportedModels;
 };
 
 

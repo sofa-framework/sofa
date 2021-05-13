@@ -112,29 +112,40 @@ FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TI
 
 
 template <class DataTypes>
-sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint)
+sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, helper::vector<Index> &points, Coord &fixPoint)
 {
-    const int idx=b.indexCollisionElement;
+    const auto idx=b.indexCollisionElement;
     MouseContainer* collisionState=0;
 
     if (b.body)
     {
         collisionState = dynamic_cast<MouseContainer*>(b.body->getContext()->getMechanicalState());
 
-        if (SphereCollisionModel<sofa::defaulttype::Vec3Types> *sphere = dynamic_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
+        bool foundSupportedModel = false;
+        for (auto supportedModel : s_mapSupportedModels)
         {
-            Sphere s(sphere, idx);
-            fixPoint = s.p();
-            points.push_back(s.getIndex());
+            if (foundSupportedModel = supportedModel.second.second(b.body, idx, points, fixPoint))
+                break;
         }
-        else if(TriangleCollisionModel<sofa::defaulttype::Vec3Types> *triangle = dynamic_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
+        if (!foundSupportedModel)
         {
-            Triangle t(triangle, idx);
-            fixPoint = (t.p1()+t.p2()+t.p3())/3.0;
-            points.push_back(t.p1Index());
-            points.push_back(t.p2Index());
-            points.push_back(t.p3Index());
+            msg_warning("FixParticlePerformer") << "Could not find a Collision Model to fix particle on.";
         }
+
+        //if (SphereCollisionModel<sofa::defaulttype::Vec3Types> *sphere = dynamic_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
+        //{
+        //    Sphere s(sphere, idx);
+        //    fixPoint = s.p();
+        //    points.push_back(s.getIndex());
+        //}
+        //else if(TriangleCollisionModel<sofa::defaulttype::Vec3Types> *triangle = dynamic_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
+        //{
+        //    Triangle t(triangle, idx);
+        //    fixPoint = (t.p1()+t.p2()+t.p3())/3.0;
+        //    points.push_back(t.p1Index());
+        //    points.push_back(t.p2Index());
+        //    points.push_back(t.p3Index());
+        //}
         else if(CapsuleCollisionModel<sofa::defaulttype::Vec3Types> *capsule = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body)){
             fixPoint = (capsule->point1(idx) + capsule->point2(idx))/2.0;
             points.push_back(capsule->point1Index(idx));
