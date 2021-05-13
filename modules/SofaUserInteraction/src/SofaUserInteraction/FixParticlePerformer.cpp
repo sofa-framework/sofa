@@ -32,13 +32,11 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePe
 
 std::unordered_map<std::type_index, FixParticlePerformer3d::PairModelFunction> FixParticlePerformer3d::s_mapSupportedModels;
 
-int triangleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<sofa::component::collision::TriangleModel>(
+int triangleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<TriangleCollisionModel<defaulttype::Vec3Types>>(
     []
     (sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
     {
-        std::cout << "Triangle was registered you know" << std::endl;
-
-        auto* triangle = dynamic_cast<TriangleModel*>(model.get());
+        auto* triangle = dynamic_cast<TriangleCollisionModel<defaulttype::Vec3Types>*>(model.get());
         
         if (!triangle)
             return false;
@@ -53,13 +51,11 @@ int triangleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<sofa::c
     }
 );
 
-int sphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<sofa::component::collision::SphereModel>(
+int sphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Vec3Types>>(
     []
 (sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
     {
-        std::cout << "sphere was registered you know" << std::endl;
-
-        auto* sphere = dynamic_cast<SphereModel*>(model.get());
+        auto* sphere = dynamic_cast<SphereCollisionModel<defaulttype::Vec3Types>*>(model.get());
 
         if (!sphere)
             return false;
@@ -67,6 +63,26 @@ int sphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<sofa::com
         Sphere s(sphere, idx);
         fixPoint = s.p();
         points.push_back(s.getIndex());
+
+        return true;
+    }
+);
+
+int rigidSphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Rigid3Types>>(
+    []
+(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
+    {
+        auto* rigidSphere = dynamic_cast<SphereCollisionModel<defaulttype::Rigid3Types>*>(model.get());
+
+        if (!rigidSphere)
+            return false;
+
+        auto* collisionState = model->getContext()->getMechanicalState();
+        fixPoint[0] = collisionState->getPX(idx);
+        fixPoint[1] = collisionState->getPY(idx);
+        fixPoint[2] = collisionState->getPZ(idx);
+
+        points.push_back(idx);
 
         return true;
     }

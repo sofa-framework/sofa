@@ -70,23 +70,20 @@ CapsuleMeshDiscreteIntersection::CapsuleMeshDiscreteIntersection(NewProximityInt
 // add CapsuleModel to the list of supported collision models for FixParticlePerformer
 using FixParticlePerformer3d = sofa::component::collision::FixParticlePerformer<defaulttype::Vec3Types>;
 
-int capsuleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>>(
+int capsuleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>(
     []
 (sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
     {
         std::cout << "obb was registered you know" << std::endl;
 
-        auto* caps = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>*>(model.get());
+        auto* caps = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>*>(model.get());
 
         if (!caps)
             return false;
 
-        auto* collisionState = model->getContext()->getMechanicalState();
-        fixPoint[0] = collisionState->getPX(idx);
-        fixPoint[1] = collisionState->getPY(idx);
-        fixPoint[2] = collisionState->getPZ(idx);
-
-        points.push_back(idx);
+        fixPoint = (caps->point1(idx) + caps->point2(idx))/2.0;
+        points.push_back(caps->point1Index(idx));
+        points.push_back(caps->point2Index(idx));
 
         return true;
     }
