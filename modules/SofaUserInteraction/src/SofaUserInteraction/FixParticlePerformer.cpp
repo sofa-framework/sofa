@@ -23,6 +23,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+
 namespace sofa::component::collision
 {
 using FixParticlePerformer3d = FixParticlePerformer<defaulttype::Vec3Types>;

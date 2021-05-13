@@ -27,11 +27,6 @@
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-
 
 namespace sofa::component::collision
 {
@@ -130,31 +125,6 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
         if (!foundSupportedModel)
         {
             msg_warning("FixParticlePerformer") << "Could not find a Collision Model to fix particle on.";
-        }
-
-        //if (SphereCollisionModel<sofa::defaulttype::Vec3Types> *sphere = dynamic_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
-        //{
-        //    Sphere s(sphere, idx);
-        //    fixPoint = s.p();
-        //    points.push_back(s.getIndex());
-        //}
-        //else if(TriangleCollisionModel<sofa::defaulttype::Vec3Types> *triangle = dynamic_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
-        //{
-        //    Triangle t(triangle, idx);
-        //    fixPoint = (t.p1()+t.p2()+t.p3())/3.0;
-        //    points.push_back(t.p1Index());
-        //    points.push_back(t.p2Index());
-        //    points.push_back(t.p3Index());
-        //}
-        //else if(CapsuleCollisionModel<sofa::defaulttype::Vec3Types> *capsule = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body)){
-        //    fixPoint = (capsule->point1(idx) + capsule->point2(idx))/2.0;
-        //    points.push_back(capsule->point1Index(idx));
-        //    points.push_back(capsule->point2Index(idx));
-        //}
-        else if(dynamic_cast<SphereCollisionModel<sofa::defaulttype::Rigid3Types>*>(b.body)){
-            collisionState = dynamic_cast<MouseContainer*>(b.mstate);
-            fixPoint = (collisionState->read(core::ConstVecCoordId::position())->getValue())[idx];
-            points.push_back(idx);
         }
     }
     else if (b.mstate)
