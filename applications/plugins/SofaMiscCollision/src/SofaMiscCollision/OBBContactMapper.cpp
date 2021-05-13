@@ -24,7 +24,6 @@
 
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
-#include <SofaConstraint/FrictionContact.inl>
 #include <SofaBaseCollision/OBBModel.h>
 
 using namespace sofa::core::collision;

@@ -69,43 +69,5 @@ int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, Outp
     return BaseProximityIntersection::testIntersection(cube1, cube2); 
 }
 
-bool NewProximityIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    return testIntersectionSphere(sph1, sph2, alarmDist);
-}
-
-int NewProximityIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
-    return computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
-}
-
-bool NewProximityIntersection::testIntersection(Sphere& sph1, RigidSphere& sph2)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    return testIntersectionSphere(sph1, sph2, alarmDist);
-}
-
-int NewProximityIntersection::computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
-    return computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
-}
-
-bool NewProximityIntersection::testIntersection(RigidSphere& sph1, RigidSphere& sph2)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    return testIntersectionSphere(sph1, sph2, alarmDist);
-}
-
-int NewProximityIntersection::computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
-    return computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
-}
 
 } // namespace sofa::component::collision

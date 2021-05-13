@@ -90,43 +90,4 @@ void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
         return;
 }
 
-bool MinProximityIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    return DiscreteIntersection::testIntersectionSphere(sph1, sph2, alarmDist);
-}
-
-int MinProximityIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
-    return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
-}
-
-bool MinProximityIntersection::testIntersection(Sphere& sph1, RigidSphere& sph2)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    return DiscreteIntersection::testIntersectionSphere(sph1, sph2, alarmDist);
-}
-
-int MinProximityIntersection::computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
-    return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
-}
-
-bool MinProximityIntersection::testIntersection(RigidSphere& sph1, RigidSphere& sph2)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    return DiscreteIntersection::testIntersectionSphere(sph1, sph2, alarmDist);
-}
-
-int MinProximityIntersection::computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts)
-{
-    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
-    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
-    return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
-}
-
 } // namespace sofa::component::collision

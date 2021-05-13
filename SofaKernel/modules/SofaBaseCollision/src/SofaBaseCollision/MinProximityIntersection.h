@@ -52,12 +52,19 @@ public:
     bool testIntersection(Cube& cube1, Cube& cube2);
     int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
 
-    bool testIntersection(Sphere& sph1, Sphere& sph2);
-    int computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts);
-    bool testIntersection(Sphere& sph1, RigidSphere& sph2);
-    int computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts);
-    bool testIntersection(RigidSphere& sph1, RigidSphere& sph2);
-    int computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+    template<typename SphereType1, typename SphereType2>
+    bool testIntersection(SphereType1& sph1, SphereType2& sph2)
+    {
+        const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+        return DiscreteIntersection::testIntersectionSphere(sph1, sph2, alarmDist);
+    }
+    template<typename SphereType1, typename SphereType2>
+    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts)
+    {
+        const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+        const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
+        return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
+    }
 
 private:
     SReal mainAlarmDistance;
