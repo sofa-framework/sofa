@@ -26,6 +26,7 @@
 #include <sofa/helper/map_ptr_stable_compare.h>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 namespace sofa::core::collision
 {
@@ -35,10 +36,18 @@ namespace sofa::core::collision
  */
 class SOFA_CORE_API NarrowPhaseDetection : virtual public Detection
 {
+
+
 public:
     SOFA_ABSTRACT_CLASS(NarrowPhaseDetection, Detection);
 
-    typedef sofa::helper::map_ptr_stable_compare< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
+    /// A stable sorted associative container of type key-value, where:
+    /// * KEY: pair of collision models
+    /// * VALUE: collision detection output
+    /// The order of the elements in the container is determined by the order the elements are inserted.
+    /// Contact response processes collision detection output in the order of this map.
+    /// A stable order allows reproducible contact response, therefore a deterministic simulation.
+    typedef sofa::helper::map_ptr_stable_compare< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector*> DetectionOutputMap;
 
 protected:
     /// Destructor
@@ -78,6 +87,8 @@ protected:
     DetectionOutputMap m_outputsMap;
 
     size_t m_primitiveTestCount; // used only for statistics purpose
+
+
 };
 
 } // namespace sofa::core::collision

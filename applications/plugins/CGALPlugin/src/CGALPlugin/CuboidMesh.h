@@ -26,10 +26,11 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/gl/template.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/visual/DrawTool.h>
 
 #include <math.h>
-#include   <algorithm>
+#include <algorithm>
 
 namespace cgal
 {
@@ -71,7 +72,7 @@ public:
 
     void update();
     void orientate();
-    void draw();
+    void draw(const core::visual::VisualParams* vparams);
 
     virtual std::string getTemplateName() const
     {
@@ -91,6 +92,7 @@ public:
     sofa::core::objectmodel::Data<bool> m_convex; ///< make convex boundary
     sofa::core::objectmodel::Data<bool> m_viewPoints; ///< Display Points
     sofa::core::objectmodel::Data<bool> m_viewTetras; ///< Display Tetrahedra
+    sofa::core::objectmodel::Data<double> m_drawScale; ///< height
 
     //Outputs
     sofa::core::objectmodel::Data<VecCoord> m_points; ///< Points
@@ -109,7 +111,7 @@ public:
 
 #if  !defined(CGALPLUGIN_CUBOIDMESH_CPP)
 extern template class SOFA_CGALPLUGIN_API CuboidMesh<defaulttype::Vec3Types>;
- 
+
 #endif
 
 } //cgal
