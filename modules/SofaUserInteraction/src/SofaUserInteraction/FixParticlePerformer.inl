@@ -124,8 +124,10 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
         bool foundSupportedModel = false;
         for (auto supportedModel : s_mapSupportedModels)
         {
-            if (foundSupportedModel = supportedModel.second.second(b.body, idx, points, fixPoint))
-                break;
+            std::cout << "Testing: " << typeid(supportedModel).name() << std::endl;
+
+            //if (foundSupportedModel = supportedModel.second.second(b.body, idx, points, fixPoint))
+            //    break;
         }
         if (!foundSupportedModel)
         {
@@ -151,7 +153,7 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
             points.push_back(capsule->point1Index(idx));
             points.push_back(capsule->point2Index(idx));
         }
-        else if(dynamic_cast<SphereCollisionModel<sofa::defaulttype::Rigid3Types>*>(b.body)||dynamic_cast<OBBCollisionModel<sofa::defaulttype::Rigid3Types>*>(b.body)){
+        else if(dynamic_cast<SphereCollisionModel<sofa::defaulttype::Rigid3Types>*>(b.body)/*||dynamic_cast<OBBCollisionModel<sofa::defaulttype::Rigid3Types>*>(b.body)*/){
             collisionState = dynamic_cast<MouseContainer*>(b.mstate);
             fixPoint = (collisionState->read(core::ConstVecCoordId::position())->getValue())[idx];
             points.push_back(idx);
