@@ -79,7 +79,7 @@ protected:
             return 0;
 
         contacts->resize(contacts->size() + 1);
-        DetectionOutput* detection = &*(contacts->end() - 1);
+        core::collision::DetectionOutput* detection = &*(contacts->end() - 1);
         SReal distSph1Sph2 = helper::rsqrt(norm2);
         detection->normal = dist / distSph1Sph2;
         detection->point[0] = sph1.getContactPointByNormal(-detection->normal);
