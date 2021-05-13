@@ -29,6 +29,7 @@
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaUserInteraction/RayModel.h>
+#include <SofaUserInteraction/FixParticlePerformer.h>
 
 namespace sofa::component::collision
 {
@@ -65,5 +66,31 @@ CapsuleMeshDiscreteIntersection::CapsuleMeshDiscreteIntersection(NewProximityInt
     intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleMeshDiscreteIntersection>(this);
     intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleMeshDiscreteIntersection>(this);
 }
+
+// add CapsuleModel to the list of supported collision models for FixParticlePerformer
+using FixParticlePerformer3d = sofa::component::collision::FixParticlePerformer<defaulttype::Vec3Types>;
+
+int capsuleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>>(
+    []
+(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
+    {
+        std::cout << "obb was registered you know" << std::endl;
+
+        auto* caps = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>*>(model.get());
+
+        if (!caps)
+            return false;
+
+        auto* collisionState = model->getContext()->getMechanicalState();
+        fixPoint[0] = collisionState->getPX(idx);
+        fixPoint[1] = collisionState->getPY(idx);
+        fixPoint[2] = collisionState->getPZ(idx);
+
+        points.push_back(idx);
+
+        return true;
+    }
+);
+
 
 } // namespace sofa::component::collision
