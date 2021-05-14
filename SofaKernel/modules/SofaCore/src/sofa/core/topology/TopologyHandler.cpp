@@ -28,7 +28,7 @@ namespace sofa::core::topology
 
 size_t TopologyHandler::getNumberOfTopologicalChanges()
 {
-    return (m_changeList.getValue()).size();
+    return (m_topology->m_changeList.getValue()).size();
 }
 
 
@@ -124,7 +124,7 @@ void TopologyHandler::update()
     if (!this->isTopologyDataRegistered())
         return;
 
-    std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_changeList.getValue().size());
+    std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_topology->m_changeList.getValue().size());
     sofa::helper::AdvancedTimer::stepBegin(msg.c_str());
     this->handleTopologyChange();
     sofa::helper::AdvancedTimer::stepEnd(msg.c_str());
