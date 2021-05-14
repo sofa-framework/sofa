@@ -81,7 +81,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::handleTopologyChange()
 
     m_topologyData->setDataSetArraySize(m_topology->getNbPoints());
 
-    sofa::core::topology::TopologyHandler::ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
+    sofa::core::topology::TopologyHandler::ApplyTopologyChanges(m_topology->m_changeList.getValue(), m_topology->getNbPoints());
 }
 
 
