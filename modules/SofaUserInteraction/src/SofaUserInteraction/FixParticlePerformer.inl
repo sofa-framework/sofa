@@ -116,16 +116,28 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
     {
         collisionState = dynamic_cast<MouseContainer*>(b.body->getContext()->getMechanicalState());
 
-        bool foundSupportedModel = false;
-        for (auto supportedModel : s_mapSupportedModels)
+        auto funcGetFixationPoints = s_mapSupportedModels.find(std::type_index(typeid(*b.body)));
+        if (funcGetFixationPoints != s_mapSupportedModels.end())
         {
-            if (foundSupportedModel = supportedModel.second.second(b.body, idx, points, fixPoint))
-                break;
+            funcGetFixationPoints->second(b.body, idx, points, fixPoint);
         }
-        if (!foundSupportedModel)
+        else
         {
-            msg_warning("FixParticlePerformer") << "Could not find a Collision Model to fix particle on.";
+            msg_warning("FixParticlePerformer") << "Could not find a Collision Model to fix particle on. " 
+                                                << typeid(b.body).name() << " has not been registered.";
         }
+        
+
+        //bool foundSupportedModel = false;
+        //for (auto supportedModel : s_mapSupportedModels)
+        //{
+        //    if (foundSupportedModel = supportedModel.second(b.body, idx, points, fixPoint))
+        //        break;
+        //}
+        //if (!foundSupportedModel)
+        //{
+        //    msg_warning("FixParticlePerformer") << "Could not find a Collision Model to fix particle on.";
+        //}
     }
     else if (b.mstate)
     {

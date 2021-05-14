@@ -23,9 +23,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-
 namespace sofa::component::collision
 {
 using FixParticlePerformer3d = FixParticlePerformer<defaulttype::Vec3Types>;
@@ -34,8 +31,8 @@ template class SOFA_SOFAUSERINTERACTION_API FixParticlePerformer<defaulttype::Ve
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer3d >  FixParticlePerformerVec3dClass("FixParticle",true);
 
 int triangleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<TriangleCollisionModel<defaulttype::Vec3Types>>(&FixParticlePerformer3d::getFixationPointsTriangle<TriangleCollisionModel<defaulttype::Vec3Types>>);
-int sphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Vec3Types>>(&FixParticlePerformer3d::getFixationPointsSphere<SphereCollisionModel<defaulttype::Vec3Types>>);
-int rigidSphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Rigid3Types>>(&FixParticlePerformer3d::getFixationPointsSphere<SphereCollisionModel<defaulttype::Rigid3Types>>);
+int sphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Vec3Types>>(&FixParticlePerformer3d::getFixationPointsSphere);
+int rigidSphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Rigid3Types>>(&FixParticlePerformer3d::getFixationPointsSphere);
 
 
 } // namespace sofa::component::collision

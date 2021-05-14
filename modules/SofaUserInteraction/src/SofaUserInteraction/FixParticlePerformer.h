@@ -26,6 +26,8 @@
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaUserInteraction/MouseInteractor.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 
 #include <unordered_map>
 #include <typeindex>
@@ -56,49 +58,36 @@ public:
     void execute();
     void draw(const core::visual::VisualParams* vparams);
 
-    using GetFixationPointsOnModelFunction = std::function<bool(sofa::core::sptr<sofa::core::CollisionModel>, const Index, helper::vector<Index>&, Coord&)>;
-    using PairModelFunction = std::pair<sofa::core::sptr<sofa::core::CollisionModel>, GetFixationPointsOnModelFunction>;
+    using GetFixationPointsOnModelFunction = std::function<void(sofa::core::sptr<sofa::core::CollisionModel>, const Index, helper::vector<Index>&, Coord&)>;
+
     template<typename TCollisionModel>
     static int RegisterSupportedModel(GetFixationPointsOnModelFunction func)
     {
-        s_mapSupportedModels[std::type_index(typeid(TCollisionModel))] = PairModelFunction(sofa::core::objectmodel::New<TCollisionModel>(), func);
+        s_mapSupportedModels[std::type_index(typeid(TCollisionModel))] = func;
 
         return 1;
     }
 
-    template<typename TCollisionModel>
-    static bool getFixationPointsTriangle(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, Coord& fixPoint)
+    template<typename TTriangleCollisionModel>
+    static void getFixationPointsTriangle(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, Coord& fixPoint)
     {
-        auto* triangle = dynamic_cast<TCollisionModel*>(model.get());
-
-        if (!triangle)
-            return false;
+        auto* triangle = static_cast<TTriangleCollisionModel*>(model.get());
 
         Triangle t(triangle, idx);
         fixPoint = (t.p1() + t.p2() + t.p3()) / 3.0;
         points.push_back(t.p1Index());
         points.push_back(t.p2Index());
         points.push_back(t.p3Index());
-
-        return true;
     }
 
-    template<typename TCollisionModel>
-    static bool getFixationPointsSphere(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, Coord& fixPoint)
+    static void getFixationPointsSphere(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, Coord& fixPoint)
     {
-        auto* sphere = dynamic_cast<TCollisionModel*>(model.get());
-
-        if (!sphere)
-            return false;
-
         auto* collisionState = model->getContext()->getMechanicalState();
         fixPoint[0] = collisionState->getPX(idx);
         fixPoint[1] = collisionState->getPY(idx);
         fixPoint[2] = collisionState->getPZ(idx);
 
         points.push_back(idx);
-
-        return true;
     }
 
 protected:
@@ -106,7 +95,7 @@ protected:
 
     std::vector< simulation::Node * > fixations;
 
-    inline static std::unordered_map<std::type_index, PairModelFunction > s_mapSupportedModels;
+    inline static std::unordered_map<std::type_index, GetFixationPointsOnModelFunction > s_mapSupportedModels;
 
 };
 
