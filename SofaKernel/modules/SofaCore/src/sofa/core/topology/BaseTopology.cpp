@@ -97,7 +97,6 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
 void TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler)
 {
     m_TopologyHandlerList.push_back(_TopologyHandler);
-    m_TopologyHandlerList.back()->m_changeList.setParent(&this->m_changeList);
     this->updateTopologyHandlerGraph();
 }
 
