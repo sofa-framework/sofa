@@ -110,7 +110,24 @@ public:
     /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
     virtual void removeOnMovedPosition(const sofa::helper::vector<Index>& indices);
 
+    /** Method to add a callback when a element is deleted from this container. It will be called by @sa remove method for example.
+    * This is only to specify a specific behevior/computation when removing an element from this container. Otherwise normal deletion is applyed.
+    * Parameters are @param Index of the element which is detroyed and @value_type value hold by this container.
+    */
+    void applyDestroyFunction(std::function<void(Index, value_type&)> func) { m_DestroyFunction = func; }
+    
+    /** Method to add a callback when a element is created in this container. It will be called by @sa add method for example.
+    * This is only to specify a specific behevior/computation when adding an element in this container. Otherwise default constructor of the element is used.
+    * @param Index of the element which is created.
+    * @param value_type value hold by this container.
+    * @param TopologyElementType type of topologyElement created.
+    * @param List of ancestor indices.
+    * @param List of coefficient respect to the ancestor indices.
+    */
+    void applyCreateFunction(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::helper::vector< Index >&, const sofa::helper::vector< double >&)> func) { m_CreateFunction = func; }
 
+    std::function<void(Index, value_type&)> m_DestroyFunction;
+    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::helper::vector< Index >&, const sofa::helper::vector< double >&)> m_CreateFunction;
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
     SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method has been removed as it is not part of the new topology change design.")
@@ -124,13 +141,7 @@ public:
 
     SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2086)", "v21.06 (PR#2086)", "This method has been removed as it's mechanism is now automatically done in TopologyHandler.")
     void registerTopologicalData() = delete;
-
-    void applyDestroyFunction(std::function<void(Index, value_type&)> func) { myDestroyFunction = func; }
-    void applyCreateFunction(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::helper::vector< Index >&, const sofa::helper::vector< double >&)> func) { myCreateFunction = func; }
-
-    std::function<void(Index, value_type&)> myDestroyFunction;
-    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::helper::vector< Index >&, const sofa::helper::vector< double >&)> myCreateFunction;
-
+    
 protected:
     sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* m_topologyHandler;
 

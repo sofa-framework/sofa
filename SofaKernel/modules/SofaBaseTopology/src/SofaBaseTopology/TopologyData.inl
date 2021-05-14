@@ -206,9 +206,9 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::helper::vector
                 this->m_topologyHandler->applyDestroyFunction(index[i], data[index[i]]);
             }
 
-            if (myDestroyFunction)
+            if (m_DestroyFunction)
             {
-                myDestroyFunction(index[i], data[index[i]]);
+                m_DestroyFunction(index[i], data[index[i]]);
             }
 
             this->swap(index[i], last);
@@ -258,9 +258,9 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
                     (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
                     (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
             
-            if (myCreateFunction)
+            if (m_CreateFunction)
             {
-                myCreateFunction(Index(i0 + i), t, elems[i],
+                m_CreateFunction(Index(i0 + i), t, elems[i],
                     (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
                     (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i]);
             }
