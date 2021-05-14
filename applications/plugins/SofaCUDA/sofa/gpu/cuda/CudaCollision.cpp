@@ -83,6 +83,11 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPer
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<CudaVec3dTypes> >  FixParticlePerformerCudaVec3dClass("FixParticle",true);
 #endif
 
+using FixParticlePerformerCuda3d = FixParticlePerformer<gpu::cuda::CudaVec3Types>;
+
+int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<TriangleCollisionModel<gpu::cuda::Vec3Types>>);
+
+
 } //namespace collision
 
 

@@ -66,12 +66,48 @@ public:
         return 1;
     }
 
+    template<typename TCollisionModel>
+    static bool getFixationPointsTriangle(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, Coord& fixPoint)
+    {
+        auto* triangle = dynamic_cast<TCollisionModel*>(model.get());
+
+        if (!triangle)
+            return false;
+
+        Triangle t(triangle, idx);
+        fixPoint = (t.p1() + t.p2() + t.p3()) / 3.0;
+        points.push_back(t.p1Index());
+        points.push_back(t.p2Index());
+        points.push_back(t.p3Index());
+
+        return true;
+    }
+
+    template<typename TCollisionModel>
+    static bool getFixationPointsSphere(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, Coord& fixPoint)
+    {
+        auto* sphere = dynamic_cast<TCollisionModel*>(model.get());
+
+        if (!sphere)
+            return false;
+
+        auto* collisionState = model->getContext()->getMechanicalState();
+        fixPoint[0] = collisionState->getPX(idx);
+        fixPoint[1] = collisionState->getPY(idx);
+        fixPoint[2] = collisionState->getPZ(idx);
+
+        points.push_back(idx);
+
+        return true;
+    }
+
 protected:
     MouseContainer* getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint);
 
     std::vector< simulation::Node * > fixations;
 
-    static std::unordered_map<std::type_index, PairModelFunction > s_mapSupportedModels;
+    inline static std::unordered_map<std::type_index, PairModelFunction > s_mapSupportedModels;
+
 };
 
 
