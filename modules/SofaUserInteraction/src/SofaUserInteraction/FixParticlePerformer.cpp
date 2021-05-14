@@ -30,6 +30,10 @@ using FixParticlePerformer3d = FixParticlePerformer<defaulttype::Vec3Types>;
 template class SOFA_SOFAUSERINTERACTION_API FixParticlePerformer<defaulttype::Vec3Types>;
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer3d >  FixParticlePerformerVec3dClass("FixParticle",true);
 
+#if defined(_MSC_VER) && _MSC_VER < 1920 // if VS is less than VS2019.0
+SOFA_SOFAUSERINTERACTION_API std::unordered_map<std::type_index, FixParticlePerformer3d::GetFixationPointsOnModelFunction > FixParticlePerformer3d::s_mapSupportedModels;
+#endif // defined(_MSC_VER) && _MSC_VER < 1920
+
 int triangleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<TriangleCollisionModel<defaulttype::Vec3Types>>(&FixParticlePerformer3d::getFixationPointsTriangle<TriangleCollisionModel<defaulttype::Vec3Types>>);
 int sphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Vec3Types>>(&FixParticlePerformer3d::getFixationPointsSphere);
 int rigidSphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Rigid3Types>>(&FixParticlePerformer3d::getFixationPointsSphere);

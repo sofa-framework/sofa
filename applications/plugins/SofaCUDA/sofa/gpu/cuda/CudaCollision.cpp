@@ -85,6 +85,10 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePe
 
 using FixParticlePerformerCuda3d = FixParticlePerformer<gpu::cuda::CudaVec3Types>;
 
+#if defined(_MSC_VER) && _MSC_VER < 1920 // if VS is less than VS2019.0
+SOFA_GPU_CUDA_API std::unordered_map<std::type_index, FixParticlePerformerCuda3d::GetFixationPointsOnModelFunction > FixParticlePerformerCuda3d::s_mapSupportedModels;
+#endif // defined(_MSC_VER) && _MSC_VER < 1920
+
 int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<TriangleCollisionModel<gpu::cuda::Vec3Types>>);
 
 
