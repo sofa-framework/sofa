@@ -63,12 +63,11 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
 
 
         // New version using map of callback
-        std::map < core::topology::TopologyChangeType, TopoChange_callback>::iterator itM;
+        std::map < core::topology::TopologyChangeType, TopologyChangeCallback>::iterator itM;
         itM = m_callbackMap.find(changeType);
 
         if (itM != m_callbackMap.end())
         {
-            std::cout << "m_callbackMap found" << std::endl;
             (*itM).second(*changeIt);
         }
 
@@ -198,7 +197,7 @@ void TopologyHandler::update()
     sofa::helper::AdvancedTimer::stepEnd(msg.c_str());
 }
 
-void TopologyHandler::addCallBack(core::topology::TopologyChangeType type, TopoChange_callback callback)
+void TopologyHandler::addCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback)
 {
     // need to warn duplicate callback
     m_callbackMap[type] = callback;

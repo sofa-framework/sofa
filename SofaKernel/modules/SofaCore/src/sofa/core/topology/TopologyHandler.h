@@ -47,7 +47,7 @@ public:
     void update() override;
 
 public:
-    typedef std::function<void(const core::topology::TopologyChange*)> TopoChange_callback;
+    typedef std::function<void(const core::topology::TopologyChange*)> TopologyChangeCallback;
 
     virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize);
 
@@ -166,7 +166,9 @@ public:
     */
     virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
 
-    void addCallBack(core::topology::TopologyChangeType type, TopoChange_callback callback);
+    /// Method to add a CallBack method to be used when a @sa core::topology::TopologyChangeType event is fired. The call back should use the @TopologyChangeCallback 
+    /// signature and pass the corresponding core::topology::TopologyChange* structure.
+    void addCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback);
 
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
@@ -180,7 +182,7 @@ protected:
     std::string m_data_name;
 
     sofa::core::topology::TopologyContainer* m_topology;
-    std::map < core::topology::TopologyChangeType, TopoChange_callback> m_callbackMap;
+    std::map < core::topology::TopologyChangeType, TopologyChangeCallback> m_callbackMap;
 };
 
 } // namespace topology
