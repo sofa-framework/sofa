@@ -150,4 +150,8 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
     return collisionState;
 }
 
+template<class DataTypes>
+std::unordered_map<std::type_index, typename FixParticlePerformer<DataTypes>::GetFixationPointsOnModelFunction >
+FixParticlePerformer<DataTypes>::s_mapSupportedModels;
+
 } // namespace sofa::component::collision
