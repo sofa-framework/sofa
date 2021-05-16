@@ -73,6 +73,10 @@ template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
 
 ContactMapperCreator< ContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > CudaSphereContactMapperClass("default",true);
 
+template<class DataTypes> SOFA_GPU_CUDA_API
+std::unordered_map<std::type_index, typename FixParticlePerformer<DataTypes>::GetFixationPointsOnModelFunction >
+FixParticlePerformer<DataTypes>::s_mapSupportedModels;
+
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3fTypes> >  AttachBodyPerformerCudaVec3fClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<CudaVec3fTypes> >  FixParticlePerformerCudaVec3fClass("FixParticle",true);

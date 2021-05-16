@@ -25,6 +25,11 @@
 
 namespace sofa::component::collision
 {
+
+template<class DataTypes> SOFA_SOFAUSERINTERACTION_API
+std::unordered_map<std::type_index, typename FixParticlePerformer<DataTypes>::GetFixationPointsOnModelFunction >
+FixParticlePerformer<DataTypes>::s_mapSupportedModels;
+
 using FixParticlePerformer3d = FixParticlePerformer<defaulttype::Vec3Types>;
 
 template class SOFA_SOFAUSERINTERACTION_API FixParticlePerformer<defaulttype::Vec3Types>;
