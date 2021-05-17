@@ -50,7 +50,7 @@ public:
     void setFilename(std::string f)  ;
     const std::string &getFilename() ;
 
-    objectmodel::DataFileName m_filename;
+    objectmodel::DataFileName d_filename;
 
 protected:
     BaseLoader() ;

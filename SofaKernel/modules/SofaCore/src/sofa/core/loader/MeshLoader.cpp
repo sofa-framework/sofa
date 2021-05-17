@@ -132,7 +132,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_normals.setReadOnly(true);
 
     /// name filename => component state update + change of all data field...but not visible ?
-    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t)
+    addUpdateCallback("filename", {&d_filename}, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
         if(load()){
