@@ -198,8 +198,7 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
     }
 
     bool success = false;
-    if (canLoad())
-        success = load(/*m_filename.getFullPath().c_str()*/);
+    success = canLoad();
 
     // File not loaded, component is set to invalid
     if (!success)
