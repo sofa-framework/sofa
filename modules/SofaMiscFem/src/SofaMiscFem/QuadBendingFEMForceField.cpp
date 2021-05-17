@@ -19,6 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/******************************************************************************
+* Contributors:
+*   - "Nhan NGuyen" <nhnhan@jaist.ac.jp>; (JAIST)
+*******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_CPP
 
 #include "QuadBendingFEMForceField.inl"
