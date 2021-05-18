@@ -20,17 +20,5 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralSimpleFem/config.h>
 
-namespace sofa::component::container
-{
-
-class LengthContainer : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(LengthContainer,core::objectmodel::BaseObject);
-
-    virtual double getLength(sofa::Index index) = 0;
-};
-
-} // namespace sofa::component::container
+#error "LengthContainer has been removed (PR21XX)."

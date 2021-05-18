@@ -40,7 +40,7 @@ void TubularMapping<TIn, TOut>::init()
 {
     if (!m_radius.isSet())
     {
-        msg_error() << "TubularMapping : No Radius defined";
+        msg_error() << "No Radius defined";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }

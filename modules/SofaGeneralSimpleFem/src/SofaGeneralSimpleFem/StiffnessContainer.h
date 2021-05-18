@@ -20,17 +20,5 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralSimpleFem/config.h>
 
-namespace sofa::component::container
-{
-
-class StiffnessContainer : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(StiffnessContainer,sofa::core::objectmodel::BaseObject);
-
-    virtual double getStiffness(sofa::Index index) = 0;
-};
-
-} // namespace sofa::component::container
+#error "StiffnessContainer has been removed (PR21XX)."

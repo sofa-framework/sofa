@@ -267,9 +267,9 @@ void Edge2QuadTopologicalMapping::init()
 
             // Need to fully init the target topology
             to_tstm->init();
-        }
 
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+            d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+        }
 
     }
 }
