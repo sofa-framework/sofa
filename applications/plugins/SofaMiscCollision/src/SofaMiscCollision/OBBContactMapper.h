@@ -19,42 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_CPP
-#include <SofaBaseCollision/NewProximityIntersection.inl>
+#pragma once
+#include <SofaMiscCollision/config.h>
 
-#include <sofa/core/collision/Intersection.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <SofaBaseCollision/OBBModel.h>
 
-namespace sofa::core::collision
-{
-    template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
-} // namespace sofa::core::collision
+using namespace sofa::core::collision;
 
 namespace sofa::component::collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
 
-int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")
-        .add< NewProximityIntersection >()
-        ;
+template <class TVec3Types>
+class SOFA_MISC_COLLISION_API ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > : public RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > {
+public:
+    sofa::Index addPoint(const typename TVec3Types::Coord& P, sofa::Index index, typename TVec3Types::Real& r)
+    {
+        const typename TVec3Types::Coord& cP = P - this->model->center(index);
+        const defaulttype::Quaternion& ori = this->model->orientation(index);
 
-NewProximityIntersection::NewProximityIntersection()
-    : BaseProximityIntersection()
-    , useLineLine(initData(&useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
-{
-}
+        return RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >::addPoint(ori.inverseRotate(cP), index, r);
+    }
+};
 
-void NewProximityIntersection::init()
-{
-    intersectors.add<CubeCollisionModel, CubeCollisionModel, NewProximityIntersection>(this);
-    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, NewProximityIntersection>(this);
-
-    IntersectorFactory::getInstance()->addIntersectors(this);
-
-	BaseProximityIntersection::init();
-}
+#if !defined(SOFA_SOFAMISCCOLLISION_OBBCONTACTMAPPER_CPP)
+extern template class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
+#endif // 
 
 } // namespace sofa::component::collision

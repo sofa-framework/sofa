@@ -60,8 +60,6 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
         intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
         intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
-        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
-        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
 
         if (intersection->useSphereTriangle.getValue())
         {
@@ -488,24 +486,6 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     detection->value -= contactDist;
 
     return 1;
-}
-
-
-
-int MeshMinProximityIntersection::computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,tri,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
-}
-
-int MeshMinProximityIntersection::computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,lin,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
-}
-
-bool MeshMinProximityIntersection::testIntersection(Capsule&,Triangle&){
-    return true;
-}
-
-bool MeshMinProximityIntersection::testIntersection(Capsule&,Line&){
-    return true;
 }
 
 } // namespace sofa::component::collision
