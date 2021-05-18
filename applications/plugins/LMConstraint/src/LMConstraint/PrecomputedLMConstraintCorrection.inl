@@ -117,13 +117,13 @@ void PrecomputedLMConstraintCorrection<DataTypes>::bwdInit()
 
         if (cgLinearSolver)
         {
-            buf_tolerance = (double) cgLinearSolver->f_tolerance.getValue();
-            buf_maxIter   = (int) cgLinearSolver->f_maxIter.getValue();
-            buf_threshold = (double) cgLinearSolver->f_smallDenominatorThreshold.getValue();
+            buf_tolerance = (double) cgLinearSolver->d_tolerance.getValue();
+            buf_maxIter   = (int) cgLinearSolver->d_maxIter.getValue();
+            buf_threshold = (double) cgLinearSolver->d_smallDenominatorThreshold.getValue();
 
-            cgLinearSolver->f_tolerance.setValue(1e-20);
-            cgLinearSolver->f_maxIter.setValue(5000);
-            cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-35);
+            cgLinearSolver->d_tolerance.setValue(1e-20);
+            cgLinearSolver->d_maxIter.setValue(5000);
+            cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-35);
         }
 
 
@@ -212,9 +212,9 @@ void PrecomputedLMConstraintCorrection<DataTypes>::bwdInit()
         // Restore linear solver parameters
         if (cgLinearSolver)
         {
-            cgLinearSolver->f_tolerance.setValue(buf_tolerance);
-            cgLinearSolver->f_maxIter.setValue(buf_maxIter);
-            cgLinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+            cgLinearSolver->d_tolerance.setValue(buf_tolerance);
+            cgLinearSolver->d_maxIter.setValue(buf_maxIter);
+            cgLinearSolver->d_smallDenominatorThreshold.setValue(buf_threshold);
         }
 
         // Retore velocity

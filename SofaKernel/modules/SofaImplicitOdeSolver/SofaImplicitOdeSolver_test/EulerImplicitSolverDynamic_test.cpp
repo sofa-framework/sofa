@@ -90,9 +90,9 @@ struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
         eulerSolver->f_rayleighMass.setValue(rm);
 
         CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver>   (root);
-        cgLinearSolver->f_maxIter=3000;
-        cgLinearSolver->f_tolerance =1e-9;
-        cgLinearSolver->f_smallDenominatorThreshold=1e-9;
+        cgLinearSolver->d_maxIter=3000;
+        cgLinearSolver->d_tolerance =1e-9;
+        cgLinearSolver->d_smallDenominatorThreshold=1e-9;
 
         // Set initial positions and velocities of fixed point and mass
         MechanicalObject3::VecCoord xFixed(1);
