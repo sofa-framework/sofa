@@ -41,11 +41,11 @@ void TubularMapping<TIn, TOut>::init()
     if (!m_radius.isSet())
     {
         msg_error() << "TubularMapping : No Radius defined";
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     Inherit::init();
 
 }
@@ -53,7 +53,7 @@ void TubularMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams */, OutDataVecCoord& dOut, const InDataVecCoord& dIn)
 {
-    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     // Propagation of positions from the input DOFs to the output DOFs
@@ -125,7 +125,7 @@ void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams
 template <class TIn, class TOut>
 void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
-    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     // Propagation of velocities from the input DOFs to the output DOFs
@@ -160,7 +160,7 @@ void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams
 template <class TIn, class TOut>
 void TubularMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparams */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
-    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     // useful for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
@@ -196,7 +196,7 @@ void TubularMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparam
 template <class TIn, class TOut>
 void TubularMapping<TIn, TOut>::applyJT( const core::ConstraintParams * /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn)
 {
-    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     // useful for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
