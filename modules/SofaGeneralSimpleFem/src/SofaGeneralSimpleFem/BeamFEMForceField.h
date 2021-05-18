@@ -25,14 +25,6 @@
 
 #include <SofaGeneralSimpleFem/config.h>
 
-
-namespace sofa::component::container
-{
-class StiffnessContainer;
-class PoissonContainer;
-
-} // namespace sofa::component::container
-
 namespace  sofa::component::forcefield
 {
 
@@ -181,9 +173,6 @@ public:
     bool m_updateStiffnessMatrix;
     bool m_assembling;
     double m_lastUpdatedStep;
-
-    container::StiffnessContainer* m_stiffnessContainer;
-    container::PoissonContainer* m_poissonContainer;
 
     Quat& beamQuat(int i);
 
