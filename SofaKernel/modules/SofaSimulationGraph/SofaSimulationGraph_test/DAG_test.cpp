@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/testing/Node_test.h>
+#include "Node_test.h"
 
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
@@ -62,7 +62,7 @@ struct DAG_test : public BaseTest
         TreeTraversalRepetition repeat; // repeat callbacks
 
         TestVisitor()
-            : Visitor(sofa::core::ExecParams::defaultInstance() )
+            : Visitor(sofa::core::execparams::defaultInstance() )
             , tree( false )
             , repeat( NO_REPETITION )
         {

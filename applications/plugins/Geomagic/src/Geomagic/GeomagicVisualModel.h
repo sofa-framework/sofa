@@ -24,6 +24,7 @@
 
 //Geomagic include
 #include <Geomagic/config.h>
+#include <Geomagic/GeomagicDriver.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaLoader/MeshObjLoader.h>
 
@@ -34,8 +35,7 @@
 //Visualization
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-
-#include <Geomagic/GeomagicDriver.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa 
 {

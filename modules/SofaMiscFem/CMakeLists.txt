@@ -1,72 +1,90 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaMiscFem)
+project(SofaMiscFem LANGUAGES CXX)
 
-# Dependencies
-sofa_find_package(Newmat BOTH_SCOPES)
-find_package(SofaCommon REQUIRED) # SofaSimpleFem
+set(SOFAMISCFEM_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    config.h
-    initMiscFEM.h
+    ${SOFAMISCFEM_SRC}/config.h.in
+    ${SOFAMISCFEM_SRC}/initSofaMiscFem.h
     )
 
 set(SOURCE_FILES
-    initMiscFEM.cpp
+    ${SOFAMISCFEM_SRC}/initSofaMiscFem.cpp
     )
 
 list(APPEND HEADER_FILES
-    BaseMaterial.h
-    BoyceAndArruda.h
-    Costa.h
-    FastTetrahedralCorotationalForceField.h
-    FastTetrahedralCorotationalForceField.inl
-    HyperelasticMaterial.h
-    MooneyRivlin.h
-    NeoHookean.h
-    Ogden.h
-    STVenantKirchhoff.h
-    StandardTetrahedralFEMForceField.h
-    StandardTetrahedralFEMForceField.inl
-    TetrahedralTensorMassForceField.h
-    TetrahedralTensorMassForceField.inl
-    VerondaWestman.h
+    ${SOFAMISCFEM_SRC}/BaseMaterial.h
+    ${SOFAMISCFEM_SRC}/BoyceAndArruda.h
+    ${SOFAMISCFEM_SRC}/Costa.h
+    ${SOFAMISCFEM_SRC}/FastTetrahedralCorotationalForceField.h
+    ${SOFAMISCFEM_SRC}/FastTetrahedralCorotationalForceField.inl
+    ${SOFAMISCFEM_SRC}/HyperelasticMaterial.h
+    ${SOFAMISCFEM_SRC}/MooneyRivlin.h
+    ${SOFAMISCFEM_SRC}/NeoHookean.h
+    ${SOFAMISCFEM_SRC}/Ogden.h
+    ${SOFAMISCFEM_SRC}/STVenantKirchhoff.h
+    ${SOFAMISCFEM_SRC}/StandardTetrahedralFEMForceField.h
+    ${SOFAMISCFEM_SRC}/StandardTetrahedralFEMForceField.inl
+    ${SOFAMISCFEM_SRC}/TetrahedralTensorMassForceField.h
+    ${SOFAMISCFEM_SRC}/TetrahedralTensorMassForceField.inl
+    ${SOFAMISCFEM_SRC}/VerondaWestman.h
 
-    TetrahedronHyperelasticityFEMForceField.h
-    TetrahedronHyperelasticityFEMForceField.inl
-    TriangleFEMForceField.h
-    TriangleFEMForceField.inl
+    ${SOFAMISCFEM_SRC}/TetrahedronHyperelasticityFEMForceField.h
+    ${SOFAMISCFEM_SRC}/TetrahedronHyperelasticityFEMForceField.inl
+    ${SOFAMISCFEM_SRC}/TriangleFEMForceField.h
+    ${SOFAMISCFEM_SRC}/TriangleFEMForceField.inl
     )
 list(APPEND SOURCE_FILES
-    FastTetrahedralCorotationalForceField.cpp
-    StandardTetrahedralFEMForceField.cpp
-    TetrahedralTensorMassForceField.cpp
+    ${SOFAMISCFEM_SRC}/FastTetrahedralCorotationalForceField.cpp
+    ${SOFAMISCFEM_SRC}/StandardTetrahedralFEMForceField.cpp
+    ${SOFAMISCFEM_SRC}/TetrahedralTensorMassForceField.cpp
 
-    TetrahedronHyperelasticityFEMForceField.cpp
-    TriangleFEMForceField.cpp
+    ${SOFAMISCFEM_SRC}/TetrahedronHyperelasticityFEMForceField.cpp
+    ${SOFAMISCFEM_SRC}/TriangleFEMForceField.cpp
     )
 
 if(Newmat_FOUND)
     list(APPEND HEADER_FILES
-        PlasticMaterial.h
-        TriangularAnisotropicFEMForceField.h
-        TriangularAnisotropicFEMForceField.inl
-        TriangularFEMForceField.h
-        TriangularFEMForceField.inl
+        ${SOFAMISCFEM_SRC}/PlasticMaterial.h
+        ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.h
+        ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.inl
+        ${SOFAMISCFEM_SRC}/TriangularFEMForceField.h
+        ${SOFAMISCFEM_SRC}/TriangularFEMForceField.inl
+	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.h
+	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.inl
         )
     list(APPEND SOURCE_FILES
-        PlasticMaterial.cpp
-        TriangularAnisotropicFEMForceField.cpp
-        TriangularFEMForceField.cpp
+        ${SOFAMISCFEM_SRC}/PlasticMaterial.cpp
+        ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.cpp
+        ${SOFAMISCFEM_SRC}/TriangularFEMForceField.cpp
+	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.cpp
         )
 endif()
 
+# Dependencies
+sofa_find_package(Newmat BOTH_SCOPES)
+sofa_find_package(SofaBase REQUIRED) 
+sofa_find_package(SofaSimpleFem REQUIRED) 
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaBaseMechanics)
 if(Newmat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaMisc
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
     )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAMISCFEM_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAMISCFEM_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(SofaMiscFem_test)
+endif()

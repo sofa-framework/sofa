@@ -182,7 +182,7 @@ TEST_P(PythonFactory_test, testCreateObjectDataConversion)
    this->testAttributeConversion(GetParam());
 }
 
-INSTANTIATE_TEST_CASE_P(testCreateObjectDataConversion,
+INSTANTIATE_TEST_SUITE_P(testCreateObjectDataConversion,
                         PythonFactory_test,
                         ::testing::ValuesIn(dataconversionvalues));
 }

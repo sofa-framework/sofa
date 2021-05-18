@@ -1,6 +1,11 @@
 <Node name="root" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <!-- <Simulation name="Simulation" /> -->
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager response="default" name="collision response" />
@@ -32,13 +37,15 @@
             <BarycentricMapping name="sphere mapping" />
         </Node>
     </Node>
-    <OglModel name="VisualModel" filename="mesh/dragon.obj" color="green" dz="-25.0" scale="0.3 0.3 0.3" />
-    <OglModel name="FloorV" filename="mesh/floor.obj" color="0.5 0.5 0.5" dy="-2.5" />
+    <MeshObjLoader name='myLoaderDragon' filename='mesh/dragon.obj'/>  
+    <MeshObjLoader name='myLoaderFloor' filename='mesh/floor.obj'/>  
+    <OglModel name="VisualModel" src='@myLoaderDragon' color="green" dz="-25.0" scale="0.3 0.3 0.3"/>
+    <OglModel name="FloorV" src='@myLoaderFloor' color="0.5 0.5 0.5" dy="-2.5"/>
     <!--<LightManager listening="true"/>
 	<SpotLight position="0 30 0.0001" direction="0 -1 0" />
 	<SpotLight position="0 5 15" direction="0 0 -1" />
 	<OglShadowShader/>-->
-    <OglShader name="dof" passive="true" vertFilename="shaders/depthOfField.vert" fragFilename="shaders/depthOfField.frag" />
+    <OglShader name="dof" passive="true" fileFragmentShaders="['shaders/depthOfField.frag']" fileVertexShaders="['shaders/depthOfField.vert']" />
     <OglFloatVariable id="blurIntensity" value="0.2" />
     <OglFloatVariable id="focusDistance" value="0.9" />
     <OglFloatVariable id="focusLength" value="0.05" />

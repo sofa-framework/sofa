@@ -32,7 +32,7 @@
 
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <SofaUserInteraction/TopologicalChangeManager.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa
 {
@@ -145,7 +145,7 @@ void CarvingManager::doCarve()
     if (detectionOutputs.size() == 0)
         return;
 
-    sofa::helper::ScopedAdvancedTimer("CarvingElems");
+    sofa::helper::ScopedAdvancedTimer timer("CarvingElems");
 
     // loop on the contact to get the one between the CarvingSurface and the CarvingTool collision model
     const ContactVector* contacts = NULL;
@@ -180,7 +180,7 @@ void CarvingManager::doCarve()
         }
 
         int nbelems = 0;
-        helper::vector<int> elemsToRemove;
+        helper::vector<Index> elemsToRemove;
 
         for (size_t j = 0; j < ncontacts; ++j)
         {
@@ -188,7 +188,7 @@ void CarvingManager::doCarve()
 
             if (c.value < d_carvingDistance.getValue())
             {
-                int triangleIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
+                auto triangleIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
                 elemsToRemove.push_back(triangleIdx);
             }
         }
@@ -253,7 +253,7 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
             d_active.setValue(false);
         }
     }
-    else if (simulation::CollisionEndEvent::checkEventType(event))
+    else if (sofa::simulation::AnimateEndEvent::checkEventType(event))
     {
         if (d_active.getValue()) {
             doCarve();

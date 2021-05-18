@@ -665,7 +665,7 @@ Matrix4 InertiaAlign::inverseTransform(Matrix4 transformToInvert)
         Translation(i)=transformToInvert(i,3);
     }
 
-    bool bS = invertMatrix(rotationInverted,rotationToInvert);
+    bool bS = defaulttype::invertMatrix(rotationInverted,rotationToInvert);
 
     sout << "Translation = " << Translation;
     if(!bS)

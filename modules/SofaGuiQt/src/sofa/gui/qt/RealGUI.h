@@ -19,17 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_VIEWER_REALGUI_H
-#define SOFA_GUI_VIEWER_REALGUI_H
+#pragma once
+#include <sofa/gui/qt/config.h>
 
 #include <string>
 #include <vector>
 
-#include <SofaGui/config.h>
 #include <ui_GUI.h>
-#include <sofa/gui/qt/config.h>
 #include "GraphListenerQListView.h"
 #include "QMenuFilesRecentlyOpened.h"
+#include "AboutSOFADialog.h"
 #include "PickHandlerCallBacks.h"
 
 #include <sofa/gui/BaseGUI.h>
@@ -54,25 +53,7 @@
 class WDoubleLineEdit;
 class QDragEnterEvent;
 
-namespace sofa
-{
-#ifdef SOFA_PML
-namespace filemanager
-{
-namespace pml
-{
-class PMLReader;
-class LMLReader;
-}
-}
-#endif
-
-namespace gui
-{
-class CallBackPicker;
-class BaseViewer;
-
-namespace qt
+namespace sofa::gui::qt
 {
 #if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
 class DocBrowser ;
@@ -406,6 +387,7 @@ public slots:
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
     virtual void showDocBrowser() ;
+    virtual void showAbout() ;
     virtual void showPluginManager();
     virtual void showMouseManager();
     virtual void showVideoRecorderManager();
@@ -481,10 +463,4 @@ protected:
     GraphListenerQListView* listener;
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_GUI_VIEWER_REALGUI_H
+} //namespace sofa::gui::qt

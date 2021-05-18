@@ -22,23 +22,19 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 #define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 
-
+#include <sofa/core/fwd.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/StateMask.h>
-
-
+#include <sofa/defaulttype/fwd.h> /// For BaseMatrix
 
 namespace sofa
 {
 
 namespace core
 {
-
-class ConstraintParams;
 
 namespace behavior
 {
@@ -74,7 +70,9 @@ class SOFA_CORE_API BaseMechanicalState : public virtual BaseState
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState)
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState);
+
+    using Index = sofa::Index;
 protected:
     BaseMechanicalState();
 
@@ -86,9 +84,9 @@ private:
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
     /// @{
-    virtual SReal getPX(size_t /*i*/) const { return 0.0; }
-    virtual SReal getPY(size_t /*i*/) const { return 0.0; }
-    virtual SReal getPZ(size_t /*i*/) const { return 0.0; }
+    virtual SReal getPX(Index /*i*/) const { return 0.0; }
+    virtual SReal getPY(Index /*i*/) const { return 0.0; }
+    virtual SReal getPZ(Index /*i*/) const { return 0.0; }
 
     /// @}
 
@@ -173,7 +171,7 @@ public:
     virtual SReal vMax(const ExecParams* params, ConstVecId a) = 0;
 
     /// Get vector size
-    virtual size_t vSize( const ExecParams* params, ConstVecId v ) = 0;
+    virtual Size vSize( const ExecParams* params, ConstVecId v ) = 0;
 
 
     /// Apply a threshold (lower bound) to all entries
@@ -256,11 +254,11 @@ public:
     /// @{
 
     /// Handle state Changes
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleStateChange() {}
 
     /// Handle state Changes from a given Topology
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleStateChange(core::topology::Topology* t);
 
     ///@}
@@ -271,8 +269,8 @@ public:
     /// Write current state to the given output stream
     virtual void writeState( std::ostream& out );
 
-    virtual size_t getCoordDimension() const { return 0; }
-    virtual size_t getDerivDimension() const { return 0; }
+    virtual Size getCoordDimension() const { return 0; }
+    virtual Size getDerivDimension() const { return 0; }
 
     /// Translate the current state
     virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz)=0;
@@ -325,12 +323,12 @@ public:
     /// \brief Get the number of scalars per Deriv value, as necessary to build mechanical matrices and vectors.
     ///
     /// If not all Derivs have the same number of scalars, then return 1 here and overload the getMatrixSize() method.
-    virtual size_t getMatrixBlockSize() const { return getDerivDimension(); }
+    virtual Size getMatrixBlockSize() const { return getDerivDimension(); }
 
     /// \brief Get the number of rows necessary to build mechanical matrices and vectors.
     ///
     /// In most cases this is equivalent to getSize() * getMatrixBlockSize().
-    virtual size_t getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
+    virtual Size getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
 
     /// \brief Copy data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns

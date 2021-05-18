@@ -26,15 +26,11 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <sofa/helper/logging/Messaging.h>
 
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
 
 #include <QApplication>
 
@@ -50,18 +46,14 @@ using sofa::helper::Utils;
 
 int main(int argc, char** argv)
 {
-    sofa::simulation::tree::init();
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
+    sofa::component::initSofaComponentAll();
 
     // TODO: create additionnal handlers depending on command-line parameters
 
     QApplication* application = new QApplication(argc, argv);
     (void)application;
 
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
@@ -87,6 +79,5 @@ int main(int argc, char** argv)
     if (argc <= 1 ) sofaModeler->newTab();
 
     int appReturnCode = application->exec();
-    sofa::simulation::tree::cleanup();
     return appReturnCode;
 }

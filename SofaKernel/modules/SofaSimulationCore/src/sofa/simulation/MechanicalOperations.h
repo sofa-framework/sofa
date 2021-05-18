@@ -25,8 +25,6 @@
 #include <sofa/simulation/config.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/MechanicalParams.h>
-#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/simulation/VisitorExecuteFunc.h>
 
@@ -126,7 +124,7 @@ public:
     /// @{
 
     // BaseMatrix & BaseVector Computations
-    void getMatrixDimension(unsigned int * const, unsigned int * const, sofa::core::behavior::MultiMatrixAccessor* matrix = nullptr);
+    void getMatrixDimension(sofa::Size* const, sofa::Size* const, sofa::core::behavior::MultiMatrixAccessor* matrix = nullptr);
     void getMatrixDimension(sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
         getMatrixDimension(nullptr, nullptr, matrix);

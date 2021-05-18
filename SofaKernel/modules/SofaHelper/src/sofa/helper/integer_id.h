@@ -25,6 +25,9 @@
 #include <sofa/helper/config.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
+#include <sofa/helper/BackTrace.h>
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Factory.h>
 #include <limits>
 
 namespace sofa
@@ -40,16 +43,15 @@ class integer_id
 {
 public:
     typedef integer_id<Name, Index, DefaultId> Id;
-    typedef Index index_type;
     typedef int sindex_type;
 protected:
-    index_type index;
+    Index index;
 public:
     static const char* getName() { return (*Name)(); }
-    static index_type getDefaultId() { return DefaultId; }
+    static Index getDefaultId() { return DefaultId; }
 
     integer_id() : index(DefaultId) {}
-    explicit integer_id(index_type i) : index(i) {}
+    explicit integer_id(Index i) : index(i) {}
     integer_id(const Id& i) : index(i.index) {}
 
     Id& operator=(const Id& i)
@@ -58,14 +60,14 @@ public:
         return *this;
     }
 
-    index_type getId() const { return index; }
-    void setId(index_type i) { index = i; }
+    Index getId() const { return index; }
+    void setId(Index i) { index = i; }
 
     bool isValid() const
     {
         return index != DefaultId;
     }
-    bool isValid(index_type size) const
+    bool isValid(Index size) const
     {
         return (unsigned)index < (unsigned)size;
     }
@@ -75,7 +77,7 @@ public:
         return index == a.index;
     }
 
-    bool operator==(const index_type& i) const
+    bool operator==(const Index& i) const
     {
         return index == i;
     }
@@ -85,7 +87,7 @@ public:
         return index != a.index;
     }
 
-    bool operator!=(const index_type& i) const
+    bool operator!=(const Index& i) const
     {
         return index != i;
     }
@@ -95,7 +97,7 @@ public:
         return index < a.index;
     }
 
-    bool operator<(const index_type& i) const
+    bool operator<(const Index& i) const
     {
         return index < i;
     }
@@ -105,7 +107,7 @@ public:
         return index <= a.index;
     }
 
-    bool operator<=(const index_type& i) const
+    bool operator<=(const Index& i) const
     {
         return index <= i;
     }
@@ -115,7 +117,7 @@ public:
         return index > a.index;
     }
 
-    bool operator>(const index_type& i) const
+    bool operator>(const Index& i) const
     {
         return index > i;
     }
@@ -125,7 +127,7 @@ public:
         return index >= a.index;
     }
 
-    bool operator>=(const index_type& i) const
+    bool operator>=(const Index& i) const
     {
         return index >= i;
     }
@@ -196,7 +198,7 @@ public:
     /// Input stream
     inline friend std::istream& operator>> ( std::istream& in, Id& i )
     {
-        index_type v = i.getDefaultId();
+        Index v = i.getDefaultId();
         if (in >> v)
             i.setId(v);
         return in;
@@ -204,7 +206,12 @@ public:
 
 };
 
-void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type, const char* tindex);
+void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type, const char* tindex)
+{
+    msg_error("vector") << "in vector<" << gettypename(type) << ", integer_id<" << tindex << "> > " << std::hex << (long)vec << std::dec << " size " << size << " : invalid index " << (int)i;
+    BackTrace::dump();
+    assert(i < size);
+}
 
 template <class T, class TIndex, bool CheckIndices =
 #ifdef SOFA_VECTOR_ACCESS_FAILURE
@@ -218,9 +225,9 @@ class vector_id : public vector<T, MemoryManager>
 public:
     typedef vector<T, MemoryManager> Inherit;
     typedef T value_type;
-    typedef TIndex index_type;
-    typedef index_type ID;
-    typedef typename Inherit::size_type size_type;
+    typedef TIndex Index;
+    typedef Index ID;
+    typedef typename Inherit::Size Size;
     typedef typename Inherit::reference reference;
     typedef typename Inherit::const_reference const_reference;
     typedef typename Inherit::iterator iterator;
@@ -235,13 +242,13 @@ public:
     /// Basic constructor
     vector_id() : Inherit() {}
     /// Constructor
-    vector_id(size_type n, const T& value): Inherit(n,value) {}
+    vector_id(Size n, const T& value): Inherit(n,value) {}
     /// Constructor
     vector_id(int n, const T& value): Inherit(n,value) {}
     /// Constructor
     vector_id(long n, const T& value): Inherit(n,value) {}
     /// Constructor
-    explicit vector_id(size_type n): Inherit(n) {}
+    explicit vector_id(Size n): Inherit(n) {}
     /// Constructor
     vector_id(const std::vector<T>& x): Inherit(x) {}
 
@@ -254,8 +261,8 @@ public:
     vector_id(const_iterator first, const_iterator last): Inherit(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
-    /// Read/write random access, with explicit index_type
-    reference at(index_type n)
+    /// Read/write random access, with explicit Index
+    reference at(Index n)
     {
         if (CheckIndices)
         {
@@ -265,8 +272,8 @@ public:
         return *(this->begin() + n.getId());
     }
 
-    /// Read-only random access, with explicit index_type
-    const_reference at(index_type n) const
+    /// Read-only random access, with explicit Index
+    const_reference at(Index n) const
     {
         if (CheckIndices)
         {
@@ -276,48 +283,48 @@ public:
         return *(this->begin() + n.getId());
     }
 
-    /// Read/write random access, with explicit index_type
-    reference operator()(index_type n)
+    /// Read/write random access, with explicit Index
+    reference operator()(Index n)
     {
         return at(n);
     }
 
-    /// Read-only random access, with explicit index_type
-    const_reference operator()(index_type n) const
+    /// Read-only random access, with explicit Index
+    const_reference operator()(Index n) const
     {
         return at(n);
     }
 
-    /// Read/write random access, with explicit index_type
-    reference operator[](index_type n)
+    /// Read/write random access, with explicit Index
+    reference operator[](Index n)
     {
         return at(n);
     }
 
     /// Read-only random access
-    const_reference operator[](index_type n) const
+    const_reference operator[](Index n) const
     {
         return at(n);
     }
 
-    index_type push_back(const_reference v)
+    Index push_back(const_reference v)
     {
-        index_type i(this->size());
+        Index i(this->size());
         Inherit::push_back(v);
         return i;
     }
 protected:
     
-    /// Read/write random access with regular index type, protected to force use of explicit index_type
-    reference operator[](size_type n)
+    /// Read/write random access with regular index type, protected to force use of explicit Index
+    reference operator[](Size n)
     {
-        return at(index_type(n));
+        return at(Index(n));
     }
     
-    /// Read-only random access with regular index type, protected to force use of explicit index_type
-    const_reference operator[](size_type n) const
+    /// Read-only random access with regular index type, protected to force use of explicit Index
+    const_reference operator[](Size n) const
     {
-        return at(index_type(n));
+        return at(Index(n));
     }
 
 };
@@ -329,8 +336,8 @@ class ReadAccessorVectorId
 {
 public:
     typedef T container_type;
-    typedef typename container_type::index_type index_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Index Index;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -347,9 +354,9 @@ public:
     const container_type& ref() const { return vref; }
 
     bool empty() const { return vref.empty(); }
-    size_type size() const { return vref.size(); }
-    const_reference operator[](index_type i) const { return vref[i]; }
-    const_reference operator()(index_type i) const { return vref(i); }
+    Size size() const { return vref.size(); }
+    const_reference operator[](Index i) const { return vref[i]; }
+    const_reference operator()(Index i) const { return vref(i); }
 
     const_iterator begin() const { return vref.begin(); }
     const_iterator end() const { return vref.end(); }
@@ -367,8 +374,8 @@ class WriteAccessorVectorId
 {
 public:
     typedef T container_type;
-    typedef typename container_type::index_type index_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Index Index;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -386,12 +393,12 @@ public:
     container_type& wref() { return vref; }
 
     bool empty() const { return vref.empty(); }
-    size_type size() const { return vref.size(); }
+    Size size() const { return vref.size(); }
 
-    const_reference operator[](index_type i) const { return vref[i]; }
-    const_reference operator()(index_type i) const { return vref(i); }
-    reference operator[](index_type i) { return vref[i]; }
-    reference operator()(index_type i) { return vref(i); }
+    const_reference operator[](Index i) const { return vref[i]; }
+    const_reference operator()(Index i) const { return vref(i); }
+    reference operator[](Index i) { return vref[i]; }
+    reference operator()(Index i) { return vref(i); }
 
     const_iterator begin() const { return vref.begin(); }
     iterator begin() { return vref.begin(); }
@@ -399,9 +406,9 @@ public:
     iterator end() { return vref.end(); }
 
     void clear() { vref.clear(); }
-    void resize(size_type s, bool /*init*/ = true) { vref.resize(s); }
-    void reserve(size_type s) { vref.reserve(s); }
-    index_type push_back(const_reference v) { return vref.push_back(v); }
+    void resize(Size s, bool /*init*/ = true) { vref.resize(s); }
+    void reserve(Size s) { vref.reserve(s); }
+    Index push_back(const_reference v) { return vref.push_back(v); }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessorVectorId<T>& vec )
     {

@@ -83,7 +83,7 @@ void ParticleSource<DataTypes>::init()
     if (_topology != nullptr)
     {
         m_pointHandler = new PSPointHandler(this, &m_lastparticles);
-        m_lastparticles.createTopologicalEngine(_topology, m_pointHandler);
+        m_lastparticles.createTopologyHandler(_topology, m_pointHandler);
         m_lastparticles.registerTopologicalData();
     }
 
@@ -150,7 +150,7 @@ void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalPara
     VecCoord& x = *xData.beginEdit();
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
     helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;    
-    msg_info() << "projectPosition: " << _lastparticles;
+    msg_info() << "projectPosition: " << _lastparticles.ref();
     for (unsigned int s = 0; s < _lastparticles.size(); s++)
     {
         x[_lastparticles[s]] = m_lastpos[s];
@@ -257,7 +257,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
                     p[c] += d_radius.getValue()[c] * rrand();
                
                 m_lastpos.push_back(p);
-                _lastparticles.push_back((unsigned int)(i0 + newX.size()));
+                _lastparticles.push_back((Index)(i0 + newX.size()));
                 newX.push_back(p + v0 * (time - m_lastTime)); // account for particle initial motion
                 newV.push_back(v0);
             }

@@ -27,7 +27,7 @@
 #include <limits>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/GLSLShader.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <SofaOpenglVisual/OglAttribute.inl>
@@ -489,7 +489,7 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
             if (maxBBox[1] < v[1]) maxBBox[1] = v[1];
             if (maxBBox[2] < v[2]) maxBBox[2] = v[2];
         }
-        this->f_bbox.setValue(params, sofa::defaulttype::TBoundingBox<SReal>(minBBox, maxBBox));
+        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox, maxBBox));
     }
 }
 

@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_GLPICKHANDLER_H
-#define SOFA_GUI_GLPICKHANDLER_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 #include <sofa/gui/OperationFactory.h>
 
@@ -29,25 +27,21 @@
 
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/gl/FrameBufferObject.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace collision
+namespace sofa::component::collision
 {
     class ComponentMouseInteraction;
     class RayCollisionModel;
-}
-namespace configurationsetting
+} // namespace sofa::component::collision
+
+namespace sofa::component::configurationsetting
 {
     class MouseButtonSetting;
-}
-}
+} // sofa::component::configurationsetting
 
 
-namespace gui
+namespace sofa::gui
 {
 
 class SOFA_SOFAGUIQT_API GLPickHandler : public PickHandler
@@ -73,11 +67,9 @@ public:
 
 protected:
     bool _fboAllocated;
-    sofa::helper::gl::FrameBufferObject _fbo;
-    sofa::helper::gl::fboParameters     _fboParams;
+    gl::FrameBufferObject _fbo;
+    gl::fboParameters     _fboParams;
 
 };
-}
-}
 
-#endif
+} // namespace sofa::gui

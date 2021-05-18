@@ -42,6 +42,15 @@ template class SOFA_SOFADENSESOLVER_API MatrixLinearSolver< NewMatSymmetricBandM
 } // namespace linearsolver
 
 
+void initSofaDenseSolver()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
 extern "C" {
     SOFA_SOFADENSESOLVER_API void initExternalModule();
     SOFA_SOFADENSESOLVER_API const char* getModuleName();
@@ -53,11 +62,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    initSofaDenseSolver();
 }
 
 const char* getModuleName()

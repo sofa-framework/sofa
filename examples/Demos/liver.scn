@@ -1,7 +1,13 @@
 <?xml version="1.0" ?>
 <Node name="lroot" gravity="0 -9.81 0" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaLoader'/>
+    <RequiredPlugin name='SofaGeneralSimpleFem'/>
+	<RequiredPlugin pluginName='SofaBoundaryCondition'/>
+	<RequiredPlugin pluginName='SofaGeneralLoader'/>
+
+	<DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
     <DiscreteIntersection/>

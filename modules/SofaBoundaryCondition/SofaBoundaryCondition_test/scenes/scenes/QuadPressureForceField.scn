@@ -6,7 +6,6 @@
 
 <QuadSetTopologyContainer name="QuadContainer" quads="@quad.quads"/>
 <QuadSetTopologyModifier />
-<QuadSetTopologyAlgorithms template="Vec3d" />
 <QuadSetGeometryAlgorithms template="Vec3d" />
 <!--<QuadPressureForceField normal="0 0 1" dmin="-0.01" dmax="0.01" showForces="1" pressure="0 0 0.2"/>-->
 

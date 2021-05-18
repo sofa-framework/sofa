@@ -2,6 +2,7 @@
 #define SOFA_COMPONENT_MAPPING_ASSEMBLEDMULTIMAPPING_H
 
 #include <sofa/core/MultiMapping.h>
+#include <sofa/core/MechanicalParams.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <Compliant/config.h>
@@ -65,10 +66,10 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
     void update() {
         this->reinit();
-        Inherit::apply(core::MechanicalParams::defaultInstance() , core::VecCoordId::position(), core::ConstVecCoordId::position());
-        Inherit::applyJ(core::MechanicalParams::defaultInstance() , core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+        Inherit::apply(core::mechanicalparams::defaultInstance() , core::VecCoordId::position(), core::ConstVecCoordId::position());
+        Inherit::applyJ(core::mechanicalparams::defaultInstance() , core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         if (this->f_applyRestPosition.getValue())
-            Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+            Inherit::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
     }
 
     typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
@@ -174,7 +175,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     {
         if( geometric.compressedMatrix.nonZeros() )
         {
-            const SReal& kfactor = mparams->kFactor();
+            const SReal& kfactor = sofa::core::mechanicalparams::kFactor(mparams);
             unsigned size = this->getFromModels().size();
 
             // TODO not optimized but at least it is implemented

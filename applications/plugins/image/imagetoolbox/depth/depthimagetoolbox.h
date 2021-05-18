@@ -461,7 +461,7 @@ public:
 
             for(unsigned int j=0;j<4;j++)
             {
-                unsigned int &p = quad[j];
+                auto &p = quad[j];
 
                 it=mapEdge.find(p);
                 if(it==mapEdge.end())

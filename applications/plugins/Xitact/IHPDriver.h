@@ -37,7 +37,6 @@
 #include <sofa/simulation/Node.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaRigid/RigidMapping.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include "PaceMaker.h"

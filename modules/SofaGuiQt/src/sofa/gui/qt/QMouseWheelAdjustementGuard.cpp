@@ -23,13 +23,7 @@
 #include <QWidget>
 #include "QMouseWheelAdjustementGuard.h"
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 QMouseWheelAdjustmentGuard::QMouseWheelAdjustmentGuard(QObject *parent) : QObject(parent)
@@ -48,6 +42,4 @@ bool QMouseWheelAdjustmentGuard::eventFilter(QObject *o, QEvent *e)
     return QObject::eventFilter(o, e);
 }
 
-} /// namespace qt
-} /// namespace gui
-} /// namespace sofa
+} //namespace sofa::gui::qt

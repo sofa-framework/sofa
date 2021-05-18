@@ -64,7 +64,7 @@ extern template class SOFA_Flexible_API MechanicalObject<defaulttype::TYPEABSTRA
 namespace mass
 {
 
-template<int N, typename Real>
+template<std::size_t N, typename Real>
 class AddMToMatrixFunctor< typename defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::Deriv, defaulttype::DeformableFrameMass<N,defaulttype::StdTYPEABSTRACTNAMETypes<N,Real>::deriv_total_size,Real> >
 {
 public:

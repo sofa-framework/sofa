@@ -86,7 +86,7 @@ using namespace gpu::cuda;
 
         VecDeriv& df = *d_df.beginEdit();
         const VecDeriv& dx = d_dx.getValue();
-        Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+        Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
         int nbEdges=m_topology->getNbEdges();
         int nbPoints=m_topology->getNbPoints();
@@ -169,7 +169,7 @@ using namespace gpu::cuda;
     {
         VecDeriv& df = *d_df.beginEdit();
         const VecDeriv& dx = d_dx.getValue();
-        Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+        Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
         int nbEdges=m_topology->getNbEdges();
         int nbPoints=m_topology->getNbPoints();

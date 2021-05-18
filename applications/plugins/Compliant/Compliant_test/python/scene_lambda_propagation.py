@@ -48,6 +48,8 @@ def createScene(node):
 
     node.gravity = '0 -1 0'
     
+    node.createObject('RequiredPlugin', pluginName="SofaLoader")
+
     num = node.createObject('SequentialSolver',
                             name = 'num',
                             iterations = 200,

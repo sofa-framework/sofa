@@ -67,6 +67,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
         "<?xml version='1.0'?>"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
+        "       <RequiredPlugin name='SofaLoader' />                       "
         "       <MeshObjLoader name='loader' filename='mesh/cube.obj'/>    "
         "       <Mesh name='topology' src='@loader'/>                      "
         "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
@@ -161,7 +162,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
            </Node>
         </Node>
 
-        m_root->init(sofa::core::ExecParams::defaultInstance());
+        m_root->init(sofa::core::execparams::defaultInstance());
 
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("indices")->getValueString(),"0");
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("indicesOut")->getValueString(),"1");
@@ -171,7 +172,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     /// Test isPointInMesh computation with a simple example
     void isPointInMeshTest()
     {
-        m_root->init(sofa::core::ExecParams::defaultInstance());
+        m_root->init(sofa::core::execparams::defaultInstance());
 
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("indices")->getValueString(),"0 3 4 5 7");
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("indicesOut")->getValueString(),"1 2 6");
@@ -180,7 +181,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     /// Test isEdgeInMesh computation with a simple example
     void isEdgeInMeshTest()
     {
-        m_root->init(sofa::core::ExecParams::defaultInstance());
+        m_root->init(sofa::core::execparams::defaultInstance());
 
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgeIndices")->getValueString(),"0 1 2 3 4 15");
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgeOutIndices")->getValueString(),"5 6 7 8 9 10 11 12 13 14 16 17");
@@ -192,7 +193,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     /// Test isTriangleInMesh computation with a simple example
     void isTriangleInMeshTest()
     {
-        m_root->init(sofa::core::ExecParams::defaultInstance());
+        m_root->init(sofa::core::execparams::defaultInstance());
 
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("triangleIndices")->getValueString(), "0 1 2 3 6 7 8 9 10 11");
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("triangleOutIndices")->getValueString(),"4 5");
@@ -203,7 +204,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     /// Test isTetrahedraInMesh computation with a simple example
     void isTetrahedraInMeshTest()
     {
-        m_root->init(sofa::core::ExecParams::defaultInstance());
+        m_root->init(sofa::core::execparams::defaultInstance());
 
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedronIndices")->getValueString(),"");
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedronOutIndices")->getValueString(),"");
@@ -212,10 +213,10 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     }
 };
 
-using testing::Types;
+using ::testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(MeshROI_test, DataTypes);
+TYPED_TEST_SUITE(MeshROI_test, DataTypes);
 
 TYPED_TEST(MeshROI_test, attributesTests) {
     EXPECT_MSG_NOEMIT(Error) ;

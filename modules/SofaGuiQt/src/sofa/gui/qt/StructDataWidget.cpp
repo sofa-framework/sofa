@@ -24,13 +24,7 @@
 #include <sofa/helper/Factory.inl>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 using sofa::helper::Creator;
@@ -46,8 +40,4 @@ Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<3,double> > > DWClass_Ri
 Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,float> > > DWClass_RigidMass3f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,double> > > DWClass_RigidMass3d("default",true);
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

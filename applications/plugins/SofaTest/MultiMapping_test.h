@@ -27,7 +27,6 @@
 #include <sstream>
 
 #include "Sofa_test.h"
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -38,9 +37,6 @@
 #include <sofa/core/MultiMapping.h>
 
 namespace sofa {
-
-typedef std::size_t Index;
-
 
 /** @brief Base class for the MultiMapping tests, directly adapted from Mapping_test.
  * @sa Mapping_test
@@ -214,7 +210,8 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 //            cout<<"random child forces  fc[" << i <<"] = "<<fc[i]<<endl;
         }
         for(Index p=0; p<Np.size(); p++) {
-            fp2[p]=InVecDeriv(Np[p], InDeriv() ); // null vector of appropriate size
+            fp2[p].resize(Np[p]);
+            std::fill(fp2[p].begin(), fp2[p].end(), InDeriv() ); // null vector of appropriate size
             WriteInVecDeriv fin = inDofs[p]->writeForces();
             copyToData( fin, fp2[p] );  // reset parent forces before accumulating child forces
         }
@@ -252,7 +249,9 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         for( Index p=0; p<Np.size(); p++ ) {
             WriteInVecDeriv dxin = inDofs[p]->writeDx();
             copyToData( dxin, vp[p] );
-            dfp[p] = InVecDeriv(Np[p], InDeriv() );
+            dfp[p].resize(Np[p]);
+            std::fill(dfp[p].begin(), dfp[p].end(), InDeriv()); // null vector of appropriate size
+
             WriteInVecDeriv fin = inDofs[p]->writeForces();
             copyToData( fin, dfp[p] );
         }
@@ -274,9 +273,12 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         // ================ test applyJT()
-        helper::vector<InVecDeriv> jfc(Np.size());
+        helper::vector<InVecDeriv> jfc;
+        jfc.resize(Np.size());
         for( Index p=0; p<Np.size(); p++ ) {
-            jfc[p] = InVecDeriv( Np[p],InDeriv());
+            jfc[p].resize(Np[p]);
+            std::fill(jfc[p].begin(), jfc[p].end(), InDeriv());
+
             EigenSparseMatrix* JJ = dynamic_cast<EigenSparseMatrix*>((*J)[p]);
             JJ->addMultTranspose(jfc[p],fc);
             if( this->vectorMaxDiff(jfc[p],fp[p])>this->epsilon()*errorMax ){

@@ -24,7 +24,7 @@
 
 #include "CudaUniformMass.h"
 #include <SofaBaseMechanics/UniformMass.inl>
-#include <sofa/helper/gl/Axis.h>
+#include <sofa/gl/Axis.h>
 
 namespace sofa
 {
@@ -211,7 +211,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,flo
 }
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> >::getElementMass(unsigned int ) const
+SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> >::getElementMass(sofa::Index) const
 {
     return (SReal)(d_vertexMass.getValue().mass);
 }
@@ -219,7 +219,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,flo
 template <>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+#if SOFACUDA_HAVE_SOFA_GL == 1
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -241,9 +241,9 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >:
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
     }
-#endif // SOFA_NO_OPENGL
+#endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
 
@@ -380,7 +380,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,dou
 }
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> >::getElementMass(unsigned int ) const
+SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> >::getElementMass(sofa::Index) const
 {
     return (SReal)(d_vertexMass.getValue().mass);
 }
@@ -409,7 +409,7 @@ void UniformMass<gpu::cuda::CudaRigid3dTypes, sofa::defaulttype::RigidMass<3,dou
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+        sofa::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
     }
 }
 

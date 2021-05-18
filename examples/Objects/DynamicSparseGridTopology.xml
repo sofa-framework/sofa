@@ -1,7 +1,6 @@
 <Node name="Group"> 
   <DynamicSparseGridTopologyContainer  name="Container" src=""/>
   <DynamicSparseGridTopologyModifier   name="Modifier" />
-  <DynamicSparseGridTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
   <DynamicSparseGridGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
 </Node>
 <!-- 

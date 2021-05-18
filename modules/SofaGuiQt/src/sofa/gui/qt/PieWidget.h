@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_PIEWIDGET_H
-#define SOFA_PIEWIDGET_H
-
+#pragma once
 #include <QWidget>
 #include <QPainter>
 #include <QTableWidget>
@@ -31,13 +29,7 @@
 #include <vector>
 #include <sofa/defaulttype/Vec.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 struct  dataTime
@@ -93,7 +85,4 @@ protected:
 };
 
 
-}
-}
-}
-#endif
+} // namespace sofa::gui::qt

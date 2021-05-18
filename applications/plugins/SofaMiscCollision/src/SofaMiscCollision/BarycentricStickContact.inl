@@ -225,7 +225,6 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     {
         if (parent!=nullptr)
         {
-            //sout << "Removing contact response from "<<parent->getName()<<sendl;
             parent->removeObject(this);
             parent->removeObject(ff);
         }

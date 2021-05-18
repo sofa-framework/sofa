@@ -33,7 +33,10 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/Texture.h>
+
+#if IMAGE_HAVE_SOFA_GL == 1
+#include <sofa/gl/Texture.h>
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
 namespace sofa
 {
@@ -108,9 +111,9 @@ public:
         , texOffset(initData(&texOffset,TexCoord(0.0,0.0),"texOffset","texture offsets (in [0,1])"))
         , triangles(initData(&triangles,SeqTriangles(),"triangles","output triangles"))
         , time((unsigned int)0)
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         , texture(NULL)
-#endif /* SOFA_NO_OPENGL */
+#endif // IMAGE_HAVE_SOFA_GL == 1
     {
         image.setReadOnly(true);
         transform.setReadOnly(true);
@@ -119,9 +122,9 @@ public:
 
     ~DepthMapToMeshEngine() override
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         if(texture) delete texture;
-#endif /* SOFA_NO_OPENGL */
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
     void init() override
@@ -139,10 +142,10 @@ public:
 protected:
 
     unsigned int time;
-#ifndef SOFA_NO_OPENGL
-    helper::gl::Texture* texture;
+#if IMAGE_HAVE_SOFA_GL == 1
+    sofa::gl::Texture* texture;
     static const unsigned texture_res=256;
-#endif /* SOFA_NO_OPENGL */
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
     void doUpdate() override
     {
@@ -159,7 +162,7 @@ protected:
         const cimg_library::CImg<T>& img = in->getCImg(this->time);
         Real f = this->depthFactor.getValue();
 
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         // update texture
         if(texture && !inTex->isEmpty())
         {
@@ -174,7 +177,7 @@ protected:
             }
             texture->update();
         }
-#endif /* SOFA_NO_OPENGL */
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
         // update points
         unsigned int count=0,p1,p2,p3;
@@ -232,12 +235,11 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
-
+#if IMAGE_HAVE_SOFA_GL == 1
         // need a valid opengl context to initialize an opengl texture, a context is not always bound during the init phase so we init the texture here
         if(!texture)
         {
-            texture = new helper::gl::Texture(new helper::io::Image,false);
+            texture = new sofa::gl::Texture(new helper::io::Image,false);
             texture->getImage()->init(texture_res,texture_res,32);
             texture->init();
 
@@ -247,26 +249,24 @@ protected:
 
         if (!vparams->displayFlags().getShowVisualModels()) return;
 
+        vparams->drawTool()->saveLastState();
+
         raPositions pos(this->position);
         raTexCoords tc(this->texCoord);
         raTriangles tri(this->triangles);
-        raImage in(this->image);
         raTexture inTex(this->texImage);
 
-        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
+        vparams->drawTool()->setMaterial(sofa::helper::types::RGBAColor{0.5,0.5,0.5,0.});
 
-        float color[]= {0.5,0.5,0.5,0.}, specular[]= {0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
-        glColor4fv(color);
+        vparams->drawTool()->enableLighting();
 
-        glEnable( GL_LIGHTING);
-
-        if(!inTex->isEmpty()) { glEnable( GL_TEXTURE_2D ); texture->bind();}
+        if(!inTex->isEmpty()) {
+            glEnable( GL_TEXTURE_2D );
+            texture->bind();
+        }
 
         glBegin(GL_TRIANGLES);
-        for (unsigned int i=0; i<tri.size(); ++i)
+        for (std::size_t i=0; i<tri.size(); ++i)
         {
             const defaulttype::Vec<3,Real>& a = pos[ tri[i][0] ];
             const defaulttype::Vec<3,Real>& b = pos[ tri[i][1] ];
@@ -278,12 +278,14 @@ protected:
             glTexCoord2d(tc[tri[i][1]][0],tc[tri[i][1]][1]); glVertex3d(b[0],b[1],b[2]);
             glTexCoord2d(tc[tri[i][2]][0],tc[tri[i][2]][1]); glVertex3d(c[0],c[1],c[2]);
         }
-        glEnd();
 
-        if(!inTex->isEmpty()) { texture->unbind(); 	glDisable( GL_TEXTURE_2D ); }
+        if(!inTex->isEmpty()) {
+            texture->unbind();
+            glDisable( GL_TEXTURE_2D );
+        }
 
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 };
 

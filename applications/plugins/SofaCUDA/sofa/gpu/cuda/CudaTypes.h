@@ -22,7 +22,6 @@
 #ifndef SOFA_GPU_CUDA_CUDATYPES_H
 #define SOFA_GPU_CUDA_CUDATYPES_H
 
-//#include "host_runtime.h" // CUDA
 #include "CudaCommon.h"
 #include "mycuda.h"
 #include <sofa/helper/system/gl.h>
@@ -30,11 +29,9 @@
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
-//#include <sofa/helper/BackTrace.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
-//#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <iostream>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
 #include <sofa/helper/vector_device.h>
@@ -48,17 +45,30 @@ namespace gpu
 namespace cuda
 {
 
+template<typename T>
+struct DataTypeInfoManager
+{
+    template<class T2> struct rebind
+    {
+        typedef DataTypeInfoManager<T2> other;
+    };
+
+    static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
+    static const bool SimpleCopy = sofa::defaulttype::DataTypeInfo<T>::SimpleCopy;
+};
+
 template<class T>
-class CudaVector : public helper::vector<T,CudaMemoryManager<T> >
+class CudaVector : public helper::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
 {
 public :
-    typedef size_t size_type;
+    using Inherit = helper::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
+    typedef size_t Size;
 
-    CudaVector() : helper::vector<T,CudaMemoryManager<T> >() {}
+    CudaVector() : Inherit() {}
 
-    CudaVector(size_type n) : helper::vector<T,CudaMemoryManager<T> >(n) {}
+    CudaVector(Size n) : Inherit(n) {}
 
-    CudaVector(const helper::vector<T,CudaMemoryManager< T > >& v) : helper::vector<T,CudaMemoryManager<T> >(v) {}
+    CudaVector(const Inherit& v) : Inherit(v) {}
 
 };
 
@@ -706,11 +716,11 @@ namespace helper
 {
 
 template<class T>
-class ReadAccessor< gpu::cuda::CudaVector<T> >
+class ReadAccessorVector< gpu::cuda::CudaVector<T>>
 {
 public:
     typedef gpu::cuda::CudaVector<T> container_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -721,31 +731,26 @@ protected:
     const container_type& vref;
     const value_type* data;
 public:
-    ReadAccessor(const container_type& container) : vref(container), data(container.hostRead()) {}
-    ~ReadAccessor() {}
+    ReadAccessorVector(const container_type& container) : vref(container), data(container.hostRead()) {}
+    ~ReadAccessorVector() {}
 
-    size_type size() const { return vref.size(); }
+    Size size() const { return vref.size(); }
     bool empty() const { return vref.empty(); }
 
     const container_type& ref() const { return vref; }
 
-    const_reference operator[](size_type i) const { return data[i]; }
+    const_reference operator[](Size i) const { return data[i]; }
 
     const_iterator begin() const { return data; }
     const_iterator end() const { return data+vref.size(); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<container_type>& vec )
-    {
-        return os << vec.vref;
-    }
 };
 
 template<class T>
-class WriteAccessor< gpu::cuda::CudaVector<T> >
+class WriteAccessorVector< gpu::cuda::CudaVector<T> >
 {
 public:
     typedef gpu::cuda::CudaVector<T> container_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -757,14 +762,14 @@ protected:
     T* data;
 
 public:
-    WriteAccessor(container_type& container) : vref(container), data(container.hostWrite()) {}
-    ~WriteAccessor() {}
+    WriteAccessorVector(container_type& container) : vref(container), data(container.hostWrite()) {}
+    ~WriteAccessorVector() {}
 
-    size_type size() const { return vref.size(); }
+    Size size() const { return vref.size(); }
     bool empty() const { return vref.empty(); }
 
-    const_reference operator[](size_type i) const { return data[i]; }
-    reference operator[](size_type i) { return data[i]; }
+    const_reference operator[](Size i) const { return data[i]; }
+    reference operator[](Size i) { return data[i]; }
 
     const container_type& ref() const { return vref; }
     container_type& wref() { return vref; }
@@ -775,21 +780,12 @@ public:
     iterator end() { return data+vref.size(); }
 
     void clear() { vref.clear(); }
-    void resize(size_type s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); data = vref.hostWrite(); }
-    void reserve(size_type s) { vref.reserve(s); data = vref.hostWrite(); }
+    void resize(Size s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); data = vref.hostWrite(); }
+    void reserve(Size s) { vref.reserve(s); data = vref.hostWrite(); }
     void push_back(const_reference v) { vref.push_back(v); data = vref.hostWrite(); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<container_type>& vec )
-    {
-        return os << vec.vref;
-    }
-
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<container_type>& vec )
-    {
-        return in >> vec.vref;
-    }
-
 };
+
+
 
 
 }

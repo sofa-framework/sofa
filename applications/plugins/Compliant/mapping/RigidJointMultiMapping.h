@@ -3,7 +3,7 @@
 
 #include "AssembledMultiMapping.h"
 #include <Compliant/config.h>
-
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include "../utils/se3.h"
 #include "../utils/map.h"
 

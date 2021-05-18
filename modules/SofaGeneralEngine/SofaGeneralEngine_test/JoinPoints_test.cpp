@@ -83,13 +83,13 @@ namespace
 {
 
     // Define the list of DataTypes to instanciate
-    using testing::Types;
+    using ::testing::Types;
     typedef Types<
         defaulttype::Vec3Types
     > DataTypes; // the types to instanciate.
 
     // Test suite for all the instanciations
-    TYPED_TEST_CASE(JoinPoints_test, DataTypes);
+    TYPED_TEST_SUITE(JoinPoints_test, DataTypes);
 
     // test data setup
     TYPED_TEST(JoinPoints_test, data_setup)

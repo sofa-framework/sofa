@@ -19,18 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QENERGYSTATWIDGET_H
-#define SOFA_GUI_QT_QENERGYSTATWIDGET_H
+#pragma once
+#include <sofa/gui/qt/QGraphStatWidget.h>
 
-#include "QGraphStatWidget.h"
-
-#include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
-
-namespace sofa
+namespace sofa::simulation::mechanicalvisitor
 {
-namespace gui
-{
-namespace qt
+    class MechanicalComputeEnergyVisitor;
+}
+
+namespace sofa::gui::qt
 {
 
 class QEnergyStatWidget : public QGraphStatWidget
@@ -38,7 +35,7 @@ class QEnergyStatWidget : public QGraphStatWidget
 
     Q_OBJECT
 
-    sofa::simulation::MechanicalComputeEnergyVisitor *m_energyVisitor;
+    sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor *m_energyVisitor { nullptr };
 
 
 public:
@@ -46,15 +43,10 @@ public:
     QEnergyStatWidget( QWidget* parent, simulation::Node* node );
 
     ~QEnergyStatWidget();
-
-    void step();
+            
+    void stepImpl() override;
 
 };
 
 
-} // qt
-} // gui
-} //sofa
-
-#endif // SOFA_GUI_QT_QDATADESCRIPTIONWIDGET_H
-
+} //namespace sofa::gui::qt

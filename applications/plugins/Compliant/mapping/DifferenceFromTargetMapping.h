@@ -4,6 +4,7 @@
 #include <Compliant/config.h>
 
 #include "ConstantAssembledMapping.h"
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 

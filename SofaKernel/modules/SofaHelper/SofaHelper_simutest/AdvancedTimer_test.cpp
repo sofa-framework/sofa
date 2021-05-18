@@ -54,9 +54,9 @@ protected:
 				 "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
 				 "</Node>                                                                        \n" ;
 
-		//root = SceneLoaderXML::loadFromMemory ("testscene",
-		//									scene.str().c_str(),
-		//									scene.str().size()) ;
+		root = SceneLoaderXML::loadFromMemory ("testscene",
+											scene.str().c_str(),
+											scene.str().size()) ;
 	}
 
 public:
@@ -98,10 +98,11 @@ TEST_F(AdvancedTimerTest, End)
 {
 	using namespace sofa::helper;
 	initScene();
-
-	ASSERT_TRUE(AdvancedTimer::end("validId", root.get()) == std::string(""));
-	ASSERT_TRUE(AdvancedTimer::end("", root.get())  == std::string(""));
-	EXPECT_NO_FATAL_FAILURE(AdvancedTimer::end("validId", nullptr));
+	AdvancedTimer::begin("validId");
+	ASSERT_TRUE(AdvancedTimer::end("validId", root->getTime(), root->getDt()) == std::string(""));
+	ASSERT_TRUE(AdvancedTimer::end("", root->getTime(), root->getDt())  == std::string(""));
+	AdvancedTimer::begin("validId");
+	EXPECT_NO_FATAL_FAILURE(AdvancedTimer::end("validId"));
 }
 
 

@@ -19,16 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSparseSolver/SparseLUSolver.inl>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <cmath>
-#include <sofa/helper/system/thread/CTime.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaSparseSolver/SparseLUSolver.inl>
 
 namespace sofa
 {

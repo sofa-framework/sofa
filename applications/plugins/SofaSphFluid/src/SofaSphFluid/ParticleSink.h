@@ -32,7 +32,6 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/types/RGBAColor.h>
@@ -48,6 +47,10 @@ namespace sofa
 
 namespace component
 {
+namespace topology
+{
+    class PointSetTopologyModifier;
+}
 
 namespace misc
 {
@@ -74,6 +77,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
+    using Index = sofa::Index;
 
     Data<Deriv> d_planeNormal; ///< plane normal
     Data<Real> d_planeD0; ///< plane d coef at which particles acceleration is constrained to 0
@@ -81,6 +85,13 @@ public:
     Data<bool> d_showPlane; ///< enable/disable drawing of plane
 
     sofa::component::topology::PointSubsetData< SetIndexArray > d_fixed; ///< indices of fixed particles
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<ParticleSink<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+private:
+    sofa::core::sptr<sofa::component::topology::PointSetTopologyModifier> m_topoModifier;
+
 protected:
     ParticleSink();
 

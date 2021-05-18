@@ -57,7 +57,7 @@
         <Node name="Visual"  >
             <MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
             <OglModel src="@meshLoader_0"  color='red' />
-            <IdentityMapping template="Vec3d,ExtVec3f"  />
+            <IdentityMapping template="Vec3d,Vec3d"  />
         </Node>
    </Node>
 
@@ -117,7 +117,7 @@
         <Node name="Visual"  >
             <MeshObjLoader name="meshLoader_2" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
             <OglModel src="@meshLoader_2" color='green'  />
-            <IdentityMapping template="Vec3d,ExtVec3f"  />
+            <IdentityMapping template="Vec3d,Vec3d"  />
         </Node>
    </Node>
 
@@ -159,7 +159,7 @@
         <Node name="Visual"  >
             <MeshObjLoader name="meshLoader_3" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
             <OglModel src="@meshLoader_3" color='blue'  />
-            <IdentityMapping template="Vec3d,ExtVec3f"  />
+            <IdentityMapping template="Vec3d,Vec3d"  />
         </Node>
    </Node>
 
@@ -189,7 +189,7 @@
         <Node name="Visual"  >
             <MeshObjLoader name="meshLoader_1" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
             <OglModel src="@meshLoader_1" color='yellow'  />
-            <IdentityMapping template="Vec3d,ExtVec3f"  />
+            <IdentityMapping template="Vec3d,Vec3d"  />
         </Node>
    </Node>
 
@@ -218,7 +218,7 @@
         <Node name="Visual"  >
             <MeshObjLoader name="meshLoader_4" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
             <OglModel src="@meshLoader_4" color='magenta'  />
-            <IdentityMapping template="Vec3d,ExtVec3f"  />
+            <IdentityMapping template="Vec3d,Vec3d"  />
         </Node>
    </Node>
 

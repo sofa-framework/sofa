@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/PrimitiveCreation.h>
+#include <SofaSimulationGraph/DAGNode.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
 
@@ -91,7 +92,7 @@ MeshTopology* BaryMapperTest::initMesh(NodePtr &father){
 
 bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
     initTriPts();
-    sofa::simulation::Node::SPtr father = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
     component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)nullptr, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);
@@ -116,7 +117,7 @@ bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
 
 bool BaryMapperTest::test_outside(int index){
     initTriPts();
-    sofa::simulation::Node::SPtr father = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
     component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)nullptr, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);

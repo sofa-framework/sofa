@@ -38,6 +38,7 @@ public:
         sofa::simpleapi::importPlugin("SofaComponentAll") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","SofaGeneralLoader" } });
 
         /// no need of gravity, the file .data is just read
         root->setGravity(Vec3(0.0,0.0,0.0));

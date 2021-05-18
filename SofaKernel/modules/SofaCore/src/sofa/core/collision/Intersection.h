@@ -24,7 +24,6 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/helper/FnDispatcher.h>
 
 namespace sofa
 {

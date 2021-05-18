@@ -502,7 +502,7 @@ public:
         if (p)
         {
             std::string nbStr = p;
-            sout << "parse: setting nbBoundaryConditions="<<nbStr<<sendl;
+            msg_info() << "parse: setting nbBoundaryConditions="<<nbStr;
             nbBoundaryConditions.read(nbStr);
             createBoundaryConditionsData();
         }
@@ -516,7 +516,7 @@ public:
         if (it != str.end() && it->second)
         {
             std::string nbStr = *it->second;
-            sout << "parseFields: setting nbBoundaryConditions="<<nbStr<<sendl;
+            msg_info() << "parseFields: setting nbBoundaryConditions="<<nbStr;
             nbBoundaryConditions.read(nbStr);
             createBoundaryConditionsData();
         }

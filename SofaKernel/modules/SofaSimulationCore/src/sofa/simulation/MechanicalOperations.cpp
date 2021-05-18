@@ -21,13 +21,39 @@
 ******************************************************************************/
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
-#include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxAndResetForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalApplyConstraintsVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddMDxVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccFromFVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeDfVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddMBKdxVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeContactForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
-#include <sofa/core/ConstraintParams.h>
+
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
 
 using namespace sofa::core;
 namespace sofa
@@ -38,6 +64,8 @@ namespace simulation
 
 namespace common
 {
+
+using namespace sofa::simulation::mechanicalvisitor;
 
 MechanicalOperations::MechanicalOperations(const sofa::core::MechanicalParams* mparams, sofa::core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder)
     :mparams(*mparams),ctx(ctx),executeVisitor(*ctx,precomputedTraversalOrder)
@@ -171,7 +199,7 @@ void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialE
 {
     kineticEnergy=0;
     potentialEnergy=0;
-    sofa::simulation::MechanicalComputeEnergyVisitor *energyVisitor = new sofa::simulation::MechanicalComputeEnergyVisitor(&mparams);
+    MechanicalComputeEnergyVisitor *energyVisitor = new MechanicalComputeEnergyVisitor(&mparams);
     executeVisitor(energyVisitor);
     kineticEnergy=energyVisitor->getKineticEnergy();
     potentialEnergy=energyVisitor->getPotentialEnergy();
@@ -475,13 +503,13 @@ void MechanicalOperations::m_print( std::ostream& out )
     defaulttype::BaseMatrix* m = s->getSystemBaseMatrix();
     if (!m) return;
     //out << *m;
-    int ny = m->rowSize();
-    int nx = m->colSize();
+    auto ny = m->rowSize();
+    auto nx = m->colSize();
     out << "[";
-    for (int y=0; y<ny; ++y)
+    for (defaulttype::BaseMatrix::Index y=0; y<ny; ++y)
     {
         out << "[";
-        for (int x=0; x<nx; x++)
+        for (defaulttype::BaseMatrix::Index x=0; x<nx; x++)
             out << ' ' << m->element(x,y);
         out << "]";
     }
@@ -490,7 +518,7 @@ void MechanicalOperations::m_print( std::ostream& out )
 
 
 // BaseMatrix & BaseVector Computations
-void MechanicalOperations::getMatrixDimension(unsigned int *  const nbRow, unsigned int * const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::getMatrixDimension(sofa::Size*  const nbRow, sofa::Size* const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     executeVisitor( MechanicalGetMatrixDimensionVisitor(&mparams, nbRow, nbCol, matrix) );
 }

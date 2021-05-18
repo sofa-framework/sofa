@@ -3,6 +3,7 @@ project(SofaSphFluid VERSION 1.0)
 
 find_package(SofaBase REQUIRED)
 sofa_find_package(SofaOpenglVisual QUIET)
+sofa_find_package(Sofa.GL QUIET)
  
 set(PLUGIN_SPH_SRC_DIR src/SofaSphFluid)
 set(HEADER_FILES
@@ -20,8 +21,6 @@ set(HEADER_FILES
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.inl
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.h
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.inl
-    ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.h
-    ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.inl
 )
 
 set(SOURCE_FILES
@@ -32,8 +31,19 @@ set(SOURCE_FILES
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidForceField.cpp
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.cpp
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.cpp
-    ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.cpp
 )
+
+if(SofaOpenglVisual_FOUND)
+    list(APPEND HEADER_FILES
+            ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.h
+            ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.inl
+        )
+
+    list(APPEND SOURCE_FILES
+            ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.cpp
+        )
+endif()
+
 
 set(README_FILES
     README.md

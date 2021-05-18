@@ -24,7 +24,7 @@
     <FixedConstraint indices="0" />
     
     <!--Shape function-->
-    <BarycentricShapeFunction name="baryShapeFunction" template="ShapeFunctiond"/> 
+    <BarycentricShapeFunction name="baryShapeFunction" template="ShapeFunction3d"/> 
     
     
     

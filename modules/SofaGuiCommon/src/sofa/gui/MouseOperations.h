@@ -19,29 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_MOUSEOPERATIONS_H
-#define SOFA_GUI_MOUSEOPERATIONS_H
-
+#pragma once
 #include <sofa/gui/config.h>
-#include <iostream>
-#include <vector>
+
+#include <sofa/helper/cast.h>
 
 #include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <SofaGraphComponent/FixPickedParticleButtonSetting.h>
-#include <sofa/gui/config.h>
-#include <sofa/helper/cast.h>
 
-namespace sofa
+#include <iostream>
+#include <vector>
+
+namespace sofa::component::collision
 {
-namespace component
-{
-namespace collision
-{
-class InteractionPerformer;
-}
-}
-namespace gui
+    class InteractionPerformer;
+} // namespace sofa::component::collision
+
+namespace sofa::gui
 {
 enum MOUSE_BUTTON {LEFT, MIDDLE, RIGHT,NONE};
 enum MOUSE_STATUS {PRESSED,RELEASED, ACTIVATED, DEACTIVATED};
@@ -266,7 +261,4 @@ protected:
     double damping;
 };
 
-}
-}
-
-#endif
+} // namespace sofa::gui

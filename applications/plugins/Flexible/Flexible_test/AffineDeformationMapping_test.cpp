@@ -75,9 +75,9 @@ namespace sofa {
         void SetRandomAffineTransform ()
         {
             // Matrix 3*3
-            for( int j=0; j<testedRotation.nbCols; j++)
+            for(size_t j=0; j<testedRotation.nbCols; j++)
             {
-                for( int i=0; i<testedRotation.nbLines; i++)
+                for(size_t i=0; i<testedRotation.nbLines; i++)
                 {
                     // random value between -1 and 1
                     testedRotation(i,j)=helper::drand(1);
@@ -145,14 +145,14 @@ namespace sofa {
     };
 
       // Define the list of DataTypes to instantiate
-    using testing::Types;
-    typedef testing::Types<
+    using ::testing::Types;
+    typedef ::testing::Types<
         LinearMapping<Affine3Types, F331Types>,
         LinearMapping<Affine3Types, F332Types>
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(AffineLinearDeformationMappings_test, DataTypes);
+    TYPED_TEST_SUITE(AffineLinearDeformationMappings_test, DataTypes);
 
     // test case: polarcorotationalStrainMapping 
     TYPED_TEST( AffineLinearDeformationMappings_test , AffineStrainDeformationPatchTest)

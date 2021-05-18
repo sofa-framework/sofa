@@ -1,6 +1,12 @@
 <!-- Use of DataDisplay to show distances from rest shape  -->
 <Node name="root" gravity="0 0 -1" dt="0.05">
     <RequiredPlugin name="SofaValidation"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
+    <RequiredPlugin pluginName='SofaOpenglVisual'/>
     
     <VisualStyle displayFlags="showVisual hideBehavior hideCollision hideMapping" />
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
@@ -29,7 +35,7 @@
         
         <Node name="Data">
             <DataDisplay pointData="@../dist.distance" />
-            <ColorMap colorScheme="Blue to Red" />
+            <OglColorMap colorScheme="Blue to Red" />
             <IdentityMapping input="@.." output="@."/>
         </Node>
 

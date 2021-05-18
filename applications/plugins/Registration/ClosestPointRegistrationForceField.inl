@@ -26,8 +26,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <iostream>
 #include <map>
 
@@ -40,7 +40,7 @@
 #include <limits>
 #include <set>
 #include <iterator>
-#include <sofa/helper/gl/Color.h>
+#include <sofa/gl/Color.h>
 
 using std::cerr;
 using std::endl;
@@ -107,7 +107,13 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
     if(!sourceTriangles.getValue().size()) {
         sofa::component::loader::MeshObjLoader *meshobjLoader;
         this->getContext()->get( meshobjLoader, core::objectmodel::BaseContext::Local);
-        if (meshobjLoader) {sourceTriangles.virtualSetLink(meshobjLoader->d_triangles); sout<<"imported triangles from "<<meshobjLoader->getName()<<sendl;}
+        if (meshobjLoader)
+        {
+            if(sourceTriangles.setParent(&meshobjLoader->d_triangles))
+                msg_info()<<"imported triangles from "<<meshobjLoader->getName();
+            else
+                msg_warning()<<"unable to import triangles from "<<meshobjLoader->getName();
+        }
     }
     // Get source normals
     if(!sourceNormals.getValue().size()) serr<<"normals of the source model not found"<<sendl;
@@ -343,7 +349,7 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
 template <class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams,DataVecDeriv& _df , const DataVecDeriv&  _dx )
 {
-    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) * this->ks.getValue();
+    Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()) * this->ks.getValue();
     if(!k) return;
     sofa::helper::WriteAccessor< DataVecDeriv > df = _df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx = _dx;
@@ -353,7 +359,7 @@ void ClosestPointRegistrationForceField<DataTypes>::addDForce(const core::Mechan
 template<class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) * this->ks.getValue();
+    Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()) * this->ks.getValue();
     if(!k) return;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix *mat = mref.matrix;
@@ -368,7 +374,7 @@ void ClosestPointRegistrationForceField<DataTypes>::addKToMatrix(const core::Mec
 template<class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+#if REGISTRATION_HAVE_SOFA_GL == 1
     if(ks.getValue()==0) return;
 
     if (!vparams->displayFlags().getShowForceFields() && !drawColorMap.getValue()) return;
@@ -420,7 +426,7 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
                 for ( unsigned int j = 0; j < 3; j++)
                 {
                     const unsigned int& indexP = t[i][j];
-                    sofa::helper::gl::Color::setHSVA(dists[indexP]*240./max,1.,.8,1.);
+                    sofa::gl::Color::setHSVA(dists[indexP]*240./max,1.,.8,1.);
                     glVertex3d(x[indexP][0],x[indexP][1],x[indexP][2]);
                 }
             }
@@ -433,7 +439,7 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
             glBegin( GL_POINTS);
             for (unsigned int i=0; i<dists.size(); i++)
             {
-                sofa::helper::gl::Color::setHSVA(dists[i]*240./max,1.,.8,1.);
+                sofa::gl::Color::setHSVA(dists[i]*240./max,1.,.8,1.);
                 glVertex3d(x[i][0],x[i][1],x[i][2]);
             }
             glEnd();
@@ -442,7 +448,7 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
 
         glPopAttrib();
     }
-#endif
+#endif // REGISTRATION_HAVE_SOFA_GL == 1
 }
 
 

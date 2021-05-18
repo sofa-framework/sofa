@@ -4,15 +4,13 @@ project(ManifoldTopologies VERSION 0.1)
 set(HEADER_FILES
     ManifoldEdgeSetGeometryAlgorithms.h
     ManifoldEdgeSetGeometryAlgorithms.inl
-    ManifoldEdgeSetTopologyAlgorithms.h
-    ManifoldEdgeSetTopologyAlgorithms.inl
     ManifoldEdgeSetTopologyContainer.h
     ManifoldEdgeSetTopologyModifier.h
     ManifoldTetrahedronSetTopologyContainer.h
     ManifoldTopologyObject_double.h
     ManifoldTopologyObject_float.h
-    ManifoldTriangleSetTopologyAlgorithms.h
-    ManifoldTriangleSetTopologyAlgorithms.inl
+    ManifoldTriangleSetGeometryAlgorithms.h
+    ManifoldTriangleSetGeometryAlgorithms.inl
     ManifoldTriangleSetTopologyContainer.h
     ManifoldTriangleSetTopologyModifier.h
     config.h
@@ -20,11 +18,10 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     ManifoldEdgeSetGeometryAlgorithms.cpp
-    ManifoldEdgeSetTopologyAlgorithms.cpp
     ManifoldEdgeSetTopologyContainer.cpp
     ManifoldEdgeSetTopologyModifier.cpp
     ManifoldTetrahedronSetTopologyContainer.cpp
-    ManifoldTriangleSetTopologyAlgorithms.cpp
+    ManifoldTriangleSetGeometryAlgorithms.cpp
     ManifoldTriangleSetTopologyContainer.cpp
     ManifoldTriangleSetTopologyModifier.cpp
     initManifoldTopologies.cpp

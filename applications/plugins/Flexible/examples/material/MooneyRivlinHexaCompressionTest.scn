@@ -29,20 +29,18 @@
     <BoxROI template="Vec3d" name="Oyz_plane_box_roi" box="-0.01 -0.01 -0.01   0.01 1.01 1.01  " drawBoxes="1" drawSize="1" />
     <ProjectToPlaneConstraint normal="1 0 0" indices="@[-1].indices" />
 
-    <BarycentricShapeFunction template="ShapeFunctiond" />
+    <BarycentricShapeFunction template="ShapeFunction3d" />
     
     <!--Decomposition of the cubes in tetrahedra -->
     <Node name="Tetra" >
       <TetrahedronSetTopologyContainer name="TetraContainer" />
       <TetrahedronSetTopologyModifier />
-      <TetrahedronSetTopologyAlgorithms template="Vec3d" />
       <TetrahedronSetGeometryAlgorithms template="Vec3d" />
       <Hexa2TetraTopologicalMapping name="default28" input="@../hexahedra" output="@TetraContainer" />
       
       <!--Quads for QuadPressureForceField-->
       <QuadSetTopologyContainer name="QuadContainer" />
       <QuadSetTopologyModifier />
-      <QuadSetTopologyAlgorithms template="Vec3d" />
       <QuadSetGeometryAlgorithms template="Vec3d" />
       <Hexa2QuadTopologicalMapping name="default28" input="@../hexahedra" output="@QuadContainer" />
       <!--Compression-->

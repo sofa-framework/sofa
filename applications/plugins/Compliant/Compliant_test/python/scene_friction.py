@@ -20,6 +20,8 @@ shared = Shared()
 dir = Tools.path( __file__ )
 
 def createScene(node):
+    node.createObject('RequiredPlugin', pluginName="SofaLoader")
+    
     # controller
     node.createObject('PythonScriptController', filename = __file__, classname = 'Controller' )
 

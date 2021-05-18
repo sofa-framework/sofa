@@ -30,9 +30,12 @@
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/helper/system/gl.h>
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+#if SOFASPHFLUID_HAVE_SOFA_GL == 1
+#include <sofa/gl/gl.h>
+#endif // SOFASPHFLUID_HAVE_SOFA_GL == 1
 
 namespace sofa
 {
@@ -507,7 +510,7 @@ void SpatialGrid<DataTypes>::end()
 ///
 /// Fill the old2new and new2old arrays giving the permutation to apply
 template<class DataTypes>
-void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2new, helper::vector<unsigned int>* new2old)
+void SpatialGrid<DataTypes>::reorderIndices(helper::vector<Index>* old2new, helper::vector<Index>* new2old)
 {
     unsigned int next = 0;
     for (typename Map::iterator itg = map.begin(); itg != map.end(); itg++)
@@ -545,7 +548,7 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2ne
 template<class DataTypes>
 void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
 {
-#ifndef SOFA_NO_OPENGL
+#if SOFASPHFLUID_HAVE_SOFA_GL == 1
     const float cscale = (float)(cellWidth);
     const float gscale = (float)(cellWidth*GRIDDIM);
     glBegin(GL_LINES);
@@ -657,7 +660,7 @@ void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
         }
     }
     glEnd();
-#endif /* SOFA_NO_OPENGL */
+#endif // SOFASPHFLUID_HAVE_SOFA_GL == 1
 }
 
 template<class DataTypes>
@@ -705,7 +708,7 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
 
     msg_info() << "sortPoints(): sorting...";
 
-    helper::vector<unsigned int> old2new, new2old;
+    helper::vector<Index> old2new, new2old;
     grid->reorderIndices(&old2new, &new2old);
     // check if the mapping actually changed something
     bool identity = true;

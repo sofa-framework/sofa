@@ -23,12 +23,10 @@
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <sofa/helper/Factory.inl>
@@ -60,7 +58,7 @@ TetrahedronCollisionModel::TetrahedronCollisionModel()
     enum_type = TETRAHEDRON_TYPE;
 }
 
-void TetrahedronCollisionModel::resize(int size)
+void TetrahedronCollisionModel::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
     elems.resize(size);
@@ -155,7 +153,7 @@ void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector
     normalVertices.push_back(p + n4*0.1);
 }
 
-void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams,int index)
+void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, Index index)
 {
     vparams->drawTool()->saveLastState();
 
@@ -165,7 +163,8 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams,i
     Tetrahedron t(this, index);
     this->addTetraToDraw(t, tetraVertices, normalVertices);
 
-    vparams->drawTool()->drawTetrahedra(tetraVertices, defaulttype::Vec<4, float>(getColor4f()));
+    const auto c = getColor4f();
+    vparams->drawTool()->drawTetrahedra(tetraVertices, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
 
     vparams->drawTool()->restoreLastState();
 }
@@ -179,20 +178,23 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->setPolygonMode(0, true);
 
         vparams->drawTool()->enableLighting();
-        vparams->drawTool()->setMaterial(defaulttype::Vec<4, float>(getColor4f()));
+
+        const auto c = getColor4f();
+        const auto color = sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]);
+        vparams->drawTool()->setMaterial(color);
 
         std::vector<sofa::defaulttype::Vector3> tetraVertices;
         std::vector<sofa::defaulttype::Vector3> normalVertices;
-        for (int i = 0; i<size; i++)
+        for (std::size_t i = 0; i<size; i++)
         {
             Tetrahedron t(this, i);
             this->addTetraToDraw(t, tetraVertices, normalVertices);
         }
 
-        vparams->drawTool()->drawTetrahedra(tetraVertices, defaulttype::Vec<4, float>(getColor4f()));
+        vparams->drawTool()->drawTetrahedra(tetraVertices, color);
         if (vparams->displayFlags().getShowNormals())
         {
-            vparams->drawTool()->drawLines(normalVertices, 1.0, defaulttype::Vec<4, float>(getColor4f()));
+            vparams->drawTool()->drawLines(normalVertices, 1.0, color);
         }
 
         if (vparams->displayFlags().getShowWireFrame())
@@ -215,7 +217,7 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
     Vector3 minElem, maxElem;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    for (int i=0; i<size; i++)
+    for (std::size_t i=0; i<size; i++)
     {
         Tetrahedron t(this,i);
         const Vector3& pt1 = x[t.p1Index()];
@@ -261,7 +263,7 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
         cubeModel->resize(size);  // size = number of Tetrahedrons
         if (!empty())
         {
-            for (int i=0; i<size; i++)
+            for (std::size_t i=0; i<size; i++)
             {
                 Tetrahedron t(this,i);
                 const Vector3& pt1 = x[t.p1Index()];

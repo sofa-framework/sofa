@@ -1,7 +1,14 @@
 <?xml version="1.0" ?>
 <Node>
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <!--<RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />-->
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaEngine'/> 
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/> 
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscExtra'/>
+    <RequiredPlugin pluginName='SofaTopologyMapping'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+
     <!--
     <DefaultPipeline verbose="0" name="CollisionPipeline"/>
     <BruteForceDetection name="N2" />
@@ -32,7 +39,8 @@
         </Node>
 -->
         <Node name="VM">
-            <OglModel name="visual" filename="mesh/liver-smooth.obj" />
+            <MeshObjLoader name='myLoader' filename='mesh/liver-smooth.obj'/>  
+            <OglModel name="visual" src="@myLoader" />
             <BarycentricMapping output="@visual" />
         </Node>
         <Node name="Circumcenters">

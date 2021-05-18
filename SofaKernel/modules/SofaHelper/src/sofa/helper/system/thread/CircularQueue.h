@@ -23,6 +23,8 @@
 #ifndef SOFA_HELPER_SYSTEM_THREAD_CIRCULARQUEUE_H
 #define SOFA_HELPER_SYSTEM_THREAD_CIRCULARQUEUE_H
 
+#include <sofa/helper/config.h>
+
 #include <atomic>
 #include <sofa/helper/fixed_array.h>
 

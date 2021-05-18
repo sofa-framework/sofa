@@ -33,20 +33,15 @@
 class QLineEdit ;
 class QTextBrowser ;
 
-namespace sofa {
-    namespace gui {
-        namespace qt {
-            class RealGUI ;
-            class BrowserHistory ;
-}}}
+namespace sofa::gui::qt 
+{
+    class RealGUI ;
+    class BrowserHistory ;
+} // namespace sofa::gui::qt 
 
 
 /////////////////////////////// DECLARATION //////////////////////////////////
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt 
 {
 
 class SofaEnrichedPage : public QWebEnginePage
@@ -92,6 +87,4 @@ private:
     RealGUI*          m_realgui ;
 } ;
 
-}
-}
-}
+} // namespace sofa::gui::qt 

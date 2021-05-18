@@ -14,7 +14,8 @@ set(SOURCE_FILES
     initTHMPGSpatialHashingPlugin.cpp
 )
 
-find_package(SofaCommon REQUIRED)
+sofa_find_package(SofaBaseCollision REQUIRED)
+sofa_find_package(SofaMeshCollision REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaMeshCollision)

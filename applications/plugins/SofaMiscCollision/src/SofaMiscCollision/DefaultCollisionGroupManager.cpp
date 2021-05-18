@@ -24,7 +24,6 @@
 #include <SofaMiscCollision/SolverMerger.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -57,9 +56,9 @@ void DefaultCollisionGroupManager::clearCollisionGroup(simulation::Node::SPtr gr
     while (!group->child.empty()) 
         parent->moveChild(core::objectmodel::BaseNode::SPtr(group->child.begin()->get()->toBaseNode()));
 
-    simulation::CleanupVisitor cleanupvis(sofa::core::ExecParams::defaultInstance());
+    simulation::CleanupVisitor cleanupvis(sofa::core::execparams::defaultInstance());
     cleanupvis.execute(group.get());
-    simulation::DeleteVisitor vis(sofa::core::ExecParams::defaultInstance());
+    simulation::DeleteVisitor vis(sofa::core::execparams::defaultInstance());
     vis.execute(group.get());
     group->detachFromGraph();
     group.reset();
@@ -246,7 +245,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     {
         simulation::Node::SPtr node = *it;
         node->detachFromGraph();
-        node->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        node->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         it->reset();
     }
     removedGroup.clear();

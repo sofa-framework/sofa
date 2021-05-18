@@ -127,7 +127,6 @@ void OglGrid::updateVisual()
 
 void OglGrid::drawVisual(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!draw.getValue()) return;
 
     std::vector<Vector3> points;
@@ -177,7 +176,6 @@ void OglGrid::drawVisual(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->drawLines(points, thickness.getValue(), color.getValue());
 
-#endif
 }
 
 } // namespace visualmodel

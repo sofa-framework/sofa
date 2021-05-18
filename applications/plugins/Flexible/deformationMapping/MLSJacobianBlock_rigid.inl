@@ -124,7 +124,7 @@ public:
         MatBlock J = MatBlock();
         for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
 
-        cpMatrix W=-crossProductMatrix(Pa);
+        cpMatrix W = -defaulttype::crossProductMatrix(Pa);
         for(unsigned int l=0; l<adim; ++l) for (unsigned int i=0; i<dim; ++i) J(i,l+dim)=W(i,l);
         return J;
     }
@@ -215,7 +215,7 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W=crossProductMatrix(getAngular(data));
+        const cpMatrix W=defaulttype::crossProductMatrix(getAngular(data));
         result.getF() += covMN(getLinear(data),Ft) + W * PFa.getF();
     }
 
@@ -233,7 +233,7 @@ public:
 
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W=-crossProductMatrix(PFa.getF().col(j));
+            cpMatrix W=-defaulttype::crossProductMatrix(PFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         return J;
@@ -326,7 +326,7 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W=crossProductMatrix(getAngular(data));
+        const cpMatrix W=defaulttype::crossProductMatrix(getAngular(data));
         result.getF() += covMN(getLinear(data),Ft) + W * PFa.getF();
     }
 
@@ -344,7 +344,7 @@ public:
 
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W=-crossProductMatrix(PFa.getF().col(j));
+            cpMatrix W=-defaulttype::crossProductMatrix(PFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         return J;
@@ -437,7 +437,7 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W=crossProductMatrix(getAngular(data));
+        const cpMatrix W = defaulttype::crossProductMatrix(getAngular(data));
         result.getF() += covMN(getLinear(data),Ft) + W * PFa.getF();
     }
 
@@ -455,7 +455,7 @@ public:
 
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W=-crossProductMatrix(PFa.getF().col(j));
+            cpMatrix W = -defaulttype::crossProductMatrix(PFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         return J;
@@ -572,7 +572,7 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W=crossProductMatrix(getAngular(data));
+        const cpMatrix W = defaulttype::crossProductMatrix(getAngular(data));
 
         result.getF() += covMN(getLinear(data),Ft) + W * PFdFa.getF();
         for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN(getLinear(data),dFt[k]) + W * PFdFa.getGradientF(k);
@@ -596,7 +596,7 @@ public:
         for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+i*mdim,i)=Ft[j];
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W=-crossProductMatrix(PFdFa.getF().col(j));
+            cpMatrix W = -defaulttype::crossProductMatrix(PFdFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         unsigned int offset=dim*mdim;
@@ -605,7 +605,7 @@ public:
             for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=dFt[k][j];
             for(unsigned int j=0; j<mdim; ++j)
             {
-                cpMatrix W=-crossProductMatrix(PFdFa.getGradientF(k).col(j));
+                cpMatrix W = -defaulttype::crossProductMatrix(PFdFa.getGradientF(k).col(j));
                 for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+offset+i*mdim,l+dim)+=W(i,l);
             }
             offset+=dim*mdim;

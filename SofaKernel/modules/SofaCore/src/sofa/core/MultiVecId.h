@@ -23,7 +23,7 @@
 #define SOFA_CORE_MULTIVECID_H
 
 #include <sofa/core/VecId.h>
-
+#include <sofa/core/objectmodel/Data.h>
 namespace sofa
 {
 

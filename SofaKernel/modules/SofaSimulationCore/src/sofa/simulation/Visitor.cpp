@@ -22,8 +22,6 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/Simulation.h>
-
 
 namespace sofa
 {
@@ -35,7 +33,6 @@ Visitor::Visitor(const core::ExecParams* p)
     : canAccessSleepingNode(true)
     , params(p)
 {
-    //params = core::MechanicalParams::defaultInstance();
 #ifdef SOFA_DUMP_VISITOR_INFO
     enteringBase=nullptr; infoPrinted=false;
 #endif
@@ -49,6 +46,19 @@ void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool precomputedO
 {
     c->executeVisitor(this, precomputedOrder);
 }
+
+//method to compare the tags of the objet with the ones of the visitor
+// return true if the object has all the tags of the visitor
+// or if no tag is set to the visitor
+bool Visitor::testTags(core::objectmodel::BaseObject* obj)
+{
+    if(subsetsToManage.empty())
+        return true;
+    if (obj->getTags().includes(subsetsToManage)) // all tags in subsetsToManage must be included in the list of tags of the object
+        return true;
+    return false;
+}
+
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 Visitor::ctime_t Visitor::initDumpTime;

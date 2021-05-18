@@ -23,7 +23,7 @@
 #define SOFA_CORE_MULTI2MAPPING_INL
 
 #include <sofa/core/Multi2Mapping.h>
-
+#include <sofa/core/behavior/BaseMechanicalState.h>
 namespace sofa
 {
 
@@ -237,10 +237,10 @@ void Multi2Mapping<In1,In2,Out>::init()
         if (core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState()) maskTo[i] = &stateTo->forceMask;
         else this->setNonMechanical();
 
-    apply(MechanicalParams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
-    applyJ(MechanicalParams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
+    apply(mechanicalparams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
+    applyJ(mechanicalparams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())
-        apply(MechanicalParams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
+        apply(mechanicalparams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
 
 template < class In1, class In2, class Out >

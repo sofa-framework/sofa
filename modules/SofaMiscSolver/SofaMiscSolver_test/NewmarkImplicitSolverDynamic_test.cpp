@@ -22,7 +22,7 @@
 #include <SofaTest/Elasticity_test.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/core/ExecParams.h>
+
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -201,13 +201,13 @@ struct NewmarkImplicitDynamic_test : public Elasticity_test<_DataTypes>
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(NewmarkImplicitDynamic_test, DataTypes);
+TYPED_TEST_SUITE(NewmarkImplicitDynamic_test, DataTypes);
 
 // Test case: h=0.001
 TYPED_TEST( NewmarkImplicitDynamic_test , newmarkImplicitSolverDynamicTest_high_dt_without_damping)

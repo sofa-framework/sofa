@@ -65,7 +65,7 @@ public:
 
     typedef TShapeFunctionTypes ShapeFunctionTypes;
     typedef typename ShapeFunctionTypes::Real Real;
-	static const unsigned int spatial_dimensions=ShapeFunctionTypes::spatial_dimensions;
+    static const std::size_t spatial_dimensions=ShapeFunctionTypes::spatial_dimensions;
 
     /** @name types */
     //@{
@@ -131,43 +131,43 @@ public:
     /// wrappers
     virtual void computeShapeFunction(const VCoord& childPosition, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
     {
-		unsigned int nb=childPosition.size();
+        std::size_t nb=childPosition.size();
         ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
+        for(std::size_t i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
 	}
 
     virtual void computeShapeFunction(const VCoord& childPosition, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw,  const VCell& cells)
     {
-        unsigned int nb=childPosition.size();
+        std::size_t nb=childPosition.size();
         ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
+        for(std::size_t i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
     }
 
     /// used to make a partition of unity: $sum_i w_i(x)=1$ and adjust derivatives accordingly
     void normalize(VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
-        unsigned int nbRef=w.size();
+        std::size_t nbRef=w.size();
         Real sum_w=0;
         Gradient sum_dw;
         Hessian sum_ddw;
 
         // Compute norm
-        for (unsigned int j = 0; j < nbRef; j++) sum_w += w[j];
+        for (std::size_t j = 0; j < nbRef; j++) sum_w += w[j];
         if(dw)
         {
-            for (unsigned int j = 0; j < nbRef; j++) sum_dw += (*dw)[j];
-            if(ddw) for (unsigned int j = 0; j < nbRef; j++) sum_ddw += (*ddw)[j];
+            for (std::size_t j = 0; j < nbRef; j++) sum_dw += (*dw)[j];
+            if(ddw) for (std::size_t j = 0; j < nbRef; j++) sum_ddw += (*ddw)[j];
         }
 
         // Normalize
         if(sum_w)
-            for (unsigned int j = 0; j < nbRef; j++)
+            for (std::size_t j = 0; j < nbRef; j++)
             {
                 Real wn=w[j]/sum_w;
                 if(dw)
                 {
                     Gradient dwn=((*dw)[j] - sum_dw*wn)/sum_w;
-                    if(ddw) for(int o=0; o<Hessian::nbLines; o++) for(int p=0; p<Hessian::nbCols; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
+                    if(ddw) for(std::size_t o=0; o<Hessian::nbLines; o++) for(std::size_t p=0; p<Hessian::nbCols; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
                     (*dw)[j]=dwn;
                 }
                 w[j]=wn;
@@ -188,7 +188,7 @@ protected:
 };
 
 
-template <int spatial_dimensions_, class Real_>
+template <std::size_t spatial_dimensions_, class Real_>
 struct ShapeFunctionTypes
 {
     typedef Real_ Real;
@@ -208,7 +208,7 @@ struct ShapeFunctionTypes
     typedef helper::vector< helper::SVector<Gradient> > VecVGradient;
     typedef helper::vector< helper::SVector<Hessian> > VecVHessian;
 
-    static const int spatial_dimensions=spatial_dimensions_ ;
+    static const std::size_t spatial_dimensions=spatial_dimensions_ ;
     static const char* Name();
 };
 

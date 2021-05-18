@@ -32,14 +32,9 @@
 #include <sofa/helper/config.h>
 #include <sstream>
 #include <set>
+#include <memory>
 
-#include <boost/shared_ptr.hpp>
-
-namespace sofa
-{
-namespace helper
-{
-namespace logging
+namespace sofa::helper::logging
 {
 
 /// The base class to keep track of informations associated with a message.
@@ -63,7 +58,7 @@ public:
     friend std::ostream& operator<<(std::ostream& out, const ComponentInfo& nfo) ;
     friend std::ostream& operator<<(std::ostream& out, const ComponentInfo* nfo) ;
 
-    typedef boost::shared_ptr<ComponentInfo> SPtr;
+    typedef std::shared_ptr<ComponentInfo> SPtr;
 protected:
     std::string m_sender ;
 };
@@ -85,9 +80,7 @@ inline bool notMuted(const ComponentInfo::SPtr&){ return true; }
 /// This function is used in the msg_* macro to handle string based on string.
 inline bool notMuted(const std::string&){ return true; }
 
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging
 
 
 #endif // COMPONENTINFO_H

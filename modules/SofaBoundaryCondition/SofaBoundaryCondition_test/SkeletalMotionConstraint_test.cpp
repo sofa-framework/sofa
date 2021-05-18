@@ -127,7 +127,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     bool test_projectPosition()
     {
-        projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()));
+        projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()));
         typename MechanicalObject::ReadVecCoord x = dofs->readPositions();
         Coord target0(CPos(0.5,0.5,0.5), CRot(0, 0.19509, 0, 0.980785));
         Coord target1(CPos(0.5,1.5,0.5), CRot(0.69352, 0.13795, -0.13795, 0.69352));
@@ -152,7 +152,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     bool test_projectVelocity()
     {
-        projection->projectVelocity(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()));
+        projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()));
         typename MechanicalObject::ReadVecDeriv x = dofs->readVelocities();
         bool succeed = true;
         Deriv target(CPos(1,1,1), typename Deriv::Rot(0,0.785397,0));
@@ -177,13 +177,13 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Rigid3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(SkeletalMotionConstraint_test, DataTypes);
+TYPED_TEST_SUITE(SkeletalMotionConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( SkeletalMotionConstraint_test , twoConstrainedBones )
 {

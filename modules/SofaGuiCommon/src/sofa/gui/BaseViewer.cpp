@@ -26,10 +26,10 @@
 #include <sofa/helper/Factory.inl>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
+#include <SofaGraphComponent/ViewerSetting.h>
+#include <SofaBaseVisual/InteractiveCamera.h>
 
-namespace sofa
-{
-namespace gui
+namespace sofa::gui
 {
 
 BaseViewer::BaseViewer()
@@ -178,7 +178,7 @@ void BaseViewer::resetView()
 
 void BaseViewer::setBackgroundColour(float r, float g, float b)
 {
-    _background = 2;
+    _background = 3;
     backgroundColour[0] = r;
     backgroundColour[1] = g;
     backgroundColour[2] = b;
@@ -277,10 +277,4 @@ void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
     redraw();
 }
 
-
-
-
-
-}
-}
-
+} // namespace sofa::gui

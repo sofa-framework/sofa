@@ -23,9 +23,10 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
 
+#include <sofa/helper/logging/Messaging.h>
+
 #include <cstdio>
 #include <iostream>
-#include <cstdio>
 #include <string>
 #include <sstream>
 

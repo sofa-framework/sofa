@@ -21,19 +21,21 @@
 ******************************************************************************/
 #include "BaseGUI.h"
 #include "BaseViewer.h"
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
+
 #include <sofa/helper/vector.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
-#include <SofaGraphComponent/SofaDefaultPathSetting.h>
-#include <SofaGraphComponent/StatsSetting.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaBaseVisual/BackgroundSetting.h>
+#include <SofaGraphComponent/ViewerSetting.h>
+#include <SofaGraphComponent/StatsSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <SofaGraphComponent/SofaDefaultPathSetting.h>
 
 #include <algorithm>
 #include <cstring>
 
-#include <sofa/core/ExecParams.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
 using namespace sofa::simulation;
@@ -41,10 +43,7 @@ using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
 using namespace sofa::simulation;
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 const char* BaseGUI::mProgramName = nullptr;
@@ -121,7 +120,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 
 void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_directory*/ )
 {
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );
 }
@@ -163,7 +162,7 @@ static void setDirectoryPath(std::string& outputVariable, const std::string& pat
         if (!pathExists)
         {
             FileSystem::createDirectory(path);
-            std::cout << "Created directory: " << path << std::endl;
+            msg_info("BaseGUI") << "Created directory: " << path;
         }
         outputVariable = path;
     }
@@ -180,6 +179,4 @@ void BaseGUI::setScreenshotDirectoryPath(const std::string& path, bool createIfN
 }
 
 
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui

@@ -28,11 +28,9 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/decompose.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif /* SOFA_SMP */
 
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 
 #include "DeformableFrameMass.h"
 
@@ -43,16 +41,34 @@ namespace defaulttype
 {
 
 
+template<typename Real>
+static Vec<2,Real> convertSpatialToQuadraticCoord(const Vec<1,Real>& p)
+{
+    return Vec<5,Real>( p[0], p[0]*p[0]);
+}
+
+template<typename Real>
+static Vec<5,Real> convertSpatialToQuadraticCoord(const Vec<2,Real>& p)
+{
+    return Vec<5,Real>( p[0], p[1], p[0]*p[0], p[1]*p[1], p[0]*p[1]);
+}
+
+template<typename Real>
+static Vec<9,Real> convertSpatialToQuadraticCoord(const Vec<3,Real>& p)
+{
+    return Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
+}
+
 /** DOF types associated with 2nd order deformable frames. Each deformable frame generates an quadratic displacement field, with 30 independent degrees of freedom.
 */
-template<int _spatial_dimensions, typename _Real>
+template< Size _spatial_dimensions, typename _Real>
 class StdQuadraticTypes
 {
 public:
-    static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int num_cross_terms =  spatial_dimensions==1? 0 : ( spatial_dimensions==2? 1 : spatial_dimensions==3? 3 : 0);
-    static const unsigned int num_quadratic_terms =  2*spatial_dimensions + num_cross_terms;
-    static const unsigned int VSize = spatial_dimensions +  spatial_dimensions * num_quadratic_terms;  // number of entries
+    static const Size spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
+    static const Size num_cross_terms =  spatial_dimensions==1? 0 : ( spatial_dimensions==2? 1 : spatial_dimensions==3? 3 : 0);
+    static const Size num_quadratic_terms =  2*spatial_dimensions + num_cross_terms;
+    static const Size VSize = spatial_dimensions +  spatial_dimensions * num_quadratic_terms;  // number of entries
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
@@ -84,18 +100,18 @@ public:
         Coord ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
         {
             getCenter() = center;
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            for(Size i=0; i<spatial_dimensions; ++i)
             {
-                for(unsigned int j=0; j<spatial_dimensions; ++j)
+                for(Size j=0; j<spatial_dimensions; ++j)
                 {
                     Frame& quadratic=getQuadratic();
                     quadratic[i][j]=affine[i][j];
                     quadratic[i][j+spatial_dimensions]=square[i][j];
                 }
             }
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            for(Size i=0; i<spatial_dimensions; ++i)
             {
-                for(unsigned int j=0; j<num_cross_terms; ++j)
+                for(Size j=0; j<num_cross_terms; ++j)
                 {
                     Frame& quadratic=getQuadratic();
                     quadratic[i][j+2*spatial_dimensions]=crossterms[i][j];
@@ -117,8 +133,8 @@ public:
         Affine getAffine() const
         {
             Affine m;
-            for (unsigned int i = 0; i < spatial_dimensions; ++i)
-                for (unsigned int j = 0; j < spatial_dimensions; ++j)
+            for (Size i = 0; i < spatial_dimensions; ++i)
+                for (Size j = 0; j < spatial_dimensions; ++j)
                     m[i][j]=getQuadratic()[i][j];
             return  m;
         }
@@ -202,10 +218,10 @@ public:
                     q[i][j] = 0.;
         }
 
-        template< int N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< int N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< Size N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< Size N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
 
     };
 
@@ -219,7 +235,7 @@ public:
     {
         assert ( ancestors.size() == coefs.size() );
         Coord c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
+        for (Size i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
         return c;
     }
 
@@ -229,10 +245,10 @@ public:
     {
         Affine m;
 #ifdef DEBUG
-        bool invertible = invertMatrix(m,c.getAffine());
+        bool invertible = defaulttype::invertMatrix(m,c.getAffine());
         assert(invertible);
 #else
-        invertMatrix(m,c.getAffine());
+        defaulttype::invertMatrix(m,c.getAffine());
 #endif
         return Coord( -(m*c.getCenter()),m );
     }
@@ -251,18 +267,18 @@ public:
         Deriv ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
         {
             getVCenter() = center;
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            for(Size i=0; i<spatial_dimensions; ++i)
             {
-                for(unsigned int j=0; j<spatial_dimensions; ++j)
+                for(Size j=0; j<spatial_dimensions; ++j)
                 {
                     Frame& quadratic=getVQuadratic();
                     quadratic[i][j]=affine[i][j];
                     quadratic[i][j+spatial_dimensions]=square[i][j];
                 }
             }
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            for(Size i=0; i<spatial_dimensions; ++i)
             {
-                for(unsigned int j=0; j<num_cross_terms; ++j)
+                for(Size j=0; j<num_cross_terms; ++j)
                 {
                     Frame& quadratic=getVQuadratic();
                     quadratic[i][j+2*spatial_dimensions]=crossterms[i][j];
@@ -284,8 +300,8 @@ public:
         Affine getAffine() const
         {
             Affine m;
-            for (unsigned int i = 0; i < spatial_dimensions; ++i)
-                for (unsigned int j = 0; j < spatial_dimensions; ++j)
+            for (Size i = 0; i < spatial_dimensions; ++i)
+                for (Size j = 0; j < spatial_dimensions; ++j)
                     m[i][j]=getVQuadratic()[i][j];
             return  m;
         }
@@ -322,13 +338,13 @@ public:
             J.clear();
 
             // translation -> identity
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
-                for(unsigned int j=0; j<spatial_dimensions; ++j)
+            for(Size i=0; i<spatial_dimensions; ++i)
+                for(Size j=0; j<spatial_dimensions; ++j)
                     J(i,j)=(i==j)?1.:0;
 
             // affine part
-            for(unsigned int i=0; i<MSize; ++i)
-                for(unsigned int j=0; j<MSize; ++j)
+            for(Size i=0; i<MSize; ++i)
+                for(Size j=0; j<MSize; ++j)
                     J(i+spatial_dimensions,j+spatial_dimensions)=dQOverdM(i,j);
         }
 
@@ -364,7 +380,7 @@ public:
                     // the projection matrix is however non symmetric..
 
                     // Compute velocity tensor W = Adot.Ainv
-                    Affine Ainv;  invertMatrix(Ainv,c.getAffine());
+                    Affine Ainv;  defaulttype::invertMatrix(Ainv,c.getAffine());
                     Affine W = getAffine() * Ainv;
 
                     // make it skew-symmetric
@@ -418,10 +434,10 @@ public:
         }
 
 
-        template< int N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< int N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< Size N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< Size N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
     typedef helper::vector<Deriv> VecDeriv;
@@ -431,7 +447,7 @@ public:
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
+        for ( Size i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
         return c;
     }
 
@@ -509,25 +525,6 @@ public:
 };
 
 
-template<typename Real>
-static Vec<2,Real> convertSpatialToQuadraticCoord(const Vec<1,Real>& p)
-{
-    return Vec<5,Real>( p[0], p[0]*p[0]);
-}
-
-template<typename Real>
-static Vec<5,Real> convertSpatialToQuadraticCoord(const Vec<2,Real>& p)
-{
-    return Vec<5,Real>( p[0], p[1], p[0]*p[0], p[1]*p[1], p[0]*p[1]);
-}
-
-template<typename Real>
-static Vec<9,Real> convertSpatialToQuadraticCoord(const Vec<3,Real>& p)
-{
-    return Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
-}
-
-
 // returns dp^* / dp
 
 template<typename Real>
@@ -542,7 +539,7 @@ template<typename Real>
 static Mat<5,2,Real> SpatialToQuadraticCoordGradient(const Vec<2,Real>& p)
 {
     Mat<5,2,Real> M;
-    for(unsigned int i=0;i<2;i++) { M(i,i)=1;  M(i+2,i)=2*p[i];}
+    for(Size i=0;i<2;i++) { M(i,i)=1;  M(i+2,i)=2*p[i];}
     M(4,0)=p[1];     M(4,1)=p[0];
     return M;
 }
@@ -551,7 +548,7 @@ template<typename Real>
 static Mat<9,3,Real> SpatialToQuadraticCoordGradient(const Vec<3,Real>& p)
 {
     Mat<9,3,Real> M;
-    for(unsigned int i=0;i<3;i++) { M(i,i)=1;  M(i+3,i)=2*p[i];}
+    for(Size i=0;i<3;i++) { M(i,i)=1;  M(i+3,i)=2*p[i];}
     M(6,0)=p[1]; M(6,1)=p[0];
     M(7,1)=p[2]; M(7,2)=p[1];
     M(8,0)=p[2]; M(8,2)=p[0];

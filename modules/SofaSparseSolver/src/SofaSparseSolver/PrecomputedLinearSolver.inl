@@ -32,13 +32,12 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #if SOFASPARSESOLVER_HAVE_CSPARSE
@@ -92,10 +91,10 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
-    odesolver::EulerImplicitSolver* EulerSolver;
-    this->getContext()->get(EulerSolver);
+    sofa::core::behavior::OdeSolver::SPtr odeSolver;
+    this->getContext()->get(odeSolver);
     factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
-    if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
+    if (odeSolver) factInt = odeSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
     std::stringstream ss;
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
@@ -206,7 +205,7 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatri
 {
     if (first)
     {
-        core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
+        core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();
         //TODO get the m b k factor from euler
 
         msg_error() << "The construction of the matrix when the solver is used only as cvonstraint "

@@ -1,6 +1,14 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 -9 1">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaDeformable'/>
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
+    <RequiredPlugin pluginName='SofaTopologyMapping'/>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -20,14 +28,13 @@
         <TriangleCollisionModel />
         
         <Node >
-          <VisualModel name="Visual" color="red" />
+          <OglModel name="Visual" color="red" />
           <IdentityMapping input="@.." output="@Visual" />
         </Node>
 
         <Node name="Edge Mesh">
             <EdgeSetTopologyContainer name="Container" />
             <EdgeSetTopologyModifier name="Modifier" />
-            <EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawEdges="1" />
             <Triangle2EdgeTopologicalMapping name="Mapping" input="@../Container" output="@Container" />
         </Node>

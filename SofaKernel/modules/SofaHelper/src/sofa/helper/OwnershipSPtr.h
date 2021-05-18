@@ -19,14 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef __SOFA_HELPER_OWNERSHIPSPTR_H__
-#define __SOFA_HELPER_OWNERSHIPSPTR_H__
+#pragma once
 
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/helper/config.h>
 
-namespace sofa {
-
-namespace helper {
+namespace sofa::helper
+{
 
 
 /// Smart pointer where the user precises if it must take the ownership (and so
@@ -68,11 +66,4 @@ public:
 
 };
 
-
-
-} // namespace helper
-
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::helper

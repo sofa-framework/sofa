@@ -19,31 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_INFORMATIONONPICKCALLBACK
-#define SOFA_GUI_QT_INFORMATIONONPICKCALLBACK
-
+#pragma once
 #include <sofa/gui/PickHandler.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
-namespace component
-{
-namespace collision
-{
-struct BodyPicked;
-}
-}
-namespace gui
-{
-namespace qt
-{
-namespace viewer
-{
-class SofaViewer;
-}
+    struct BodyPicked;
+} // namespace sofa::component::collision
 
+namespace sofa::gui::qt::viewer
+{
+    class SofaViewer;
+} // namespace sofa::gui::qt::viewer
+
+namespace sofa::gui::qt
+{
 class RealGUI;
 
 class InformationOnPickCallBack: public CallBackPicker
@@ -67,8 +59,5 @@ protected:
     viewer::SofaViewer* _viewer;
 
 };
-}
-}
-}
 
-#endif // SOFA_GUI_QT_INFORMATIONONPICKCALLBACK
+} // namespace sofa::gui::qt

@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QGRAPHSTATWIDGET_H
-#define SOFA_GUI_QT_QGRAPHSTATWIDGET_H
+#pragma once
 
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 #include <QWidget>
 #include <QTextEdit>
@@ -31,16 +30,16 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include <qwt_legend.h>
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
 
+namespace QtCharts
+{
+    class QChartView;
+    class QChart;
+    class QLineSeries;
+    class QValueAxis;
+}
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 /// Base class to make graphes in the stat tab of the node widget
@@ -50,35 +49,51 @@ class QGraphStatWidget : public QWidget
     Q_OBJECT
 
 public:
-
-    QGraphStatWidget( QWidget* parent, simulation::Node* node, const QString& title, unsigned numberOfCurves );
+    QGraphStatWidget( QWidget* parent, simulation::Node* node, const QString& title, unsigned numberOfCurves, int bufferSize );
     virtual ~QGraphStatWidget();
+
+    /// Main method called to update the graph
+    virtual void step() final;
+
     /// the only function that should be overloaded
-    virtual void step();
-
-    void updateVisualization();
-
+    virtual void stepImpl() = 0;
 
 protected:
-
     /// set the index-th curve (index must be < _numberOfCurves)
     void setCurve( unsigned index, const QString& name, const QColor& color );
-    unsigned _numberOfCurves;
 
-    simulation::Node *_node;
+    /// Method to update Y axis scale
+    void updateYAxisBounds(SReal value);
 
-    std::vector< double > _XHistory; ///< X-axis values (by default take the node time)
-    std::vector< std::vector< double > > _YHistory; ///< Y-axis values, one for each curve (_numberOfCurves)
+    /// flush data from series not anymore displayed
+    void flushSeries();
 
+    /// pointer to the node monitored
+    simulation::Node *m_node;
 
-    QwtPlot *_graph;
-    std::vector< QwtPlotCurve* > _curves; ///< resized to _numberOfCurves
+    /// size of the buffers to stored
+    int m_bufferSize;
+
+    /// Pointer to the chart Data
+    QtCharts::QChart *m_chart;
+
+    /// vector of series to be ploted
+    std::vector< QtCharts::QLineSeries *> m_curves;
+
+    /// x axis pointer
+    QtCharts::QValueAxis* m_axisX;
+    /// y axis pointer
+    QtCharts::QValueAxis* m_axisY;
+    
+    /// min y axis value stored
+    SReal m_yMin;
+    /// max y axis value stored
+    SReal m_yMax;
+    /// last timestep monitored
+    SReal m_lastTime;
+    /// step counter monitored
+    int m_cptStep;
 };
 
 
-} // qt
-} // gui
-} //sofa
-
-#endif // SOFA_GUI_QT_QGRAPHSTATWIDGET_H
-
+} //namespace sofa::gui::qt

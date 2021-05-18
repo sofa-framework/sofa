@@ -26,7 +26,7 @@
 
 #include <SofaPython/config.h>
 #include <sofa/core/objectmodel/ScriptEvent.h>
-
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

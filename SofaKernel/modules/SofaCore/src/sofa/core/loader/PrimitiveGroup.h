@@ -19,52 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/helper/types/PrimitiveGroup.h>
 
-#ifndef SOFA_CORE_LOADER_PRIMITIVEGROUP_H_
-#define SOFA_CORE_LOADER_PRIMITIVEGROUP_H_
-
-#include <string>
-
-namespace sofa
+namespace sofa::core::loader
 {
 
-namespace core
-{
-
-namespace loader
-{
-
-class PrimitiveGroup
-{
-public:
-    int p0, nbp;
-    std::string materialName;
-    std::string groupName;
-    int materialId;
-    inline friend std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
-    {
-        out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
-        return out;
-    }
-    inline friend std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
-    {
-        in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
-        return in;
-    }
-
-    bool operator <(const PrimitiveGroup& p) const
-    {
-        return p0 < p.p0;
-    }
-
-    PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
-    PrimitiveGroup(int p0, int nbp, std::string materialName, std::string groupName, int materialId) : p0(p0), nbp(nbp), materialName(materialName), groupName(groupName), materialId(materialId) {}
-};
-
-} // namespace loader
-
-} // namespace core
+///The PrimitiveGroup object that was previously in this sofa::core::loader is now in sofa::helper:types::Material.
+///The following lines is there to provide backward compatibility with existing code base.
+///This is just there for a transitional period of time and will be removed after 2018-01-07
+//TODO(dmarchal 2020-12-29): Delete that around 2021-05-01
+using sofa::helper::types::PrimitiveGroup;
 
 } // namespace sofa
 
-#endif /* SOFA_CORE_LOADER_PRIMITIVEGROUP_H_ */

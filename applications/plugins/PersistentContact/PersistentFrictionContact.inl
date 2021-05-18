@@ -27,7 +27,7 @@
 
 #include <SofaConstraint/FrictionContact.inl>
 
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 
 namespace sofa

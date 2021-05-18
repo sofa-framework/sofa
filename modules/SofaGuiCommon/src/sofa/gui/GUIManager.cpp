@@ -19,27 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <fstream>
-
 #include "GUIManager.h"
+
 #include "BaseGUI.h"
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
-#include <SofaSimulationCommon/init.h>
-#include <sofa/helper/system/FileSystem.h>
+#include <sofa/gui/ArgumentParser.h>
+
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaSimulationCommon/init.h>
+
+#include <fstream>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 /*STATIC FIELD DEFINITIONS */
@@ -79,7 +77,7 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIP
             ++it;
         if (it != itend)
         {
-            msg_error("GUIManager") << "ERROR(GUIManager): GUI "<<name<<" duplicate registration.";
+            msg_error("GUIManager") << "GUI "<<name<<" duplicate registration.";
             return 1;
         }
     }
@@ -122,7 +120,7 @@ const char* GUIManager::GetValidGUIName()
     if (guiCreators.empty())
     {
 
-        msg_error("GUIManager") << "ERROR(SofaGUI): No GUI registered.";
+        msg_error("GUIManager") << "No GUI registered.";
         return nullptr;
     }
     else
@@ -147,11 +145,11 @@ const char* GUIManager::GetValidGUIName()
                     return it1->name;
                 }
             }
-            msg_warning("GUIManager") << "WARNING(SofaGUI): Previously used GUI not registered. Using default GUI.";
+            msg_warning("GUIManager") << "Previously used GUI not registered. Using default GUI.";
         }
         else
         {
-            msg_info("GUIManager") << "INFO(SofaGUI): lastUsedGUI.ini not found; using default GUI.";
+            msg_info("GUIManager") << "lastUsedGUI.ini not found; using default GUI.";
         }
 
         std::list<GUICreator>::iterator it =guiCreators.begin();
@@ -197,9 +195,6 @@ int GUIManager::Init(const char* argv0, const char* name)
     if (first)
     {
         sofa::component::initSofaBase();
-        sofa::component::initSofaCommon();
-        sofa::component::initSofaGeneral();
-        sofa::component::initSofaMisc();
 
         first = false;
     }
@@ -299,25 +294,6 @@ void GUIManager::SetDimension(int  width , int  height )
 {
     if (currentGUI)
     {
-        //        std::string viewerFileName;
-        //        std::string path = sofa::helper::system::DataRepository.getFirstPath();
-        //        viewerFileName = path.append("/share/config/sofaviewer.ini");
-
-        //        if(sofa::helper::system::DataRepository.findFile(viewerFileName))
-        //        {
-        //            std::string configPath = sofa::helper::system::DataRepository.getFile(viewerFileName);
-        //            std::string w, h;
-        //            std::ifstream viewerStream(configPath.c_str());
-        //            std::getline(viewerStream,w);
-        //            std::getline(viewerStream,h);
-        //            viewerStream.close();
-
-        //            std::stringstream convertW(w);
-        //            convertW >> width;
-
-        //            std::stringstream convertH(h);
-        //            convertH >> height;
-        //        }
         currentGUI->setViewerResolution(width,height);
     }
 }
@@ -335,8 +311,4 @@ void GUIManager::SaveScreenshot(const char* filename)
 }
 
 
-}
-// namespace gui
-
-}
-// namespace sofa
+} // namespace sofa::gui

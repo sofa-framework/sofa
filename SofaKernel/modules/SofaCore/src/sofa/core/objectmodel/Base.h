@@ -22,16 +22,17 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/helper/StringUtils.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/DataTracker.h>
+#include <sofa/core/objectmodel/Link.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <list>
 #include <sofa/core/sptr.h>
 
 #include <deque>
+#include <atomic>
 
 #include <sofa/core/objectmodel/ComponentState.h>
 #include <sofa/core/DataTracker.h>
@@ -69,7 +70,6 @@ namespace behavior {
     class BaseInteractionProjectiveConstraintSet;
     class BaseConstraintSet;
     class BaseConstraint;
-    class BaseLMConstraint;
 } // namespace behavior
 namespace visual {
     class VisualModel;
@@ -133,12 +133,6 @@ public:
     using MyClass = TClass< Base, void >;
     static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
-
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* b)
-    {
-        ptr = dynamic_cast<T*>(b);
-    }
 
 protected:
     /// Constructor cannot be called directly
@@ -349,12 +343,12 @@ public:
     const MapLink& getLinkAliases() const { return m_aliasLink; }
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
-    virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
+    virtual Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
     template<class T>
     bool findLinkDest(T*& ptr, const std::string& path, const BaseLink* link)
     {
-        void* result = findLinkDestClass(T::GetClass(), path, link);
-        ptr = reinterpret_cast<T*>(result);
+        Base* result = findLinkDestClass(T::GetClass(), path, link);
+        ptr = dynamic_cast<T*>(result);
         return (result != nullptr);
     }
 
@@ -441,8 +435,7 @@ public:
     /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string typeName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -455,8 +448,7 @@ public:
     /// \code  std::string type = Base::className<B>(); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string className(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -469,8 +461,7 @@ public:
     /// \code  std::string type = Base::namespaceName<T>(); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string namespaceName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -483,8 +474,7 @@ public:
     /// \code  std::string type = Base::templateName<B>); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
     static std::string templateName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -509,7 +499,7 @@ public:
     /// @{
 
     ComponentState getComponentState() const { return d_componentState.getValue() ; }
-    bool isComponentStateValid() const { return d_componentState == ComponentState::Valid; }
+    bool isComponentStateValid() const { return d_componentState.getValue() == ComponentState::Valid; }
 
     ///@}
 
@@ -538,12 +528,11 @@ public:
 
     Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
 
-    [[deprecated("m_componentstate was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
+    SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE("To fix your code, use d_componentState")
     DeprecatedAndRemoved m_componentstate;
 
-    [[deprecated("d_componentState was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
+    SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE("To fix your code, use d_componentState")
     DeprecatedAndRemoved d_componentstate;
-
 
     std::string m_definitionSourceFileName        {""};
     int         m_definitionSourceFilePos         {-1};
@@ -590,7 +579,6 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionProjectiveConstraintSet )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet                      )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint                         )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLMConstraint                       )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                            )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualManager                          )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                             )

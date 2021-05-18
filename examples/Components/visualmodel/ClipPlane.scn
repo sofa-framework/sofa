@@ -1,4 +1,12 @@
 <Node name="root" dt="0.01" gravity="0 0 -10" showBoundingTree="0">
+
+	<RequiredPlugin pluginName='SofaImplicitOdeSolver'/> 
+	<RequiredPlugin pluginName='SofaLoader'/>
+	<RequiredPlugin pluginName='SofaMeshCollision'/> 
+	<RequiredPlugin pluginName='SofaMiscCollision'/>
+	<RequiredPlugin pluginName='SofaOpenglVisual'/>
+	<RequiredPlugin pluginName='SofaRigid'/>
+
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager response="default" />

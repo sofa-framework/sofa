@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.001" gravity="0 -9.81 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaConstraint'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaRigid'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    
     <VisualStyle displayFlags="showForceFields showVisual showBehavior" />
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
@@ -19,8 +26,9 @@
         <UniformMass totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping input="@.." output="@Visual" />
+            <MeshObjLoader name='myLoader1' filename='mesh/cube.obj'/>  
+            <OglModel name="Visual1" src='@myLoader1' color="1 1 0 1.0" />
+            <RigidMapping input="@.." output="@Visual1" />
         </Node>
         <Node name="ColliCube">
             <MeshTopology filename="mesh/cube.obj" />
@@ -46,8 +54,9 @@
         <UniformMass totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping input="@.." output="@Visual" />
+            <MeshObjLoader name='myLoader2' filename='mesh/cube.obj'/>  
+            <OglModel name="Visual2" src='@myLoader2' color="1 1 0 1.0" />
+            <RigidMapping input="@.." output="@Visual2" />
         </Node>
         <Node name="ColliCube">
             <MeshTopology filename="mesh/cube.obj" />

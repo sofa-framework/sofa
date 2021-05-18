@@ -16,7 +16,6 @@
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <TetrahedronSetTopologyContainer src="@loader" name="Container" filename="mesh/cylinder.msh" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3 1.0" />
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="360" assembling="0" />
         <DiagonalMass template="Vec3d" name="default11" massDensity="0.5" />
@@ -25,7 +24,6 @@
         <Node name="Triangles Mesh">
             <TriangleSetTopologyContainer name="Container" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@Container" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />

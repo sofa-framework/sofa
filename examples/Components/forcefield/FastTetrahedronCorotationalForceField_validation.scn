@@ -1,5 +1,13 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="2" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
+    <RequiredPlugin pluginName='SofaMiscForceField'/> 
+    <RequiredPlugin pluginName='SofaTopologyMapping'/> 
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showVisual" />
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />

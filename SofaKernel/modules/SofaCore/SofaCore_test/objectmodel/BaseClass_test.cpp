@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
+using sofa::core::objectmodel::Base ;
 
 #include <sofa/helper/NameDecoder.h>
 #include <sofa/core/ObjectFactory.h>
@@ -158,13 +159,13 @@ TEST_F(BaseClass_test, checkClassEquivalence  )
 
 TEST_F(BaseClass_test, checkStaticClassName  )
 {
-    ASSERT_EQ(BaseObject::className<decltype (m_ptr1)>(),"EmptyObject");
-    ASSERT_EQ(BaseObject::className<decltype (m_ptr2)>(),"NumberedClass123");
-    ASSERT_EQ(BaseObject::className<decltype (m_ptr3)>(),"NumberedClass456");
+    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr1)>(),"EmptyObject");
+    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr2)>(),"NumberedClass123");
+    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr3)>(),"NumberedClass456");
 
-    ASSERT_EQ(BaseObject::className<sofa::another_namespace::EmptyObject>(),"EmptyObject");
-    ASSERT_EQ(BaseObject::className<sofa::numbered_namespace_123::NumberedClass123>(),"NumberedClass123");
-    ASSERT_EQ(BaseObject::className<sofa::numbered_namespace_123::NumberedClass456>(),"NumberedClass456");
+    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::another_namespace::EmptyObject>(),"EmptyObject");
+    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::numbered_namespace_123::NumberedClass123>(),"NumberedClass123");
+    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::numbered_namespace_123::NumberedClass456>(),"NumberedClass456");
 }
 
 TEST_F(BaseClass_test, checkDynamicClassName  )

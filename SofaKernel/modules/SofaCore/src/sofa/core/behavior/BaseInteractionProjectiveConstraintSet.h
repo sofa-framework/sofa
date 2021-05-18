@@ -23,6 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_BASEINTERACTIONPROJECTIVECONSTRAINTSET_H
 
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {

@@ -2,6 +2,15 @@ import Sofa
 
 def createScene(rootNode):
         rootNode.createObject('RequiredPlugin', name='SofaSparseSolver')
+        rootNode.createObject('RequiredPlugin', name='SofaBoundaryCondition')
+        rootNode.createObject('RequiredPlugin', name='SofaDeformable')
+        rootNode.createObject('RequiredPlugin', name='SofaEngine')
+        rootNode.createObject('RequiredPlugin', name='SofaGeneralAnimationLoop')
+        rootNode.createObject('RequiredPlugin', name='SofaImplicitOdeSolver')
+        rootNode.createObject('RequiredPlugin', name='SofaRigid')
+        rootNode.createObject('RequiredPlugin', name='SofaMiscMapping')
+        rootNode.createObject('RequiredPlugin', name='SofaSimpleFem')
+
         rootNode.createObject('VisualStyle', displayFlags='showCollisionModels hideMappings showForceFields')
 
         meshDivision = rootNode.createChild('meshDivision')

@@ -44,7 +44,7 @@ namespace defaulttype
 template<class real>
 inline real getDeterminantGradient(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
-    real det=determinant(from);
+    real det=defaulttype::determinant(from);
 
     dest(0,0)= (from(1,1)*from(2,2) - from(2,1)*from(1,2));
     dest(0,1)= (from(1,2)*from(2,0) - from(2,2)*from(1,0));
@@ -185,9 +185,9 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        Real di1 =  scalarProduct(dI1,data.getF());
-        Real di2 =  scalarProduct(dI2,data.getF());
-        Real dj =   scalarProduct(dJ,data.getF());
+        Real di1 =  defaulttype::scalarProduct(dI1,data.getF());
+        Real di2 =  defaulttype::scalarProduct(dI2,data.getF());
+        Real dj =   defaulttype::scalarProduct(dJ,data.getF());
 
         result.getStrain()[0] +=  di1;
         result.getStrain()[1] +=  di2;

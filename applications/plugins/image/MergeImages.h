@@ -317,7 +317,7 @@ protected:
             }
         }
 
-        sout << "Created merged image from " << nb << " input images." << sendl;
+        msg_info() << "Created merged image from " << nb << " input images.";
     }
 
     defaulttype::Vec<2,Coord> getBB(unsigned int i) // get image corners

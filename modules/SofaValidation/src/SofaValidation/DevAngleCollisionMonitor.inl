@@ -112,7 +112,7 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
                 {
                     if ((*contacts)[i].elem.second.getCollisionModel() == pointsCM)
                     {
-                        if ((*contacts)[i].elem.second.getIndex() == ((int)x.size()-1))
+                        if ((*contacts)[i].elem.second.getIndex() == (x.size()-1))
                         {
                             double norm = ((*contacts)[i].point[0] - (*contacts)[i].point[1]).norm();
                             if (norm < minNorm)
@@ -133,7 +133,7 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
                 {
                     if ((*contacts)[i].elem.first.getCollisionModel() == pointsCM)
                     {
-                        if ((*contacts)[i].elem.first.getIndex() == ((int)x.size()-1))
+                        if ((*contacts)[i].elem.first.getIndex() == (x.size()-1))
                         {
                             double norm = ((*contacts)[i].point[0] - (*contacts)[i].point[1]).norm();
 

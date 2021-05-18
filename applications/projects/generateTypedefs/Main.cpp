@@ -41,7 +41,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 #include <algorithm>
 #include <functional>
 using sofa::core::SofaLibrary;
@@ -175,7 +174,7 @@ void pushToList( const std::string& templateCombination, const char separator, s
 {
     size_t curPos = 0;
     size_t oldPos = 0;
-    std::string chunk;
+    
     while ( ( curPos = templateCombination.find(separator, oldPos) ) != std::string::npos )
     {
         templateList.push_back( templateCombination.substr(oldPos,curPos) );
@@ -581,7 +580,6 @@ int main(int , char** )
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
     SofaLibrary library; library.build();
     const SofaLibrary::VecCategory &categories = library.getCategories();
 

@@ -23,15 +23,10 @@
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
 #include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/fwd.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <utility> // for std::pair
-#include <cstddef> // for nullptr and std::size_t
-#include <iostream>
-#include <vector>
-#include <cassert>
-#include <climits>
+#include <iosfwd>
 
 namespace sofa
 {
@@ -47,7 +42,7 @@ namespace defaulttype
 class SOFA_DEFAULTTYPE_API BaseMatrix
 {
 public:
-    typedef BaseVector::Index Index;
+    typedef sofa::SignedIndex Index;
 
     BaseMatrix();
     virtual ~BaseMatrix();
@@ -74,32 +69,16 @@ public:
     virtual void add(Index i, Index j, double v) = 0;
 
     ///Adding values from a 3x3d matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const defaulttype::Mat3x3d & _M) {
-        for (unsigned i=0;i<3;i++)
-            for (unsigned j=0;j<3;j++)
-                add(_i+i,_j+j,_M[i][j]);
-    }
+    virtual void add(Index _i, Index _j, const defaulttype::Mat3x3d & _M);
 
     ///Adding values from a 3x3f matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const defaulttype::Mat3x3f & _M) {
-        for (unsigned i=0;i<3;i++)
-            for (unsigned j=0;j<3;j++)
-                add(_i+i,_j+j,_M[i][j]);
-    }
+    virtual void add(Index _i, Index _j, const defaulttype::Mat3x3f & _M);
 
     ///Adding values from a 2x2d matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const defaulttype::Mat2x2d & _M) {
-        for (unsigned i=0;i<2;i++)
-            for (unsigned j=0;j<2;j++)
-                add(_i+i,_j+j,_M[i][j]);
-    }
+    virtual void add(Index _i, Index _j, const defaulttype::Mat2x2d & _M);
 
     ///Adding values from a 2x2f matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const defaulttype::Mat2x2f & _M) {
-        for (unsigned i=0;i<2;i++)
-            for (unsigned j=0;j<2;j++)
-                add(_i+i,_j+j,_M[i][j]);
-    }
+    virtual void add(Index _i, Index _j, const defaulttype::Mat2x2f & _M);
 
     /*    /// Write the value of the element at row i, column j (using 0-based indices)
         virtual void set(Index i, Index j, float v) { set(i,j,(double)v); }
@@ -1200,85 +1179,17 @@ public:
 
     /// @}
 
-    friend std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m )
-    {
-        Index nx = m.colSize();
-        Index ny = m.rowSize();
-        out << "[";
-        for (Index y=0; y<ny; ++y)
-        {
-            out << "\n[";
-            for (Index x=0; x<nx; ++x)
-            {
-                out << " " << m.element(y,x);
-            }
-            out << " ]";
-        }
-        out << " ]";
-        return out;
-    }
-
-    friend std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m )
-    {
-        // The reading could be way simplier with an other format,
-        // but I did not want to change the existing output.
-        // Anyway, I guess there are better ways to perform the reading
-        // but at least this one is working...
-
-        std::vector<SReal> line;
-        std::vector< std::vector<SReal> > lines;
-
-    //    unsigned l=0, c;
-
-        in.ignore(INT_MAX, '['); // ignores all characters until it passes a [, start of the matrix
-
-        while(true)
-        {
-            in.ignore(INT_MAX, '['); // ignores all characters until it passes a [, start of the line
-    //        c=0;
-
-            SReal r;
-            char car; in >> car;
-            while( car!=']') // end of the line
-            {
-                in.seekg( -1, std::istream::cur ); // unread car
-                in >> r;
-                line.push_back(r);
-    //            ++c;
-                in >> car;
-            }
-
-    //        ++l;
-
-            lines.push_back(line);
-            line.clear();
-
-            in >> car;
-            if( car==']' ) break; // end of the matrix
-            else in.seekg( -1, std::istream::cur ); // unread car
-
-        }
-
-        m.resize( (Index)lines.size(), (Index)lines[0].size() );
-
-        for( size_t i=0; i<lines.size();++i)
-        {
-            assert( lines[i].size() == lines[0].size() ); // all line should have the same number of columns
-            for( size_t j=0; j<lines[i].size();++j)
-            {
-                m.add( (Index)i, (Index)j, lines[i][j] );
-            }
-        }
-
-        m.compress();
-
-
-        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-        return in;
-    }
-
+    /// Declare that the operator << is friend so they can use private data.
+    friend SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
+    /// Declare that the operator >> is friend so they can use private data.
+    friend SOFA_DEFAULTTYPE_API std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
 };
 
+/// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
+SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
+
+/// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
+SOFA_DEFAULTTYPE_API std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
 
 } // nampespace defaulttype
 

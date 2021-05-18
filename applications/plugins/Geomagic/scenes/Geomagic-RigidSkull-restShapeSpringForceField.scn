@@ -1,9 +1,11 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.005" gravity="10 0 0" >
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaHaptics'/>
+    <RequiredPlugin name='Geomagic'/>
+    <RequiredPlugin name='SofaOpenglVisual'/>
+    <RequiredPlugin name='SofaHaptics'/>
+    <RequiredPlugin name='SofaSparseSolver'/>    
+
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
-    <RequiredPlugin name="Geomagic plugin" pluginName="Geomagic" />
     
     <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
     <BruteForceDetection name="detection" />
@@ -13,16 +15,15 @@
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" drawDeviceFrame="1" positionBase="0 0 0" orientationBase="0 0.707 0 -0.707"  />
 
-
-    <Node name="Tooth" >
+    <Node name="Skull" >
         <Node name="VisualModel" >
             <MeshObjLoader name="meshLoader_0" filename="Demos/Dentistry/data/mesh/skull_and_teeth.obj" handleSeams="1" />
-            <OglModel name="ToothVisualModel" src="@meshLoader_0" color="white" /> 
+            <OglModel name="SkullVisualModel" src="@meshLoader_0" color="white" /> 
         </Node>
         <Node name="CollisionModel" >
             <MeshObjLoader filename="Demos/Dentistry/data/mesh/skull_and_teeth_coarse.obj"  name="loader"/>
-            <MeshTopology src="@loader" name="ToothCollisionModel"  />
-            <MechanicalObject src="@loader" name="toothState" />        
+            <MeshTopology src="@loader" name="SkullCollisionModel"  />
+            <MechanicalObject src="@loader" name="SkullState" />        
             <TriangleCollisionModel contactStiffness="100" simulated="0" moving="0"/>
             <LineCollisionModel contactStiffness="100" simulated="0" moving="0"/>    
             <PointCollisionModel contactStiffness="100" simulated="0" moving="0"/>   
@@ -37,14 +38,14 @@
 
     <Node name="Instrument" >
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
-        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
+        <SparseLDLSolver /> 
         
 		<MechanicalObject name="instrumentState" template="Rigid3d" />
 		<UniformMass name="mass" totalMass="0.01" />
 		
 		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' points='0' external_points='0' />
-        <LCPForceFeedback activate="true" forceCoef="1.0"/> <!-- ADDED : Compute a force-feedback for the device -->
-        <UncoupledConstraintCorrection/>
+        <LCPForceFeedback activate="true" forceCoef="0.00005"/> <!-- ADDED : Compute a force-feedback for the device -->
+        <LinearSolverConstraintCorrection/>
         
 		<Node name="VisualModel" >
             <MeshObjLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />

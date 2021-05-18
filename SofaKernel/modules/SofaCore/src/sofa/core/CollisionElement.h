@@ -22,8 +22,8 @@
 #ifndef SOFA_CORE_COLLISIONELEMENT_H
 #define SOFA_CORE_COLLISIONELEMENT_H
 #include <sofa/core/config.h>
+#include <sofa/core/fwd.h>
 
-#include <cstddef>
 #include <vector>
 
 namespace sofa
@@ -31,14 +31,6 @@ namespace sofa
 
 namespace core
 {
-
-namespace visual
-{
-class VisualParams;
-} // namespace visual
-
-class CollisionModel;
-class CollisionElementIterator;
 
 /**
  *  \brief Base class for reference to an collision element defined by its <i>index</i>
@@ -49,18 +41,20 @@ class BaseCollisionElementIterator
 public:
     typedef std::vector<int>::const_iterator VIterator;
 
+    using Index = sofa::Index;
+
     /// Constructor.
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    BaseCollisionElementIterator(int index=0)
+    BaseCollisionElementIterator(Index index=0)
         : index(index), it(emptyVector.begin()), itend(emptyVector.end())
     {
     }
 
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
-    BaseCollisionElementIterator(int index, VIterator it, VIterator itend)
+    BaseCollisionElementIterator(Index index, VIterator it, VIterator itend)
         : index(index), it(it), itend(itend)
     {
     }
@@ -88,23 +82,45 @@ public:
         }
     }
 
-    /// Increment this iterator to reference the next element.
-    void operator++()
+    /// Prefix increment this iterator to reference the next element.
+    BaseCollisionElementIterator& operator++()
     {
         next();
+        return *this;
     }
 
-    /// Increment this iterator to reference the next element.
-    void operator++(int)
+    /// Postfix increment this iterator to reference the next element.
+    BaseCollisionElementIterator operator++(int)
     {
+        auto tmp = *this;
         next();
+        return tmp;
+    }
+
+    // Increment this iterator by n elements. Negative numbers are not supported
+    BaseCollisionElementIterator& operator+=(int n)
+    {
+        if (n > 0)
+        {
+            while(n--)
+            {
+                next();
+            }
+        }
+        return *this;
+    }
+
+    BaseCollisionElementIterator operator+(int n) const
+    {
+        auto tmp = *this;
+        return tmp += n;
     }
 
     /// Return the index of the referenced element inside the CollisionModel.
     ///
     /// This methods should rarely be used.
     /// Users should call it.draw() instead of model->draw(it.getIndex()).
-    int getIndex() const
+    Index getIndex() const
     {
         return index;
     }
@@ -124,7 +140,7 @@ public:
     /// @}
 
 protected:
-    int index;      ///< index of the referenced element inside the CollisionModel.
+    Index index;      ///< index of the referenced element inside the CollisionModel.
     VIterator it; ///< current position in a vector of indices, in case this iterator traverse a non-contiguous set of indices
     VIterator itend; ///< end position in a vector of indices, in case this iterator traverse a non-contiguous set of indices
     static std::vector<int> SOFA_CORE_API emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
@@ -152,14 +168,14 @@ public:
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    TCollisionElementIterator(Model* model=nullptr, int index=0)
+    TCollisionElementIterator(Model* model=nullptr, Index index=0)
         : BaseCollisionElementIterator(index), model(model)
     {
     }
 
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
-    TCollisionElementIterator(Model* model, int index, VIterator it, VIterator itend)
+    TCollisionElementIterator(Model* model, Index index, VIterator it, VIterator itend)
         : BaseCollisionElementIterator(index, it, itend), model(model)
     {
     }
@@ -188,6 +204,19 @@ public:
     bool operator!=(const TCollisionElementIterator<Model2>& i) const
     {
         return this->model != i.getCollisionModel() || this->index != i.getIndex();
+    }
+
+    // Increment this iterator by n elements. Negative numbers are not supported
+    TCollisionElementIterator& operator+=(int n)
+    {
+        BaseCollisionElementIterator::operator+=(n);
+        return *this;
+    }
+
+    TCollisionElementIterator operator+(int n) const
+    {
+        auto tmp = *this;
+        return tmp += n;
     }
 
     /// Test if this iterator is initialized with a valid CollisionModel.
@@ -229,7 +258,7 @@ public:
     /// Test if this element can collide with another element.
     ///
     /// @see CollisionModel::canCollideWithElement
-    bool canCollideWith(TCollisionElementIterator<Model>& elem)
+    bool canCollideWith(const TCollisionElementIterator<Model>& elem) const
     {
         return ((model != elem.model) || (index < elem.index)) && model->canCollideWithElement(index, elem.model, elem.index);
     }
@@ -284,7 +313,7 @@ public:
     /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
-    CollisionElementIterator(CollisionModel* model=nullptr, int index=0)
+    CollisionElementIterator(CollisionModel* model=nullptr, Index index=0)
         : TCollisionElementIterator<CollisionModel>(model, index)
     {
     }
@@ -298,7 +327,7 @@ public:
 
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
-    CollisionElementIterator(CollisionModel* model, int index, VIterator it, VIterator itend)
+    CollisionElementIterator(CollisionModel* model, Index index, VIterator it, VIterator itend)
         : TCollisionElementIterator<CollisionModel>(model, index, it, itend)
     {
     }

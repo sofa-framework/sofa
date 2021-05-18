@@ -54,7 +54,7 @@ BaseObject::BaseObject()
 BaseObject::~BaseObject()
 {
     assert(l_master.get() == nullptr); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
-    for(auto slave : l_slaves)
+    for(auto& slave : l_slaves)
     {
         if (slave.get())
         {
@@ -69,7 +69,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
-    for (auto slave : l_slaves)
+    for (auto& slave : l_slaves)
     {
         if (slave.get())
         {
@@ -84,7 +84,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 }
 
 /// This method insures that slaves objects have master and context links set correctly
-void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add)
+void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add)
 {
     if (!ptr) return;
     if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
@@ -147,7 +147,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
     if (attributeList != nullptr)
     {
-        for (unsigned int j = 0; j<attributeList->size(); ++j)
+        for (std::size_t j = 0; j<attributeList->size(); ++j)
         {
             it_map = dataLoaderMap.find ((*attributeList)[j]);
             if (it_map != dataLoaderMap.end())
@@ -185,7 +185,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
     }
 }
 
-void* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link)
+Base* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link)
 {
     if (this->getContext() == BaseContext::getDefault())
         return nullptr;

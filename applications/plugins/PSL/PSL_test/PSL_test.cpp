@@ -165,7 +165,7 @@ TEST_P(PSL_test, checkTestFiles)
     checkTestFilesMsg(GetParam()) ;
 }
 
-INSTANTIATE_TEST_CASE_P(BaseTestSet,
+INSTANTIATE_TEST_SUITE_P(BaseTestSet,
                         PSL_test,
                         ::testing::ValuesIn(testvalues));
 

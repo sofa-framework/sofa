@@ -27,18 +27,13 @@
 #include "ModifyObject.h"
 #include <QDebug>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QScrollArea>
+#include <QScreen>
+
 // uncomment to show traces of GUI operations in this file
 //#define DEBUG_GUI
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
@@ -46,11 +41,11 @@ QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
         unsigned int idx):
     QWidget(parent), object(o), item(i), index(idx), size(0), dirty(false), pixelSize(0), pixelMaxSize(600)
 {
-    const int screenHeight = QApplication::desktop()->height();
+    const int screenHeight = QGuiApplication::primaryScreen()->availableGeometry().height();
 
     QVBoxLayout* vbox = new QVBoxLayout();
     vbox->setObjectName("tabVisualizationLayout");
-    vbox->setMargin(0);
+    vbox->setContentsMargins(0, 0, 0, 0);
     vbox->setSpacing(0);
 
     this->setLayout(vbox);
@@ -122,7 +117,7 @@ void QTabulationModifyObject::dataValueChanged(QString dataValue)
 
 void QTabulationModifyObject::updateListViewItem()
 {
-    if (simulation::Node *node=dynamic_cast< simulation::Node *>(object))
+    if (simulation::Node *node=sofa::simulation::node::getNodeFrom(object))
     {
         item->setText(0,object->getName().c_str());
         emit nodeNameModification(node);
@@ -204,8 +199,4 @@ void QTabulationModifyObject::addStretch()
     dynamic_cast<QVBoxLayout*>(this->layout())->addStretch();
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

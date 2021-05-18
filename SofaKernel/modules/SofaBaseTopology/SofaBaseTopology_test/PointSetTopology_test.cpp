@@ -22,7 +22,6 @@
 
 #include <gtest/gtest.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <SofaSimulationTree/GNode.h>
 
 using namespace sofa::component::topology;
 

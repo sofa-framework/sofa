@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>VideoRecorderManager</class>
  <widget class="QDialog" name="VideoRecorderManager">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -169,14 +172,17 @@
    <slot>onChangeRecordingType()</slot>
    <hints>
     <hint type="sourcelabel">
-      <x>20</x>
-      <y>20</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
-      <x>20</x>
-      <y>20</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>onChangeRecordingType()</slot>
+ </slots>
 </ui>

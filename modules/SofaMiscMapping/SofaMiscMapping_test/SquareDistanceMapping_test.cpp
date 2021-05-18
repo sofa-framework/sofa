@@ -105,14 +105,14 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 
 
 // Define the list of types to instanciate.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 component::mapping::SquareDistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>
 , component::mapping::SquareDistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE( SquareDistanceMappingTest, DataTypes );
+TYPED_TEST_SUITE( SquareDistanceMappingTest, DataTypes );
 
 // test case
 TYPED_TEST( SquareDistanceMappingTest , test )

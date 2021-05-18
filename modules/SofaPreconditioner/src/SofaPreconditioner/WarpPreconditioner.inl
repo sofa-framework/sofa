@@ -32,7 +32,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
 
 #include <iostream>
 #include <cmath>
@@ -84,17 +83,20 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit() {
     sofa::core::objectmodel::BaseContext * c = this->getContext();
     c->get<sofa::core::behavior::BaseRotationFinder >(&rotationFinders, sofa::core::objectmodel::BaseContext::Local);
 
-    sout << "Found " << rotationFinders.size() << " Rotation finders" << sendl;
+    std::stringstream tmpStr;
+    tmpStr << "Found " << rotationFinders.size() << " Rotation finders" << msgendl;
     for (unsigned i=0; i<rotationFinders.size(); i++) {
-        sout << i << " : " << rotationFinders[i]->getName() << sendl;
+        tmpStr << i << " : " << rotationFinders[i]->getName() << msgendl;
     }
+    msg_info() << tmpStr.str();
 
     first = true;
     indexwork = 0;
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-unsigned WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sofa::core::MechanicalParams* mparams) {
+typename  WarpPreconditioner<TMatrix, TVector, ThreadManager >::Index 
+WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sofa::core::MechanicalParams* mparams) {
     simulation::common::MechanicalOperations mops(mparams, this->getContext());
 
     this->currentGroup->matrixAccessor.setGlobalMatrix(this->currentGroup->systemMatrix);
@@ -108,7 +110,7 @@ template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
     this->currentMFactor = mparams->mFactor();
-    this->currentBFactor = mparams->bFactor();
+    this->currentBFactor = sofa::core::mechanicalparams::bFactor(mparams);
     this->currentKFactor = mparams->kFactor();
     if (!this->frozen) {
         simulation::common::MechanicalOperations mops(mparams, this->getContext());
@@ -152,7 +154,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         this->currentGroup->systemMatrix->resize(updateSystemSize,updateSystemSize);
         this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
     } else {
-        currentSystemSize = getSystemDimention(sofa::core::MechanicalParams::defaultInstance());
+        currentSystemSize = getSystemDimention(sofa::core::mechanicalparams::defaultInstance());
 
 
         this->currentGroup->systemMatrix->clear();

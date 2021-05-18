@@ -238,8 +238,8 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
 };
 
-TEST_F( EulerImplicit_test_2_particles_to_equilibrium,  ){}
-TEST_F( EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium,  ){}
+TEST_F( EulerImplicit_test_2_particles_to_equilibrium, check ){}
+TEST_F( EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium, check ){}
 
 }// namespace sofa
 

@@ -22,7 +22,7 @@
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
         <FixedConstraint indices="@FixedROI.indices" />
         
-        <BarycentricShapeFunction  template="ShapeFunctiond"/>
+        <BarycentricShapeFunction  template="ShapeFunction3d"/>
 
         <Node 	name="behavior_hooke"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
@@ -59,7 +59,7 @@
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
         <FixedConstraint indices="@FixedROI.indices" />
         
-        <BarycentricShapeFunction  template="ShapeFunctiond"/>
+        <BarycentricShapeFunction  template="ShapeFunction3d"/>
 
         <Node 	name="behavior_hooke"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />

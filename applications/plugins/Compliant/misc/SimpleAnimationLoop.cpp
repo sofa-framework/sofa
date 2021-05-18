@@ -2,7 +2,7 @@
 
 
 #include <sofa/simulation/AnimateVisitor.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -18,6 +18,12 @@
 #include <sofa/simulation/IntegrateEndEvent.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/helper/cast.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
 namespace sofa
 {

@@ -37,7 +37,6 @@ namespace io
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::loader;
 
 Creator<Mesh::FactoryMesh,MeshOBJ> MeshOBJClass("obj");
 Creator<Mesh::FactoryMesh, MeshOBJ> MeshOBJClass2("OBJ");
@@ -60,8 +59,8 @@ void MeshOBJ::init (std::string filename)
 
 void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
 {
-    vector< vector<int> > vertNormTexIndices;
-    vector<int>vIndices, nIndices, tIndices;
+    vector< vector<PointID> > vertNormTexIndices;
+    vector<PointID>vIndices, nIndices, tIndices;
     int vtn[3];
     Vec3d result;
     Vec3d texCoord;

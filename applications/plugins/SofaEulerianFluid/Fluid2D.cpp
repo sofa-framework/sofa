@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaEulerianFluid/Fluid2D.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include <cstring>
@@ -101,7 +101,7 @@ void Fluid2D::updatePosition(SReal dt)
 void Fluid2D::draw(const core::visual::VisualParams* vparams)
 {
     using namespace sofa::helper;
-#ifndef SOFA_NO_OPENGL
+
     updateVisual();
     glPushMatrix();
     const int& nx = f_nx.getValue();
@@ -209,7 +209,6 @@ void Fluid2D::draw(const core::visual::VisualParams* vparams)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     glPopMatrix();
-#endif /* SOFA_NO_OPENGL */
 }
 
 void Fluid2D::updateVisual()

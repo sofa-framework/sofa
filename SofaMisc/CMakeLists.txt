@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMisc)
 
+## Version
+set(SOFAMISC_VERSION ${SofaFramework_VERSION})
+
 ## Subdirectories
-set(SOFAMISC_TARGETS
+set(SOFAMISC_MODULES
     SofaMiscExtra
     SofaMiscEngine
     SofaMiscFem
@@ -12,9 +15,20 @@ set(SOFAMISC_TARGETS
     SofaMiscTopology
     )
 
-foreach(TARGET ${SOFAMISC_TARGETS})
-    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+foreach(module ${SOFAMISC_MODULES})
+    sofa_find_package(${module} QUIET)
+    if(NOT ${module}_FOUND)
+        string(TOUPPER module_${module} MODULE_TO_CHECK)
+        list(APPEND LIST_MODULES_TO_CHECK ${MODULE_TO_CHECK})
+    endif()
 endforeach()
+if(LIST_MODULES_TO_CHECK)
+    message(FATAL_ERROR
+        " If you still want to use ${PROJECT_NAME}, please enable the following CMake option(s): \n"
+        " ${LIST_MODULES_TO_CHECK}"
+        )
+endif()
+
 
 set(SOFAMISC_SRC src/${PROJECT_NAME})
 
@@ -28,7 +42,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAMISC_TARGETS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAMISC_MODULES})
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

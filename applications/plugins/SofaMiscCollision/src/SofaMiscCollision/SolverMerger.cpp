@@ -30,7 +30,7 @@
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaConstraint/LCPConstraintSolver.h>
-#include <SofaConstraint/LMConstraintSolver.h>
+
 namespace sofa
 {
 
@@ -57,7 +57,7 @@ typename T::SPtr copySolver(const T& s)
         core::objectmodel::BaseData* s = fields[i];
         core::objectmodel::BaseData* d = res->findData(s->getName());
         if (d)
-            d->copyValue(s);
+            d->copyValueFrom(s);
     }
     return res;
 }
@@ -72,15 +72,11 @@ ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* sol
     {
         if (constraintset::LCPConstraintSolver* cs=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2))
             return copySolver<constraintset::LCPConstraintSolver>(*cs);
-        else if (constraintset::LMConstraintSolver* cs=dynamic_cast<constraintset::LMConstraintSolver*>(csolver2))
-            return copySolver<constraintset::LMConstraintSolver>(*cs);
     }
     else if (!csolver2)
     {
         if (constraintset::LCPConstraintSolver* cs=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver1))
             return copySolver<constraintset::LCPConstraintSolver>(*cs);
-        else if (constraintset::LMConstraintSolver* cs=dynamic_cast<constraintset::LMConstraintSolver*>(csolver1))
-            return copySolver<constraintset::LMConstraintSolver>(*cs);
     }
     else
     {
@@ -95,19 +91,6 @@ ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* sol
             newSolver->tol.setValue(lcp1->tol.getValue() < lcp2->tol.getValue() ? lcp1->tol.getValue() : lcp2->tol.getValue() );
             newSolver->maxIt.setValue(lcp1->maxIt.getValue() > lcp2->maxIt.getValue() ? lcp1->maxIt.getValue() : lcp2->maxIt.getValue() );
             newSolver->mu.setValue((lcp1->mu.getValue() + lcp2->mu.getValue())*0.5);
-            return newSolver;
-        }
-        else if (dynamic_cast<constraintset::LMConstraintSolver*>(csolver2) && dynamic_cast<constraintset::LMConstraintSolver*>(csolver1))
-        {
-            constraintset::LMConstraintSolver* lm1=dynamic_cast<constraintset::LMConstraintSolver*>(csolver1);
-            constraintset::LMConstraintSolver* lm2=dynamic_cast<constraintset::LMConstraintSolver*>(csolver2);
-            constraintset::LMConstraintSolver::SPtr newSolver = sofa::core::objectmodel::New<constraintset::LMConstraintSolver>();
-            newSolver->numIterations.setValue(lm1->numIterations.getValue() > lm2->numIterations.getValue() ? lm1->numIterations.getValue() : lm2->numIterations.getValue() );
-            newSolver->maxError.setValue(lm1->maxError.getValue() < lm2->maxError.getValue() ? lm1->maxError.getValue() : lm2->maxError.getValue() );
-
-            newSolver->constraintAcc.setValue(lm1->constraintAcc.getValue() | lm2->constraintAcc.getValue());
-            newSolver->constraintVel.setValue(lm1->constraintVel.getValue() | lm2->constraintVel.getValue());
-            newSolver->constraintPos.setValue(lm1->constraintPos.getValue() | lm2->constraintPos.getValue());
             return newSolver;
         }
     }

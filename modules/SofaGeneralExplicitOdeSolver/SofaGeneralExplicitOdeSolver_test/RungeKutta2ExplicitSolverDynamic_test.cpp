@@ -22,7 +22,7 @@
 #include <SofaTest/Elasticity_test.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/core/ExecParams.h>
+
 
 
 
@@ -201,13 +201,13 @@ struct RungeKutta2ExplicitSolverDynamic_test : public Elasticity_test<_DataTypes
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(RungeKutta2ExplicitSolverDynamic_test, DataTypes);
+TYPED_TEST_SUITE(RungeKutta2ExplicitSolverDynamic_test, DataTypes);
 
 // Test case: h=0.1 k=100 m =10 rm=0.1 rk=0.1
 TYPED_TEST( RungeKutta2ExplicitSolverDynamic_test , rungeKutta2ExplicitSolverDynamicTest_medium_dt)

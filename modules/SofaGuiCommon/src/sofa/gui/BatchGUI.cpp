@@ -20,21 +20,25 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "BatchGUI.h"
-#include <sofa/simulation/Simulation.h>
+
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <iostream>
-#include <sstream>
-#include <string>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/UpdateContextVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/gui/ArgumentParser.h>
 
 #include <boost/program_options.hpp>
 
-namespace sofa
+#include <fstream>
+#include <string>
+#include <iomanip>
+
+namespace sofa::gui
 {
 
-namespace gui
-{
+using sofa::helper::AdvancedTimer;
 
 const signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
 signed int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
@@ -61,9 +65,9 @@ int BatchGUI::mainLoop()
             msg_info("BatchGUI") << "Computing infinite iterations." << msgendl;
         }
 
-        sofa::helper::AdvancedTimer::begin("Animate");
+        AdvancedTimer::begin("Animate");
         sofa::simulation::getSimulation()->animate(groot.get());
-        msg_info("BatchGUI") << "Processing." << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
+        msg_info("BatchGUI") << "Processing." << AdvancedTimer::end("Animate", groot->getTime(), groot->getDt()) << msgendl;
         sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
         sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
@@ -75,8 +79,15 @@ int BatchGUI::mainLoop()
         {
             if (i != nbIter)
             {
-                sofa::helper::ScopedAdvancedTimer("Animate");
+                AdvancedTimer::begin("Animate");
+
                 sofa::simulation::getSimulation()->animate(groot.get());
+
+                const std::string timerOutputStr = AdvancedTimer::end("Animate", groot->getTime(), groot->getDt());
+                if (canExportJson(timerOutputStr, "Animate"))
+                {
+                    exportJson(timerOutputStr, i);
+                }
             }
 
             if ( i == nbIter || (nbIter == -1 && i%1000 == 0) )
@@ -128,7 +139,7 @@ void BatchGUI::resetScene()
         root->setTime(0.);
         simulation::getSimulation()->reset ( root );
 
-        sofa::simulation::UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
+        sofa::simulation::UpdateSimulationContextVisitor(sofa::core::execparams::defaultInstance()).execute(root);
     }
 }
 
@@ -178,6 +189,29 @@ int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
     return 0;
 }
 
-} // namespace gui
+bool BatchGUI::canExportJson(const std::string& timerOutputStr, const std::string& timerId)
+{
+    const auto outputType = AdvancedTimer::getOutputType(AdvancedTimer::IdTimer(timerId));
+    if (outputType == AdvancedTimer::outputType::JSON || outputType == AdvancedTimer::outputType::LJSON)
+    {
+        //timerOutputStr is not empty when the AdvancedTimer has been setup with an interval (AdvancedTimer::setInterval)
+        //and the number of iterations is reached
+        return !timerOutputStr.empty() && timerOutputStr != "null";
+    }
+    return false;
+}
 
-} // namespace sofaa
+void BatchGUI::exportJson(const std::string &timerOutputStr, int iterationNumber) const
+{
+    std::stringstream ss;
+    ss << std::setw(6) << std::setfill('0') << iterationNumber;
+
+    const std::string jsonFilename =
+            sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.c_str()) + "_" + ss.str() + ".json";
+    msg_info("BatchGUI") << "Writing " << jsonFilename;
+    std::ofstream out(jsonFilename);
+    out << timerOutputStr;
+    out.close();
+}
+
+} // namespace sofa::gui

@@ -16,7 +16,7 @@
 		<ImageSampler template="ImageUC" name="sampler"  printLog="0"  listening="1"  image="@image.image"  transform="@image.transform"  method="1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1)"  param="1" />
 		<MergeMeshes template="Vec3d" name="merged"  nbMeshes="2"  position1="@sampler.fixedPosition"  position2="@sampler.position" />
 		<MechanicalObject template="Rigid3d" name="parent"    position="@merged.position"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1" />
-		<VoronoiShapeFunction template="ShapeFunctiond,ImageUC" name="SF"  nbRef="4"  position="@parent.rest_position"  image="@image.image"  transform="@image.transform"  method="0 - Distance ratio"  useDijkstra="1" />
+		<VoronoiShapeFunction template="ShapeFunction3d,ImageUC" name="SF"  nbRef="4"  position="@parent.rest_position"  image="@image.image"  transform="@image.transform"  method="0 - Distance ratio"  useDijkstra="1" />
 		<Node 	 name="collision"  >
 			<MeshTopology name="mesh"  position="@../../mesh.position"  edges="@../../mesh.edges"  triangles="@../../mesh.triangles"  quads="@../../mesh.quads"  tetrahedra="@../../mesh.tetras"  hexahedra="@../../mesh.hexas" />
 			<MechanicalObject template="Vec3d" name="pts"    position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
@@ -27,8 +27,8 @@
 		</Node>
 		<Node 	 name="visual"  >
 			<MeshObjLoader name="meshLoader_0" filename="beam.obj" handleSeams="1" />
-			<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"  material="Default Diffuse 1 1 0.8 0.8 1 Ambient 1 0.2 0.16 0.16 1 Specular 0 1 0.8 0.8 1 Emissive 0 1 0.8 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-			<LinearMapping template="Rigid,ExtVec3f" name="linearMap2"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="0 - None"  input="@../"  output="@./" />
+			<OglModel template="Vec3d" name="Visual" src="@meshLoader_0"  material="Default Diffuse 1 1 0.8 0.8 1 Ambient 1 0.2 0.16 0.16 1 Specular 0 1 0.8 0.8 1 Emissive 0 1 0.8 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<LinearMapping template="Rigid,Vec3d" name="linearMap2"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="0 - None"  input="@../"  output="@./" />
 		</Node>
 	</Node>
 	<Node 	 name="Rigid"  >
@@ -45,8 +45,8 @@
 		</Node>
 		<Node 	 name="visual"  >
 			<MeshObjLoader name="meshLoader_1" filename="beam.obj" handleSeams="1" />
-			<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1"  material="Default Diffuse 1 0.8 1 0.8 1 Ambient 1 0.16 0.2 0.16 1 Specular 0 0.8 1 0.8 1 Emissive 0 0.8 1 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-			<RigidMapping template="Rigid,ExtVec3f" name="rigidMap2"  input="@../"  output="@./" />
+			<OglModel template="Vec3d" name="Visual" src="@meshLoader_1"  material="Default Diffuse 1 0.8 1 0.8 1 Ambient 1 0.16 0.2 0.16 1 Specular 0 0.8 1 0.8 1 Emissive 0 0.8 1 0.8 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<RigidMapping template="Rigid,Vec3d" name="rigidMap2"  input="@../"  output="@./" />
 		</Node>
 	</Node>
 </Node>

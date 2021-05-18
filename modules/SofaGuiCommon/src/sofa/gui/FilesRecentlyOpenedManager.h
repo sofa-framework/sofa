@@ -19,18 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_VIEWER_FILESRECENTLYOPENEDMANAGER_H
-#define SOFA_GUI_VIEWER_FILESRECENTLYOPENEDMANAGER_H
+#pragma once
+#include <sofa/gui/config.h>
 
 #include <sofa/helper/vector.h>
 
 #include <string>
 
-#include <sofa/gui/config.h>
 
-namespace sofa
-{
-namespace gui
+namespace sofa::gui
 {
 class SOFA_SOFAGUICOMMON_API FilesRecentlyOpenedManager
 {
@@ -62,7 +59,4 @@ protected:
 };
 
 
-}
-}
-
-#endif
+} // namespace sofa::gui

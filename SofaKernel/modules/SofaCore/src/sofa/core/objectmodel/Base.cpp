@@ -23,6 +23,9 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/PathResolver.h>
+using sofa::core::PathResolver;
+
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
@@ -356,6 +359,7 @@ BaseData* Base::findData( const std::string &name ) const
     else return nullptr;
 }
 
+
 /// Find fields given a name: several can be found as we look into the alias map
 std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 {
@@ -418,7 +422,7 @@ bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseL
     return (ptr != nullptr);
 }
 
-void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
+Base* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
 {
     msg_error() << "Base: calling unimplemented findLinkDest method" ;
     return nullptr;
@@ -444,14 +448,15 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
 
     for (unsigned int d=0; d<dataVec.size(); ++d)
     {
-        // test if data is a link and can be linked
+        /// test if data is a link and can be linked
         if (value.length() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
         {
             if (!dataVec[d]->setParent(value))
             {
                 BaseData* data = nullptr;
-                BaseLink* bl = nullptr;
-                dataVec[d]->findDataLinkDest(data, value, bl);
+
+                PathResolver::FindBaseDataFromPath(dataVec[d] , value);
+
                 if (data != nullptr && dynamic_cast<EmptyData*>(data) != nullptr)
                 {
                     Base* owner = data->getOwner();
@@ -500,9 +505,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             std::stringstream tmp;
             tmp << "  " << linkVec[l]->getLinkedPath(i) << " = ";
             Base* b = linkVec[l]->getLinkedBase(i);
-            BaseData* d = linkVec[l]->getLinkedData(i);
             if (b) tmp << b->getTypeName() << " " << b->getName();
-            if (d) tmp << " . " << d->getValueTypeString() << " " << d->getName();
             msg_info() << tmp.str();
         }
     }

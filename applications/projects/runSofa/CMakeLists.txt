@@ -20,7 +20,9 @@ configure_file(${_defaultConfigPluginFilePath} ${PROJECT_BINARY_DIR}/${_defaultC
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 ###################################
 
-find_package(SofaValidation QUIET)
+sofa_find_package(SofaValidation QUIET)
+sofa_find_package(SofaGui REQUIRED)
+sofa_find_package(SofaGraphComponent REQUIRED)
 
 set(HEADER_FILES
     runSofaValidation.h
@@ -55,9 +57,10 @@ endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
-target_link_libraries(${PROJECT_NAME} SofaMisc)
+
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
-target_link_libraries(${PROJECT_NAME} SofaGuiMain)
+target_link_libraries(${PROJECT_NAME} SofaGui)
+target_link_libraries(${PROJECT_NAME} SofaGraphComponent)
 
 if(SofaValidation_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaValidation)
@@ -66,7 +69,7 @@ else()
 endif()
 
 if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
+    sofa_find_package(SofaTest QUIET)
     if(SofaTest_FOUND)
         add_subdirectory(runSofa_test)
     endif()

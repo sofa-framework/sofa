@@ -49,7 +49,7 @@ static PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /*arg
     PyTuple_SetItem( res, 1, shape );
 
     // the type name
-    PyTuple_SetItem( res, 2, PyString_FromString( DataTypeName<IMAGETYPE::T>::name() ) );
+    PyTuple_SetItem( res, 2, PyString_FromString( DataTypeInfo<IMAGETYPE::T>::name().c_str() ) );
 
     return res;
 }

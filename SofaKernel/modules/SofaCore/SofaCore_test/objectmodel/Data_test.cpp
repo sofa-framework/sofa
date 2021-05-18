@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/config.h>
+
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vectorData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -44,8 +46,8 @@ public:
 
 TEST_F(Data_test, getValueTypeString)
 {
-    EXPECT_EQ(dataInt.getValueTypeString(), "int");
-    EXPECT_EQ(dataFloat.getValueTypeString(), "float");
+    EXPECT_EQ(dataInt.getValueTypeString(), "i");
+    EXPECT_EQ(dataFloat.getValueTypeString(), "f");
     EXPECT_EQ(dataBool.getValueTypeString(), "bool");
     EXPECT_EQ(dataVec3.getValueTypeString(), "Vec3d");
     EXPECT_EQ(dataVectorVec3.getValueTypeString(), "vector<Vec3d>");
@@ -54,49 +56,12 @@ TEST_F(Data_test, getValueTypeString)
 
 TEST_F(Data_test, getNameWithValueTypeInfo)
 {
-    EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "int");
-    EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "float");
+    EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "i");
+    EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "f");
     EXPECT_EQ(dataBool.getValueTypeInfo()->name(), "bool");
     EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3d");
     EXPECT_EQ(dataVectorVec3.getValueTypeInfo()->name(), "vector<Vec3d>");
     EXPECT_EQ(dataVectorColor.getValueTypeInfo()->name(), "vector<RGBAColor>");
-}
-
-/**  Test suite for data link.
-Create two datas and a link between them.
-Set the value of data1 and check if the boolean is dirty of data2 is true and that the value of data2 is right.
-  */
-struct DataLink_test: public BaseTest
-{
-    Data<int> data1;
-    Data<int> data2;
-
-    /// Create a link between the two datas
-    void SetUp() override
-    {
-        // Link
-        data2.setParent(&data1);
-    }
-
-    // Test if the output is updated only if necessary
-    void testDataLink()
-    {
-        data1.setValue(1);
-        ASSERT_FALSE(data1.isDirty());
-        ASSERT_TRUE(data2.isDirty());
-        ASSERT_TRUE(data2.getValue()!=0);
-
-    }
-
-};
-
-
-/////////////////////////////////////
-
-
-TEST_F(DataLink_test , testDataLink )
-{
-    this->testDataLink();
 }
 
 /** Test suite for vectorData
@@ -130,6 +95,7 @@ struct vectorData_test: public ::testing::Test
         vDataInt.resize(5);
         vDataInt[3]->setParent(&data1);
         data1.setValue(1);
+        ASSERT_NE(vDataInt[3]->getParent(),nullptr);
         ASSERT_EQ(vDataInt[3]->getValue(),1);
     }
 
@@ -167,13 +133,13 @@ struct DataFileNameVector_test: public ::testing::Test
 
 TEST_F(DataFileNameVector_test , setValueAsString_spaces )
 {
-    dataFileNameVector.setValueAsString( "['"+std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    dataFileNameVector.setValueAsString( "['"+std::string(SOFA_TESTING_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(SOFA_TESTING_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 
 TEST_F(DataFileNameVector_test , read_spaces )
 {
-    dataFileNameVector.read( "['" + std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    dataFileNameVector.read( "['" + std::string(SOFA_TESTING_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(SOFA_TESTING_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 

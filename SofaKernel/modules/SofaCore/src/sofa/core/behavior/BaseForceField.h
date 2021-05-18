@@ -24,7 +24,10 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/MultiVecId.h>
+
+namespace sofa::defaulttype { class BaseMatrix; }
+namespace sofa::core::behavior { class MultiMatrixAccessor; }
 
 namespace sofa
 {
@@ -81,7 +84,7 @@ public:
     /// Very often, at least one of these matrices is null.
     ///
     /// \param mparams
-    /// - \a mparams->bFactor() is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// - \a sofa::core::mechanicalparams::bFactor(mparams) is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// - \a mparams->readX() is the input vector of position
     /// - \a mparams->readV() is the input vector of velocity
@@ -130,7 +133,7 @@ public:
     /// \param mparams
     /// - \a mparams->readDx() is the input vector
     /// - \a mparams->mFactor() is the coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// - \a mparams->bFactor() is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// - \a sofa::core::mechanicalparams::bFactor(mparams) is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// \param dfId the output vector
     virtual void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId);
@@ -140,7 +143,7 @@ public:
     ///
     /// Used to extimate the total energy of the system by some
     /// post-stabilization techniques.
-    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = MechanicalParams::defaultInstance() ) const=0;
+    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const=0;
     /// @}
 
 
@@ -158,7 +161,7 @@ public:
 
     /// \brief Compute the system matrix corresponding to b B
     ///
-    /// \param mparams \a mparams->bFactor() is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// \param mparams \a sofa::core::mechanicalparams::bFactor(mparams) is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param matrix the matrix to add the result to
     virtual void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     //virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
@@ -169,7 +172,7 @@ public:
     ///
     /// \param mparams
     /// - \a mparams->mFactor() is the coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// - \a mparams->bFactor() is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
+    /// - \a sofa::core::mechanicalparams::bFactor(mparams) is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// \param matrix the matrix to add the result to
     virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );

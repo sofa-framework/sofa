@@ -28,12 +28,27 @@
 #include <sofa/simulation/CollisionEndEvent.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
-#include <sofa/simulation/PropagateEventVisitor.h>
-
+#include <sofa/simulation/Node.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 
-//#include "MechanicalIntegration.h"
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateConstraint.h>
+using sofa::simulation::mechanicalvisitor::MechanicalAccumulateConstraint;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
 
 using namespace sofa::core;
 
@@ -71,7 +86,7 @@ void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior:
     sofa::helper::AdvancedTimer::stepBegin("InteractionFF",obj);
 
     MultiVecDerivId   ffId      = VecDerivId::externalForce();
-    MechanicalParams mparams; // = MechanicalParams::defaultInstance();
+    MechanicalParams mparams;
     mparams.setDt(this->dt);
     obj->addForce(&mparams, ffId);
 
@@ -153,7 +168,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         {
             unsigned int constraintId=0;
             core::ConstraintParams cparams;
-            simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(),constraintId).execute(node);
+            MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(),constraintId).execute(node);
         }
 
         for( unsigned i=0; i<node->solver.size(); i++ )

@@ -19,32 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_LOADER_MATERIAL_H_
-#define SOFA_CORE_LOADER_MATERIAL_H_
-
-#include <sofa/helper/types/Material.h>
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace loader
-{
-
 ///The Material object that was previously in this sofa::core::loader is now in sofa::helper:types::Material.
 ///The following lines is there to provide backward compatibility with existing code base.
-///This is just there for a transitional period of time and will be removed after 2018-01-07
-using sofa::helper::types::Material ;
-
-//TODO(dmarchal 2017-06-13): Delete that around 2018-01-07
+///This is just there for a transitional period of time and has be removed at sofa release 21.06
+#error Material is now located in sofa/helper/types/Material.h
 
 
-} // namespace loader
-
-} // namespace core
-
-} // namespace sofa
-
-#endif /* SOFA_CORE_LOADER_MATERIAL_H_ */

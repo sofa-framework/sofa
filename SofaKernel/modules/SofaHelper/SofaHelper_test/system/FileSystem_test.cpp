@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/config.h>
 
 #include <sofa/helper/system/FileSystem.h>
 #include <gtest/gtest.h>
@@ -33,7 +34,7 @@ using sofa::helper::testing::BaseTest ;
 using sofa::helper::system::FileSystem;
 
 static std::string getPath(std::string s) {
-    return std::string(FRAMEWORK_TEST_RESOURCES_DIR) + std::string("/") + s;
+    return std::string(SOFA_TESTING_RESOURCES_DIR) + std::string("/") + s;
 }
 
 // Mmmh, we can't have empty directories in git...

@@ -334,7 +334,7 @@ public:
 
         if( _geometricStiffnessData.invT() )
         {
-            _geometricStiffnessData.degenerated() = helper::Decompose<Real>::QRDecomposition_stable( data.getF(), _R ) || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+            _geometricStiffnessData.degenerated() = helper::Decompose<Real>::QRDecomposition_stable( data.getF(), _R ) || defaulttype::determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
             Mat<3,3,Real> T = _R.multTranspose( data.getF() ); // T = rt * f
             _geometricStiffnessData.invT()->invert( T );
             strainmat = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
@@ -355,7 +355,7 @@ public:
         if( _geometricStiffnessData.invG() )
         {
             helper::Decompose<Real>::polarDecompositionGradient_G( _R, strainmat, *_geometricStiffnessData.invG() );
-            _geometricStiffnessData.degenerated() = determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+            _geometricStiffnessData.degenerated() = defaulttype::determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
         }
 
         addapply_common( result, data, strainmat );
@@ -372,7 +372,7 @@ public:
             Affine U, V; Vec<material_dimensions,Real> S;
             _geometricStiffnessData.degenerated() = computeSVD( data.getF(), _R, strainmat, U, S, V )
                     || !helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( U, S, V, *_geometricStiffnessData.dROverdF() )
-                    || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+                    || defaulttype::determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
         }
         else helper::Decompose<Real>::polarDecomposition_stable( data.getF(), _R, strainmat );
 
@@ -676,7 +676,7 @@ public:
         if( _geometricStiffnessData.invT() )
         {
             _geometricStiffnessData.degenerated() = helper::Decompose<Real>::QRDecomposition_stable( data.getF(), _R )
-                    || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+                    || defaulttype::determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
             Mat<2,2,Real> T = _R.multTranspose( data.getF() ); // T = rt * f
             _geometricStiffnessData.invT()->invert( T );
             strainmat = cauchyStrainTensor( T ); // s = ( T + Tt ) * 0.5
@@ -708,7 +708,7 @@ public:
             Affine U; Mat<material_dimensions,material_dimensions,Real> V; Vec<2,Real> Fdiag;
             computeSVD( data.getF(), _R, strainmat, U, Fdiag, V );
             _geometricStiffnessData.degenerated() = !helper::Decompose<Real>::polarDecompositionGradient_dQOverdM( U, Fdiag, V, *_geometricStiffnessData.dROverdF() )
-                    || determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
+                    || defaulttype::determinant( data.getF() ) < helper::Decompose<Real>::zeroTolerance();
         }
         else
         {

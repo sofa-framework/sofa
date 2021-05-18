@@ -8,6 +8,10 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="image"/>
     <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin pluginName='SofaGeneralEngine'/> 
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/> 
+
 
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
 
@@ -36,7 +40,7 @@
             <MechanicalObject template="Affine" name="parent"  showObject="true" src="@merged" showObjectScale="1"/>
 	    <FixedConstraint indices="0" />
 
-              <DiffusionShapeFunction template="ShapeFunctiond,ImageD"  name="SF" position="@parent.rest_position" image="@../youngM.outputImage" transform="@../extruder.outputTransform" clearData="0" iterations="10000000" tolerance="1e-3" solver="2 - CG" bias="1" nbRef="2" outsideDiffusion="0"/>
+              <DiffusionShapeFunction template="ShapeFunction3d,ImageD"  name="SF" position="@parent.rest_position" image="@../youngM.outputImage" transform="@../extruder.outputTransform" clearData="0" iterations="10000000" tolerance="1e-3" solver="2 - CG" bias="1" nbRef="2" outsideDiffusion="0"/>
     
              <Node name="SFDisplay">
                  <ImageShapeFunctionSelectNode template="ImageD" name="selectNode" shapeFunctionWeights="@../SF.weights" shapeFunctionIndices="@../SF.indices" nodeIndex="1" />
@@ -47,7 +51,7 @@
    	<!--   <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="-1 -1 4"/>  -->
 	<!--   <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="-1 -1 4"/>   -->
 
-    <ImageDensityMass  template="Affine" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" /> 
+    <ImageDensityMass template="Affine,ShapeFunction3d" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" /> 
 
     <Node 	name="behavior"   >
         
@@ -83,7 +87,7 @@
 		<Node name="Visu">
 			<MeshObjLoader name="meshLoader_0" filename="../data/mesh/steak.obj" handleSeams="1" />
 			<OglModel name="Beam" src="@meshLoader_0" texturename="../data/mesh/steak.png" normals="0" />
-			<LinearMapping template="Affine,ExtVec3f"/>
+			<LinearMapping template="Affine,Vec3d"/>
 		</Node>
     </Node>
 </Node>

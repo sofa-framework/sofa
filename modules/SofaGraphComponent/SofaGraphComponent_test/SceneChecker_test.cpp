@@ -22,6 +22,7 @@ using sofa::helper::system::PluginManager;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML;
 using sofa::simulation::Node;
+using sofa::core::execparams::defaultInstance; 
 
 /////////////////////// COMPONENT DEFINITION & DECLARATION /////////////////////////////////////////
 /// This component is only for testing the APIVersion system.
@@ -68,9 +69,9 @@ struct SceneChecker_test : public Sofa_test<>
         EXPECT_MSG_NOEMIT(Error);
 
         ASSERT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
-        SceneCheckerVisitor checker(ExecParams::defaultInstance());
+        SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
         checker.addCheck( SceneCheckMissingRequiredPlugin::newSPtr() );
 
         if(missing)
@@ -91,6 +92,7 @@ struct SceneChecker_test : public Sofa_test<>
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
               << "    <RequiredPlugin name='SofaOpenglVisual'/>                   \n"
+              << "    <RequiredPlugin name='SofaGraphComponent'/>                 \n"
               << "    <Node name='nodeCheck'>                                     \n"
               << "      <Node name='nodeA' />                                     \n"
               << "      <Node name='nodeA' />                                     \n"
@@ -114,9 +116,9 @@ struct SceneChecker_test : public Sofa_test<>
                                                           scene.str().size());
 
         ASSERT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
-        SceneCheckerVisitor checker(ExecParams::defaultInstance());
+        SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
         checker.addCheck( SceneCheckDuplicatedName::newSPtr() );
 
         std::vector<std::string> nodenames = {"nodeCheck", "objectCheck", "mixCheck"};
@@ -147,6 +149,7 @@ struct SceneChecker_test : public Sofa_test<>
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
+              << "      <RequiredPlugin name='SofaGraphComponent'/>               \n"
               << "      <APIVersion level='"<< lvl <<"'/>                         \n"
               << "      <ComponentDeprecated />                                   \n"
               << "</Node>                                                         \n";
@@ -156,9 +159,9 @@ struct SceneChecker_test : public Sofa_test<>
                                                           scene.str().size());
 
         ASSERT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
-        SceneCheckerVisitor checker(ExecParams::defaultInstance());
+        SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
         SceneCheckAPIChange::SPtr apichange = SceneCheckAPIChange::newSPtr();
         apichange->installDefaultChangeSets();
         apichange->addHookInChangeSet("17.06", [](Base* o){
@@ -188,20 +191,21 @@ struct SceneChecker_test : public Sofa_test<>
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
+              << "    <RequiredPlugin name='SofaGraphComponent'/>                 \n"
               << "    <MechanicalObject template='Vec3d' />                       \n"
               << "    <MeshTopology />                                            \n"
               << "    <" << componentName << "/>                                  \n"
               << "</Node>                                                         \n";
 
 
-        SceneCheckerVisitor checker(ExecParams::defaultInstance());
+        SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
         checker.addCheck( SceneCheckUsingAlias::newSPtr() );
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size());
         ASSERT_NE(root.get(), nullptr);
-        root->init(ExecParams::defaultInstance());
+        root->init(sofa::core::execparams::defaultInstance());
 
         if(sceneWithAlias)
         {

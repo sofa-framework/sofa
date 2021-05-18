@@ -241,11 +241,18 @@ public:
         backup_led=led;
         backup_tiltangle=tiltAngle.getValue();
 
-        // init context and device
-        if (freenect_init(&f_ctx, NULL) < 0) { serr<<"freenect_init() failed"<<sendl; return ; }
-        //freenect_set_log_level(f_ctx, FREENECT_LOG_DEBUG);
-        int nr_devices = freenect_num_devices (f_ctx); sout<<"Number of devices found: "<<nr_devices<<sendl;
-        if (nr_devices < 1) {serr<<"No Kinect found"<<sendl; return; }
+        if (freenect_init(&f_ctx, NULL) < 0) {
+            msg_error()<<"freenect_init() failed";
+            return ;
+        }
+        int nr_devices = freenect_num_devices (f_ctx);
+        msg_info()<<"Number of devices found: "<<nr_devices;
+
+        if (nr_devices < 1)
+        {
+            msg_error()<<"No Kinect found";
+            return;
+        }
         int user_device_number = (int)this->deviceID.getValue();
         if (freenect_open_device(f_ctx, &f_dev, user_device_number) < 0) { serr<<"Could not open device "<<user_device_number<<sendl; return; }
 
@@ -502,7 +509,7 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams)
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         // draw bounding box
 
         if (!vparams->displayFlags().getShowVisualModels()) return;
@@ -541,7 +548,7 @@ protected:
 
         glPopMatrix ();
         glPopAttrib();
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
 

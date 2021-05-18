@@ -135,7 +135,7 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     defaulttype::Vec1Types,
     defaulttype::Vec2Types,
@@ -146,7 +146,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(PartialFixedConstraint_test, DataTypes);
+TYPED_TEST_SUITE(PartialFixedConstraint_test, DataTypes);
 
 // test cases
 TYPED_TEST( PartialFixedConstraint_test , testContraintExplicit )

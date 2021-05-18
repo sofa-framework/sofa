@@ -39,14 +39,14 @@ namespace defaulttype
 ////  material laws
 //////////////////////////////////////////////////////////////////////////////////
 
-template<typename _Real,unsigned int dim,unsigned int size>
+template<typename _Real,std::size_t dim,std::size_t size>
 class HookeLaw
 {
 public:
     typedef _Real Real;
 
-    static const unsigned int material_dimensions = dim;
-    static const unsigned int strain_size = size;
+    static const std::size_t material_dimensions = dim;
+    static const std::size_t strain_size = size;
 
     std::vector<Real> Kparams;  /** Constants for the stiffness matrix (e.g. Lamé coeffs) */
     std::vector<Real> Cparams;  /** Constants for the compliance matrix (e.g. Young modulus, poisson, shear modulus)*/
@@ -59,7 +59,7 @@ public:
 
 
 /// isotropic 3D/2D
-template<typename Real,int dim,unsigned int size>
+template<typename Real, std::size_t dim,std::size_t size>
 class IsotropicHookeLaw: public HookeLaw<Real,dim,size>
 {
 public:
@@ -80,9 +80,9 @@ public:
         block K=block::Zero();
         if(!vol) return K;
         Real muVol = this->Kparams[1]*vol;
-        for(unsigned int i=0; i<dim; i++)  K(i,i)-=muVol*2.0;
-        for(unsigned int i=dim; i<size; i++) K(i,i)-=muVol;
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<dim; j++) K(i,j)-=this->Kparams[0]*vol;
+        for(std::size_t i=0; i<dim; i++)  K(i,i)-=muVol*2.0;
+        for(std::size_t i=dim; i<size; i++) K(i,i)-=muVol;
+        for(std::size_t i=0; i<dim; i++) for(std::size_t j=0; j<dim; j++) K(i,j)-=this->Kparams[0]*vol;
         return K;
     }
 
@@ -90,12 +90,12 @@ public:
     {
         if(!vol) return;
         Real muVol = this->Kparams[1]*vol;
-        for(unsigned int i=0; i<dim; i++)             out[i]-=in[i]*muVol*2.0;
-        for(unsigned int i=dim; i<size; i++)          out[i]-=in[i]*muVol;
+        for(std::size_t i=0; i<dim; i++)             out[i]-=in[i]*muVol*2.0;
+        for(std::size_t i=dim; i<size; i++)          out[i]-=in[i]*muVol;
         if(this->Kparams[0])
         {
-            Real tce = in[0]; for(unsigned int i=1; i<dim; i++) tce += in[i];  tce *= this->Kparams[0]*vol;
-            for(unsigned int i=0; i<dim; i++) out[i]-=tce;
+            Real tce = in[0]; for(std::size_t i=1; i<dim; i++) tce += in[i];  tce *= this->Kparams[0]*vol;
+            for(std::size_t i=0; i<dim; i++) out[i]-=tce;
         }
     }
 
@@ -105,9 +105,9 @@ public:
         block C=block::Zero();
         if(!vol) return C;
         Real invvolE = 1./(vol*this->Cparams[0]);
-        for(unsigned int i=0; i<dim; i++)  C(i,i)-=invvolE;
-        for(unsigned int i=dim; i<size; i++) C(i,i)-= invvolE * (1+this->Cparams[1]) * 2.0;;
-        for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<i; j++) C(i,j) = C(j,i) = invvolE *this-> Cparams[1];
+        for(std::size_t i=0; i<dim; i++)  C(i,i)-=invvolE;
+        for(std::size_t i=dim; i<size; i++) C(i,i)-= invvolE * (1+this->Cparams[1]) * 2.0;;
+        for(std::size_t i=0; i<dim; i++) for(std::size_t j=0; j<i; j++) C(i,j) = C(j,i) = invvolE *this-> Cparams[1];
         return C;
     }
 };
@@ -115,7 +115,7 @@ public:
 
 
 /// isotropic viscosity 3D/2D (= isotropic law with zero poisson ratio)
-template<class Real,unsigned int dim,unsigned int size>
+template<class Real,std::size_t dim,std::size_t size>
 class ViscosityHookeLaw: public HookeLaw<Real,dim,size>
 {
 public:
@@ -132,8 +132,8 @@ public:
         block K=block::Zero();
         if(!vol) return K;
         Real muVol = this->Kparams[0]*vol;
-        for(unsigned int i=0; i<dim; i++)  K(i,i)-=muVol*2.0;
-        for(unsigned int i=dim; i<size; i++) K(i,i)-=muVol;
+        for(std::size_t i=0; i<dim; i++)  K(i,i)-=muVol*2.0;
+        for(std::size_t i=dim; i<size; i++) K(i,i)-=muVol;
         return K;
     }
 
@@ -141,8 +141,8 @@ public:
     {
         if(!vol) return;
         Real muVol = this->Kparams[0]*vol;
-        for(unsigned int i=0; i<dim; i++)             out[i]-=in[i]*muVol*2.0;
-        for(unsigned int i=dim; i<size; i++)          out[i]-=in[i]*muVol;
+        for(std::size_t i=0; i<dim; i++)             out[i]-=in[i]*muVol*2.0;
+        for(std::size_t i=dim; i<size; i++)          out[i]-=in[i]*muVol;
     }
 
     virtual Eigen::Matrix<Real,size,size,Eigen::RowMajor> assembleC(const Real &vol) const
@@ -151,8 +151,8 @@ public:
         block C=block::Zero();
         if(!vol) return C;
         Real invvolE = 1./(vol*this->Cparams[0]);
-        for(unsigned int i=0; i<dim; i++)  C(i,i)-=invvolE;
-        for(unsigned int i=dim; i<size; i++) C(i,i)-=invvolE*2.0;
+        for(std::size_t i=0; i<dim; i++)  C(i,i)-=invvolE;
+        for(std::size_t i=dim; i<size; i++) C(i,i)-=invvolE*2.0;
         return C;
     }
 };
@@ -161,7 +161,7 @@ public:
 
 
 /// Orthotropic 3D
-template<class Real,unsigned int dim,unsigned int size>
+template<class Real,std::size_t dim,std::size_t size>
 class OrthotropicHookeLaw: public HookeLaw<Real,dim,size> {};
 
 template<class Real>
@@ -231,7 +231,7 @@ public:
 
 
 /// transverse isotropic 3D (supposing e1 is the axis of symmetry)
-template<class Real,unsigned int dim,unsigned int size>
+template<class Real,std::size_t dim,std::size_t size>
 class TransverseHookeLaw: public HookeLaw<Real,dim,size> {};
 
 template<typename Real>
@@ -357,7 +357,7 @@ public:
 //////////////////////////////////////////////////////////////////////////////////
 
 // order 0
-template<int spatial_dimensions, int strain_size, class Real, int order> class HookeMaterialFactors
+template<std::size_t spatial_dimensions, std::size_t strain_size, class Real, int order> class HookeMaterialFactors
 {
 protected:
 
@@ -380,7 +380,7 @@ public:
 };
 
 // order 1
-template<int spatial_dimensions, int strain_size, class Real> class HookeMaterialFactors<spatial_dimensions,strain_size,Real,1> : public HookeMaterialFactors<spatial_dimensions,strain_size,Real,0>
+template<std::size_t spatial_dimensions, std::size_t strain_size, class Real> class HookeMaterialFactors<spatial_dimensions,strain_size,Real,1> : public HookeMaterialFactors<spatial_dimensions,strain_size,Real,0>
 {
 protected:
 
@@ -403,7 +403,7 @@ public:
 };
 
 // order 2
-template<int spatial_dimensions, int strain_size, class Real> class HookeMaterialFactors<spatial_dimensions,strain_size,Real,2> : public HookeMaterialFactors<spatial_dimensions,strain_size,Real,1>
+template<std::size_t spatial_dimensions, std::size_t strain_size, class Real> class HookeMaterialFactors<spatial_dimensions,strain_size,Real,2> : public HookeMaterialFactors<spatial_dimensions,strain_size,Real,1>
 {
 protected:
 
@@ -495,11 +495,11 @@ public:
 
         if( order > 0 )
         {
-            for(unsigned int i=0; i<spatial_dimensions; i++) W-=dot(f.getStrainGradient(i),x.getStrainGradient(i))*0.5;
+            for( std::size_t i=0; i<spatial_dimensions; i++) W-=dot(f.getStrainGradient(i),x.getStrainGradient(i))*0.5;
 
             if( order > 1 )
             {
-                for(unsigned int i=0; i<spatial_dimensions; i++) for(unsigned int j=i; j<spatial_dimensions; j++) W-=dot(f.getStrainHessian(i,j),x.getStrainHessian(i,j))*0.5;
+                for( std::size_t i=0; i<spatial_dimensions; i++) for( std::size_t j=i; j<spatial_dimensions; j++) W-=dot(f.getStrainHessian(i,j),x.getStrainHessian(i,j))*0.5;
             }
         }
         return W;
@@ -513,12 +513,12 @@ public:
         if( order > 0 )
         {
             // order 1
-            for(unsigned int i=0; i<spatial_dimensions; i++)  hooke.applyK(f.getStrain(),x.getStrainGradient(i),factors.order1()[i]);
-            for(unsigned int i=0; i<spatial_dimensions; i++)  hooke.applyK(f.getStrainGradient(i),x.getStrain(),factors.order1()[i]);
+            for(std::size_t i=0; i<spatial_dimensions; i++)  hooke.applyK(f.getStrain(),x.getStrainGradient(i),factors.order1()[i]);
+            for(std::size_t i=0; i<spatial_dimensions; i++)  hooke.applyK(f.getStrainGradient(i),x.getStrain(),factors.order1()[i]);
             // order 2
-            unsigned int count = 0;
-            for(unsigned int i=0; i<spatial_dimensions; i++)
-                for(unsigned int j=i; j<spatial_dimensions; j++)
+            std::size_t count = 0;
+            for(std::size_t i=0; i<spatial_dimensions; i++)
+                for(std::size_t j=i; j<spatial_dimensions; j++)
                 {
                     hooke.applyK(f.getStrainGradient(i),x.getStrainGradient(j),factors.order2()[count]);
                     if(i!=j) hooke.applyK(f.getStrainGradient(j),x.getStrainGradient(i),factors.order2()[count]);
@@ -528,23 +528,23 @@ public:
             if( order > 1 )
             {
                 count = 0;
-                for(unsigned int i=0; i<spatial_dimensions; i++)
-                    for(unsigned int j=i; j<spatial_dimensions; j++)
+                for(std::size_t i=0; i<spatial_dimensions; i++)
+                    for(std::size_t j=i; j<spatial_dimensions; j++)
                     {
                         hooke.applyK(f.getStrain(),x.getStrainHessian(i,j),factors.order2()[count]);
                         hooke.applyK(f.getStrainHessian(i,j),x.getStrain(),factors.order2()[count]);
                         count++;
                     }
                 // order 3
-                for(unsigned int i=0; i<spatial_dimensions; i++)
-                    for(unsigned int j=0; j<strain_size; j++)
+                for(std::size_t i=0; i<spatial_dimensions; i++)
+                    for(std::size_t j=0; j<strain_size; j++)
                     {
                         hooke.applyK(f.getStrainGradient(i),x.getStrainHessian(j),factors.order3()(i,j));
                         hooke.applyK(f.getStrainHessian(j),x.getStrainGradient(i),factors.order3()(i,j));
                     }
                 // order 4
-                for(unsigned int i=0; i<strain_size; i++)
-                    for(unsigned int j=0; j<strain_size; j++)
+                for(std::size_t i=0; i<strain_size; i++)
+                    for(std::size_t j=0; j<strain_size; j++)
                     {
                         hooke.applyK(f.getStrainHessian(i),x.getStrainHessian(j),factors.order4()(i,j));
                     }
@@ -560,12 +560,12 @@ public:
             if( order > 0 )
             {
                 // order 1
-                for(unsigned int i=0; i<spatial_dimensions; i++)  viscosity.applyK(f.getStrain(),v.getStrainGradient(i),factors.order1()[i]);
-                for(unsigned int i=0; i<spatial_dimensions; i++)  viscosity.applyK(f.getStrainGradient(i),v.getStrain(),factors.order1()[i]);
+                for(std::size_t i=0; i<spatial_dimensions; i++)  viscosity.applyK(f.getStrain(),v.getStrainGradient(i),factors.order1()[i]);
+                for(std::size_t i=0; i<spatial_dimensions; i++)  viscosity.applyK(f.getStrainGradient(i),v.getStrain(),factors.order1()[i]);
                 // order 2
-                unsigned int count =0;
-                for(unsigned int i=0; i<spatial_dimensions; i++)
-                    for(unsigned int j=i; j<spatial_dimensions; j++)
+                std::size_t count =0;
+                for(std::size_t i=0; i<spatial_dimensions; i++)
+                    for(std::size_t j=i; j<spatial_dimensions; j++)
                     {
                         viscosity.applyK(f.getStrainGradient(i),v.getStrainGradient(j),factors.order2()[count]);
                         if(i!=j) viscosity.applyK(f.getStrainGradient(j),v.getStrainGradient(i),factors.order2()[count]);
@@ -575,8 +575,8 @@ public:
                 if( order > 1 )
                 {
                     count =0;
-                    for(unsigned int i=0; i<spatial_dimensions; i++)
-                        for(unsigned int j=i; j<spatial_dimensions; j++)
+                    for(std::size_t i=0; i<spatial_dimensions; i++)
+                        for(std::size_t j=i; j<spatial_dimensions; j++)
                         {
                             viscosity.applyK(f.getStrain(),v.getStrainHessian(i,j),factors.order2()[count]);
                             viscosity.applyK(f.getStrainHessian(i,j),v.getStrain(),factors.order2()[count]);
@@ -584,15 +584,15 @@ public:
                         }
 
                     // order 3
-                    for(unsigned int i=0; i<spatial_dimensions; i++)
-                        for(unsigned int j=0; j<strain_size; j++)
+                    for(std::size_t i=0; i<spatial_dimensions; i++)
+                        for(std::size_t j=0; j<strain_size; j++)
                         {
                             viscosity.applyK(f.getStrainGradient(i),v.getStrainHessian(j),factors.order3()(i,j));
                             viscosity.applyK(f.getStrainHessian(j),v.getStrainGradient(i),factors.order3()(i,j));
                         }
                     // order 4
-                    for(unsigned int i=0; i<strain_size; i++)
-                        for(unsigned int j=0; j<strain_size; j++)
+                    for(std::size_t i=0; i<strain_size; i++)
+                        for(std::size_t j=0; j<strain_size; j++)
                         {
                             viscosity.applyK(f.getStrainHessian(i),v.getStrainHessian(j),factors.order4()(i,j));
                         }
@@ -609,12 +609,12 @@ public:
         if( order > 0 )
         {
             // order 1
-            for(unsigned int i=0; i<spatial_dimensions; i++)  hooke.applyK(df.getStrain(),dx.getStrainGradient(i),factors.order1()[i]*kfactor);
-            for(unsigned int i=0; i<spatial_dimensions; i++)  hooke.applyK(df.getStrainGradient(i),dx.getStrain(),factors.order1()[i]*kfactor);
+            for(std::size_t i=0; i<spatial_dimensions; i++)  hooke.applyK(df.getStrain(),dx.getStrainGradient(i),factors.order1()[i]*kfactor);
+            for(std::size_t i=0; i<spatial_dimensions; i++)  hooke.applyK(df.getStrainGradient(i),dx.getStrain(),factors.order1()[i]*kfactor);
             // order 2
-            unsigned int count = 0;
-            for(unsigned int i=0; i<spatial_dimensions; i++)
-                for(unsigned int j=i; j<spatial_dimensions; j++)
+            std::size_t count = 0;
+            for(std::size_t i=0; i<spatial_dimensions; i++)
+                for(std::size_t j=i; j<spatial_dimensions; j++)
                 {
                     hooke.applyK(df.getStrainGradient(i),dx.getStrainGradient(j),factors.order2()[count]*kfactor);
                     if(i!=j) hooke.applyK(df.getStrainGradient(j),dx.getStrainGradient(i),factors.order2()[count]*kfactor);
@@ -623,23 +623,23 @@ public:
             if( order > 1 )
             {
                 count = 0;
-                for(unsigned int i=0; i<spatial_dimensions; i++)
-                    for(unsigned int j=i; j<spatial_dimensions; j++)
+                for(std::size_t i=0; i<spatial_dimensions; i++)
+                    for(std::size_t j=i; j<spatial_dimensions; j++)
                     {
                         hooke.applyK(df.getStrain(),dx.getStrainHessian(i,j),factors.order2()[count]*kfactor);
                         hooke.applyK(df.getStrainHessian(i,j),dx.getStrain(),factors.order2()[count]*kfactor);
                         count++;
                     }
                 // order 3
-                for(unsigned int i=0; i<spatial_dimensions; i++)
-                    for(unsigned int j=0; j<strain_size; j++)
+                for(std::size_t i=0; i<spatial_dimensions; i++)
+                    for(std::size_t j=0; j<strain_size; j++)
                     {
                         hooke.applyK(df.getStrainGradient(i),dx.getStrainHessian(j),factors.order3()(i,j)*kfactor);
                         hooke.applyK(df.getStrainHessian(j),dx.getStrainGradient(i),factors.order3()(i,j)*kfactor);
                     }
                 // order 4
-                for(unsigned int i=0; i<strain_size; i++)
-                    for(unsigned int j=0; j<strain_size; j++)
+                for(std::size_t i=0; i<strain_size; i++)
+                    for(std::size_t j=0; j<strain_size; j++)
                     {
                         hooke.applyK(df.getStrainHessian(i),dx.getStrainHessian(j),factors.order4()(i,j)*kfactor);
                     }
@@ -655,12 +655,12 @@ public:
             if( order > 0 )
             {
                 // order 1
-                for(unsigned int i=0; i<spatial_dimensions; i++)  viscosity.applyK(df.getStrain(),dx.getStrainGradient(i),factors.order1()[i]*bfactor);
-                for(unsigned int i=0; i<spatial_dimensions; i++)  viscosity.applyK(df.getStrainGradient(i),dx.getStrain(),factors.order1()[i]*bfactor);
+                for(std::size_t i=0; i<spatial_dimensions; i++)  viscosity.applyK(df.getStrain(),dx.getStrainGradient(i),factors.order1()[i]*bfactor);
+                for(std::size_t i=0; i<spatial_dimensions; i++)  viscosity.applyK(df.getStrainGradient(i),dx.getStrain(),factors.order1()[i]*bfactor);
                 // order 2
-                unsigned int count = 0;
-                for(unsigned int i=0; i<spatial_dimensions; i++)
-                    for(unsigned int j=i; j<spatial_dimensions; j++)
+                std::size_t count = 0;
+                for(std::size_t i=0; i<spatial_dimensions; i++)
+                    for(std::size_t j=i; j<spatial_dimensions; j++)
                     {
                         viscosity.applyK(df.getStrainGradient(i),dx.getStrainGradient(j),factors.order2()[count]*bfactor);
                         if(i!=j) viscosity.applyK(df.getStrainGradient(j),dx.getStrainGradient(i),factors.order2()[count]*bfactor);
@@ -670,23 +670,23 @@ public:
                 if( order > 1 )
                 {
                     count = 0;
-                    for(unsigned int i=0; i<spatial_dimensions; i++)
-                        for(unsigned int j=i; j<spatial_dimensions; j++)
+                    for(std::size_t i=0; i<spatial_dimensions; i++)
+                        for(std::size_t j=i; j<spatial_dimensions; j++)
                         {
                             viscosity.applyK(df.getStrain(),dx.getStrainHessian(i,j),factors.order2()[count]*bfactor);
                             viscosity.applyK(df.getStrainHessian(i,j),dx.getStrain(),factors.order2()[count]*bfactor);
                             count++;
                         }
                     // order 3
-                    for(unsigned int i=0; i<spatial_dimensions; i++)
-                        for(unsigned int j=0; j<strain_size; j++)
+                    for(std::size_t i=0; i<spatial_dimensions; i++)
+                        for(std::size_t j=0; j<strain_size; j++)
                         {
                             viscosity.applyK(df.getStrainGradient(i),dx.getStrainHessian(j),factors.order3()(i,j)*bfactor);
                             viscosity.applyK(df.getStrainHessian(j),dx.getStrainGradient(i),factors.order3()(i,j)*bfactor);
                         }
                     // order 4
-                    for(unsigned int i=0; i<strain_size; i++)
-                        for(unsigned int j=0; j<strain_size; j++)
+                    for(std::size_t i=0; i<strain_size; i++)
+                        for(std::size_t j=0; j<strain_size; j++)
                         {
                             viscosity.applyK(df.getStrainHessian(i),dx.getStrainHessian(j),factors.order4()(i,j)*bfactor);
                         }
@@ -708,12 +708,12 @@ public:
         if( order > 0 )
         {
             // order 1
-            for(unsigned int i=0; i<spatial_dimensions; i++)   eK.block(strain_size*(i+1),0,strain_size,strain_size) = hooke.assembleK(factors.order1()[i]);
-            for(unsigned int i=0; i<spatial_dimensions; i++)   eK.block(0,strain_size*(i+1),strain_size,strain_size) = hooke.assembleK(factors.order1()[i]);
+            for(std::size_t i=0; i<spatial_dimensions; i++)   eK.block(strain_size*(i+1),0,strain_size,strain_size) = hooke.assembleK(factors.order1()[i]);
+            for(std::size_t i=0; i<spatial_dimensions; i++)   eK.block(0,strain_size*(i+1),strain_size,strain_size) = hooke.assembleK(factors.order1()[i]);
             // order 2
-            unsigned int count = 0;
-            for(unsigned int i=0; i<spatial_dimensions; i++)
-                for(unsigned int j=i; j<spatial_dimensions; j++)
+            std::size_t count = 0;
+            for(std::size_t i=0; i<spatial_dimensions; i++)
+                for(std::size_t j=i; j<spatial_dimensions; j++)
                 {
                     eK.block(strain_size*(i+1),strain_size*(j+1),strain_size,strain_size) = hooke.assembleK(factors.order2()[count]);
                     if(i!=j) eK.block(strain_size*(j+1),strain_size*(i+1),strain_size,strain_size) = hooke.assembleK(factors.order2()[count]);
@@ -722,23 +722,23 @@ public:
 
             if( order > 1 )
             {
-                unsigned int offset = (spatial_dimensions+1)*strain_size;
-                for(unsigned int j=0; j<strain_size; j++)
+                std::size_t offset = (spatial_dimensions+1)*strain_size;
+                for(std::size_t j=0; j<strain_size; j++)
                 {
                     eK.block(0,offset+strain_size*j,strain_size,strain_size) = hooke.assembleK(factors.order2()[j]);
                     eK.block(offset+strain_size*j,0,strain_size,strain_size) = hooke.assembleK(factors.order2()[j]);
                 }
 
                 // order 3
-                for(unsigned int i=0; i<spatial_dimensions; i++)
-                    for(unsigned int j=0; j<strain_size; j++)
+                for(std::size_t i=0; i<spatial_dimensions; i++)
+                    for(std::size_t j=0; j<strain_size; j++)
                     {
                         eK.block(strain_size*(i+1),offset+strain_size*j,strain_size,strain_size) = hooke.assembleK(factors.order3()(i,j));
                         eK.block(offset+strain_size*j,strain_size*(i+1),strain_size,strain_size) = hooke.assembleK(factors.order3()(i,j));
                     }
                 // order 4
-                for(unsigned int i=0; i<strain_size; i++)
-                    for(unsigned int j=0; j<strain_size; j++)
+                for(std::size_t i=0; i<strain_size; i++)
+                    for(std::size_t j=0; j<strain_size; j++)
                     {
                         eK.block(offset+strain_size*i,offset+strain_size*j,strain_size,strain_size) = hooke.assembleK(factors.order4()(i,j));
                     }
@@ -771,12 +771,12 @@ public:
         if( order > 0 )
         {
             // order 1
-            for(unsigned int i=0; i<spatial_dimensions; i++)   eB.block(strain_size*(i+1),0,strain_size,strain_size) = viscosity.assembleK(factors.order1()[i]);
-            for(unsigned int i=0; i<spatial_dimensions; i++)   eB.block(0,strain_size*(i+1),strain_size,strain_size) = viscosity.assembleK(factors.order1()[i]);
+            for(std::size_t i=0; i<spatial_dimensions; i++)   eB.block(strain_size*(i+1),0,strain_size,strain_size) = viscosity.assembleK(factors.order1()[i]);
+            for(std::size_t i=0; i<spatial_dimensions; i++)   eB.block(0,strain_size*(i+1),strain_size,strain_size) = viscosity.assembleK(factors.order1()[i]);
             // order 2
-            unsigned int count = 0;
-            for(unsigned int i=0; i<spatial_dimensions; i++)
-                for(unsigned int j=i; j<spatial_dimensions; j++)
+            std::size_t count = 0;
+            for(std::size_t i=0; i<spatial_dimensions; i++)
+                for(std::size_t j=i; j<spatial_dimensions; j++)
                 {
                     eB.block(strain_size*(i+1),strain_size*(j+1),strain_size,strain_size) = viscosity.assembleK(factors.order2()[count]);
                     if(i!=j) eB.block(strain_size*(j+1),strain_size*(i+1),strain_size,strain_size) = viscosity.assembleK(factors.order2()[count]);
@@ -785,23 +785,23 @@ public:
 
             if( order > 1 )
             {
-                unsigned int offset = (spatial_dimensions+1)*strain_size;
-                for(unsigned int j=0; j<strain_size; j++)
+                std::size_t offset = (spatial_dimensions+1)*strain_size;
+                for(std::size_t j=0; j<strain_size; j++)
                 {
                     eB.block(0,offset+strain_size*j,strain_size,strain_size) = viscosity.assembleK(factors.order2()[j]);
                     eB.block(offset+strain_size*j,0,strain_size,strain_size) = viscosity.assembleK(factors.order2()[j]);
                 }
 
                 // order 3
-                for(unsigned int i=0; i<spatial_dimensions; i++)
-                    for(unsigned int j=0; j<strain_size; j++)
+                for(std::size_t i=0; i<spatial_dimensions; i++)
+                    for(std::size_t j=0; j<strain_size; j++)
                     {
                         eB.block(strain_size*(i+1),offset+strain_size*j,strain_size,strain_size) = viscosity.assembleK(factors.order3()(i,j));
                         eB.block(offset+strain_size*j,strain_size*(i+1),strain_size,strain_size) = viscosity.assembleK(factors.order3()(i,j));
                     }
                 // order 4
-                for(unsigned int i=0; i<strain_size; i++)
-                    for(unsigned int j=0; j<strain_size; j++)
+                for(std::size_t i=0; i<strain_size; i++)
+                    for(std::size_t j=0; j<strain_size; j++)
                     {
                         eB.block(offset+strain_size*i,offset+strain_size*j,strain_size,strain_size) = viscosity.assembleK(factors.order4()(i,j));
                     }

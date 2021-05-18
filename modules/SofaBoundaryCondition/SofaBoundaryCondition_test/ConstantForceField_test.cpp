@@ -50,8 +50,7 @@ using sofa::component::container::MechanicalObject ;
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
 using sofa::component::forcefield::ConstantForceField ;
-using sofa::core::ExecParams ;
-
+using sofa::core::execparams::defaultInstance; 
 
 template <typename TDataType, typename TMassType>
 struct TypeTuple
@@ -91,7 +90,7 @@ struct ConstantForceField_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheMechanicalObject* mechanicalobject ;
         root->getTreeObject(mechanicalobject) ;
@@ -142,7 +141,7 @@ struct ConstantForceField_test : public Sofa_test<>
                                                                   scene.str().size()) ;
                 ASSERT_NE(root.get(), nullptr) << "Problem to load scene: " << scene.str() ;
                 EXPECT_MSG_EMIT(Error) ;
-                root->init(ExecParams::defaultInstance());
+                root->init(sofa::core::execparams::defaultInstance());
 
                 sofa::core::objectmodel::BaseObject* constantff = root->getObject("myForceField") ;
                 ASSERT_NE( constantff, nullptr) ;
@@ -176,7 +175,7 @@ struct ConstantForceField_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         TheConstantForceField* forcefield ;
         root->getTreeObject(forcefield) ;
@@ -215,12 +214,12 @@ struct ConstantForceField_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 TypeTuple<Rigid2Types, Rigid2Mass>
 ,TypeTuple<Vec1dTypes, double>
@@ -233,7 +232,7 @@ TypeTuple<Rigid2Types, Rigid2Mass>
 > DataTypes;
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(ConstantForceField_test, DataTypes);// first test case
+TYPED_TEST_SUITE(ConstantForceField_test, DataTypes);// first test case
 TYPED_TEST( ConstantForceField_test , testBasicAttributes )
 {
     ASSERT_NO_THROW (this->testBasicAttributes());

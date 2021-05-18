@@ -141,7 +141,7 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
             else if ( pt1[2] < minElem[2] ) minElem[2] = pt1[2];
         }
 
-        for (int i=0; i<getSize(); ++i)
+        for (std::size_t i=0; i<getSize(); ++i)
         {
             Triangle t(this,i);
             const Vector3& pt1 = x[t.p1Index()];

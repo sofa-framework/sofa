@@ -17,7 +17,7 @@ set(SOURCE_FILES
     QCompliantMouseOperations.cpp
 )
 
-find_package(SofaGui REQUIRED)
+find_package(SofaGuiQt REQUIRED)
 find_package(SofaOpenglVisual REQUIRED)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets QUIET)
@@ -27,6 +27,6 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${MOC_FILES})
 add_definitions("-DSOFA_BUILD_COMPLIANT_GUI")
-target_link_libraries(${PROJECT_NAME} SofaGuiMain Compliant SofaOpenglVisual)
+target_link_libraries(${PROJECT_NAME} SofaGuiQt Compliant SofaOpenglVisual)
 
 sofa_install_targets(Compliant ${PROJECT_NAME} ${PROJECT_NAME})

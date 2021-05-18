@@ -24,7 +24,7 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseVisual/VisualStyle.h>
-
+#include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
 

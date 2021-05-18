@@ -230,6 +230,16 @@ void FlagTreeItem::write_recursive(const FlagTreeItem* root, std::string& str )
     }
 }
 
+std::ostream& operator<< ( std::ostream& os, const FlagTreeItem& root )
+{
+    return root.write(os);
+}
+std::istream& operator>> ( std::istream& in, FlagTreeItem& root )
+{
+    return root.read(in);
+}
+
+
 DisplayFlags::DisplayFlags():
     m_root(FlagTreeItem("showRoot","hideRoot",nullptr)),
     m_showAll(FlagTreeItem("showAll","hideAll",&m_root)),
@@ -370,6 +380,17 @@ DisplayFlags difference_displayFlags(const DisplayFlags& previous, const Display
     difference.m_showNormals.setValue( difference_tristate(previous.m_showNormals.state(),current.m_showNormals.state()) );
     return difference;
 }
+
+std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags )
+{
+    return flags.m_root.write(os);
+}
+
+std::istream& operator>> ( std::istream& in, DisplayFlags& flags )
+{
+    return flags.m_root.read(in);
+}
+
 }
 
 }

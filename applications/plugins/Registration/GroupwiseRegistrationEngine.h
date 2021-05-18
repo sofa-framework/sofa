@@ -139,10 +139,10 @@ protected:
         {
             Xcm+=target[i];
             Xcm0+=source[i];
-            M += dyad(target[i],source[i]);
+            M += defaulttype::dyad(target[i],source[i]);
         }
         Xcm /= (Real)N;
-        M -= dyad(Xcm,Xcm0); // sum (X-Xcm)(X0-Xcm0)^T = sum X.X0^T - N.Xcm.Xcm0^T
+        M -= defaulttype::dyad(Xcm,Xcm0); // sum (X-Xcm)(X0-Xcm0)^T = sum X.X0^T - N.Xcm.Xcm0^T
         Xcm0 /= (Real)N;
         helper::Decompose<Real>::polarDecomposition(M, R);
         t = Xcm - R*Xcm0;

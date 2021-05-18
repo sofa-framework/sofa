@@ -4,10 +4,9 @@ set(SOFATUTORIALS_TARGETS
     # No CMakeLists.txt
     # anatomyModelling
     chainHybrid
-    #compositeObject
-    #houseOfCards
-    #mixedPendulum
-    #oneParticle
+    compositeObject
+    mixedPendulum
+    oneParticle
     # Needs SofaTypedefs
     # oneParticleWithSofaTypedefs
     oneTetrahedron

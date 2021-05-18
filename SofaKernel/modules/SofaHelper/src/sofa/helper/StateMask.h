@@ -19,19 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_PARTICLEMASK_H
-#define SOFA_HELPER_PARTICLEMASK_H
-#include <sofa/helper/vector.h>
-
-#include <sofa/defaulttype/Mat.h>
-#include <Eigen/SparseCore>
-
-
-namespace sofa
-{
-
-namespace helper
-{
+#pragma once
 
 /**
  *  \brief Utility class to handle the mechanism of masks.
@@ -59,6 +47,11 @@ namespace helper
 
 
 #ifdef SOFA_USE_MASK
+#include <sofa/helper/vector.h>
+#include <sofa/defaulttype/Mat.h>
+#include <Eigen/SparseCore>
+namespace sofa::helper
+{
 
 class SOFA_HELPER_API StateMask
 {
@@ -136,8 +129,15 @@ protected:
     bool activated; // automatic switch (the mask is only used for specific operations)
 
 };
-
+}
 #else
+
+#include <sofa/helper/config.h>
+#include <iosfwd>
+
+
+namespace sofa::helper
+{
 
 class SOFA_HELPER_API StateMask
 {
@@ -164,7 +164,6 @@ public:
     } // unsafe to be use where we do not care if the mapping in deactivated
 
     /// getting mask entries is useful for advanced uses.
-    //    const InternalStorage& getEntries() const { return mask; }
 
     void resize( size_t size ) { m_size=size; }
     inline void clear() { m_size=0; }
@@ -175,29 +174,21 @@ public:
 
     inline friend std::ostream& operator<< ( std::ostream& os, const StateMask& /*sm*/ ) { return os; }
 
-
     /// filtering the given input matrix by using the mask as a diagonal projection matrix
     /// output = mask.asDiagonal() * input
-    template<class Real>
-    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const {SOFA_UNUSED(blockSize); output=input;}
+    ///template<class Real>
+    ///void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const {SOFA_UNUSED(blockSize); output=input;}
 
     /// return the number of dofs in the mask
     size_t nbActiveDofs() const {return m_size;}
-
     size_t getHash() const { return 0; }
 
 protected:
-
     size_t m_size;
-
 };
 
-#endif
-
-
-
-} // namespace helper
-
-} // namespace sofa
+} /// namespace sofa
 
 #endif
+
+

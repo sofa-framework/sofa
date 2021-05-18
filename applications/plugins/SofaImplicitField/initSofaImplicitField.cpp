@@ -50,9 +50,6 @@ void initExternalModule()
     {
         first = false;
     }
-
-    if(SOFAIMPLICITFIELD_HAVE_SOFAPYTHON)
-        PluginManager::getInstance().loadPlugin("SofaPython") ;
 }
 
 const char* getModuleName()

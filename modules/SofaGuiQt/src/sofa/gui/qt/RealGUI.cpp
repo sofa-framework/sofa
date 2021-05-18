@@ -47,6 +47,8 @@
 #include <sofa/simulation/Node.h>
 #endif
 
+
+#include <QScreen>
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
 #include "FileManagement.h"
@@ -81,6 +83,7 @@ using sofa::gui::GuiDataRepository;
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory;
 
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
 #include <QHBoxLayout>
@@ -94,13 +97,15 @@ using sofa::simulation::SceneLoaderFactory;
 #include <QAction>
 #include <QMessageBox>
 #include <QDockWidget>
-#include <QDesktopWidget>
 #include <QStatusBar>
-#include <QDockWidget>
 #include <QSettings>
 #include <QMimeData>
 #include <QCompleter>
 #include <QDesktopServices>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
+    #include <QDesktopWidget>
+#endif
 
 #   ifdef SOFA_GUI_INTERACTION
 #    include <QCursor>
@@ -127,10 +132,6 @@ using sofa::simulation::SimulationStopEvent;
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor;
 
-#include <sofa/helper/system/FileSystem.h>
-using sofa::helper::system::FileSystem;
-
-
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -141,22 +142,15 @@ using sofa::gui::qt::DocBrowser;
 
 using sofa::core::ExecParams;
 
-#include <boost/program_options.hpp>
+#include <sofa/gui/ArgumentParser.h>
 
-
-namespace sofa
-{
 
 #ifdef SOFA_PML
-using namespace filemanager::pml;
+using namespace sofa::gui::filemanager::pml;
 #endif
 
-namespace gui
+namespace sofa::gui::qt
 {
-
-namespace qt
-{
-
 
 using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
@@ -393,7 +387,11 @@ RealGUI::RealGUI ( const char* viewername)
     }
 
     this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     dockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures);
+#else
+    dockWidget->setFeatures(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+#endif
     dockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
 
     connect(dockWidget, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
@@ -452,7 +450,11 @@ RealGUI::RealGUI ( const char* viewername)
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+#else
+    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
     this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
@@ -493,6 +495,10 @@ RealGUI::RealGUI ( const char* viewername)
     /// Signal to the realGUI that the visibility has changed (eg: to update the menu bar)
     connect(m_docbrowser, SIGNAL(visibilityChanged(bool)), this, SLOT(docBrowserVisibilityChanged(bool)));
 #endif
+
+    // Trigger QDialog for "About" section
+    connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(showAbout()));
+
 
     m_filelistener = new RealGUIFileListener(this);
 }
@@ -553,7 +559,7 @@ void RealGUI::mouseMoveEvent(QMouseEvent * /*e*/)
         QCursor::setPos(p);
         Node* groot = mViewer->getScene();
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
         return;
     }
 }
@@ -567,7 +573,7 @@ void RealGUI::wheelEvent(QWheelEvent* e)
         sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
         Node* groot = mViewer->getScene();
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
         e->accept();
         return;
     }
@@ -586,21 +592,21 @@ void RealGUI::mousePressEvent(QMouseEvent * e)
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::RightButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::MidButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             return;
         }
@@ -620,21 +626,21 @@ void RealGUI::mouseReleaseEvent(QMouseEvent * e)
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::RightButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             else if (e->button() == Qt::MidButton)
             {
                 sofa::core::objectmodel::MouseEvent mouseEvent = sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased);
                 Node* groot = mViewer->getScene();
                 if (groot)
-                    groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+                    groot->propagateEvent(core::execparams::defaultInstance(), &mouseEvent);
             }
             return;
         }
@@ -650,7 +656,7 @@ void RealGUI::keyReleaseEvent(QKeyEvent * e)
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
         Node* groot = mViewer->getScene();
         if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
         return;
     }
 }
@@ -755,8 +761,9 @@ int RealGUI::mainLoop()
 int RealGUI::closeGUI()
 {
     QSettings settings;
-    settings.beginGroup("viewer");
-    settings.setValue("screenNumber", QApplication::desktop()->screenNumber(this));
+    QScreen* screen = widget->window()->windowHandle()->screen();
+    settings.beginGroup("viewer"); ;
+    settings.setValue("screenNumber", QGuiApplication::screens().indexOf(screen));
     settings.endGroup();
     delete this;
     return 0;
@@ -806,8 +813,8 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 
     if( currentSimulation() ) this->unloadScene();
 
-    const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
-    mSimulation = simulation::getSimulation()->load ( filename, reload, sceneArgs );
+    const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();
+    mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == nullptr )
@@ -858,7 +865,7 @@ void RealGUI::emitIdle()
     Node* groot = mViewer->getScene();
     if (groot)
     {
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &hb);
+        groot->propagateEvent(core::execparams::defaultInstance(), &hb);
     }
 
     if(isEmbeddedViewer())
@@ -1179,6 +1186,17 @@ void RealGUI::showDocBrowser()
 #endif
 }
 
+//------------------------------------
+
+void RealGUI::showAbout()
+{
+    //create the QDialog for About
+    AboutSOFADialog* aboutSOFA_dialog = new sofa::gui::qt::AboutSOFADialog(this);
+    aboutSOFA_dialog->show();
+}
+
+//------------------------------------
+
 void RealGUI::showPluginManager()
 {
     pluginManager_dialog->updatePluginsListView();
@@ -1225,8 +1243,11 @@ void RealGUI::setViewerResolution ( int w, int h )
         QSize winSize = size();
         QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
         const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
-
+#else
+        const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();// QGuiApplication::screens().at(QApplication::desktop()->screenNumber(this))->availableGeometry();
+#endif
         QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
         if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
         if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);
@@ -1622,7 +1643,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
             Node* groot = qtViewer->getScene();
             if (groot)
-                groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+                groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
         }
         return;
     }
@@ -1962,7 +1983,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
 
     if (activate)
         node->setActive(true);
-    simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), activate);
+    simulation::DeactivationVisitor v(sofa::core::execparams::defaultInstance(), activate);
     node->executeVisitor(&v);
 
     using core::objectmodel::BaseNode;
@@ -2091,7 +2112,7 @@ void RealGUI::playpauseGUI ( bool startSimulation )
     if(startSimulation)
     {
         SimulationStopEvent startEvt;
-        root->propagateEvent(core::ExecParams::defaultInstance(), &startEvt);
+        root->propagateEvent(core::execparams::defaultInstance(), &startEvt);
         m_clockBeforeLastStep = 0;
         frameCounter=0;
         timerStep->start(0);
@@ -2099,7 +2120,7 @@ void RealGUI::playpauseGUI ( bool startSimulation )
     }
 
     SimulationStartEvent stopEvt;
-    root->propagateEvent(core::ExecParams::defaultInstance(), &stopEvt);
+    root->propagateEvent(core::execparams::defaultInstance(), &stopEvt);
 
     timerStep->stop();
     return;
@@ -2399,7 +2420,7 @@ void RealGUI::setExportGnuplot ( bool exp )
     m_exportGnuplot = exp;
     if ( exp && root )
     {
-        sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+        sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
         InitGnuplotVisitor v(params , gnuplot_directory);
         root->execute( v );
         exportGnuplot(root,gnuplot_directory);
@@ -2632,8 +2653,4 @@ void RealGUI::appendToDataLogFile(QString dataModifiedString)
 
 //======================= SIGNALS-SLOTS ========================= }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui::qt

@@ -25,8 +25,10 @@
 #include <functional>
 #include <map>
 #include <vector>
+#include <string>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include "objectmodel/ComponentState.h"
+#include <sofa/core/objectmodel/ComponentState.h>
+
 namespace sofa::core::objectmodel
 {
     class Base;
@@ -59,10 +61,10 @@ namespace core
 
         /// Did the data change since its last access?
         /// @warning data must be a tracked Data @see trackData
-        bool hasChanged( const objectmodel::BaseData& data );
+        bool hasChanged( const objectmodel::BaseData& data ) const;
 
         /// Did one of the tracked data change since the last call to clean()?
-        bool hasChanged();
+        bool hasChanged() const;
 
         /// comparison point is cleaned for the specified tracked Data
         /// @warning data must be a tracked Data @see trackData

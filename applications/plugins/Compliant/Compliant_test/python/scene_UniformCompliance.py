@@ -51,6 +51,8 @@ def createScene(node):
     node.gravity = '0 0 0'
     node.dt = 1e-2
     
+    node.createObject('RequiredPlugin', pluginName="SofaLoader")
+    
     num = node.createObject('MinresSolver',
                             name = 'num',
                             iterations = 100,

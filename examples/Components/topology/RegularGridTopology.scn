@@ -1,6 +1,12 @@
 <!-- RegularGrid examples -->
 <Node name="root" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />

@@ -19,45 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Topology.h"
+#include <sofa/core/topology/Topology.h>
+
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
+namespace sofa::core::topology
 {
 
-namespace core
-{
-
-namespace topology
-{
-
-bool Topology::insertInNode( objectmodel::BaseNode* node )
+bool Topology::insertInNode(objectmodel::BaseNode* node)
 {
     node->addTopology(this);
     Inherit1::insertInNode(node);
     return true;
 }
 
-bool Topology::removeInNode( objectmodel::BaseNode* node )
+bool Topology::removeInNode(objectmodel::BaseNode* node)
 {
     node->removeTopology(this);
     Inherit1::removeInNode(node);
     return true;
 }
 
-const sofa::helper::vector<Topology::index_type> Topology::InvalidSet;
-const Topology::Edge Topology::InvalidEdge;
-const Topology::Triangle Topology::InvalidTriangle;
-const Topology::Quad Topology::InvalidQuad;
-const Topology::Tetrahedron Topology::InvalidTetrahedron;
-const Topology::Pyramid Topology::InvalidPyramid;
-const Topology::Pentahedron Topology::InvalidPentahedron;
-const Topology::Hexahedron Topology::InvalidHexahedron;
+// Tetrahedron
+const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
+const unsigned int trianglesOrientationInTetrahedronArray[4][3] = {{1,2,3}, {0,3,2}, {1,3,0}, {0,2,1}};
 
+// Hexahedron
+const unsigned int edgesInHexahedronArray[12][2] = {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
+const unsigned int quadsInHexahedronArray[6][4] = {{0,1,2,3}, {4,7,6,5}, {1,0,4,5}, {1,5,6,2}, {2,6,7,3}, {0,3,7,4}};
+const unsigned int quadsOrientationInHexahedronArray[6][4] = {{0,3,2,1}, {4,5,6,7}, {0,1,5,4}, {1,2,6,5}, {2,3,7,6}, {3,0,4,7}};
+const unsigned int verticesInHexahedronArray[2][2][2] = { {{0,4}, {3,7}}, {{1,5}, {2,6}} };
 
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::core::topology

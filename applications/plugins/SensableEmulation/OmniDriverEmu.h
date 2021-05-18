@@ -31,11 +31,7 @@
 #include <sofa/defaulttype/SolidTypes.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-
-#ifndef WIN32
-#  include <pthread.h>
-#endif
-
+#include <thread>
 #include <SensableEmulation/config.h>
 
 
@@ -122,7 +118,6 @@ public:
 
     void init() override;
     void bwdInit() override;
-    void reset() override;
     void reinit() override;
     void cleanup() override;
     void draw(const core::visual::VisualParams*) override;
@@ -140,9 +135,11 @@ public:
     //need for "omni simulation"
     helper::system::thread::CTime *thTimer;
 
-#ifndef WIN32
-    pthread_t hapSimuThread;
-#endif
+    /// Thread object
+    std::thread hapSimuThread;
+
+    /// Bool to notify thread to stop work
+    std::atomic<bool> m_terminate;
 
     double lastStep;
     bool executeAsynchro;

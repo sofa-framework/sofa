@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_STRUCTDATAWIDGET_H
-#define SOFA_GUI_QT_STRUCTDATAWIDGET_H
-
+#pragma once
 #include "SimpleDataWidget.h"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaDeformable/SpringForceField.h>
@@ -35,13 +33,7 @@
 #include <QVBoxLayout>
 #include <QLayout>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 ////////////////////////////////////////////////////////////////
@@ -342,7 +334,7 @@ public:
 /// Rigids (as data-structures) support
 ////////////////////////////////////////////////////////////////
 
-template<int N, class T>
+template<std::size_t N, class T>
 class struct_data_trait < sofa::defaulttype::RigidCoord<N, T> >
 {
 public:
@@ -358,11 +350,11 @@ template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidCoord<3 COMMA T>, 1, "
 template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidCoord<2 COMMA T>, 0, "Center", "", typename data_type::Vec2, getCenter());
 template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidCoord<2 COMMA T>, 1, "Orientation", "A", typename data_type::Real, getOrientation());
 
-template<int N, class T>
+template<std::size_t N, class T>
 class data_widget_container < sofa::defaulttype::RigidCoord<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidCoord<N, T> >
 {};
 
-template<int N, class T>
+template<std::size_t N, class T>
 class struct_data_trait < sofa::defaulttype::RigidMass<N, T> >
 {
 public:
@@ -374,14 +366,14 @@ public:
     }
 };
 
-template<int N, class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<N COMMA T>, 0, "Mass", "Mass", T, mass);
-template<int N, class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<N COMMA T>, 1, "Volume", "Vol", T, volume);
+template<std::size_t N, class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<N COMMA T>, 0, "Mass", "Mass", T, mass);
+template<std::size_t N, class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<N COMMA T>, 1, "Volume", "Vol", T, volume);
 template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<2 COMMA T>, 2, "Inertia Matrix", "Inertia", T, inertiaMatrix);
 template<class T> STRUCT_DATA_VAR(sofa::defaulttype::RigidMass<3 COMMA T>, 2, "Inertia Matrix", "Inertia", typename data_type::Mat3x3, inertiaMatrix);
 template<class T> STRUCT_DATA_VAR_READONLY(sofa::defaulttype::RigidMass<2 COMMA T>, 3, "Inertia Mass Matrix", "InertialMass", T, inertiaMassMatrix);
 template<class T> STRUCT_DATA_VAR_READONLY(sofa::defaulttype::RigidMass<3 COMMA T>, 3, "Inertia Mass Matrix", "InertialMass", typename data_type::Mat3x3, inertiaMassMatrix);
 
-template<int N, class T>
+template<std::size_t N, class T>
 class data_widget_container < sofa::defaulttype::RigidMass<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidMass<N, T> >
 {};
 
@@ -403,8 +395,8 @@ public:
     }
 };
 
-template<class T> STRUCT_DATA_VAR(CLASS, 0, "Index 1", "Index 1", int, m1);
-template<class T> STRUCT_DATA_VAR(CLASS, 1, "Index 2", "Index 2", int, m2);
+template<class T> STRUCT_DATA_VAR(CLASS, 0, "Index 1", "Index 1", sofa::Index, m1);
+template<class T> STRUCT_DATA_VAR(CLASS, 1, "Index 2", "Index 2", sofa::Index, m2);
 template<class T> STRUCT_DATA_VAR(CLASS, 2, "Stiffness", "Ks", T, ks);
 template<class T> STRUCT_DATA_VAR(CLASS, 3, "Damping", "Kd", T, kd);
 template<class T> STRUCT_DATA_VAR(CLASS, 4, "Rest Length", "L", T, initpos);
@@ -432,8 +424,8 @@ public:
     }
 };
 
-template<class T> STRUCT_DATA_VAR(CLASS, 0,  "Index 1", "Index 1", int, m1);
-template<class T> STRUCT_DATA_VAR(CLASS, 1,  "Index 2", "Index 2", int, m2);
+template<class T> STRUCT_DATA_VAR(CLASS, 0,  "Index 1", "Index 1", sofa::Index, m1);
+template<class T> STRUCT_DATA_VAR(CLASS, 1,  "Index 2", "Index 2", sofa::Index, m2);
 template<class T> STRUCT_DATA_VAR(CLASS, 2, "Trans X Axis", "Trans X Axis", bool, freeMovements[0]);
 template<class T> STRUCT_DATA_VAR(CLASS, 3, "Trans Y Axis", "Trans Y Axis", bool, freeMovements[1]);
 template<class T> STRUCT_DATA_VAR(CLASS, 4, "Trans Z Axis", "Trans Z Axis", bool, freeMovements[2]);
@@ -504,36 +496,29 @@ class data_widget_container < CLASS > : public struct_data_widget_container < CL
 
 
 ////////////////////////////////////////////////////////////////
-/// sofa::core::loader::Material support
+/// sofa::helper::types::Material support
 ////////////////////////////////////////////////////////////////
 
 template<>
-class struct_data_trait < sofa::core::loader::Material >
+class struct_data_trait < sofa::helper::types::Material >
 {
 public:
-    typedef sofa::core::loader::Material data_type;
+    typedef sofa::helper::types::Material data_type;
     enum { NVAR = 6 };
     static void set( data_type& /*d*/)
     {
     }
 };
 
-template<> STRUCT_DATA_VAR(sofa::core::loader::Material, 0, "Name", "Name", std::string, name);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 1, "Ambient", "Amb", sofa::helper::types::RGBAColor, ambient, useAmbient);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 2, "Diffuse", "Diff", sofa::helper::types::RGBAColor, diffuse, useDiffuse);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 3, "Specular", "Spec", sofa::helper::types::RGBAColor, specular, useSpecular);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 4, "Emissive", "Emm", sofa::helper::types::RGBAColor, emissive, useEmissive);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 5, "Shininess", "Shin", float, shininess, useShininess);
+template<> STRUCT_DATA_VAR(sofa::helper::types::Material, 0, "Name", "Name", std::string, name);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 1, "Ambient", "Amb", sofa::helper::types::RGBAColor, ambient, useAmbient);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 2, "Diffuse", "Diff", sofa::helper::types::RGBAColor, diffuse, useDiffuse);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 3, "Specular", "Spec", sofa::helper::types::RGBAColor, specular, useSpecular);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 4, "Emissive", "Emm", sofa::helper::types::RGBAColor, emissive, useEmissive);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 5, "Shininess", "Shin", float, shininess, useShininess);
 
 template<>
-class data_widget_container < sofa::core::loader::Material > : public struct_data_widget_container < sofa::core::loader::Material >
+class data_widget_container < sofa::helper::types::Material > : public struct_data_widget_container < sofa::helper::types::Material >
 {};
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-
-#endif
+} //namespace sofa::gui::qt

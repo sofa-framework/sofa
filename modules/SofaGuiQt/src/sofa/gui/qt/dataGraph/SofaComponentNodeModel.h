@@ -15,17 +15,11 @@ using QtNodes::NodeDataModel;
 using QtNodes::PortType;
 using QtNodes::PortIndex;
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
-    namespace core
-    {
-        namespace objectmodel
-        {
-            class BaseObject;
-            class BaseData;
-        }
-    }
-}
+    class BaseObject;
+    class BaseData;
+} // namespace sofa::core::objectmodel
 
 /// The class can potentially incapsulate any user data which
 /// need to be transferred within the Node Editor graph

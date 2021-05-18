@@ -173,7 +173,7 @@ namespace sofa {
     > PrincipalStretchesDataTypes; // the types to instanciate.
 
     // Test suite for all the instanciations
-    TYPED_TEST_CASE(PrincipalStretchesMappingTest, PrincipalStretchesDataTypes);
+    TYPED_TEST_SUITE(PrincipalStretchesMappingTest, PrincipalStretchesDataTypes);
     // first test case
     TYPED_TEST( PrincipalStretchesMappingTest , test_auto )
     {

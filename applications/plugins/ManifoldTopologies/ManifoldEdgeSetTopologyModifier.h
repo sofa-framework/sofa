@@ -61,43 +61,19 @@ public:
     */
     void addEdgeProcess(Edge e);
 
-    /** \brief Add some edges to this topology.
-    *
-    * \sa addEdgesWarning
-    */
-    virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges) override;
-
-    /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
-    *
-    * Elements corresponding to these edges are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the edges are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeEdgesWarning
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    *
-    * @param removeIsolatedItems if true isolated vertices are also removed
-    */
-    virtual void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems = false) override;
-
     using EdgeSetTopologyModifier::removeEdges;
     /** \brief Remove a set  of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
     *
     */
     // side effect: edges are sorted in removeEdgesWarning
-    virtual void removeEdges(/*const*/ sofa::helper::vector< unsigned int >& edges,
+    virtual void removeEdges(/*const*/ sofa::helper::vector< Index >& edges,
             const bool removeIsolatedPoints = true);
 
     using EdgeSetTopologyModifier::removeItems;
     /** \brief Generic method to remove a list of items.
      */
-    virtual void removeItems(/*const*/ sofa::helper::vector< unsigned int >& items);
-
-    /** \brief Generic method for points renumbering
-    */
-    virtual void renumberPoints( const sofa::helper::vector<unsigned int> & index,
-            const sofa::helper::vector<unsigned int> & inv_index) override;
+    virtual void removeItems(/*const*/ sofa::helper::vector< EdgeID >& items);
 
     /** \brief add a set  of edges
     @param edges an array of pair of vertex indices describing the edge to be created
@@ -112,26 +88,26 @@ public:
     *
     */
     virtual void addEdges(const sofa::helper::vector< Edge >& edges,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< Index > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) override;
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
     *
     */
-    virtual void swapEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs) override;
+    virtual void swapEdges(const sofa::helper::vector< sofa::helper::vector< Index > >& edgesPairs) override;
 
     /** \brief Fuse a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by one edge (p11, p22)
     *
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void fuseEdges(const sofa::helper::vector< sofa::helper::vector< unsigned int > >& edgesPairs, const bool removeIsolatedPoints = true) override;
+    virtual void fuseEdges(const sofa::helper::vector< sofa::helper::vector< Index > >& edgesPairs, const bool removeIsolatedPoints = true) override;
 
     /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
     * On each edge, a vertex is created based on its barycentric coordinates
     *
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void splitEdges( sofa::helper::vector<unsigned int> &indices,
+    virtual void splitEdges( sofa::helper::vector<Index> &indices,
             const bool removeIsolatedPoints = true) override;
 
     /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
@@ -139,9 +115,29 @@ public:
     *
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void splitEdges( sofa::helper::vector<unsigned int> &indices,
+    virtual void splitEdges( sofa::helper::vector<Index> &indices,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
             const bool removeIsolatedPoints = true) override;
+protected:
+    /** \brief Add some edges to this topology.
+    *
+    * \sa addEdgesWarning
+    */
+    virtual void addEdgesProcess(const sofa::helper::vector< Edge >& edges) override;
+
+    /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
+    *
+    * Elements corresponding to these edges are removed form the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the edges are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeEdgesWarning
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    *
+    * @param removeIsolatedItems if true isolated vertices are also removed
+    */
+    virtual void removeEdgesProcess(const sofa::helper::vector<Index>& indices, const bool removeIsolatedItems = false) override;
+
 
 private:
     ManifoldEdgeSetTopologyContainer* 	m_container;

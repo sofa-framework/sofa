@@ -53,15 +53,15 @@ class CudaMatrix
 public:
     typedef CudaMatrix<T> Matrix;
     typedef T      value_type;
-    typedef size_t size_type;
+    typedef size_t Size;
 
 private:
-    size_type    sizeX;     ///< Current size of the vector
-    size_type    sizeY;     ///< Current size of the vector
-    size_type    pitch_device;     ///< Row alignment on the GPU
-    size_type    pitch_host;     ///< Row alignment on the GPU
-    size_type    allocSizeX;  ///< Allocated size
-    size_type    allocSizeY;  ///< Allocated size
+    Size    sizeX;     ///< Current size of the vector
+    Size    sizeY;     ///< Current size of the vector
+    Size    pitch_device;     ///< Row alignment on the GPU
+    Size    pitch_host;     ///< Row alignment on the GPU
+    Size    allocSizeX;  ///< Allocated size
+    Size    allocSizeY;  ///< Allocated size
     void*        devicePointer;  ///< Pointer to the data on the GPU side
     T*           hostPointer;    ///< Pointer to the data on the CPU side
     mutable bool deviceIsValid;  ///< True if the data on the GPU is currently valid
@@ -97,9 +97,9 @@ public:
         return allocSizeY;
     }
 
-    void resize_allocated(size_type y,size_t x,size_t WARP_SIZE) {
-        size_type d_x = x;
-        size_type d_y = y;
+    void resize_allocated(Size y,size_t x,size_t WARP_SIZE) {
+        Size d_x = x;
+        Size d_y = y;
 
         if (WARP_SIZE==0) {
             d_x = x;
@@ -190,19 +190,25 @@ public:
         if (devicePointer!=NULL) mycudaFree(devicePointer);
     }
 
-    size_type getSizeX() const {
+    Size colSize() const {
         return sizeX;
     }
 
-    size_type getSizeY() const {
+    Size rowSize() const {
         return sizeY;
     }
 
-    size_type getPitchDevice() const {
+    [[deprecated("2021-02-17: Method has been depreciate in PR #1788. Please use rowSize instead")]]
+    Size getSizeY() const {return  rowSize();}
+
+    [[deprecated("2021-02-17: Method has been depreciate in PR #1788. Please use colSize instead")]]
+    Size getSizeX() const {return  colSize();}
+
+    Size getPitchDevice() const {
         return pitch_device;
     }
 
-    size_type getPitchHost() const {
+    Size getPitchHost() const {
         return pitch_host;
     }
 
@@ -249,7 +255,7 @@ public:
         fastResize(nbRow,nbCol);
     }
 
-    void fastResize(size_type y,size_type x,size_type WARP_SIZE=MemoryManager::BSIZE) {
+    void fastResize(Size y,Size x,Size WARP_SIZE=MemoryManager::BSIZE) {
         DEBUG_OUT_M(SPACEP << "fastResize : " << x << " " << y << " WArp_Size=" << WARP_SIZE << " sizeof(T)=" << sizeof(T) << std::endl);
 
         if ( x==0 || y==0) {
@@ -271,7 +277,7 @@ public:
         DEBUG_OUT_M(SPACEM << "fastResize" << std::endl);
     }
 
-    void resize (size_type y,size_type x,size_t WARP_SIZE=MemoryManager::BSIZE) {
+    void resize (Size y,Size x,size_t WARP_SIZE=MemoryManager::BSIZE) {
         DEBUG_OUT_M(SPACEP << "reisze : " << x << " " << y << " WArp_Size=" << WARP_SIZE << " sizeof(T)=" << sizeof(T) << std::endl);
 
         if ((x==0) || (y==0)) {
@@ -343,12 +349,12 @@ public:
 
     void swap ( CudaMatrix<T>& v ) {
 #define VSWAP(type, var) { type t = var; var = v.var; v.var = t; }
-        VSWAP ( size_type, sizeX );
-        VSWAP ( size_type, sizeY );
-        VSWAP ( size_type, pitch_device );
-        VSWAP ( size_type, pitch_host );
-        VSWAP ( size_type, allocSizeX );
-        VSWAP ( size_type, allocSizeY );
+        VSWAP ( Size, sizeX );
+        VSWAP ( Size, sizeY );
+        VSWAP ( Size, pitch_device );
+        VSWAP ( Size, pitch_host );
+        VSWAP ( Size, allocSizeX );
+        VSWAP ( Size, allocSizeY );
         VSWAP ( void*    , devicePointer );
         VSWAP ( T*       , hostPointer );
         VSWAP ( bool     , deviceIsValid );
@@ -417,35 +423,35 @@ public:
         return ((const T*) (((const char*) hostPointer) + pitch_host*y))[x];
     }
 
-    const T& operator() (size_type y,size_type x) const {
+    const T& operator() (Size y,Size x) const {
 #ifdef DEBUG_OUT_MATRIX
         checkIndex (y,x);
 #endif
         return hostRead(y,x);
     }
 
-    T& operator() (size_type y,size_type x) {
+    T& operator() (Size y,Size x) {
 #ifdef DEBUG_OUT_MATRIX
         checkIndex (y,x);
 #endif
         return hostWrite(y,x);
     }
 
-    const T* operator[] (size_type y) const {
+    const T* operator[] (Size y) const {
 #ifdef DEBUG_OUT_MATRIX
         checkIndex (y,0);
 #endif
         return hostRead(y,0);
     }
 
-    T* operator[] (size_type y) {
+    T* operator[] (Size y) {
 #ifdef DEBUG_OUT_MATRIX
         checkIndex (y,0);
 #endif
         return hostWrite(y,0);
     }
 
-    const T& getCached (size_type y,size_type x) const {
+    const T& getCached (Size y,Size x) const {
 #ifdef DEBUG_OUT_MATRIX
         checkIndex (y,x);
 #endif
@@ -455,10 +461,10 @@ public:
     friend std::ostream& operator<< ( std::ostream& os, const Matrix & mat ) {
         mat.hostRead();
         os << "[\n";
-        for (unsigned j=0; j<mat.getSizeY(); j++)
+        for (unsigned j=0; j<mat.rowSize(); j++)
         {
             os << "[ ";
-            for (unsigned i=0; i<mat.getSizeX(); i++)
+            for (unsigned i=0; i<mat.colSize(); i++)
             {
                 os << " " << mat[j][i];
             }
@@ -481,7 +487,7 @@ protected:
         hostIsValid = true;
     }
 
-    void copyToHostSingle(size_type y,size_type x) const
+    void copyToHostSingle(Size y,Size x) const
     {
         if ( hostIsValid ) return;
         mycudaMemcpyDeviceToHost(((T*)(((char *) hostPointer)+(pitch_host*y))) + x, ((T*)(((char *) devicePointer)+(pitch_device*y))) + x, sizeof ( T ) );
@@ -500,7 +506,7 @@ protected:
     }
 
 #ifdef DEBUG_OUT_MATRIX
-    void checkIndex ( size_type y,size_type x) const {
+    void checkIndex ( Size y,Size x) const {
         if (x>=sizeX) assert(0);
         if (y>=sizeY) assert(0);
     }

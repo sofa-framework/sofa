@@ -125,10 +125,10 @@ struct MergePoints_test : public Sofa_test<typename _DataTypes::Real>,
 
 };
 
-using testing::Types;
+using ::testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(MergePoints_test, DataTypes);
+TYPED_TEST_SUITE(MergePoints_test, DataTypes);
 
 TYPED_TEST(MergePoints_test, initTest ) {
     ASSERT_NO_THROW(this->initTest());

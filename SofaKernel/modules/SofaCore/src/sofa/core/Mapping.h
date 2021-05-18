@@ -23,7 +23,8 @@
 #define SOFA_CORE_MAPPING_H
 
 #include <sofa/core/BaseMapping.h>
-
+#include <sofa/core/State.h>
+#include <sofa/helper/StateMask.h>
 
 namespace sofa
 {
@@ -144,7 +145,7 @@ public:
     /// The displacement is accessed in the parent state using mparams->readDx() .
     /// This method generally corresponds to a symmetric stiffness matrix, but with rotations (which are not a commutative group) it is not the case.
     /// Since some solvers (including the Conjugate Gradient) require symmetric matrices, a flag is set in the MechanicalParams to say if symmetric matrices are required. If so, non-symmetric geometric stiffness should not be applied.
-    void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) override;
+    void applyDJT(const MechanicalParams* /*mparams = */ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) override;
 
     /// ApplyJT (Constraint)///
     void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override;
@@ -282,7 +283,7 @@ public:
 
 protected:
 
-    typedef BaseMapping::ForceMask ForceMask;
+    typedef sofa::helper::StateMask ForceMask;
     /// keep an eye on the dof masks (if the dofs are Mechanical)
     ForceMask *maskFrom, *maskTo;
 

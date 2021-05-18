@@ -24,8 +24,7 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-
-
+#include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa
 {

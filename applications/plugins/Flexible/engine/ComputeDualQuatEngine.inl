@@ -97,7 +97,7 @@ void ComputeDualQuatEngine< DataTypes >::doUpdate()
         }
 
         // Pass to a dualquat
-        DualQuat dualQuat( p );
+        DualQuat dualQuat( p.getCenter(), p.getOrientation());
 
         // Insert into the output
         sofa::defaulttype::Vec<4,Real> orientation = dualQuat.getOrientation();

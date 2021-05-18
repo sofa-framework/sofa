@@ -17,7 +17,7 @@ static struct Tests : public Python_test_list
 
 
 // run test list
-INSTANTIATE_TEST_CASE_P(Batch,
+INSTANTIATE_TEST_SUITE_P(Batch,
                         Python_scene_test,
                         ::testing::ValuesIn(tests.list));
 

@@ -4,7 +4,7 @@ using sofa::helper::testing::BaseSimulationTest ;
 #include <SofaSimulationGraph/SimpleApi.h>
 using namespace sofa::simpleapi ;
 
-#include <sofa/simulation/testing/Node_test.h>
+#include "Node_test.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -45,6 +45,28 @@ struct Link_test : public BaseSimulationTest
         ASSERT_NE(nodeLink.getLinkedBase(), aBasePtr);
     }
 
+    void read_multilink_test()
+    {
+        SceneInstance si("root") ;
+        BaseObject::SPtr A = sofa::core::objectmodel::New<BaseObject>();
+        BaseObject::SPtr B = sofa::core::objectmodel::New<BaseObject>();
+        BaseObject::SPtr C = sofa::core::objectmodel::New<BaseObject>();
+        si.root->addObject(A);
+        si.root->addObject(B);
+
+        BaseLink::InitLink<BaseObject> il1(B.get(), "l1", "");
+        MultiLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withOwner(il1) ;
+
+        // 1. test with valid link & owner
+        ASSERT_TRUE(withOwner.read("@/B"));
+
+        // 2. setting C's context
+        si.root->addObject(B);
+
+        ASSERT_TRUE(withOwner.read("@/C"));
+        ASSERT_TRUE(withOwner.read("@/B @/C"));
+    }
+
     void read_test()
     {
         SceneInstance si("root") ;
@@ -71,7 +93,7 @@ struct Link_test : public BaseSimulationTest
         // 4. test with invalid link but valid owner
         ASSERT_FALSE(withOwner.read("/A")); // should return false as the link is invalid (should start with '@')
         ASSERT_TRUE(withOwner.read("@/plop")); // same as 3: plop could be added later in the graph, after init()
-        ASSERT_FALSE(withOwner.read("@/\!-#"))  << "read doesn't check path consistency, except for the presence of the '@'sign in the first character. This will currently return true";
+        ASSERT_FALSE(withOwner.read("@/\\!-#"))  << "read doesn't check path consistency, except for the presence of the '@'sign in the first character. This will currently return true";
         ASSERT_TRUE(withOwner.read("@/")); // Here link is OK, but points to a BaseNode, while the link only accepts BaseObjects. Should return false. But returns true, since findLinkDest returns false in read()
 
         // test with valid link & valid owner
@@ -88,6 +110,11 @@ TEST_F( Link_test, setLinkedBase_test)
 TEST_F( Link_test, read_test)
 {
     this->read_test() ;
+}
+
+TEST_F( Link_test, read_multilink_test)
+{
+    this->read_multilink_test();
 }
 
 }// namespace sofa

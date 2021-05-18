@@ -24,7 +24,8 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseForceField.h>
-
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 namespace sofa
 {
 
@@ -151,26 +152,18 @@ public:
     /// addToMatrix only on the subMatrixIndex
     virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix * matrix, const helper::vector<unsigned> & subMatrixIndex, SReal kFact, unsigned int &offset);
 
-
-
     void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /// addBToMatrix only on the subMatrixIndex
     void addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex ) override;
 
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
-
-    /// addBToMatrix only on the subMatrixIndex
-    virtual void addSubBToMatrix(sofa::defaulttype::BaseMatrix * matrix, const helper::vector<unsigned> & subMatrixIndex, SReal bFact, unsigned int &offset);
-
-
     /** Accumulate an element matrix to a global assembly matrix. This is a helper for addKToMatrix, to accumulate each (square) element matrix in the (square) assembled matrix.
-      \param bm the global assembly matrix
-      \param offset start index of the local DOFs within the global matrix
-      \param nodeIndex indices of the nodes of the element within the local nodes, as stored in the topology
-      \param em element matrix, typically a stiffness, damping, mass, or weighted sum thereof
-      \param scale weight applied to the matrix, typically ±params->kfactor() for a stiffness matrix
-      */
+    \param bm the global assembly matrix
+    \param offset start index of the local DOFs within the global matrix
+    \param nodeIndex indices of the nodes of the element within the local nodes, as stored in the topology
+    \param em element matrix, typically a stiffness, damping, mass, or weighted sum thereof
+    \param scale weight applied to the matrix, typically ±params->kfactor() for a stiffness matrix
+    */
     template<class IndexArray, class ElementMat>
     void addToMatrix(sofa::defaulttype::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
     {
@@ -195,6 +188,10 @@ public:
         }
     }
 
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
+
+    /// addBToMatrix only on the subMatrixIndex
+    virtual void addSubBToMatrix(sofa::defaulttype::BaseMatrix * matrix, const helper::vector<unsigned> & subMatrixIndex, SReal bFact, unsigned int &offset);
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

@@ -9,7 +9,6 @@
         <MechanicalObject name="dofs" position="@../loader.position"/>
         <TriangleSetTopologyContainer name="topo" triangles="@../loader.triangles"/>
         <TriangleSetTopologyModifier   name="Modifier" />
-        <TriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" />
     </Node>
 

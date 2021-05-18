@@ -11,7 +11,7 @@
     <Node 	name="ref_highresFEM"   >
 	<VisualStyle displayFlags="hideWireframe" />
         <MeshObjLoader name="meshLoader_0" filename="../beam/refBeam_Flex.obj" translation="-0.5 0 0" handleSeams="1" />
-        <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5"/>
+        <OglModel template="Vec3d" name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5"/>
     </Node>
 
   <Node name="Flexible"   >
@@ -44,7 +44,7 @@
     
     
     
-    <DiffusionShapeFunction template="ShapeFunctiond,ImageD"  name="SF" position="@parent.rest_position" src="@image" clearData="0" iterations="1000000" tolerance="1e-5" solver="2 - CG" bias="1" />
+    <DiffusionShapeFunction template="ShapeFunction3d,ImageD"  name="SF" position="@parent.rest_position" src="@image" clearData="0" iterations="1000000" tolerance="1e-5" solver="2 - CG" bias="1" />
     
     
     
@@ -95,8 +95,8 @@
     <Node 	name="visual"   >
 <VisualStyle displayFlags="showWireframe" />
         <MeshObjLoader name="meshLoader_1" filename="../beam/beam.obj" handleSeams="1" />
-        <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="1 0.8 0.8"/>
-	<LinearMapping template="Affine,ExtVec3f"/>
+        <OglModel template="Vec3d" name="Visual" src="@meshLoader_1" color="1 0.8 0.8"/>
+	<LinearMapping template="Affine,Vec3d"/>
     </Node>
 </Node>
 

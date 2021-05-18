@@ -1,5 +1,11 @@
 <Node name="root" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/> 
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollision" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -16,11 +22,11 @@
         <Node name="Visu">
             <MeshObjLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="red" />
-            <SurfaceIdentityMapping input="@.." output="@Visual" />
+            <SubsetMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-	    <VisualStyle displayFlags="hideCollision" />
-	    <SphereLoader filename="mesh/smCube27b.sph" />
+            <VisualStyle displayFlags="hideCollision" />
+            <SphereLoader filename="mesh/smCube27b.sph" />
             <MechanicalObject position="@[-1].position" />
             <SphereCollisionModel listRadius="@[-2].listRadius" />
             <BarycentricMapping />
@@ -30,7 +36,7 @@
     <MechanicalObject position="@[-1].position" translation="0 -12.5 0" />
     <SphereCollisionModel name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" contactStiffness="1000" />
     <Node>
-	<MeshObjLoader name="meshLoader_1" filename="mesh/floor2.obj" translation="0 -12.5 0" handleSeams="1" />
-	<OglModel name="FloorV" src="@meshLoader_1" texturename="textures/floor2.bmp" />
+        <MeshObjLoader name="meshLoader_1" filename="mesh/floor2.obj" translation="0 -12.5 0" handleSeams="1" />
+        <OglModel name="FloorV" src="@meshLoader_1" texturename="textures/floor2.bmp" />
     </Node>
 </Node>

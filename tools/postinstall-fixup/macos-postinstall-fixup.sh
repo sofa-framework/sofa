@@ -2,13 +2,14 @@
 # set -o errexit # Exit on error
 
 usage() {
-    echo "Usage: macos-postinstall-fixup.sh <install-dir> [qt-dir] [macdeployqt]"
+    echo "Usage: macos-postinstall-fixup.sh <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
 }
 
 if [ "$#" -ge 1 ]; then
     INSTALL_DIR="$(cd $1 && pwd)"
-    QT_DIR="$2"
-    MACDEPLOYQT_EXE="$3"
+    QT_LIB_DIR="$2"
+    QT_DATA_DIR="$3"
+    MACDEPLOYQT_EXE="$4"
 else
     usage; exit 1
 fi
@@ -20,25 +21,34 @@ fi
 
 echo "INSTALL_DIR = $INSTALL_DIR"
 echo "BUNDLE_DIR = $BUNDLE_DIR"
-echo "QT_DIR = $QT_DIR"
+echo "QT_LIB_DIR = $QT_LIB_DIR"
+echo "QT_DATA_DIR = $QT_DATA_DIR"
 echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
 
 # Keep plugin_list as short as possible
 echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
+disabled_plugins='plugins_ignored_by_default'
 for plugin in \
-        SofaExporter       \
-        SofaSparseSolver   \
-        SofaPreconditioner \
-        SofaValidation     \
-        SofaDenseSolver    \
-        SofaNonUniformFem  \
-        SofaOpenglVisual   \
-        SofaSphFluid       \
-        CImgPlugin         \
-        SofaMiscCollision  \
+        SofaEulerianFluid     \
+        SofaDistanceGrid      \
+        SofaImplicitField     \
+        MultiThreading        \
+        DiffusionSolver       \
+        image                 \
+        Compliant             \
+        SofaPython            \
+        Flexible              \
+        Registration          \
+        ExternalBehaviorModel \
+        ManifoldTopologies    \
+        ManualMapping         \
+        THMPGSpatialHashing   \
+        SofaCarving           \
+        RigidScale            \
     ; do
-    grep "$plugin" "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+    disabled_plugins=$disabled_plugins'\|'$plugin
 done
+grep -v $disabled_plugins "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
 
 # Make sure the bin folder exists and contains runSofa
 if [ ! -d "$INSTALL_DIR/bin" ]; then
@@ -56,11 +66,11 @@ if [ -d "$BUNDLE_DIR" ] && [ -e "$MACDEPLOYQT_EXE" ]; then
     cp -R $BUNDLE_DIR/Contents/PlugIns/* $BUNDLE_DIR/Contents/MacOS/bin && rm -rf $BUNDLE_DIR/Contents/PlugIns
 
     printf "[Paths] \n    Plugins = MacOS/bin \n" > $BUNDLE_DIR/Contents/Resources/qt.conf
-elif [ -d "$QT_DIR" ]; then
-    cp -Rf $QT_DIR/plugins/iconengines $INSTALL_DIR/bin
-    cp -Rf $QT_DIR/plugins/imageformats $INSTALL_DIR/bin
-    cp -Rf $QT_DIR/plugins/platforms $INSTALL_DIR/bin
-    cp -Rf $QT_DIR/plugins/styles $INSTALL_DIR/bin
+elif [ -d "$QT_DATA_DIR" ]; then
+    cp -Rf $QT_DATA_DIR/plugins/iconengines $INSTALL_DIR/bin
+    cp -Rf $QT_DATA_DIR/plugins/imageformats $INSTALL_DIR/bin
+    cp -Rf $QT_DATA_DIR/plugins/platforms $INSTALL_DIR/bin
+    cp -Rf $QT_DATA_DIR/plugins/styles $INSTALL_DIR/bin
 fi
 
 echo "Fixing up libs manually ..."
@@ -72,7 +82,8 @@ check-all-deps() {
     (
     find "$INSTALL_DIR" -type f -name "Qt*" -path "*/Qt*.framework/Versions/*/Qt*" | grep -v "Headers"
     find "$INSTALL_DIR" -type f -name "*.dylib"
-    find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
+    find "$INSTALL_DIR" -type f -name "*.so"
+    find "$INSTALL_DIR" -type f -name "runSofa*" -path "*/bin/*"
     ) | while read lib; do
         echo "  Checking (pass $pass) $lib"
 
@@ -82,6 +93,7 @@ check-all-deps() {
         libglew=""
         libjpeg=""
         libpng=""
+        libtiff=""
         dependencies="$( otool -L $lib | tail -n +2 | perl -p -e 's/^[\t ]+(.*) \(.*$/\1/g' )"
 
         is_fixup_needed="false"
@@ -110,14 +122,19 @@ check-all-deps() {
                 libname="$libjpeg"
             elif libpng="$(echo $dep | egrep -o "/libpng[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libpng" ]; then
                 libname="$libpng"
+            elif libtiff="$(echo $dep | egrep -o "/libtiff[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libtiff" ]; then
+                libname="$libtiff"
             else
+                if [[ "$dep" == "/usr/local/"* ]]; then
+                    echo "WARNING: no fixup rule set for: $lib"
+                fi
                 # this dep is not a lib to fixup
                 continue
             fi
 
             if [[ "$mode" == "copy" ]]; then
                 if [ -n "$libqt" ]; then
-                    originlib="$QT_DIR/lib/$libqt.framework"
+                    originlib="$QT_LIB_DIR/$libqt.framework"
                     destlib="$INSTALL_DIR/lib/$libqt.framework"
                 else
                     originlib="$dep"
@@ -133,7 +150,8 @@ check-all-deps() {
                 else
                     rpathlib="$libname"
                 fi
-                #echo "install_name_tool -change $dep @rpath/$rpathlib $lib"
+                libbasename="$(basename $lib)"
+                echo "install_name_tool -change $dep @rpath/$rpathlib $libbasename"
                 install_name_tool -change $dep @rpath/$rpathlib $lib
             fi
         done
@@ -145,18 +163,49 @@ if [ -d "$BUNDLE_DIR" ]; then
     chmod -R 755 $BUNDLE_DIR/Contents/MacOS/lib
 
     INSTALL_DIR=$BUNDLE_DIR
-    check-all-deps "fixup" "1/1"
 
     # remove duplicated libs
-    ls $BUNDLE_DIR/Contents/Frameworks | while read libname; do
-        rm -rf $BUNDLE_DIR/Contents/MacOS/lib/$libname
+    find "$BUNDLE_DIR/Contents/MacOS" -type f -name "*.dylib" | while read lib; do
+        libname="$(basename $lib)"
+        # libs in all dirs should not be in Frameworks/*
+        rm -rf $BUNDLE_DIR/Contents/Frameworks/$libname*
+        if [[ "$lib" == *"Contents/MacOS/plugins/"* ]]; then
+            # libs in plugins/* should not be in lib/*
+            rm -rf $BUNDLE_DIR/Contents/Contents/MacOS/lib/$libname*
+        fi
     done
+
+    check-all-deps "fixup" "1/1"
 else
     check-all-deps "copy" "1/4"
     check-all-deps "copy" "2/4"
     check-all-deps "copy" "3/4"
     chmod -R 755 $INSTALL_DIR/lib
     check-all-deps "fixup" "4/4"
+fi
+
+if [ -d "$BUNDLE_DIR" ]; then
+    # Adding default RPATH to all libs and to runSofa
+    (
+    find "$BUNDLE_DIR/Contents/MacOS" -type f -name "*.dylib"
+    find "$BUNDLE_DIR/Contents/MacOS" -type f -name "*.so"
+    find "$BUNDLE_DIR" -type f -name "runSofa*" -path "*/bin/*"
+    ) | while read lib; do
+        install_name_tool -add_rpath "@loader_path/../lib" $lib
+        install_name_tool -add_rpath "@executable_path/../lib" $lib
+        if [[ "$lib" == *"Contents/MacOS/plugins/"* ]]; then
+            install_name_tool -add_rpath "@loader_path/../../../../Frameworks" $lib
+            install_name_tool -add_rpath "@executable_path/../../../../Frameworks" $lib
+        else
+            install_name_tool -add_rpath "@loader_path/../../Frameworks" $lib
+            install_name_tool -add_rpath "@executable_path/../../Frameworks" $lib
+        fi
+    done
+    ls -d $BUNDLE_DIR/Contents/MacOS/plugins/*/ | while read plugin; do
+        pluginname="$(basename $plugin)"
+        install_name_tool -add_rpath "@loader_path/../plugins/$pluginname/lib" "$BUNDLE_DIR/Contents/MacOS/bin/runSofa"
+        install_name_tool -add_rpath "@executable_path/../plugins/$pluginname/lib" "$BUNDLE_DIR/Contents/MacOS/bin/runSofa"
+    done
 fi
 
 echo "Done."

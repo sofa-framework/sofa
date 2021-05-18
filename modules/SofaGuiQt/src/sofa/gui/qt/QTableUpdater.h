@@ -20,10 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_GUI_QT_QTABLEUPDATER_H
-#define SOFA_GUI_QT_QTABLEUPDATER_H
-
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 
@@ -32,11 +29,7 @@
 
 
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 

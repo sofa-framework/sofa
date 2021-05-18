@@ -37,9 +37,9 @@ DataMonitor::DataMonitor()
 {
 }
 
-const char* DataMonitor::getValue()
+const std::string DataMonitor::getValue()
 {
-    return data.getValueString().c_str();
+    return data.getValueString();
 }
 
 } // namespace sofa::component::misc

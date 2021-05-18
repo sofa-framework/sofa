@@ -20,7 +20,6 @@
         <UniformMass name="Mass" template="Vec3d" vertexMass="0.1" />
         <TriangleSetTopologyContainer src="@loader" name="Topology Container" />
         <TriangleSetTopologyModifier name="Topology Modifier" />
-        <TriangleSetTopologyAlgorithms template="Vec3d" name="Topology Algorithms" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="Geometry Algorithms" />
         <TriangularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="300" damping="1" />
         <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="80" />

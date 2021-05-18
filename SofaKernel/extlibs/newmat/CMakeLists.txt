@@ -52,7 +52,7 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
 endif()
 
 
-include(../../SofaFramework/SofaMacros.cmake)
+include(SofaMacros)
 sofa_create_package_with_targets(
     PACKAGE_NAME Newmat
     PACKAGE_VERSION ${PROJECT_VERSION}

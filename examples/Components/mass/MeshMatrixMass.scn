@@ -1,6 +1,12 @@
 <Node name="root" dt="0.005">
     <RequiredPlugin pluginName="SofaOpenglVisual"/>
     <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/> 
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMiscForceField'/> 
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" />
@@ -24,7 +30,7 @@
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
         
         <FixedConstraint  name="FixedConstraint" indices="3" />
-        <PartialFixedConstraint  name="FixedConstraint" indices="39 64" fixedDirections="1 1 0" />
+        <PartialFixedConstraint  name="PartialFixedConstraint" indices="39 64" fixedDirections="1 1 0" />
 
         <Node name="Visu" >
             <OglModel  name="VisualModel" src="@../../LiverSurface" color="0 1 1"/>

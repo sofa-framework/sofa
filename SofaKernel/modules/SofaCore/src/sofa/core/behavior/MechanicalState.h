@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MECHANICALSTATE_H
-#define SOFA_CORE_BEHAVIOR_MECHANICALSTATE_H
+#pragma once
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/State.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -76,14 +69,15 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     /// Sparse matrix containing derivative values (constraints)
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-protected:
-    ~MechanicalState() override {}
+
+    using Index = sofa::Index;
+
 public:
-    size_t getCoordDimension() const override { return defaulttype::DataTypeInfo<Coord>::size(); }
-    size_t getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
+    Size getCoordDimension() const override { return defaulttype::DataTypeInfo<Coord>::size(); }
+    Size getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
 
     /// Get the indices of the particles located in the given bounding box
-    virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
+    virtual void getIndicesInSpace(sofa::helper::vector<Index>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
 
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
@@ -94,137 +88,22 @@ public:
         return name;
     }
 
-	void copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const override {
-		const size_t size = this->getSize();
-		
-		switch(src.type) {
-		case V_COORD: {
-			helper::ReadAccessor< Data<VecCoord> > vec = this->read(ConstVecCoordId(src));
-			const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
-			assert( n == dim * size );
-			
-			for(size_t i = 0; i < size; ++i) {
-				for(size_t j = 0; j < dim; ++j) {
-					defaulttype::DataTypeInfo<Coord>::getValue(vec[i], j, *(dst++));
-				}
-			}
-			
-		}; break;
-		case V_DERIV: {
-            helper::ReadAccessor< Data<VecDeriv> > vec = this->read(ConstVecDerivId(src));
-            const size_t dim = defaulttype::DataTypeInfo<Deriv>::size();
-            assert( n == dim * size );
-			
-            for(size_t i = 0; i < size; ++i) {
-                for(size_t j = 0; j < dim; ++j) {
-                    defaulttype::DataTypeInfo<Deriv>::getValue(vec[i], j, *(dst++));
-                }
-            }
-			
-		}; break;
-		default: 
-			assert( false );
-		}
-		
-		// get rid of unused parameter warnings in release build
-		(void) n;
-	}
+    void copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const override;
+    void copyFromBuffer(VecId dst, const SReal* src, unsigned n) override;
+    void addFromBuffer(VecId dst, const SReal* src, unsigned n) override;
 
-	void copyFromBuffer(VecId dst, const SReal* src, unsigned n) override {
-		const size_t size = this->getSize();
-		
-		switch(dst.type) {
-		case V_COORD: {
-            helper::WriteOnlyAccessor< Data<VecCoord> > vec = this->write(VecCoordId(dst));
-			const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
-			assert( n == dim * size );
-			
-			for(size_t i = 0; i < size; ++i) {
-				for(size_t j = 0; j < dim; ++j) {
-					defaulttype::DataTypeInfo<Coord>::setValue(vec[i], j, *(src++));
-				}
-			}
-			
-		}; break;
-		case V_DERIV: {
-            helper::WriteOnlyAccessor< Data<VecDeriv> > vec = this->write(VecDerivId(dst));
-			const size_t dim = defaulttype::DataTypeInfo<Deriv>::size();
-			assert( n == dim * size );
-			
-			for(size_t i = 0; i < size; ++i) {
-				for(size_t j = 0; j < dim; ++j) {
-                    defaulttype::DataTypeInfo<Deriv>::setValue(vec[i], j, *(src++));
-				}
-			}
-			
-		}; break;
-		default: 
-			assert( false );
-		}
-		
-		// get rid of unused parameter warnings in release build
-		(void) n;
-	}
-
-    void addFromBuffer(VecId dst, const SReal* src, unsigned n) override {
-        const size_t size = this->getSize();
-
-        switch(dst.type) {
-        case V_COORD: {
-            helper::WriteAccessor< Data<VecCoord> > vec = this->write(VecCoordId(dst));
-            const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
-            assert( n == dim * size );
-
-            for(size_t i = 0; i < size; ++i) {
-                for(size_t j = 0; j < dim; ++j) {
-                    typename Coord::value_type tmp;
-                    defaulttype::DataTypeInfo<Coord>::getValue(vec[i], j, tmp);
-                    tmp += (typename Coord::value_type) *(src++);
-                    defaulttype::DataTypeInfo<Coord>::setValue(vec[i], j, tmp);
-                }
-            }
-
-        }; break;
-        case V_DERIV: {
-            helper::WriteAccessor< Data<VecDeriv> > vec = this->write(VecDerivId(dst));
-            const size_t dim = defaulttype::DataTypeInfo<Deriv>::size();
-            assert( n == dim * size );
-
-            for(size_t i = 0; i < size; ++i) {
-                for(size_t j = 0; j < dim; ++j) {
-                    typename Deriv::value_type tmp;
-                    defaulttype::DataTypeInfo<Deriv>::getValue(vec[i], j, tmp);
-                    tmp += (typename Coord::value_type) *(src++);
-                    defaulttype::DataTypeInfo<Deriv>::setValue(vec[i], j, tmp);
-                }
-            }
-
-        }; break;
-        default:
-            assert( false );
-        }
-
-        // get rid of unused parameter warnings in release build
-        (void) n;
-    }
-
+protected:
+    ~MechanicalState() override {}
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP)
-extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec3dTypes>;
-extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec6Types>;
-extern template class SOFA_CORE_API MechanicalState<defaulttype::Rigid3Types>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Rigid2Types>;
-
-
+extern template class SOFA_CORE_API MechanicalState<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace behavior
+} /// namespace sofa::core::behavior
 
-} // namespace core
-
-} // namespace sofa
-
-#endif

@@ -29,15 +29,7 @@
 
 #define SIZE_TEXT     60
 
-namespace sofa
-{
-
-using namespace core::objectmodel;
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 LinkWidget *LinkWidget::CreateLinkWidget(const LinkWidget::CreatorArgument &/*dwarg*/)
@@ -124,8 +116,4 @@ unsigned int QDisplayLinkInfoWidget::numLines(const std::string& str)
     return numlines;
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

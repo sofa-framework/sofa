@@ -39,6 +39,7 @@ template class SOFA_CORE_API Multi2Mapping< Vec1Types, Rigid3Types, Rigid3Types 
 template class SOFA_CORE_API Multi2Mapping< Vec3Types, Rigid3Types, Vec3Types >;
 template class SOFA_CORE_API Multi2Mapping< Vec3Types, Rigid3Types, Rigid3Types >;
 template class SOFA_CORE_API Multi2Mapping< Vec3Types, Vec3Types, Vec3Types >;
+template class SOFA_CORE_API Multi2Mapping< Vec3Types, Vec1Types, Vec3Types >;
 template class SOFA_CORE_API Multi2Mapping< Vec1Types, Vec3Types, Rigid3Types >;
 template class SOFA_CORE_API Multi2Mapping< Vec1Types, Rigid3Types, Vec3Types >;
 template class SOFA_CORE_API Multi2Mapping< Vec1Types, Vec1Types, Rigid3Types >;

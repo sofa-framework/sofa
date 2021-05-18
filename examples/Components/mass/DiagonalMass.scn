@@ -1,11 +1,15 @@
 <Node name="root" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <!-- <Simulation name="Simulation" /> -->
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
-    <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver" depend="topo dofs">
         <!--<CGImplicit iterations="25"/>-->
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

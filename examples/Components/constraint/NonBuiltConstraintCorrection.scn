@@ -1,5 +1,13 @@
 <Node name="root" dt="0.03">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaConstraint'/>
+    <RequiredPlugin pluginName='SofaExplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaRigid'/> 
+
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <FreeMotionAnimationLoop initial_guess="true" displayTime="1" maxIt="100" build_lcp="false" />
     <DefaultPipeline depth="8" verbose="0" draw="0" />

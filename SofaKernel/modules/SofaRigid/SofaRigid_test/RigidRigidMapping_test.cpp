@@ -276,11 +276,11 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<mapping::RigidRigidMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types> > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(RigidRigidMappingTest, DataTypes);
+TYPED_TEST_SUITE(RigidRigidMappingTest, DataTypes);
 
 TYPED_TEST( RigidRigidMappingTest , test_translation )
 {

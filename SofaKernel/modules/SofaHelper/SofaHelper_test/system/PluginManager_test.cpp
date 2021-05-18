@@ -26,19 +26,19 @@
 #include <sofa/helper/Utils.h>
 
 #include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+using sofa::helper::testing::BaseTest;
 
 #include <fstream>
 
 using sofa::helper::system::PluginManager;
 using sofa::helper::system::FileSystem;
 
-static std::string pluginName = "TestPlugin" ;
+static std::string pluginName = "TestPlugin";
 
 #ifdef NDEBUG
-static std::string pluginFileName = "TestPlugin" ;
+static std::string pluginFileName = "TestPlugin";
 #else
-static std::string pluginFileName = "TestPlugin_d" ;
+static std::string pluginFileName = "TestPlugin_d";
 #endif //N_DEBUG
 
 static std::string nonpluginName = "RandomNameForAPluginButHopeItDoesNotExist";
@@ -58,7 +58,21 @@ struct PluginManager_test: public BaseTest
 
     void SetUp() override
     {
-        pluginDir = sofa::helper::system::PluginRepository.getFirstPath();
+        // Set pluginDir by searching pluginFileName in the PluginRepository
+        for ( std::string path : sofa::helper::system::PluginRepository.getPaths() )
+        {
+            if ( FileSystem::exists(path + separator + prefix + pluginFileName + dotExt) )
+            {
+                pluginDir = path;
+                break;
+            }
+        }
+
+        ASSERT_FALSE( pluginDir.empty() );
+
+        std::cout << "PluginManager_test.loadTestPluginByPath: "
+                  << "pluginDir = " << pluginDir
+                  << std::endl;
     }
 
     void TearDown() override
@@ -86,12 +100,18 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
     std::string pluginPath = pluginDir + separator + prefix + pluginFileName + dotExt;
     std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
 
+    std::cout << "PluginManager_test.loadTestPluginByPath: "
+              << "pluginPath = " << pluginPath
+              << std::endl;
+
     /// Check that existing plugins are correctly handled and returns no
     /// error/warning message.
     {
-        EXPECT_MSG_NOEMIT(Warning, Error) ;
+        EXPECT_MSG_NOEMIT(Warning, Error);
 
-        std::cout << pm.getPluginMap().size() << std::endl;
+        std::cout << "PluginManager_test.loadTestPluginByPath: "
+                  << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
+                  << std::endl;
         ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
         ASSERT_GT(pm.findPlugin(pluginName).size(), 0u);
     }
@@ -99,13 +119,17 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
     /// Check that non existing plugin are currectly handled and returns an
     /// error message.
     {
-        EXPECT_MSG_NOEMIT(Warning) ;
-        EXPECT_MSG_EMIT(Error) ;
+        EXPECT_MSG_NOEMIT(Warning);
+        EXPECT_MSG_EMIT(Error);
 
-        std::cout << pm.getPluginMap().size() << std::endl;
+        std::cout << "PluginManager_test.loadTestPluginByPath: "
+                  << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
+                  << std::endl;
         ASSERT_FALSE(pm.loadPluginByPath(nonpluginPath));
         ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
-        std::cout << pm.getPluginMap().size() << std::endl;
+        std::cout << "PluginManager_test.loadTestPluginByPath: "
+                  << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
+                  << std::endl;
     }
 }
 
@@ -116,7 +140,7 @@ TEST_F(PluginManager_test, loadTestPluginByName )
     /// Check that existing plugins are correctly handled and returns no
     /// error/warning message.
     {
-        EXPECT_MSG_NOEMIT(Warning, Error) ;
+        EXPECT_MSG_NOEMIT(Warning, Error);
 
         ASSERT_TRUE(pm.loadPluginByName(pluginName) );
         std::string pluginPath = pm.findPlugin(pluginName);
@@ -126,8 +150,8 @@ TEST_F(PluginManager_test, loadTestPluginByName )
     /// Check that non existing plugin are currectly handled and returns an
     /// error message.
     {
-        EXPECT_MSG_NOEMIT(Warning) ;
-        EXPECT_MSG_EMIT(Error) ;
+        EXPECT_MSG_NOEMIT(Warning);
+        EXPECT_MSG_EMIT(Error);
         ASSERT_FALSE(pm.loadPluginByName(nonpluginName));
 
         ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);

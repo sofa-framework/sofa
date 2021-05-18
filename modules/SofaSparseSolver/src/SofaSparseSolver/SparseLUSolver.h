@@ -23,13 +23,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
 #include <SofaSparseSolver/config.h>
 
-#include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
-#include <sofa/helper/map.h>
-#include <cmath>
 #include <csparse.h>
 
 namespace sofa
@@ -49,7 +43,7 @@ public :
     css *S;
     csn *N;
     cs A;
-    helper::vector<int> A_i, A_p;
+    helper::vector<sofa::Index> A_i, A_p;
     helper::vector<Real> A_x;
     Real * tmp;
     SparseLUInvertData()

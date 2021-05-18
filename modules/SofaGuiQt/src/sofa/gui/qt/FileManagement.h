@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_FILEMANAGEMENT_H
-#define SOFA_GUI_FILEMANAGEMENT_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 #include <vector>
 
 #include <QFileDialog>
 
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 
@@ -47,10 +39,4 @@ QString SOFA_SOFAGUIQT_API getSaveFileName ( QWidget* parent, const QString & st
 
 void SOFA_SOFAGUIQT_API getFilesInDirectory( const QString &path, std::vector< QString > &files, bool recursive=true, const std::vector< QString > &filter=std::vector< QString >() );
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_GUI_VIEWER_REALGUI_H
+} //namespace sofa::gui::qt

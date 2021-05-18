@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "WindowVisitor.h"
+#include <sofa/gui/qt/WindowVisitor.h>
 
 #include <QHeaderView>
 #include <QMenu>
@@ -27,13 +27,7 @@
 #include <QPainter>
 #include <QGridLayout>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 QPixmap *WindowVisitor::icons[WindowVisitor::OTHER+1];
 
@@ -279,7 +273,4 @@ void WindowVisitor::collapseNode(QTreeWidgetItem* item)
     }
 }
 
-
-}
-}
-}
+} // namespace sofa::gui::qt

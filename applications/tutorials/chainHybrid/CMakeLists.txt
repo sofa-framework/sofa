@@ -1,21 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 project(chainHybrid)
 
-find_package(SceneCreator)
-find_package(SofaGui)
-find_package(SofaGeneral)
-find_package(SofaCommon)
-find_package(SofaBase)
-find_package(SofaSimulation)
-find_package(SofaFramework)
+find_package(SceneCreator REQUIRED)
+find_package(SofaGui REQUIRED)
+find_package(SofaComponentAll REQUIRED)
 
 add_executable(${PROJECT_NAME} chainHybrid.cpp)
-target_link_libraries(${PROJECT_NAME}
-    SceneCreator
-    SofaGuiMain SofaGuiCommon # SofaGui
-    SofaGeneralDeformable SofaGeneralLoader # SofaGeneral
-    SofaDeformable SofaSimpleFem # SofaCommon
-    SofaBaseMechanics SofaBaseTopology # SofaBase
-    SofaSimulationTree # SofaSimulation
-    SofaCore SofaHelper SofaDefaultType # SofaFramework
-    )
+target_link_libraries(${PROJECT_NAME} SceneCreator SofaGui SofaComponentAll)

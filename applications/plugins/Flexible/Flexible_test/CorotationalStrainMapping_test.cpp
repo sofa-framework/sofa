@@ -69,7 +69,7 @@ namespace sofa {
     > CorotationalDataTypes; // the types to instanciate.
 
     // Test suite for all the instanciations
-    TYPED_TEST_CASE(CorotationalStrainMappingTest, CorotationalDataTypes);
+    TYPED_TEST_SUITE(CorotationalStrainMappingTest, CorotationalDataTypes);
     // test cases
     TYPED_TEST( CorotationalStrainMappingTest , polar )
     {

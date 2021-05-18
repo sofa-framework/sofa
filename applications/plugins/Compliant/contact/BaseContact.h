@@ -7,13 +7,11 @@
 #include <SofaBaseCollision/BaseContactMapper.h>
 
 #include <Compliant/config.h>
-
+#include <sofa/simulation/Node.h>
 #include "../mapping/DifferenceMapping.h"
 
 #include "../constraint/Restitution.h"
 #include "../constraint/HolonomicConstraintValue.h"
-
-//#include <sofa/simulation/DeactivatedNodeVisitor.h>
 
 #include <sofa/helper/cast.h>
 
@@ -129,7 +127,7 @@ public:
         {
             // should only be called when keepAlive
             delta_node->setActive( false );
-//            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), false);
+//            simulation::DeactivationVisitor v(sofa::core::execparams::defaultInstance(), false);
 //            node->executeVisitor(&v);
             return; // keeping contact alive imposes a call with a null DetectionOutput
         }
@@ -211,7 +209,7 @@ public:
             create_node();
         } else {
             delta_node->setActive( true );
-//            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), true);
+//            simulation::DeactivationVisitor v(sofa::core::execparams::defaultInstance(), true);
 //            node->executeVisitor(&v);
          	update_node();
         }
@@ -257,7 +255,7 @@ protected:
 
     // the node that will hold all the stuff
     typedef sofa::simulation::Node node_type;
-    node_type::SPtr delta_node;
+    sofa::core::sptr<node_type> delta_node;
 
     // TODO correct real type
     typedef container::MechanicalObject<ResponseDataTypes> delta_dofs_type;

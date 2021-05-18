@@ -20,14 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <map>
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/core/loader/VoxelLoader.h>
 
@@ -86,14 +82,14 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
     vparams->drawTool()->setLightingEnabled(true);
     Real _radius = radius.getValue();
 
-    Vec<4,float> col( r, g, b, a );
+    sofa::helper::types::RGBAColor col( r, g, b, a );
 
     const SeqEdges& edges = d_edges.getValue();
 
-    for( SeqEdges::const_iterator it=edges.begin(), itend=edges.end() ; it !=itend ; ++it )
+    for(auto edge : edges)
     {
-        const Coord& p1 = pos[(*it)[0]];
-        const Coord& p2 = pos[(*it)[1]];
+        const Coord& p1 = pos[edge[0]];
+        const Coord& p2 = pos[edge[1]];
 
         vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
     }
@@ -160,7 +156,7 @@ void OglCylinderModel::setColor(std::string color)
     setColor(r,g,b,a);
 }
 
-void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, int& vindex, int& /*nindex*/, int& /*tindex*/, int& /*count*/)
+void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, Index& vindex, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/)
 {
     const VecCoord& x = this->read( core::ConstVecCoordId::position() )->getValue();
     const SeqEdges& edges = d_edges.getValue();

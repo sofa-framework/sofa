@@ -69,13 +69,13 @@ public:
     * \sa removeHexahedraWarning
     * @param removeIsolatedItems if true remove isolated quads, edges and vertices
     */
-    void removeHexahedraProcess(const sofa::helper::vector<unsigned int>&indices, const bool removeIsolatedItems = false) override;
+    void removeHexahedraProcess(const sofa::helper::vector<Index>&indices, const bool removeIsolatedItems = false) override;
 
     /** \brief Renumber the attributes of this class
     *
     * This method is automatically called in removeHexahedraProcess() if the user has not ever called it.
     */
-    virtual void renumberAttributes( const sofa::helper::vector<unsigned int> &hexahedra );
+    virtual void renumberAttributes( const sofa::helper::vector<Index> &hexahedra );
 
 private:
     bool everRenumbered;

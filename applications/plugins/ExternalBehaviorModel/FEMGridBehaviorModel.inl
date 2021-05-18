@@ -32,7 +32,6 @@
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -123,7 +122,7 @@ void FEMGridBehaviorModel<DataTypes>::init()
     m_internalNode->addObject( constraint );
     m_internalNode->addObject( odesolver );
     m_internalNode->addObject( cg );
-    m_internalNode->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
+    m_internalNode->execute<simulation::InitVisitor>(sofa::core::execparams::defaultInstance());
     m_internalNode->setGravity(this->getContext()->getGravity());
     m_internalNode->setDt(this->getContext()->getDt());
 
@@ -176,7 +175,7 @@ void FEMGridBehaviorModel<DataTypes>::handleEvent(sofa::core::objectmodel::Event
         internalDataV.endEdit();
 
 //        // start the internal model ode solver (where the sofa dof states must be constrained)
-        simulation::AnimateVisitor av( core::ExecParams::defaultInstance(), m_internalNode->getDt() );
+        simulation::AnimateVisitor av( core::execparams::defaultInstance(), m_internalNode->getDt() );
         m_internalNode->execute( av );
     }
 }

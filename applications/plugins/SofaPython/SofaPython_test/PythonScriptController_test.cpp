@@ -70,7 +70,7 @@ protected:
                                                           scene.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
     void checkErrorMessage(const std::string& teststring)
@@ -115,9 +115,8 @@ class TestController(Sofa.PythonScriptController):
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
-
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         PythonScriptController* pyctrl = root->getTreeObject<PythonScriptController>();
         ASSERT_NE(pyctrl, nullptr) ;

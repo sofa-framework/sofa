@@ -1,5 +1,7 @@
 <Node name="root" dt="0.005">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaGraphComponent"/>
+    
     <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
     <Gravity name="G" gravity="0 -9.81 0" />
     <DefaultPipeline name="pipeline" depth="6" verbose="0" />

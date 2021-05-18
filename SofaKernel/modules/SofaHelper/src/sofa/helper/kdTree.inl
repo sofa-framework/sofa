@@ -19,19 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_KDTREE_INL
-#define SOFA_HELPER_KDTREE_INL
+#pragma once
 
-#include "kdTree.h"
+#include <sofa/helper/kdTree.h>
+
+#include <sofa/helper/logging/Messaging.h>
 
 #include <map>
 #include <limits>
 #include <iterator>
 #include <cmath>
 
-namespace sofa
-{
-namespace helper
+namespace sofa::helper
 {
 
 template<class Coord>
@@ -44,7 +43,7 @@ void kdTree<Coord>::build(const VecCoord& positions)
 }
 
 template<class Coord>
-void kdTree<Coord>::build(const VecCoord& positions, const vector<unsigned int> &ROI)
+void kdTree<Coord>::build(const VecCoord& positions, const helper::vector<unsigned int> &ROI)
 {
     const size_t nbp = ROI.size();
     UIlist list;
@@ -198,9 +197,4 @@ bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
     }
 }
 
-
-
-}
-}
-
-#endif
+} // namespace sofa::helper
