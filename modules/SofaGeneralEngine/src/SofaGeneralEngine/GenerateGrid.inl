@@ -88,7 +88,7 @@ void GenerateGrid<DataTypes>::doUpdate()
         height = size[2]/freqH;
     Coord origin;
 
-    const auto minCorder = d_minCorner.getValue();
+    const auto& minCorder = d_minCorner.getValue();
     for (auto i = 0; i < Coord::spatial_dimensions; i++)
     {
         origin[i] = minCorder[i];
@@ -105,7 +105,7 @@ void GenerateGrid<DataTypes>::doUpdate()
         for(j=0;j<=freqW;++j) {
             for(i=0;i<=freqL;i++) {
                 // handle Vec2D case
-                auto t = Vec3(i * length, j * width, k * height);
+                const Vec3 t { i * length, j * width, k * height };
                 for (auto c = 0; c < Coord::spatial_dimensions; c++)
                 {
                     pos[c] = t[c];
