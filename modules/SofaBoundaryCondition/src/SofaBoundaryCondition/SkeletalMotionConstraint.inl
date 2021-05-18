@@ -144,7 +144,7 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
     if( !active.getValue() ) return;
 
     helper::WriteAccessor<DataVecDeriv> dx = vData;
-    helper::ReadAccessor<DataVecCoord> x =((MechanicalObject*)this->getContext()->getMechanicalState())->readPositions();
+    helper::ReadAccessor<DataVecCoord> x = ((MechanicalState*)this->getContext()->getMechanicalState())->readPositions();
     Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
     Real dt = (Real) this->getContext()->getDt();
 

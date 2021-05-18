@@ -27,6 +27,9 @@
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalVMultiOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVMultiOpVisitor;
+
 namespace sofa::component::linearsolver
 {
 
@@ -55,7 +58,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     ops[1].first = (MultiVecDerivId)r;
     ops[1].second.push_back(std::make_pair((MultiVecDerivId)r,1.0));
     ops[1].second.push_back(std::make_pair((MultiVecDerivId)q,-alpha));
-    this->executeVisitor(simulation::MechanicalVMultiOpVisitor(params, ops));
+    this->executeVisitor(MechanicalVMultiOpVisitor(params, ops));
 #endif
 }
 

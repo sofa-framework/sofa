@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscCollision VERSION 1.0)
 
+sofa_find_package(SofaBaseCollision REQUIRED)
+sofa_find_package(SofaBaseTopology REQUIRED)
+sofa_find_package(SofaGeneralMeshCollision REQUIRED)
+sofa_find_package(SofaGeneralDeformable REQUIRED)
+sofa_find_package(SofaConstraint REQUIRED)
+sofa_find_package(SofaExplicitOdeSolver REQUIRED)
+sofa_find_package(SofaGeneralExplicitOdeSolver REQUIRED)
+sofa_find_package(SofaImplicitOdeSolver REQUIRED)
 sofa_find_package(SofaSphFluid QUIET)
 sofa_find_package(SofaDistanceGrid QUIET)
 

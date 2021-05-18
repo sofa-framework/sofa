@@ -68,7 +68,7 @@ public:
     void bindInput(core::visual::VisualParams* /*vp*/);
     void unbindInput();
 
-    helper::gl::FrameBufferObject& getFBO() override {return *fbo;}
+    sofa::gl::FrameBufferObject& getFBO() override {return *fbo;}
 
     const sofa::core::objectmodel::TagSet& getOutputTags() {return output_tags.getValue();}
 

@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BoundingBox.h>
 
-#include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/gl/FrameBufferObject.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
@@ -62,7 +62,7 @@ public:
     Data<bool> p_swapMainView; ///< Swap this viewport with the main view
     Data<bool> p_drawCamera; ///< Draw a frame representing the camera (see it in main viewport)
 
-    std::unique_ptr<helper::gl::FrameBufferObject> fbo;
+    std::unique_ptr<sofa::gl::FrameBufferObject> fbo;
 
 protected:
     OglViewport();

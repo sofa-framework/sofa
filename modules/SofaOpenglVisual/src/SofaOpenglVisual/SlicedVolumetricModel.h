@@ -28,7 +28,7 @@
 #include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.h>
 
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 namespace sofa
 {

@@ -4,6 +4,11 @@
 
 #include <sofa/helper/rmath.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
 namespace sofa {
 namespace component {
@@ -56,8 +61,8 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 
     SReal lastVelocity = 0;
 
-    simulation::MechanicalProjectPositionAndVelocityVisitor projectPositionAndVelocityVisitor( sofa::core::mechanicalparams::defaultInstance() );
-    simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor propagatePositionAndVelocityVisitor( sofa::core::mechanicalparams::defaultInstance() );
+    MechanicalProjectPositionAndVelocityVisitor projectPositionAndVelocityVisitor( sofa::core::mechanicalparams::defaultInstance() );
+    MechanicalPropagateOnlyPositionAndVelocityVisitor propagatePositionAndVelocityVisitor( sofa::core::mechanicalparams::defaultInstance() );
 
     unsigned i=0;
     std::stringstream tmpStr;

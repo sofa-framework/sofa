@@ -21,14 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/geometry/config.h>
 
 namespace sofa::geometry
 {
-    struct Pentahedron
-    {
-        static const sofa::Size NumberOfNodes = 6;
 
-        Pentahedron() = default;
-    };
-}
+struct Pentahedron
+{
+    static const sofa::Size NumberOfNodes = 6;
+
+    Pentahedron() = default;
+};
+
+} // namespace sofa::geometry

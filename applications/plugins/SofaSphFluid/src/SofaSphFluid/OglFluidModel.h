@@ -3,8 +3,8 @@
 #include <SofaSphFluid/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/FrameBufferObject.h>
+#include <sofa/gl/GLSLShader.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/types/RGBAColor.h>
 
@@ -38,21 +38,21 @@ private:
 	VecCoord m_previousPositions;
 
     GLuint m_posVBO;
-    helper::gl::FrameBufferObject* m_spriteDepthFBO;
-    helper::gl::FrameBufferObject* m_spriteThicknessFBO;
-    helper::gl::FrameBufferObject* m_spriteNormalFBO;
-    helper::gl::FrameBufferObject* m_spriteBlurDepthHFBO;
-    helper::gl::FrameBufferObject* m_spriteBlurDepthVFBO;
-    helper::gl::FrameBufferObject* m_spriteBlurThicknessHFBO;
-    helper::gl::FrameBufferObject* m_spriteBlurThicknessVFBO;
-    helper::gl::FrameBufferObject* m_spriteShadeFBO;
+    sofa::gl::FrameBufferObject* m_spriteDepthFBO;
+    sofa::gl::FrameBufferObject* m_spriteThicknessFBO;
+    sofa::gl::FrameBufferObject* m_spriteNormalFBO;
+    sofa::gl::FrameBufferObject* m_spriteBlurDepthHFBO;
+    sofa::gl::FrameBufferObject* m_spriteBlurDepthVFBO;
+    sofa::gl::FrameBufferObject* m_spriteBlurThicknessHFBO;
+    sofa::gl::FrameBufferObject* m_spriteBlurThicknessVFBO;
+    sofa::gl::FrameBufferObject* m_spriteShadeFBO;
 
-    helper::gl::GLSLShader m_spriteShader;
-    helper::gl::GLSLShader m_spriteNormalShader;
-    helper::gl::GLSLShader m_spriteBlurDepthShader;
-    helper::gl::GLSLShader m_spriteBlurThicknessShader;
-    helper::gl::GLSLShader m_spriteShadeShader;
-    helper::gl::GLSLShader m_spriteFinalPassShader;
+    sofa::gl::GLSLShader m_spriteShader;
+    sofa::gl::GLSLShader m_spriteNormalShader;
+    sofa::gl::GLSLShader m_spriteBlurDepthShader;
+    sofa::gl::GLSLShader m_spriteBlurThicknessShader;
+    sofa::gl::GLSLShader m_spriteShadeShader;
+    sofa::gl::GLSLShader m_spriteFinalPassShader;
 
     void drawSprites(const core::visual::VisualParams* vparams);
     void updateVertexBuffer();

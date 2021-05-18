@@ -81,6 +81,13 @@ protected:
     /// They are implemented by executing Visitors in the subtree of the scene-graph below this solver.
     /// @{
 
+    /// Function meant to be called before the actual collision computation
+    virtual void preCollisionComputation(const core::ExecParams* params = core::execparams::defaultInstance());
+    /// Function performing the actual collision computation
+    virtual void internalCollisionComputation(const core::ExecParams* params = core::execparams::defaultInstance());
+    /// Function meant to be called after the actual collision computation
+    virtual void postCollisionComputation(const core::ExecParams* params = core::execparams::defaultInstance());
+
     /// Activate collision pipeline
     virtual void computeCollision(const core::ExecParams* params = core::execparams::defaultInstance());
 

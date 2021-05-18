@@ -22,37 +22,44 @@
 /** A sample program. Laure Heigeas, Francois Faure, 2007. */
 // scene data structure
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaGraphComponent/Gravity.h>
+#include <SofaRigid/RigidMapping.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>
-#include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseVisual/VisualStyle.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 // gui
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/accessor.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaGui/initSofaGui.h>
 
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
 
-using namespace sofa::simulation::tree;
-typedef sofa::component::odesolver::EulerSolver Solver;
+typedef sofa::component::odesolver::EulerExplicitSolver Solver;
 using sofa::core::objectmodel::Data;
 using sofa::helper::ReadAccessor;
 using sofa::helper::WriteAccessor;
 using sofa::core::VecId;
 
-int main(int, char** argv)
+int main(int argc, char** argv)
 {
-    sofa::simulation::tree::init();
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
-    
-    sofa::gui::initMain();
+
+    //force load SofaComponentAll
+    sofa::component::initSofaComponentAll();
+    //force load SofaGui (registering guis)
+    sofa::gui::initSofaGui();
+
+    //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
+    sofa::gui::GUIManager::SetDimension(800, 600);
+
     sofa::gui::GUIManager::Init(argv[0]);
     //=========================== Build the scene
     double endPos = 1.;
@@ -60,43 +67,47 @@ int main(int, char** argv)
     double splength = 1.;
 
     //-------------------- The graph root node
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-    sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
-    groot->setGravity( Coord3(0,-10,0) );
+    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    auto groot = sofa::simulation::getSimulation()->createNewGraph("root");
+    groot->setGravity({ 0,-10,0 });
 
     // One solver for all the graph
-    Solver::SPtr solver = sofa::core::objectmodel::New<Solver>();
+    auto solver = sofa::core::objectmodel::New<Solver>();
     groot->addObject(solver);
     solver->setName("S");
 
     //-------------------- Deformable body
 
+    using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>;
     sofa::simulation::Node::SPtr deformableBody = groot.get()->createChild("deformableBody");
     // degrees of freedom
     MechanicalObject3::SPtr DOF = sofa::core::objectmodel::New<MechanicalObject3>();
     deformableBody->addObject(DOF);
     DOF->resize(2);
     DOF->setName("Dof1");
-    WriteAccessor< Data< VecCoord3 > > x = *DOF->write(VecId::position() );
-    x[0] = Coord3(0,0,0);
-    x[1] = Coord3(endPos,0,0);
+
+    auto x = sofa::helper::getWriteAccessor(*DOF->write(VecId::position()));
+    x[0] = { 0,0,0 };
+    x[1] = { endPos,0,0 };
 
     // mass
-    //    ParticleMasses* mass = new ParticleMasses;
-    UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
+    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types, SReal>;
+    auto mass = sofa::core::objectmodel::New<UniformMass3>();
     deformableBody->addObject(mass);
     mass->setMass(1);
     mass->setName("M1");
 
     // Fixed point
-    FixedConstraint3::SPtr constraints = sofa::core::objectmodel::New<FixedConstraint3>();
+    using FixedConstraint3 = sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::Vec3Types>;
+    auto constraints = sofa::core::objectmodel::New<FixedConstraint3>();
     deformableBody->addObject(constraints);
     constraints->setName("C");
     constraints->addConstraint(0);
 
 
     // force field
-    StiffSpringForceField3::SPtr spring = sofa::core::objectmodel::New<StiffSpringForceField3>();
+    using StiffSpringForceField3 = sofa::component::interactionforcefield::StiffSpringForceField<sofa::defaulttype::Vec3Types>;
+    auto spring = sofa::core::objectmodel::New<StiffSpringForceField3>();
     deformableBody->addObject(spring);
     spring->setName("F1");
     spring->addSpring( 1,0, 100., 1, splength );
@@ -105,20 +116,22 @@ int main(int, char** argv)
     //-------------------- Rigid body
     sofa::simulation::Node::SPtr rigidBody = groot.get()->createChild("rigidBody");
 
+    using MechanicalObjectRigid3 = sofa::component::container::MechanicalObject<sofa::defaulttype::RigidTypes>;
     // degrees of freedom
     MechanicalObjectRigid3::SPtr rigidDOF = sofa::core::objectmodel::New<MechanicalObjectRigid3>();
     rigidBody->addObject(rigidDOF);
     rigidDOF->resize(1);
     rigidDOF->setName("Dof2");
-    WriteAccessor< Data<VecCoordRigid3> > rigid_x = *rigidDOF->write(VecId::position() );
-    rigid_x[0] = CoordRigid3( Coord3(endPos-attach+splength,0,0),
-            Quat3::identity() );
+    auto rigid_x = sofa::helper::getWriteAccessor(*rigidDOF->write(VecId::position()));
+    rigid_x[0] = { {endPos - attach + splength,0,0}, sofa::type::Quatd::identity() };
 
     // mass
+    using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes, sofa::defaulttype::Rigid3dMass>;
     UniformMassRigid3::SPtr rigidMass = sofa::core::objectmodel::New<UniformMassRigid3>();
     rigidBody->addObject(rigidMass);
     rigidMass->setName("M2");
-    UniformMassRigid3::MassType* m = rigidMass->d_mass.beginEdit();
+    
+    auto m = sofa::helper::getWriteAccessor(rigidMass->d_vertexMass);
     m->mass=0.3;
     UniformMassRigid3::MassType::Mat3x3 inertia;
     inertia.fill(0.0);
@@ -128,7 +141,6 @@ int main(int, char** argv)
     inertia[2][2] = in;
     m->inertiaMatrix = inertia;
     m->recalc();
-    rigidMass->d_mass.endEdit();
 
 
     //-------------------- the particles attached to the rigid body
@@ -139,11 +151,12 @@ int main(int, char** argv)
     rigidParticles->addObject(rigidParticleDOF);
     rigidParticleDOF->resize(1);
     rigidParticleDOF->setName("Dof3");
-    WriteAccessor< Data< VecCoord3 > > rp_x = *rigidParticleDOF->write(VecId::position() );
-    rp_x[0] = Coord3(attach,0,0);
+    auto rp_x = sofa::helper::getWriteAccessor(*rigidParticleDOF->write(VecId::position()));
+    rp_x[0] = { attach,0,0 };
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
-    RigidMappingRigid3_to_3::SPtr rigidMapping = sofa::core::objectmodel::New<RigidMappingRigid3_to_3>();
+    using RigidMappingRigid3_to_3 = sofa::component::mapping::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
+    auto rigidMapping = sofa::core::objectmodel::New<RigidMappingRigid3_to_3>();
     rigidMapping->setModels(rigidDOF.get(),rigidParticleDOF.get());
 
     // Setting paths is redundant with previous line
@@ -182,17 +195,23 @@ int main(int, char** argv)
     flags.setShowBehaviorModels(true);
     style->displayFlags.endEdit();
 
+
+    //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
+    sofa::gui::GUIManager::SetDimension(800, 600);
+
     //=========================== Init the scene
-    sofa::simulation::tree::getSimulation()->init(groot.get());
-    /*    groot->setAnimate(false);
-    */
+    sofa::simulation::getSimulation()->init(groot.get());
+    sofa::gui::GUIManager::SetScene(groot);
 
     groot->setAnimate(true);
 
     //=========================== Run the main loop
     sofa::gui::GUIManager::MainLoop(groot);
 
-    sofa::simulation::tree::cleanup();
+    if (groot != NULL)
+        sofa::simulation::getSimulation()->unload(groot);
+
+    sofa::simulation::graph::cleanup();
     return 0;
 }
 

@@ -186,7 +186,7 @@ template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3dType
 
 
 
-#include <sofa/helper/gl/Axis.h>
+#include <sofa/gl/Axis.h>
 namespace sofa
 {
 namespace component

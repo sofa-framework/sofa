@@ -32,7 +32,7 @@ namespace component
 namespace visualmodel
 {
 
-using namespace helper::gl;
+using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 
@@ -95,7 +95,7 @@ void VisualManagerSecondaryPass::initVisual()
     passWidth = (GLint)(viewport[2]*factor.getValue());
     passHeight = (GLint)(viewport[3]*factor.getValue());
 
-    fbo = std::unique_ptr<helper::gl::FrameBufferObject>(
+    fbo = std::unique_ptr<sofa::gl::FrameBufferObject>(
                 new FrameBufferObject(true, true, true, true));
     fbo->init(passWidth, passHeight);
 }
@@ -319,8 +319,9 @@ bool VisualManagerSecondaryPass::drawScene(VisualParams* vp)
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
-        return true;
+
         glPopAttrib();
+        return true;
     }
     else
         return false;
