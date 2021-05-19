@@ -21,4 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#error "StiffnessContainer has been removed (PR21XX)."
+#error "StiffnessContainer has been removed (PR2099)."
