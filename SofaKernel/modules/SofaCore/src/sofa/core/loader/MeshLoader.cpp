@@ -197,11 +197,8 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
         d_scale.setValue(d_scale.getValue()*s);
     }
 
-    bool success = false;
-    success = canLoad();
-
     // File not loaded, component is set to invalid
-    if (!success)
+    if (!canLoad())
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 }
 
