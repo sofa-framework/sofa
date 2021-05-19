@@ -95,8 +95,10 @@ protected:
 
     std::vector< simulation::Node * > fixations;
 
-    // inline initialization of templated static members works on VS2019
-    // BUT: not on VS2017 and crash with clang5
+    // inline initialization of templated static members works on VS2019/gcc/clang (>5?)
+    // but not on VS2017 and crash the compilation itself using clang5.
+    // TODO: once VS2017 and clang5 support is dropped, just uncomment the inline static initialization 
+    // and remove the initialization in the inl file (linux/mac) and cpp (windows)
     //inline static std::unordered_map<std::type_index, GetFixationPointsOnModelFunction > s_mapSupportedModels;
     static std::unordered_map<std::type_index, GetFixationPointsOnModelFunction > s_mapSupportedModels;
 
