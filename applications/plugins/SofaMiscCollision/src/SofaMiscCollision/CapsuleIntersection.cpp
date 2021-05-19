@@ -74,8 +74,6 @@ int capsuleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<CapsuleC
     []
 (sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
     {
-        std::cout << "obb was registered you know" << std::endl;
-
         auto* caps = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>*>(model.get());
 
         if (!caps)

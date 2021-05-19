@@ -234,8 +234,6 @@ int obbFixParticle = FixParticlePerformer3d::RegisterSupportedModel<OBBCollision
     []
 (sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
     {
-        std::cout << "obb was registered you know" << std::endl;
-
         auto* obb = dynamic_cast<OBBCollisionModel<sofa::defaulttype::Rigid3Types>*>(model.get());
 
         if (!obb)
