@@ -642,7 +642,7 @@ protected:
             {
                 unsigned int axis=0; if(p.size()) axis=(unsigned int)p[0];
                 if(axis==0) cimglist_for(img,l) img(l)=inimg(l).get_mirror ('x');
-                else if(axis==0) cimglist_for(img,l) img(l)=inimg(l).get_mirror ('y');
+                else if(axis==1) cimglist_for(img,l) img(l)=inimg(l).get_mirror ('y');
                 else cimglist_for(img,l) img(l)=inimg(l).get_mirror ('z');
             }
             break;
