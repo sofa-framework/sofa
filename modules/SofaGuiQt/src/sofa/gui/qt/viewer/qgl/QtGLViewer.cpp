@@ -27,6 +27,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <cmath>

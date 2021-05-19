@@ -26,6 +26,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/DynamicLibrary.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <QMessageBox>
 #include <QTextEdit>

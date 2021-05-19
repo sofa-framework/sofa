@@ -20,11 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/gui/config.h>
+
 #include <sofa/helper/vector.h>
 
 #include <string>
 
-#include <sofa/gui/config.h>
 
 namespace sofa::gui
 {

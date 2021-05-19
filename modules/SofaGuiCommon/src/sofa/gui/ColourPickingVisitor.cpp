@@ -20,15 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gui/ColourPickingVisitor.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/visual/VisualParams.h>
+
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+
 #if SOFAGUICOMMON_HAVE_SOFA_GL == 1
 #include <sofa/gl/gl.h>
 #include <sofa/gl/BasicShapes.h>
 #endif // SOFAGUICOMMON_HAVE_SOFA_GL  == 1
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
+
 namespace sofa::gui
 {
 
