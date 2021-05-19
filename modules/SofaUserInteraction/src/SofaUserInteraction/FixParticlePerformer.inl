@@ -126,18 +126,6 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
             msg_warning("FixParticlePerformer") << "Could not find a Collision Model to fix particle on. " 
                                                 << typeid(b.body).name() << " has not been registered.";
         }
-        
-
-        //bool foundSupportedModel = false;
-        //for (auto supportedModel : s_mapSupportedModels)
-        //{
-        //    if (foundSupportedModel = supportedModel.second(b.body, idx, points, fixPoint))
-        //        break;
-        //}
-        //if (!foundSupportedModel)
-        //{
-        //    msg_warning("FixParticlePerformer") << "Could not find a Collision Model to fix particle on.";
-        //}
     }
     else if (b.mstate)
     {
@@ -150,10 +138,10 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
     return collisionState;
 }
 
-#ifndef _MSC_VER
+#ifndef WIN32
 template<typename DataTypes>
     std::unordered_map<std::type_index, typename FixParticlePerformer<DataTypes>::GetFixationPointsOnModelFunction >
     FixParticlePerformer<DataTypes>::s_mapSupportedModels;
-#endif // _MSC_VER
+#endif // WIN32
 
 } // namespace sofa::component::collision
