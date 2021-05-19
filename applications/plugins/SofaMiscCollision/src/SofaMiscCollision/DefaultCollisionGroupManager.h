@@ -98,8 +98,8 @@ private:
     DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;
     DefaultCollisionGroupManager& operator=(const DefaultCollisionGroupManager& n) ;
 
-    /// In the loop where it is called, this function returns true if currentGroup == firstGroup, i.e. when the loop is endless
-    bool checkEndlessLoop(const MergeGroupsMap& mergedGroups, simulation::Node* firstGroup, simulation::Node* currentGroup);
+    /// In the loop where it is called, this function checks if currentGroup == firstGroup, i.e. when the loop is endless, and throw and exception
+    void checkEndlessLoop(const MergeGroupsMap& mergedGroups, simulation::Node* firstGroup, simulation::Node* currentGroup);
 };
 
 } // namespace sofa::component::collision

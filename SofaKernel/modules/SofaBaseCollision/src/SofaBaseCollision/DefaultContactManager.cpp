@@ -149,8 +149,7 @@ void DefaultContactManager::createNewContacts(const core::collision::ContactMana
             core::CollisionModel* model1 = outputsIt->first.first;
             core::CollisionModel* model2 = outputsIt->first.second;
 
-            msg_error_when(model1 == nullptr) << "Contact found with a nullptr collision model";
-            msg_error_when(model2 == nullptr) << "Contact found with a nullptr collision model";
+            dmsg_error_when(model1 == nullptr || model2 == nullptr) << "Contact found with an invalid collision model";
 
             std::string responseUsed = getContactResponse(model1, model2);
 
@@ -201,7 +200,7 @@ DefaultContactManager::removeInactiveContacts(const core::collision::ContactMana
          contactIt != contactItEnd;)
     {
         core::collision::Contact::SPtr contact = contactIt->second;
-        msg_error_when(contact == nullptr) << "Reading nullptr contact";
+        dmsg_error_when(contact == nullptr) << "Checking if inactive on invalid contact";
 
         if (outputsMap.find(contactIt->first) == outputsMap.end())
         {

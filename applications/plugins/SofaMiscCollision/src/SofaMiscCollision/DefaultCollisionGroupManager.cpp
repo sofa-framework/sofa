@@ -417,19 +417,20 @@ simulation::Node* DefaultCollisionGroupManager::getNodeFromMergedGroups(simulati
     return node;
 }
 
-bool DefaultCollisionGroupManager::checkEndlessLoop(const MergeGroupsMap& mergedGroups, simulation::Node* firstGroup, simulation::Node* currentGroup)
+void DefaultCollisionGroupManager::checkEndlessLoop(const MergeGroupsMap& mergedGroups, simulation::Node* firstGroup, simulation::Node* currentGroup)
 {
     if (currentGroup == firstGroup)
     {
-        std::stringstream errorStream;
+        std::stringstream msg;
+        msg << "A logic problem (endless loop) has been detected. Please report a bug on https://github.com/sofa-framework/sofa/issues. Details:\n";
         for (const auto& [a, b] : mergedGroups)
         {
-            errorStream << a << " " << b << "\n";
+            msg << a << "(" << (a ? a->getPathName() : "invalid") << ") " << b << "(" << (b ? b->getPathName() : "invalid") << "), ";
         }
-        msg_fatal() << "Detected an endless loop:\n" << errorStream.str();
-        std::exit(EXIT_FAILURE);
+
+        msg_fatal() << msg.str();
+        throw std::logic_error(msg.str());
     }
-    return false;
 }
 
 } // namespace sofa::component::collision
