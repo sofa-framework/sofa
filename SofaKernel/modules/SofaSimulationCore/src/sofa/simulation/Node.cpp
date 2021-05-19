@@ -602,7 +602,7 @@ bool Node::doAddObject(BaseObject::SPtr sobj)
 /// Remove an object
 bool Node::doRemoveObject(BaseObject::SPtr sobj)
 {
-    msg_warning_when(sobj == nullptr) << "Trying to remove a nullptr object";
+    dmsg_warning_when(sobj == nullptr) << "Trying to remove a nullptr object";
 
     this->clearObjectContext(sobj);
     object.remove(sobj);
