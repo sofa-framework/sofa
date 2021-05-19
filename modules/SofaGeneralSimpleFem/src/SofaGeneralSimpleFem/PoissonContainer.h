@@ -21,4 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#error "PoissonContainer has been removed (PR2099)."
+#error "PoissonContainer has been removed in v21.06 (PR2099)."

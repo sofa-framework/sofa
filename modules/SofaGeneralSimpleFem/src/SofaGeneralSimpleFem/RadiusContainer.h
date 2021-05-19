@@ -22,4 +22,4 @@
 #pragma once
 #include <SofaGeneralSimpleFem/config.h>
 
-#error "RadiusContainer has been removed (PR2099)."
+#error "RadiusContainer has been removed in v21.06 (PR2099)."

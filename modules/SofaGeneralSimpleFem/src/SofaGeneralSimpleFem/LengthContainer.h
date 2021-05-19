@@ -21,4 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#error "LengthContainer has been removed (PR2099)."
+#error "LengthContainer has been removed in v21.06 (PR2099)."
