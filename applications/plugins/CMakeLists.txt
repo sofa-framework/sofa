@@ -71,5 +71,3 @@ if(Sofa.GL_FOUND)
 else()
     message("Sofa.GL not found; disabling SofaCUDA, SofaSimpleGUI and VolumetricRendering plugins")
 endif()
-
-sofa_add_subdirectory_external(SofaGLFW SofaGLFW)
