@@ -71,7 +71,22 @@ typedef simulation::Visitor::ctime_t ctime_t;
 
 void DefaultPipeline::init()
 {
-    Inherit1::init() ;
+    Inherit1::init();
+
+    if (broadPhaseDetection == nullptr)
+    {
+        msg_warning() << "A BroadPhase component is required to compute collision detection and was not found in the current scene";
+    }
+
+    if (narrowPhaseDetection == nullptr)
+    {
+        msg_warning() << "A NarrowPhase component is required to compute collision detection and was not found in the current scene";
+    }
+
+    if (contactManager == nullptr)
+    {
+        msg_warning() << "A ContactManager component is required to compute collision response and was not found in the current scene";
+    }
 
     /// Insure that all the value provided by the user are valid and report message if it is not.
     checkDataValues() ;
@@ -93,7 +108,7 @@ void DefaultPipeline::doCollisionReset()
             << "DefaultPipeline::doCollisionReset" ;
 
     // clear all contacts
-    if (contactManager!=nullptr)
+    if (contactManager != nullptr)
     {
         const helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
         for (const auto& contact : contacts)
@@ -106,7 +121,7 @@ void DefaultPipeline::doCollisionReset()
     }
 
     // clear all collision groups
-    if (groupManager!=nullptr)
+    if (groupManager != nullptr)
     {
         core::objectmodel::BaseContext* scene = getContext();
         groupManager->clearGroups(scene);
@@ -169,7 +184,10 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
                 << "doCollisionDetection, Computed "<<nActive<<" BBoxs" ;
     }
     // then we start the broad phase
-    if (broadPhaseDetection==nullptr) return; // can't go further
+    if (broadPhaseDetection == nullptr)
+    {
+        return; // can't go further
+    }
 
     msg_info_when(d_doPrintInfoMessage.getValue())
             << "doCollisionDetection, BroadPhaseDetection "<<broadPhaseDetection->getName();
@@ -190,7 +208,10 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
 #endif
 
     // then we start the narrow phase
-    if (narrowPhaseDetection==nullptr) return; // can't go further
+    if (narrowPhaseDetection == nullptr)
+    {
+        return; // can't go further
+    }
 
     msg_info_when(d_doPrintInfoMessage.getValue())
         << "doCollisionDetection, NarrowPhaseDetection "<<narrowPhaseDetection->getName();
@@ -221,14 +242,13 @@ void DefaultPipeline::doCollisionResponse()
 {
     core::objectmodel::BaseContext* scene = getContext();
     // then we start the creation of contacts
-    if (contactManager==nullptr)
+    if (narrowPhaseDetection == nullptr || contactManager == nullptr)
     {
-        msg_warning() << "Cannot compute collision response without a ContactManager";
         return; // can't go further
     }
 
     msg_info_when(d_doPrintInfoMessage.getValue())
-        << "Create Contacts "<<contactManager->getName() ;
+        << "Create Contacts " << contactManager->getName() ;
 
     sofa::helper::AdvancedTimer::stepBegin("CreateContacts");
     contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
@@ -244,7 +264,7 @@ void DefaultPipeline::doCollisionResponse()
     sofa::helper::AdvancedTimer::stepBegin("CreateStaticObjectsResponse");
     for (const auto& contact : contacts)
     {
-        const auto& collisionModels = contact->getCollisionModels();
+        const auto collisionModels = contact->getCollisionModels();
         if (collisionModels.first != nullptr && !collisionModels.first->isSimulated())
         {
             contact->createResponse(collisionModels.second->getContext());
@@ -254,11 +274,13 @@ void DefaultPipeline::doCollisionResponse()
             contact->createResponse(collisionModels.first->getContext());
         }
         else
+        {
             notStaticContacts.push_back(contact);
+        }
     }
     sofa::helper::AdvancedTimer::stepEnd("CreateStaticObjectsResponse");
 
-    if (groupManager==nullptr)
+    if (groupManager == nullptr)
     {
         ScopedAdvancedTimer createResponseTimer("CreateMovingObjectsResponse");
 
@@ -288,12 +310,6 @@ std::set< std::string > DefaultPipeline::getResponseList() const
         listResponse.insert(it->first);
     }
     return listResponse;
-}
-
-void DefaultPipeline::draw(const core::visual::VisualParams* )
-{
-    if (!d_doDebugDraw.getValue()) return;
-    if (!narrowPhaseDetection) return;
 }
 
 } // namespace sofa::component::collision
