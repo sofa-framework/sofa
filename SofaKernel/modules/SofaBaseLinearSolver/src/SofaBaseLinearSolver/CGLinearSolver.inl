@@ -103,12 +103,9 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     Vector& q = *vtmp.createTempVector(); // temporary vector computing A*p
     Vector& r = *vtmp.createTempVector(); // residual
 
-    const bool printLog  = this->f_printLog.getValue();
     double rho, rho_1=0, alpha, beta;
 
-
-    msg_info_when(printLog) << "b = " << b ;
-
+    msg_info() << "b = " << b ;
 
     /// Compute the initial residual r depending on the warmStart option
     if( d_warmStart.getValue() )
@@ -133,6 +130,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 
     sofa::helper::vector<SReal>& graph_den = graph[std::string("Denominator")];
     graph_den.clear();
+
 
     unsigned nb_iter = 0;
     const char* endcond = "iterations";
@@ -189,10 +187,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
                     }
 
                     endcond = "tolerance";
-                    if( printLog )
-                    {
-                        msg_info() << "error = " << err <<", tolerance = " << d_tolerance.getValue();
-                    }
+                    msg_info() << "error = " << err <<", tolerance = " << d_tolerance.getValue();
 
 #ifdef SOFA_DUMP_VISITOR_INFO
                     if (simulation::Visitor::isPrintActivated())
@@ -217,17 +212,11 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
                 cgstep_beta(params, p,r,beta);
             }
 
-            if( printLog )
-            {
-                msg_info() << "p : " << p;
-            }
+            msg_info() << "p : " << p;
 
             /// Compute the matrix-vector product A p to compute the denominator
             q = A*p;
-            if( printLog )
-            {
-                msg_info() << "q = A p : " << q;
-            }
+            msg_info() << "q = A p : " << q;
 
             /// Compute the denominator : pT A p
             double den = p.dot(q);
@@ -258,10 +247,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
                         }
 
                         endcond = "threshold";
-                        if( printLog )
-                        {
-                            msg_info() << "den = " << den <<", smallDenominatorThreshold = " << d_smallDenominatorThreshold.getValue() <<", err = " << err;
-                        }
+                        msg_info() << "den = " << den <<", smallDenominatorThreshold = " << d_smallDenominatorThreshold.getValue() <<", err = " << err;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
                     if (simulation::Visitor::isPrintActivated())
@@ -280,10 +266,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
                 /// r = r - alpha p
                 cgstep_alpha(params, x,r,p,q,alpha);
 
-                if( printLog )
-                {
-                    msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
-                }
+                msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
             }
             else
             {
@@ -333,8 +316,8 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 
     sofa::helper::AdvancedTimer::valSet("CG iterations", nb_iter);
 
-    dmsg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond;
-    dmsg_info_when( printLog ) <<"solve, solution = "<< x ;
+    msg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond;
+    msg_info() <<"solve, solution = "<< x ;
 
     /// Delete all temporary vectors p, q and r
     vtmp.deleteTempVector(&p);
