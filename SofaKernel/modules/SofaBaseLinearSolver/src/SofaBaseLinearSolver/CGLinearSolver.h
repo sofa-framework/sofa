@@ -69,7 +69,7 @@ public:
     /// Solve iteratively the linear system Ax=b following a conjugate gradient descent
     void solve (Matrix& A, Vector& x, Vector& b) override;
 
-    //Temporary function to warn the user when old attribute names are used until v20.12
+    //Temporary function to warn the user when old attribute names are used until v21.12
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         if (arg->getAttribute("verbose"))
