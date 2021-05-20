@@ -144,7 +144,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     // Check if forces in the Left Hand Side (LHS) vector are non-zero
     if(normb != 0.0)
     {
-        for( nb_iter=1; nb_iter<=d_maxIter.getValue(); nb_iter++ )
+        for( nb_iter = 1; nb_iter <= d_maxIter.getValue(); nb_iter++ )
         {
 #ifdef SOFA_DUMP_VISITOR_INFO
             std::ostringstream comment;
