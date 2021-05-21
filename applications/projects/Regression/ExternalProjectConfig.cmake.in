@@ -10,5 +10,6 @@ ExternalProject_Add(Regression
     BUILD_COMMAND ""
     INSTALL_COMMAND ""
     TEST_COMMAND ""
+    GIT_CONFIG "remote.origin.fetch=+refs/pull/*:refs/remotes/origin/pr/*"
 )
 	
