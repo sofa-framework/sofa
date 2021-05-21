@@ -26,10 +26,7 @@
 #include <map>
 #include <memory>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 /// An object transforming pointers to stable ids, i.e. whose value depend on the order the pointers
@@ -44,18 +41,14 @@ public:
 
     unsigned int operator()(T* p)
     {
-        unsigned int id = 0;
-        typename std::map<T*,unsigned int>::iterator it = idMap->find(p);
+        const auto it = idMap->find(p);
         if (it != idMap->end())
         {
-            id = it->second;
+            return it->second;
         }
-        else
-        {
-            id = ++(*counter);
-            idMap->insert(std::make_pair(p, id));
-        }
-        return id;
+
+        idMap->insert({p, *counter});
+        return (*counter)++;
     }
 
     inline unsigned int id(T* p)
@@ -188,8 +181,6 @@ private:
     std::unique_ptr<stable_id_map_type> m_stable_id_map;
 };
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 
 #endif
