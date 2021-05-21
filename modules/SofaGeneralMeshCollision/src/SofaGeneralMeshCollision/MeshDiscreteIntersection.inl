@@ -145,13 +145,4 @@ int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& tr
     return 0; // No intersection: passed all tests for intersections !
 }
 
-
-inline int MeshDiscreteIntersection::computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,tri,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
-}
-
-inline int MeshDiscreteIntersection::computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,lin,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
-}
-
 } // namespace sofa::component::collision
