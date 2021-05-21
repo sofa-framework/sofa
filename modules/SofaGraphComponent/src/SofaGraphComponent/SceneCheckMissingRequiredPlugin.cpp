@@ -95,7 +95,7 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
         msg_warning(this->getName())
                 << "This scene is using component defined in plugins but is not importing the required plugins." << msgendl
                 << indent << "Your scene may not work on a sofa environment with different pre-loaded plugins." << msgendl
-                << indent << "To fix your scene and remove this warning you just need to cut & paste the following lines at the begining of your scene (if it is a .scn): " << msgendl
+                << indent << "To fix your scene and remove this warning you just need to cut & paste the following lines at the beginning of your scene (if it is a .scn): " << msgendl
                 << tmp.str();
     }
 }
