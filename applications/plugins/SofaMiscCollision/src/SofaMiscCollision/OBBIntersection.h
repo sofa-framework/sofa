@@ -25,10 +25,11 @@
 #include <sofa/core/collision/Intersection.h>
 
 #include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaMeshCollision/MeshNewProximityIntersection.h>
-
-#include <SofaUserInteraction/RayModel.h>
 #include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/BaseIntTool.h>
+#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaMeshCollision/MeshNewProximityIntersection.h>
+#include <SofaUserInteraction/RayModel.h>
 
 namespace sofa::component::collision
 {

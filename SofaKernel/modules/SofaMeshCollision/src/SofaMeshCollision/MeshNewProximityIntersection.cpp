@@ -38,19 +38,56 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
     if (addSelf)
     {
         intersection->intersectors.add<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
-        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
-        
+
+        intersection->intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MeshNewProximityIntersection>(this);
+
     }
+}
+
+bool MeshNewProximityIntersection::testIntersection(Point& pt1, Point& pt2)
+{
+
+    return false;
+}
+
+bool MeshNewProximityIntersection::testIntersection(Line& line, Point& pt)
+{
+
+    return false;
+}
+
+bool MeshNewProximityIntersection::testIntersection(Line& line1, Line& line2)
+{
+
+    return false;
+}
+
+bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Point& pt)
+{
+
+    return false;
+}
+
+bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Line& line)
+{
+
+    return false;
+}
+
+bool MeshNewProximityIntersection::testIntersection(Triangle& tri1, Triangle& tri2)
+{
+
+    return false;
 }
 
 int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)

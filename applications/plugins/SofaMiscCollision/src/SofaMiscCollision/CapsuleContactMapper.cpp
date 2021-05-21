@@ -32,7 +32,6 @@ using namespace sofa::core::collision;
 namespace sofa::component::collision
 {
 
-
 ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleContactMapperClass("default", true);
 ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > RigidCapsuleContactMapperClass("default", true);
 template class SOFA_MISC_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;

@@ -46,4 +46,5 @@ Creator<Contact::Factory, FrictionContact<TriangleCollisionModel<sofa::defaultty
 Creator<Contact::Factory, FrictionContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RigidSphereOBBFrictionContactClass("FrictionContact", true);
 
 Creator<Contact::Factory, RayContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RayRigidBoxContactClass("ray", true); //cast not wroking
+
 } // namespace sofa::component::collision

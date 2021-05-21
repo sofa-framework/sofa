@@ -39,6 +39,8 @@ list(APPEND HEADER_FILES
     ${SRC_ROOT}/TetrahedronDiscreteIntersection.h
     ${SRC_ROOT}/TetrahedronModel.h
     ${SRC_ROOT}/TriangleModelInRegularGrid.h
+    ${SRC_ROOT}/CapsuleContactMapper.h
+    ${SRC_ROOT}/OBBContactMapper.h
     )
 
 list(APPEND SOURCE_FILES
