@@ -161,7 +161,6 @@ void SubsetMapping<TIn, TOut>::init()
         {
             // Initialize functions and parameters for topological changes
             f_indices.createTopologyHandler(topology);
-            f_indices.registerTopologicalData();
         }
         else
         {
