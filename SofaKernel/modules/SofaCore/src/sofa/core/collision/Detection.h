@@ -58,6 +58,9 @@ public:
     virtual void setIntersectionMethod(Intersection* v) { intersectionMethod = v;    }
     Intersection* getIntersectionMethod() const         { return intersectionMethod; }
 
+    /// Returns true if the detection algorithm requires a deep bounding tree i.e. a depth that can be superior to 1.
+    inline virtual bool needsDeepBoundingTree() const { return true; }
+
 protected:
     virtual void changeInstanceBP(Instance) {}
     virtual void changeInstanceNP(Instance) {}
