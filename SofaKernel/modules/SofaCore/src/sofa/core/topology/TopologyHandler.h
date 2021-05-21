@@ -164,6 +164,12 @@ public:
     * This function should be used at the end of the all declaration link to this Data while using it in a component.
     */
     virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
+
+
+    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
+    SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2085", "This method has been removed as it is not part of the new topology change design.")
+    bool registerTopology() = delete;
+
 protected:
     /// use to define engine name.
     std::string m_prefix;
