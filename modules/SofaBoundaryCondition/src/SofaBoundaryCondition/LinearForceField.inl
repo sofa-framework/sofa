@@ -63,7 +63,6 @@ void LinearForceField<DataTypes>::init()
         
         // Initialize functions and parameters for topology data and handler
         points.createTopologyHandler(_topology);
-        points.registerTopologicalData();
     }
     else
     {

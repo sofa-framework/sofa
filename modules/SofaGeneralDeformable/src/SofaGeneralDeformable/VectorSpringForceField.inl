@@ -183,7 +183,6 @@ void VectorSpringForceField<DataTypes>::init()
         {
             edgeHandler = new EdgeDataHandler(this,&springArray);
             springArray.createTopologyHandler(m_topology,edgeHandler);
-            springArray.registerTopologicalData();
         }
     }
     this->getContext()->get(edgeGeo);

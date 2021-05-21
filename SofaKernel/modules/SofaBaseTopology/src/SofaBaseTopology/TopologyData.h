@@ -73,11 +73,6 @@ public:
     /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine);
 
-    /// Function to link the topological Data with the engine and the current topology. And init everything.
-    /// This function should be used at the end of the all declaration link to this Data while using it in a component.
-    void registerTopologicalData();
-
-
     /// Link Data to topology arrays
     void linkToPointDataArray();
     void linkToEdgeDataArray();
@@ -127,6 +122,8 @@ public:
     SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
     value_type& operator[](int i) = delete;
 
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2086)", "v21.06 (PR#2086)", "This method has been removed as it's mechanism is now automatically done in TopologyHandler.")
+    void registerTopologicalData() = delete;
 
 protected:
     sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* m_topologyHandler;
