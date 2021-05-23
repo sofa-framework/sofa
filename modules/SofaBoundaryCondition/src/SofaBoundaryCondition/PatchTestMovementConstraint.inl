@@ -34,14 +34,6 @@
 namespace sofa::component::projectiveconstraintset
 {
 
-// Define TestFunction
-template< class DataTypes>
-bool PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    return fc != 0;
-}
-
-
 // Define RemovalFunction
 template< class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)

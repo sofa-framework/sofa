@@ -30,21 +30,6 @@ namespace sofa::component::constraintset
 {
 
 
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index /*nbPoints*/, const sofa::helper::vector< Index > &, const sofa::helper::vector< double >& )
-{
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 // Define RemovalFunction
 template< class DataTypes>
 void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)

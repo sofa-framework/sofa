@@ -53,9 +53,6 @@ public:
 
     void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
-    bool applyTestCreateFunction(Index /*index*/,
-                                 const helper::vector< Index > & /*ancestors*/,
-                                 const helper::vector< double > & /*coefs*/);
 protected:
     FixedPlaneConstraint<DataTypes> *fc;
 };
@@ -70,19 +67,6 @@ void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index
     }
 }
 
-/// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const helper::vector<Index> &, const helper::vector<double> &)
-{
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
 
 /////////////////////////// DEFINITION OF FixedPlaneConstraint /////////////////////////////////////
 template <class DataTypes>
