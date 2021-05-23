@@ -43,10 +43,18 @@ template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::swap(Index i1, Index i2)
 {
     container_type& data = *(this->beginEdit());
+    
+    if (i1 >= data.size() || i2 >= data.size())
+    {
+        msg_warning("TopologySubsetData") << "swap indices out of bouds: i1: " << i1 << " | i2: " << i2 << " out of data size: " << data.size();
+        this->endEdit();
+        return;
+    }
+    
+    value_type tmp = data[i1];
+    data[i1] = data[i2];
+    data[i2] = tmp;
 
-    iterator it = std::find(data.begin(), data.end(), i1);
-    if (it != data.end())
-        (*it) = i2;
     this->endEdit();
 }
 
@@ -59,11 +67,12 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     // Using default values
     container_type& data = *(this->beginEdit());
 
-    size_t size = data.size();
+    Size size = data.size();
+    data.resize(size + nbElements);
     
     if (this->m_topologyHandler)
     {
-        bool test = false;
+        value_type t;
         for (std::size_t i = 0; i < nbElements; ++i)
         {
             if (ancestors.empty() || coefs.empty())
@@ -71,18 +80,16 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
                 const sofa::helper::vector< Index > empty_vecint;
                 const sofa::helper::vector< double > empty_vecdouble;
 
-                test = this->m_topologyHandler->applyTestCreateFunction(Index(size + i), empty_vecint, empty_vecdouble);
+                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
             }
             else {
-                test = this->m_topologyHandler->applyTestCreateFunction(Index(size + i), ancestors[i], coefs[i]);
+                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
             }
-
-            if (test)
-                data.push_back((size + i));
         }
     }
    
     this->lastElementIndex += nbElements;
+    this->endEdit();
 }
 
 
@@ -122,67 +129,41 @@ template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::vector<Index>& index)
 {
     container_type& data = *(this->beginEdit());
-    std::size_t it1;
-    std::size_t it2;
+    
+    unsigned int cptDone = 0;
+    Index last = data.size() - 1;
 
-    for (std::size_t i = 0; i < index.size(); ++i)
+    // check for each element remove if it concern this subsetData
+    for (Index idRemove : index)
     {
-        it1 = 0;
-        while (it1 < data.size())
+        Index idElem = sofa::InvalidID;
+        bool found = false;
+        for (idElem = 0; idElem < data.size(); idElem++)
         {
-            if (data[it1] == index[i])
+            if (data[idElem] == idRemove) // TODO: change that, this won't work if template is not an Index
+            {
+                found = true;
                 break;
-            else
-                it1 += 1;
+            }
         }
 
+        if (!found) // element to remove not in this subset
+            continue;
 
-        if (it1 < data.size())
-        {
-            it2 = 0;
-            while (it2 < data.size())
-            {
-                if (data[it2] == this->lastElementIndex)
-                    break;
-                else
-                    it2 += 1;
-            }
-
-            if (it2 < data.size())
-                data[it2] = index[i];
-
-            data[it1] = data[data.size() - 1];
-            size_t size_before = data.size();
-
-            // Call destroy function implemented in specific component
-            if (this->m_topologyHandler)
-            {
-                this->m_topologyHandler->applyDestroyFunction(index[i], data[data.size() - 1]);
-            }
-
-            // As applyDestroyFunction could already perfom the suppression, if implemented. Size is checked again. If no change this handler really perform the suppresion
-            if (size_before == data.size())
-                data.resize(data.size() - 1);
-        }
+        //if (this->m_topologyHandler)
+        //{
+        //    this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
+        //}
+        this->swap(idElem, last);
+        cptDone++;
+        if (last == 0)
+            break;
         else
-        {
-            it2 = 0;
-            while (it2 < data.size())
-            {
-                if (data[it2] == this->lastElementIndex)
-                    break;
-                else
-                    it2 += 1;
-            }
-
-            if (it2 < data.size())
-            {
-                data[it2] = index[i];
-            }
-        }
-        --this->lastElementIndex;
+            --last;     
     }
 
+    data.resize(data.size() - cptDone);
+    this->lastElementIndex = last;
     this->endEdit();
 }
 
