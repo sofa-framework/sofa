@@ -139,16 +139,18 @@ public:
         applyCreateFunction(i, t, e, ancestors, coefs);
     }
 
-    virtual bool applyTestCreateFunction(Index /*index*/,
-        const sofa::helper::vector< Index >& /*ancestors*/,
-        const sofa::helper::vector< double >& /*coefs*/) {
-        return false;
-    }
+
 
     // update the default value used during creation
     void setDefaultValue(const value_type& v) {
         m_defaultValue = v;
     }
+
+
+    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
+    // TODO change message before PR
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2171)", "v21.06 (PR#2171)", "This method has been removed as it has never been used and is not needed.")
+    bool applyTestCreateFunction(Index /*index*/, const sofa::helper::vector< Index >& /*ancestors*/, const sofa::helper::vector< double >& /*coefs*/) = delete;
 
 protected:
     t_topologicalData* m_topologyData;

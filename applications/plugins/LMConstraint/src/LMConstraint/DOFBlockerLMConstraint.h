@@ -128,9 +128,6 @@ public:
         void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
 
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
     protected:
         DOFBlockerLMConstraint<DataTypes> *fc;
     };

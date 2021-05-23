@@ -37,13 +37,6 @@ namespace sofa::component::projectiveconstraintset
 {
 
 
-// Define TestNewPointFunction
-template< class DataTypes>
-bool PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    return lc != 0;
-}
-
 // Define RemovalFunction
 template< class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)

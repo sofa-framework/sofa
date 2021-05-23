@@ -59,11 +59,12 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     // Using default values
     container_type& data = *(this->beginEdit());
 
-    size_t size = data.size();
+    Size size = data.size();
+    data.resize(size + nbElements);
     
     if (this->m_topologyHandler)
     {
-        bool test = false;
+        value_type t;
         for (std::size_t i = 0; i < nbElements; ++i)
         {
             if (ancestors.empty() || coefs.empty())
@@ -71,18 +72,16 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
                 const sofa::helper::vector< Index > empty_vecint;
                 const sofa::helper::vector< double > empty_vecdouble;
 
-                test = this->m_topologyHandler->applyTestCreateFunction(Index(size + i), empty_vecint, empty_vecdouble);
+                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
             }
             else {
-                test = this->m_topologyHandler->applyTestCreateFunction(Index(size + i), ancestors[i], coefs[i]);
+                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
             }
-
-            if (test)
-                data.push_back((size + i));
         }
     }
    
     this->lastElementIndex += nbElements;
+    this->endEdit();
 }
 
 

@@ -38,20 +38,6 @@ using sofa::core::objectmodel::ComponentState;
 namespace sofa::component::projectiveconstraintset
 {
 
-// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    if (fc)
-    {
-        return false;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 // Define RemovalFunction
 template< class DataTypes>
 void FixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
