@@ -9,7 +9,9 @@ find_package(SofaLoader REQUIRED)
 find_package(OpenHaptics REQUIRED)
 
 if( NOT OPENHAPTICS_FOUND )
-    message( SEND_ERROR "OpenHaptics library not found, GeomagicDriver cannot compile")
+    message( WARNING "OpenHaptics library not found, GeomagicDriver cannot compile")
+elseif( NOT OPENHAPTICS_FOUND )
+    add_definitions("-DHAS_OPENHAPTICS")
 endif()
 
 set(GEOMAGIC_SRC_DIR src/Geomagic)
