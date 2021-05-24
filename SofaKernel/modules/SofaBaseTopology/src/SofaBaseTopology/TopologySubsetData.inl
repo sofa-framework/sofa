@@ -192,6 +192,11 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
             idElem = this->indexOfElement(idRemove);
             if (idElem == sofa::InvalidID)
                 continue;
+
+            if (this->m_topologyHandler)
+            {
+                this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
+            }
         }
         else
         {
@@ -209,10 +214,6 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
                 continue;
         }
 
-        //if (this->m_topologyHandler)
-        //{
-        //    this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
-        //}
         this->swap(idElem, last);
         cptDone++;
         if (last == 0)
