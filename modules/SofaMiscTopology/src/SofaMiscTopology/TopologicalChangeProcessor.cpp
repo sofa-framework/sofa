@@ -628,8 +628,8 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             Vector3 b;
             Index ind_ta;
             Index ind_tb;
-            Index a_last = core::topology::BaseMeshTopology::InvalidID;
-            Index b_last = core::topology::BaseMeshTopology::InvalidID;
+            Index a_last = sofa::InvalidID;
+            Index b_last = sofa::InvalidID;
             bool firstCut = true;
 
             //get the number of element
@@ -682,7 +682,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 if (firstCut)
                     a_last
-                        = core::topology::BaseMeshTopology::InvalidID;
+                        = sofa::InvalidID;
                 else
                 {
                     core::behavior::MechanicalState<Vec3Types> * mstate =
@@ -1200,8 +1200,8 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     Vector3 a;
     Vector3 b;
 
-    unsigned int a_last = core::topology::BaseMeshTopology::InvalidID;
-    unsigned int b_last = core::topology::BaseMeshTopology::InvalidID;
+    unsigned int a_last = sofa::InvalidID;
+    unsigned int b_last = sofa::InvalidID;
     bool firstCut= true;
 
     std::vector<Vector3> coordinates;
@@ -1249,7 +1249,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
         if(firstCut)
-            a_last = core::topology::BaseMeshTopology::InvalidID;
+            a_last = sofa::InvalidID;
         else
         {
             core::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
