@@ -63,6 +63,12 @@ public:
     /// Constructor
     TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
+    void setMap2Elements(const sofa::helper::vector<Index> _map2Elements);
+
+    sofa::helper::vector<Index>& getMap2Elements() { return m_map2Elements; }
+
+    Index indexOfElement(Index index);
+
     /// Swaps values at indices i1 and i2.
     void swap(Index i1, Index i2) override;
 
@@ -100,6 +106,11 @@ public:
     /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
     void removeOnMovedPosition(const sofa::helper::vector<Index>& indices) override;
 
+protected:
+    // same size as SparseData but contain id of element link to each data[]
+    sofa::helper::vector<Index> m_map2Elements;
+
+    bool m_usingMap;
 };
 
 
