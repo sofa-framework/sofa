@@ -34,6 +34,7 @@ namespace sofa::component::topology
 template <typename TopologyElementType, typename VecT>
 TopologySubsetData <TopologyElementType, VecT>::TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
     : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
+    , m_usingMap(false)
 {
 
 }
@@ -50,6 +51,21 @@ void TopologySubsetData <TopologyElementType, VecT>::swap(Index i1, Index i2)
         this->endEdit();
         return;
     }
+
+    if (m_usingMap)
+    {
+        if (data.size() != m_map2Elements.size())
+        {
+            msg_warning("TopologySubsetData") << "swap indices, map not the same size as data stored. Map size:" << m_map2Elements.size() << " out of data size: " << data.size();
+            this->endEdit();
+            return;
+        }
+
+        //apply same change to map:
+        Index tmp2 = m_map2Elements[i1];
+        m_map2Elements[i1] = m_map2Elements[i2];
+        m_map2Elements[i2] = tmp2;
+    }
     
     value_type tmp = data[i1];
     data[i1] = data[i2];
@@ -58,6 +74,26 @@ void TopologySubsetData <TopologyElementType, VecT>::swap(Index i1, Index i2)
     this->endEdit();
 }
 
+
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetData <TopologyElementType, VecT>::setMap2Elements(const sofa::helper::vector<Index> _map2Elements)
+{
+    m_map2Elements = _map2Elements;
+    m_usingMap = true;
+}
+
+template <typename TopologyElementType, typename VecT>
+Index TopologySubsetData <TopologyElementType, VecT>::indexOfElement(Index index)
+{
+    if (!m_usingMap)
+        return sofa::InvalidID;
+
+    for (unsigned int i = 0; i < m_map2Elements.size(); ++i)
+        if (index == m_map2Elements[i])
+            return i;
+
+    return sofa::InvalidID;
+}
 
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
@@ -70,6 +106,7 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     Size size = data.size();
     data.resize(size + nbElements);
     
+    // Call for specific callback if handler has been set
     if (this->m_topologyHandler)
     {
         value_type t;
@@ -87,8 +124,21 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
             }
         }
     }
-   
-    this->lastElementIndex += nbElements;
+
+    // update map if needed
+    if (m_usingMap)
+    {
+        for (unsigned int i = 0; i < nbElements; ++i)
+        {
+            this->lastElementIndex++;
+            m_map2Elements.push_back(this->lastElementIndex);
+        }
+    }
+    else
+    {
+        this->lastElementIndex += nbElements;
+    }
+    
     this->endEdit();
 }
 
@@ -137,18 +187,27 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
     for (Index idRemove : index)
     {
         Index idElem = sofa::InvalidID;
-        bool found = false;
-        for (idElem = 0; idElem < data.size(); idElem++)
+        if (m_usingMap)
         {
-            if (data[idElem] == idRemove) // TODO: change that, this won't work if template is not an Index
-            {
-                found = true;
-                break;
-            }
+            idElem = this->indexOfElement(idRemove);
+            if (idElem == sofa::InvalidID)
+                continue;
         }
+        else
+        {
+            bool found = false;
+            for (idElem = 0; idElem < data.size(); idElem++)
+            {
+                if (data[idElem] == idRemove) // TODO: change that, this won't work if template is not an Index
+                {
+                    found = true;
+                    break;
+                }
+            }
 
-        if (!found) // element to remove not in this subset
-            continue;
+            if (!found) // element to remove not in this subset
+                continue;
+        }
 
         //if (this->m_topologyHandler)
         //{
@@ -162,6 +221,9 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
             --last;     
     }
 
+    if (m_usingMap) {
+        m_map2Elements.resize(data.size() - cptDone);
+    }
     data.resize(data.size() - cptDone);
     this->lastElementIndex = last;
     this->endEdit();
