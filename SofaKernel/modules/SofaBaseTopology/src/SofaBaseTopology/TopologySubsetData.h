@@ -56,11 +56,16 @@ public:
     /// Getter of the vector map indices
     sofa::helper::vector<Index>& getMap2Elements() { return m_map2Elements; }
 
+    bool getSparseDataStatus() { return m_isConcerned; }
+
+    void activateSparseData() { m_isConcerned = true; }
+    void desactivateSparseData() { m_isConcerned = false; }
+
     /** Method to return the index position of an element inside the vector map @sa m_map2Elements
     * @param {Index} element index of the full Data vector to find in the vector map
     * @return {Index} position of the element in the vector map. return sofa::InvalidID if not found.
     */
-    Index indexOfElement(Index index);
+    virtual Index indexOfElement(Index index);
 
     /// Swaps values of this subsetmap at indices i1 and i2. (only if i1 and i2 < subset size())
     void swap(Index i1, Index i2) override;
@@ -106,11 +111,18 @@ public:
     void removeOnMovedPosition(const sofa::helper::vector<Index>& indices) override;
 
 protected:
+    virtual void swapPostProcess(Index i1, Index i2);
+
+    virtual void removePostProcess(sofa::Size nbElements);
+
+    virtual void addPostProcess(sofa::Size nbElements);
+
+protected:
     /// same size as this SubsetData but contains id of element link to each data[]
     sofa::helper::vector<Index> m_map2Elements;
 
-    /// booleen to store the behavior if the vector map @sa m_map2Elements is used. False by default, meaning the subset is the map itself.
-    bool m_usingMap;
+    /// boolen to set subdata as concerne, will allow to add element
+    bool m_isConcerned;
 };
 
 

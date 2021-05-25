@@ -34,7 +34,7 @@ namespace sofa::component::topology
 template <typename TopologyElementType, typename VecT>
 TopologySubsetData <TopologyElementType, VecT>::TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
     : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
-    , m_usingMap(false)
+    , m_isConcerned(false)
 {
 
 }
@@ -52,42 +52,24 @@ void TopologySubsetData <TopologyElementType, VecT>::swap(Index i1, Index i2)
         return;
     }
 
-    if (m_usingMap)
-    {
-        if (data.size() != m_map2Elements.size())
-        {
-            msg_warning("TopologySubsetData") << "swap indices, map not the same size as data stored. Map size:" << m_map2Elements.size() << " out of data size: " << data.size();
-            this->endEdit();
-            return;
-        }
-
-        //apply same change to map:
-        Index tmp2 = m_map2Elements[i1];
-        m_map2Elements[i1] = m_map2Elements[i2];
-        m_map2Elements[i2] = tmp2;
-    }
-    
     value_type tmp = data[i1];
     data[i1] = data[i2];
     data[i2] = tmp;
 
     this->endEdit();
-}
 
+    swapPostProcess(i1, i2);
+}
 
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::setMap2Elements(const sofa::helper::vector<Index> _map2Elements)
 {
     m_map2Elements = _map2Elements;
-    m_usingMap = true;
 }
 
 template <typename TopologyElementType, typename VecT>
 Index TopologySubsetData <TopologyElementType, VecT>::indexOfElement(Index index)
-{
-    if (!m_usingMap)
-        return sofa::InvalidID;
-
+{    
     for (unsigned int i = 0; i < m_map2Elements.size(); ++i)
         if (index == m_map2Elements[i])
             return i;
@@ -100,6 +82,9 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
     const sofa::helper::vector<sofa::helper::vector<double> >& coefs)
 {
+    if (!this->getSparseDataStatus())
+        return;
+
     // Using default values
     container_type& data = *(this->beginEdit());
 
@@ -124,22 +109,10 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
             }
         }
     }
+    this->endEdit();
 
     // update map if needed
-    if (m_usingMap)
-    {
-        for (unsigned int i = 0; i < nbElements; ++i)
-        {
-            this->lastElementIndex++;
-            m_map2Elements.push_back(this->lastElementIndex);
-        }
-    }
-    else
-    {
-        this->lastElementIndex += nbElements;
-    }
-    
-    this->endEdit();
+    addPostProcess(nbElements);
 }
 
 
@@ -187,31 +160,14 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
     for (Index idRemove : index)
     {
         Index idElem = sofa::InvalidID;
-        if (m_usingMap)
-        {
-            idElem = this->indexOfElement(idRemove);
-            if (idElem == sofa::InvalidID)
-                continue;
+        
+        idElem = this->indexOfElement(idRemove);
+        if (idElem == sofa::InvalidID)
+            continue;
 
-            if (this->m_topologyHandler)
-            {
-                this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
-            }
-        }
-        else
+        if (this->m_topologyHandler)
         {
-            bool found = false;
-            for (idElem = 0; idElem < data.size(); idElem++)
-            {
-                if (data[idElem] == idRemove) // TODO: change that, this won't work if template is not an Index
-                {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) // element to remove not in this subset
-                continue;
+            this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
         }
 
         this->swap(idElem, last);
@@ -222,14 +178,12 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
             --last;     
     }
 
-    if (m_usingMap) {
-        m_map2Elements.resize(data.size() - cptDone);
-    }
     data.resize(data.size() - cptDone);
     this->lastElementIndex = last;
     this->endEdit();
-}
 
+    removePostProcess(data.size() - cptDone);
+}
 
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::renumber(const sofa::helper::vector<Index>& index)
@@ -242,6 +196,41 @@ void TopologySubsetData <TopologyElementType, VecT>::renumber(const sofa::helper
         data[i] = copy[index[i]];
     }
     this->endEdit();
+}
+
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetData <TopologyElementType, VecT>::swapPostProcess(Index i1, Index i2)
+{
+    if (i1 >= m_map2Elements.size() || i2 >= m_map2Elements.size())
+    {
+        msg_warning("TopologySubsetData") << "swap indices out of bouds: i1: " << i1 << " | i2: " << i2 << " out of m_map2Elements size: " << m_map2Elements.size();
+        return;
+    }
+
+    //apply same change to map:
+    Index tmp2 = m_map2Elements[i1];
+    m_map2Elements[i1] = m_map2Elements[i2];
+    m_map2Elements[i2] = tmp2;
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetData <TopologyElementType, VecT>::removePostProcess(sofa::Size nbElements)
+{
+    m_map2Elements.resize(nbElements);
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetData <TopologyElementType, VecT>::addPostProcess(sofa::Size nbElements)
+{
+    for (unsigned int i = 0; i < nbElements; ++i)
+    {
+        this->lastElementIndex++;
+        m_map2Elements.push_back(this->lastElementIndex);
+    }
 }
 
 
