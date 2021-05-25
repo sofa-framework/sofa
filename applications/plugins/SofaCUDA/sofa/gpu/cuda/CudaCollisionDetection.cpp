@@ -124,7 +124,7 @@ void CudaCollisionDetection::endNarrowPhase()
             {
                 core::CollisionModel *cm1 = it->first.first->getFirst(); //->getNext();
                 core::CollisionModel *cm2 = it->first.second->getFirst(); //->getNext();
-                Inherit2::addCollisionPair( std::make_pair(cm1, cm2) );
+                addCollisionPair( std::make_pair(cm1, cm2) );
             }
         }
 
