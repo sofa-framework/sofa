@@ -59,6 +59,12 @@ list(APPEND HEADER_FILES
     ${SOFAMISCCOLLISION_SRC}/OBBModel.inl
     ${SOFAMISCCOLLISION_SRC}/RigidCapsuleModel.h
     ${SOFAMISCCOLLISION_SRC}/RigidCapsuleModel.inl
+    ${SOFAMISCCOLLISION_SRC}/IntrMeshUtility.h
+    ${SOFAMISCCOLLISION_SRC}/IntrMeshUtility.inl
+    ${SOFAMISCCOLLISION_SRC}/IntrTriangleOBB.h
+    ${SOFAMISCCOLLISION_SRC}/IntrTriangleOBB.inl
+    ${SOFAMISCCOLLISION_SRC}/MeshIntTool.h
+    ${SOFAMISCCOLLISION_SRC}/MeshIntTool.inl
     )
 
 list(APPEND SOURCE_FILES
@@ -91,6 +97,9 @@ list(APPEND SOURCE_FILES
     ${SOFAMISCCOLLISION_SRC}/OBBIntTool.cpp
     ${SOFAMISCCOLLISION_SRC}/OBBModel.cpp
     ${SOFAMISCCOLLISION_SRC}/RigidCapsuleModel.cpp
+    ${SOFAMISCCOLLISION_SRC}/IntrMeshUtility.cpp
+    ${SOFAMISCCOLLISION_SRC}/IntrTriangleOBB.cpp
+    ${SOFAMISCCOLLISION_SRC}/MeshIntTool.cpp
     )
 message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
