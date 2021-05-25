@@ -6,7 +6,8 @@
     <RequiredPlugin pluginName='SofaMeshCollision'/>
     <RequiredPlugin pluginName='SofaRigid'/> 
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels" />
-    <BruteForceDetection name="default0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="default1" />
     <DefaultPipeline name="default2" />
     <MinProximityIntersection name="default3" alarmDistance="1" contactDistance="0.5"/>

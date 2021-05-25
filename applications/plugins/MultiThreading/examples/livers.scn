@@ -9,7 +9,8 @@
   <Node name="scene1" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop1" />
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="default" />
 	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver1" gravity="0 -9.81 0">
@@ -40,7 +41,8 @@
   <Node name="scene2" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop2" />
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="default" />
 	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver2" gravity="0 -9.81 0">
@@ -71,7 +73,8 @@
   <Node name="scene3" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop2" />
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="default" />
 	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver3" gravity="0 -9.81 0">
@@ -103,7 +106,8 @@
   <Node name="scene4" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop2" />
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="default" />
 	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver4" gravity="0 -9.81 0">
