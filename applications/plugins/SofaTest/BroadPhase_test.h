@@ -6,6 +6,7 @@
 #include <sofa/simulation/Node.h>
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaBaseCollision/OBBModel.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <gtest/gtest.h>
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
@@ -53,7 +54,7 @@ struct MyBox{
     sofa::component::collision::Cube cube;
 };
 
-template <class BroadPhase>
+template <class BroadPhase, class NarrowPhase = BroadPhase>
 struct BroadPhaseTest: public ::testing::Test{
     static double getExtent(){return 1.2;}
 
@@ -208,13 +209,15 @@ struct CItCompare{
     }
 };
 
-template<class Detection>
-bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection)
+template<class BroadPhase, class NarrowPhase>
+bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,
+             BroadPhase & broadPhaseDetection, NarrowPhase & narrowPhaseDetection)
 {
     cm1->setSelfCollision(true);
     cm2->setSelfCollision(true);
 
-    col_detection.setIntersectionMethod(proxIntersection.get());
+    broadPhaseDetection.setIntersectionMethod(proxIntersection.get());
+    narrowPhaseDetection.setIntersectionMethod(proxIntersection.get());
 
 //    col_detection.addCollisionModel(cm1);
 //    if(cm2 != 0x0)
@@ -259,44 +262,46 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 //    }
 //    std::cout<<"========SORTED BRUTE"<<std::endl;
 
-    col_detection.beginBroadPhase();
-    col_detection.addCollisionModel(cm1->getFirst());
+    broadPhaseDetection.beginBroadPhase();
+    broadPhaseDetection.addCollisionModel(cm1->getFirst());
     if(cm2)
-        col_detection.addCollisionModel(cm2->getFirst());
+    {
+        broadPhaseDetection.addCollisionModel(cm2->getFirst());
+    }
+    broadPhaseDetection.endBroadPhase();
 
-    col_detection.endBroadPhase();
-    col_detection.beginNarrowPhase();
-    col_detection.addCollisionPairs(col_detection.getCollisionModelPairs());
-    col_detection.endNarrowPhase();
+    narrowPhaseDetection.beginNarrowPhase();
+    narrowPhaseDetection.addCollisionPairs(broadPhaseDetection.getCollisionModelPairs());
+    narrowPhaseDetection.endNarrowPhase();
 
     std::vector<std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > broadPhaseInter;
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> * res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm1,cm1));
+    sofa::helper::vector<sofa::core::collision::DetectionOutput> * res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(narrowPhaseDetection.getDetectionOutputs(cm1,cm1));
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             broadPhaseInter.push_back(((*res)[i]).elem);
 
 
-    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm1,cm2));
+    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(narrowPhaseDetection.getDetectionOutputs(cm1,cm2));
 
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             broadPhaseInter.push_back(((*res)[i]).elem);
 
-    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm2,cm1));
+    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(narrowPhaseDetection.getDetectionOutputs(cm2,cm1));
 
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             broadPhaseInter.push_back(((*res)[i]).elem);
 
-    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm2,cm2));
+    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(narrowPhaseDetection.getDetectionOutputs(cm2,cm2));
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             broadPhaseInter.push_back(((*res)[i]).elem);
 
     std::sort(broadPhaseInter.begin(),broadPhaseInter.end(),c);
 
-    col_detection.endNarrowPhase();
+    narrowPhaseDetection.endNarrowPhase();
 
     if(brutInter.size() != broadPhaseInter.size()){
         std::cout<<"BRUT FORCE PAIRS"<<std::endl;
@@ -436,12 +441,24 @@ bool BroadPhaseTest<BroadPhase, NarrowPhase>::randTest(int /*seed*/, int nb1, in
     obbm1->setSelfCollision(true);
     obbm2->setSelfCollision(true);
 
-    typename BroadPhase::SPtr pbroadphase = sofa::core::objectmodel::New<BroadPhase>();
-    BroadPhase & broadphase = *pbroadphase;
+    typename BroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BroadPhase>();
 
-    for(int i = 0 ; i < 2 ; ++i){
-        if(!GENTest(obbm1.get(),obbm2.get(),broadphase))
+    sofa::core::collision::NarrowPhaseDetection::SPtr narrowPhase;
+    if constexpr(std::is_base_of_v<sofa::core::collision::NarrowPhaseDetection, BroadPhase>)
+    {
+        narrowPhase = broadPhase;
+    }
+    else
+    {
+        narrowPhase = sofa::core::objectmodel::New<NarrowPhase>();
+    }
+
+    for(int i = 0 ; i < 2 ; ++i)
+    {
+        if(!GENTest(obbm1.get(),obbm2.get(), *broadPhase, *narrowPhase))
+        {
             return false;
+        }
 
         randMoving(obbm1.get(),min,max);
         randMoving(obbm2.get(),min,max);

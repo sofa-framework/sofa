@@ -83,7 +83,7 @@ struct MyBox{
     sofa::component::collision::Cube cube;
 };
 
-template <class BroadPhase, class NarrowPhase>
+template <class BroadPhase, class NarrowPhase = BroadPhase>
 struct BroadPhaseTest: public ::testing::Test{
     static double getExtent(){return 1.2;}
 
@@ -473,7 +473,16 @@ bool BroadPhaseTest<BroadPhase, NarrowPhase>::randTest(int seed,int nb1,int nb2,
     obbm2->setSelfCollision(true);
 
     typename BroadPhase::SPtr broadPhase = New<BroadPhase>();
-    typename NarrowPhase::SPtr narrowPhase = New<NarrowPhase>();
+
+    sofa::core::collision::NarrowPhaseDetection::SPtr narrowPhase;
+    if constexpr(std::is_base_of_v<sofa::core::collision::NarrowPhaseDetection, BroadPhase>)
+    {
+        narrowPhase = broadPhase;
+    }
+    else
+    {
+        narrowPhase = New<NarrowPhase>();
+    }
 
     for(int i = 0 ; i < 2 ; ++i)
     {
