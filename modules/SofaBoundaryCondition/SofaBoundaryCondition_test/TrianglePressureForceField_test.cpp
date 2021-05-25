@@ -23,8 +23,6 @@
 #include <SofaTest/ForceField_test.h>
 //Force field
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
-
 #include <SofaTest/TestMessageHandler.h>
 
 

@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <sofa/helper/types/RGBAColor.h>

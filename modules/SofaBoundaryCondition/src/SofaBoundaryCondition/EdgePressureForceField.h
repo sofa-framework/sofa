@@ -23,7 +23,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySparseData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
@@ -78,7 +78,7 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
+    sofa::component::topology::EdgeSubsetData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
 
     sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;

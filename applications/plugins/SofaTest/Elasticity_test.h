@@ -30,7 +30,6 @@
 //Including Simulation
 #include <SofaSimulationGraph/DAGSimulation.h>
 
-#include <SofaBaseTopology/TopologySparseData.inl>
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
