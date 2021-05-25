@@ -39,11 +39,11 @@ void BruteForceDetection::init()
 
     if (broadPhaseComponents.empty())
     {
-        broadPhaseComponents.push_back("BruteForceBroadPhase");
+        broadPhaseComponents.push_back(BruteForceBroadPhase::GetClass()->className);
     }
     if (narrowPhaseComponents.empty())
     {
-        narrowPhaseComponents.push_back("BVHNarrowPhase");
+        narrowPhaseComponents.push_back(BVHNarrowPhase::GetClass()->className);
     }
 
     const auto comma_fold = [](std::string a, std::string b)
@@ -65,7 +65,7 @@ void BruteForceDetection::init()
                      << "  As a replacement, use a BroadPhase component, such as [" << broadPhaseComponentsString
                      << "]," << msgendl
                      << "  AND a NarrowPhase component, such as [" << narrowPhaseComponentsString << "]." << msgendl
-                     << "  BruteForceBroadPhase and BVHNarrowPhase have been automatically added to your scene for backward compatibility.";
+                     << "  " << BruteForceBroadPhase::GetClass()->className << " and " << BVHNarrowPhase::GetClass()->className << " have been automatically added to your scene for backward compatibility.";
 }
 
 void BruteForceDetection::findAllDetectionComponents(std::vector<std::string> &broadPhaseComponents,
