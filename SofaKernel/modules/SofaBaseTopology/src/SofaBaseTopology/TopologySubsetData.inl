@@ -84,9 +84,24 @@ void TopologySubsetData <TopologyElementType, VecT>::setMap2Elements(const sofa:
 
 template <typename TopologyElementType, typename VecT>
 Index TopologySubsetData <TopologyElementType, VecT>::indexOfElement(Index index)
-{
+{    
     if (!m_usingMap)
-        return sofa::InvalidID;
+    {
+        // not using map, check if data is the map
+        if constexpr (std::is_same_v<container_type::value_type, Index>) 
+        {
+            const container_type& data = this->getValue();
+            for (Index idElem = 0; idElem < data.size(); idElem++)
+            {
+                if (data[idElem] == index)
+                    return idElem;
+            }
+        }
+        else 
+        {
+            return sofa::InvalidID;
+        }
+    }
 
     for (unsigned int i = 0; i < m_map2Elements.size(); ++i)
         if (index == m_map2Elements[i])
@@ -187,31 +202,14 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
     for (Index idRemove : index)
     {
         Index idElem = sofa::InvalidID;
-        if (m_usingMap)
-        {
-            idElem = this->indexOfElement(idRemove);
-            if (idElem == sofa::InvalidID)
-                continue;
+        
+        idElem = this->indexOfElement(idRemove);
+        if (idElem == sofa::InvalidID)
+            continue;
 
-            if (this->m_topologyHandler)
-            {
-                this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
-            }
-        }
-        else
+        if (m_usingMap && this->m_topologyHandler)
         {
-            bool found = false;
-            for (idElem = 0; idElem < data.size(); idElem++)
-            {
-                if (data[idElem] == idRemove) // TODO: change that, this won't work if template is not an Index
-                {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) // element to remove not in this subset
-                continue;
+            this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
         }
 
         this->swap(idElem, last);
