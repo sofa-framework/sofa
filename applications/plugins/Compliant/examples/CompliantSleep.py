@@ -44,7 +44,8 @@ def createScene(root):
     ##### Collisions
     root.createObject('DefaultCollisionGroupManager')
     root.createObject('NewProximityIntersection', alarmDistance=0.5, contactDistance=0.05)
-    root.createObject('BruteForceDetection')
+    root.createObject('BruteForceBroadPhase', name='N2')
+    root.createObject('BVHNarrowPhase')
     root.createObject('DefaultContactManager', response='FrictionCompliantContact', responseParams="mu=0.01")
     root.createObject('DefaultPipeline', depth=6)
 

@@ -55,7 +55,8 @@ In the scene graph, we obtain:
 The example \textit{/examples/Components/mapping/ArticulatedSystemMapping.scn} shows a basic pendulum :
 
 \begin{code_xml}
-<Object type="BruteForceDetection"/>
+<Object type="BruteForceBroadPhase"/>
+<Object type="BVHNarrowPhase"/>
 <Object type="DefaultContactManager"/>
 <Object type="DefaultPipeline"/>
 <Object type="ProximityIntersection"/>
