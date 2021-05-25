@@ -186,26 +186,28 @@ fi
 
 if [ -d "$BUNDLE_DIR" ]; then
     # Adding default RPATH to all libs and to runSofa
+    rm -f errors.log
     (
     find "$BUNDLE_DIR/Contents/MacOS" -type f -name "*.dylib"
     find "$BUNDLE_DIR/Contents/MacOS" -type f -name "*.so"
     find "$BUNDLE_DIR" -type f -name "runSofa*" -path "*/bin/*"
     ) | while read lib; do
-        install_name_tool -add_rpath "@loader_path/../lib" $lib
-        install_name_tool -add_rpath "@executable_path/../lib" $lib
+        install_name_tool -add_rpath "@loader_path/../lib" $lib 2>> errors.log
+        install_name_tool -add_rpath "@executable_path/../lib" $lib 2>> errors.log
         if [[ "$lib" == *"Contents/MacOS/plugins/"* ]]; then
-            install_name_tool -add_rpath "@loader_path/../../../../Frameworks" $lib
-            install_name_tool -add_rpath "@executable_path/../../../../Frameworks" $lib
+            install_name_tool -add_rpath "@loader_path/../../../../Frameworks" $lib 2>> errors.log
+            install_name_tool -add_rpath "@executable_path/../../../../Frameworks" $lib 2>> errors.log
         else
-            install_name_tool -add_rpath "@loader_path/../../Frameworks" $lib
-            install_name_tool -add_rpath "@executable_path/../../Frameworks" $lib
+            install_name_tool -add_rpath "@loader_path/../../Frameworks" $lib 2>> errors.log
+            install_name_tool -add_rpath "@executable_path/../../Frameworks" $lib 2>> errors.log
         fi
     done
     ls -d $BUNDLE_DIR/Contents/MacOS/plugins/*/ | while read plugin; do
         pluginname="$(basename $plugin)"
-        install_name_tool -add_rpath "@loader_path/../plugins/$pluginname/lib" "$BUNDLE_DIR/Contents/MacOS/bin/runSofa"
-        install_name_tool -add_rpath "@executable_path/../plugins/$pluginname/lib" "$BUNDLE_DIR/Contents/MacOS/bin/runSofa"
+        install_name_tool -add_rpath "@loader_path/../plugins/$pluginname/lib" "$BUNDLE_DIR/Contents/MacOS/bin/runSofa" 2>> errors.log
+        install_name_tool -add_rpath "@executable_path/../plugins/$pluginname/lib" "$BUNDLE_DIR/Contents/MacOS/bin/runSofa" 2>> errors.log
     done
+    cat errors.log | grep -v 'file already has LC_RPATH for' >&2
 fi
 
 echo "Done."
