@@ -6,12 +6,10 @@ find_package(SofaOpenglVisual REQUIRED)
 find_package(SofaUserInteraction REQUIRED)
 find_package(SofaLoader REQUIRED)
 
-find_package(OpenHaptics REQUIRED)
+sofa_find_package(OpenHaptics QUIET)
 
 if( NOT OPENHAPTICS_FOUND )
     message( WARNING "OpenHaptics library not found, GeomagicDriver cannot compile")
-elseif( NOT OPENHAPTICS_FOUND )
-    add_definitions("-DHAS_OPENHAPTICS")
 endif()
 
 set(GEOMAGIC_SRC_DIR src/Geomagic)

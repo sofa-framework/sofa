@@ -30,7 +30,7 @@
 //force feedback
 #include <SofaHaptics/ForceFeedback.h>
 
-#ifdef HAS_OPENHAPTICS
+#if GEOMAGIC_HAVE_OPENHAPTICS
 #include <HD/hd.h>
 #endif
 
@@ -57,7 +57,7 @@ public:
     typedef RigidTypes::Coord Coord;
     typedef RigidTypes::VecCoord VecCoord;
 
-#ifdef HAS_OPENHAPTICS
+#if GEOMAGIC_HAVE_OPENHAPTICS
     typedef HDdouble SHDdouble;
     typedef HDSchedulerHandle SHDSchedulerHandle;
     typedef HHD SHHD;

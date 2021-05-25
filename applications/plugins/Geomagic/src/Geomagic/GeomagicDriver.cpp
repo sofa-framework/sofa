@@ -36,7 +36,7 @@ namespace sofa::component::controller
     
 using namespace sofa::defaulttype;
 
-#ifdef HAS_OPENHAPTICS
+#if GEOMAGIC_HAVE_OPENHAPTICS
 // Method to get the first error on the deck and if logError is not set to false will pop up full error message before returning the error code.
 // Return HD_SUCCESS == 0 if no error.
 HDerror catchHDError(bool logError = true)
@@ -214,7 +214,7 @@ void GeomagicDriver::init()
 
 void GeomagicDriver::clearDevice()
 {
-#ifdef HAS_OPENHAPTICS
+#if GEOMAGIC_HAVE_OPENHAPTICS
     hdMakeCurrentDevice(m_hHD);
 
     // stop scheduler first only if some works are registered
@@ -244,7 +244,7 @@ void GeomagicDriver::clearDevice()
 
 void GeomagicDriver::initDevice()
 {
-#ifdef HAS_OPENHAPTICS
+#if GEOMAGIC_HAVE_OPENHAPTICS
     HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
 
     if (s_schedulerRunning) // need to stop scheduler if already running before any init
@@ -426,7 +426,7 @@ void GeomagicDriver::updateButtonStates()
         oldStates[i] = buttons[i];
 
     // get new values
-#ifdef HAS_OPENHAPTICS
+#if GEOMAGIC_HAVE_OPENHAPTICS
     buttons[0] = m_simuData.buttonState & HD_DEVICE_BUTTON_1;
     buttons[1] = m_simuData.buttonState & HD_DEVICE_BUTTON_2;
 #endif
