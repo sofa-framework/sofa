@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SofaBoundaryCondition/OscillatingTorsionPressureForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/types/RGBAColor.h>

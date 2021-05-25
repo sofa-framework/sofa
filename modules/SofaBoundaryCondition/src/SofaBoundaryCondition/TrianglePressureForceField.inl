@@ -24,7 +24,7 @@
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/types/RGBAColor.h>

@@ -24,7 +24,7 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySparseData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 #include <fstream>
 
 namespace sofa::component::forcefield
@@ -81,7 +81,7 @@ protected:
     std::ofstream file;
 
 public:
-    sofa::component::topology::TriangleSparseData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure    
+    sofa::component::topology::TriangleSubsetData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure    
 
     Data<Real> moment;   ///< total moment/torque applied
     Data<sofa::helper::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied

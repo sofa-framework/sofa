@@ -22,8 +22,6 @@
 
 //Force field
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
-
 #include <SofaSimpleFem_test/ForceFieldTestCreation.h>
 
 

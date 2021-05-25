@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SofaBoundaryCondition/EdgePressureForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/types/RGBAColor.h>

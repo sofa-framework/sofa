@@ -22,7 +22,6 @@
 
 //Force field
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
 
 #include <SofaSimpleFem_test/ForceFieldTestCreation.h>
 

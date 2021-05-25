@@ -20,132 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+// TODO: Backward compability header, to be removed for v21.12
 #include <SofaBaseTopology/config.h>
-
-#include <SofaBaseTopology/TopologyData.h>
-#include <SofaBaseTopology/TopologyDataHandler.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 
 namespace sofa::component::topology
 {
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class TopologyElementType, class VecT>
-class TopologySparseData : public sofa::component::topology::TopologyData<TopologyElementType, VecT>
-{
-
-public:
-    typedef VecT container_type;
-    typedef typename container_type::value_type value_type;
-
-    /// Size
-    typedef typename container_type::Size Size;
-    /// reference to a value (read-write)
-    typedef typename container_type::reference reference;
-    /// const reference to a value (read only)
-    typedef typename container_type::const_reference const_reference;
-    /// const iterator
-    typedef typename container_type::const_iterator const_iterator;
-    typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
-    typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
-    typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
-
-    using Index = sofa::Index;
-
-
-    /// Constructor
-    TopologySparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
-        , m_isConcerned(false)
-    {}
-
-
-    void setMap2Elements(const sofa::helper::vector<Index> _map2Elements)
-    {
-        m_map2Elements = _map2Elements;
-    }
-
-    sofa::helper::vector<Index>& getMap2Elements() {return m_map2Elements;}
-
-    bool getSparseDataStatus() {return m_isConcerned;}
-
-    void activateSparseData() {m_isConcerned = true;}
-    void desactivateSparseData() {m_isConcerned = false;}
-
-    size_t size() {return m_map2Elements.size();}
-
-    Index indexOfElement(Index index)
-    {
-        for (unsigned int i=0; i<m_map2Elements.size(); ++i)
-            if (index == m_map2Elements[i])
-                return i;
-
-        return sofa::InvalidID;
-    }
-
-
-    /// Swaps values at indices i1 and i2.
-    void swap(Index i1, Index i2) override;
-
-    //using core::topology::TopologyDataHandler< TopologyElementType >::add;
-    /// Add some values. Values are added at the end of the vector.
-    void add(sofa::Size nbElements,
-        const sofa::helper::vector< TopologyElementType >&,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-
-    void add(sofa::Size nbElements,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
-
-    void add(const sofa::helper::vector<Index>& index,
-        const sofa::helper::vector< TopologyElementType >& elems,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
-        const sofa::helper::vector< AncestorElem >& ancestorElems) override;
-
-    /// Remove the values corresponding to the Edges removed.
-    void remove(const sofa::helper::vector<Index>& index) override;
-
-    /// Reorder the values.
-    void renumber(const sofa::helper::vector<Index>& index) override;
-
-    /// Move a list of points
-    void move(const sofa::helper::vector<Index>& indexList,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs) override;
-
-    /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
-    void addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
-        const sofa::helper::vector< TopologyElementType >& elems) override;
-
-    /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
-    void removeOnMovedPosition(const sofa::helper::vector<Index>& indices) override;
-
-
-
-
-
-protected:
-    // same size as SparseData but contain id of element link to each data[]
-    sofa::helper::vector<Index> m_map2Elements;
-
-    bool m_isConcerned;
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Element Topology Data Implementation   ////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT > using PointSparseData = TopologySparseData<core::topology::BaseMeshTopology::Point, VecT>;
-template< class VecT > using EdgeSparseData = TopologySparseData<core::topology::BaseMeshTopology::Edge, VecT>;
-template< class VecT > using TriangleSparseData = TopologySparseData<core::topology::BaseMeshTopology::Triangle, VecT>;
-template< class VecT > using QuadSparseData = TopologySparseData<core::topology::BaseMeshTopology::Quad, VecT>;
-template< class VecT > using TetrahedronSparseData = TopologySparseData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
-template< class VecT > using HexahedronSparseData = TopologySparseData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
-
+//SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2114", "This class has been removed. TopologySubsetData should be used instead.")
+template< class VecT > using PointSparseData = TopologySubsetData<core::topology::BaseMeshTopology::Point, VecT>;
+template< class VecT > using EdgeSparseData = TopologySubsetData<core::topology::BaseMeshTopology::Edge, VecT>;
+template< class VecT > using TriangleSparseData = TopologySubsetData<core::topology::BaseMeshTopology::Triangle, VecT>;
+template< class VecT > using QuadSparseData = TopologySubsetData<core::topology::BaseMeshTopology::Quad, VecT>;
+template< class VecT > using TetrahedronSparseData = TopologySubsetData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
+template< class VecT > using HexahedronSparseData = TopologySubsetData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
 } //namespace sofa::component::topology
