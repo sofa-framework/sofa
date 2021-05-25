@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseCollision/config.h>
+#include <SofaMiscCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -196,8 +196,8 @@ using Capsule = TCapsule<sofa::defaulttype::Vec3Types>;
 
 
 #if  !defined(SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP)
-extern template class SOFA_SOFABASECOLLISION_API TCapsule<defaulttype::Vec3Types>;
-extern template class SOFA_SOFABASECOLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
+extern template class SOFA_MISC_COLLISION_API TCapsule<defaulttype::Vec3Types>;
+extern template class SOFA_MISC_COLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
 #endif
 
 } // namespace sofa::component::collision

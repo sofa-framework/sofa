@@ -20,16 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseCollision/config.h>
+#include <SofaMiscCollision/config.h>
 
 #include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/CapsuleIntTool.h>
-#include <SofaBaseCollision/OBBIntTool.h>
+#include <SofaMiscCollision/CapsuleIntTool.h>
+#include <SofaMiscCollision/OBBIntTool.h>
 
 namespace sofa::component::collision
 {
 
-class SOFA_SOFABASECOLLISION_API BaseIntTool : public CapsuleIntTool,public OBBIntTool
+class SOFA_MISC_COLLISION_API BaseIntTool : public CapsuleIntTool,public OBBIntTool
 {
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;

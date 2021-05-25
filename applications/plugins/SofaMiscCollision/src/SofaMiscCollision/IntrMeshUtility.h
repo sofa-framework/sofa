@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
+#include <SofaMiscCollision/config.h>
 
-#include <SofaBaseCollision/IntrUtility3.h>
+#include <SofaMiscCollision/IntrUtility3.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -46,7 +46,7 @@ struct IntrUtil<TTriangle<DataType> >{
 
 
 template <class TDataTypes1,class TDataTypes2>
-class SOFA_SOFAMESHCOLLISION_API IntrAxis<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >
+class SOFA_MISC_COLLISION_API IntrAxis<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >
 {
 public:
     typedef typename TDataTypes1::Real Real;
@@ -99,10 +99,10 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRMESHUTILITY_CPP)
-extern template struct SOFA_SOFAMESHCOLLISION_API IntrUtil<TTriangle<defaulttype::Vec3Types> >;
-extern template class SOFA_SOFAMESHCOLLISION_API FindContactSet<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
-extern template class SOFA_SOFAMESHCOLLISION_API IntrAxis<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
-extern template struct SOFA_SOFAMESHCOLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3Types> >;
+extern template struct SOFA_MISC_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3Types> >;
+extern template class SOFA_MISC_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+extern template class SOFA_MISC_COLLISION_API IntrAxis<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+extern template struct SOFA_MISC_COLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3Types> >;
 
 #endif
 

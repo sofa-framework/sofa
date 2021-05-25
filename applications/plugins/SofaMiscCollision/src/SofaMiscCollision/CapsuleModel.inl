@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaMiscCollision/CapsuleModel.h>
 
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/visual/DisplayFlags.h>

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/CapsuleIntTool.h>
+#include <SofaMiscCollision/CapsuleIntTool.h>
 
 namespace sofa::component::collision
 {

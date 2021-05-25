@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
+#include <SofaMiscCollision/config.h>
 
 #include <sofa/core/collision/Intersection.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/IntrMeshUtility.h>
+#include <SofaMiscCollision/IntrMeshUtility.h>
 #include <SofaBaseCollision/Intersector.h>
 
 namespace sofa::component::collision
@@ -64,7 +64,7 @@ private:
 typedef TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrTriangleOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP)
-extern template class SOFA_SOFAMESHCOLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+extern template class SOFA_MISC_COLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
 
 #endif
 

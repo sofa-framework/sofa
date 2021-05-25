@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP
-#include <SofaBaseCollision/RigidCapsuleModel.inl>
+#include <SofaMiscCollision/RigidCapsuleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision
@@ -38,7 +38,7 @@ int RigidCapsuleCollisionModelClass = core::RegisterObject("Collision model whic
         .addAlias("RigidCapsuleCollisionModel")
         ;
 
-template class SOFA_SOFABASECOLLISION_API TCapsule<defaulttype::Rigid3Types>;
-template class SOFA_SOFABASECOLLISION_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
+template class SOFA_MISC_COLLISION_API TCapsule<defaulttype::Rigid3Types>;
+template class SOFA_MISC_COLLISION_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
 
 } // namespace sofa::component::collision

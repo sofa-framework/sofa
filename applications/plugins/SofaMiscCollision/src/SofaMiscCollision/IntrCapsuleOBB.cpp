@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_CPP
-#include <SofaBaseCollision/IntrCapsuleOBB.inl>
+#include <SofaMiscCollision/IntrCapsuleOBB.inl>
 
 namespace sofa::component::collision
 {
@@ -28,8 +28,8 @@ using namespace sofa::defaulttype;
 //----------------------------------------------------------------------------
 // Explicit instantiation.
 //----------------------------------------------------------------------------
-template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<Vec3Types,Rigid3Types>;
-template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<Rigid3Types,Rigid3Types>;
+template class SOFA_MISC_COLLISION_API TIntrCapsuleOBB<Vec3Types,Rigid3Types>;
+template class SOFA_MISC_COLLISION_API TIntrCapsuleOBB<Rigid3Types,Rigid3Types>;
 
 //----------------------------------------------------------------------------
 } // namespace sofa::component::collision

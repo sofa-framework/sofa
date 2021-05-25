@@ -27,8 +27,8 @@
 //
 // File Version: 5.0.1 (2010/10/01)
 
-#include <SofaBaseCollision/IntrUtility3.h>
-#include <SofaBaseCollision/IntrCapsuleOBB.h>
+#include <SofaMiscCollision/IntrUtility3.h>
+#include <SofaMiscCollision/IntrCapsuleOBB.h>
 
 namespace sofa::component::collision{
 

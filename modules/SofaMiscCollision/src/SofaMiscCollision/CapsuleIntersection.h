@@ -27,9 +27,9 @@
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/BaseIntTool.h>
-#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaMiscCollision/CapsuleModel.h>
+#include <SofaMiscCollision/BaseIntTool.h>
+#include <SofaMiscCollision/MeshIntTool.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.h>
 
 namespace sofa::component::collision

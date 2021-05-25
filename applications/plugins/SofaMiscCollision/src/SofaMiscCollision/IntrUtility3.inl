@@ -22,7 +22,7 @@
 // File modified from GeometricTools
 // http://www.geometrictools.com/
 #pragma once
-#include <SofaBaseCollision/IntrUtility3.h>
+#include <SofaMiscCollision/IntrUtility3.h>
 
 
 namespace sofa::component::collision{

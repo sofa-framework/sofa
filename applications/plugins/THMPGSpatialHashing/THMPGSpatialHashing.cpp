@@ -2,9 +2,8 @@
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 
-#include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

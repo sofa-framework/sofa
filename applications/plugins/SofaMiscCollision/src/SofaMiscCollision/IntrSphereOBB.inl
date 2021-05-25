@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseCollision/IntrSphereOBB.h>
+#include <SofaMiscCollision/IntrSphereOBB.h>
 
 namespace sofa::component::collision{
 

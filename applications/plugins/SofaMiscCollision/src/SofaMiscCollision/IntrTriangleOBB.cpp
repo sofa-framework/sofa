@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP
-#include <SofaMeshCollision/IntrTriangleOBB.inl>
+#include <SofaMiscCollision/IntrTriangleOBB.inl>
 
 namespace sofa::component::collision{
 
 //----------------------------------------------------------------------------
 // Explicit instantiation.
 //----------------------------------------------------------------------------
-template class SOFA_SOFAMESHCOLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+template class SOFA_MISC_COLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
 
 //----------------------------------------------------------------------------
 

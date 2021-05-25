@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP
-#include <SofaBaseCollision/CapsuleModel.inl>
+#include <SofaMiscCollision/CapsuleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision
@@ -37,7 +37,7 @@ int CapsuleCollisionModelClass = core::RegisterObject("Collision model which rep
 
         ;
 
-template class SOFA_SOFABASECOLLISION_API TCapsule<defaulttype::Vec3Types>;
-template class SOFA_SOFABASECOLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
+template class SOFA_MISC_COLLISION_API TCapsule<defaulttype::Vec3Types>;
+template class SOFA_MISC_COLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
 
 } // namespace sofa::component::collision

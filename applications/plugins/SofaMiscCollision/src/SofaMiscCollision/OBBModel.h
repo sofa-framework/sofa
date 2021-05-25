@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #pragma once
-#include <SofaBaseCollision/config.h>
+#include <SofaMiscCollision/config.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/CollisionModel.h>
@@ -270,8 +270,8 @@ using OBBModel [[deprecated("The OBBModel is now deprecated, please use OBBColli
 using OBB = TOBB<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_OBBMODEL_CPP)
-extern template class SOFA_SOFABASECOLLISION_API TOBB<defaulttype::Rigid3Types>;
-extern template class SOFA_SOFABASECOLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
+extern template class SOFA_MISC_COLLISION_API TOBB<defaulttype::Rigid3Types>;
+extern template class SOFA_MISC_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
 
 #endif
 

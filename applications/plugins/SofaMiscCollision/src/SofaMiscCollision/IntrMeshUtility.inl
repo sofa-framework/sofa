@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMeshCollision/IntrMeshUtility.h>
-#include <SofaBaseCollision/IntrUtility3.inl>
+#include <SofaMiscCollision/IntrMeshUtility.h>
+#include <SofaMiscCollision/IntrUtility3.inl>
 
 
 namespace sofa::component::collision

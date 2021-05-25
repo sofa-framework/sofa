@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/BaseIntTool.h>
+#include <SofaMiscCollision/BaseIntTool.h>
 
 namespace sofa::component::collision
 {
@@ -49,6 +49,6 @@ bool BaseIntTool::testIntersection(Cube &cube1, Cube &cube2,SReal alarmDist)
     return true;
 }
 
-class SOFA_SOFABASECOLLISION_API BaseIntTool;
+class SOFA_MISC_COLLISION_API BaseIntTool;
 
 } // namespace sofa::component::collision

@@ -24,12 +24,12 @@
 
 
 #pragma once
-#include <SofaBaseCollision/config.h>
+#include <SofaMiscCollision/config.h>
 
 #include <SofaBaseCollision/Intersector.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/CapsuleModel.h>
+#include <SofaMiscCollision/RigidCapsuleModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 
 namespace sofa::component::collision
 {
@@ -65,8 +65,8 @@ private:
 typedef TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types> IntrCapsuleOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_CPP)
-extern template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types>;
-extern template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_MISC_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_MISC_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types>;
 
 #endif
 

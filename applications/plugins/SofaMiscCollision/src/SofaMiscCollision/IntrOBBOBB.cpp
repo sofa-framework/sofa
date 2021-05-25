@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_INTROBBOBB_CPP
-#include <SofaBaseCollision/IntrOBBOBB.inl>
+#include <SofaMiscCollision/IntrOBBOBB.inl>
 
 namespace sofa::component::collision
 {
@@ -28,7 +28,7 @@ namespace sofa::component::collision
 //----------------------------------------------------------------------------
 // Explicit instantiation.
 //----------------------------------------------------------------------------
-template class SOFA_SOFABASECOLLISION_API TIntrOBBOBB<defaulttype::Rigid3Types>;
+template class SOFA_MISC_COLLISION_API TIntrOBBOBB<defaulttype::Rigid3Types>;
 
 //----------------------------------------------------------------------------
 } // namespace sofa::component::collision

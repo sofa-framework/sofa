@@ -22,8 +22,8 @@
 // File modified from GeometricTools
 // http://www.geometrictools.com/
 
-#include <SofaBaseCollision/IntrOBBOBB.h>
-#include <SofaBaseCollision/IntrUtility3.h>
+#include <SofaMiscCollision/IntrOBBOBB.h>
+#include <SofaMiscCollision/IntrUtility3.h>
 #include <limits>
 
 namespace sofa::component::collision{

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/OBBIntTool.h>
+#include <SofaMiscCollision/OBBIntTool.h>
 
 namespace sofa::component::collision
 {

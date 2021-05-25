@@ -23,10 +23,10 @@
 // http://www.geometrictools.com/
 
 #pragma once
-#include <SofaBaseCollision/config.h>
+#include <SofaMiscCollision/config.h>
 
 #include <SofaBaseCollision/Intersector.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 
 namespace sofa::component::collision
 {
@@ -89,7 +89,7 @@ private:
 typedef TIntrOBBOBB<sofa::defaulttype::RigidTypes> IntrOBBOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTROBBOBB_CPP)
-extern template class SOFA_SOFABASECOLLISION_API TIntrOBBOBB<defaulttype::Rigid3Types>;
+extern template class SOFA_MISC_COLLISION_API TIntrOBBOBB<defaulttype::Rigid3Types>;
 
 #endif
 

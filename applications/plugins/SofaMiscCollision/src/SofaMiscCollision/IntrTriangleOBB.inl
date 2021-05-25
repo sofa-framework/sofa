@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMeshCollision/IntrTriangleOBB.h>
+#include <SofaMiscCollision/IntrTriangleOBB.h>
 
 namespace sofa::component::collision
 {

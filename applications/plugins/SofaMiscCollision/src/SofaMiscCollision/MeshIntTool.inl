@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaMiscCollision/MeshIntTool.h>
 
 namespace sofa::component::collision
 {

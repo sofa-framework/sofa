@@ -19,8 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/OBBIntTool.h>
-#include <SofaBaseCollision/CapsuleIntTool.h>
+#include <SofaTest/PrimitiveCreation.h>
+#include <SofaTest/TestMessageHandler.h>
+
+#include <SofaMiscCollision/OBBIntTool.h>
+#include <SofaMiscCollision/CapsuleIntTool.h>
+
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
