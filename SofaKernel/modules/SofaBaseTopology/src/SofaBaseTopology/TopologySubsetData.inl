@@ -35,6 +35,7 @@ template <typename TopologyElementType, typename VecT>
 TopologySubsetData <TopologyElementType, VecT>::TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
     : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
     , m_usingMap(false)
+    , m_isConcerned(false)
 {
 
 }
@@ -115,6 +116,9 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
     const sofa::helper::vector<sofa::helper::vector<double> >& coefs)
 {
+    if (!this->getSparseDataStatus())
+        return;
+
     // Using default values
     container_type& data = *(this->beginEdit());
 
