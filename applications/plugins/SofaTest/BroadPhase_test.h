@@ -142,7 +142,7 @@ void randMoving(sofa::core::CollisionModel* cm,const sofa::defaulttype::Vector3 
 //CLASS FUNCTIONS
 
 struct CItCompare{
-    void rearrenge(const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2,sofa::core::CollisionElementIterator & e11,
+    void rearrange(const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2,sofa::core::CollisionElementIterator & e11,
                     sofa::core::CollisionElementIterator & e12,sofa::core::CollisionElementIterator & e21,sofa::core::CollisionElementIterator & e22)const{
         if(p1.first.getCollisionModel()->getLast() == p1.second.getCollisionModel()->getLast()){
             if(p1.first.getIndex() < p1.second.getIndex()){
@@ -185,7 +185,7 @@ struct CItCompare{
 
     bool operator()(const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2)const{
         sofa::core::CollisionElementIterator e11,e12,e21,e22;
-        rearrenge(p1,p2,e11,e12,e21,e22);
+        rearrange(p1,p2,e11,e12,e21,e22);
 
         if(e11.getCollisionModel()->getLast() != e21.getCollisionModel()->getLast())
             return e11.getCollisionModel()->getLast() < e21.getCollisionModel()->getLast();
@@ -201,7 +201,7 @@ struct CItCompare{
 
     bool same(const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2)const{
         sofa::core::CollisionElementIterator e11,e12,e21,e22;
-        rearrenge(p1,p2,e11,e12,e21,e22);
+        rearrange(p1,p2,e11,e12,e21,e22);
 
         return e11.getCollisionModel()->getLast() == e21.getCollisionModel()->getLast() && e12.getCollisionModel()->getLast() == e22.getCollisionModel()->getLast() &&
                 e11.getIndex() == e21.getIndex() && e12.getIndex() == e22.getIndex();
@@ -209,9 +209,8 @@ struct CItCompare{
 };
 
 template<class Detection>
-bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection){
-//    assert(goodBoundingTree((cm1)));
-//    assert(goodBoundingTree((cm2)));
+bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection)
+{
     cm1->setSelfCollision(true);
     cm2->setSelfCollision(true);
 
@@ -417,8 +416,8 @@ sofa::defaulttype::Vector3 randVect(const sofa::defaulttype::Vector3 & min,const
 }
 
 
-template <class BroadPhase>
-bool BroadPhaseTest<BroadPhase>::randTest(int /*seed*/, int nb1, int nb2, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max){
+template <class BroadPhase, class NarrowPhase>
+bool BroadPhaseTest<BroadPhase, NarrowPhase>::randTest(int /*seed*/, int nb1, int nb2, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max){
 
     std::vector<sofa::defaulttype::Vector3> firstCollision;
     std::vector<sofa::defaulttype::Vector3> secondCollision;
@@ -452,8 +451,8 @@ bool BroadPhaseTest<BroadPhase>::randTest(int /*seed*/, int nb1, int nb2, const 
 }
 
 
-template <class BroadPhase>
-bool BroadPhaseTest<BroadPhase>::randDense(){
+template <class BroadPhase, class NarrowPhase>
+bool BroadPhaseTest<BroadPhase, NarrowPhase>::randDense(){
     ////*!randTest(i,20,20,Vector3(-5,-5,-5),Vector3(5,5,5))*/
     for(int i = 0 ; i < 100 ; ++i){
         if(/*!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,40,20,sofa::defaulttype::Vector3(-5,-5,-5),sofa::defaulttype::Vector3(5,5,5))){
@@ -466,8 +465,8 @@ bool BroadPhaseTest<BroadPhase>::randDense(){
     return true;
 }
 
-template <class BroadPhase>
-bool BroadPhaseTest<BroadPhase>::randSparse(){
+template <class BroadPhase, class NarrowPhase>
+bool BroadPhaseTest<BroadPhase, NarrowPhase>::randSparse(){
     for(int i = 0 ; i < 1000 ; ++i){
         if(/*!randTest(i,1,1,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,2,1,sofa::defaulttype::Vector3(-5,-5,-5),sofa::defaulttype::Vector3(5,5,5))){
             //std::cout<<"FAIL seed number "<<i<<std::endl;
