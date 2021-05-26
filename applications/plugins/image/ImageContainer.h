@@ -197,7 +197,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
             else wimage->getCImgList().push_back(cimg_library::CImg<T>().load(fname.c_str()));
 
         const bool isImageEmpty = wimage->isEmpty();
-        msg_info_when(container, !isImageEmpty) << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")";
+        msg_info_when(!isImageEmpty, container) << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")";
         return !isImageEmpty;
     }
 
