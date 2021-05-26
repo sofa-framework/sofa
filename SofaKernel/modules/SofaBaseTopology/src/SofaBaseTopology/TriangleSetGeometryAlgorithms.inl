@@ -1635,7 +1635,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
 // Computes the intersection of the segment from point a to point b and the triangle indexed by t
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersections(bool is_entered,
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangle(bool is_entered,
     const sofa::defaulttype::Vec<3, double>& a,
     const sofa::defaulttype::Vec<3, double>& b,
     const TriangleID ind_t,

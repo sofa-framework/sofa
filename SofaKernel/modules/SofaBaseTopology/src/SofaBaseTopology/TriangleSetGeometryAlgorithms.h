@@ -244,12 +244,12 @@ public:
     * @param indices : indices of edges (belonging to ind_t) crossed by the vecteur AB
     * @param baryCoef : barycoef of intersections points on the edge
     */
-    bool computeSegmentTriangleIntersections(bool is_entered,
+    bool computeIntersectionsLineTriangle(bool is_entered,
         const sofa::defaulttype::Vec<3, double>& a,
         const sofa::defaulttype::Vec<3, double>& b,
         const TriangleID ind_t,
         sofa::helper::vector<PointID>& indices,
-        sofa::helper::vector<double>& baryCoef,
+        sofa::helper::vector<double>& vecBaryCoef,
         sofa::helper::vector<double>& vecCoordKmin) const;
 
     /** \brief Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
