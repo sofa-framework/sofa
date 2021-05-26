@@ -84,7 +84,7 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
         std::stringstream tmp;
         for(const auto& kv : m_requiredPlugins)
         {
-            tmp << indent << "<RequiredPlugin name='"<<kv.first<<"'/> <!-- Needed to use components [";
+            tmp << indent << "<RequiredPlugin name=\""<<kv.first<<"\"/> <!-- Needed to use components [";
             if (!kv.second.empty())
             {
                 std::copy(kv.second.begin(), kv.second.end() - 1, std::ostream_iterator<std::string>(tmp, ", "));
