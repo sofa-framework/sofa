@@ -118,13 +118,13 @@ public:
 
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2082", "This method has been removed as it is not part of the new topology change design.")
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method has been removed as it is not part of the new topology change design.")
     void addInputData(sofa::core::objectmodel::BaseData* _data) = delete;
 
-    SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2082", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
     const value_type& operator[](int i) const = delete;
 
-    SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2082", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
     value_type& operator[](int i) = delete;
 
 
