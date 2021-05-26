@@ -60,11 +60,7 @@ private:
 
 };
 
-std::vector<unsigned> params = {
-    { 1 },
-    { 2 },
-    { 3 }
-};
+std::vector<unsigned> params = { 1, 2, 3};
 
 /// run the tests
 TEST_P(MyBehaviorModel_test, dummyTest) {
