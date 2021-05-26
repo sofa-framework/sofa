@@ -1200,8 +1200,8 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     Vector3 a;
     Vector3 b;
 
-    unsigned int a_last = sofa::InvalidID;
-    unsigned int b_last = sofa::InvalidID;
+    sofa::Index a_last = sofa::InvalidID;
+    sofa::Index b_last = sofa::InvalidID;
     bool firstCut= true;
 
     std::vector<Vector3> coordinates;
