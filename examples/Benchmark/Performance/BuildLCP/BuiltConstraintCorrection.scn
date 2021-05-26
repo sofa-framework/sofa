@@ -1,12 +1,12 @@
 <Node name="root" dt="0.03">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaConstraint'/>
-    <RequiredPlugin pluginName='SofaExplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaMiscCollision'/>
-    <RequiredPlugin pluginName='SofaRigid'/> 
+    <RequiredPlugin name="SofaConstraint"/>
+    <RequiredPlugin name="SofaExplicitOdeSolver"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaLoader"/>
+    <RequiredPlugin name="SofaMeshCollision"/>
+    <RequiredPlugin name="SofaMiscCollision"/>
+    <RequiredPlugin name="SofaRigid"/> 
 
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <FreeMotionAnimationLoop initial_guess="true" displayTime="1" maxIt="100" />
