@@ -90,7 +90,7 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
                 std::copy(kv.second.begin(), kv.second.end() - 1, std::ostream_iterator<std::string>(tmp, ", "));
                 tmp << kv.second.back();
             }
-            tmp <<"]-->" << msgendl;
+            tmp <<"] -->" << msgendl;
         }
         msg_warning(this->getName())
                 << "This scene is using component defined in plugins but is not importing the required plugins." << msgendl
