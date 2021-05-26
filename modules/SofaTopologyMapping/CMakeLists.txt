@@ -42,11 +42,10 @@ set(SOURCE_FILES
     ${SOFATOPOLOGYMAPPING_SRC}/initSofaTopologyMapping.cpp
 )
 
-sofa_find_package(SofaGeneralSimpleFem REQUIRED)
-sofa_find_package(SofaGeneralTopology REQUIRED)
+sofa_find_package(SofaBaseTopology REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGeneralTopology SofaGeneralSimpleFem)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

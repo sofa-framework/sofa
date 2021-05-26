@@ -20,17 +20,5 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralSimpleFem/config.h>
 
-namespace sofa::component::container
-{
-
-class PoissonContainer : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(PoissonContainer,sofa::core::objectmodel::BaseObject);
-
-    virtual double getPoisson(sofa::Index index) = 0;
-};
-
-} // namespace sofa::component::container
+#error "PoissonContainer has been removed in v21.06 (PR2099)."
