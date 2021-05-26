@@ -167,7 +167,7 @@ public:
 
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2085", "This method has been removed as it is not part of the new topology change design.")
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed as it is not part of the new topology change design.")
     bool registerTopology() = delete;
 
 protected:
