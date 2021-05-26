@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	 name="Root"  dt="0.02"  gravity="0 0 -9.81" >
+    <RequiredPlugin name='SofaMiscCollision'/>
 	<VisualStyle name="displayFlags"  displayFlags="showAll" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceDetection name="Detection" />

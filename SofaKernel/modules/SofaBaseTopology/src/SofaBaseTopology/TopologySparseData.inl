@@ -119,6 +119,8 @@ void TopologySparseData <TopologyElementType, VecT>::add(const sofa::helper::vec
     const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
     const sofa::helper::vector< AncestorElem >& ancestorElems)
 {
+    SOFA_UNUSED(elems);
+    SOFA_UNUSED(ancestorElems);
     this->add(index.size(), ancestors, coefs);
 }
 

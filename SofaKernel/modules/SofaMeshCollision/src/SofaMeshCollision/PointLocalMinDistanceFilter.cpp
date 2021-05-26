@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaMeshCollision/LineModel.h>
@@ -256,7 +256,7 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*
     sofa::core::topology::BaseMeshTopology * bmt = pLMDFilter->bmt; //getContext()->getMeshTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(pLMDFilter->getContext()->getMechanicalState());
+    auto*  mstateVec3d= dynamic_cast<core::behavior::MechanicalState<sofa::defaulttype::Vec3Types>*>(pLMDFilter->getContext()->getMechanicalState());
     if(pLMDFilter->isRigid())
     {
         /////// TODO : template de la classe

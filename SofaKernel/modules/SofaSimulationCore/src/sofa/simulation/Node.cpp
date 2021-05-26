@@ -80,37 +80,34 @@ Node::Node(const std::string& name)
     , child(initLink("child", "Child nodes"))
     , object(initLink("object","All objects attached to this node"))
 
-    , animationManager(initLink("animationLoop","The AnimationLoop attached to this node (only valid for root node)"))
-    , visualLoop(initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
-
     , behaviorModel(initLink("behaviorModel", "The BehaviorModel attached to this node (only valid for root node)"))
     , mapping(initLink("mapping", "The (non-mechanical) Mapping(s) attached to this node (only valid for root node)"))
 
     , solver(initLink("odeSolver", "The OdeSolver(s) attached to this node (controlling the mechanical time integration of this branch)"))
     , constraintSolver(initLink("constraintSolver", "The ConstraintSolver(s) attached to this node"))
     , linearSolver(initLink("linearSolver", "The LinearSolver(s) attached to this node"))
-    , topology(initLink("topology", "The Topology attached to this node"))
-    , meshTopology(initLink("meshTopology", "The MeshTopology / TopologyContainer attached to this node"))
     , topologyObject(initLink("topologyObject", "The topology-related objects attached to this node"))
-    , state(initLink("state", "The State attached to this node (storing vectors such as position, velocity)"))
-    , mechanicalState(initLink("mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"))
-    , mechanicalMapping(initLink("mechanicalMapping", "The MechanicalMapping attached to this node"))
-    , mass(initLink("mass", "The Mass attached to this node"))
     , forceField(initLink("forceField", "The (non-interaction) ForceField(s) attached to this node"))
     , interactionForceField(initLink("interactionForceField", "The InteractionForceField(s) attached to this node"))
     , projectiveConstraintSet(initLink("projectiveConstraintSet", "The ProjectiveConstraintSet(s) attached to this node"))
     , constraintSet(initLink("constraintSet", "The ConstraintSet(s) attached to this node"))
     , contextObject(initLink("contextObject", "The ContextObject(s) attached to this node"))
     , configurationSetting(initLink("configurationSetting", "The ConfigurationSetting(s) attached to this node"))
-
     , shaders(initLink("shaders", "The shaders attached to this node"))
     , visualModel(initLink("visualModel", "The VisualModel(s) attached to this node"))
     , visualManager(initLink("visualManager", "The VisualManager(s) attached to this node"))
-
     , collisionModel(initLink("collisionModel", "The CollisionModel(s) attached to this node"))
-    , collisionPipeline(initLink("collisionPipeline", "The collision Pipeline attached to this node"))
-
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
+
+    , animationManager(initLink("animationLoop","The AnimationLoop attached to this node (only valid for root node)"))
+    , visualLoop(initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
+    , topology(initLink("topology", "The Topology attached to this node"))
+    , meshTopology(initLink("meshTopology", "The MeshTopology / TopologyContainer attached to this node"))
+    , state(initLink("state", "The State attached to this node (storing vectors such as position, velocity)"))
+    , mechanicalState(initLink("mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"))
+    , mechanicalMapping(initLink("mechanicalMapping", "The MechanicalMapping attached to this node"))
+    , mass(initLink("mass", "The Mass attached to this node"))
+    , collisionPipeline(initLink("collisionPipeline", "The collision Pipeline attached to this node"))
 
     , debug_(false)
     , initialized(false)
@@ -605,11 +602,13 @@ bool Node::doAddObject(BaseObject::SPtr sobj)
 /// Remove an object
 bool Node::doRemoveObject(BaseObject::SPtr sobj)
 {
+    dmsg_warning_when(sobj == nullptr) << "Trying to remove a nullptr object";
+
     this->clearObjectContext(sobj);
     object.remove(sobj);
     BaseObject* obj = sobj.get();
 
-    if( !obj->removeInNode( this ) )
+    if(obj != nullptr && !obj->removeInNode( this ) )
         unsorted.remove(obj);
     return true;
 }

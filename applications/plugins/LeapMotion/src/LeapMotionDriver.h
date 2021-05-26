@@ -29,8 +29,8 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/helper/gl/glText.inl>
+#include <sofa/gl/BasicShapes.h>
+#include <sofa/gl/glText.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>

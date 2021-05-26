@@ -19,25 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_CONFIG_H
-#define SOFA_HELPER_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
-#cmakedefine01 SOFAHELPER_HAVE_BOOST
-#cmakedefine01 SOFAHELPER_HAVE_BOOST_THREAD
-#cmakedefine01 SOFAHELPER_HAVE_BOOST_SYSTEM
-#cmakedefine01 SOFAHELPER_HAVE_BOOST_FILESYSTEM
+#cmakedefine01 SOFA_HELPER_HAVE_BOOST
+#cmakedefine01 SOFA_HELPER_HAVE_BOOST_THREAD
+#cmakedefine01 SOFA_HELPER_HAVE_BOOST_FILESYSTEM
 
-#cmakedefine01 SOFAHELPER_HAVE_OPENGL
+// DEPRECATED since v21.06
+// will be removed at v21.12
+#define SOFAHELPER_HAVE_BOOST = @SOFA_HELPER_HAVE_BOOST@;
+#define SOFAHELPER_HAVE_BOOST_THREAD = @SOFA_HELPER_HAVE_BOOST_THREAD@;
+#define SOFAHELPER_HAVE_BOOST_FILESYSTEM = @SOFA_HELPER_HAVE_BOOST_FILESYSTEM@;
 
-#cmakedefine01 SOFAHELPER_HAVE_GLEW
-
-#ifdef SOFA_BUILD_HELPER
-#  define SOFA_TARGET SofaHelper
+#ifdef SOFA_BUILD_SOFA_HELPER
+#  define SOFA_TARGET @PROJECT_NAME@
 #  define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 #endif

@@ -26,8 +26,8 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/gl/template.h>
+#include <sofa/gl/Texture.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <SofaOpenglVisual/OglShader.h>
 #include <SofaOpenglVisual/OglTexture.h>

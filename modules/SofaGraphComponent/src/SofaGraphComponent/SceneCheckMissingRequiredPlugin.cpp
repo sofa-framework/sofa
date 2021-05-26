@@ -80,7 +80,7 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
         std::stringstream tmp;
         for(auto& kv : m_requiredPlugins)
         {
-            tmp << "<RequiredPlugin pluginName='"<<kv.first<<"'/> <!-- Needed to use components [";
+            tmp << "<RequiredPlugin name='"<<kv.first<<"'/> <!-- Needed to use components [";
             for(auto& name : kv.second)
             {
                 tmp << name << ", ";

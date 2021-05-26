@@ -1,6 +1,9 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>

@@ -148,10 +148,10 @@ public:
     const helper::visual::Transformation& sceneTransform() const { return m_sceneTransform; }
 
     //[[deprecated("frameBufferObject in DrawTool is removed from VisualParam, use your rendering API instead.")]]
-    //helper::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
+    //sofa::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
 
     //[[deprecated("frameBufferObject in DrawTool is removed from VisualParam, use your rendering API instead.")]]
-    //helper::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
+    //sofa::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
 
     bool isSupported(unsigned int api) const
     {
@@ -176,7 +176,7 @@ protected:
     Pass                                m_pass;
     DisplayFlags                        m_displayFlags;
     mutable helper::visual::DrawTool*   m_drawTool;
-    //mutable helper::gl::FrameBufferObject*	m_boundFrameBuffer;
+    //mutable sofa::gl::FrameBufferObject*	m_boundFrameBuffer;
     /// Ids of position vector
     ConstMultiVecCoordId m_x;
     /// Ids of velocity vector

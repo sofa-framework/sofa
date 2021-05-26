@@ -116,7 +116,7 @@ public:
         using CudaSphereCollisionModel = sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>;
 
         sofa::component::collision::NewProximityIntersection::init();
-        intersectors.add<CudaSphereCollisionModel, CudaSphereCollisionModel,   DiscreteIntersection>(this);
+        intersectors.add<CudaSphereCollisionModel, CudaSphereCollisionModel, NewProximityIntersection>(this);
         RayDiscreteIntersection* rayIntersector = new RayDiscreteIntersection(this, false);
         intersectors.add<RayCollisionModel,        CudaSphereCollisionModel,   RayDiscreteIntersection>(rayIntersector);
         MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);

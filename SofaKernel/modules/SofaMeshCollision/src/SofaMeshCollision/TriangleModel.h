@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 #include <SofaMeshCollision/config.h>
-#include <sofa/core/fwd.h>
 
-#include <sofa/core/CollisionModel.h>
-#include <SofaBaseTopology/TopologyData.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/fwd.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/core/VecId.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa::component::collision
 {

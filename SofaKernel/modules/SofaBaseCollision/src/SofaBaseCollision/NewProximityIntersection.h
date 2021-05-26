@@ -33,15 +33,24 @@ public:
     SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
 
     Data<bool> useLineLine; ///< Line-line collision detection enabled
-protected:
-    NewProximityIntersection();
-public:
 
     typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
 
     void init() override;
 
     static inline int doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id);
+
+
+    bool testIntersection(Cube& cube1, Cube& cube2);
+    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
+
+    template<typename SphereType1, typename SphereType2>
+    bool testIntersection(SphereType1& sph1, SphereType2& sph2);
+    template<typename SphereType1, typename SphereType2>
+    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts);
+
+protected:
+    NewProximityIntersection();
 
 };
 
