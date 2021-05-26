@@ -303,17 +303,6 @@ public:
     */
     virtual std::list<const TopologyChange *>::const_iterator endStateChange() const;
 
-    /** \brief Adds a TopologyHandler to the list.
-    */
-    virtual void addTopologyHandler(TopologyHandler* _TopologyHandler);
-
-    /** \brief Provides an iterator on the first element in the list of TopologyHandler objects.
-    */
-    virtual std::list<TopologyHandler *>::const_iterator beginTopologyHandler() const;
-
-    /** \brief Provides an iterator on the last element in the list of TopologyHandler objects.
-    */
-    virtual std::list<TopologyHandler *>::const_iterator endTopologyHandler() const;
     /// @}
 
     // functions returning border elements. To be moved in a mapping.
@@ -323,6 +312,16 @@ public:
 
     virtual const sofa::helper::vector <PointID>& getPointsOnBorder();
 
+
+    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed as it is not part of the new topology change design.")
+    std::list<TopologyHandler*>::const_iterator beginTopologyHandler() const = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed as it is not part of the new topology change design.")
+    std::list<TopologyHandler*>::const_iterator endTopologyHandler() const = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed from this Base class as it is common to static topology and is now in TopologyContainer.")
+    void addTopologyHandler(TopologyHandler* _TopologyHandler) = delete;
 protected:
 
     sofa::core::objectmodel::DataFileName fileTopology;

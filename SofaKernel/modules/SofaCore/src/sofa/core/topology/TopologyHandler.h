@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/DataEngine.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/fwd.h>
 
@@ -38,7 +39,7 @@ namespace topology
 class SOFA_CORE_API TopologyHandler : public sofa::core::objectmodel::DDGNode
 {
 protected:
-    TopologyHandler() {}
+    TopologyHandler();
 
 public:
     virtual void handleTopologyChange() {}
@@ -46,9 +47,6 @@ public:
     void update() override;
 
 public:
-    // really need to be a Data??
-    Data <std::list<const TopologyChange *> >m_changeList;
-
 
     virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize);
 
@@ -162,13 +160,23 @@ public:
     void setNamePrefix(const std::string& s) { m_prefix = s; }
     std::string getName() { return m_prefix + m_data_name; }
 
-    virtual bool registerTopology();
+    /** Function to link the topological Data with the engine and the current topology. And init everything.
+    * This function should be used at the end of the all declaration link to this Data while using it in a component.
+    */
     virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
+
+
+    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed as it is not part of the new topology change design.")
+    bool registerTopology() = delete;
+
 protected:
     /// use to define engine name.
     std::string m_prefix;
     /// use to define data handled name.
     std::string m_data_name;
+
+    sofa::core::topology::TopologyContainer* m_topology;
 };
 
 } // namespace topology
