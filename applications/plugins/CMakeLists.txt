@@ -2,9 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 find_package(SofaFramework)
 
-sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON) # Contains DefaultCollisionGroupManager
-
-# SofaMiscCollision needs to be after SofaMiscCollision, as it depends on it
+# SofaTest needs to be after SofaMiscCollision, as it depends on it
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     # Library used to write high level tests involving many components.
     add_subdirectory(SofaTest)
