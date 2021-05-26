@@ -23,10 +23,7 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 Visitor::Visitor(const core::ExecParams* p)
@@ -38,9 +35,7 @@ Visitor::Visitor(const core::ExecParams* p)
 #endif
 }
 
-Visitor::~Visitor()
-{
-}
+Visitor::~Visitor() = default;
 
 void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool precomputedOrder)
 {
@@ -54,9 +49,7 @@ bool Visitor::testTags(core::objectmodel::BaseObject* obj)
 {
     if(subsetsToManage.empty())
         return true;
-    if (obj->getTags().includes(subsetsToManage)) // all tags in subsetsToManage must be included in the list of tags of the object
-        return true;
-    return false;
+    return obj->getTags().includes(subsetsToManage); // all tags in subsetsToManage must be included in the list of tags of the object
 }
 
 
@@ -293,19 +286,24 @@ void Visitor::end(simulation::Visitor::VisitorContext* vc, core::objectmodel::Ba
     end(vc->node, obj, t0);
 }
 
-#ifdef SOFA_VERBOSE_TRAVERSAL
 void Visitor::debug_write_state_before( core::objectmodel::BaseObject* obj )
 {
     if( dynamic_cast<VisualVisitor*>(this) ) return;
     std::stringstream tmp;
-    tmp<<"Visitor "<<getClassName()<<" enter component "<<obj->getName();
-    using core::behavior::BaseMechanicalState;
-    if( BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
+    tmp << "Visitor " << getClassName() << " enter component " << obj->getName();
+    if( core::behavior::BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
-        tmp<<", state:\nx= "; dof->writeX(tmp);
-        tmp<<"\nv= ";        dof->writeV(tmp);
-        tmp<<"\ndx= ";       dof->writeDx(tmp);
-        tmp<<"\nf= ";        dof->writeF(tmp);
+        tmp<<", state:\nx= ";
+        dof->writeVec(core::VecId::position(), tmp);
+
+        tmp<<"\nv= ";
+        dof->writeVec(core::VecId::velocity(), tmp);
+
+        tmp<<"\ndx= ";
+        dof->writeVec(core::VecId::dx(), tmp);
+
+        tmp<<"\nf= ";
+        dof->writeVec(core::VecId::force(), tmp);
     }
     dmsg_info("Visitor(debug)") << tmp.str() ;
 }
@@ -314,20 +312,23 @@ void Visitor::debug_write_state_after( core::objectmodel::BaseObject* obj )
 {
     if( dynamic_cast<VisualVisitor*>(this) ) return;
     std::stringstream tmp ;
-    tmp<<"Visitor "<<getClassName()<<" leave component "<<obj->getName();
-    using core::behavior::BaseMechanicalState;
-    if( BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
+    tmp << "Visitor " << getClassName() << " leave component " << obj->getName();
+    if( core::behavior::BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
-        tmp<<", state:\nx= "; dof->writeX(tmp);
-        tmp<<"\nv= ";        dof->writeV(tmp);
-        tmp<<"\ndx= ";       dof->writeDx(tmp);
-        tmp<<"\nf= ";        dof->writeF(tmp);
+        tmp<<", state:\nx= ";
+        dof->writeVec(core::VecId::position(), tmp);
+
+        tmp<<"\nv= ";
+        dof->writeVec(core::VecId::velocity(), tmp);
+
+        tmp<<"\ndx= ";
+        dof->writeVec(core::VecId::dx(), tmp);
+
+        tmp<<"\nf= ";
+        dof->writeVec(core::VecId::force(), tmp);
     }
-    dmsg_info() << tmp.str() ;
+    dmsg_info("Visitor(debug)") << tmp.str() ;
 }
-#endif
 
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::simulation
 
