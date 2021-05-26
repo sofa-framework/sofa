@@ -73,28 +73,9 @@ public:
     /// To create topological engine link to this Data. Pointer to current topology is needed.
     void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine);
 
-    /// Allow to add additionnal dependencies to others Data.
-    void addInputData(sofa::core::objectmodel::BaseData* _data);
-
     /// Function to link the topological Data with the engine and the current topology. And init everything.
     /// This function should be used at the end of the all declaration link to this Data while using it in a component.
     void registerTopologicalData();
-
-
-    const value_type& operator[](int i) const
-    {
-        const container_type& data = *(this->getValue());
-        const value_type& result = data[i];
-        return result;
-    }
-
-    value_type& operator[](int i)
-    {
-        container_type& data = *(this->beginEdit());
-        value_type& result = data[i];
-        this->endEdit();
-        return result;
-    }
 
 
     /// Link Data to topology arrays
@@ -133,6 +114,18 @@ public:
 
     /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
     virtual void removeOnMovedPosition(const sofa::helper::vector<Index>& indices);
+
+
+
+    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
+    SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2082", "This method has been removed as it is not part of the new topology change design.")
+    void addInputData(sofa::core::objectmodel::BaseData* _data) = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2082", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
+    const value_type& operator[](int i) const = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2082", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
+    value_type& operator[](int i) = delete;
 
 
 protected:
