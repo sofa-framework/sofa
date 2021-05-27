@@ -27,13 +27,13 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <cmath>
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <cmath>
 #include <sofa/gl/gl.h>
 #include <sofa/gl/glu.h>
 #include <sofa/gui/BaseGUI.h>

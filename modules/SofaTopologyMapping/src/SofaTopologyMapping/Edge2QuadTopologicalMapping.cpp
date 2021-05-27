@@ -34,10 +34,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <cmath>
-#include <sofa/defaulttype/Vec.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -65,24 +63,34 @@ Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
     , d_focalAxis( initData(&d_focalAxis, Vec(0,0,1), "focalAxis", "In case of ellipses"))
     , d_edgeList(initData(&d_edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
     , d_flipNormals(initData(&d_flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
-    , m_radiusContainer(nullptr)
 {
 }
 
 void Edge2QuadTopologicalMapping::init()
 {
-    double rho = d_radius.getValue();
-    if (!d_radius.isSet())
-    {
-        this->getContext()->get(m_radiusContainer);
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 
-        if(!m_radiusContainer)
-            msg_info() << "No radius defined";
+    if (!d_radius.isSet() && !d_radiusFocal.isSet())
+    {
+        msg_error() << "No radius (neither radius nor radiusFocal) defined";
+        return;
     }
+
+    if (d_radius.isSet() && d_radius.getValue() < std::numeric_limits<double>::min())
+    {
+        msg_error() << "Radius is zero or negative";
+        return;
+    }
+    else if (d_radiusFocal.isSet() && d_radiusFocal.getValue() < std::numeric_limits<double>::min())
+    {
+        msg_error() << "Focal Radius is zero or negative";
+        return;
+    }
+    double rho = d_radius.getValue();
 
     bool ellipse = false;
     double rhoFocal;
-    if (d_radiusFocal.isSet() && d_radiusFocal.getValue()>0.)
+    if (d_radiusFocal.isSet())
     {
         ellipse = true;
         rhoFocal = d_radiusFocal.getValue();
@@ -162,8 +170,6 @@ void Edge2QuadTopologicalMapping::init()
 
                     for(unsigned int j=0; j<N; ++j)
                     {
-                        if(m_radiusContainer) rho = m_radiusContainer->getPointRadius(j);
-
                         Vec x;
                         if(ellipse){
                             x = t + Y*cos((Real) (2.0*j*M_PI/N))*((Real) rho) + Z*sin((Real) (2.0*j*M_PI/N))*((Real) rhoFocal);
@@ -261,6 +267,8 @@ void Edge2QuadTopologicalMapping::init()
 
             // Need to fully init the target topology
             to_tstm->init();
+
+            d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
 
     }
@@ -274,6 +282,8 @@ Index Edge2QuadTopologicalMapping::getFromIndex(Index ind)
 
 void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 {
+    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
 
     unsigned int N = d_nbPointsOnEachCircle.getValue();
 

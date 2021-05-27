@@ -43,7 +43,7 @@ protected:
     ~OglOITShader() override;
 
 public:
-    helper::gl::GLSLShader* accumulationShader();
+    sofa::gl::GLSLShader* accumulationShader();
 
 public:
     static const std::string PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS;

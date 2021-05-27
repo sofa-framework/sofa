@@ -223,7 +223,7 @@ protected:
     */
     void propagateTopologicalChanges() override;  // DEPRECATED
 
-    /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
+    /// \brief function to propagate topological change events by parsing the list of TopologyHandlers linked to this topology.
     /// TODO: temporary duplication of topological events (commented by default)
     virtual void propagateTopologicalEngineChanges();
 

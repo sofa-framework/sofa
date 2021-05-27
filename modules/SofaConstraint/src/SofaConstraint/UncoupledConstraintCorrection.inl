@@ -23,10 +23,9 @@
 #include <SofaConstraint/UncoupledConstraintCorrection.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
-
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -164,7 +163,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 
             if (_topology != nullptr)
             {
-                compliance.createTopologicalEngine(_topology);
+                compliance.createTopologyHandler(_topology);
                 compliance.registerTopologicalData();
             }
         }

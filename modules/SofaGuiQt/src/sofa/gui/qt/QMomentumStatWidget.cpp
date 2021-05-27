@@ -24,6 +24,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetMomentumVisitor.h>
 
 namespace sofa::gui::qt
 {
@@ -37,7 +38,7 @@ QMomentumStatWidget::QMomentumStatWidget( QWidget* parent, simulation::Node* nod
     setCurve( 4, "Angular Y", Qt::magenta );
     setCurve( 5, "Angular Z", Qt::yellow );
 
-    m_momentumVisitor = new simulation::MechanicalGetMomentumVisitor(core::mechanicalparams::defaultInstance());
+    m_momentumVisitor = new simulation::mechanicalvisitor::MechanicalGetMomentumVisitor(core::mechanicalparams::defaultInstance());
 }
 
 QMomentumStatWidget::~QMomentumStatWidget()

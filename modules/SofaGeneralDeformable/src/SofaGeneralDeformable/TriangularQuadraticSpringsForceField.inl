@@ -170,10 +170,10 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
         return;
     }
 
-    triangleInfo.createTopologicalEngine(m_topology,triangleHandler);
+    triangleInfo.createTopologyHandler(m_topology,triangleHandler);
     triangleInfo.registerTopologicalData();
 
-    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.registerTopologicalData();
 
     if (m_topology->getNbTriangles()==0)

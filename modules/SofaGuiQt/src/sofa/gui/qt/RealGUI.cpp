@@ -98,7 +98,6 @@ using sofa::simulation::SceneLoaderFactory;
 #include <QMessageBox>
 #include <QDockWidget>
 #include <QStatusBar>
-#include <QDockWidget>
 #include <QSettings>
 #include <QMimeData>
 #include <QCompleter>
@@ -133,10 +132,6 @@ using sofa::simulation::SimulationStopEvent;
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor;
 
-#include <sofa/helper/system/FileSystem.h>
-using sofa::helper::system::FileSystem;
-
-
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -147,7 +142,7 @@ using sofa::gui::qt::DocBrowser;
 
 using sofa::core::ExecParams;
 
-#include <boost/program_options.hpp>
+#include <sofa/gui/ArgumentParser.h>
 
 
 #ifdef SOFA_PML
@@ -818,7 +813,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 
     if( currentSimulation() ) this->unloadScene();
 
-    const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
+    const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();
     mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
     simulation::getSimulation()->init ( mSimulation.get() );

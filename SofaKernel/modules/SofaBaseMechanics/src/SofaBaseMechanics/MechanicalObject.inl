@@ -1209,24 +1209,24 @@ void MechanicalObject<DataTypes>::init()
 
 
 #if 0// SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    x0.createTopologicalEngine(l_topology);
+    x0.createTopologyHandler(l_topology);
     //x0.setCreateFunction(PointCreationFunction);
     //x0.setDestroyFunction(PointDestroyFunction);
     //x0.setCreateParameter( (void *) this );
     //x0.setDestroyParameter( (void *) this );
     x0.registerTopologicalData();
 
-    x.createTopologicalEngine(l_topology);
+    x.createTopologyHandler(l_topology);
     x.setCreateFunction(PointCreationFunction);
     x.setDestroyFunction(PointDestroyFunction);
     x.setCreateParameter( (void *) this );
     x.setDestroyParameter( (void *) this );
     x.registerTopologicalData();
 
-    v.createTopologicalEngine(l_topology);
+    v.createTopologyHandler(l_topology);
     v.registerTopologicalData();
 
-    f.createTopologicalEngine(l_topology);
+    f.createTopologyHandler(l_topology);
     f.registerTopologicalData();
 #endif
 

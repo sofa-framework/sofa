@@ -12,6 +12,12 @@
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
+
 using namespace sofa::core::objectmodel;
 using namespace sofa::core::behavior;
 using namespace sofa::simulation;
@@ -96,7 +102,7 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
     computeCollision();
 
 
-    simulation::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
+    MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
     this->gnode->execute(&beginVisitor);
 
     // solve the system with full contact
@@ -119,7 +125,7 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
     // solve the correction system
     m_solver->post_stabilization( sop, pos.id(), vel.id(), true, true );
 
-    simulation::MechanicalEndIntegrationVisitor endVisitor(params, dt);
+    MechanicalEndIntegrationVisitor endVisitor(params, dt);
     this->gnode->execute(&endVisitor);
 
     this->gnode->setTime ( startTime + dt );

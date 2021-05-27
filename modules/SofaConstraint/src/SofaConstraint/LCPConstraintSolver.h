@@ -65,11 +65,7 @@ public:
         , _directions(directions)
         , _areas(areas)
         , _cparams(params)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override
     {
@@ -93,11 +89,6 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalGetConstraintInfoVisitor";}
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 private:
     VecConstraintBlockInfo& _blocks;
     VecPersistentID& _ids;

@@ -21,10 +21,6 @@ list(APPEND HEADER_FILES
     ${SOFAGENERALSIMPLEFEM_SRC}/HexahedralFEMForceFieldAndMass.inl
     ${SOFAGENERALSIMPLEFEM_SRC}/HexahedronFEMForceFieldAndMass.h
     ${SOFAGENERALSIMPLEFEM_SRC}/HexahedronFEMForceFieldAndMass.inl
-    ${SOFAGENERALSIMPLEFEM_SRC}/LengthContainer.h
-    ${SOFAGENERALSIMPLEFEM_SRC}/PoissonContainer.h
-    ${SOFAGENERALSIMPLEFEM_SRC}/RadiusContainer.h
-    ${SOFAGENERALSIMPLEFEM_SRC}/StiffnessContainer.h
     ${SOFAGENERALSIMPLEFEM_SRC}/TetrahedralCorotationalFEMForceField.h
     ${SOFAGENERALSIMPLEFEM_SRC}/TetrahedralCorotationalFEMForceField.inl
     ${SOFAGENERALSIMPLEFEM_SRC}/TriangularFEMForceFieldOptim.h

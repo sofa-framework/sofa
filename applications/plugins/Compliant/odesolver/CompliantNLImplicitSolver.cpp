@@ -6,6 +6,17 @@
 #include <Compliant/utils/scoped.h>
 #include <Compliant/numericalsolver/KKTSolver.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeForceVisitor.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalVMultiOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVMultiOpVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeGeometricStiffness.h>
+using sofa::simulation::mechanicalvisitor::MechanicalComputeGeometricStiffness;
+
 using std::cerr;
 using std::endl;
 
@@ -131,13 +142,13 @@ public:
 #endif
 };
 
-class MechanicalMyComputeForceVisitor : public simulation::MechanicalComputeForceVisitor
+class MechanicalMyComputeForceVisitor : public simulation::mechanicalvisitor::MechanicalComputeForceVisitor
 {
     core::MultiVecDerivId lambdas;
      SReal invdt;
 public:
     MechanicalMyComputeForceVisitor(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res, core::MultiVecDerivId lambdas, SReal dt )
-        : simulation::MechanicalComputeForceVisitor(mparams,res,true,true)
+        : simulation::mechanicalvisitor::MechanicalComputeForceVisitor(mparams,res,true,true)
         , lambdas( lambdas )
         , invdt( -1.0/dt )
     {
@@ -309,7 +320,7 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, core::M
 
 
     // compute deltaV (propagated to mapped dofs)
-    simulation::MechanicalVMultiOpVisitor multivis( &sop.mparams(), velocity_ops );
+    MechanicalVMultiOpVisitor multivis( &sop.mparams(), velocity_ops );
     multivis.mapped = true; // propagating
     this->getContext()->executeVisitor( &multivis, true );
 
@@ -391,7 +402,7 @@ void CompliantNLImplicitSolver::compute_jacobian(SolverOperations sop)
 //    cerr<<"compute_jacobian, x = "; sop.vop.print(sop.mparams().x(),cerr); cerr<<endl;
 //    cerr<<"compute_jacobian, v = "; sop.vop.print(sop.mparams().v(),cerr); cerr<<endl;
 
-    simulation::MechanicalComputeGeometricStiffness gsvis( &sop.mparams(), core::VecDerivId::force() );
+    MechanicalComputeGeometricStiffness gsvis( &sop.mparams(), core::VecDerivId::force() );
     send( gsvis );
 
     // assemble system
@@ -430,7 +441,7 @@ void CompliantNLImplicitSolver::integrate( SolverOperations& sop, core::MultiVec
 
 void CompliantNLImplicitSolver::v_eq_all(const core::ExecParams* params, sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a) // v=a including mapped dofs
 {
-    simulation::MechanicalVOpVisitor vis( params, v, a );
+    MechanicalVOpVisitor vis( params, v, a );
     vis.mapped = true;
     this->getContext()->executeVisitor( &vis, true );
 }

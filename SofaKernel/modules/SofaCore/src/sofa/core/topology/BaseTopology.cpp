@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/topology/BaseTopology.h>
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 namespace sofa
 {
@@ -70,7 +70,7 @@ TopologyContainer::~TopologyContainer()
 {
     resetTopologyChangeList();
     resetStateChangeList();
-    resetTopologyEngineList();
+    resetTopologyHandlerList();
 }
 
 void TopologyContainer::init()
@@ -94,11 +94,11 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
     m_stateChangeList.endEdit();
 }
 
-void TopologyContainer::addTopologyEngine(TopologyEngine *_topologyEngine)
+void TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler)
 {
-    m_topologyEngineList.push_back(_topologyEngine);
-    m_topologyEngineList.back()->m_changeList.setParent(&this->m_changeList);
-    this->updateTopologyEngineGraph();
+    m_TopologyHandlerList.push_back(_TopologyHandler);
+    m_TopologyHandlerList.back()->m_changeList.setParent(&this->m_changeList);
+    this->updateTopologyHandlerGraph();
 }
 
 
@@ -122,14 +122,14 @@ std::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateC
     return (m_stateChangeList.getValue()).begin();
 }
 
-std::list<TopologyEngine *>::const_iterator TopologyContainer::endTopologyEngine() const
+std::list<TopologyHandler *>::const_iterator TopologyContainer::endTopologyHandler() const
 {
-    return m_topologyEngineList.end();
+    return m_TopologyHandlerList.end();
 }
 
-std::list<TopologyEngine *>::const_iterator TopologyContainer::beginTopologyEngine() const
+std::list<TopologyHandler *>::const_iterator TopologyContainer::beginTopologyHandler() const
 {
-    return m_topologyEngineList.begin();
+    return m_TopologyHandlerList.begin();
 }
 
 void TopologyContainer::resetTopologyChangeList()
@@ -158,16 +158,16 @@ void TopologyContainer::resetStateChangeList()
     m_stateChangeList.endEdit();
 }
 
-void TopologyContainer::resetTopologyEngineList()
+void TopologyContainer::resetTopologyHandlerList()
 {
-    for (std::list<TopologyEngine *>::iterator it=m_topologyEngineList.begin();
-            it!=m_topologyEngineList.end(); ++it)
+    for (std::list<TopologyHandler *>::iterator it=m_TopologyHandlerList.begin();
+            it!=m_TopologyHandlerList.end(); ++it)
     {
         //delete (*it);
         *it = nullptr;
     }
 
-    m_topologyEngineList.clear();
+    m_TopologyHandlerList.clear();
 }
 
 

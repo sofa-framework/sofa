@@ -38,6 +38,9 @@
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalIntegrationVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalIntegrationVisitor;
+
 #include <cstdlib>
 #include <cmath>
 
@@ -58,30 +61,37 @@ CollisionAnimationLoop::CollisionAnimationLoop(simulation::Node* _gnode)
 CollisionAnimationLoop::~CollisionAnimationLoop()
 {}
 
+void CollisionAnimationLoop::preCollisionComputation(const core::ExecParams *params)
+{
+    sofa::helper::ScopedAdvancedTimer timer("CollisionBeginEvent");
+    CollisionBeginEvent evBegin;
+    PropagateEventVisitor eventPropagation( params, &evBegin);
+    eventPropagation.execute(getContext());
+}
+
+void CollisionAnimationLoop::internalCollisionComputation(const core::ExecParams *params)
+{
+    sofa::helper::ScopedAdvancedTimer timer("CollisionVisitor");
+    CollisionVisitor act(params);
+    act.setTags(this->getTags());
+    act.execute(getContext());
+}
+
+void CollisionAnimationLoop::postCollisionComputation(const core::ExecParams *params)
+{
+    sofa::helper::ScopedAdvancedTimer timer("CollisionEndEvent");
+    CollisionEndEvent evEnd;
+    PropagateEventVisitor eventPropagation( params, &evEnd);
+    eventPropagation.execute(getContext());
+}
+
 void CollisionAnimationLoop::computeCollision(const core::ExecParams* params)
 {
     dmsg_info() <<"CollisionAnimationLoop::computeCollision()" ;
 
-    {
-        sofa::helper::ScopedAdvancedTimer timer("CollisionBeginEvent");
-        CollisionBeginEvent evBegin;
-        PropagateEventVisitor eventPropagation( params, &evBegin);
-        eventPropagation.execute(getContext());
-    }
-
-    {
-        sofa::helper::ScopedAdvancedTimer timer("CollisionVisitor");
-        CollisionVisitor act(params);
-        act.setTags(this->getTags());
-        act.execute(getContext());
-    }
-
-    {
-        sofa::helper::ScopedAdvancedTimer timer("CollisionEndEvent");
-        CollisionEndEvent evEnd;
-        PropagateEventVisitor eventPropagation( params, &evEnd);
-        eventPropagation.execute(getContext());
-    }
+    preCollisionComputation(params);
+    internalCollisionComputation(params);
+    postCollisionComputation(params);
 }
 
 void CollisionAnimationLoop::integrate(const core::ExecParams* params, SReal dt)

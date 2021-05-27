@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <SofaGui/initSofaGui.h>
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 
     bool showHelp = false;
     unsigned int idExample = 0;
-    ArgumentParser* argParser = new ArgumentParser(argc, argv);
+    auto* argParser = new sofa::gui::ArgumentParser(argc, argv);
     argParser->addArgument(
         boost::program_options::value<bool>(&showHelp)
         ->default_value(false)

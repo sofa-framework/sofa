@@ -31,6 +31,7 @@
 #include <SofaUserInteraction/RayTraceDetection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/collision/Intersection.h>
 #include <map>
 #include <queue>
 #include <stack>
@@ -60,7 +61,6 @@ RayTraceDetection ():bDraw (initData
                     "enable/disable display of results"))
 {
 }
-
 
 void RayTraceDetection::findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2)
 {
@@ -233,38 +233,6 @@ void RayTraceDetection::findPairsVolume (CubeCollisionModel * cm1, CubeCollision
 
     }
 
-}
-
-void RayTraceDetection::addCollisionModel (core::CollisionModel * cm)
-{
-    if (cm->empty ())
-        return;
-    for (sofa::helper::vector < core::CollisionModel * >::iterator it =
-            collisionModels.begin (); it != collisionModels.end (); ++it)
-    {
-        core::CollisionModel * cm2 = *it;
-        if (!cm->isSimulated() && !cm2->isSimulated())
-            continue;
-        if (!cm->canCollideWith (cm2))
-            continue;
-
-        bool swapModels = false;
-        core::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2, swapModels);
-        if (intersector == nullptr)
-            continue;
-
-        core::CollisionModel* cm1 = (swapModels?cm2:cm);
-        cm2 = (swapModels?cm:cm2);
-
-
-        // Here we assume a single root element is present in both models
-        if (intersector->canIntersect (cm1->begin (), cm2->begin ()))
-        {
-
-            cmPairs.push_back (std::make_pair (cm1, cm2));
-        }
-    }
-    collisionModels.push_back (cm);
 }
 
 void RayTraceDetection::addCollisionPair (const std::pair <

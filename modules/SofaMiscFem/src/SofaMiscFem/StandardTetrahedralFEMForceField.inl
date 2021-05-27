@@ -157,10 +157,10 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
         return;
     }
 
-    tetrahedronInfo.createTopologicalEngine(m_topology,tetrahedronHandler);
+    tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
     tetrahedronInfo.registerTopologicalData();
 
-    edgeInfo.createTopologicalEngine(m_topology);
+    edgeInfo.createTopologyHandler(m_topology);
     edgeInfo.registerTopologicalData();
 
     /** parse the parameter set */

@@ -10,7 +10,9 @@ set(HEADER_FILES
     ${SOFABASECOLLISION_SRC}/BaseContactMapper.h
     ${SOFABASECOLLISION_SRC}/BaseIntTool.h
     ${SOFABASECOLLISION_SRC}/BaseProximityIntersection.h
+    ${SOFABASECOLLISION_SRC}/BruteForceBroadPhase.h
     ${SOFABASECOLLISION_SRC}/BruteForceDetection.h
+    ${SOFABASECOLLISION_SRC}/BVHNarrowPhase.h
     ${SOFABASECOLLISION_SRC}/CapsuleIntTool.h
     ${SOFABASECOLLISION_SRC}/CapsuleIntTool.inl
     ${SOFABASECOLLISION_SRC}/CapsuleModel.h
@@ -33,6 +35,7 @@ set(HEADER_FILES
     ${SOFABASECOLLISION_SRC}/IntrUtility3.h
     ${SOFABASECOLLISION_SRC}/IntrUtility3.inl
     ${SOFABASECOLLISION_SRC}/MinProximityIntersection.h
+    ${SOFABASECOLLISION_SRC}/MirrorIntersector.h
     ${SOFABASECOLLISION_SRC}/NewProximityIntersection.h
     ${SOFABASECOLLISION_SRC}/NewProximityIntersection.inl
     ${SOFABASECOLLISION_SRC}/OBBIntTool.h
@@ -50,7 +53,9 @@ set(SOURCE_FILES
     ${SOFABASECOLLISION_SRC}/BaseContactMapper.cpp
     ${SOFABASECOLLISION_SRC}/BaseIntTool.cpp
     ${SOFABASECOLLISION_SRC}/BaseProximityIntersection.cpp
+    ${SOFABASECOLLISION_SRC}/BruteForceBroadPhase.cpp
     ${SOFABASECOLLISION_SRC}/BruteForceDetection.cpp
+    ${SOFABASECOLLISION_SRC}/BVHNarrowPhase.cpp
     ${SOFABASECOLLISION_SRC}/CapsuleIntTool.cpp
     ${SOFABASECOLLISION_SRC}/CapsuleModel.cpp
     ${SOFABASECOLLISION_SRC}/ContactListener.cpp

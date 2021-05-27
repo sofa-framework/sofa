@@ -49,14 +49,14 @@ void OglFluidModel<DataTypes>::init()
 template<class DataTypes>
 void OglFluidModel<DataTypes>::initVisual()
 {
-    m_spriteDepthFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteThicknessFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteNormalFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteBlurDepthHFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteBlurDepthVFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteBlurThicknessHFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteBlurThicknessVFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteShadeFBO = new helper::gl::FrameBufferObject(true, true, true);
+    m_spriteDepthFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteThicknessFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteNormalFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteBlurDepthHFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteBlurDepthVFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteBlurThicknessHFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteBlurThicknessVFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteShadeFBO = new sofa::gl::FrameBufferObject(true, true, true);
 
     const VecCoord& vertices = m_positions.getValue();
 
@@ -74,7 +74,7 @@ void OglFluidModel<DataTypes>::initVisual()
     m_spriteBlurThicknessVFBO->init(width, height);
     m_spriteShadeFBO->init(width, height);
 
-    if (!sofa::helper::gl::GLSLShader::InitGLSL())
+    if (!sofa::gl::GLSLShader::InitGLSL())
     {
         msg_error() << "InitGLSL failed, check your GPU setup (driver, etc)";
         return;

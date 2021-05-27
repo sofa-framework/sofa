@@ -49,7 +49,6 @@ namespace sofa::component::topology
 {
 class HexahedronSetTopologyModifier;
 
-
 /** a class that stores a set of hexahedra and provides access with adjacent quads, edges and vertices */
 class SOFA_SOFABASETOPOLOGY_API HexahedronSetTopologyContainer : public QuadSetTopologyContainer
 {
@@ -103,9 +102,6 @@ public:
     {
         return getHexahedronArray();
     }
-
-    /** \brief Get the Data which contains the array of hexahedra. */
-    Data< sofa::helper::vector<Hexahedron> >& getHexahedronDataArray() {return d_hexahedron;}
 
     /** \brief Get a hexahedron from its index.
      *
@@ -420,7 +416,7 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_hexahedron
-    void updateTopologyEngineGraph() override;
+    void updateTopologyHandlerGraph() override;
 
 
     /// Use a specific boolean @see m_hexahedronTopologyDirty in order to know if topology Data is dirty or not.
@@ -433,10 +429,10 @@ public:
 	/// force the creation of quads
 	Data<bool>  d_createQuadArray;
 
-protected:
-	/// provides the set of hexahedra.
+    /// provides the set of hexahedra.
     Data< sofa::helper::vector<Hexahedron> > d_hexahedron;
 
+protected:
     /// provides the set of edges for each hexahedron.
     sofa::helper::vector<EdgesInHexahedron> m_edgesInHexahedron;
 
@@ -457,7 +453,7 @@ protected:
     bool m_hexahedronTopologyDirty;
 
     /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;

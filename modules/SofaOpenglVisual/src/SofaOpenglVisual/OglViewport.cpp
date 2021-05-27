@@ -24,8 +24,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/helper/visual/Transformation.h>
+#include <sofa/gl/template.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/system/glu.h>
 #include <SofaBaseVisual/VisualStyle.h>
@@ -87,7 +87,7 @@ void OglViewport::initVisual()
     if (p_useFBO.getValue())
     {
         const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
-        fbo = std::unique_ptr<helper::gl::FrameBufferObject>(new helper::gl::FrameBufferObject());
+        fbo = std::unique_ptr<sofa::gl::FrameBufferObject>(new sofa::gl::FrameBufferObject());
         fbo->init(screenSize[0],screenSize[1]);
     }
 }
@@ -130,7 +130,7 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
         }
 
         cameraOrientation.normalize();
-        helper::gl::Transformation transform;
+        sofa::helper::visual::Transformation transform;
 
         cameraOrientation.buildRotationMatrix(transform.rotation);
         //cameraOrientation.writeOpenGlMatrix((SReal*) transform.rotation);
@@ -191,9 +191,9 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glLoadIdentity();
-        helper::gl::glMultMatrix((SReal *)transform.rotation);
+        sofa::gl::glMultMatrix((SReal *)transform.rotation);
 
-        helper::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
+        sofa::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
     }
 }
 
@@ -264,7 +264,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     }
     else
     {
-        helper::gl::Transformation transform;
+        sofa::helper::visual::Transformation transform;
         double zNear=1e10, zFar=-1e10;
 //        double fovy = 0;
 
@@ -341,9 +341,9 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glLoadIdentity();
-        helper::gl::glMultMatrix((SReal *)transform.rotation);
+        sofa::gl::glMultMatrix((SReal *)transform.rotation);
 
-        helper::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
+        sofa::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
 
         //gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2],0 ,0 ,0, cameraDirection[0], cameraDirection[1], cameraDirection[2]);
     }

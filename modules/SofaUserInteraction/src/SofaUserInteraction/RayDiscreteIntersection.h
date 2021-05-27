@@ -23,14 +23,13 @@
 #include <SofaUserInteraction/config.h>
 
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/helper/FnDispatcher.h>
+
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaUserInteraction/RayModel.h>
-#include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/DiscreteIntersection.h>
 
 namespace sofa::component::collision
@@ -48,9 +47,6 @@ public:
 
     template<class T> int computeIntersection(Ray&, TSphere<T>&, OutputVector*);
     int computeIntersection(Ray&, Triangle&, OutputVector*);
-
-    bool testIntersection(Ray& rRay, OBB& rOBB);
-    int computeIntersection(Ray& rRay, OBB& rOBB, OutputVector*);
 
 protected:
 

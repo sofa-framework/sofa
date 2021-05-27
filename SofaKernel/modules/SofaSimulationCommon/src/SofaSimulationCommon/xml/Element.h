@@ -42,7 +42,7 @@ public:
     virtual void setObject(typename Object::SPtr newObject);
 
     /// Get the associated object
-    core::objectmodel::Base* getObject() override;
+    sofa::core::objectmodel::Base* getObject() override;
 
     typedef helper::Factory< std::string, Object, Element<Object>*, typename Object::SPtr > Factory;
 };

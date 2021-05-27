@@ -1,10 +1,8 @@
-#include <sofa/simulation/Task.h>
-
+#include <sofa/simulation/CpuTask.h>
 
 namespace sofa
 {
-
-    // compute recursively the Fibonacci number for input N  O(~1.6 exp(N)) 
+    // compute recursively the Fibonacci number for input N  O(~1.6 exp(N))
     // this is implemented to test the task scheduler generating super lightweight tasks and not for performance
     class FibonacciTask : public simulation::CpuTask
     {

@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+
+#include <sofa/core/behavior/MechanicalState.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
@@ -207,7 +207,7 @@ void LineLocalMinDistanceFilter::init()
         m_pointInfo.endEdit();
 
         pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
-        m_pointInfo.createTopologicalEngine(bmt, pointInfoHandler);
+        m_pointInfo.createTopologyHandler(bmt, pointInfoHandler);
         m_pointInfo.registerTopologicalData();
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
@@ -215,7 +215,7 @@ void LineLocalMinDistanceFilter::init()
         m_lineInfo.endEdit();
 
         lineInfoHandler = new LineInfoHandler(this,&m_lineInfo);
-        m_lineInfo.createTopologicalEngine(bmt, lineInfoHandler);
+        m_lineInfo.createTopologyHandler(bmt, lineInfoHandler);
         m_lineInfo.registerTopologicalData();
     }
 }
@@ -230,7 +230,7 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*p
     sofa::core::topology::BaseMeshTopology * bmt = lLMDFilter->bmt; //getContext()->getTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
+    auto*  mstateVec3d= dynamic_cast<core::behavior::MechanicalState<sofa::defaulttype::Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
     if(mstateVec3d != nullptr)
     {
         pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
@@ -249,7 +249,7 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index /*ed
 
 
     /////// TODO : template de la classe
-    component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
+    auto*  mstateVec3d= dynamic_cast<core::behavior::MechanicalState<sofa::defaulttype::Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
     if(mstateVec3d != nullptr)
     {
         lInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());

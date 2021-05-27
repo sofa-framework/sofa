@@ -336,7 +336,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
             (const sofa::helper::vector<sofa::helper::vector<double> >)0
                                       );
 
-    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.linkToTriangleDataArray();
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();

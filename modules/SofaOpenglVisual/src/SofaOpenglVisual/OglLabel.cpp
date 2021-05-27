@@ -25,7 +25,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
 #include <string>
@@ -79,7 +78,7 @@ void OglLabel::parse(BaseObjectDescription *arg)
     msg_deprecated() << "Attribute color='contrast' is deprecated since Sofa 17.06.  " << msgendl
                      << "Using deprecated attributes may result in lower performance or un-expected behaviors" << msgendl
                      << "To remove this message you need to update your scene by replacing color='contrast' with "
-                        " selectConstrastingColor='true'" ;
+                        " selectContrastingColor='true'" ;
 
 }
 

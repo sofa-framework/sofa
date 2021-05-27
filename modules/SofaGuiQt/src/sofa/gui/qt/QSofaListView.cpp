@@ -32,7 +32,6 @@
 #include <SofaSimulationCommon/xml/BaseElement.h>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/cast.h>
-#include <sofa/simulation/Simulation.h>
 #include <QMenu>
 #include <QtGlobal> // version macro
 #include <QMessageBox>
@@ -263,11 +262,12 @@ void QSofaListView::expandNode(QTreeWidgetItem* item)
     if (!item) return;
     emit Lock(true);
     item->setExpanded ( true );
+
     for(int i=0 ; i<item->childCount() ; i++)
     {
         QTreeWidgetItem* child = item->child(i);
         child->setExpanded(true);
-        expandNode(item);
+        expandNode(child);
     }
 
     emit Lock(false);

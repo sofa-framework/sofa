@@ -211,12 +211,9 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
     helper::ReadAccessor<DataVecCoord> p1 = x;
     helper::ReadAccessor<DataVecCoord> p0 = *getExtPosition();
 
-    msg_info() << this->getName() << " P1 = " << p1.ref();
-    msg_info() << this->getName() << " P0 = " << p0.ref();
-    msg_info() << this->getName() << " F = " << f1.ref();
-
-    if (this->f_printLog.getValue())
-        msg_info() << "[" <<  this->getName() << "]: ";
+    msg_info() << "P1 = " << p1.ref();
+    msg_info() << "P0 = " << p0.ref();
+    msg_info() << "F = " << f1.ref();
 
     const VecReal& zeroLength = d_zeroLength.getValue();
     f1.resize(p1.size());

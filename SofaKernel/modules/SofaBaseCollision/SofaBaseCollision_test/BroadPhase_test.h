@@ -26,6 +26,9 @@
 #include <SofaGeneralMeshCollision/IncrSAP.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <SofaSimulationGraph/DAGNode.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+
+#include <SofaBaseCollision/OBBModel.h>
 
 #include <gtest/gtest.h>
 

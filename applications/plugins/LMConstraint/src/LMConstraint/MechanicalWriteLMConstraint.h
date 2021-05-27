@@ -37,11 +37,7 @@ public:
     MechanicalWriteLMConstraint(const sofa::core::ExecParams * params)
         : BaseMechanicalVisitor(params)
         , offset(0)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
 
     Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -70,11 +66,6 @@ public:
     {
         return false;
     }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 
 protected:
     unsigned int offset;

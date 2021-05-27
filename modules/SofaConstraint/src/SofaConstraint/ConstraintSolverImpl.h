@@ -83,11 +83,7 @@ public:
         : simulation::BaseMechanicalVisitor(params)
         , cparams(params)
         , m_v(v)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override
     {
@@ -106,12 +102,6 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalGetConstraintViolationVisitor";}
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 
 private:
     /// Constraint parameters

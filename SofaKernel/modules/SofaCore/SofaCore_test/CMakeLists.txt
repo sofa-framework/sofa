@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaCore_test)
 
 set(SOURCE_FILES
+    collision/NarrowPhaseDetection_test.cpp
     loader/MeshLoader_test.cpp
     objectmodel/AspectPool_test.cpp
     objectmodel/BaseClass_test.cpp

@@ -22,8 +22,23 @@
 #pragma once
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
-namespace sofa::component::linearsolver {
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintJacobianVisitor;
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorToBaseVectorVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetDimensionVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalGetDimensionVisitor;
+
+namespace sofa::component::linearsolver
+{
 
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
@@ -107,7 +122,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
     if (!this->frozen)
     {
         SReal dim = 0;
-        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(this->getContext());
+        simulation::mechanicalvisitor::MechanicalGetDimensionVisitor(mparams, &dim).execute(this->getContext());
         currentGroup->systemSize = Size(dim);
         currentGroup->matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
 
@@ -153,7 +168,7 @@ void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(double massFactor, double 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(core::MultiVecDerivId v)
 {
-    executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(core::execparams::defaultInstance(), v,
+    executeVisitor( MechanicalMultiVectorToBaseVectorVisitor(core::execparams::defaultInstance(), v,
                                                                          currentGroup->systemRHVector,
                                                                          &(currentGroup->matrixAccessor)) );
 }
@@ -164,7 +179,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(core::MultiVecDerivId 
     currentGroup->solutionVecId = v;
     if (!currentGroup->solutionVecId.isNull())
     {
-        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::execparams::defaultInstance(), v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+        executeVisitor( MechanicalMultiVectorToBaseVectorVisitor( core::execparams::defaultInstance(), v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
     }
 }
 
@@ -179,7 +194,7 @@ void MatrixLinearSolver<Matrix,Vector>::solveSystem()
     this->solve(*currentGroup->systemMatrix, *currentGroup->systemLHVector, *currentGroup->systemRHVector);
     if (!currentGroup->solutionVecId.isNull())
     {
-        executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::execparams::defaultInstance(), currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+        executeVisitor( MechanicalMultiVectorFromBaseVectorVisitor(core::execparams::defaultInstance(), currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
     }
 }
 
@@ -311,7 +326,7 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::
         return true;
     }
 
-    executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(cparams,j_local));
+    executeVisitor(MechanicalGetConstraintJacobianVisitor(cparams,j_local));
 
     return addJMInvJt(result,j_local,fact);
 }
@@ -326,8 +341,8 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
     /// lhs = M^-1 * rhs
     this->solve(*currentGroup->systemMatrix,*currentGroup->systemLHVector,*currentGroup->systemRHVector);
 
-    executeVisitor(simulation::MechanicalMultiVectorFromBaseVectorVisitor(cparams, dx, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
-    executeVisitor(simulation::MechanicalMultiVectorFromBaseVectorVisitor(cparams, cparams->lambda(), currentGroup->systemRHVector, &(currentGroup->matrixAccessor)));
+    executeVisitor(MechanicalMultiVectorFromBaseVectorVisitor(cparams, dx, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+    executeVisitor(MechanicalMultiVectorFromBaseVectorVisitor(cparams, cparams->lambda(), currentGroup->systemRHVector, &(currentGroup->matrixAccessor)));
 }
 
 template<class Matrix, class Vector>
@@ -340,7 +355,7 @@ void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* 
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::core::behavior::MultiVecDeriv force(&vop, core::VecDerivId::force() );
 
-    executeVisitor( simulation::MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
+    executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
 }
 
 

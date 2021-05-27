@@ -24,8 +24,6 @@
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
 #include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
-#include <SofaConstraint/LMDNewProximityIntersection.inl>
-#include <SofaConstraint/LMDNewProximityIntersection.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
@@ -37,8 +35,6 @@
 
 #include <iostream>
 #include <algorithm>
-
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::component::collision
 {

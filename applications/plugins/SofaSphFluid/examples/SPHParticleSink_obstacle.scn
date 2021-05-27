@@ -3,6 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/> 
     <RequiredPlugin name='SofaSphFluid' />
     <RequiredPlugin name='SofaExplicitOdeSolver'/>
+    <RequiredPlugin name='SofaLoader'/>
     <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideWireframe" />
 
     <DefaultPipeline depth="15" verbose="0" draw="0" />

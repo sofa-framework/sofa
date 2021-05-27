@@ -9,7 +9,7 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 namespace sofa
 {

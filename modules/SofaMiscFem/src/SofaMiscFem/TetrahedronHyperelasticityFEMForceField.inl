@@ -131,8 +131,7 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::~
 
 template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
 {
-    if (this->f_printLog.getValue())
-        msg_info() << "initializing TetrahedronHyperelasticityFEMForceField";
+    msg_info() << "initializing TetrahedronHyperelasticityFEMForceField";
 
     this->Inherited::init();
 
@@ -167,56 +166,48 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
 
 
     /** parse the input material name */
-    std::string material = d_materialName.getValue();
+    const std::string material = d_materialName.getValue();
     if (material=="ArrudaBoyce")
     {
         fem::BoyceAndArruda<DataTypes> *BoyceAndArrudaMaterial = new fem::BoyceAndArruda<DataTypes>;
         m_myMaterial = BoyceAndArrudaMaterial;
-        if (this->f_printLog.getValue())
-            msg_info()<<"The model is "<<material;
+        msg_info() << "The model is " << material;
     }
     else if (material=="StVenantKirchhoff")
     {
         fem::STVenantKirchhoff<DataTypes> *STVenantKirchhoffMaterial = new fem::STVenantKirchhoff<DataTypes>;
         m_myMaterial = STVenantKirchhoffMaterial;
-        if (this->f_printLog.getValue())
-            msg_info()<<"The model is "<<material;
+        msg_info() << "The model is " << material;
     }
     else if (material=="NeoHookean")
     {
         fem::NeoHookean<DataTypes> *NeoHookeanMaterial = new fem::NeoHookean<DataTypes>;
         m_myMaterial = NeoHookeanMaterial;
-        if (this->f_printLog.getValue())
-            msg_info()<<"The model is "<<material;
+        msg_info() << "The model is " << material;
     }
     else if (material=="MooneyRivlin")
     {
         fem::MooneyRivlin<DataTypes> *MooneyRivlinMaterial = new fem::MooneyRivlin<DataTypes>;
         m_myMaterial = MooneyRivlinMaterial;
-        if (this->f_printLog.getValue())
-            msg_info()<<"The model is "<<material;
+        msg_info() << "The model is " << material;
     }
     else if (material=="VerondaWestman")
     {
         fem::VerondaWestman<DataTypes> *VerondaWestmanMaterial = new fem::VerondaWestman<DataTypes>;
         m_myMaterial = VerondaWestmanMaterial;
-        if (this->f_printLog.getValue())
-            msg_info()<<"The model is "<<material;
+        msg_info() << "The model is " << material;
     }
-
     else if (material=="Costa")
     {
         fem::Costa<DataTypes> *CostaMaterial = new fem::Costa<DataTypes>;
         m_myMaterial = CostaMaterial;
-        if (this->f_printLog.getValue())
-            msg_info()<<"The model is "<<material;
+        msg_info() << "The model is " << material;
     }
     else if (material=="Ogden")
     {
         fem::Ogden<DataTypes> *OgdenMaterial = new fem::Ogden<DataTypes>;
         m_myMaterial = OgdenMaterial;
-        if (this->f_printLog.getValue())
-            msg_info()<<"The model is "<<material;
+        msg_info() << "The model is " << material;
     }
     else
     {
@@ -238,7 +229,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
 
     edgeInf.resize(m_topology->getNbEdges());
-    m_edgeInfo.createTopologicalEngine(m_topology);
+    m_edgeInfo.createTopologyHandler(m_topology);
 
     m_edgeInfo.registerTopologicalData();
 
@@ -260,7 +251,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     }
 
     /// set the call back function upon creation of a tetrahedron
-    m_tetrahedronInfo.createTopologicalEngine(m_topology,m_tetrahedronHandler);
+    m_tetrahedronInfo.createTopologyHandler(m_topology,m_tetrahedronHandler);
     m_tetrahedronInfo.registerTopologicalData();
 
     m_tetrahedronInfo.endEdit();

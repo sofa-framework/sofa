@@ -280,11 +280,11 @@ public:
     virtual void handleEvent( Event* );
 
     /// Handle topological Changes
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleTopologyChange() {}
 
     /// Handle topological Changes from a given Topology
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleTopologyChange(core::topology::Topology* t);
 
     ///@}

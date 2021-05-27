@@ -4,8 +4,8 @@ project(Sofa) # Cannot use VERSION with patch like "00"
 include(CMakeDependentOption)
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 20)
-set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_MAJOR 21)
+set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -52,7 +52,8 @@ else()
     set(DISABLE_PRECOMPILE_HEADERS ON)
 endif()
 
-## Change default install prefix
+## Change default install component and prefix
+set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME applications)
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif()
@@ -182,6 +183,10 @@ option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to Sofa
 add_subdirectory(extlibs)
 
 ### Main Sofa subdirectories
+
+# TODO: add an option once the sofa code has been converted
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
+
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
 

@@ -22,17 +22,17 @@
 #pragma once
 #include <sofa/type/config.h>
 
-#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 
 #include <ostream>
 #include <istream>
 #include <string>
-
+#include <cmath>
 
 namespace sofa::type
 {
 
-using sofa::type::stdtype::fixed_array ;
+using sofa::type::fixed_array ;
 
 
 #define RGBACOLOR_EQUALITY_THRESHOLD 1e-6
@@ -96,6 +96,8 @@ public:
             if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return true;
         return false;
     }
+
+    RGBAColor operator*(float f) const;
 
     friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
     friend SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;

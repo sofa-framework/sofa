@@ -72,8 +72,6 @@ using sofa::core::objectmodel::BaseNode ;
 using sofa::gui::BatchGUI;
 using sofa::gui::BaseGUI;
 
-#include <sofa/helper/logging/Messaging.h>
-
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
 
@@ -101,11 +99,11 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
 
-#include <boost/program_options.hpp>
+#include <sofa/gui/ArgumentParser.h>
 
 
 
-void addGUIParameters(ArgumentParser* argumentParser)
+void addGUIParameters(sofa::gui::ArgumentParser* argumentParser)
 {
     GUIManager::RegisterParameters(argumentParser);
 }
@@ -189,7 +187,7 @@ int main(int argc, char** argv)
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
-    ArgumentParser* argParser = new ArgumentParser(argc, argv);
+    sofa::gui::ArgumentParser* argParser = new sofa::gui::ArgumentParser(argc, argv);
     argParser->addArgument(
         boost::program_options::value<bool>(&showHelp)
         ->default_value(false)

@@ -22,8 +22,6 @@
 #include "SceneCheckerListener.h"
 
 #include <sofa/simulation/Node.h>
-#include <SofaGraphComponent/SceneCheckAPIChange.h>
-using sofa::simulation::scenechecking::SceneCheckAPIChange;
 #include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
 using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
 #include <SofaGraphComponent/SceneCheckDuplicatedName.h>

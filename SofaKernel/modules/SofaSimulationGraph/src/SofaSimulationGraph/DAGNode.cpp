@@ -58,7 +58,7 @@ protected:
 GetDownObjectsVisitor::GetDownObjectsVisitor(const sofa::core::objectmodel::ClassInfo& class_info,
                                              DAGNode::GetObjectsCallBack& container,
                                              const sofa::core::objectmodel::TagSet& tags)
-    : Visitor( core::execparams::defaultInstance() )
+    : Visitor( sofa::core::execparams::defaultInstance() )
     , _class_info(class_info)
     , _container(container)
     , _tags(tags)
@@ -110,7 +110,7 @@ GetUpObjectsVisitor::GetUpObjectsVisitor(DAGNode* searchNode,
                                          const sofa::core::objectmodel::ClassInfo& class_info,
                                          DAGNode::GetObjectsCallBack& container,
                                          const sofa::core::objectmodel::TagSet& tags)
-    : Visitor( core::execparams::defaultInstance() )
+    : Visitor( sofa::core::execparams::defaultInstance() )
     , _searchNode( searchNode )
     , _class_info(class_info)
     , _container(container)
@@ -240,7 +240,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     if (dir != SearchParents)
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
-            core::objectmodel::BaseObject* obj = it->get();
+            sofa::core::objectmodel::BaseObject* obj = it->get();
             if (tags.empty() || (obj)->getTags().includes(tags))
             {
 
@@ -345,7 +345,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         }
         else
         {
-            core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
+            sofa::core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
             if (obj == nullptr)
             {
                 return nullptr;
@@ -415,7 +415,7 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
 }
 
 /// Get a list of parent node
-core::objectmodel::BaseNode::Parents DAGNode::getParents() const
+sofa::core::objectmodel::BaseNode::Parents DAGNode::getParents() const
 {
     Parents p;
 
@@ -434,7 +434,7 @@ size_t DAGNode::getNbParents() const
 }
 
 /// return the first parent (returns nullptr if no parent)
-core::objectmodel::BaseNode* DAGNode::getFirstParent() const
+sofa::core::objectmodel::BaseNode* DAGNode::getFirstParent() const
 {
     const LinkParents::Container& parents = l_parents.getValue();
     if( parents.empty() ) return nullptr;
@@ -482,7 +482,7 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
 
 /// Mesh Topology that is relevant for this context
 /// (within it or its parents until a mapping is reached that does not preserve topologies).
-core::topology::BaseMeshTopology* DAGNode::getMeshTopologyLink(SearchDirection dir) const
+sofa::core::topology::BaseMeshTopology* DAGNode::getMeshTopologyLink(SearchDirection dir) const
 {
     if (this->meshTopology)
         return this->meshTopology;
@@ -497,7 +497,7 @@ core::topology::BaseMeshTopology* DAGNode::getMeshTopologyLink(SearchDirection d
     {
         return nullptr;
     }
-    for ( Sequence<core::BaseMapping>::iterator i=this->mapping.begin(), iend=this->mapping.end(); i!=iend; ++i )
+    for ( Sequence<sofa::core::BaseMapping>::iterator i=this->mapping.begin(), iend=this->mapping.end(); i!=iend; ++i )
     {
         if (!(*i)->sameTopology())
         {
@@ -511,7 +511,7 @@ core::topology::BaseMeshTopology* DAGNode::getMeshTopologyLink(SearchDirection d
         // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
         if ( parents[i] )
         {
-            core::topology::BaseMeshTopology* res = parents[i]->getMeshTopologyLink(Local);
+            sofa::core::topology::BaseMeshTopology* res = parents[i]->getMeshTopologyLink(Local);
             if (res)
                 return res;
         }
@@ -520,14 +520,14 @@ core::topology::BaseMeshTopology* DAGNode::getMeshTopologyLink(SearchDirection d
 }
 
 
-void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
+void DAGNode::precomputeTraversalOrder( const sofa::core::ExecParams* params )
 {
     // acumulating traversed Nodes
     class TraversalOrderVisitor : public Visitor
     {
         NodeList& _orderList;
     public:
-        TraversalOrderVisitor(const core::ExecParams* params, NodeList& orderList )
+        TraversalOrderVisitor(const sofa::core::ExecParams* params, NodeList& orderList )
             : Visitor(params)
             , _orderList( orderList )
         {
@@ -792,7 +792,7 @@ void DAGNode::initVisualContext()
 
 void DAGNode::updateContext()
 {
-    core::objectmodel::BaseNode* firstParent = getFirstParent();
+    sofa::core::objectmodel::BaseNode* firstParent = getFirstParent();
 
     if ( firstParent )
     {
@@ -809,7 +809,7 @@ void DAGNode::updateContext()
 
 void DAGNode::updateSimulationContext()
 {
-    core::objectmodel::BaseNode* firstParent = getFirstParent();
+    sofa::core::objectmodel::BaseNode* firstParent = getFirstParent();
 
     if ( firstParent )
     {
@@ -854,7 +854,7 @@ void DAGNode::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_i
 {
     for (DAGNode::ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
-        core::objectmodel::BaseObject* obj = it->get();
+        sofa::core::objectmodel::BaseObject* obj = it->get();
         void* result = class_info.dynamicCast(obj);
         if (result != nullptr && (tags.empty() || (obj)->getTags().includes(tags)))
             container(result);

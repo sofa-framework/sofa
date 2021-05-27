@@ -25,7 +25,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/io/Image.h>
-#include <sofa/helper/gl/RAII.h>
+#include <sofa/gl/RAII.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -217,7 +217,7 @@ SofaPhysicsDataController** SofaPhysicsAPI::getDataControllers()
 ////////////////////////////////////////
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
+using namespace sofa::gl;
 using namespace sofa::core::objectmodel;
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
@@ -692,7 +692,7 @@ void SofaPhysicsSimulation::drawGL()
             }
 
             sofa::helper::io::Image* image = sofa::helper::io::Image::FactoryImage::getInstance()->createObject("bmp", sofa::helper::system::DataRepository.getFile(imageFileName));
-            texLogo = new sofa::helper::gl::Texture(image);
+            texLogo = new sofa::gl::Texture(image);
             texLogo->init();
         }
         
