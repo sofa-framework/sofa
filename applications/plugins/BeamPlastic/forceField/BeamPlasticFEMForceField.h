@@ -361,10 +361,6 @@ protected:
     /// Tests if the stress tensor of a material point in an elastic state
     /// actually corresponds to plastic deformation.
     bool goToPlastic(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
-    /// Tests if the new stress tensor of a material point in a plastic state
-    /// actually corresponds to an elastic (incremental) deformation
-    bool goToPostPlastic(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
-                         const bool verbose = FALSE);
 
     /// Computes local displacement of a beam element using the corotational model
     void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);

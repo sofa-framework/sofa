@@ -1143,25 +1143,6 @@ bool BeamPlasticFEMForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stress
 }
 
 template< class DataTypes>
-bool BeamPlasticFEMForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &stressTensor,
-                                                     const VoigtTensor2 &stressIncrement,
-                                                     const bool verbose /*=FALSE*/)
-{
-    // Computing the unit normal to the yield surface from the Von Mises gradient
-    VoigtTensor2 gradient = vonMisesGradient(stressTensor);
-    VoigtTensor2 yieldNormal = helper::rsqrt(2.0 / 3)*gradient;
-
-    // Computing the dot product with the incremental elastic predictor
-    double cp = voigtDotProduct(yieldNormal.transpose(), stressIncrement);
-    if (verbose)
-    {
-        std::cout.precision(17);
-        std::cout << cp << std::scientific << " "; //DEBUG
-    }
-    return (cp < m_stressComparisonThreshold); //if true, the stress point goes into post-plastic phase
-}
-
-template< class DataTypes>
 Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::deviatoricStress(const VoigtTensor2 &stressTensor)
 {
     // Returns the deviatoric stress from a given stress tensor in Voigt notation
