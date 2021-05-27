@@ -124,6 +124,19 @@ void BeamPlasticFEMForceField<DataTypes>::init()
     {
         Real youngModulus = d_youngModulus.getValue();
         Real yieldStress = d_yieldStress.getValue();
+
+        //Initialisation of the comparison threshold for stress tensor norms to 0.
+        // Plasticity computation requires to basically compare stress tensor norms to 0.
+        // As stress norm values can vary of several orders of magnitude, depending on the
+        // considered materials and/or applied forces, this comparison has to be carried out
+        // carefully.
+        // The idea here is to use the initialYieldStress of the material, and the
+        // available precision limit (e.g. std::numeric_limits<double>::epsilon()).
+        // We rely on the value of the initial Yield stress, as we can expect plastic
+        // deformation to occur inside a relatively small intervl of stresses around this value.
+        const int orderOfMagnitude = d_yieldStress.getValue(); //Should use std::abs, but d_initialYieldStress > 0
+        m_stressComparisonThreshold = std::numeric_limits<double>::epsilon() * orderOfMagnitude;
+
         m_ConstitutiveLaw = std::unique_ptr<RambergOsgood<DataTypes>>(new RambergOsgood<DataTypes>(youngModulus, yieldStress));
         if (this->f_printLog.getValue())
             msg_info() << "The model is " << constitutiveModel;
@@ -1120,15 +1133,13 @@ bool BeamPlasticFEMForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stress
                                                  const double yieldStress,
                                                  const bool verbose /*=FALSE*/)
 {
-    double threshold = 1e2; //TO DO: choose adapted threshold
-
-    double yield = vonMisesYield(stressTensor, yieldStress);
     if (verbose)
     {
         std::cout.precision(17);
-        std::cout << yield << std::scientific << " "; //DEBUG
+        std::cout << vonMisesYield(stressTensor, yieldStress) << std::scientific << " "; //DEBUG
     }
-    return yield > threshold;
+    // Plasticity occurs if Von Mises function is >= 0
+    return vonMisesYield(stressTensor, yieldStress) > m_stressComparisonThreshold;
 }
 
 template< class DataTypes>
@@ -1136,8 +1147,6 @@ bool BeamPlasticFEMForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &st
                                                      const VoigtTensor2 &stressIncrement,
                                                      const bool verbose /*=FALSE*/)
 {
-    double threshold = -0.f; //TO DO: use proper threshold
-
     // Computing the unit normal to the yield surface from the Von Mises gradient
     VoigtTensor2 gradient = vonMisesGradient(stressTensor);
     VoigtTensor2 yieldNormal = helper::rsqrt(2.0 / 3)*gradient;
@@ -1149,7 +1158,7 @@ bool BeamPlasticFEMForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &st
         std::cout.precision(17);
         std::cout << cp << std::scientific << " "; //DEBUG
     }
-    return (cp < threshold); //if true, the stress point goes into post-plastic phase
+    return (cp < m_stressComparisonThreshold); //if true, the stress point goes into post-plastic phase
 }
 
 template< class DataTypes>

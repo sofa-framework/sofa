@@ -472,6 +472,10 @@ protected:
 
     double m_lastUpdatedStep;
 
+    // Threshold used to compare stress tensor norms to 0. See detailed explanation
+    // at the computation of the threshold in the init() method.
+    Real m_stressComparisonThreshold;
+
     defaulttype::Quat& beamQuat(int i);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
