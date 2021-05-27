@@ -39,8 +39,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/FnDispatcher.inl
     ${SRC_ROOT}/GenerateRigid.h
     ${SRC_ROOT}/IndexOpenMP.h
-    ${SRC_ROOT}/LCPSolver.h
-    ${SRC_ROOT}/LCPSolver.inl
     ${SRC_ROOT}/LCPcalc.h
     ${SRC_ROOT}/MarchingCubeUtility.h
     ${SRC_ROOT}/MatEigen.h
