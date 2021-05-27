@@ -66,6 +66,9 @@ class TestDefaultPipeLine : public Sofa_test<> {
 public:
     void checkDefaultPipelineWithNoAttributes();
     void checkDefaultPipelineWithMissingIntersection();
+    void checkDefaultPipelineWithMissingBroadPhase();
+    void checkDefaultPipelineWithMissingNarrowPhase();
+    void checkDefaultPipelineWithMissingContactManager();
     int checkDefaultPipelineWithMonkeyValueForDepth(int value);
 };
 
@@ -78,7 +81,10 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <DefaultPipeline name='pipeline'/>                                           \n"
-             "  <DiscreteIntersection name='interaction'/>                                    \n"
+             "  <BruteForceBroadPhase/>                                                      \n"
+             "  <BVHNarrowPhase/>                                                            \n"
+             "  <DefaultContactManager/>                                                     \n"
+             "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -98,11 +104,89 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
     EXPECT_MSG_EMIT(Warning) ;
     EXPECT_MSG_NOEMIT(Error) ;
 
+    std::stringstream scene ;
+    scene << "<?xml version='1.0'?>                                                          \n"
+             "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+             "  <DefaultPipeline name='pipeline'/>                                           \n"
+             "  <BruteForceBroadPhase/>                                                      \n"
+             "  <BVHNarrowPhase/>                                                            \n"
+             "  <DefaultContactManager/>                                                     \n"
+             "</Node>                                                                        \n" ;
+
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                      scene.str().c_str(),
+                                                      scene.str().size()) ;
+    ASSERT_NE(root.get(), nullptr) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
+
+    BaseObject* clp = root->getObject("pipeline") ;
+    ASSERT_NE(clp, nullptr) ;
+
+    clearSceneGraph();
+}
+
+void TestDefaultPipeLine::checkDefaultPipelineWithMissingBroadPhase()
+{
+    EXPECT_MSG_EMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <DefaultPipeline name='pipeline'/>                                           \n"
+             "  <BVHNarrowPhase/>                                                            \n"
+             "  <DefaultContactManager/>                                                     \n"
+             "  <DiscreteIntersection name='interaction'/>                                   \n"
+             "</Node>                                                                        \n" ;
+
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                      scene.str().c_str(),
+                                                      scene.str().size()) ;
+    ASSERT_NE(root.get(), nullptr) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
+
+    BaseObject* clp = root->getObject("pipeline") ;
+    ASSERT_NE(clp, nullptr) ;
+
+    clearSceneGraph();
+}
+void TestDefaultPipeLine::checkDefaultPipelineWithMissingNarrowPhase()
+{
+    EXPECT_MSG_EMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+
+    std::stringstream scene ;
+    scene << "<?xml version='1.0'?>                                                          \n"
+             "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+             "  <DefaultPipeline name='pipeline'/>                                           \n"
+             "  <BruteForceBroadPhase/>                                                      \n"
+             "  <DefaultContactManager/>                                                     \n"
+             "  <DiscreteIntersection name='interaction'/>                                   \n"
+             "</Node>                                                                        \n" ;
+
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                      scene.str().c_str(),
+                                                      scene.str().size()) ;
+    ASSERT_NE(root.get(), nullptr) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
+
+    BaseObject* clp = root->getObject("pipeline") ;
+    ASSERT_NE(clp, nullptr) ;
+
+    clearSceneGraph();
+}
+void TestDefaultPipeLine::checkDefaultPipelineWithMissingContactManager()
+{
+    EXPECT_MSG_EMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+
+    std::stringstream scene ;
+    scene << "<?xml version='1.0'?>                                                          \n"
+             "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+             "  <DefaultPipeline name='pipeline'/>                                           \n"
+             "  <BruteForceBroadPhase/>                                                      \n"
+             "  <BVHNarrowPhase/>                                                            \n"
+             "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -122,8 +206,11 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <DefaultPipeline name='pipeline' depth='"<< dvalue <<"'/>                     \n"
-             "  <DiscreteIntersection name='interaction'/>                                    \n"
+             "  <DefaultPipeline name='pipeline' depth='"<< dvalue <<"'/>                    \n"
+             "  <BruteForceBroadPhase/>                                                      \n"
+             "  <BVHNarrowPhase/>                                                            \n"
+             "  <DefaultContactManager/>                                                     \n"
+             "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -152,32 +239,53 @@ TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMissingIntersection)
     this->checkDefaultPipelineWithMissingIntersection();
 }
 
+TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMissingBroadPhase)
+{
+    this->checkDefaultPipelineWithMissingBroadPhase();
+}
+
+TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMissingNarrowPhase)
+{
+    this->checkDefaultPipelineWithMissingNarrowPhase();
+}
+
+TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMissingContactManager)
+{
+    this->checkDefaultPipelineWithMissingContactManager();
+}
+
 TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssue)
 {
-    std::vector<std::pair<int, bool>> testvalues = {
-        std::make_pair(-1, false),
-        std::make_pair( 0, true),
-        std::make_pair( 2, true),
-        std::make_pair(10, true),
-        std::make_pair(1000, true)
+    const std::vector<std::pair<int, bool>> testvalues = {
+        {-1, false},
+        { 0, true},
+        { 2, true},
+        {10, true},
+        {1000, true}
     };
 
-    for(auto is : testvalues){
+    for(const auto& is : testvalues)
+    {
         EXPECT_MSG_NOEMIT(Error) ;
 
-        if(is.second){
+        if (is.second)
+        {
             EXPECT_MSG_NOEMIT(Warning) ;
 
             // Check the returned value.
-            if(this->checkDefaultPipelineWithMonkeyValueForDepth(is.first)!=is.first){
+            if(this->checkDefaultPipelineWithMonkeyValueForDepth(is.first) != is.first)
+            {
                 ADD_FAILURE() << "User provided depth parameter value '" << is.first << "' has been un-expectedly overriden." ;
             }
-        }else{
+        }
+        else
+        {
             EXPECT_MSG_EMIT(Warning) ;
 
             // Check the default value.
-            if(this->checkDefaultPipelineWithMonkeyValueForDepth(is.first)!=6){
-                ADD_FAILURE() << "User provided invalid depth parameter value '" << is.first << "' have not been replaced with the default value = 6." ;
+            if(this->checkDefaultPipelineWithMonkeyValueForDepth(is.first) != DefaultPipeline::defaultDepthValue)
+            {
+                ADD_FAILURE() << "User provided invalid depth parameter value '" << is.first << "' and has not been replaced with the default value = " << DefaultPipeline::defaultDepthValue;
             }
         }
     }
