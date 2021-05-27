@@ -50,6 +50,7 @@ set(SOFACOMPONENTALL_MODULES
     SofaNonUniformFem
 
     # SofaMisc
+    SofaMiscCollision
     SofaMiscEngine
     SofaMiscExtra
     SofaMiscFem
@@ -57,7 +58,6 @@ set(SOFACOMPONENTALL_MODULES
     SofaMiscMapping
     SofaMiscSolver
     SofaMiscTopology
-    SofaMiscCollision
 
     # Other (pluginized from SofaGeneral)
     SofaDenseSolver
