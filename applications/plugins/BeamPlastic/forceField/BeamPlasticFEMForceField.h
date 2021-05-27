@@ -23,7 +23,6 @@
 #include <BeamPlastic/config.h>
 #include <BeamPlastic/constitutiveLaw/PlasticConstitutiveLaw.h>
 #include <BeamPlastic/quadrature/gaussian.h>
-#include <BeamPlastic/quadrature/quadrature.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
