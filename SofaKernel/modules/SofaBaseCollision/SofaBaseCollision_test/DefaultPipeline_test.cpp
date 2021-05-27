@@ -264,18 +264,18 @@ TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssu
         {1000, true}
     };
 
-    for(const auto& is : testvalues)
+    for(const auto& [depthValue, validValue] : testvalues)
     {
         EXPECT_MSG_NOEMIT(Error) ;
 
-        if (is.second)
+        if (validValue)
         {
             EXPECT_MSG_NOEMIT(Warning) ;
 
             // Check the returned value.
-            if(this->checkDefaultPipelineWithMonkeyValueForDepth(is.first) != is.first)
+            if(this->checkDefaultPipelineWithMonkeyValueForDepth(depthValue) != depthValue)
             {
-                ADD_FAILURE() << "User provided depth parameter value '" << is.first << "' has been un-expectedly overriden." ;
+                ADD_FAILURE() << "User provided depth parameter value '" << depthValue << "' has been un-expectedly overriden." ;
             }
         }
         else
@@ -283,9 +283,9 @@ TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssu
             EXPECT_MSG_EMIT(Warning) ;
 
             // Check the default value.
-            if(this->checkDefaultPipelineWithMonkeyValueForDepth(is.first) != DefaultPipeline::defaultDepthValue)
+            if(this->checkDefaultPipelineWithMonkeyValueForDepth(depthValue) != DefaultPipeline::defaultDepthValue)
             {
-                ADD_FAILURE() << "User provided invalid depth parameter value '" << is.first << "' and has not been replaced with the default value = " << DefaultPipeline::defaultDepthValue;
+                ADD_FAILURE() << "User provided invalid depth parameter value '" << depthValue << "' and has not been replaced with the default value = " << DefaultPipeline::defaultDepthValue;
             }
         }
     }
