@@ -24,7 +24,6 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <iostream>
 

@@ -27,6 +27,11 @@
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 
+namespace sofa::simulation
+{
+    class Node;
+}
+
 namespace sofa::component::collision
 {
 

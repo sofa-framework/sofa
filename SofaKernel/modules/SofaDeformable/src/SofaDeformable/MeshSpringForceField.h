@@ -23,7 +23,6 @@
 #include <SofaDeformable/config.h>
 
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <set>
 
 namespace sofa::component::interactionforcefield

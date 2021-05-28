@@ -24,8 +24,7 @@
 
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseTopology/TopologySubsetData.inl> 
+#include <SofaBaseTopology/TopologySubsetData.h> 
 
 namespace sofa::component::interactionforcefield
 {
