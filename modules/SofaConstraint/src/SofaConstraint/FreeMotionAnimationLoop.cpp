@@ -26,12 +26,12 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/VecId.h>
+#include <sofa/core/behavior/MultiVec.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>

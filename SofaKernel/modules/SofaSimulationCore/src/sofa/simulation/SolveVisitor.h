@@ -19,18 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SOLVEACTION_H
-#define SOFA_SIMULATION_SOLVEACTION_H
-
-
+#pragma once
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/MultiVecId.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 /** Used by the animation loop: send the solve signal to the others solvers
@@ -39,24 +33,13 @@ namespace simulation
 class SOFA_SIMULATION_CORE_API SolveVisitor : public Visitor
 {
 public:
-    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt) : Visitor(params), dt(_dt), x(sofa::core::VecCoordId::position()),
-        v(sofa::core::VecDerivId::velocity()) {}
 
-    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free) : Visitor(params), dt(_dt){
-        if(free)
-        {
-            x = sofa::core::VecCoordId::freePosition();
-            v = sofa::core::VecDerivId::freeVelocity();
-        }
-        else
-        {
-            x = sofa::core::VecCoordId::position();
-            v = sofa::core::VecDerivId::velocity();
-        }
-    }
+    SolveVisitor(const sofa::core::ExecParams* params,
+                 SReal _dt,
+                 sofa::core::MultiVecCoordId X = sofa::core::VecCoordId::position(),
+                 sofa::core::MultiVecDerivId V = sofa::core::VecDerivId::velocity());
 
-    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, sofa::core::MultiVecCoordId X,sofa::core::MultiVecDerivId V) : Visitor(params), dt(_dt),
-        x(X),v(V){}
+    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free);
 
     virtual void processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* b);
     Result processNodeTopDown(simulation::Node* node) override;
@@ -69,16 +52,13 @@ public:
     const char* getCategoryName() const override { return "behavior update position"; }
     const char* getClassName() const override { return "SolveVisitor"; }
 
-    void setDt(SReal _dt) {dt = _dt;}
-    SReal getDt() {return dt;}
+    void setDt(SReal _dt);
+    SReal getDt() const;
+
 protected:
     SReal dt;
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId v;
 };
 
-} // namespace simulation
-
 } // namespace sofa
-
-#endif

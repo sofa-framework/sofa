@@ -20,21 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/SolveVisitor.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* s)
 {
     sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
     s->solve(params, dt, x, v);
-
     sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 
@@ -45,11 +41,40 @@ Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
         for_each(this, node, node->solver, &SolveVisitor::processSolver);
         return RESULT_PRUNE;
     }
-    else
-        return RESULT_CONTINUE;
+    return RESULT_CONTINUE;
 }
 
-} // namespace simulation
+void SolveVisitor::setDt(SReal _dt)
+{
+    dt = _dt;
+}
 
-} // namespace sofa
+SReal SolveVisitor::getDt() const
+{
+    return dt;
+}
+
+SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, sofa::core::MultiVecCoordId X,
+                           sofa::core::MultiVecDerivId V)
+        : Visitor(params)
+        , dt(_dt)
+        , x(X)
+        , v(V)
+{}
+
+SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free) : Visitor(params), dt(_dt)
+{
+    if(free)
+    {
+        x = sofa::core::VecCoordId::freePosition();
+        v = sofa::core::VecDerivId::freeVelocity();
+    }
+    else
+    {
+        x = sofa::core::VecCoordId::position();
+        v = sofa::core::VecDerivId::velocity();
+    }
+}
+
+} // namespace sofa::simulation
 
