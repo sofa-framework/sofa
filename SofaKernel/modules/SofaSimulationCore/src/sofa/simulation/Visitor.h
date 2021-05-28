@@ -137,15 +137,23 @@ public:
     /// Alias for context->executeVisitor(this)
     virtual void execute(sofa::core::objectmodel::BaseContext* node, bool precomputedOrder=false);
 
+    /// Optional helper method to call before handling an object if not using the for_each method.
+    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
     virtual ctime_t begin(simulation::Node *node, sofa::core::objectmodel::BaseObject *obj,
                           const std::string &typeInfo = std::string("type"));
 
+    /// Optional helper method to call after handling an object if not using the for_each method.
+    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
     virtual void end(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0);
 
-    ctime_t begin(simulation::Visitor::VisitorContext *node, sofa::core::objectmodel::BaseObject *obj,
+    /// Optional helper method to call before handling an object if not using the for_each method.
+    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+    virtual ctime_t begin(simulation::Visitor::VisitorContext *node, sofa::core::objectmodel::BaseObject *obj,
                   const std::string &typeInfo = std::string("type"));
 
-    void end(simulation::Visitor::VisitorContext* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0);
+    /// Optional helper method to call after handling an object if not using the for_each method.
+    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+    virtual void end(simulation::Visitor::VisitorContext* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0);
 
     /// Specify whether this visitor can be parallelized.
     virtual bool isThreadSafe() const { return false; }

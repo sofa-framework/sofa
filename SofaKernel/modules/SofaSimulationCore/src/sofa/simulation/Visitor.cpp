@@ -234,8 +234,7 @@ void Visitor::printCloseNode(const char* type)
 }
 
 #endif
-/// Optional helper method to call before handling an object if not using the for_each method.
-/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+
 simulation::Visitor::ctime_t Visitor::begin(simulation::Node* /*node*/, core::objectmodel::BaseObject*
 #ifdef SOFA_DUMP_VISITOR_INFO
         obj
@@ -272,15 +271,11 @@ void Visitor::end(simulation::Node* /*node*/, core::objectmodel::BaseObject* /*o
 #endif
 }
 
-/// Optional helper method to call before handling an object if not using the for_each method.
-/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
 simulation::Visitor::ctime_t Visitor::begin(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj, const std::string &info)
 {
     return begin(vc->node, obj, info);
 }
 
-/// Optional helper method to call after handling an object if not using the for_each method.
-/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
 void Visitor::end(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj, ctime_t t0)
 {
     end(vc->node, obj, t0);
