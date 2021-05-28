@@ -42,6 +42,7 @@
 namespace sofa::plugin::beamplastic::component::forcefield::_beamplasticfemforcefield_
 {
 
+using core::objectmodel::BaseContext;
 using sofa::plugin::beamplastic::component::constitutivelaw::RambergOsgood;
 
 template<class DataTypes>
@@ -63,7 +64,7 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
     , d_isTimoshenko(initData(&d_isTimoshenko,false,"isTimoshenko","implements a Timoshenko beam model"))
     , m_edgeHandler(nullptr)
 {
-    m_edgeHandler = std::unique_ptr<BeamFFEdgeHandler>(new BeamFFEdgeHandler(this, &m_beamsData));
+    m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
 
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
@@ -91,12 +92,17 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio,
     , d_isTimoshenko(initData(&d_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
     , m_edgeHandler(nullptr)
 {
-    m_edgeHandler = std::unique_ptr<BeamFFEdgeHandler>(new BeamFFEdgeHandler(this, &m_beamsData));
+    m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
 
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
 }
 
+template<class DataTypes>
+BeamPlasticFEMForceField<DataTypes>::~BeamPlasticFEMForceField()
+{
+    if (m_edgeHandler) delete m_edgeHandler;
+}
 
 /*****************************************************************************/
 /*                           INITIALISATION                                  */
@@ -113,10 +119,32 @@ void BeamPlasticFEMForceField<DataTypes>::bwdInit()
 template <class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::init()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    Inherit1::init();
 
-    m_topology = context->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". Object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    BaseContext* context = this->getContext();
+
+    if (m_topology->getNbEdges() == 0)
+    {
+        msg_error() << "Topology is empty.";
+        return;
+    }
+    m_indexedElements = &m_topology->getEdges();
 
     // Retrieving the 1D plastic constitutive law model
     std::string constitutiveModel = d_modelName.getValue();
@@ -146,23 +174,7 @@ void BeamPlasticFEMForceField<DataTypes>::init()
         msg_error() << "constitutive law model name " << constitutiveModel << " is not valid (should be RambergOsgood)";
     }
 
-
-    if (m_topology==nullptr)
-    {
-        serr << "ERROR(BeamPlasticFEMForceField): object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)."<<sendl;
-        return;
-    }
-    else
-    {
-        if (m_topology->getNbEdges()==0)
-        {
-            serr << "ERROR(BeamPlasticFEMForceField): topology is empty."<<sendl;
-            return;
-        }
-        m_indexedElements = &m_topology->getEdges();
-    }
-
-    m_beamsData.createTopologicalEngine(m_topology, m_edgeHandler.get());
+    m_beamsData.createTopologyHandler(m_topology, m_edgeHandler);
     m_beamsData.registerTopologicalData();
 
     reinit();

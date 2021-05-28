@@ -41,6 +41,7 @@ namespace _beamplasticfemforcefield_
 {
 
 using sofa::component::topology::TopologyDataHandler;
+using core::topology::BaseMeshTopology;
 using sofa::component::topology::EdgeData;
 using sofa::plugin::beamplastic::component::constitutivelaw::PlasticConstitutiveLaw;
 
@@ -248,7 +249,7 @@ protected:
 
     EdgeData< sofa::helper::vector<BeamInfo> > m_beamsData;
 
-    class BeamFFEdgeHandler : public TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >
+    class BeamFFEdgeHandler : public TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >
     {
     public:
         typedef typename BeamPlasticFEMForceField<DataTypes>::BeamInfo BeamInfo;
@@ -466,6 +467,9 @@ protected:
     Data<bool> d_useSymmetricAssembly;
     Data<bool> d_isTimoshenko;
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<BeamPlasticFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
     double m_lastUpdatedStep;
 
     // Threshold used to compare stress tensor norms to 0. See detailed explanation
@@ -474,14 +478,14 @@ protected:
 
     defaulttype::Quat& beamQuat(int i);
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
-    std::unique_ptr<BeamFFEdgeHandler> m_edgeHandler;
+    BaseMeshTopology* m_topology;
+    BeamFFEdgeHandler* m_edgeHandler;
 
     BeamPlasticFEMForceField();
     BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
                         bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
                         helper::vector<defaulttype::Quat> localOrientations);
-    virtual ~BeamPlasticFEMForceField() = default;
+    virtual ~BeamPlasticFEMForceField();
 
 public:
 
