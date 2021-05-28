@@ -33,6 +33,11 @@
 #include <unordered_map>
 #include <typeindex>
 
+namespace sofa::simulation
+{
+    class Node;
+}
+
 namespace sofa::component::collision
 {
 
