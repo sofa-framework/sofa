@@ -32,15 +32,17 @@ namespace sofa::component::collision
 template < class TCollisionModel, class DataTypes >
 void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
-    if (mapping != nullptr)
+    if (mapping != nullptr && model != nullptr)
     {
-        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-        if (parent!=nullptr)
+        auto* modelContext = model->getContext();
+        if (dynamic_cast<simulation::Node*>(modelContext) != nullptr)
         {
-            simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext());
-            child->detachFromGraph();
-            child->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
-            child.reset();
+            if (simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext()))
+            {
+                child->detachFromGraph();
+                child->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
+                child.reset();
+            }
             mapping.reset();
         }
     }
@@ -59,12 +61,15 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     }
     simulation::Node::SPtr child = parent->createChild(name);
     typename MMechanicalObject::SPtr mstate = sofa::core::objectmodel::New<MMechanicalObject>();
+    mstate->setName(GenerateStringID::generate().c_str());
     child->addObject(mstate);
     //mapper = mapping->getMapper();
     mapper = sofa::core::objectmodel::New<mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes> >(model->getCollisionTopology(), (topology::PointSetTopologyContainer*)nullptr);
+    mapper->setName(GenerateStringID::generate().c_str());
     mapper->maskFrom = &model->getMechanicalState()->forceMask;
     mapper->maskTo = &mstate->forceMask;
     mapping =  sofa::core::objectmodel::New<MMapping>(model->getMechanicalState(), mstate.get(), mapper);
+    mapping->setName(GenerateStringID::generate().c_str());
     child->addObject(mapping);
     return mstate.get();
 }

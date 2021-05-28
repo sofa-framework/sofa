@@ -29,6 +29,7 @@
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaUserInteraction/RayModel.h>
+#include <SofaUserInteraction/FixParticlePerformer.h>
 
 namespace sofa::component::collision
 {
@@ -65,5 +66,26 @@ CapsuleMeshDiscreteIntersection::CapsuleMeshDiscreteIntersection(NewProximityInt
     intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleMeshDiscreteIntersection>(this);
     intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, CapsuleMeshDiscreteIntersection>(this);
 }
+
+// add CapsuleModel to the list of supported collision models for FixParticlePerformer
+using FixParticlePerformer3d = sofa::component::collision::FixParticlePerformer<defaulttype::Vec3Types>;
+
+int capsuleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>(
+    []
+(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
+    {
+        auto* caps = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>*>(model.get());
+
+        if (!caps)
+            return false;
+
+        fixPoint = (caps->point1(idx) + caps->point2(idx))/2.0;
+        points.push_back(caps->point1Index(idx));
+        points.push_back(caps->point2Index(idx));
+
+        return true;
+    }
+);
+
 
 } // namespace sofa::component::collision
