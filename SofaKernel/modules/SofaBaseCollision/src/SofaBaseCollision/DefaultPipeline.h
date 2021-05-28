@@ -52,6 +52,9 @@ protected:
     void doCollisionResponse() override;
 
     virtual void checkDataValues() ;
+
+public:
+    static const int defaultDepthValue;
 };
 
 } // namespace sofa::component::collision
