@@ -23,6 +23,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/simulation/TaskScheduler.h>
 
 namespace sofa::simulation
 {
@@ -38,10 +39,34 @@ Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (! node->solver.empty())
     {
-        for_each(this, node, node->solver, &SolveVisitor::processSolver);
+        if (m_isSolvedConcurrently)
+        {
+            parallelSolve(node);
+        }
+        else
+        {
+            sequentialSolve(node);
+        }
         return RESULT_PRUNE;
     }
     return RESULT_CONTINUE;
+}
+
+void SolveVisitor::processNodeBottomUp(simulation::Node*)
+{
+    // only in case of parallel solving:
+    // processNodeBottomUp is called after all processNodeTopDown calls are done,
+    // i.e when all parallel tasks have been created and started.
+    // It is time to wait them to finish
+
+    if (!m_tasks.empty())
+    {
+        auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+        assert(taskScheduler != nullptr);
+        sofa::helper::ScopedAdvancedTimer parallelSolveTimer("waitParallelTasks");
+        taskScheduler->workUntilDone(&m_status);
+    }
+    m_tasks.clear();
 }
 
 void SolveVisitor::setDt(SReal _dt)
@@ -55,14 +80,21 @@ SReal SolveVisitor::getDt() const
 }
 
 SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, sofa::core::MultiVecCoordId X,
-                           sofa::core::MultiVecDerivId V)
+                           sofa::core::MultiVecDerivId V, bool _parallelSolve)
         : Visitor(params)
         , dt(_dt)
         , x(X)
         , v(V)
-{}
+        , m_isSolvedConcurrently(_parallelSolve)
+{
+    if (m_isSolvedConcurrently)
+    {
+        initializeTaskScheduler();
+    }
+}
 
-SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free) : Visitor(params), dt(_dt)
+SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve)
+: Visitor(params), dt(_dt), m_isSolvedConcurrently(_parallelSolve)
 {
     if(free)
     {
@@ -74,6 +106,44 @@ SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool
         x = sofa::core::VecCoordId::position();
         v = sofa::core::VecDerivId::velocity();
     }
+
+    if (m_isSolvedConcurrently)
+    {
+        initializeTaskScheduler();
+    }
+}
+
+void SolveVisitor::sequentialSolve(simulation::Node* node)
+{
+    for_each(this, node, node->solver, &SolveVisitor::processSolver);
+}
+
+void SolveVisitor::parallelSolve(simulation::Node* node)
+{
+    auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    assert(taskScheduler != nullptr);
+
+    for (auto* solver : node->solver)
+    {
+        m_tasks.emplace_back(&m_status, solver, params, dt, x, v);
+        taskScheduler->addTask(&m_tasks.back());
+    }
+}
+
+void SolveVisitor::initializeTaskScheduler()
+{
+    auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    assert(taskScheduler != nullptr);
+    if (taskScheduler->getThreadCount() < 1)
+    {
+        taskScheduler->init(0);
+    }
+}
+
+sofa::simulation::Task::MemoryAlloc SolveVisitorTask::run()
+{
+    m_solver->solve(m_execParams, m_dt, m_x, m_v);
+    return Task::Stack;
 }
 
 } // namespace sofa::simulation

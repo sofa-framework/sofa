@@ -71,6 +71,7 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
     , m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
     , d_isParallel(initData(&d_isParallel, false, "parallel", "If true, executes free motion and collision detection in parallel"))
+    , d_solveODEConcurrently(initData(&d_solveODEConcurrently, false, "solveODEConcurrently", "If true, executes all free motions in parallel"))
     , constraintSolver(nullptr)
     , defaultSolver(nullptr)
 {
@@ -116,7 +117,7 @@ void FreeMotionAnimationLoop::init()
 
     auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
     assert(taskScheduler != nullptr);
-    if (d_isParallel.getValue())
+    if (d_isParallel.getValue() || d_solveODEConcurrently.getValue())
     {
         if (taskScheduler->getThreadCount() < 1)
         {
@@ -294,7 +295,7 @@ void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::
                                                               simulation::common::MechanicalOperations* mop)
 {
     sofa::simulation::CpuTask::Status freeMotionTaskStatus;
-    FreeMotionTask freeMotionTask(gnode, params, &cparams, dt, pos, freePos, freeVel, mop, getContext(), &freeMotionTaskStatus);
+    FreeMotionTask freeMotionTask(gnode, params, &cparams, dt, pos, freePos, freeVel, mop, getContext(), &freeMotionTaskStatus, d_solveODEConcurrently.getValue());
     if (!d_isParallel.getValue())
     {
         ScopedAdvancedTimer timer("FreeMotion+CollisionDetection");
