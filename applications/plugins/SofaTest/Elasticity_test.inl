@@ -187,9 +187,9 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
 
     // CGLinearSolver
     typename CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(root,"linearSolver");
-    cgLinearSolver->d_maxIter=maxIter;
-    cgLinearSolver->d_tolerance =1e-9;
-    cgLinearSolver->d_smallDenominatorThreshold=1e-9;
+    cgLinearSolver->d_maxIter.setValue(maxIter);
+    cgLinearSolver->d_tolerance.setValue(1e-9);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
     // StaticSolver
     typename component::odesolver::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::StaticSolver>(root,"StaticSolver");
     // mechanicalObject object
