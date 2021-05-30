@@ -19,42 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_CPP
-#include <SofaBaseCollision/NewProximityIntersection.inl>
+#define SOFA_SOFAMISCCOLLISION_OBBCONTACTMAPPER_CPP
+#include <SofaMiscCollision/OBBContactMapper.h>
 
-#include <sofa/core/collision/Intersection.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <SofaBaseCollision/OBBModel.h>
 
-namespace sofa::core::collision
-{
-    template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
-} // namespace sofa::core::collision
+using namespace sofa::core::collision;
 
 namespace sofa::component::collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
-int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")
-        .add< NewProximityIntersection >()
-        ;
-
-NewProximityIntersection::NewProximityIntersection()
-    : BaseProximityIntersection()
-    , useLineLine(initData(&useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
-{
-}
-
-void NewProximityIntersection::init()
-{
-    intersectors.add<CubeCollisionModel, CubeCollisionModel, NewProximityIntersection>(this);
-    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, NewProximityIntersection>(this);
-
-    IntersectorFactory::getInstance()->addIntersectors(this);
-
-	BaseProximityIntersection::init();
-}
+ContactMapperCreator< ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > OBBContactMapperClass("default", true);
+template class  ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 
 } // namespace sofa::component::collision
