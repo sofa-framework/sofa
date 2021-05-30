@@ -21,7 +21,7 @@
 ******************************************************************************/
 /******************************************************************************
 * Contributors:
-*   - "Nhan NGuyen" <nhnhan@jaist.ac.jp>; (JAIST)
+*   - "Nhan NGuyen" <nhnhanbk92@gmail.com> - JAIST (PRESTO Project)
 *******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_CPP
 
