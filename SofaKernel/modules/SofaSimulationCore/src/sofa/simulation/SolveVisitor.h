@@ -25,6 +25,8 @@
 #include <sofa/core/MultiVecId.h>
 #include <sofa/simulation/CpuTask.h>
 
+#include <list>
+
 namespace sofa::simulation
 {
 
