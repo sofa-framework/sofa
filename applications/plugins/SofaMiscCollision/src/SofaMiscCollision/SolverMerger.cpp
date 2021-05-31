@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaMiscCollision/SolverMerger.h>
-#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/helper/FnDispatcher.inl>
@@ -31,59 +30,75 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaConstraint/LCPConstraintSolver.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 using sofa::core::behavior::OdeSolver;
 using sofa::core::behavior::BaseLinearSolver;
 using sofa::core::behavior::ConstraintSolver;
 
+SolverSet::SolverSet(core::behavior::OdeSolver::SPtr o,
+                     core::behavior::BaseLinearSolver::SPtr l,
+                     core::behavior::ConstraintSolver::SPtr c) :
+        odeSolver(o),linearSolver(l),constraintSolver(c)
+{}
+
 namespace solvermergers
 {
 
-template<class T>
-typename T::SPtr copySolver(const T& s)
+/// Create a new object which type is the template parameter, and
+/// copy all its data fields values.
+/// This function is meant to be used for ODE solvers and constraint solvers
+template<class SolverType>
+typename SolverType::SPtr copySolver(const SolverType& s)
 {
-    const T* src = &s;
-    typename T::SPtr res = sofa::core::objectmodel::New<T>();
-    const sofa::core::objectmodel::BaseObject::VecData& fields = src->getDataFields();
-    for (unsigned int i=0; i<fields.size(); ++i)
+    const SolverType* src = &s;
+    typename SolverType::SPtr res = sofa::core::objectmodel::New<SolverType>();
+    for (auto* dataField : src->getDataFields())
     {
-        core::objectmodel::BaseData* s = fields[i];
-        core::objectmodel::BaseData* d = res->findData(s->getName());
-        if (d)
-            d->copyValueFrom(s);
+        msg_error_when(dataField == nullptr, "SolverMerger::copySolver") << "Found nullptr data field from " << src->getName();
+        if (auto* d = res->findData(dataField->getName()))
+            d->copyValueFrom(dataField);
     }
     return res;
 }
 
 ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
-    ConstraintSolver* csolver1 = nullptr; if (solver1!=nullptr) solver1->getContext()->get(csolver1, core::objectmodel::BaseContext::SearchDown);
-    ConstraintSolver* csolver2 = nullptr; if (solver2!=nullptr) solver2->getContext()->get(csolver2, core::objectmodel::BaseContext::SearchDown);
+    ConstraintSolver* csolver1 = nullptr;
+    if (solver1!=nullptr)
+    {
+        solver1->getContext()->get(csolver1, core::objectmodel::BaseContext::SearchDown);
+    }
 
-    if (!csolver1 && !csolver2) return nullptr;
+    ConstraintSolver* csolver2 = nullptr;
+    if (solver2!=nullptr)
+    {
+        solver2->getContext()->get(csolver2, core::objectmodel::BaseContext::SearchDown);
+    }
+
+    if (!csolver1 && !csolver2)
+    {
+        //no constraint solver associated to any ODE solver
+        return nullptr;
+    }
     if (!csolver1)
     {
-        if (constraintset::LCPConstraintSolver* cs=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2))
+        //first ODE solver does not have any constraint solver. The second is copied to be shared with the first
+        if (auto* cs=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2))
             return copySolver<constraintset::LCPConstraintSolver>(*cs);
     }
     else if (!csolver2)
     {
-        if (constraintset::LCPConstraintSolver* cs=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver1))
+        //second ODE solver does not have any constraint solver. The first is copied to be shared with the second
+        if (auto* cs=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver1))
             return copySolver<constraintset::LCPConstraintSolver>(*cs);
     }
     else
     {
-        if (dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2) && dynamic_cast<constraintset::LCPConstraintSolver*>(csolver1))
+        //both ODE solvers have an associated constraint solver
+        if (auto* lcp1 = dynamic_cast<constraintset::LCPConstraintSolver*>(csolver1))
+        if (auto* lcp2 = dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2))
         {
-            constraintset::LCPConstraintSolver* lcp1=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver1);
-            constraintset::LCPConstraintSolver* lcp2=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2);
             constraintset::LCPConstraintSolver::SPtr newSolver = sofa::core::objectmodel::New<constraintset::LCPConstraintSolver>();
             newSolver->displayTime.setValue(lcp1->displayTime.getValue() | lcp2->displayTime.getValue());
             newSolver->initial_guess.setValue(lcp1->initial_guess.getValue() | lcp2->initial_guess.getValue());
@@ -116,8 +131,19 @@ typedef linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatr
 BaseLinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
     DefaultCGLinearSolver::SPtr lsolver = sofa::core::objectmodel::New<DefaultCGLinearSolver>();
-    DefaultCGLinearSolver* lsolver1 = nullptr; if (solver1!=nullptr) solver1->getContext()->get(lsolver1, core::objectmodel::BaseContext::SearchDown);
-    DefaultCGLinearSolver* lsolver2 = nullptr; if (solver2!=nullptr) solver2->getContext()->get(lsolver2, core::objectmodel::BaseContext::SearchDown);
+
+    DefaultCGLinearSolver* lsolver1 = nullptr;
+    if (solver1!=nullptr)
+    {
+        solver1->getContext()->get(lsolver1, core::objectmodel::BaseContext::SearchDown);
+    }
+
+    DefaultCGLinearSolver* lsolver2 = nullptr;
+    if (solver2!=nullptr)
+    {
+        solver2->getContext()->get(lsolver2, core::objectmodel::BaseContext::SearchDown);
+    }
+
     unsigned int maxIter = 0;
     double tolerance = 1.0e10;
     double smallDenominatorThreshold = 1.0e10;
@@ -205,6 +231,4 @@ SolverMerger::SolverMerger()
     solverDispatcher.add<odesolver::StaticSolver,odesolver::StaticSolver,createSolverStaticSolver,true>();
 }
 
-}// namespace collision
-} // namespace component
-} // namespace Sofa
+} // namespace sofa::component::collision

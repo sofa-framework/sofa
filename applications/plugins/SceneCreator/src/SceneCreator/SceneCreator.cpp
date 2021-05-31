@@ -347,7 +347,7 @@ void addTetraFEM(simulation::Node::SPtr parent, const std::string& objectName,
 {
     simpleapi::createObject(parent, "UniformMass", {
                                 {"name",objectName + "_mass"},
-                                {"totalmass", str(totalMass)},
+                                {"totalMass", str(totalMass)},
                             });
 
     simpleapi::createObject(parent, "TetrahedronFEMForceField", {

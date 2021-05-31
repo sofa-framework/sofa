@@ -1,18 +1,17 @@
 <Node name="root" dt="0.03">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaConstraint'/>
-    <RequiredPlugin pluginName='SofaExplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaMiscCollision'/>
-    <RequiredPlugin pluginName='SofaRigid'/> 
+    <RequiredPlugin name="SofaConstraint"/>
+    <RequiredPlugin name="SofaExplicitOdeSolver"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaLoader"/>
+    <RequiredPlugin name="SofaMeshCollision"/>
+    <RequiredPlugin name="SofaMiscCollision"/>
+    <RequiredPlugin name="SofaRigid"/> 
 
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <FreeMotionAnimationLoop initial_guess="true" displayTime="1" maxIt="100" />
     <DefaultPipeline depth="8" verbose="0" draw="0" />
-    <BruteForceBroadPhase/>
-    <BVHNarrowPhase/>
+    <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.35" contactDistance="0.1" />
     <DefaultContactManager name="Response" response="FrictionContact" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000" build_lcp="false"/>
