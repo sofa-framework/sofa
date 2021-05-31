@@ -23,66 +23,42 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/ConstraintParams.h>
-namespace sofa
+
+namespace sofa::core::behavior
 {
 
-namespace core
-{
-
-namespace behavior
-{
-
-ConstraintSolver::ConstraintSolver()
-{}
-
-ConstraintSolver::~ConstraintSolver()
-{}
+ConstraintSolver::ConstraintSolver() = default;
+ConstraintSolver::~ConstraintSolver() = default;
 
 void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVecId res1, MultiVecId res2)
 {
-    using sofa::helper::AdvancedTimer;
+    const std::string className = "SolveConstraint: " + cParams->getName();
+    sofa::helper::ScopedAdvancedTimer solveConstraintTimer(className);
 
-    std::string className = "SolveConstraint: " + cParams->getName();
-    AdvancedTimer::stepBegin(className);
-
-    AdvancedTimer::stepBegin(className + " - PrepareState");
-    bool continueSolving = prepareStates(cParams, res1, res2);
-    AdvancedTimer::stepEnd(className + " - PrepareState");
+    bool continueSolving = true;
+    {
+        sofa::helper::ScopedAdvancedTimer prepareStateTimer(className + " - PrepareState");
+        continueSolving = prepareStates(cParams, res1, res2);
+    }
 
     if (continueSolving)
     {
-        AdvancedTimer::stepBegin(className + " - BuildSystem");
+        sofa::helper::ScopedAdvancedTimer buildSystemTimer(className + " - BuildSystem");
         continueSolving = buildSystem(cParams, res1, res2);
-        AdvancedTimer::stepEnd(className + " - BuildSystem");
-    }
-    else
-    {
-        AdvancedTimer::stepEnd(className);
-        return;
     }
 
     if (continueSolving)
     {
-        AdvancedTimer::stepBegin(className + " - SolveSystem");
+        sofa::helper::ScopedAdvancedTimer buildSystemTimer(className + " - SolveSystem");
         continueSolving = solveSystem(cParams, res1, res2);
-        AdvancedTimer::stepEnd(className + " - SolveSystem");
-    }
-    else
-    {
-        AdvancedTimer::stepEnd(className);
-        return;
     }
 
     if (continueSolving)
     {
-        AdvancedTimer::stepBegin(className + " - ApplyCorrection");
+        sofa::helper::ScopedAdvancedTimer applyCorrectionTimer(className + " - ApplyCorrection");
         applyCorrection(cParams, res1, res2);
-        AdvancedTimer::stepEnd(className + " - ApplyCorrection");
     }
-
-    AdvancedTimer::stepEnd(className);
 }
-
 
 bool ConstraintSolver::insertInNode( objectmodel::BaseNode* node )
 {
@@ -98,12 +74,5 @@ bool ConstraintSolver::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-
-
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior
 
