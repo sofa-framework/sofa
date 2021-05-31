@@ -196,11 +196,9 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
             }
             else wimage->getCImgList().push_back(cimg_library::CImg<T>().load(fname.c_str()));
 
-        if(!wimage->isEmpty())
-            msg_info(container) << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")";
-        else return false;
-
-        return true;
+        const bool isImageEmpty = wimage->isEmpty();
+        msg_info_when(!isImageEmpty, container) << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")";
+        return !isImageEmpty;
     }
 
     static bool loadCamera( ImageContainerT* container )
@@ -368,9 +366,13 @@ public:
         if (!this->transformIsSet) this->transform.unset();
 
         if (this->transformIsSet)
+        {
             msg_info() << "Transform is set";
+        }
         else
+        {
             msg_info() << "Transform is NOT set";
+        }
 
         ImageContainerSpecialization<ImageTypes>::parse( this, arg );
     }

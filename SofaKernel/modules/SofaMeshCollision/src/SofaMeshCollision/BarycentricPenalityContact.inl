@@ -51,7 +51,11 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     if (ff!=nullptr)
     {
         ff->cleanup();
-        if (parent!=nullptr) parent->removeObject(ff);
+
+        if (parent != nullptr)
+        {
+            parent->removeObject(ff);
+        }
         //delete ff;
         parent = nullptr;
         ff = nullptr;

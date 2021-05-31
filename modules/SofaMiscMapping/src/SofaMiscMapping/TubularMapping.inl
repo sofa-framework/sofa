@@ -33,7 +33,6 @@ TubularMapping<TIn, TOut>::TubularMapping ( )
     , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
     , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
     , m_peak (initData(&m_peak, 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))
-    ,radiusContainer(nullptr)
 {
 }
 template <class TIn, class TOut>
@@ -41,16 +40,12 @@ void TubularMapping<TIn, TOut>::init()
 {
     if (!m_radius.isSet())
     {
-        this->getContext()->get(radiusContainer);
-        msg_info() << "get Radius Container";
-        if (!radiusContainer)
-            msg_error() << "TubularMapping : No Radius defined";
-    }
-    else
-    {
-        msg_info() << "get Radius tout court";
+        msg_error() << "No Radius defined";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     Inherit::init();
 
 }
@@ -58,8 +53,10 @@ void TubularMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams */, OutDataVecCoord& dOut, const InDataVecCoord& dIn)
 {
-    // Propagation of positions from the input DOFs to the output DOFs
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
 
+    // Propagation of positions from the input DOFs to the output DOFs
     const InVecCoord& in = dIn.getValue();
     OutVecCoord& out = *dOut.beginEdit();
 
@@ -77,9 +74,6 @@ void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams
 
     for (unsigned int i=0; i<in.size(); i++)
     {
-        if(radiusContainer)
-            rho = radiusContainer->getPointRadius(i);
-
         // allows for peak at the beginning or at the end of the Tubular Mapping
 
         Real radius_rho = (Real) rho;
@@ -131,6 +125,9 @@ void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams
 template <class TIn, class TOut>
 void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     // Propagation of velocities from the input DOFs to the output DOFs
     const InVecDeriv& in = dIn.getValue();
     OutVecDeriv& out = *dOut.beginEdit();
@@ -163,6 +160,9 @@ void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams
 template <class TIn, class TOut>
 void TubularMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparams */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     // useful for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
     const OutVecDeriv& in = dIn.getValue();
     InVecDeriv& out = *dOut.beginEdit();
@@ -196,6 +196,9 @@ void TubularMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparam
 template <class TIn, class TOut>
 void TubularMapping<TIn, TOut>::applyJT( const core::ConstraintParams * /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn)
 {
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     // useful for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
     const OutMatrixDeriv& in = dIn.getValue();
     InMatrixDeriv& out = *dOut.beginEdit();
