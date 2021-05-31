@@ -410,6 +410,21 @@ void SofaWindowProfiler::createTreeView()
     columnNames << "Hierarchy Step Name" << "Total (%)" << "Self (%)" << "Time (ms)" << "Self (ms)";
     tree_steps->setHeaderLabels(columnNames);
 
+    tree_steps->headerItem()->setToolTip(1, QString("Percentage of time taken by this step compared to the total time"));
+    tree_steps->headerItem()->setToolTip(2,
+                                         QString("- If the step has child steps: percentage of the time taken "
+                                                 "by this step minus the sum of the time taken by its children, compared to "
+                                                 "the total time.\n"
+                                                 "- If the step has no child step: percentage of the average time taken by "
+                                                 "this step in case of multiple calls of this step during this time step, "
+                                                 "compared to the total time."));
+    tree_steps->headerItem()->setToolTip(3, QString("Time taken by this step compared to the total time"));
+    tree_steps->headerItem()->setToolTip(4,
+                                         QString("- If the step has child steps: time taken "
+                                                 "by this step minus the sum of the time taken by its children.\n"
+                                                 "- If the step has no child step: average time taken by "
+                                                 "this step in case of multiple calls of this step during this time step."));
+
     // set column properties
     tree_steps->header()->setStretchLastSection(false);
     tree_steps->header()->setSectionResizeMode(0, QHeaderView::Stretch);
