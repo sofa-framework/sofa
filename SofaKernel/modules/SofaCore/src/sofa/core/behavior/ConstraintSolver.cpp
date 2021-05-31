@@ -37,26 +37,30 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 
     bool continueSolving = true;
     {
-        sofa::helper::ScopedAdvancedTimer prepareStateTimer(className + " - PrepareState");
+        sofa::helper::AdvancedTimer::stepBegin(className + " - PrepareState");
         continueSolving = prepareStates(cParams, res1, res2);
+        sofa::helper::AdvancedTimer::stepEnd(className + " - PrepareState");
     }
 
     if (continueSolving)
     {
-        sofa::helper::ScopedAdvancedTimer buildSystemTimer(className + " - BuildSystem");
+        sofa::helper::AdvancedTimer::stepBegin(className + " - BuildSystem");
         continueSolving = buildSystem(cParams, res1, res2);
+        sofa::helper::AdvancedTimer::stepEnd(className + " - BuildSystem");
     }
 
     if (continueSolving)
     {
-        sofa::helper::ScopedAdvancedTimer buildSystemTimer(className + " - SolveSystem");
+        sofa::helper::AdvancedTimer::stepBegin(className + " - SolveSystem");
         continueSolving = solveSystem(cParams, res1, res2);
+        sofa::helper::AdvancedTimer::stepEnd(className + " - SolveSystem");
     }
 
     if (continueSolving)
     {
-        sofa::helper::ScopedAdvancedTimer applyCorrectionTimer(className + " - ApplyCorrection");
+        sofa::helper::AdvancedTimer::stepBegin(className + " - ApplyCorrection");
         applyCorrection(cParams, res1, res2);
+        sofa::helper::AdvancedTimer::stepEnd(className + " - ApplyCorrection");
     }
 }
 
