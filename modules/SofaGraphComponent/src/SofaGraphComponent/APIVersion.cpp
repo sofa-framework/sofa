@@ -28,6 +28,7 @@ using sofa::core::RegisterObject ;
 
 #include "APIVersion.h"
 #include <sofa/version.h>
+#include <numeric>
 
 namespace sofa::component::_apiversion_
 {
@@ -56,10 +57,15 @@ void APIVersion::checkInputData()
     if( !d_level.isSet() && name.isSet() ){
         d_level.setValue(getName());
     }
-    std::vector<std::string> allowedVersion = { "17.06", "17.12", "18.06", "18.12", SOFA_VERSION_STR } ;
-    if( std::find( allowedVersion.begin(), allowedVersion.end(), d_level.getValue()) == allowedVersion.end() )
+
+    const auto & API_version = d_level.getValue();
+    static const std::set<std::string> allowedAPIVersions { "17.06", "17.12", "18.06", "18.12", "19.06", "19.12", "20.06", "20.12", SOFA_VERSION_STR } ;
+    if( allowedAPIVersions.find(API_version) == std::cend(allowedAPIVersions) )
     {
-        msg_warning() << "The provided level '"<< d_level.getValue() <<"' is now valid. " ;
+        auto allowedVersionStr = std::accumulate(std::next(allowedAPIVersions.begin()), allowedAPIVersions.end(), *(allowedAPIVersions.begin()), [](const std::string & s, const std::string & v) {
+            return s + ", " + v;
+        });
+        msg_warning() << "The provided level '"<< API_version <<"' is not valid. Allowed versions are [" << allowedVersionStr << "]." ;
     }
 }
 

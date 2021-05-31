@@ -34,8 +34,6 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include "StiffnessContainer.h"
-#include "PoissonContainer.h"
 #include "BeamFEMForceField.h"
 
 
@@ -127,8 +125,6 @@ void BeamFEMForceField<DataTypes>::init()
     }
 
     BaseContext* context = this->getContext();
-    m_stiffnessContainer = context->BaseContext::get<container::StiffnessContainer>();
-    m_poissonContainer = context->BaseContext::get<container::PoissonContainer>();
 
     if(m_topology->getNbEdges()==0)
     {
@@ -183,10 +179,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(Index i)
     Index b = (*m_indexedElements)[i][1];
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    if (m_stiffnessContainer)
-        stiffness = m_stiffnessContainer->getStiffness(i) ;
-    else
-        stiffness =  d_youngModulus.getValue() ;
+    stiffness =  d_youngModulus.getValue() ;
 
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
 

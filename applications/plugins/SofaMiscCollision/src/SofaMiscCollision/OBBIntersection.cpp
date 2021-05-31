@@ -29,6 +29,8 @@
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaUserInteraction/RayModel.h>
 
+#include <SofaUserInteraction/FixParticlePerformer.h>
+
 namespace sofa::component::collision
 {
 
@@ -225,6 +227,27 @@ int  RigidDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, Output
 
 }
 
+// add OBBModel to the list of supported collision models for FixParticlePerformer
+using FixParticlePerformer3d = sofa::component::collision::FixParticlePerformer<defaulttype::Vec3Types>;
 
+int obbFixParticle = FixParticlePerformer3d::RegisterSupportedModel<OBBCollisionModel<sofa::defaulttype::Rigid3Types>>(
+    []
+(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
+    {
+        auto* obb = dynamic_cast<OBBCollisionModel<sofa::defaulttype::Rigid3Types>*>(model.get());
+
+        if (!obb)
+            return false;
+
+        auto* collisionState= model->getContext()->getMechanicalState();
+        fixPoint[0] = collisionState->getPX(idx);
+        fixPoint[1] = collisionState->getPY(idx);
+        fixPoint[2] = collisionState->getPZ(idx);
+
+        points.push_back(idx);
+
+        return true;
+    }
+);
 
 } // namespace sofa::component::collision

@@ -22,12 +22,7 @@
 #pragma once
 
 #include <SofaGeneralMeshCollision/MeshDiscreteIntersection.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/proximity.h>
-#include <iostream>
-#include <algorithm>
-
+#include <SofaBaseCollision/DiscreteIntersection.h>
 
 namespace sofa::component::collision
 {
