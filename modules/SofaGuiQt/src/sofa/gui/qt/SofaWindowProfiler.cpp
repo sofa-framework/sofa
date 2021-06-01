@@ -410,19 +410,19 @@ void SofaWindowProfiler::createTreeView()
     columnNames << "Hierarchy Step Name" << "Total (%)" << "Self (%)" << "Time (ms)" << "Self (ms)";
     tree_steps->setHeaderLabels(columnNames);
 
-    tree_steps->headerItem()->setToolTip(1, QString("Percentage of time taken by this step compared to the total time"));
+    tree_steps->headerItem()->setToolTip(1, QString("Percentage of duration of this step compared to the duration of the root step"));
     tree_steps->headerItem()->setToolTip(2,
-                                         QString("- If the step has child steps: percentage of the time taken "
-                                                 "by this step minus the sum of the time taken by its children, compared to "
-                                                 "the total time.\n"
-                                                 "- If the step has no child step: percentage of the average time taken by "
-                                                 "this step in case of multiple calls of this step during this time step, "
-                                                 "compared to the total time."));
-    tree_steps->headerItem()->setToolTip(3, QString("Time in milliseconds taken by this step"));
+                                         QString("- If the step has child steps: percentage of the duration "
+                                                 "of this step minus the sum of durations of its children, compared to "
+                                                 "the duration of the root step.\n"
+                                                 "- If the step has no child step: percentage of the average duration "
+                                                 "of this step in case of multiple calls of this step during this time step, "
+                                                 "compared to the duration of the root step."));
+    tree_steps->headerItem()->setToolTip(3, QString("Duration in milliseconds of this step"));
     tree_steps->headerItem()->setToolTip(4,
-                                         QString("- If the step has child steps: time in milliseconds taken "
-                                                 "by this step minus the sum of the time taken by its children.\n"
-                                                 "- If the step has no child step: average time in milliseconds taken by "
+                                         QString("- If the step has child steps: duration in milliseconds of "
+                                                 "this step minus the sum of durations of its children.\n"
+                                                 "- If the step has no child step: average duration in milliseconds of "
                                                  "this step in case of multiple calls of this step during this time step."));
 
     // set column properties
