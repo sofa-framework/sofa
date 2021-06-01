@@ -418,11 +418,11 @@ void SofaWindowProfiler::createTreeView()
                                                  "- If the step has no child step: percentage of the average time taken by "
                                                  "this step in case of multiple calls of this step during this time step, "
                                                  "compared to the total time."));
-    tree_steps->headerItem()->setToolTip(3, QString("Time taken by this step compared to the total time"));
+    tree_steps->headerItem()->setToolTip(3, QString("Time in milliseconds taken by this step"));
     tree_steps->headerItem()->setToolTip(4,
-                                         QString("- If the step has child steps: time taken "
+                                         QString("- If the step has child steps: time in milliseconds taken "
                                                  "by this step minus the sum of the time taken by its children.\n"
-                                                 "- If the step has no child step: average time taken by "
+                                                 "- If the step has no child step: average time in milliseconds taken by "
                                                  "this step in case of multiple calls of this step during this time step."));
 
     // set column properties
