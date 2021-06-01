@@ -28,6 +28,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <QGridLayout>
 #include <QDebug>
+#include <utility>
 
 namespace sofa::gui::qt
 {
@@ -96,7 +97,7 @@ SReal convertInMs(ctime_t t, int nbIter=1)
 
 SofaWindowProfiler::AnimationSubStepData::AnimationSubStepData(int level, std::string name, ctime_t start)
     : m_level(level)
-    , m_name(name)
+    , m_name(std::move(name))
     , m_nbrCall(1)
     , m_start(start)
 {
@@ -290,7 +291,7 @@ bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idStr
 SReal SofaWindowProfiler::AnimationStepData::getStepMs(const std::string& stepName, const std::string& parentName)
 {
     SReal result = 0.0;
-    if (parentName == "")
+    if (parentName.empty())
     {
         for (unsigned int i=0; i<m_subSteps.size(); i++)
         {
@@ -405,25 +406,34 @@ void SofaWindowProfiler::resetGraph()
 
 void SofaWindowProfiler::createTreeView()
 {
+    //list of the columns description
+    //- first: column names
+    //- second: tooltip (description of the column)
+    const std::vector< std::pair< QString, QString > > columnsLabels = {
+            {"Hierarchy Step Name", "Label of the measured step"},
+            {"Total (%)", "Percentage of duration of this step compared to the duration of the root step"},
+            {"Self (%)", "- If the step has child steps: percentage of the duration "
+                           "of this step minus the sum of durations of its children, compared to "
+                           "the duration of the root step.\n"
+                           "- If the step has no child step: percentage of the average duration "
+                           "of this step in case of multiple calls of this step during this time step, "
+                           "compared to the duration of the root step."},
+            {"Time (ms)", "Duration in milliseconds of this step"},
+            {"Self (ms)", "- If the step has child steps: duration in milliseconds of "
+                             "this step minus the sum of durations of its children.\n"
+                             "- If the step has no child step: average duration in milliseconds of "
+                             "this step in case of multiple calls of this step during this time step."}
+    };
+
     // set column names
     QStringList columnNames;
-    columnNames << "Hierarchy Step Name" << "Total (%)" << "Self (%)" << "Time (ms)" << "Self (ms)";
-    tree_steps->setHeaderLabels(columnNames);
 
-    tree_steps->headerItem()->setToolTip(1, QString("Percentage of duration of this step compared to the duration of the root step"));
-    tree_steps->headerItem()->setToolTip(2,
-                                         QString("- If the step has child steps: percentage of the duration "
-                                                 "of this step minus the sum of durations of its children, compared to "
-                                                 "the duration of the root step.\n"
-                                                 "- If the step has no child step: percentage of the average duration "
-                                                 "of this step in case of multiple calls of this step during this time step, "
-                                                 "compared to the duration of the root step."));
-    tree_steps->headerItem()->setToolTip(3, QString("Duration in milliseconds of this step"));
-    tree_steps->headerItem()->setToolTip(4,
-                                         QString("- If the step has child steps: duration in milliseconds of "
-                                                 "this step minus the sum of durations of its children.\n"
-                                                 "- If the step has no child step: average duration in milliseconds of "
-                                                 "this step in case of multiple calls of this step during this time step."));
+    for (std::size_t i = 0; i < columnsLabels.size(); ++i)
+    {
+        columnNames << columnsLabels[i].first;
+        tree_steps->headerItem()->setToolTip(i, columnsLabels[i].second);
+    }
+    tree_steps->setHeaderLabels(columnNames);
 
     // set column properties
     tree_steps->header()->setStretchLastSection(false);
@@ -479,7 +489,7 @@ void SofaWindowProfiler::updateChart()
     {
         m_series->replace(cpt, cpt, stepData->m_totalMs);
 
-        if (m_selectedStep != "")
+        if (!m_selectedStep.empty())
         {
             SReal value = stepData->getStepMs(m_selectedStep, m_selectedParentStep);
             m_selectionSeries->replace(cpt, cpt, value);
