@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -40,7 +41,10 @@ using sofa::core::objectmodel::New;
 using sofa::component::container::MechanicalObject;
 using namespace sofa::defaulttype;
 
-sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& v, sofa::simulation::Node::SPtr& father)
+namespace sofa
+{
+
+inline sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& v, sofa::simulation::Node::SPtr& father)
 {
     //creating node containing TriangleModel
     sofa::simulation::Node::SPtr tri = father->createChild("tri");
@@ -89,4 +93,6 @@ sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>
     triCollisionModel->init();
 
     return triCollisionModel;
+}
+
 }

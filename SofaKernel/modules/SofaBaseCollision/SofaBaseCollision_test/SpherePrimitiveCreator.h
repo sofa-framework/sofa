@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
 
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -41,7 +41,10 @@ using sofa::core::objectmodel::New;
 using sofa::component::container::MechanicalObject;
 using namespace sofa::defaulttype;
 
-sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRigidSphere(const Vec3& p, SReal radius, const Vec3& v, const double* angles, const int* order,
+namespace sofa
+{
+
+inline sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRigidSphere(const Vec3& p, SReal radius, const Vec3& v, const double* angles, const int* order,
     sofa::simulation::Node::SPtr& father)
 {
     //creating node containing OBBModel
@@ -152,53 +155,4 @@ sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::
     return sphereCollisionModel;
 }
 
-sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& v, sofa::simulation::Node::SPtr& father)
-{
-    //creating node containing TriangleModel
-    sofa::simulation::Node::SPtr tri = father->createChild("tri");
-
-    //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject3::SPtr triDOF = New<MechanicalObject3>();
-
-    //editing DOF related to the TriangleCollisionModel<sofa::defaulttype::Vec3Types> to be created, size is 3 (3 points) because it contains just one Triangle
-    triDOF->resize(3);
-    Data<MechanicalObject3::VecCoord>& dpositions = *triDOF->write(sofa::core::VecId::position());
-    MechanicalObject3::VecCoord& positions = *dpositions.beginEdit();
-
-    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = p0;
-    positions[1] = p1;
-    positions[2] = p2;
-
-    dpositions.endEdit();
-
-    //Editting the velocity of the OBB
-    Data<MechanicalObject3::VecDeriv>& dvelocities = *triDOF->write(sofa::core::VecId::velocity());
-
-    MechanicalObject3::VecDeriv& velocities = *dvelocities.beginEdit();
-    velocities[0] = v;
-    velocities[1] = v;
-    velocities[2] = v;
-
-    dvelocities.endEdit();
-
-    tri->addObject(triDOF);
-
-    //creating a topology necessary for capsule
-    sofa::component::topology::MeshTopology::SPtr bmt = New<sofa::component::topology::MeshTopology>();
-    bmt->addTriangle(0, 1, 2);
-    bmt->addEdge(0, 1);
-    bmt->addEdge(1, 2);
-    bmt->addEdge(2, 0);
-    tri->addObject(bmt);
-
-    //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr triCollisionModel = New<sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
-    tri->addObject(triCollisionModel);
-
-
-    //editting the OBBModel
-    triCollisionModel->init();
-
-    return triCollisionModel;
 }

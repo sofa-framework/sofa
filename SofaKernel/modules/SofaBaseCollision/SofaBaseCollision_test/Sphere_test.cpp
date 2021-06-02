@@ -38,12 +38,6 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
-using sofa::component::collision::MeshMinProximityIntersection;
-
-#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
-using sofa::component::collision::MeshNewProximityIntersection ;
-
 #include <SofaBaseCollision/DiscreteIntersection.h>
 using sofa::component::collision::DiscreteIntersection;
 
@@ -516,12 +510,6 @@ void checkGracefulHandlingWhenMechanicalModelIsMissing()
     root->init(sofa::core::execparams::defaultInstance()) ;
 
 }
-
-component::collision::MinProximityIntersection::SPtr minProx = New<component::collision::MinProximityIntersection>();
-MeshMinProximityIntersection meshMin(minProx.get());
-
-component::collision::NewProximityIntersection::SPtr newProx = New<component::collision::NewProximityIntersection>();
-MeshNewProximityIntersection meshNew(newProx.get());
 
 TEST_F(TestSphere, rigid_rigid_1 ) { ASSERT_TRUE( rigidRigid1()); }
 TEST_F(TestSphere, rigid_rigid_2 ) { ASSERT_TRUE( rigidRigid2()); }

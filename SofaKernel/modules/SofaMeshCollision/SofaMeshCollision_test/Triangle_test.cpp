@@ -1,12 +1,18 @@
 
-#include <SofaBaseCollision/DiscreteIntersection.h>
-using sofa::component::collision::DiscreteIntersection;
+#include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
+using sofa::component::collision::MeshMinProximityIntersection;
+
+#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
+using sofa::component::collision::MeshNewProximityIntersection;
+
+#include <SofaMeshCollision/TriangleModel.h>
 
 using sofa::core::execparams::defaultInstance;
 using sofa::core::objectmodel::New;
 using sofa::component::collision::Sphere;
 using sofa::component::collision::SphereCollisionModel;
 using sofa::component::collision::RigidSphere;
+using sofa::component::collision::TriangleCollisionModel;
 
 using sofa::core::collision::DetectionOutput;
 using sofa::defaulttype::Vec3d;
@@ -17,19 +23,18 @@ using sofa::helper::logging::MessageDispatcher;
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest;
 
+#include <SofaSimulationGraph/DAGNode.h>
+
 #include "MeshPrimitiveCreator.h"
+#include <SofaBaseCollision_test/SpherePrimitiveCreator.h>
 
-namespace sofa {
-
+namespace sofa 
+{
 
     struct TestTriangle : public BaseTest
     {
         void SetUp() override
         {
-            m_discreteIntersection = sofa::core::objectmodel::New<DiscreteIntersection>();
-            m_discreteIntersection->setAlarmDistance(1.0);
-            m_discreteIntersection->setContactDistance(1.0);
-
         }
         void TearDown() override
         {
@@ -40,8 +45,6 @@ namespace sofa {
 
         template <class Intersector>
         bool softTriangle(Intersector& bi);
-
-        DiscreteIntersection::SPtr m_discreteIntersection;
     };
 
 template <class Intersector>
@@ -130,7 +133,15 @@ bool TestTriangle::softTriangle(Intersector& bi) {
     return true;
 }
 
+component::collision::MinProximityIntersection::SPtr minProx = New<component::collision::MinProximityIntersection>();
+MeshMinProximityIntersection meshMin(minProx.get());
+
+component::collision::NewProximityIntersection::SPtr newProx = New<component::collision::NewProximityIntersection>();
+MeshNewProximityIntersection meshNew(newProx.get());
+
 TEST_F(TestTriangle, rigid_sphere_triangle_min_prox) { ASSERT_TRUE(rigidTriangle<MeshMinProximityIntersection >(meshMin)); }
 TEST_F(TestTriangle, rigid_sphere_triangle_new_prox) { ASSERT_TRUE(rigidTriangle<MeshNewProximityIntersection >(meshNew)); }
 TEST_F(TestTriangle, soft_sphere_triangle_min_prox) { ASSERT_TRUE(softTriangle<MeshMinProximityIntersection >(meshMin)); }
 TEST_F(TestTriangle, soft_sphere_triangle_new_prox) { ASSERT_TRUE(softTriangle<MeshNewProximityIntersection >(meshNew)); }
+
+} 
