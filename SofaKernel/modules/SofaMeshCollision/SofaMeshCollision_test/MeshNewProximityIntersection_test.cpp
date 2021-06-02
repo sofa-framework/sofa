@@ -24,9 +24,9 @@
 
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
-#include <sofa/helper/testing/NumericTest.h>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
+#include <sofa/testing/NumericTest.h>
 
 
 namespace sofa{
