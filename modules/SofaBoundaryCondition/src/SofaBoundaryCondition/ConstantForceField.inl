@@ -117,7 +117,7 @@ void ConstantForceField<DataTypes>::init()
         // check size of vector indices
         if( indicesSize > m_systemSize )
         {
-            msg_error() << "Size mismatch: indices > system size";
+            msg_error() << "Size mismatch: indices: "<< indicesSize << " > system size: " << m_systemSize;
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
