@@ -125,7 +125,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
         std::map<std::string, CommunicationSubscriber*> map = aServerCommunicationOSC->getSubscribers();
@@ -145,7 +145,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
         CommunicationSubscriber* subscriber = aServerCommunicationOSC->getSubscriberFor("/test");
@@ -165,7 +165,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance());
+        root->init(core::execparams::defaultInstance());
 
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
         EXPECT_NE(aServerCommunicationOSC, nullptr);
@@ -206,7 +206,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
     }
 
     void checkSendOSC()
@@ -222,7 +222,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         std::future<void> future = std::async(std::launch::async, [](){
             OscDumpPacketListener listener;
@@ -257,7 +257,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance());
+        root->init(core::execparams::defaultInstance());
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscReceiver"));
         aServerCommunicationOSC->setRunning(false);
         UdpTransmitSocket transmitSocket( IpEndpointName( "127.0.0.1", 6000 ) );
@@ -306,7 +306,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         ServerCommunication* aServerCommunicationOSCSender = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
         ServerCommunication* aServerCommunicationOSCReceiver = dynamic_cast<ServerCommunication*>(root->getObject("oscReceiver"));

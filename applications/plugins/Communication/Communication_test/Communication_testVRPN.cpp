@@ -99,7 +99,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         ServerCommunication* aServerCommunicationVRPN = dynamic_cast<ServerCommunication*>(root->getObject("vrpnSender"));
         std::map<std::string, CommunicationSubscriber*> map = aServerCommunicationVRPN->getSubscribers();
@@ -119,7 +119,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         ServerCommunication* aServerCommunicationVRPN = dynamic_cast<ServerCommunication*>(root->getObject("vrpnSender"));
         CommunicationSubscriber* subscriber = aServerCommunicationVRPN->getSubscriberFor("/test");
@@ -139,7 +139,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance());
+        root->init(core::execparams::defaultInstance());
 
         ServerCommunication* aServerCommunicationVRPN = dynamic_cast<ServerCommunication*>(root->getObject("vrpnSender"));
         EXPECT_NE(aServerCommunicationVRPN, nullptr);
@@ -180,7 +180,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
     }
 
     void checkSendVRPN()
@@ -196,7 +196,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         std::future<void> future = std::async(std::launch::async, [](){
             //vrpn_Text_Receiver *vrpnText = new vrpn_Text_Receiver("\test@localhost");
@@ -225,7 +225,7 @@ public:
 //                  "</Node>                                                                      \n";
 
 //        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-//        root->init(ExecParams::defaultInstance());
+//        root->init(core::execparams::defaultInstance());
 //        ServerCommunication* aServerCommunicationVRPN = dynamic_cast<ServerCommunication*>(root->getObject("receiver"));
 //        aServerCommunicationVRPN->setRunning(false);
 
@@ -271,7 +271,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         ServerCommunication* aServerCommunicationVRPNSender = dynamic_cast<ServerCommunication*>(root->getObject("vrpnSender"));
         ServerCommunication* aServerCommunicationVRPNReceiver = dynamic_cast<ServerCommunication*>(root->getObject("vrpnReceiver"));

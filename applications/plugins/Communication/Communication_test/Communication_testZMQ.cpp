@@ -177,7 +177,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         ServerCommunication* aServerCommunicationZMQ = dynamic_cast<ServerCommunication*>(root->getObject("zmqSender"));
         std::map<std::string, CommunicationSubscriber*> map = aServerCommunicationZMQ->getSubscribers();
@@ -197,7 +197,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         ServerCommunication* aServerCommunicationZMQ = dynamic_cast<ServerCommunication*>(root->getObject("zmqSender"));
         CommunicationSubscriber* subscriber = aServerCommunicationZMQ->getSubscriberFor("/test");
@@ -217,7 +217,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance());
+        root->init(core::execparams::defaultInstance());
 
         ServerCommunication* aServerCommunicationZMQ = dynamic_cast<ServerCommunication*>(root->getObject("zmqSender"));
         EXPECT_NE(aServerCommunicationZMQ, nullptr);
@@ -258,7 +258,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
     }
 
     void checkSendZMQ()
@@ -275,7 +275,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
 
         std::future<std::string> future = std::async(std::launch::async, [](){
@@ -313,7 +313,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance());
+        root->init(core::execparams::defaultInstance());
         ServerCommunication* aServerCommunication = dynamic_cast<ServerCommunication*>(root->getObject("receiver"));
         root->setAnimate(true);
 
@@ -366,7 +366,7 @@ public:
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(core::execparams::defaultInstance()) ;
 
         ServerCommunication* aServerCommunicationSender = dynamic_cast<ServerCommunication*>(root->getObject("sender"));
         ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("receiver"));
@@ -441,7 +441,7 @@ public:
 
 
 //        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-//        root->init(ExecParams::defaultInstance()) ;
+//        root->init(core::execparams::defaultInstance()) ;
 
 //        ServerCommunication* aServerCommunicationSender = dynamic_cast<ServerCommunication*>(root->getObject("Sender"));
 //        ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("Receiver"));
