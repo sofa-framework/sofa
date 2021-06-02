@@ -113,10 +113,7 @@ void FixedTranslationConstraint<DataTypes>::init()
         // Initialize functions and parameters
         m_pointHandler = new FCPointHandler(this, &f_indices);
         f_indices.createTopologyHandler(_topology, m_pointHandler);
-        f_indices.registerTopologicalData();
-
         f_coordinates.createTopologyHandler(_topology);
-        f_coordinates.registerTopologicalData();
     }
     else
     {
