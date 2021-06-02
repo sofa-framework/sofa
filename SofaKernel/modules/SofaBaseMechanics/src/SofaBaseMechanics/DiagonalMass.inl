@@ -700,7 +700,6 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
         d_vertexMass.linkToTetrahedronDataArray();
     if (hexaGeo)
         d_vertexMass.linkToHexahedronDataArray();
-    d_vertexMass.registerTopologicalData();
 }
 
 template <class DataTypes, class MassType>

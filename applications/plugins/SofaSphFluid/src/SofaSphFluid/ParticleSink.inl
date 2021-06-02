@@ -85,7 +85,6 @@ void ParticleSink<DataTypes>::init()
 
         // Initialize functions and parameters for topology data and handler
         d_fixed.createTopologyHandler(_topology);
-        d_fixed.registerTopologicalData();
     }
 
     msg_info() << "Normal=" << d_planeNormal.getValue() << " d0=" << d_planeD0.getValue() << " d1=" << d_planeD1.getValue();

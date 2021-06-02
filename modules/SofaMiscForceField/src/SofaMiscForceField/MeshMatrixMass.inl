@@ -1079,10 +1079,6 @@ void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers(sofa::core::topol
 
     // PointData need to be linked to Edge container in any topology. d_edgeMassInfo as EdgeData is automatically register to Edge container
     d_vertexMassInfo.linkToEdgeDataArray();
-    
-    // Register topological Data
-    d_vertexMassInfo.registerTopologicalData();
-    d_edgeMassInfo.registerTopologicalData();
 }
 
 
@@ -1309,9 +1305,6 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         m_edgeMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
         m_massLumpingCoeff = 2.0;
     }
-
-    d_vertexMassInfo.registerTopologicalData();
-    d_edgeMassInfo.registerTopologicalData();
 
     d_vertexMassInfo.endEdit();
     d_edgeMassInfo.endEdit();

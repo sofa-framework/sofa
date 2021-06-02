@@ -487,7 +487,6 @@ void TriangularBendingSprings<DataTypes>::init()
     edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.linkToPointDataArray();
     edgeInfo.linkToTriangleDataArray();
-    edgeInfo.registerTopologicalData();
 
     this->reinit();
 }
