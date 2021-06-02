@@ -21,12 +21,12 @@
 ******************************************************************************/
 
 #include "fake_TopologyScene.h"
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
 
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 
 class HexahedronSetTopology_test : public BaseTest

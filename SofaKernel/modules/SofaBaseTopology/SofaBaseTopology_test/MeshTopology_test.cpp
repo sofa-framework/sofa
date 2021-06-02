@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include "fake_TopologyScene.h"
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
@@ -35,7 +35,7 @@
 
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 /**
  * This class will test the MeshTopology containers.
