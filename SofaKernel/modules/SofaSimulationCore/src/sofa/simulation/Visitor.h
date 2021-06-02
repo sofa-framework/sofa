@@ -98,7 +98,7 @@ protected:
     /// Function to be called when a visitor executes a main task
     /// It surrounds the task function with debug information
     template< class VisitorType, class VContext, class ObjectType>
-    static void runVisitorTask(VisitorType *visitor,
+    void runVisitorTask(VisitorType *visitor,
                                VContext *ctx,
                                void (VisitorType::*task)(VContext *, ObjectType *),
                                ObjectType *ptr,
@@ -107,21 +107,21 @@ protected:
     /// Function to be called when a visitor executes a main task
     /// It surrounds the task function with debug information
     template< class VisitorType, class VContext, class ObjectType>
-    static Result runVisitorTask(VisitorType *visitor,
+    Result runVisitorTask(VisitorType *visitor,
                                  VContext *ctx,
                                  Result (VisitorType::*task)(VContext *, ObjectType *),
                                  ObjectType *ptr,
                                  const std::string &typeInfo = std::string("type"));
 
     template < class Visit, class VContext, class Container, typename PointedType = typename Container::pointed_type >
-    static void for_each(Visit* visitor,
+    void for_each(Visit* visitor,
                          VContext* ctx,
                          const Container& list,
                          void (Visit::*task)(VContext*, PointedType*),
                          const std::string &typeInfo = std::string("type"));
 
     template < class Visit, class VContext, class Container, typename PointedType = typename Container::pointed_type>
-    static Visitor::Result for_each(Visit* visitor,
+    Visitor::Result for_each(Visit* visitor,
                                     VContext* ctx,
                                     const Container& list,
                                     Visitor::Result (Visit::*task)(VContext*, PointedType*),
@@ -238,14 +238,14 @@ void Visitor::runVisitorTask(VisitorType *visitor,
                              ObjectType *ptr,
                              const std::string &typeInfo)
 {
-    if(visitor->testTags(ptr))
+    if(this->testTags(ptr))
     {
 #ifdef SOFA_VERBOSE_TRAVERSAL
         visitor->debug_write_state_before(ptr);
 #endif
-        auto t = visitor->begin(ctx, ptr, typeInfo);
+        auto t = this->begin(ctx, ptr, typeInfo);
         (visitor->*task)(ctx, ptr);
-        visitor->end(ctx, ptr, t);
+        this->end(ctx, ptr, t);
 #ifdef SOFA_VERBOSE_TRAVERSAL
         visitor->debug_write_state_after(ptr);
 #endif
@@ -260,14 +260,14 @@ Visitor::Result Visitor::runVisitorTask(VisitorType *visitor,
                                         const std::string &typeInfo)
 {
     Result res = Result::RESULT_CONTINUE;
-    if(visitor->testTags(ptr))
+    if(this->testTags(ptr))
     {
 #ifdef SOFA_VERBOSE_TRAVERSAL
         visitor->debug_write_state_before(ptr);
 #endif
-        auto t = visitor->begin(ctx, ptr, typeInfo);
+        auto t = this->begin(ctx, ptr, typeInfo);
         res = (visitor->*task)(ctx, ptr);
-        visitor->end(ctx, ptr, t);
+        this->end(ctx, ptr, t);
 #ifdef SOFA_VERBOSE_TRAVERSAL
         visitor->debug_write_state_after(ptr);
 #endif
