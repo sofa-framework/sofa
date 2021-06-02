@@ -1,5 +1,6 @@
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+#include <sofa/testing/BaseTest.h>
+
+using sofa::testing::BaseTest;
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 
