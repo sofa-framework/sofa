@@ -66,7 +66,6 @@ void ServerCommunicationVRPN::initTypeFactory()
 
     getFactoryInstance()->registerCreator("matrixVRPNfloat", new DataCreator<FullMatrix<float>>());
     getFactoryInstance()->registerCreator("matrixVRPNdouble", new DataCreator<FullMatrix<double>>());
-    getFactoryInstance()->registerCreator("matrixVRPNint", new DataCreator<FullMatrix<int>>());
 }
 
 std::string ServerCommunicationVRPN::defaultDataType()

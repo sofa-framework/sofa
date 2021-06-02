@@ -56,7 +56,6 @@ void ServerCommunicationZMQ::initTypeFactory()
 
     getFactoryInstance()->registerCreator("matrixfloat", new DataCreator<FullMatrix<float>>());
     getFactoryInstance()->registerCreator("matrixdouble", new DataCreator<FullMatrix<double>>());
-    getFactoryInstance()->registerCreator("matrixint", new DataCreator<FullMatrix<int>>());
 }
 
 std::string ServerCommunicationZMQ::defaultDataType()

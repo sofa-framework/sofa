@@ -63,7 +63,6 @@ void ServerCommunicationOSC::initTypeFactory()
 
     getFactoryInstance()->registerCreator("matrixfloat32", new DataCreator<FullMatrix<float>>());
     getFactoryInstance()->registerCreator("matrixdouble", new DataCreator<FullMatrix<double>>());
-    getFactoryInstance()->registerCreator("matrixint32", new DataCreator<FullMatrix<int>>());
 }
 
 std::string ServerCommunicationOSC::defaultDataType()
