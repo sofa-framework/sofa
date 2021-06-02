@@ -3,7 +3,7 @@
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/simulation/CpuTask.h>
 #include <sofa/simulation/DefaultTaskScheduler.h>
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 
 namespace sofa
 {

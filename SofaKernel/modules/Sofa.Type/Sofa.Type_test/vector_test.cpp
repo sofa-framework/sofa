@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/testing/NumericTest.h>
-using sofa::helper::testing::NumericTest ;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest ;
 
 using ::testing::Types;
 

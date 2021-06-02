@@ -33,8 +33,8 @@ using sofa::helper::system::DataRepository ;
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory ;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 const std::string filename = "UtilsTest.ini";
 const std::string fullpath = std::string(SOFA_TESTING_RESOURCES_DIR) + "/" + filename;

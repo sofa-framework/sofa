@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest;
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 

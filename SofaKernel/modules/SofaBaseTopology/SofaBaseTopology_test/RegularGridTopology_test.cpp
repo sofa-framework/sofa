@@ -6,7 +6,7 @@ using sofa::Sofa_test;
 using sofa::core::objectmodel::New;
 using sofa::defaulttype::Vector3;
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 struct RegularGridTopology_test : public BaseTest,
                                   public ::testing::WithParamInterface<std::vector<int>>
