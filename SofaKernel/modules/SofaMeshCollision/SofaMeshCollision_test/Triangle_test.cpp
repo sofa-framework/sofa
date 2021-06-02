@@ -12,7 +12,9 @@ using sofa::core::objectmodel::New;
 using sofa::component::collision::Sphere;
 using sofa::component::collision::SphereCollisionModel;
 using sofa::component::collision::RigidSphere;
+
 using sofa::component::collision::TriangleCollisionModel;
+
 
 using sofa::core::collision::DetectionOutput;
 using sofa::defaulttype::Vec3d;
@@ -30,14 +32,15 @@ using sofa::testing::BaseTest;
 
 namespace sofa 
 {
-
     struct TestTriangle : public BaseTest
     {
         void SetUp() override
         {
+
         }
         void TearDown() override
         {
+
         }
 
         template <class Intersector>

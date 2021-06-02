@@ -38,8 +38,14 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaBaseCollision/MinProximityIntersection.h>
-using sofa::component::collision::MinProximityIntersection;
+#include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
+using sofa::component::collision::MeshMinProximityIntersection;
+
+#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
+using sofa::component::collision::MeshNewProximityIntersection ;
+
+#include <SofaBaseCollision/DiscreteIntersection.h>
+using sofa::component::collision::DiscreteIntersection;
 
 using sofa::core::execparams::defaultInstance; 
 using sofa::core::objectmodel::New;
@@ -65,7 +71,6 @@ using sofa::testing::BaseSimulationTest;
 
 namespace sofa {
 
-
 struct TestSphere : public BaseSimulationTest
 {
     void SetUp() override
@@ -73,7 +78,6 @@ struct TestSphere : public BaseSimulationTest
         m_proxIntersection = sofa::core::objectmodel::New<MinProximityIntersection>();
         m_proxIntersection->setAlarmDistance(1.0);
         m_proxIntersection->setContactDistance(1.0);
-
     }
     void TearDown() override
     {
