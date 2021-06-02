@@ -503,58 +503,12 @@ void EdgeSetTopologyModifier::fuseEdgesProcess(const sofa::helper::vector< sofa:
 void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<EdgeID> &indices,
         const bool removeIsolatedPoints)
 {
-    if(!m_container->hasEdges())
-        return;
 
     sofa::helper::vector< sofa::helper::vector< SReal > > defaultBaryCoefs(indices.size());
-
-    sofa::helper::vector< sofa::helper::vector< EdgeID > > v(indices.size());
-
-    sofa::helper::vector< Edge >  edges;
-    edges.reserve(2*indices.size());
-
-    sofa::helper::vector< EdgeID >  edgesIndex;
-    edgesIndex.reserve(2*indices.size());
-
-    size_t nbEdges = m_container->getNumberOfEdges();
-
-    for (size_t i=0; i<indices.size(); ++i)
-    {
-        const EdgeID p1 = m_container->getEdge( indices[i] )[0];
-        const EdgeID p2 = m_container->getEdge( indices[i] )[1];
-
-        // Adding the new point
-        v[i].resize(2);
-        v[i][0] = p1;
-        v[i][1] = p2;
-
-        // Adding the new Edges
-        const Edge e1( p1, (PointID)(m_container->getNbPoints() + i ));
-        const Edge e2( (PointID)(m_container->getNbPoints() + i), p2 );
-        edges.push_back( e1 );
-        edges.push_back( e2 );
-        edgesIndex.push_back((EdgeID)nbEdges++);
-        edgesIndex.push_back((EdgeID)nbEdges++);
-
+    for (size_t i = 0; i < indices.size(); ++i)
         defaultBaryCoefs[i].resize(2, 0.5f);
-    }
 
-    addPointsProcess(sofa::Size(indices.size()));
-
-    addEdgesProcess( edges );
-
-    // warn about added points and edges
-    addPointsWarning(sofa::Size(indices.size()), v, defaultBaryCoefs);
-
-    addEdgesWarning(sofa::Size(edges.size()), edges, edgesIndex);
-
-    // warn about old edges about to be removed
-    removeEdgesWarning( indices );
-
-    propagateTopologicalChanges();
-
-    // Removing the old edges
-    removeEdgesProcess( indices, removeIsolatedPoints );
+    return splitEdgesProcess(indices, defaultBaryCoefs, removeIsolatedPoints);
 }
 
 
