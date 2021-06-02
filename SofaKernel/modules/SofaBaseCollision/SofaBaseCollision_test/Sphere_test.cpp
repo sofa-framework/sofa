@@ -38,8 +38,8 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaBaseCollision/DiscreteIntersection.h>
-using sofa::component::collision::DiscreteIntersection;
+#include <SofaBaseCollision/MinProximityIntersection.h>
+using sofa::component::collision::MinProximityIntersection;
 
 using sofa::core::execparams::defaultInstance; 
 using sofa::core::objectmodel::New;
