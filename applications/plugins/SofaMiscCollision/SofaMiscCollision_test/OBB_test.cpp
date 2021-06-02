@@ -19,21 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/PrimitiveCreation.h>
-#include <SofaTest/TestMessageHandler.h>
-
 #include <SofaBaseCollision/OBBIntTool.h>
 #include <SofaBaseCollision/CapsuleIntTool.h>
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-using namespace sofa::PrimitiveCreationTest;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
+
+#include "OBBCapsPrimitiveCreator.h"
+#include <SofaMeshCollision_test/MeshPrimitiveCreator.h>
+
+#include <SofaBaseCollision/BaseIntTool.h>
+#include <SofaMeshCollision/MeshIntTool.h>
+
 using namespace sofa::defaulttype;
 
 using sofa::core::objectmodel::New;
 
 namespace sofa{
-struct TestOBB : public Sofa_test<>{
+struct TestOBB : public BaseTest {
     bool faceVertex();
     bool vertexVertex();
     bool faceFace();

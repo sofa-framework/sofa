@@ -20,6 +20,7 @@ target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaMeshCollision)
 get_target_property(SOFABASECOLLISIONTEST_INCLUDES SofaBaseCollision_test INCLUDE_DIRECTORIES)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SOFABASECOLLISIONTEST_INCLUDES})
+target_include_directories(${PROJECT_NAME} PUBLIC ..)
 
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
