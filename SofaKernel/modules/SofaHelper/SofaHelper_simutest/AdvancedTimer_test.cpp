@@ -27,7 +27,7 @@ using sofa::simulation::Node ;
 using sofa::core::ExecParams;
 
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest ;
+using sofa::testing::BaseSimulationTest ;
 
 namespace sofa {
 

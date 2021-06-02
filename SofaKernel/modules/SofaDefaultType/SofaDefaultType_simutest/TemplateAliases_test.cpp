@@ -24,7 +24,7 @@ using sofa::defaulttype::TemplateAliases;
 using sofa::defaulttype::TemplateAlias;
 
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest ;
+using sofa::testing::BaseSimulationTest ;
 
 namespace sofa {
 

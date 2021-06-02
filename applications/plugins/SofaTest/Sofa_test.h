@@ -25,7 +25,7 @@
 #define SOFA_SOFATEST_BASETEST_H
 
 #include "InitPlugin_test.h"
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 #include <sofa/helper/testing/NumericTest.h>
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 
@@ -38,7 +38,7 @@ using sofa::defaulttype::Vec1Types;
 
 namespace sofa
 {
-    using namespace sofa::helper::testing ;
+    using namespace sofa::testing ;
     class SOFA_SOFATEST_API BaseSofa_test : public BaseSimulationTest
     {
     public:

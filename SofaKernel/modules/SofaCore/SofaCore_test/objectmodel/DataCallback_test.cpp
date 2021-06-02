@@ -24,8 +24,8 @@ using sofa::core::objectmodel::DataCallback;
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 
 namespace sofa {
