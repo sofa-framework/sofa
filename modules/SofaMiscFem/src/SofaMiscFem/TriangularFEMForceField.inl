@@ -173,13 +173,8 @@ void TriangularFEMForceField<DataTypes>::init()
 
     // Create specific Engine for TriangleData
     triangleInfo.createTopologyHandler(m_topology, triangleEngine);
-    triangleInfo.registerTopologicalData();
-
     edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.registerTopologicalData();
-
     vertexInfo.createTopologyHandler(m_topology);
-    vertexInfo.registerTopologicalData();
 
 
     if (f_method.getValue() == "small")

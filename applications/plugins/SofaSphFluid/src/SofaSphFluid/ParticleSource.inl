@@ -84,7 +84,6 @@ void ParticleSource<DataTypes>::init()
     {
         m_pointHandler = new PSPointHandler(this, &m_lastparticles);
         m_lastparticles.createTopologyHandler(_topology, m_pointHandler);
-        m_lastparticles.registerTopologicalData();
     }
 
     msg_info() << "ParticleSource: center = " << d_center.getValue();
