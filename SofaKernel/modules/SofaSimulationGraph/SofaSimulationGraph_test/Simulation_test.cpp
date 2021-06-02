@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/testing/NumericTest.h>
+#include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest ;
 
 #include <sofa/defaulttype/VecTypes.h>

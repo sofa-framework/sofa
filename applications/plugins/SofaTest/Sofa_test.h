@@ -26,7 +26,7 @@
 
 #include "InitPlugin_test.h"
 #include <sofa/testing/BaseTest.h>
-#include <sofa/helper/testing/NumericTest.h>
+#include <sofa/testing/NumericTest.h>
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
