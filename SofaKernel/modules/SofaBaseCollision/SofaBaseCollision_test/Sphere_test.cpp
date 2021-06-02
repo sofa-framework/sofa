@@ -38,8 +38,8 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaBaseCollision/DiscreteIntersection.h>
-using sofa::component::collision::DiscreteIntersection;
+#include <SofaBaseCollision/MinProximityIntersection.h>
+using sofa::component::collision::MinProximityIntersection;
 
 using sofa::core::execparams::defaultInstance; 
 using sofa::core::objectmodel::New;
@@ -58,21 +58,21 @@ using sofa::helper::logging::ClangMessageHandler ;
 
 #include <SofaSimulationGraph/DAGNode.h>
 
-#include <sofa/testing/BaseTest.h>
-using sofa::testing::BaseTest;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include "SpherePrimitiveCreator.h"
 
 namespace sofa {
 
 
-struct TestSphere : public BaseTest
+struct TestSphere : public BaseSimulationTest
 {
     void SetUp() override
     {
-        m_discreteIntersection = sofa::core::objectmodel::New<DiscreteIntersection>();
-        m_discreteIntersection->setAlarmDistance(1.0);
-        m_discreteIntersection->setContactDistance(1.0);
+        m_proxIntersection = sofa::core::objectmodel::New<MinProximityIntersection>();
+        m_proxIntersection->setAlarmDistance(1.0);
+        m_proxIntersection->setContactDistance(1.0);
 
     }
     void TearDown() override
@@ -87,7 +87,7 @@ struct TestSphere : public BaseTest
     bool rigidSoft4();
     bool softSoft1();
 
-    DiscreteIntersection::SPtr m_discreteIntersection;
+    MinProximityIntersection::SPtr m_proxIntersection;
 };
 
 
@@ -118,8 +118,8 @@ bool TestSphere::rigidRigid1(){
 
     sofa::helper::vector<DetectionOutput> detectionOUTPUT;
 
-    //looking for an intersection
-    if(!m_discreteIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
+    //looking for an intersection (with proximities)
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -175,7 +175,7 @@ bool TestSphere::rigidRigid2(){
     sofa::helper::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_discreteIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -222,7 +222,7 @@ bool TestSphere::rigidSoft2(){
     sofa::helper::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_discreteIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -269,7 +269,7 @@ bool TestSphere::rigidSoft1(){
     sofa::helper::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_discreteIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -317,7 +317,7 @@ bool TestSphere::rigidSoft3(){
     sofa::helper::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_discreteIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -364,7 +364,7 @@ bool TestSphere::rigidSoft4(){
     sofa::helper::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_discreteIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
@@ -400,7 +400,7 @@ bool TestSphere::softSoft1(){
     sofa::helper::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
-    if(!m_discreteIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
+    if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
         return false;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)

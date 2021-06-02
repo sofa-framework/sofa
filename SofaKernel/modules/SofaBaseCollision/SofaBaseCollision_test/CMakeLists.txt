@@ -3,12 +3,10 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaBaseCollision_test)
 
 set(HEADER_FILES
-    BroadPhase_test.h
     SpherePrimitiveCreator.h
 )
 
 set(SOURCE_FILES
-    BroadPhase_test.cpp
     Sphere_test.cpp
     DefaultPipeline_test.cpp
 )
