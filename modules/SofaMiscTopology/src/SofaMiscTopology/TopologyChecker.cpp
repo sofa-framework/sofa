@@ -233,7 +233,7 @@ bool TopologyChecker::checkTriangleToEdgeCrossContainer()
 
         for (unsigned int j = 0; j < 3; j++)
         {
-            if (eInTri[j] == Topology::InvalidID)
+            if (eInTri[j] == sofa::InvalidID)
             {
                 msg_error() << "CheckTriangleTopology failed: EdgesInTriangle of triangle: " << i << ": " << triangle << " has invalid ID: " << eInTri;
                 ret = false;
@@ -392,7 +392,7 @@ bool TopologyChecker::checkQuadToEdgeCrossContainer()
 
         for (auto eId : eInQ)
         {
-            if (eId == Topology::InvalidID)
+            if (eId == sofa::InvalidID)
             {
                 msg_error() << "CheckQuadTopology failed: EdgesInQuad of quad: " << i << ": " << quad << " has invalid ID: " << eInQ;
                 ret = false;
@@ -553,7 +553,7 @@ bool TopologyChecker::checkTetrahedronToTriangleCrossContainer()
 
         for (unsigned int j = 0; j < 4; j++)
         {
-            if (triInTetra[j] == Topology::InvalidID)
+            if (triInTetra[j] == sofa::InvalidID)
             {
                 msg_error() << "checkTetrahedronTopology failed: TrianglesInTetrahedron of tetrahedron: " << tetraId << ": " << tetrahedron << " has invalid ID: " << triInTetra;
                 ret = false;
@@ -785,7 +785,7 @@ bool TopologyChecker::checkHexahedronToQuadCrossContainer()
 
         for (auto qId : qInHexa)
         {
-            if (qId == Topology::InvalidID)
+            if (qId == sofa::InvalidID)
             {
                 msg_error() << "checkHexahedronTopology failed: QuadsInHexahedron of hexahedron: " << hexaId << ": " << hexahedron << " has invalid ID: " << qInHexa;
                 ret = false;

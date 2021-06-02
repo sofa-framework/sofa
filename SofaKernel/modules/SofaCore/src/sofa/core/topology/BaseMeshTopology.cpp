@@ -46,12 +46,12 @@ BaseMeshTopology::EdgesInHexahedron BaseMeshTopology::InvalidEdgesInHexahedron;
 
 int initStaticStructures()
 {
-    BaseMeshTopology::InvalidEdgesInTriangles.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidEdgesInQuad.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidTrianglesInTetrahedron.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidEdgesInTetrahedron.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidQuadsInHexahedron.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidEdgesInHexahedron.assign(Topology::InvalidID);
+    BaseMeshTopology::InvalidEdgesInTriangles.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidEdgesInQuad.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidTrianglesInTetrahedron.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidEdgesInTetrahedron.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidQuadsInHexahedron.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidEdgesInHexahedron.assign(sofa::InvalidID);
     return 0;
 }
 

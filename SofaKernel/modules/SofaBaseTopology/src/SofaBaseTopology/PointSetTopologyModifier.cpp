@@ -135,7 +135,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
         newPointIndices[i] = PointID(startIndex + i);
         PointID ancestorIndex = ancestorElems[i].index;
         // check if this new point has indeed an ancestor.
-        if (ancestorIndex != core::topology::BaseMeshTopology::InvalidID )
+        if (ancestorIndex != sofa::InvalidID )
         {
             core::topology::PointAncestorElem::LocalCoords localCoords = ancestorElems[i].localCoords;
             switch (ancestorElems[i].type)
