@@ -22,8 +22,6 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
 
-#include <SofaGeneralMeshCollision/DirectSAP.h>
-#include <SofaGeneralMeshCollision/IncrSAP.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaBaseMechanics/MechanicalObject.h>

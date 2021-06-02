@@ -6,6 +6,7 @@ find_package(SofaMiscCollision REQUIRED)
 
 set(SOURCE_FILES
     DefaultCollisionGroupManager_test.cpp
+    OBB_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
