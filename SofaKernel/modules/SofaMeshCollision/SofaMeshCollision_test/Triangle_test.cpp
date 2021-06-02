@@ -12,6 +12,7 @@ using sofa::core::objectmodel::New;
 using sofa::component::collision::Sphere;
 using sofa::component::collision::SphereCollisionModel;
 using sofa::component::collision::RigidSphere;
+using sofa::component::collision::TriangleCollisionModel;
 
 using sofa::component::collision::TriangleCollisionModel;
 
@@ -36,7 +37,6 @@ namespace sofa
     {
         void SetUp() override
         {
-
         }
         void TearDown() override
         {

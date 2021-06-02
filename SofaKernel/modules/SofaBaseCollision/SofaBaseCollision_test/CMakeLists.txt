@@ -20,4 +20,6 @@ target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaBaseCollision SofaBaseMec
 target_include_directories(${PROJECT_NAME} PUBLIC ..)
 
 
+target_include_directories(${PROJECT_NAME} PUBLIC ..)
+
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

@@ -38,12 +38,6 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
-using sofa::component::collision::MeshMinProximityIntersection;
-
-#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
-using sofa::component::collision::MeshNewProximityIntersection ;
-
 #include <SofaBaseCollision/DiscreteIntersection.h>
 using sofa::component::collision::DiscreteIntersection;
 
