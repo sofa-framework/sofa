@@ -42,6 +42,7 @@
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
 #include <deque>
+#include <unordered_map>
 
 namespace sofa::gui::qt
 {
