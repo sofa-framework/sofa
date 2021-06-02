@@ -675,13 +675,14 @@ void SofaWindowProfiler::onStepSelected(QTreeWidgetItem *item, int /*column*/)
         }
 
         int cpt = 0;
+        QVector<QPointF> seriesPoints;
         for (auto* stepData : m_profilingData)
         {
             const SReal value = stepData->getStepMs(m_selectedStep, m_selectedParentStep);
-            m_selectionSeries->setName(QString(m_selectedStep.c_str()));
-            m_selectionSeries->replace(cpt, cpt, value);
-            cpt++;
+            seriesPoints << QPointF(cpt++, value);
         }
+        m_selectionSeries->replace(seriesPoints);
+        m_selectionSeries->setName(QString(m_selectedStep.c_str()));
     }
 }
 
