@@ -68,7 +68,7 @@ protected:
     void createGroup(core::collision::Contact* contact,
                      int& groupIndex,
                      MergeGroupsMap& mergedGroups,
-                     std::map<core::collision::Contact*, simulation::Node::SPtr>& contactGroup,
+                     sofa::helper::vector< std::pair<core::collision::Contact*, simulation::Node::SPtr> >& contactGroup,
                      sofa::helper::vector< simulation::Node::SPtr >& removedGroup,
                      sofa::helper::vector< core::collision::Contact* >& stationaryContacts);
 
