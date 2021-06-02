@@ -58,8 +58,8 @@ using sofa::helper::logging::ClangMessageHandler ;
 
 #include <SofaSimulationGraph/DAGNode.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include "SpherePrimitiveCreator.h"
 
