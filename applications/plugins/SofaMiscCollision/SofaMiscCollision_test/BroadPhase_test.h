@@ -26,6 +26,9 @@
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/initSofaMiscCollision.h>
+
 #include <gtest/gtest.h>
 
 using sofa::core::objectmodel::New;
@@ -80,7 +83,17 @@ struct MyBox{
 };
 
 template <class BroadPhase>
-struct BroadPhaseTest: public ::testing::Test{
+struct BroadPhaseTest: public ::testing::Test
+{
+    void SetUp() override
+    {
+        // force load SofaMiscCollision
+        sofa::component::initSofaMiscCollision();
+    }
+    void TearDown() override
+    {
+    }
+
     static double getExtent(){return 1.2;}
 
     static bool randSparse();
