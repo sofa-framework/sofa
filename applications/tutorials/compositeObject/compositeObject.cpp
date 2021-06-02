@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>
 
 #include <sofa/simulation/Node.h>
@@ -246,6 +246,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
 
 int main(int argc, char** argv)
 {
+    SOFA_UNUSED(argc);
     sofa::simulation::graph::init();
     sofa::helper::BackTrace::autodump();
 
