@@ -115,7 +115,6 @@ void TriangleLocalMinDistanceFilter::init()
 
         pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
         m_pointInfo.createTopologyHandler(bmt, pointInfoHandler);
-        m_pointInfo.registerTopologicalData();
         m_pointInfo.createTopologyHandler(bmt);
 
         type::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
@@ -130,7 +129,6 @@ void TriangleLocalMinDistanceFilter::init()
 
         lineInfoHandler = new LineInfoHandler(this,&m_lineInfo);
         m_lineInfo.createTopologyHandler(bmt, lineInfoHandler);
-        m_lineInfo.registerTopologicalData();
 
         type::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
@@ -144,7 +142,6 @@ void TriangleLocalMinDistanceFilter::init()
 
         triangleInfoHandler = new TriangleInfoHandler(this,&m_triangleInfo);
         m_triangleInfo.createTopologyHandler(bmt, triangleInfoHandler);
-        m_triangleInfo.registerTopologicalData();
 
         type::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
         tInfo.resize(bmt->getNbTriangles());

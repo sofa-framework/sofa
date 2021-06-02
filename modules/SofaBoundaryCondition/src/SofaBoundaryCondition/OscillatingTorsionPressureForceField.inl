@@ -96,7 +96,6 @@ void OscillatingTorsionPressureForceField<DataTypes>::init()
     origCenter.resize( numPts );
 
     trianglePressureMap.createTopologyHandler(m_topology);
-    trianglePressureMap.registerTopologicalData();
 
     initTriangleInformation();
 }

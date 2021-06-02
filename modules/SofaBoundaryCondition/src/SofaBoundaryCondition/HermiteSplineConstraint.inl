@@ -84,7 +84,6 @@ void HermiteSplineConstraint<DataTypes>::init()
 
         // Initialize functions and parameters for topology data and handler
         m_indices.createTopologyHandler(_topology);
-        m_indices.registerTopologicalData();
     }
     else
     {

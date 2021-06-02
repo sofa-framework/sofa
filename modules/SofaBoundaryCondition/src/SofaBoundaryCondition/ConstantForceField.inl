@@ -73,7 +73,6 @@ void ConstantForceField<DataTypes>::init()
         
         // Initialize functions and parameters for topology data and handler
         d_indices.createTopologyHandler(_topology);
-        d_indices.registerTopologicalData();
 
         m_systemSize = _topology->getNbPoints();
     }
