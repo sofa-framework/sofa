@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaImplicitOdeSolver_test)
 
-set(HEADER_FILES
-    MassSpringSystemCreation.h
-)
-
 set(SOURCE_FILES
     loadPlugins.cpp
     EulerImplicitSolverStatic_test.cpp
@@ -15,7 +11,8 @@ set(SOURCE_FILES
     
 add_definitions("-DSOFAIMPLICITODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
 target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaDeformable SofaImplicitOdeSolver SofaBaseMechanics SofaBaseUtils SofaBoundaryCondition SofaEigen2Solver SceneCreator)
 
 get_target_property(SOFAEXPLICITODESOLVERTEST_INCLUDES SofaExplicitOdeSolver_test INCLUDE_DIRECTORIES)
