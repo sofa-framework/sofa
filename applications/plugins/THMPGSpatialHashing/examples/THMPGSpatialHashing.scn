@@ -5,10 +5,11 @@
     <RequiredPlugin name="SofaLoader"/>
     <RequiredPlugin name="SofaMeshCollision"/>
     <RequiredPlugin name="SofaSimpleFem"/>
+    <RequiredPlugin name="THMPGSpatialHashing"/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <THMPGSpatialHashing name="spatialHashing" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" response="default" />
     <Node name="cubeFEM">
