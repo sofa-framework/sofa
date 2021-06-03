@@ -19,16 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "TestEngine.h"
 #include <SceneCreator/SceneCreator.h>
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/DataEngine_test.h>
+
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <sofa/defaulttype/VecTypes.h>
 
-
-#include <SofaTest/TestMessageHandler.h>
-
+#include "TestEngine.h"
+#include "DataEngineTestCreation.h"
 
 namespace sofa {
 
@@ -44,7 +43,7 @@ engine1
          engine3
 
   */
-struct Engine_test : public Sofa_test<>
+struct Engine_test : public BaseTest
 {
     typedef sofa::component::engine::TestEngine TestEngine;
     TestEngine::SPtr engine1;
@@ -199,7 +198,6 @@ TEST_F(Engine_test , check_propagation )
 #include <SofaGeneralEngine/config.h>
 #include <SofaGeneralEngine/AverageCoord.h>
 #include <SofaEngine/BoxROI.h>
-#include <SofaTest/TestMessageHandler.h>
 #include <SofaGeneralEngine/PairBoxRoi.h>
 #include <SofaGeneralEngine/PlaneROI.h>
 #include <SofaGeneralEngine/SphereROI.h>
