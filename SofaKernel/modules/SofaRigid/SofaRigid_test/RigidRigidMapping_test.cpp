@@ -19,13 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Mapping_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaRigid/RigidRigidMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+#include <SofaBaseMechanics_test/MappingTestCreation.h>
 
 namespace sofa {
 namespace {
