@@ -30,6 +30,8 @@ using sofa::testing::BaseSimulationTest;
 
 #include <SofaBaseMechanics_test/MappingTestCreation.h>
 
+#include <SofaComponentAll/initSofaComponentAll.h>
+
 namespace sofa {
   namespace {
 using namespace core;
@@ -42,11 +44,11 @@ using defaulttype::Mat;
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _RigidMapping>
-struct RigidMappingTest : public Mapping_test<_RigidMapping>
+struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
 {
 
     typedef _RigidMapping RigidMapping;
-    typedef Mapping_test<RigidMapping> Inherit;
+    typedef sofa::mapping_test::Mapping_test<RigidMapping> Inherit;
 
     typedef typename RigidMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
@@ -73,6 +75,11 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
     typedef typename OutMechanicalObject::WriteVecDeriv WriteOutVecDeriv;
     typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
     typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
+
+    void SetUp() override
+    {
+        sofa::component::initSofaComponentAll(); 
+    }
 
 
     RigidMapping* rigidMapping;

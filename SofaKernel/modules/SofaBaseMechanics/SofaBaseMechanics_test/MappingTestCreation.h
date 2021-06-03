@@ -31,8 +31,6 @@ using sofa::testing::NumericTest;
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaBase/initSofaBase.h>
-
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -42,7 +40,7 @@ using sofa::testing::NumericTest;
 
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa {
+namespace sofa::mapping_test {
 
 
 /** @brief Base class for the Mapping tests, with helpers to automatically test applyJ, applyJT, applyDJT and getJs using finite differences.
@@ -128,7 +126,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::initSofaBase();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
@@ -144,7 +141,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
     Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::initSofaComponentAll();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
@@ -534,4 +530,4 @@ protected:
 
 };
 
-} // namespace sofa
+} // namespace sofa::mapping_test
