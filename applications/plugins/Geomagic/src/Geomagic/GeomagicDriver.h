@@ -61,7 +61,7 @@ public:
     typedef HDdouble SHDdouble;
     typedef HDSchedulerHandle SHDSchedulerHandle;
     typedef HHD SHHD;
-#else
+#else // This is just a compatibility layer to be able to compile the plugin without Openhaptics for the continuous integration. The plugin won't work without Openhaptics. 
     typedef double SHDdouble;
     typedef unsigned long SHDSchedulerHandle;
     typedef unsigned int SHHD;
