@@ -65,7 +65,7 @@ namespace sofa::mapping_test {
   and a failure is issued if the error is greater than errorMax*epsilon,
   where epsilon=std::numeric_limits<Real>::epsilon() is 1.19209e-07 for float and 2.22045e-16 for double.
 
-  @author FranÃ§ois Faure @date 2013
+  @author François Faure @date 2013
   */
 
 template< class _Mapping>
@@ -126,6 +126,8 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
+        sofa::component::initSofaBase();
+
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
