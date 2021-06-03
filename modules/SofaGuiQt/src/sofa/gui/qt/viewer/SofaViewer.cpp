@@ -235,7 +235,6 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
             msg_info("SofaViewer") << "Stereo mode: None"; break;
         default:
             msg_info("SofaViewer") << "Stereo mode: INVALID"; break;
-            break;
         }
         break;
     }
