@@ -54,21 +54,15 @@ bool MeshGmshLoader::doLoad()
     std::ifstream file(filename);
 
     // -- Looking for Gmsh version of this file.
-    std::getline(file, cmd); //Version
-    std::istringstream versionReader(cmd);
-    string version;
-    versionReader >> version;
-    if (version == "$MeshFormat") // Reading gmsh 2.0 file
+    std::getline(file, cmd);
+    if (cmd == "$MeshFormat") // Reading gmsh
     {
-        gmshFormat = 2;
-        string line;
-        std::getline(file, line); // we don't need this line (2 0 8)
-        std::getline(file, cmd); // end Version
-        std::istringstream endMeshReader(cmd);
-        string endMesh;
-        endMeshReader >> endMesh;
+        string version;
+        std::getline(file, version); // Getting the version line (e.g. 4.1 0 8)
+        gmshFormat = std::stoul( version.substr( 0, version.find(" ")) ); // Retrieving the mesh format, keeping only the integer part
+        std::getline(file, cmd); // $EndMeshFormat
 
-        if (endMesh != string("$EndMeshFormat") ) // it should end with $EndMeshFormat
+        if (cmd != string("$EndMeshFormat") ) // it should end with $EndMeshFormat
         {
             msg_error() << "No $EndMeshFormat flag found at the end of the file. Closing File";
             file.close();
@@ -79,37 +73,37 @@ bool MeshGmshLoader::doLoad()
             std::getline(file, cmd); // First Command
         }
     }
-    else
+    else if (cmd == "$NOD")
     {
+        // Legacy MSh format version 1 directly starts with the Nodes section
+        // https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format-version-1-_0028Legacy_0029
         gmshFormat = 1;
+    }
+    else // If the first line is neither "$MeshFormat" or "$NOD", then the file is not in a registered MSH format
+    {
+        msg_error() << "File '" << m_filename << "' finally appears not to be a Gmsh file (first line doesn't match known formats).";
+        file.close();
+        return false;
     }
 
     std::istringstream nodeReader(cmd);
     string node;
     nodeReader >> node;
     // -- Reading file
-    if (node == "$NOD" || node == "$Nodes") // Gmsh format
-    {
-        // By default for Gmsh file format, create subElements except if specified not to.
-        if (!d_createSubelements.isSet())
-            d_createSubelements.setValue(true);
 
-        // TODO 2018-04-06: temporary change to unify loader API
-        //fileRead = readGmsh(file, gmshFormat);
-        (void)gmshFormat;
-        file.close();
-        helper::io::Mesh* _mesh = helper::io::Mesh::Create("gmsh", filename);
+    // By default for Gmsh file format, create subElements except if specified not to.
+    if (!d_createSubelements.isSet())
+        d_createSubelements.setValue(true);
 
-        copyMeshToData(*_mesh);
-        delete _mesh;
-        return true;
-    }
-    else //if it enter this "else", it means there is a problem before in the factory or in canLoad()
-    {
-        msg_error() << "File '" << m_filename << "' finally appears not to be a Gmsh file.";
-        file.close();
-        return false;
-    }
+    // TODO 2018-04-06: temporary change to unify loader API
+    //fileRead = readGmsh(file, gmshFormat);
+    (void)gmshFormat;
+    file.close();
+    helper::io::Mesh* _mesh = helper::io::Mesh::Create("gmsh", filename);
+
+    copyMeshToData(*_mesh);
+    delete _mesh;
+    return true;
 }
 
 

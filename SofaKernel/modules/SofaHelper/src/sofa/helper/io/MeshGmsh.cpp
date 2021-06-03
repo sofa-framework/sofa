@@ -59,33 +59,34 @@ void MeshGmsh::init (std::string filename)
     std::string cmd;
 
     // -- Looking for Gmsh version of this file.
-    std::getline(file, cmd); //Version
-    std::istringstream versionReader(cmd);
-    std::string version;
-    versionReader >> version;
-    if (version == "$MeshFormat") // Reading gmsh 2.0 file
+    std::getline(file, cmd); //First line should be the start of the $MeshFormat section
+    if (cmd == "$MeshFormat")
     {
-        gmshFormat = 2;
-        std::string line;
-        std::getline(file, line); // we don't nedd this line
+        std::string version;
+        std::getline(file, version); // Getting the version line (e.g. 4.1 0 8)
+        gmshFormat = std::stoul(version.substr( 0, version.find(" ")) ); // Retrieving the mesh format, keeping only the integer part
         std::getline(file, cmd);
-        std::istringstream endMeshReader(cmd);
-        std::string endMesh;
-        endMeshReader >> endMesh;
 
-        if (endMesh != std::string("$EndMeshFormat")) // it should end with $EndMeshFormat
+        if (cmd != std::string("$EndMeshFormat")) // it should end with $EndMeshFormat
         {
             file.close();
             return;
         }
         else
         {
-            std::getline(file, cmd); // First Command
+            // Reading the file until the node section is hit. In recent versions of MSH file format,
+            // we may encounter various sections between $MeshFormat and $Nodes
+            while (cmd != std::string("$Nodes"))
+                std::getline(file, cmd); // First Command
         }
     }
     else
     {
+        // Legacy MSh format version 1 directly starts with the Nodes section
+        // https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format-version-1-_0028Legacy_0029
         gmshFormat = 1;
+        // The next line is already the first line of the $Nodes section. The file can be passed
+        // to readGmdh in its current state
     }
 
     readGmsh(file, gmshFormat);
