@@ -7,6 +7,8 @@ project(SofaBaseMechanics_test)
 
 set(HEADER_FILES
     MappingTestCreation.h
+    MultiMappingTestCreation.h
+    Multi2MappingTestCreation.h
 )
 
 set(SOURCE_FILES
