@@ -110,12 +110,6 @@ protected:
     FixedPlaneConstraintInternalData<DataTypes> data;
     friend class FixedPlaneConstraintInternalData<DataTypes>;
 
-    /// Forward class declaration, definition is in the .inl
-    class FCPointHandler;
-
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler {nullptr};
-
     /// whether vertices should be selected from 2 parallel planes
     bool m_selectVerticesFromPlanes {false};
 

@@ -135,20 +135,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename LinearMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(LinearMovementConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-    protected:
-        LinearMovementConstraint<DataTypes> *lc;
-    };
-
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
@@ -167,9 +153,6 @@ private:
 
     /// find previous and next time keys
     void findKeyTimes();
-
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 };
 
 

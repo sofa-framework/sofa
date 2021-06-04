@@ -34,17 +34,6 @@
 namespace sofa::component::projectiveconstraintset
 {
 
-// Define RemovalFunction
-template< class DataTypes>
-void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type>&)
-{
-    if (fc)
-    {
-        fc->removeConstraint(pointIndex);
-    }
-}
-
-
 template <class DataTypes>
 AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
@@ -58,7 +47,6 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
     , m_translation(  initData(&m_translation,"translation","translation applied to border points") )
     , m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     if(!m_beginConstraintTime.isSet())
         m_beginConstraintTime = 0;
@@ -71,8 +59,7 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
 template <class DataTypes>
 AffineMovementConstraint<DataTypes>::~AffineMovementConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class DataTypes>
@@ -116,9 +103,8 @@ void AffineMovementConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";        
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &m_indices);
-        m_indices.createTopologyHandler(_topology, m_pointHandler);
+        // Initialize topological changes support
+        m_indices.createTopologyHandler(_topology);
     }
     else
     {

@@ -120,26 +120,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-
-    class FCPointHandler : public component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >
-    {
-    public:
-        typedef typename ProjectToPlaneConstraint<DataTypes>::Indices Indices;
-        typedef typename sofa::core::topology::Point Point;
-        FCPointHandler(ProjectToPlaneConstraint<DataTypes>* _fc, component::topology::PointSubsetData<Indices>* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >(_data), fc(_fc) {}
-
-
-        using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >::applyDestroyFunction;
-        void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
-
-    protected:
-        ProjectToPlaneConstraint<DataTypes> *fc;
-    };
-
 protected :
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
     SparseMatrix jacobian; ///< projection matrix in local state
     SparseMatrix J;        ///< auxiliary variable

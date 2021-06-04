@@ -37,36 +37,6 @@ namespace sofa::component::projectiveconstraintset
 using sofa::helper::WriteAccessor;
 using sofa::defaulttype::Vec;
 using sofa::component::topology::PointSubsetData;
-using sofa::component::topology::TopologyDataHandler;
-
-
-/////////////////////////// DEFINITION OF FCPointHandler (INNER CLASS) /////////////////////////////
-template <class DataTypes>
-class FixedPlaneConstraint<DataTypes>::FCPointHandler :
-        public TopologyDataHandler<BaseMeshTopology::Point, SetIndexArray >
-{
-public:
-    typedef typename FixedPlaneConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-    FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
-        : TopologyDataHandler<BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-    void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-protected:
-    FixedPlaneConstraint<DataTypes> *fc;
-};
-
-/// Define RemovalFunction
-template< class DataTypes>
-void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
-
 
 /////////////////////////// DEFINITION OF FixedPlaneConstraint /////////////////////////////////////
 template <class DataTypes>
@@ -76,7 +46,6 @@ FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
     , d_dmax( initData(&d_dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
     , d_indices( initData(&d_indices,"indices","Indices of the fixed points"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     m_selectVerticesFromPlanes=false;   
 }
@@ -84,8 +53,7 @@ FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::~FixedPlaneConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 /// Matrix Integration interface
@@ -238,9 +206,8 @@ void FixedPlaneConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
-        /// Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &d_indices);
-        d_indices.createTopologyHandler(_topology, m_pointHandler);
+        // Initialize topological changes support
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {

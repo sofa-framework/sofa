@@ -34,17 +34,6 @@
 namespace sofa::component::projectiveconstraintset
 {
 
-// Define RemovalFunction
-template< class DataTypes>
-void PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
-
-
 template <class DataTypes>
 PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
@@ -58,7 +47,6 @@ PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
     , d_cornerPoints(  initData(&d_cornerPoints,"cornerPoints","corner points for computing constraint") )
     , d_drawConstrainedPoints(  initData(&d_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     if(!d_beginConstraintTime.isSet())
      d_beginConstraintTime = 0;
@@ -71,8 +59,7 @@ PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
 template <class DataTypes>
 PatchTestMovementConstraint<DataTypes>::~PatchTestMovementConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class DataTypes>
@@ -116,9 +103,8 @@ void PatchTestMovementConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &d_indices);
-        d_indices.createTopologyHandler(_topology, m_pointHandler);
+        // Initialize topological changes support
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
