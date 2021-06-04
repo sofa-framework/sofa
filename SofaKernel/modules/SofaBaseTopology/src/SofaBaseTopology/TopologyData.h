@@ -114,7 +114,7 @@ public:
     * This is only to specify a specific behevior/computation when removing an element from this container. Otherwise normal deletion is applyed.
     * Parameters are @param Index of the element which is detroyed and @value_type value hold by this container.
     */
-    void applyDestroyFunction(std::function<void(Index, value_type&)> func) { m_DestroyFunction = func; }
+    void setDestructionCallback(std::function<void(Index, value_type&)> func) { p_onDestructionCallback = func; }
     
     /** Method to add a callback when a element is created in this container. It will be called by @sa add method for example.
     * This is only to specify a specific behevior/computation when adding an element in this container. Otherwise default constructor of the element is used.
@@ -124,10 +124,10 @@ public:
     * @param List of ancestor indices.
     * @param List of coefficient respect to the ancestor indices.
     */
-    void applyCreateFunction(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> func) { m_CreateFunction = func; }
+    void setCreationCallback(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> func) { p_onCreationCallback = func; }
 
-    std::function<void(Index, value_type&)> m_DestroyFunction;
-    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> m_CreateFunction;
+    std::function<void(Index, value_type&)> p_onDestructionCallback;
+    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> p_onCreationCallback;
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
     SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method has been removed as it is not part of the new topology change design.")
