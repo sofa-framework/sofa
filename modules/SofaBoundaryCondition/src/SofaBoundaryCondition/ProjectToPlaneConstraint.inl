@@ -32,15 +32,6 @@
 namespace sofa::component::projectiveconstraintset
 {
 
-template< class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type> &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
-
 template <class DataTypes>
 ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
@@ -50,7 +41,6 @@ ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new ProjectToPlaneConstraintInternalData<DataTypes>())    
-    , m_pointHandler(nullptr)
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
@@ -60,9 +50,6 @@ ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
 template <class DataTypes>
 ProjectToPlaneConstraint<DataTypes>::~ProjectToPlaneConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
-
     delete data;
 }
 
@@ -107,9 +94,8 @@ void ProjectToPlaneConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
+        // Initialize topological changes support
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {

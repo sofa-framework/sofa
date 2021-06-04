@@ -32,15 +32,6 @@
 namespace sofa::component::projectiveconstraintset
 {
 
-template< class DataTypes>
-void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type> &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
-
 template <class DataTypes>
 ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
@@ -50,7 +41,6 @@ ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
     , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new ProjectToLineConstraintInternalData<DataTypes>())    
-    , m_pointHandler(nullptr)
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
@@ -60,9 +50,6 @@ ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
 template <class DataTypes>
 ProjectToLineConstraint<DataTypes>::~ProjectToLineConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
-
     delete data;
 }
 
@@ -107,9 +94,8 @@ void ProjectToLineConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
+        // Initialize topological changes support
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {

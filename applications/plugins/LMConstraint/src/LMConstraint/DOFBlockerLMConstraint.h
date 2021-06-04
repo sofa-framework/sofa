@@ -77,15 +77,13 @@ protected:
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
         , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, 1.0f, "showSizeAxis", "size of the vector used to display the constrained axis"))
         , l_topology(initLink("topology", "link to the topology container"))
-        , m_pointHandler(nullptr)
     {
         
     }
 
     ~DOFBlockerLMConstraint()
     {
-        if (m_pointHandler)
-            delete m_pointHandler;
+
     }
 
 public:
@@ -117,25 +115,8 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<DOFBlockerLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    class FCTPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<Index> >
-    {
-    public:
-        FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, SetIndex* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, sofa::type::vector<Index> >(_data), fc(_fc) {}
-
-
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-
-    protected:
-        DOFBlockerLMConstraint<DataTypes> *fc;
-    };
-
 protected :
     sofa::type::vector<SetIndexArray> idxEquations;
-    
-    FCTPointHandler* m_pointHandler;
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)

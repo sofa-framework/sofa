@@ -140,30 +140,12 @@ public:
     /// Draw the constrained points (= border mesh points)
      void draw(const core::visual::VisualParams* vparams) override;
 
-     class FCPointHandler : public component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename AffineMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(AffineMovementConstraint<DataTypes>* _fc, SetIndex* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-        using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >::applyDestroyFunction;
-        void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
-
-    protected:
-        AffineMovementConstraint<DataTypes> *fc;
-    };
-
 protected:
     
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
 private:
-
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
     /// Initialize initial positions
     void initializeInitialPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0);

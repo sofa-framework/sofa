@@ -118,27 +118,9 @@ public:
 
     bool fixAllDOFs() const { return d_fixAll.getValue(); }
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename FixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(FixedConstraint<DataTypes>* _fc, SetIndex* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-    protected:
-        FixedConstraint<DataTypes> *fc;
-    };
-
 protected :
     /// Function check values of given indices
     void checkIndices();
-    
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
 };
 

@@ -70,8 +70,7 @@ protected:
 
     ~FixedLMConstraint()
     {
-        if (m_pointHandler)
-            delete m_pointHandler;
+
     }
 
 public:
@@ -101,30 +100,11 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<FixedLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename FixedLMConstraint<DataTypes>::SetIndexArray SetIndexArray;
-        FCPointHandler(FixedLMConstraint<DataTypes>* _fc, SetIndex* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-    protected:
-        FixedLMConstraint<DataTypes> *fc;
-    };
-
 protected :
 
     Deriv X,Y,Z;
     SetIndexArray idxX, idxY, idxZ;
     std::map< Index, Coord> restPosition;
-
-
-    FCPointHandler* m_pointHandler;
-
 };
 
 

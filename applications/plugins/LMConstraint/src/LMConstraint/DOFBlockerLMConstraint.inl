@@ -29,17 +29,6 @@
 namespace sofa::component::constraintset
 {
 
-// Define RemovalFunction
-template< class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-    return;
-}
-
 template <class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::clearConstraints()
 {
@@ -80,9 +69,8 @@ void DOFBlockerLMConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
-        // Initialize functions and parameters
-        m_pointHandler = new FCTPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
+        // Initialize topological change handling
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {

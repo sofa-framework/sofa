@@ -33,16 +33,6 @@
 namespace sofa::component::projectiveconstraintset
 {
 
-// Define RemovalFunction
-template< class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (lc)
-    {
-        lc->removeIndex((Index) pointIndex);
-    }
-}
-
 template <class TDataTypes>
 LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(nullptr)
@@ -51,7 +41,6 @@ LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     , d_keyVelocities(  initData(&d_keyVelocities,"velocities","velocities corresponding to the key times") )
     , d_coordinates( initData(&d_coordinates, "coordinates", "coordinates on which to apply velocities") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
@@ -66,8 +55,7 @@ LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
 template <class TDataTypes>
 LinearVelocityConstraint<TDataTypes>::~LinearVelocityConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class TDataTypes>
@@ -129,9 +117,8 @@ void LinearVelocityConstraint<TDataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &d_indices);
-        d_indices.createTopologyHandler(_topology, m_pointHandler);
+        // Initialize topological changes support
+        d_indices.createTopologyHandler(_topology);
         d_coordinates.createTopologyHandler(_topology);
     }
     else
