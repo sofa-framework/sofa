@@ -23,8 +23,8 @@
 #define SOFA_STANDARDTEST_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD__TEST_CPP
 
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
@@ -45,7 +45,7 @@ namespace sofa {
  */
 
 template <typename _ForceFieldType>
-struct TetrahedronHyperelasticityFEMForceField_params_test : public Sofa_test<typename _ForceFieldType::DataTypes::Real>
+struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulationTest
 {
     typedef _ForceFieldType ForceField;
     typedef typename ForceField::DataTypes DataTypes;
