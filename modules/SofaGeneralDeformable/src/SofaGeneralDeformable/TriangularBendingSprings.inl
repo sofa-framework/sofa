@@ -434,7 +434,7 @@ void TriangularBendingSprings<DataTypes>::init()
     edgeInfo.linkToPointDataArray();
     edgeInfo.linkToTriangleDataArray();
 
-    edgeInfo.applyCreateFunction([this](Index edgeIndex, EdgeInformation& ei,
+    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeInformation& ei,
         const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::helper::vector< Index >& ancestors,
         const sofa::helper::vector< double >& coefs)
