@@ -1779,7 +1779,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     Real minVMN = (Real)1e20, maxVMN = (Real)-1e20;
     helper::ReadAccessor<Data<helper::vector<Real> > > vM =  _vonMisesPerElement;
     helper::ReadAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
-    if (_computeVonMisesStress.getValue() > 0) 
+    if (_computeVonMisesStress.getValue() > 0)
     {
         for (size_t i = 0; i < vM.size(); i++) {
             minVM = (vM[i] < minVM) ? vM[i] : minVM;
@@ -1801,19 +1801,22 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     if (_showVonMisesStressPerNode.getValue())
     {
-        if (!_computeVonMisesStress.getValue())
+        if (_computeVonMisesStress.getValue()<=0)
         {
             msg_warning() << "Von Mises Stress Per Node can only be displayed if option computeVonMisesStress is set to true";
+            _showVonMisesStressPerNode.setValue(false);
         }
-    
-        std::vector<sofa::helper::types::RGBAColor> nodeColors(x.size());
-        std::vector<defaulttype::Vector3> pts(x.size());
-        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
-        for (size_t nd = 0; nd < x.size(); nd++) {
-            pts[nd] = x[nd];
-            nodeColors[nd] = evalColor(vMN[nd]);
+        else
+        {
+            std::vector<sofa::helper::types::RGBAColor> nodeColors(x.size());
+            std::vector<defaulttype::Vector3> pts(x.size());
+            helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
+            for (size_t nd = 0; nd < x.size(); nd++) {
+                pts[nd] = x[nd];
+                nodeColors[nd] = evalColor(vMN[nd]);
+            }
+            vparams->drawTool()->drawPoints(pts, 10, nodeColors);
         }
-        vparams->drawTool()->drawPoints(pts, 10, nodeColors);
     }
     
     {
@@ -1855,7 +1858,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             } 
             else
             {
-                if (_computeVonMisesStress.getValue() > 0) 
+                if (_computeVonMisesStress.getValue() > 0)
                 {
                     helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
                     auto col = sofa::helper::types::RGBAColor::fromVec4(evalColor(vM[i]));
