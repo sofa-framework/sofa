@@ -144,7 +144,7 @@ void TriangularFEMForceField<DataTypes>::init()
     edgeInfo.createTopologyHandler(m_topology);
     vertexInfo.createTopologyHandler(m_topology);
 
-    triangleInfo.applyCreateFunction([this](Index triangleIndex, TriangleInformation& triInfo,
+    triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInformation& triInfo,
         const core::topology::BaseMeshTopology::Triangle& triangle,
         const sofa::helper::vector< Index >& ancestors,
         const sofa::helper::vector< double >& coefs) 
