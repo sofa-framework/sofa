@@ -41,10 +41,6 @@ TopologyHandler::TopologyHandler()
 {
     
 }
-#define SOFA_CALLBACK_CASE(name, type) \
-    case core::topology::name: \
-        (*itM).second(static_cast< const type* >( *changeIt )); \
-        break;
 
 
 void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize)
@@ -73,58 +69,6 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
             (*itM).second(*changeIt);
         }
 
-        /*
-        if (itM != m_callbackMap.end())
-        {
-            std::cout << "m_callbackMap found" << std::endl;
-            switch (changeType)
-            {
-                SOFA_CALLBACK_CASE(ENDING_EVENT, EndingEvent);
-
-                SOFA_CALLBACK_CASE(POINTSINDICESSWAP, PointsIndicesSwap);
-                SOFA_CALLBACK_CASE(POINTSADDED, PointsAdded);
-                SOFA_CALLBACK_CASE(POINTSREMOVED, PointsRemoved);
-                SOFA_CALLBACK_CASE(POINTSMOVED, PointsMoved);
-                SOFA_CALLBACK_CASE(POINTSRENUMBERING, PointsRenumbering);
-
-                SOFA_CALLBACK_CASE(EDGESINDICESSWAP, EdgesIndicesSwap);
-                SOFA_CALLBACK_CASE(EDGESADDED, EdgesAdded);
-                SOFA_CALLBACK_CASE(EDGESREMOVED, EdgesRemoved);
-                SOFA_CALLBACK_CASE(EDGESMOVED_REMOVING, EdgesMoved_Removing);
-                SOFA_CALLBACK_CASE(EDGESMOVED_ADDING, EdgesMoved_Adding);
-                SOFA_CALLBACK_CASE(EDGESRENUMBERING, EdgesRenumbering);
-
-                SOFA_CALLBACK_CASE(TRIANGLESINDICESSWAP, TrianglesIndicesSwap);
-                SOFA_CALLBACK_CASE(TRIANGLESADDED, TrianglesAdded);
-                SOFA_CALLBACK_CASE(TRIANGLESREMOVED, TrianglesRemoved);
-                SOFA_CALLBACK_CASE(TRIANGLESMOVED_REMOVING, TrianglesMoved_Removing);
-                SOFA_CALLBACK_CASE(TRIANGLESMOVED_ADDING, TrianglesMoved_Adding);
-                SOFA_CALLBACK_CASE(TRIANGLESRENUMBERING, TrianglesRenumbering);
-
-                SOFA_CALLBACK_CASE(TETRAHEDRAINDICESSWAP, TetrahedraIndicesSwap);
-                SOFA_CALLBACK_CASE(TETRAHEDRAADDED, TetrahedraAdded);
-                SOFA_CALLBACK_CASE(TETRAHEDRAREMOVED, TetrahedraRemoved);
-                SOFA_CALLBACK_CASE(TETRAHEDRAMOVED_REMOVING, TetrahedraMoved_Removing);
-                SOFA_CALLBACK_CASE(TETRAHEDRAMOVED_ADDING, TetrahedraMoved_Adding);
-                SOFA_CALLBACK_CASE(TETRAHEDRARENUMBERING, TetrahedraRenumbering);
-
-                SOFA_CALLBACK_CASE(QUADSINDICESSWAP, QuadsIndicesSwap);
-                SOFA_CALLBACK_CASE(QUADSADDED, QuadsAdded);
-                SOFA_CALLBACK_CASE(QUADSREMOVED, QuadsRemoved);
-                SOFA_CALLBACK_CASE(QUADSMOVED_REMOVING, QuadsMoved_Removing);
-                SOFA_CALLBACK_CASE(QUADSMOVED_ADDING, QuadsMoved_Adding);
-                SOFA_CALLBACK_CASE(QUADSRENUMBERING, QuadsRenumbering);
-
-                SOFA_CALLBACK_CASE(HEXAHEDRAINDICESSWAP, HexahedraIndicesSwap);
-                SOFA_CALLBACK_CASE(HEXAHEDRAADDED, HexahedraAdded);
-                SOFA_CALLBACK_CASE(HEXAHEDRAREMOVED, HexahedraRemoved);
-                SOFA_CALLBACK_CASE(HEXAHEDRAMOVED_REMOVING, HexahedraMoved_Removing);
-                SOFA_CALLBACK_CASE(HEXAHEDRAMOVED_ADDING, HexahedraMoved_Adding);
-                SOFA_CALLBACK_CASE(HEXAHEDRARENUMBERING, HexahedraRenumbering);
-            default:
-                break;
-            };
-        }*/
 
         // old version to be removed.
         switch (changeType)
@@ -185,7 +129,6 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
         //++changeIt;
     }
 }
-#undef SOFA_CALLBACK_CASE
 
 void TopologyHandler::update()
 {
