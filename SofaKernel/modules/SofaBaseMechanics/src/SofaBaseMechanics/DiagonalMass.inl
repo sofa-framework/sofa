@@ -77,33 +77,26 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyPointDestruction(c
     helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
     helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
 
-    size_t numberPointsRemoved = pointsRemoved.size();
-    size_t newSize = masses.size()-numberPointsRemoved;
-    size_t counter = 0;
-
-    // Remove the mass of the removed points from totalMass
-    for(size_t i=0; i<numberPointsRemoved; i++)
+    Index last = masses.size() - 1;
+    for (std::size_t i = 0; i < pointsRemoved.size(); ++i)
     {
-        totalMass -= masses[pointsRemoved[i]];
-    }
+        Index id = pointsRemoved[i];
 
-    // Resize the vertexMass vector and remove removed indices
-    bool removedPointFound;
-    for(size_t i=0; i<newSize; i++)
-    {
-        removedPointFound = false;
-        for(size_t j=0; j<numberPointsRemoved; j++)
+        if (id >= masses.size())
         {
-            if(i == pointsRemoved[j])
-                removedPointFound = true;
+            msg_error("DMassPointEngine") << "Point to remove is out of bounds from mass vector: " << id << " out of size: " << masses.size();
+            continue;
         }
-        if(removedPointFound)
-            counter++;
-        else
-            masses[i-counter] = masses[i];
+        
+        // Remove the mass of the removed points from totalMass
+        totalMass -= masses[id];
+
+        // swap value before resize
+        masses[id] = masses[last];
+        --last;
     }
 
-    masses.resize(newSize);
+    masses.resize(last + 1);
 }
 
 template <class DataTypes, class MassType>
