@@ -33,7 +33,7 @@ namespace {
  * @author Matthieu Nesme
   */
 template <typename SquareMapping>
-struct SquareMappingTest : public Mapping_test<SquareMapping>
+struct SquareMappingTest : public sofa::mapping_test::Mapping_test<SquareMapping>
 {
     typedef typename SquareMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;

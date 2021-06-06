@@ -34,7 +34,7 @@ namespace {
  * @author Matthieu Nesme
   */
 template <typename DistanceMapping>
-struct DistanceMappingTest : public Mapping_test<DistanceMapping>
+struct DistanceMappingTest : public sofa::mapping_test::Mapping_test<DistanceMapping>
 {
     typedef typename DistanceMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
