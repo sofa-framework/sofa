@@ -95,11 +95,8 @@ public:
 
     bool operator()(const std::pair<T*,T*>& a, const std::pair<T*,T*>& b) const
     {
-        if (a.first != b.first)
-        {
-            return m_ids->id(a.first) < m_ids->id(b.first);
-        }
-        return m_ids->id(a.second) < m_ids->id(b.second);
+        return std::make_pair(m_ids->id(b.first), m_ids->id(b.second)) >
+               std::make_pair(m_ids->id(a.first), m_ids->id(a.second));
     }
 
     explicit ptr_stable_compare( ptr_stable_id<T>* ids):m_ids(ids)
