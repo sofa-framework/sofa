@@ -75,7 +75,7 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
 
     acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
-    addSeparateGravity(&mop, dt);
+    addSeparateGravity(&mop, dt, core::VecDerivId::velocity());
     computeForce(&mop, f);
     projectResponse(&mop, acc);
 
@@ -244,14 +244,14 @@ void EulerExplicitSolver::init()
     reinit();
 }
 
-void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt)
+void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
 {
     sofa::helper::ScopedAdvancedTimer timer("addSeparateGravity");
 
     /// Calls the "addGravityToV" method of every BaseMass objects found in the current
     /// context tree, if the BaseMass object has the m_separateGravity flag set to true.
     /// The method "addGravityToV" usually performs v += dt * g
-    mop->addSeparateGravity(dt);
+    mop->addSeparateGravity(dt, v);
 }
 
 void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f)
