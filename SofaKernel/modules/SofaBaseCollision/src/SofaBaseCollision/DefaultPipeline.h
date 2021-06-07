@@ -39,7 +39,6 @@ protected:
     DefaultPipeline();
 public:
     void init() override;
-    void draw(const core::visual::VisualParams* vparams) override;
 
     /// get the set of response available with the current collision pipeline
     std::set< std::string > getResponseList() const override;
@@ -53,6 +52,9 @@ protected:
     void doCollisionResponse() override;
 
     virtual void checkDataValues() ;
+
+public:
+    static const int defaultDepthValue;
 };
 
 } // namespace sofa::component::collision

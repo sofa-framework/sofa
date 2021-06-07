@@ -1,7 +1,7 @@
 #include <gtest/gtest-spi.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 
 ////////////// IMPLEMENTS A TEST PREDICATE TO VALIDE THAT A THERE IS AT LEAST ONE MESSAGE

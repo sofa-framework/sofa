@@ -63,10 +63,10 @@ using sofa::simulation::SceneLoaderXML;
 using sofa::helper::logging::MessageDispatcher;
 
 #include <sofa/helper/testing/TestMessageHandler.h>
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 
 template <typename TDataType>
-struct BoxROITest :  public sofa::helper::testing::BaseTest
+struct BoxROITest :  public sofa::testing::BaseTest
 {
     typedef BoxROI<TDataType> TheBoxROI;
     Simulation* m_simu  {nullptr};

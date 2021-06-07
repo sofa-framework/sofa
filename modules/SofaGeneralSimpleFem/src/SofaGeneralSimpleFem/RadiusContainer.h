@@ -22,22 +22,4 @@
 #pragma once
 #include <SofaGeneralSimpleFem/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-
-namespace sofa::component::container
-{
-
-class RadiusContainer : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_ABSTRACT_CLASS(RadiusContainer,sofa::core::objectmodel::BaseObject);
-
-    /// Get the radius around a given point
-    virtual double getPointRadius(sofa::Index index) = 0;
-    /// Get the radius around a given edge
-    virtual double getEdgeRadius(sofa::Index index) = 0;
-    /// Deprecated alias for getEdgeRadius
-    double getRadius(sofa::Index index) { return getEdgeRadius(index); }
-};
-
-} // namespace sofa::component::container
+#error "RadiusContainer has been removed in v21.06 (PR2099)."

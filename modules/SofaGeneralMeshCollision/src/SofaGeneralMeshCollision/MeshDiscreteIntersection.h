@@ -25,22 +25,18 @@
 
 #include <sofa/core/collision/Intersection.h>
 
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/PointModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaBaseCollision/SphereModel.h>
 
 namespace sofa::component::collision
 {
 
+class DiscreteIntersection;
+
 class SOFA_SOFAGENERALMESHCOLLISION_API MeshDiscreteIntersection : public core::collision::BaseIntersector
 {
-
-    typedef DiscreteIntersection::OutputVector OutputVector;
+    typedef core::collision::BaseIntersector::OutputVector OutputVector;
 
 public:
     MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
@@ -51,16 +47,7 @@ public:
     int computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts);
     template<class T> int computeIntersection(TSphere<T>&, Triangle&, OutputVector*);
 
-    int computeIntersection(Triangle & e1,Capsule & e2, OutputVector* contacts);
-
-    inline int computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts);
-    inline int computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts);
-
-    bool testIntersection(Capsule&,Triangle&);
-    bool testIntersection(Capsule&,Line&);
-
 protected:
-
     DiscreteIntersection* intersection;
 
 };
