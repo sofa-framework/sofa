@@ -125,6 +125,10 @@ protected:
     /// container that stotes all requires information for each tetrahedron
     topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> > tetrahedronInfo;
 
+    void createTetrahedronInformation(Index tetrahedronIndex, TetrahedronInformation& tInfo, const core::topology::BaseMeshTopology::Tetrahedron& tetra,
+        const sofa::helper::vector<Index>& ancestors,
+        const sofa::helper::vector<double>& coefs);
+
     /// @name Full system matrix assembly support
     /// @{
 
@@ -138,28 +142,7 @@ protected:
     SReal m_potentialEnergy;
 
     sofa::core::topology::BaseMeshTopology* _topology;
-public:
-    class SOFA_SOFAGENERALSIMPLEFEM_API TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
-    {
-    public :
-        typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
-        using Index = sofa::Index;
-        TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
-                           topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
-            ,ff(ff)
-        {
 
-        }
-
-        void applyCreateFunction(Index, TetrahedronInformation &t, const core::topology::BaseMeshTopology::Tetrahedron &,
-                const sofa::helper::vector<Index> &,
-                const sofa::helper::vector<double> &);
-
-    protected:
-        TetrahedralCorotationalFEMForceField<DataTypes>* ff;
-
-    };
 public:
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
@@ -180,7 +163,6 @@ public:
     SingleLink<TetrahedralCorotationalFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     TetrahedralCorotationalFEMForceField();
-    TetrahedronHandler* tetrahedronHandler;
 
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
