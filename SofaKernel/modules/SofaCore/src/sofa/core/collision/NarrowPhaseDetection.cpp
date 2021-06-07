@@ -78,16 +78,8 @@ auto NarrowPhaseDetection::getDetectionOutputs() const -> const DetectionOutputM
 DetectionOutputVector*& NarrowPhaseDetection::getDetectionOutputs(CollisionModel *cm1, CollisionModel *cm2)
 {
     std::pair< CollisionModel*, CollisionModel* > cm_pair = std::make_pair(cm1, cm2);
-
-    DetectionOutputMap::iterator it = m_outputsMap.find(cm_pair);
-
-    if (it == m_outputsMap.end())
-    {
-        // new contact
-        it = m_outputsMap.insert( std::make_pair(cm_pair, static_cast< DetectionOutputVector * >(0)) ).first;
-    }
-
-    return it->second;
+    const auto res = m_outputsMap.insert(m_outputsMap.end(), {cm_pair, nullptr});
+    return res->second;
 }
 
 void NarrowPhaseDetection::changeInstanceNP(Instance inst)
