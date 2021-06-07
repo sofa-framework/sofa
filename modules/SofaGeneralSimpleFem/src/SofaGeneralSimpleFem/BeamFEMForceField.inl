@@ -58,10 +58,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
     , m_partialListSegment(false)
     , m_updateStiffnessMatrix(true)
     , m_assembling(false)
-    , m_edgeHandler(nullptr)
 {
-    m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
-
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
 }
@@ -80,10 +77,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , m_partialListSegment(false)
     , m_updateStiffnessMatrix(true)
     , m_assembling(false)
-    , m_edgeHandler(nullptr)
 {
-    m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
-
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
 }
@@ -91,7 +85,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::~BeamFEMForceField()
 {
-    if(m_edgeHandler) delete m_edgeHandler;
+
 }
 
 template <class DataTypes>
@@ -157,7 +151,14 @@ void BeamFEMForceField<DataTypes>::init()
         }
     }
 
-    m_beamsData.createTopologyHandler(m_topology,m_edgeHandler);
+    m_beamsData.createTopologyHandler(m_topology);
+    m_beamsData.applyCreateFunction([this](Index edgeIndex, BeamInfo& ei,
+        const core::topology::BaseMeshTopology::Edge& edge,
+        const sofa::helper::vector< Index >& ancestors,
+        const sofa::helper::vector< double >& coefs)
+    {
+        createBeamInfo(edgeIndex, ei, edge, ancestors, coefs);
+    });
 
     reinit();
 }
@@ -202,16 +203,13 @@ void BeamFEMForceField<DataTypes>::reinitBeam(Index i)
 }
 
 template< class DataTypes>
-void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(Index edgeIndex, BeamInfo &ei,
-                                                                          const core::topology::BaseMeshTopology::Edge &,
-                                                                          const sofa::helper::vector<Index> &,
-                                                                          const sofa::helper::vector<double> &)
+void BeamFEMForceField<DataTypes>::createBeamInfo(Index edgeIndex, BeamInfo &ei, 
+    const core::topology::BaseMeshTopology::Edge &,
+    const sofa::helper::vector<Index> &,
+    const sofa::helper::vector<double> &)
 {
-    if(ff)
-    {
-        ff->reinitBeam(edgeIndex);
-        ei = ff->m_beamsData.getValue()[edgeIndex];
-    }
+    reinitBeam(edgeIndex);
+    ei = m_beamsData.getValue()[edgeIndex];
 }
 
 template<class DataTypes>

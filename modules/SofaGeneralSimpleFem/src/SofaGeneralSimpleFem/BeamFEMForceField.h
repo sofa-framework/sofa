@@ -38,8 +38,6 @@ namespace  sofa::component::forcefield
 
 namespace _beamfemforcefield_
 {
-
-using topology::TopologyDataHandler;
 using core::MechanicalParams;
 using core::behavior::MultiMatrixAccessor;
 using core::behavior::ForceField;
@@ -141,27 +139,16 @@ protected:
             return in;
         }
     };
-
-    class BeamFFEdgeHandler : public TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >
-    {
-    public:
-        typedef typename BeamFEMForceField<DataTypes>::BeamInfo BeamInfo;
-        BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, EdgeData<helper::vector<BeamInfo> >* data)
-            :TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >(data),ff(ff) {}
-
-        void applyCreateFunction(Index edgeIndex, BeamInfo&,
-                                 const BaseMeshTopology::Edge& e,
-                                 const helper::vector<Index> &,
-                                 const helper::vector< double > &);
-
-    protected:
-        BeamFEMForceField<DataTypes>* ff;
-
-    };
-
+   
     //just for draw forces
     VecDeriv m_forces;
     EdgeData<helper::vector<BeamInfo> > m_beamsData; ///< Internal element data
+
+    void createBeamInfo(Index edgeIndex, BeamInfo&,
+        const BaseMeshTopology::Edge& e,
+        const helper::vector<Index>&,
+        const helper::vector< double >&);
+
 
     const VecElement *m_indexedElements;
 
@@ -188,7 +175,6 @@ public:
     Quat& beamQuat(int i);
 
     BaseMeshTopology* m_topology;
-    BeamFFEdgeHandler* m_edgeHandler;
 
     BeamFEMForceField();
     BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner);
