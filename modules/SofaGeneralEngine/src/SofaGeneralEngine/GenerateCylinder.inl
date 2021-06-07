@@ -23,11 +23,12 @@
 #include "GenerateCylinder.h"
 #include <sofa/helper/rmath.h> //M_PI
 
+#include <sofa/core/topology/Topology.h>
+
 namespace sofa::component::engine
 {
 
-
-    const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
+using sofa::core::topology::edgesInTetrahedronArray;
 
 template <class DataTypes>
 GenerateCylinder<DataTypes>::GenerateCylinder()

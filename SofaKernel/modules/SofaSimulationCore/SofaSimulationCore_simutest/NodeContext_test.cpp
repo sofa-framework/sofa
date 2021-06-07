@@ -23,7 +23,7 @@
 using sofa::simulation::Node ;
 
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest ;
+using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 #include <SofaBaseUtils/InfoComponent.h>

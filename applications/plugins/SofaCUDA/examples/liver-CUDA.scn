@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name='SofaGeneralLoader'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaLoader'/>
+    <RequiredPlugin name='SofaOpenglVisual'/>
+    <RequiredPlugin name="SofaCUDA"/>
+	
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="collision response" response="default" />
+    <DiscreteIntersection/>
+
+    <MeshObjLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
+
+    <Node name="Liver" gravity="0 -9.81 0">
+        <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
+        
+        <MechanicalObject name="dofs" src="@meshLoader" template="CudaVec3f"/>
+        
+        <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+        <TetrahedronSetGeometryAlgorithms template="CudaVec3f" name="GeomAlgo" />
+        
+        <DiagonalMass template="CudaVec3f,float" name="DiagonalMass" massDensity="1" />
+        <TetrahedronFEMForceField template="CudaVec3f" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+                
+        <FixedConstraint name="FixedConstraint" template="CudaVec3f" topology="@topo" indices="3 39 64" />
+        
+        <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
+            <OglModel  name="VisualModel" src="@../../LiverSurface" />
+            <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
+        </Node>
+        
+        <Node name="Surf" gravity="0 -9.81 0">
+            <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject name="spheres" position="@[-1].position" template="CudaVec3f"/>
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+            <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
+        </Node>
+        
+    </Node>
+</Node>

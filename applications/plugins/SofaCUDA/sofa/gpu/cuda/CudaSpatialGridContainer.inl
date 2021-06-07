@@ -37,7 +37,7 @@
 #include <sofa/gpu/cuda/CudaSpatialGridContainer.h>
 #include <sofa/gpu/cuda/CudaSort.h>
 #include <SofaSphFluid/SpatialGridContainer.inl>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 namespace sofa
 {
@@ -327,7 +327,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         int b = (cell>>4)&3;
         glColor4ub(63+r*64,63+g*64,63+b*64,255);
         //glVertex3fv(sortedPos[i].ptr());
-        helper::gl::glVertexT((*lastX)[p]);
+        sofa::gl::glVertexT((*lastX)[p]);
     }
     glEnd();
     glPointSize(1);

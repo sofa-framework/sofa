@@ -19,16 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_CONFIG_H
-#define SOFA_DEFAULTTYPE_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
-#ifdef SOFA_BUILD_DEFAULTTYPE
-#  define SOFA_TARGET SofaDefaultType
+#ifdef SOFA_BUILD_SOFA_DEFAULTTYPE
+#  define SOFA_TARGET @PROJECT_NAME@
 #  define SOFA_DEFAULTTYPE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_DEFAULTTYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 #endif

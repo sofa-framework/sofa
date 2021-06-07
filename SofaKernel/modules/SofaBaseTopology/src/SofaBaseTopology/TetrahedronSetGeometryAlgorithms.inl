@@ -35,8 +35,6 @@ namespace sofa::component::topology
 using sofa::core::objectmodel::ComponentState;
 using namespace sofa::core::topology;
 
-const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
-
 template< class DataTypes>
 NumericalIntegrationDescriptor<typename TetrahedronSetGeometryAlgorithms< DataTypes >::Real,4> &TetrahedronSetGeometryAlgorithms< DataTypes >::getTetrahedronNumericalIntegrationDescriptor()
 {
@@ -723,7 +721,7 @@ template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& c, Real r,
         sofa::helper::vector<TetrahedronID> &indices) const
 {
-    TetraID ind_ta = core::topology::BaseMeshTopology::InvalidID;
+    TetraID ind_ta = sofa::InvalidID;
     sofa::defaulttype::Vec<3,Real> pa;
     pa[0] = (Real) (c[0]);
     pa[1] = (Real) (c[1]);
@@ -736,7 +734,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
             break;
         }
     }
-    if(ind_ta == core::topology::BaseMeshTopology::InvalidID)
+    if(ind_ta == sofa::InvalidID)
         msg_error() << "getTetraInBall, Can't find the seed.";
     Real d = r;
 //      const Tetrahedron &ta=this->m_topology->getTetrahedron(ind_ta);

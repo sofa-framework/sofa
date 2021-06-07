@@ -25,7 +25,7 @@
 #include "BaseDeformationMultiMapping.h"
 #include "BaseDeformationImpl.inl"
 #include "../quadrature/BaseGaussPointSampler.h"
-#include <sofa/helper/gl/Color.h>
+#include <sofa/gl/Color.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/IndexOpenMP.h>
 
@@ -702,7 +702,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
                 {
                     if(j<size1) In1::get(edge[0][0],edge[0][1],edge[0][2],in1[ref[i][j]]);
                     else In2::get(edge[0][0],edge[0][1],edge[0][2],in2[ref[i][j]-size1]);
-                    sofa::helper::gl::Color::getHSVA(&col[0],240.*w[i][j],1.,.8,1.);
+                    sofa::gl::Color::getHSVA(&col[0],240.*w[i][j],1.,.8,1.);
                     vparams->drawTool()->drawLines ( edge, 1, col );
                 }
         }

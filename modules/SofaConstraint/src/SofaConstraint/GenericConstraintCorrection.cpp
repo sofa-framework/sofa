@@ -22,17 +22,18 @@
 #define SOFA_COMPONENT_CONSTRAINT_GENERICCONSTRAINTCORRECTION_CPP
 
 #include <SofaConstraint/GenericConstraintCorrection.h>
-
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/ConstraintParams.h>
+
 using sofa::core::execparams::defaultInstance; 
 
 namespace sofa::component::constraintset 
 {
-
+using sofa::simulation::mechanicalvisitor::MechanicalIntegrateConstraintsVisitor;
 using sofa::helper::vector;
 using sofa::core::objectmodel::BaseContext;
 using sofa::core::behavior::LinearSolver;
@@ -203,7 +204,7 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
 {
     for (Size i = 0; i < m_linearSolvers.size(); ++i)
     {
-        simulation::MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, m_linearSolvers[i]->getSystemMultiMatrixAccessor());
+        MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, m_linearSolvers[i]->getSystemMultiMatrixAccessor());
         m_linearSolvers[i]->getContext()->executeVisitor(&v);
     }
 }

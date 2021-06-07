@@ -22,57 +22,25 @@
 #pragma once
 #include <SofaBaseCollision/config.h>
 
-#include <sofa/core/collision/BroadPhaseDetection.h>
-#include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <sofa/helper/vector.h>
-
+#include <SofaBaseCollision/BruteForceBroadPhase.h>
+#include <SofaBaseCollision/BVHNarrowPhase.h>
 
 namespace sofa::component::collision
 {
 
-class CubeCollisionModel;
-
 class SOFA_SOFABASECOLLISION_API BruteForceDetection :
-    public core::collision::BroadPhaseDetection,
-    public core::collision::NarrowPhaseDetection
+    public BruteForceBroadPhase,
+    public BVHNarrowPhase
 {
+
 public:
-    SOFA_CLASS2(BruteForceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
-
-private:
-
-    sofa::helper::vector<core::CollisionModel*> collisionModels;
-
-    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
-
-    CubeCollisionModel::SPtr boxModel;
-
+    SOFA_CLASS2(BruteForceDetection, BruteForceBroadPhase, BVHNarrowPhase);
 
 protected:
     BruteForceDetection();
 
     ~BruteForceDetection() override = default;
 
-    virtual bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
-
-public:
-
-    void init() override;
-    void reinit() override;
-
-    void addCollisionModel (core::CollisionModel *cm) override;
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
-
-    void beginBroadPhase() override
-    {
-        core::collision::BroadPhaseDetection::beginBroadPhase();
-        collisionModels.clear();
-    }
-
-    void draw(const core::visual::VisualParams* /* vparams */) override { }
-
-    inline bool needsDeepBoundingTree()const override {return true;}
 };
 
 } // namespace sofa::component::collision

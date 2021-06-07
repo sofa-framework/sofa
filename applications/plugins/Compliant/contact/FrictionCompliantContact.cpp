@@ -3,6 +3,8 @@
 #include <SofaConstraint/FrictionContact.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <SofaMiscCollision/CapsuleContactMapper.h>
+#include <SofaMiscCollision/OBBContactMapper.h>
 
 namespace sofa
 {

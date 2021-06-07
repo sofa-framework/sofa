@@ -30,6 +30,15 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateConstraint.h>
+using sofa::simulation::mechanicalvisitor::MechanicalAccumulateConstraint;
+
 using sofa::core::VecId;
 
 namespace sofa::component::constraintset
@@ -45,7 +54,7 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
     last_lcp = lcp;
-    simulation::MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
+    MechanicalVOpVisitor(core::execparams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
 
     msg_info() <<" propagate DXn performed - collision called" ;
 
@@ -310,8 +319,8 @@ void LCPConstraintSolver::build_LCP()
 
     sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
-    simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
-    simulation::MechanicalAccumulateConstraint(&cparams, cparams.j(), _numConstraints).execute(context);
+    MechanicalResetConstraintVisitor(&cparams).execute(context);
+    MechanicalAccumulateConstraint(&cparams, cparams.j(), _numConstraints).execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
@@ -695,9 +704,9 @@ void LCPConstraintSolver::build_problem_info()
 
     // Accumulate Constraints
 
-    simulation::MechanicalResetConstraintVisitor resetCtr(&cparams);
+    MechanicalResetConstraintVisitor resetCtr(&cparams);
     resetCtr.execute(context);
-    simulation::MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
+    MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
     accCtr.execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();

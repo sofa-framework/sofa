@@ -2,6 +2,7 @@
 <Node dt="0.01" gravity="0 -10 0" bbox="-4 -4 -4 4 4 4">
     <RequiredPlugin name="SofaOpenglVisual"/> 
     <RequiredPlugin name='SofaSphFluid' />
+    <RequiredPlugin name='SofaExplicitOdeSolver'/>
     <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideWireframe" />
 
     <Node name="Particles">

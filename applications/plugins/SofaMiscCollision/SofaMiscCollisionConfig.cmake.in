@@ -3,6 +3,15 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
+find_package(SofaBaseCollision QUIET REQUIRED)
+find_package(SofaBaseTopology QUIET REQUIRED)
+find_package(SofaGeneralMeshCollision QUIET REQUIRED)
+find_package(SofaGeneralDeformable QUIET REQUIRED)
+find_package(SofaConstraint QUIET REQUIRED)
+find_package(SofaExplicitOdeSolver QUIET REQUIRED)
+find_package(SofaGeneralExplicitOdeSolver QUIET REQUIRED)
+find_package(SofaImplicitOdeSolver QUIET REQUIRED)
+
 set(SOFAMISCCOLLISION_HAVE_SOFASPHFLUID @SOFAMISCCOLLISION_HAVE_SOFASPHFLUID@)
 set(SOFAMISCCOLLISION_HAVE_SOFADISTANCEGRID @SOFAMISCCOLLISION_HAVE_SOFADISTANCEGRID@)
 

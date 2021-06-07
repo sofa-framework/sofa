@@ -218,7 +218,7 @@ void OglTexture::initVisual()
     }
 
     if (texture) delete texture;
-    texture = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),
+    texture = new sofa::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),
             generateMipmaps.getValue(), srgbColorspace.getValue(),
             minLod.getValue(), maxLod.getValue());
     texture->init();

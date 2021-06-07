@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaEulerianFluid/Fluid3D.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include <cstring>

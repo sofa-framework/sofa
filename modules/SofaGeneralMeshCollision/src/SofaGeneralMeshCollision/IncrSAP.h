@@ -33,8 +33,6 @@
 #include <set>
 #include <map>
 #include <deque>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>

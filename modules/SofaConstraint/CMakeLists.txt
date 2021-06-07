@@ -23,6 +23,7 @@ list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/ConstraintStoreLambdaVisitor.h
     ${SOFACONSTRAINT_SRC}/ContactIdentifier.h
     ${SOFACONSTRAINT_SRC}/FreeMotionAnimationLoop.h
+    ${SOFACONSTRAINT_SRC}/FreeMotionTask.h
     ${SOFACONSTRAINT_SRC}/FrictionContact.h
     ${SOFACONSTRAINT_SRC}/FrictionContact.inl
     ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.h
@@ -59,6 +60,7 @@ list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/ConstraintStoreLambdaVisitor.cpp
     ${SOFACONSTRAINT_SRC}/ContactIdentifier.cpp
     ${SOFACONSTRAINT_SRC}/FreeMotionAnimationLoop.cpp
+    ${SOFACONSTRAINT_SRC}/FreeMotionTask.cpp
     ${SOFACONSTRAINT_SRC}/FrictionContact.cpp
     ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/GenericConstraintSolver.cpp

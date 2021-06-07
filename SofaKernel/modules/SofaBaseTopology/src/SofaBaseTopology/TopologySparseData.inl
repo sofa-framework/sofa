@@ -119,6 +119,8 @@ void TopologySparseData <TopologyElementType, VecT>::add(const sofa::helper::vec
     const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
     const sofa::helper::vector< AncestorElem >& ancestorElems)
 {
+    SOFA_UNUSED(elems);
+    SOFA_UNUSED(ancestorElems);
     this->add(index.size(), ancestors, coefs);
 }
 
@@ -147,7 +149,7 @@ void TopologySparseData <TopologyElementType, VecT>::remove(const sofa::helper::
         unsigned int elemId = index[i];
         unsigned int id = this->indexOfElement(elemId);
 
-        if (id == sofa::core::topology::Topology::InvalidID)
+        if (id == sofa::InvalidID)
             continue;
 
         cptDone++;

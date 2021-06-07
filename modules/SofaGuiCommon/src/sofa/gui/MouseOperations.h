@@ -21,14 +21,15 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/config.h>
-#include <iostream>
-#include <vector>
+
+#include <sofa/helper/cast.h>
 
 #include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <SofaGraphComponent/FixPickedParticleButtonSetting.h>
-#include <sofa/gui/config.h>
-#include <sofa/helper/cast.h>
+
+#include <iostream>
+#include <vector>
 
 namespace sofa::component::collision
 {

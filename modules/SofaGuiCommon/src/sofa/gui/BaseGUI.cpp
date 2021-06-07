@@ -21,18 +21,20 @@
 ******************************************************************************/
 #include "BaseGUI.h"
 #include "BaseViewer.h"
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
+
 #include <sofa/helper/vector.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
-#include <SofaGraphComponent/SofaDefaultPathSetting.h>
-#include <SofaGraphComponent/StatsSetting.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaBaseVisual/BackgroundSetting.h>
+#include <SofaGraphComponent/ViewerSetting.h>
+#include <SofaGraphComponent/StatsSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <SofaGraphComponent/SofaDefaultPathSetting.h>
 
 #include <algorithm>
 #include <cstring>
-
 
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 

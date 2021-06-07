@@ -24,7 +24,7 @@
 
 #include "OpenCLUniformMass.h"
 #include <SofaBaseMechanics/UniformMass.inl>
-#include <sofa/helper/gl/Axis.h>
+#include <sofa/gl/Axis.h>
 
 namespace sofa
 {

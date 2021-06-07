@@ -1,3 +1,26 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU General Public License as published by the Free  *
+* Software Foundation; either version 2 of the License, or (at your option)   *
+* any later version.                                                          *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+* more details.                                                               *
+*                                                                             *
+* You should have received a copy of the GNU General Public License along     *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <sofa/testing/config.h>
+
 #include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
 
@@ -17,11 +40,11 @@ struct GLSLShader_test : public ::testing::Test
 
     void SetUp() override
     {
-        sofa::helper::system::DataRepository.addFirstPath(FRAMEWORK_TEST_RESOURCES_DIR);
+        sofa::helper::system::DataRepository.addFirstPath(SOFA_TESTING_RESOURCES_DIR);
     }
     void TearDown() override
     {
-        sofa::helper::system::DataRepository.removePath(FRAMEWORK_TEST_RESOURCES_DIR);
+        sofa::helper::system::DataRepository.removePath(SOFA_TESTING_RESOURCES_DIR);
     }
 
 };
@@ -69,11 +92,11 @@ TEST(GLSLShader_test, GLSLShader_SetFiles)
 TEST(GLSLShader_test, GLSLShader_SetStrings)
 {
     gl::GLSLShader glshader;
-    std::string vs = sofa::helper::gl::shader::testvs;
-    std::string fs = sofa::helper::gl::shader::testfs;
-    std::string gs = sofa::helper::gl::shader::testgs;
-    std::string tcs = sofa::helper::gl::shader::testtcs;
-    std::string tes = sofa::helper::gl::shader::testtes;
+    std::string vs = sofa::gl::shader::testvs;
+    std::string fs = sofa::gl::shader::testfs;
+    std::string gs = sofa::gl::shader::testgs;
+    std::string tcs = sofa::gl::shader::testtcs;
+    std::string tes = sofa::gl::shader::testtes;
     glshader.SetVertexShaderFromString(vs);
     glshader.SetFragmentShaderFromString(fs);
 #ifdef GL_GEOMETRY_SHADER_EXT

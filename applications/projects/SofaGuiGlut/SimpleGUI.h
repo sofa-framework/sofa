@@ -30,8 +30,8 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/gl/Texture.h>
-#include <sofa/helper/gl/Capture.h>
+#include <sofa/gl/Texture.h>
+#include <sofa/gl/Capture.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
@@ -54,7 +54,7 @@ namespace glut
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
+using namespace sofa::gl;
 using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 

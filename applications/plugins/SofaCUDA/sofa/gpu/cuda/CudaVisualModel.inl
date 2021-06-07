@@ -24,7 +24,7 @@
 
 #include "CudaVisualModel.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 namespace sofa
 {
@@ -436,9 +436,9 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
         for (unsigned int i = 0; i < x.size(); i++)
         {
             glBegin(GL_LINES);
-            helper::gl::glVertexT(x[i]);
+            sofa::gl::glVertexT(x[i]);
             Coord p = x[i] + vnormals[i]*0.01;
-            helper::gl::glVertexT(p);
+            sofa::gl::glVertexT(p);
             glEnd();
         }
     }

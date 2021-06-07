@@ -102,6 +102,10 @@ class OdeSolver;
 class BaseLinearSolver;
 class BaseInteractionForceField;
 class BaseProjectiveConstraintSet;
+class BaseInteractionProjectiveConstraintSet;
+class BaseInteractionConstraint;
+
+class MultiMatrixAccessor;
 
 template<class T>
 class MechanicalState;

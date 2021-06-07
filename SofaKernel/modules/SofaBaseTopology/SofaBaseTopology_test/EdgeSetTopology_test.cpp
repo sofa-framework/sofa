@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 #include "fake_TopologyScene.h"
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
 
 
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 
 class EdgeSetTopology_test : public BaseTest

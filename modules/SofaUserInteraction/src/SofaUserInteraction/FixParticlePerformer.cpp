@@ -25,7 +25,20 @@
 
 namespace sofa::component::collision
 {
+
+#ifdef WIN32
+template<> SOFA_SOFAUSERINTERACTION_API
+    std::unordered_map<std::type_index, typename FixParticlePerformer<defaulttype::Vec3Types>::GetFixationPointsOnModelFunction >
+    FixParticlePerformer<defaulttype::Vec3Types>::s_mapSupportedModels;
+#endif // WIN32
+using FixParticlePerformer3d = FixParticlePerformer<defaulttype::Vec3Types>;
+
 template class SOFA_SOFAUSERINTERACTION_API FixParticlePerformer<defaulttype::Vec3Types>;
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3Types> >  FixParticlePerformerVec3dClass("FixParticle",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer3d >  FixParticlePerformerVec3dClass("FixParticle",true);
+
+int triangleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<TriangleCollisionModel<defaulttype::Vec3Types>>(&FixParticlePerformer3d::getFixationPointsTriangle<TriangleCollisionModel<defaulttype::Vec3Types>>);
+int sphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Vec3Types>>(&FixParticlePerformer3d::getFixationPointsSphere);
+int rigidSphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Rigid3Types>>(&FixParticlePerformer3d::getFixationPointsSphere);
+
 
 } // namespace sofa::component::collision

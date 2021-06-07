@@ -251,7 +251,7 @@ void InteractiveCamera::processKeyPressedEvent(core::objectmodel::KeypressedEven
     {
         //glPushMatrix();
         //glLoadIdentity();
-        //helper::gl::Axis(p_position.getValue(), p_orientation.getValue(), 10.0);
+        //sofa::gl::Axis(p_position.getValue(), p_orientation.getValue(), 10.0);
         //glPopMatrix();
         break;
     }

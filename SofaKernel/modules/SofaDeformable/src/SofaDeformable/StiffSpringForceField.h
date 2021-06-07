@@ -77,8 +77,6 @@ protected:
     StiffSpringForceField(double ks=100.0, double kd=5.0);
     StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
 
-    void doUpdateInternal() override;
-
     /// Will create the set of springs using \sa d_indices1 and \sa d_indices2 with \sa d_length
     void createSpringsFromInputs();
 

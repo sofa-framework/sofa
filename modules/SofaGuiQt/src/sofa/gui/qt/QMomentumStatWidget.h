@@ -21,7 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/qt/QGraphStatWidget.h>
-#include <sofa/simulation/MechanicalGetMomentumVisitor.h>
+
+namespace sofa::simulation::mechanicalvisitor
+{
+class MechanicalGetMomentumVisitor;
+}
 
 namespace sofa::gui::qt
 {
@@ -32,7 +36,7 @@ class QMomentumStatWidget : public QGraphStatWidget
     Q_OBJECT
 
 
-    simulation::MechanicalGetMomentumVisitor *m_momentumVisitor;
+    simulation::mechanicalvisitor::MechanicalGetMomentumVisitor *m_momentumVisitor;
 
 public:
 

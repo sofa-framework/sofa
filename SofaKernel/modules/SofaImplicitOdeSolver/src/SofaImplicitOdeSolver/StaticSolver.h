@@ -23,7 +23,6 @@
 #include <SofaImplicitOdeSolver/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
 #include <sofa/core/behavior/MultiVec.h>
 
 namespace sofa::component::odesolver
@@ -31,6 +30,32 @@ namespace sofa::component::odesolver
 
 using sofa::core::objectmodel::Data;
 
+/**
+ * Implementation of a static ODE solver compatible with non-linear materials.
+ *
+ * We are trying to solve to following
+ * \f{eqnarray*}{
+ *     \vec{R}(\vec{x}) - \vec{P} = 0
+ * \f}
+ *
+ * Where \f$\vec{R}\f$ is the (possibly non-linear) internal elastic force residual and \f$\vec{P}\f$ is the external
+ * force vector (for example, gravitation force or surface traction).
+ *
+ * Following the <a href="https://en.wikipedia.org/wiki/Newton's_method#Nonlinear_systems_of_equations">Newton-Raphson method</a>,
+ * we pose
+ *
+ * \f{align*}{
+ *     \vec{F}(\vec{x}_{n+1}) &= \vec{R}(\vec{x}_{n+1}) - \vec{P}_n \\
+ *     \mat{J} = \frac{\partial \vec{F}}{\partial \vec{x}_{n+1}} \bigg\rvert_{\vec{x}_{n+1}^i} &= \mat{K}(\vec{x}_{n+1})
+ * \f}
+ *
+ * where \f$\vec{x}_{n+1}\f$ is the unknown position vector at the \f$n\f$th time step. We then iteratively solve
+ *
+ * \f{align*}{
+ *     \mat{K}(\vec{x}_{n+1}^i) \left [ \Delta \vec{x}_{n+1}^{i+1} \right ] &= - \vec{F}(\vec{x}_{n+1}^i) \\
+ *     \vec{x}_{n+1}^{i+1} &= \vec{x}_{n+1}^{i} + \Delta \vec{x}_{n+1}^{i+1}
+ * \f}
+ */
 class SOFA_SOFAIMPLICITODESOLVER_API StaticSolver : public sofa::core::behavior::OdeSolver
 {
 public:
@@ -39,6 +64,12 @@ public:
 
 public:
     void solve (const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
+    /** The list of squared residual norms (r.dot(r) = ||r||^2) of every newton iterations of the last solve call. */
+    auto squared_residual_norms() const -> const std::vector<SReal> & { return p_squared_residual_norms; }
+
+    /** The list of squared correction increment norms (dx.dot(dx) = ||dx||^2) of every newton iterations of the last solve call. */
+    auto squared_increment_norms() const -> const std::vector<SReal> & { return p_squared_increment_norms; }
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
     ///
@@ -117,13 +148,22 @@ public:
 
 protected:
 
-    /// the solution vector is stored for warm-start
-    sofa::core::behavior::MultiVecDeriv dx;
-
     Data<unsigned> d_newton_iterations; ///< Number of newton iterations between each load increments (normally, one load increment per simulation time-step.
-    Data<double> d_correction_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm of correction |du| reach this threshold.
-    Data<double> d_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm of the residual |f - K(u)| reach this threshold. Use a negative value to disable this criterion.
+    Data<double> d_absolute_correction_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm |du| is smaller than this threshold.
+    Data<double> d_relative_correction_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the ratio |du| / |U| is smaller than this threshold.
+    Data<double> d_absolute_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm of the residual |R| is smaller than this threshold. Use a negative value to disable this criterion.
+    Data<double> d_relative_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the ratio |R|/|R0| is smaller than this threshold. Use a negative value to disable this criterion.
     Data<bool> d_should_diverge_when_residual_is_growing; ///< Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration.
+
+private:
+    /// Sum of displacement increments since the beginning of the time step
+    sofa::core::behavior::MultiVecDeriv U;
+
+    /// List of squared residual norms (r.dot(R) = ||r||^2) of every newton iterations of the last solve call.
+    std::vector<SReal> p_squared_residual_norms;
+
+    /// List of squared correction increment norms (dx.dot(dx) = ||dx||^2) of every newton iterations of the last solve call.
+    std::vector<SReal> p_squared_increment_norms;
 };
 
 } // namespace sofa::component::odesolver

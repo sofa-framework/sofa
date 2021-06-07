@@ -164,24 +164,6 @@ private:
     void unspecializedInit() ;
 };
 
-template<>
-void BilateralInteractionConstraint<Rigid3Types>::buildConstraintMatrix(const ConstraintParams *cParams,
-                                                                        DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d,
-                                                                        unsigned int &cIndex
-                                                                        , const DataVecCoord &x1, const DataVecCoord &x2);
-
-template<>
-void BilateralInteractionConstraint<Rigid3Types>::getConstraintViolation(const ConstraintParams *cParams,
-                                                                         BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
-                                                                         , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
-
-template<>
-void BilateralInteractionConstraint<Rigid3Types>::addContact(Deriv /*norm*/,
-                                                             Coord P, Coord Q, Real /*contactDistance*/,
-                                                             int m1, int m2, Coord /*Pfree*/,
-                                                             Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
-
-
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
 extern template class SOFA_SOFACONSTRAINT_API BilateralInteractionConstraint< Vec3Types >;

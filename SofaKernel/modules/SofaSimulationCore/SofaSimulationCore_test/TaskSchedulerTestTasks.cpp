@@ -67,6 +67,4 @@ namespace sofa
         
         return MemoryAlloc::Stack;
     }
-    
-
 } // namespace sofa

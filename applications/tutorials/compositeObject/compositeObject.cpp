@@ -19,25 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <sofa/helper/ArgumentParser.h>
-#include <sofa/helper/vector_algebra.h>
-#include <sofa/helper/vector.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>
-#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -47,8 +38,16 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <SofaSimpleFem/HexahedronFEMForceField.h>
 
-#include <utility>
+#include <SofaComponentAll/initSofaComponentAll.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaGui/initSofaGui.h>
 
 
 
@@ -65,8 +64,8 @@ using namespace sofa::component::mapping;
 using namespace sofa::component::forcefield;
 
 typedef SReal Scalar;
-typedef Vec<3,SReal> Vec3;
-typedef Vec<1,SReal> Vec1;
+typedef sofa::type::Vec<3,SReal> Vec3;
+typedef sofa::type::Vec<1,SReal> Vec1;
 typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
@@ -95,7 +94,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
 
     // The graph root node
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
-    root->setGravity( Coord3(0,-10,0) );
+    root->setGravity({ 0,-10,0 });
     root->setAnimate(false);
     root->setDt(0.01);
     addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
@@ -107,16 +106,25 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
     simulatedScene->addObject(cgLinearSolver);
 
+    using MechanicalObjectRigid3 = sofa::component::container::MechanicalObject<sofa::defaulttype::RigidTypes>;
+    using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes, sofa::defaulttype::Rigid3dMass>;
+    using RigidMappingRigid3_to_3 = sofa::component::mapping::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
+    using FixedConstraintRigid3 = sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::RigidTypes>;
     // The rigid object
     Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
-    MechanicalObjectRigid3::SPtr rigid_dof = addNew<MechanicalObjectRigid3>(rigidNode, "dof");
-    UniformMassRigid3::SPtr rigid_mass = addNew<UniformMassRigid3>(rigidNode,"mass");
-    FixedConstraintRigid3::SPtr rigid_fixedConstraint = addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
+    auto rigid_dof = addNew<MechanicalObjectRigid3>(rigidNode, "dof");
+    auto rigid_mass = addNew<UniformMassRigid3>(rigidNode,"mass");
+    auto rigid_fixedConstraint = addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
 
+
+    using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>;
+    using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes, sofa::defaulttype::Rigid3dMass>;
+    using RigidMappingRigid3_to_3 = sofa::component::mapping::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
+    using FixedConstraintRigid3 = sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::Rigid3Types>;
     // Particles mapped to the rigid object
-    Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
-    MechanicalObject3::SPtr mappedParticles_dof = addNew< MechanicalObject3>(mappedParticles,"dof");
-    RigidMappingRigid3_to_3::SPtr mappedParticles_mapping = addNew<RigidMappingRigid3_to_3>(mappedParticles,"mapping");
+    auto mappedParticles = rigidNode->createChild("mappedParticles");
+    auto mappedParticles_dof = addNew< MechanicalObject3>(mappedParticles,"dof");
+    auto mappedParticles_mapping = addNew<RigidMappingRigid3_to_3>(mappedParticles,"mapping");
     mappedParticles_mapping->setModels( rigid_dof.get(), mappedParticles_dof.get() );
 
     // The independent particles
@@ -124,6 +132,11 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     MechanicalObject3::SPtr independentParticles_dof = addNew< MechanicalObject3>(independentParticles,"dof");
 
     // The deformable grid, connected to its 2 parents using a MultiMapping
+    using SubsetMultiMapping3_to_3 = SubsetMultiMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types>;
+    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types, SReal>;
+    using HexahedronFEMForceField3 = HexahedronFEMForceField<sofa::defaulttype::Vec3Types>;
+
+
     Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
     mappedParticles->addChild(deformableGrid);                                       // second parent
 
@@ -139,7 +152,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
 
     UniformMass3::SPtr mass = addNew<UniformMass3>(deformableGrid,"mass" );
-    mass->d_mass.setValue( totalMass/(numX*numY*numZ) );
+    mass->d_vertexMass.setValue( totalMass/(numX*numY*numZ) );
 
     HexahedronFEMForceField3::SPtr hexaFem = addNew<HexahedronFEMForceField3>(deformableGrid, "hexaFEM");
     hexaFem->f_youngModulus.setValue(1000);
@@ -233,25 +246,20 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
 
 int main(int argc, char** argv)
 {
-    sofa::simulation::tree::init();
+    SOFA_UNUSED(argc);
+    sofa::simulation::graph::init();
     sofa::helper::BackTrace::autodump();
-    sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
-    sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-    .option(&startAnim,'a',"start","start the animation loop")
-    .option(&verbose,'v',"verbose","print debug info")
-    (argc,argv);
-
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
-    sofa::gui::initMain();
+    //force load SofaComponentAll
+    sofa::component::initSofaComponentAll();
+    //force load SofaGui (registering guis)
+    sofa::gui::initSofaGui();
 
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;
     if (int err=sofa::gui::GUIManager::createGUI(NULL)) return err;
     sofa::gui::GUIManager::SetDimension(800,600);
 
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     //=================================================
     sofa::simulation::Node::SPtr groot = createGridScene(Vec3(0,0,0), Vec3(5,1,1), 6,2,2, 1.0 );
@@ -269,7 +277,7 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->unload(groot);
     sofa::gui::GUIManager::closeGUI();
 
-    sofa::simulation::tree::cleanup();
+    sofa::simulation::graph::cleanup();
     return 0;
 }
 
