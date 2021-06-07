@@ -152,7 +152,7 @@ typedef unsigned __int64	uint64_t;
 
 #define SOFA_ATTRIBUTE_DISABLED__LOADER_FILENAME(msg) \
     SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#2095)", "v21.12", msg)
+        "v21.06 (PR#2095)", "v21.06 (PR#2095)", msg)
 
 #define SOFA_ATTRIBUTE_DISABLED__DATALINK() \
     SOFA_ATTRIBUTE_DISABLED( \
