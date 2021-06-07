@@ -35,7 +35,7 @@ using sofa::component::loader::MeshSTLLoader;
 using sofa::core::objectmodel::New ;
 using sofa::defaulttype::Vector3 ;
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 
 struct SparseGridTopology_test : public BaseTest

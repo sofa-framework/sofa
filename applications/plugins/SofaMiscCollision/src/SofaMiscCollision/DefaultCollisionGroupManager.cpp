@@ -79,8 +79,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
     // list of nodes that must be removed due to a move from a node to another
     sofa::helper::vector< simulation::Node::SPtr > removedGroup;
-    
-    std::map<Contact*, simulation::Node::SPtr> contactGroup;
+
+    sofa::helper::vector< std::pair<core::collision::Contact*, simulation::Node::SPtr> > contactGroup;
 
     //list of contacts considered stationary: one of the collision model has no associated ODE solver (= stationary)
     //for stationary contacts, no need to combine nodes into a single ODE solver
@@ -98,6 +98,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     }
 
     // now that the groups are final, attach contacts' response
+    // note: contact responses must be created in the same order than the contact list
+    // This is to ensure the reproducibility of the simulation
     for (const auto& [contact, group] : contactGroup)
     {
         simulation::Node* g = getNodeFromMergedGroups(group.get(), mergedGroups);
@@ -134,7 +136,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 void DefaultCollisionGroupManager::createGroup(core::collision::Contact* contact,
                                                int& groupIndex,
                                                MergeGroupsMap& mergedGroups,
-                                               std::map<core::collision::Contact*, simulation::Node::SPtr>& contactGroup,
+                                               sofa::helper::vector< std::pair<core::collision::Contact*, simulation::Node::SPtr> >& contactGroup,
                                                sofa::helper::vector< simulation::Node::SPtr >& removedGroup,
                                                sofa::helper::vector< core::collision::Contact* >& stationaryContacts)
 {
@@ -217,7 +219,7 @@ void DefaultCollisionGroupManager::createGroup(core::collision::Contact* contact
                         // both ODE solver nodes are already in the same collision group
                         groupMap[group1Iter->first] = collGroup.get();
                         groupMap[group2Iter->first] = collGroup.get();
-                        contactGroup[contact] = collGroup;
+                        contactGroup.emplace_back(contact, collGroup);
                         return;
                     }
                     else
@@ -272,7 +274,7 @@ void DefaultCollisionGroupManager::createGroup(core::collision::Contact* contact
             addSolversToNode(collGroup, solver);
         }
     }
-    contactGroup[contact] = collGroup;
+    contactGroup.emplace_back(contact, collGroup);
 }
 
 
