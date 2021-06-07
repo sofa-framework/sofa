@@ -81,8 +81,6 @@ public:
     void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     Data<bool> d_symplectic; ///< If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).
-    Data<bool> d_forceDiagonalMassMatrixOptimization; ///< If true, the optimization used to solve the system assuming a diagonal mass matrix is used, even if the mass matrix is not diagonal. False by default.
-    Data<bool> d_forceBuildingMatrixSystem; ///< If true, the global linear system is built and solved, even if the mass matrix is diagonal. False by default.
     Data<bool> d_threadSafeVisitor;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),

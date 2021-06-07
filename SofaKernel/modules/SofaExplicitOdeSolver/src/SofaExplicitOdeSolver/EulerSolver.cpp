@@ -50,8 +50,6 @@ int EulerExplicitSolverClass = core::RegisterObject("A simple explicit time inte
 
 EulerExplicitSolver::EulerExplicitSolver()
     : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
-    , d_forceDiagonalMassMatrixOptimization(initData(&d_forceDiagonalMassMatrixOptimization, false, "forceDiagonalMassMatrixOptimization", "If true, the optimization used to solve the system assuming a diagonal mass matrix is used, even if the mass matrix is not diagonal. False by default."))
-    , d_forceBuildingMatrixSystem(initData(&d_forceBuildingMatrixSystem, false, "forceBuildingMatrixSystem", "If true, the global linear system is built and solved, even if the mass matrix is diagonal. False by default."))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
@@ -87,14 +85,8 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
 
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
-    if((nbNonDiagonalMasses == 0. || d_forceDiagonalMassMatrixOptimization.getValue()) && !d_forceBuildingMatrixSystem.getValue())
+    if(nbNonDiagonalMasses == 0.)
     {
-        if (d_forceDiagonalMassMatrixOptimization.getValue() && nbNonDiagonalMasses > 0.)
-        {
-            msg_warning() << "You requested the optimization based on diagonal mass matrix "
-                             "('forceDiagonalMassMatrixOptimization' is true), but at least one "
-                             "non-diagonal mass matrix has been detected. It may not work as expected.";
-        }
         // acc = M^-1 * f
         computeAcceleration(&mop, acc, f);
         projectResponse(&mop, acc);
@@ -102,12 +94,6 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     }
     else
     {
-        if (nbNonDiagonalMasses == 0.)
-        {
-            msg_warning() << "You requested to build explicitly the global linear system. This time consumming method"
-                             "is not necessary if working with only diagonal mass matrices. Set 'forceBuildingMatrixSystem'"
-                             " to false to remove this warning and use the optimized implementation.";
-        }
         core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
 
         // Build the global matrix. In this solver, it is the global mass matrix

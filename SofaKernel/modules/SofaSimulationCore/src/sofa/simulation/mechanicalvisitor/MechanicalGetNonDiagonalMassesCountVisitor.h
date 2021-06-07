@@ -47,11 +47,6 @@ public:
         return true;
     }
 
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* /*map*/) override
-    {
-        return false;
-    }
-
 };
 
 }
