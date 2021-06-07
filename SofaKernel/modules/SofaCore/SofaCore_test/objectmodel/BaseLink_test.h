@@ -28,8 +28,8 @@ using sofa::core::objectmodel::BaseNode ;
 #include <sofa/core/objectmodel/BaseLink.h>
 using sofa::core::objectmodel::BaseLink ;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 /***********************************************************************************
  * This is checking that the predicates about BaseLink are still valid in an

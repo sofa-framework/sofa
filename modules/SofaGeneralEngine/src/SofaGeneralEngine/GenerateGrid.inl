@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include "GenerateGrid.h"
-#include <SofaBaseMechanics/IdentityMapping.h>
 
 namespace sofa::component::engine
 {
@@ -88,9 +87,12 @@ void GenerateGrid<DataTypes>::doUpdate()
     else
         height = size[2]/freqH;
     Coord origin;
-    helper::eq(origin,Vec3(d_minCorner.getValue()));
 
-
+    const auto& minCorder = d_minCorner.getValue();
+    for (auto i = 0; i < Coord::spatial_dimensions; i++)
+    {
+        origin[i] = minCorder[i];
+    }
 
 
     size_t  nbVertices= (freqL+1)*(freqH+1)*(freqW+1);
@@ -103,7 +105,12 @@ void GenerateGrid<DataTypes>::doUpdate()
         for(j=0;j<=freqW;++j) {
             for(i=0;i<=freqL;i++) {
                 // handle Vec2D case
-                helper::eq(pos,Vec3(i*length,j*width,k*height));
+                const Vec3 t { i * length, j * width, k * height };
+                for (auto c = 0; c < Coord::spatial_dimensions; c++)
+                {
+                    pos[c] = t[c];
+                }
+
                 pos+=origin;
                 out[index++]=pos;
             }

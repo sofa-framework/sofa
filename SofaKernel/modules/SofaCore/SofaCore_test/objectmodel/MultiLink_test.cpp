@@ -28,8 +28,8 @@ using sofa::core::objectmodel::BaseNode ;
 using sofa::core::objectmodel::MultiLink ;
 using sofa::core::objectmodel::BaseLink ;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 using sofa::core::objectmodel::MultiLink;
 class MultiLink_test: public BaseTest

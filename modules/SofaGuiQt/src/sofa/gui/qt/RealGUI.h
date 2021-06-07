@@ -123,7 +123,7 @@ public:
 //public:
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    virtual void setTraceVisitors(bool);
+    void setTraceVisitors(bool) override;
 #endif
 
     void showFPS(double fps) override;

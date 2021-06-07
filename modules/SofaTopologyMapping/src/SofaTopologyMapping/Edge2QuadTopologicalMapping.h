@@ -31,9 +31,6 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include <SofaGeneralSimpleFem/RadiusContainer.h>
-
-
 namespace sofa::component::topology
 {
 
@@ -105,8 +102,6 @@ protected:
     Data<VecIndex> d_edgeList; ///< list of input edges for the topological mapping: by default, all considered
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating quad)
 
-    
-    container::RadiusContainer* m_radiusContainer;
 };
 
 } //namespace sofa::component::topology

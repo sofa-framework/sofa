@@ -19,6 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/******************************************************************************
+* Contributors:
+*   - "Nhan NGuyen" <nhnhanbk92@gmail.com> - JAIST (PRESTO Project)
+*******************************************************************************/
 #pragma once
 
 #include "QuadBendingFEMForceField.h"
