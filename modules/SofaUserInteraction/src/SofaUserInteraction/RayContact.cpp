@@ -24,7 +24,6 @@
 #include <SofaUserInteraction/RayModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
 
 namespace sofa::component::collision
 {

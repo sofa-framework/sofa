@@ -24,7 +24,7 @@ using sofa::core::objectmodel::Base ;
 using sofa::core::objectmodel::ComponentState;
 
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest ;
+using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 #include <sofa/core/objectmodel/BaseObject.h>

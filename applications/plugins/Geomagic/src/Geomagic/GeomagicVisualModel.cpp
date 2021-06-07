@@ -23,7 +23,7 @@
 #include <Geomagic/GeomagicVisualModel.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 
 namespace sofa::component::controller
 {
@@ -225,7 +225,7 @@ void GeomagicVisualModel::updateDisplay(const GeomagicDriver::Coord& posDevice, 
 
     if (m_omniVisualNode)
     {
-        sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(m_omniVisualNode.get());
+        sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(m_omniVisualNode.get());
         sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(m_omniVisualNode.get());
     }
 }

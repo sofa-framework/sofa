@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
@@ -38,7 +38,7 @@ using sofa::core::ExecParams;
 using namespace sofa::helper::system::thread;
 
 //template <typename _DataTypes>
-class LCPForceFeedback_test : public sofa::helper::testing::BaseTest
+class LCPForceFeedback_test : public sofa::testing::BaseTest
 {
 public:
     typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MecaRig;
