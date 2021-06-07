@@ -53,10 +53,10 @@ protected:
 
     bool checkExtension(const std::string& ext)
     {
-        std::vector<std::string>::const_iterator extItBegin = sofa::helper::io::ImageCImgCreators::cimgSupportedExtensions.cbegin();
-        std::vector<std::string>::const_iterator extItEnd = sofa::helper::io::ImageCImgCreators::cimgSupportedExtensions.cend();
+        auto extItBegin = sofa::helper::io::ImageCImgCreators::cimgSupportedExtensions.cbegin();
+        auto extItEnd = sofa::helper::io::ImageCImgCreators::cimgSupportedExtensions.cend();
 
-        return (std::find(extItBegin, extItEnd, ext) != extItEnd);
+        return std::find(extItBegin, extItEnd, ext) != extItEnd;
     }
 
     struct ImageCImgTestData
@@ -68,8 +68,8 @@ protected:
         const unsigned char* data;
 
         ImageCImgTestData(const std::string& filename, unsigned int width, unsigned int height
-            , unsigned int bpp, const unsigned char* data)
-            : filename(filename), width(width), height(height), bpp(bpp), data(data)
+                , unsigned int bpp, const unsigned char* data)
+                : filename(filename), width(width), height(height), bpp(bpp), data(data)
         {
 
         }
@@ -85,11 +85,11 @@ protected:
                 //there are much better algorithms
                 //but that is not the really the point here.
 
-                float totalRef = std::accumulate(data, data + total, 0, std::plus<unsigned int>());
-                float totalTest = std::accumulate(testdata, testdata + total, 0, std::plus<unsigned int>());
+                const float totalRef = std::accumulate(data, data + total, 0, std::plus<>());
+                const float totalTest = std::accumulate(testdata, testdata + total, 0, std::plus<>());
 
-                res = fabs(totalRef - totalTest)/total < PIXEL_TOLERANCE;
-
+                const auto difference = std::abs(totalRef - totalTest) / static_cast<float>(total);
+                res = difference < PIXEL_TOLERANCE;
             }
             else
             {
@@ -122,7 +122,8 @@ protected:
             ASSERT_TRUE(comparePixels(lossy, testdata));
             //add errors
             unsigned char* testdata2 = img.getPixels();
-            std::for_each(testdata2, testdata2+width*height*bpp, [](unsigned char &n){ n+=PIXEL_TOLERANCE + 1; });
+            std::for_each(testdata2, testdata2 + width * height * bpp,
+                          [](unsigned char &n){ n += static_cast<unsigned char>(std::ceil(PIXEL_TOLERANCE)); });
 
             ASSERT_FALSE(comparePixels(lossy, testdata2));
         }
@@ -132,11 +133,11 @@ protected:
 
 TEST_F(ImageCImg_test, ImageCImg_NoFile)
 {
-        /// This generates a test failure if no error message is generated.
-        EXPECT_MSG_EMIT(Error) ;
+    /// This generates a test failure if no error message is generated.
+    EXPECT_MSG_EMIT(Error) ;
 
-        sofa::helper::io::ImageCImg imgNoFile;
-        EXPECT_FALSE(imgNoFile.load("randomnamewhichdoesnotexist.png"));
+    sofa::helper::io::ImageCImg imgNoFile;
+    EXPECT_FALSE(imgNoFile.load("randomnamewhichdoesnotexist.png"));
 
 }
 
@@ -149,7 +150,7 @@ TEST_F(ImageCImg_test, ImageCImg_NoImg)
     EXPECT_FALSE(imgNoImage.load("imagetest_noimage.png"));
 }
 
-TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite)
+TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite_png)
 {
     EXPECT_MSG_NOEMIT(Error, Warning) ;
 
@@ -157,31 +158,78 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite)
     unsigned int height = 600;
     unsigned int bpp = 3;//images are RGB
     unsigned int totalsize = width*height*bpp;
-    unsigned int halfTotalsize = totalsize * 0.5;
+    unsigned int halfTotalsize = totalsize / 2;
 
-    unsigned char* imgdata = new unsigned char[totalsize];
+    std::vector<unsigned char> imgdata(totalsize, 0);
     //half image (800x300) is black the other one is white
-    std::fill(imgdata, imgdata + halfTotalsize, 0);
-    std::fill(imgdata + halfTotalsize , imgdata + totalsize, 255);
+    std::fill(imgdata.begin() + halfTotalsize , imgdata.end(), 255);
 
     if(checkExtension("png"))
     {
-        ImageCImgTestData imgBW("imagetest_blackwhite.png", width, height, bpp, imgdata);
+        ImageCImgTestData imgBW("imagetest_blackwhite.png", width, height, bpp, imgdata.data());
         imgBW.testBench();
     }
+}
+
+TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite_jpg)
+{
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
+
+    unsigned int width = 800;
+    unsigned int height = 600;
+    unsigned int bpp = 3;//images are RGB
+    unsigned int totalsize = width*height*bpp;
+    unsigned int halfTotalsize = totalsize / 2;
+
+    std::vector<unsigned char> imgdata(totalsize, 0);
+    //half image (800x300) is black the other one is white
+    std::fill(imgdata.begin() + halfTotalsize , imgdata.end(), 255);
+
     if(checkExtension("jpg"))
     {
-        ImageCImgTestData imgBW("imagetest_blackwhite.jpg", width, height, bpp, imgdata);
+        ImageCImgTestData imgBW("imagetest_blackwhite.jpg", width, height, bpp, imgdata.data());
         imgBW.testBench(true);
     }
+}
+
+TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite_tiff)
+{
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
+
+    unsigned int width = 800;
+    unsigned int height = 600;
+    unsigned int bpp = 3;//images are RGB
+    unsigned int totalsize = width*height*bpp;
+    unsigned int halfTotalsize = totalsize / 2;
+
+    std::vector<unsigned char> imgdata(totalsize, 0);
+    //half image (800x300) is black the other one is white
+    std::fill(imgdata.begin() + halfTotalsize , imgdata.end(), 255);
+
     if(checkExtension("tiff"))
     {
-        ImageCImgTestData imgBW("imagetest_blackwhite.tiff", width, height, bpp, imgdata);
+        ImageCImgTestData imgBW("imagetest_blackwhite.tiff", width, height, bpp, imgdata.data());
         imgBW.testBench();
     }
+}
+
+TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite_bmp)
+{
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
+
+    unsigned int width = 800;
+    unsigned int height = 600;
+    unsigned int bpp = 3;//images are RGB
+    unsigned int totalsize = width*height*bpp;
+    unsigned int halfTotalsize = totalsize / 2;
+
+    std::vector<unsigned char> imgdata(totalsize, 0);
+    //half image (800x300) is black the other one is white
+    std::fill(imgdata.begin() + halfTotalsize , imgdata.end(), 255);
+
     if(checkExtension("bmp"))
     {
-        ImageCImgTestData imgBW("imagetest_blackwhite.bmp", width, height, bpp, imgdata);
+        ImageCImgTestData imgBW("imagetest_blackwhite.bmp", width, height, bpp, imgdata.data());
         imgBW.testBench();
     }
 }
@@ -195,12 +243,11 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
     unsigned int height = 600;
     unsigned int bpp = 3;//image is RGB
     unsigned int totalsize = width*height*bpp;
-    unsigned int halfTotalsize = totalsize * 0.5;
+    unsigned int halfTotalsize = totalsize / 2;
 
-    unsigned char* imgdata = new unsigned char[totalsize];
+    std::vector<unsigned char> imgdata(totalsize, 0);
     //half image (800x300) is black the other one is white
-    std::fill(imgdata, imgdata + halfTotalsize, 0);
-    std::fill(imgdata + halfTotalsize , imgdata + totalsize, 255);
+    std::fill(imgdata.begin() + halfTotalsize , imgdata.end(), 255);
 
     sofa::helper::io::ImageCImg img;
     bool isLoaded = img.load("imagetest_blackwhite.png");
@@ -210,12 +257,7 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
     bool isWritten = img.save(output_bw_path);
     ASSERT_TRUE(isWritten);
 
-    delete[] imgdata;
-    imgdata = new unsigned char[totalsize];
-    std::fill(imgdata, imgdata + halfTotalsize, 0);
-    std::fill(imgdata + halfTotalsize , imgdata + totalsize, 255);
-
-    ImageCImgTestData imgBW("output_bw.png", width, height, bpp, imgdata);
+    ImageCImgTestData imgBW("output_bw.png", width, height, bpp, imgdata.data());
     imgBW.testBench();
 
     std::remove(output_bw_path.c_str());
