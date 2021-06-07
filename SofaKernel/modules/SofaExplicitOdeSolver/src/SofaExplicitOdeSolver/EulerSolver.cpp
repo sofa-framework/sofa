@@ -27,6 +27,9 @@
 #include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
+
 //#define SOFA_NO_VMULTIOP
 
 namespace sofa::component::odesolver
@@ -47,7 +50,8 @@ int EulerExplicitSolverClass = core::RegisterObject("A simple explicit time inte
 
 EulerExplicitSolver::EulerExplicitSolver()
     : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
-    , d_optimizedForDiagonalMatrix(initData(&d_optimizedForDiagonalMatrix, true, "optimizedForDiagonalMatrix", "If true, solution to the system Ax=b can be directly found by computing x = f/m. Must be set to false if M is sparse."))
+    , d_forceDiagonalMassMatrixOptimization(initData(&d_forceDiagonalMassMatrixOptimization, false, "forceDiagonalMassMatrixOptimization", "If true, the optimization used to solve the system assuming a diagonal mass matrix is used, even if the mass matrix is not diagonal. False by default."))
+    , d_forceBuildingMatrixSystem(initData(&d_forceBuildingMatrixSystem, false, "forceBuildingMatrixSystem", "If true, the global linear system is built and solved, even if the mass matrix is diagonal. False by default."))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
@@ -79,9 +83,18 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     computeForce(&mop, f);
     projectResponse(&mop, acc);
 
+    SReal nbNonDiagonalMasses = 0;
+    MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
+
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
-    if(d_optimizedForDiagonalMatrix.getValue())
+    if((nbNonDiagonalMasses == 0. || d_forceDiagonalMassMatrixOptimization.getValue()) && !d_forceBuildingMatrixSystem.getValue())
     {
+        if (d_forceDiagonalMassMatrixOptimization.getValue() && nbNonDiagonalMasses > 0.)
+        {
+            msg_warning() << "You requested the optimization based on diagonal mass matrix "
+                             "('forceDiagonalMassMatrixOptimization' is true), but at least one "
+                             "non-diagonal mass matrix has been detected. It may not work as expected.";
+        }
         // acc = M^-1 * f
         computeAcceleration(&mop, acc, f);
         projectResponse(&mop, acc);
@@ -89,6 +102,12 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     }
     else
     {
+        if (nbNonDiagonalMasses == 0.)
+        {
+            msg_warning() << "You requested to build explicitly the global linear system. This time consumming method"
+                             "is not necessary if working with only diagonal mass matrices. Set 'forceBuildingMatrixSystem'"
+                             " to false to remove this warning and use the optimized implementation.";
+        }
         core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
 
         // Build the global matrix. In this solver, it is the global mass matrix
@@ -242,6 +261,19 @@ void EulerExplicitSolver::init()
 {
     OdeSolver::init();
     reinit();
+}
+
+void EulerExplicitSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    const char* val = arg->getAttribute("optimizedForDiagonalMatrix",nullptr) ;
+    if(val)
+    {
+        msg_deprecated() << "The attribute 'optimizedForDiagonalMatrix' is deprecated since SOFA 21.06." << msgendl
+                         << "This data was previously used to solve the system more efficiently in case the "
+                            "global mass matrix were diagonal." << msgendl
+                         << "Now, this property is detected automatically. See also the data 'forceDiagonalMassMatrixOptimization'"
+                            "and 'forceBuildingMatrixSystem'";
+    }
 }
 
 void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
