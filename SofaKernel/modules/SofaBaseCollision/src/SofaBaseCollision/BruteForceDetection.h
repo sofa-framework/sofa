@@ -36,6 +36,8 @@ class SOFA_SOFABASECOLLISION_API BruteForceDetection :
 public:
     SOFA_CLASS2(BruteForceDetection, BruteForceBroadPhase, BVHNarrowPhase);
 
+    bool needsDeepBoundingTree() const override { return BruteForceBroadPhase::needsDeepBoundingTree() || BVHNarrowPhase::needsDeepBoundingTree(); }
+
 protected:
     BruteForceDetection();
 
