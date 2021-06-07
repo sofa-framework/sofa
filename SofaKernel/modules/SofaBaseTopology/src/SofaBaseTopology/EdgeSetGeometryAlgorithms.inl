@@ -899,5 +899,68 @@ void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const c
     }
 }
 
+template<class DataTypes>
+bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID edgeID,
+    const sofa::defaulttype::Vec<3, double>& a,
+    const sofa::defaulttype::Vec<3, double>& b,
+    double &baryCoef)
+    //intersection=edge[0]+baryCoef*(edge[1]-edge[0])
+{
+    double EPS = 1e-05;
+    bool is_intersect = false;
+    
+    const Edge& e = this->m_topology->getEdge(edgeID);
+    const VecCoord& p = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::Coord& c0 = p[e[0]];
+    const typename DataTypes::Coord& c1 = p[e[1]];
+    //sofa::defaulttype::Vec<3, Real> p0 = defaulttype::Vector3(DataTypes::getCPos(p[e[0]]));
+    //sofa::defaulttype::Vec<3, Real> p1 = defaulttype::Vector3(DataTypes::getCPos(p[e[1]]));
+    
+    sofa::defaulttype::Vec<3, Real> p0;
+    p0[0] = (Real)(c0[0]);
+    p0[1] = (Real)(c0[1]);
+    p0[2] = (Real)(c0[2]);
+    sofa::defaulttype::Vec<3, Real> p1;
+    p1[0] = (Real)(c1[0]);
+    p1[1] = (Real)(c1[1]);
+    p1[2] = (Real)(c1[2]);
+    
+    sofa::defaulttype::Vec<3, Real> pa;
+    pa[0] = (Real)(a[0]);
+    pa[1] = (Real)(a[1]);
+    pa[2] = (Real)(a[2]);
+    sofa::defaulttype::Vec<3, Real> pb;
+    pb[0] = (Real)(b[0]);
+    pb[1] = (Real)(b[1]);
+    pb[2] = (Real)(b[2]);
+    
+    
+
+    sofa::defaulttype::Vec<3, Real> v_0a = p0 - pa;
+    sofa::defaulttype::Vec<3, Real> v_ba = pb - pa;
+    sofa::defaulttype::Vec<3, Real> v_10 = p1 - p0;
+  
+    double d0aba, dba10, d0a10, dbaba, d1010;
+
+    d0aba = v_0a * v_ba;
+    dba10 = v_ba * v_ba;
+    d0a10 = v_0a * v_10;
+    dbaba = v_ba * v_ba;
+    d1010 = v_10 * v_10;
+
+    double deno, num;
+    deno = d1010 * dbaba - dba10 * dba10;
+    if (!abs(deno) <= EPS)
+    {
+        num = d0aba * dba10 - d0a10 * dbaba;
+
+        //baryCoef= (d0aba + dba10 * (num / deno)) / dbaba;
+        baryCoef = num / deno;
+        //if (baryCoef >= 0.0 && baryCoef <= 1.0)
+            is_intersect = true;
+    }
+    return is_intersect;
+}
+
 
 } //namespace sofa::component::topology
