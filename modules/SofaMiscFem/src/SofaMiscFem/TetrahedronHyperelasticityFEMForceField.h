@@ -168,24 +168,8 @@ public:
         d_anisotropySet.setValue(direction);
     }
 
-    class SOFA_SOFAMISCFEM_API TetrahedronHandler : public TopologyDataHandler<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >
-    {
-    public:
-      typedef typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
-      TetrahedronHandler(TetrahedronHyperelasticityFEMForceField<DataTypes>* ff,
-                         TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> >* data )
-        :TopologyDataHandler<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >(data)
-        ,ff(ff)
-      {
-
-      }
-
-      void applyCreateFunction(Index, TetrahedronRestInformation &t, const Tetrahedron &,
-                               const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &);
-
-    protected:
-      TetrahedronHyperelasticityFEMForceField<DataTypes>* ff;
-    };
+    void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t, const Tetrahedron&,
+        const sofa::helper::vector<Index>&, const sofa::helper::vector<double>&);
 
 protected:
    TetrahedronHyperelasticityFEMForceField();
@@ -214,7 +198,6 @@ public:
     /// the array that describes the complete material energy and its derivatives
 
     fem::HyperelasticMaterial<DataTypes> *m_myMaterial;
-    TetrahedronHandler* m_tetrahedronHandler;
 
     void testDerivatives();
     void saveMesh( const char *filename );

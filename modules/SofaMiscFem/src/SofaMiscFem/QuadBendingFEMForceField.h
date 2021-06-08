@@ -166,19 +166,10 @@ public:
     topology::PointData<sofa::helper::vector<VertexInformation> > vertexInfo; ///< Internal point data
     topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
-    class QuadHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Quad,helper::vector<QuadInformation> >
-    {
-    public:
-        QuadHandler(QuadBendingFEMForceField<DataTypes>* _ff, topology::QuadData<sofa::helper::vector<QuadInformation> >* _data) : 
-        topology::TopologyDataHandler<core::topology::BaseMeshTopology::Quad, sofa::helper::vector<QuadInformation> >(_data), ff(_ff) {}
-
-        void applyCreateFunction(unsigned int quadIndex, QuadInformation& ,
-                const core::topology::BaseMeshTopology::Quad & t,
-                const sofa::helper::vector< unsigned int > &,
-                const sofa::helper::vector< double > &);
-    protected:
-        QuadBendingFEMForceField<DataTypes>* ff;
-    };
+    void createQuadInformation(unsigned int quadIndex, QuadInformation&,
+        const core::topology::BaseMeshTopology::Quad& t,
+        const sofa::helper::vector< unsigned int >&,
+        const sofa::helper::vector< double >&);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
     
@@ -225,7 +216,6 @@ public:
     Data<helper::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
     Data<helper::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
     Data<Real> f_thickness;
-    QuadHandler* quadHandler;
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<QuadBendingFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
