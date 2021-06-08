@@ -65,8 +65,13 @@ public:
         parent->m_resetSystem();
     }
 
-    /// m = m*M+b*B+k*K
+    [[deprecated("Use setSystemMBKMatrix instead.")]]
     void operator=(const MechanicalMatrix& m)
+    {
+        setSystemMBKMatrix(m);
+    }
+
+    void setSystemMBKMatrix(const MechanicalMatrix& m)
     {
         parent->m_setSystemMBKMatrix(m.getMFact(), m.getBFact(), m.getKFact());
     }
