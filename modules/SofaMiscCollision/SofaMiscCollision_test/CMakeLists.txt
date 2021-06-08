@@ -5,12 +5,10 @@ project(SofaMiscCollision_test)
 find_package(SofaMiscCollision REQUIRED)
 
 set(HEADER_FILES
-    BroadPhase_test.h
     OBBCapsPrimitiveCreator.h
 )
 
 set(SOURCE_FILES
-    BroadPhase_test.cpp
     DefaultCollisionGroupManager_test.cpp
     OBB_test.cpp
 )
