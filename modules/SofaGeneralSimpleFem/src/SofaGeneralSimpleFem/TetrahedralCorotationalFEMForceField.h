@@ -70,7 +70,6 @@ public:
             LARGE = 1, ///< Symbol of large displacements tetrahedron solver
             POLAR = 2  ///< Symbol of polar displacements tetrahedron solver
          };
-protected:
 
     /// @name Per element (tetrahedron) data
     /// @{
@@ -138,10 +137,6 @@ protected:
 
     CompressedMatrix _stiffnesses;
     /// @}
-
-    SReal m_potentialEnergy;
-
-    sofa::core::topology::BaseMeshTopology* _topology;
 
 public:
     int method;
