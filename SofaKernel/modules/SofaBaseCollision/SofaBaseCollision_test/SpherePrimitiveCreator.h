@@ -41,7 +41,7 @@ using sofa::core::objectmodel::New;
 using sofa::component::container::MechanicalObject;
 using namespace sofa::defaulttype;
 
-namespace sofa
+namespace sofa::collision_test
 {
 
 inline sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRigidSphere(const Vec3& p, SReal radius, const Vec3& v, const double* angles, const int* order,
@@ -155,4 +155,4 @@ sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::
     return sphereCollisionModel;
 }
 
-}
+} // namespace sofa::collision_test

@@ -41,7 +41,7 @@ using sofa::core::objectmodel::New;
 using sofa::component::container::MechanicalObject;
 using namespace sofa::defaulttype;
 
-namespace sofa
+namespace sofa::collision_test
 {
 
 inline sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& v, sofa::simulation::Node::SPtr& father)
@@ -95,4 +95,4 @@ inline sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec
     return triCollisionModel;
 }
 
-}
+} // namespce sofa::collision_test
