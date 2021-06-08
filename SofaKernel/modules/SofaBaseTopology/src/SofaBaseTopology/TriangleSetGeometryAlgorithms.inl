@@ -1636,15 +1636,16 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 // Computes the intersection of the segment from point a to point b and the triangle indexed by t
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangle(bool is_entered,
-    const sofa::defaulttype::Vec<3, double>& a,
-    const sofa::defaulttype::Vec<3, double>& b,
+    const sofa::defaulttype::Vec<3, Real>& a,
+    const sofa::defaulttype::Vec<3, Real>& b,
     const TriangleID ind_t,
     sofa::helper::vector<TriangleID>& indices,
-    sofa::helper::vector<double>& vecBaryCoef,
-    sofa::helper::vector<double>& vecCoordKmin) const
+    sofa::helper::vector<Real>& vecBaryCoef,
+    sofa::helper::vector<Real>& vecCoordKmin) const
 {
-    double baryCoef;
-    double coord_kmin;
+    Real EPS = 1e-10;
+    Real baryCoef;
+    Real coord_kmin;
     // HYP : point a is in triangle indexed by t
     // is_entered == true => indices.size() == 2
     TriangleID ind_first = 0;
@@ -1673,32 +1674,16 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
     const typename DataTypes::Coord& c1 = vect_c[t[1]];
     const typename DataTypes::Coord& c2 = vect_c[t[2]];
 
-    sofa::defaulttype::Vec<3, Real> p0;
-    p0[0] = (Real)(c0[0]);
-    p0[1] = (Real)(c0[1]);
-    p0[2] = (Real)(c0[2]);
-    sofa::defaulttype::Vec<3, Real> p1;
-    p1[0] = (Real)(c1[0]);
-    p1[1] = (Real)(c1[1]);
-    p1[2] = (Real)(c1[2]);
-    sofa::defaulttype::Vec<3, Real> p2;
-    p2[0] = (Real)(c2[0]);
-    p2[1] = (Real)(c2[1]);
-    p2[2] = (Real)(c2[2]);
-
-    sofa::defaulttype::Vec<3, Real> pa;
-    pa[0] = (Real)(a[0]);
-    pa[1] = (Real)(a[1]);
-    pa[2] = (Real)(a[2]);
-    sofa::defaulttype::Vec<3, Real> pb;
-    pb[0] = (Real)(b[0]);
-    pb[1] = (Real)(b[1]);
-    pb[2] = (Real)(b[2]);
+    sofa::defaulttype::Vec<3, Real> p0{ c0[0],c0[1],c0[2] };
+    sofa::defaulttype::Vec<3, Real> p1{ c1[0],c1[1],c1[2] };
+    sofa::defaulttype::Vec<3, Real> p2{ c2[0],c2[1],c2[2] };
+    sofa::defaulttype::Vec<3, Real> pa{ a[0],a[1],a[2] };
+    sofa::defaulttype::Vec<3, Real> pb{ b[0],b[1],b[2] };
 
     sofa::defaulttype::Vec<3, Real> v_normal = (p2 - p0).cross(p1 - p0);
     Real norm_v_normal = v_normal.norm(); // WARN : square root COST
 
-    if (norm_v_normal != 0.0)
+    if (norm_v_normal >=EPS)
     {
 
         v_normal /= norm_v_normal;
@@ -1719,26 +1704,26 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 
         Real norm2_v_ab_proj = v_ab_proj * (v_ab_proj); //dot product WARNING
 
-        if (norm2_v_ab_proj != 0.0) // pb_proj != pa
+        if (norm2_v_ab_proj >= EPS) // pb_proj != pa
         {
-            double coord_t = 0.0;
-            double coord_k = 0.0;
+            Real coord_t = 0.0;
+            Real coord_k = 0.0;
 
-            double is_initialized = false;
+            bool is_initialized = false;
             coord_kmin = 0.0;
 
-            double coord_test1;
-            double coord_test2;
+            Real coord_test1;
+            Real coord_test2;
 
-            double s_t;
-            double s_k;
+            Real s_t;
+            Real s_k;
 
             if (!is_full_01)
             {
                 coord_t = 0.0;
                 coord_k = 0.0;
                 bool is_intersected_01 = false;
-                double is_initialized_01 = false;
+                bool is_initialized_01 = false;
                 /// Test of edge (p0,p1) :
                 s_t = (p0 - p1) * n_proj;
                 s_k = (pa - pb_proj) * n_01;
@@ -1801,7 +1786,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
                 coord_t = 0.0;
                 coord_k = 0.0;
                 bool is_intersected_12 = false;
-                double is_initialized_12 = false;
+                bool is_initialized_12 = false;
                 /// Test of edge (p1,p2) :
 
                 s_t = (p1 - p2) * (n_proj);
@@ -1869,7 +1854,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
                 coord_t = 0.0;
                 coord_k = 0.0;
                 bool is_intersected_20 = false;
-                double is_initialized_20 = false;
+                bool is_initialized_20 = false;
                 /// Test of edge (p2,p0) :
 
                 s_t = (p2 - p0) * (n_proj);
