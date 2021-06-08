@@ -144,34 +144,19 @@ public:
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
+    typedef typename topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, edgeRestInfoVector > TetrahedralTMEdgeHandler;
 
-    class TetrahedralTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >
-    {
-    public:
-        typedef typename TetrahedralTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
-        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, topology::EdgeData<edgeRestInfoVector >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, edgeRestInfoVector >(_data), ff(_ff) {}
+    void createEdgeRestInformation(Index edgeIndex, EdgeRestInformation& ei,
+        const core::topology::BaseMeshTopology::Edge&,
+        const sofa::type::vector< Index >&,
+        const sofa::type::vector< double >&);
 
-        void applyCreateFunction(Index edgeIndex, EdgeRestInformation& ei,
-                const core::topology::BaseMeshTopology::Edge &,
-                const sofa::type::vector< Index > &,
-                const sofa::type::vector< double > &);
+    void applyTetrahedronCreation(const sofa::type::vector<Index>& tetrahedronAdded,
+        const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>&,
+        const sofa::type::vector<sofa::type::vector<Index> >&,
+        const sofa::type::vector<sofa::type::vector<double> >&);
 
-        void applyTetrahedronCreation(const sofa::type::vector<Index> &edgeAdded,
-                const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron> &,
-                const sofa::type::vector<sofa::type::vector<Index> > &,
-                const sofa::type::vector<sofa::type::vector<double> > &);
-
-        void applyTetrahedronDestruction(const sofa::type::vector<Index> &edgeRemoved);
-
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >::ApplyTopologyChange;
-        /// Callback to add tetrahedron elements.
-        void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/);
-        /// Callback to remove tetrahedron elements.
-        void ApplyTopologyChange(const core::topology::TetrahedraRemoved* /*event*/);
-
-    protected:
-        TetrahedralTensorMassForceField<DataTypes>* ff;
-    };
+    void applyTetrahedronDestruction(const sofa::type::vector<Index>& tetrahedronRemoved);
 
 protected:
 
@@ -182,7 +167,7 @@ protected:
     topology::EdgeData < edgeRestInfoVector > &getEdgeInfo() {return edgeInfo;}
 
 
-    TetrahedralTMEdgeHandler* edgeHandler;
+    TetrahedralTMEdgeHandler* m_edgeHandler;
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 

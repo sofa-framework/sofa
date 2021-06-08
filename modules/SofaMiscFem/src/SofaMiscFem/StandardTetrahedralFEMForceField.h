@@ -191,27 +191,10 @@ public:
 
   //  type::Mat<3,3,double> getPhi( int );
 
-    class GHTetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >
-        {
-        public:
-          typedef typename StandardTetrahedralFEMForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
-
-          GHTetrahedronHandler(StandardTetrahedralFEMForceField<DataTypes>* ff,
-                               topology::TetrahedronData<tetrahedronRestInfoVector>* data )
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >(data)
-            ,ff(ff)
-          {
-          }
-
-          void applyCreateFunction(Index, TetrahedronRestInformation &t,
-                                   const core::topology::BaseMeshTopology::Tetrahedron&,
-                                   const sofa::type::vector<Index> &,
-                                   const sofa::type::vector<double> &);
-
-         protected:
-          StandardTetrahedralFEMForceField<DataTypes>* ff;
-
-        };
+    void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
+        const core::topology::BaseMeshTopology::Tetrahedron&,
+        const sofa::type::vector<Index>&,
+        const sofa::type::vector<double>&);
 	
   protected:
     /// the array that describes the complete material energy and its derivatives
@@ -227,9 +210,6 @@ public:
         void saveMesh( const char *filename );
 	
 	VecCoord myposition;
-
-        GHTetrahedronHandler* tetrahedronHandler;
-    
 };
 
 

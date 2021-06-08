@@ -105,35 +105,14 @@ protected:
         }
     };
 
-    class FTCFTetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::type::vector<TetrahedronRestInformation> >
-    {
-    public:
-        typedef typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
-
-        using Index = sofa::Index;
-
-        FTCFTetrahedronHandler(FastTetrahedralCorotationalForceField<DataTypes>* ff,
-                topology::TetrahedronData<sofa::type::vector<TetrahedronRestInformation> >* data )
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::type::vector<TetrahedronRestInformation> >(data)
-            ,ff(ff)
-        {
-
-        }
-
-        void applyCreateFunction(Index, TetrahedronRestInformation &t,
-                                 const core::topology::BaseMeshTopology::Tetrahedron&,
-                                 const sofa::type::vector<Index> &,
-                                 const sofa::type::vector<double> &);
-
-    protected:
-        FastTetrahedralCorotationalForceField<DataTypes>* ff;
-
-    };
-
     topology::PointData<sofa::type::vector<Mat3x3> > pointInfo; ///< Internal point data
     topology::EdgeData<sofa::type::vector<Mat3x3> > edgeInfo; ///< Internal edge data
     topology::TetrahedronData<sofa::type::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
 
+    void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
+        const core::topology::BaseMeshTopology::Tetrahedron&,
+        const sofa::type::vector<Index>&,
+        const sofa::type::vector<double>&);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
     VecCoord  _initialPoints;///< the intial positions of the points
@@ -203,8 +182,6 @@ public:
 
 
 protected :
-    FTCFTetrahedronHandler* tetrahedronHandler;
-
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
     topology::EdgeData<sofa::type::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}

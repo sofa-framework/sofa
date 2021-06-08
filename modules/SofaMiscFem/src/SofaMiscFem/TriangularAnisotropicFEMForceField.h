@@ -81,37 +81,23 @@ public:
     Data<Real> f_theta; ///< Fiber angle in global reference frame (in degrees)
     Data<VecCoord> f_fiberCenter; ///< Concentric fiber center in global reference frame
     Data<bool> showFiber; ///< Flag activating rendering of fiber directions within each triangle
-
-    topology::TriangleData <type::vector< Deriv> > localFiberDirection; ///< Computed fibers direction within each triangle
+    typedef typename TriangularAnisotropicFEMForceField::Deriv TriangleFiberDirection;
+    topology::TriangleData < sofa::type::vector< TriangleFiberDirection > > localFiberDirection; ///< Computed fibers direction within each triangle
 
     /// Link to be set to the topology container in the component graph.
     using Inherit1::l_topology;
 
-    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,type::vector<Deriv> >
-    {
-    public:
-        typedef typename TriangularAnisotropicFEMForceField::Deriv triangleInfo;
-
-        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<type::vector<triangleInfo> >*  _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, type::vector<triangleInfo> >(_data), ff(_ff) {}
-
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,type::vector<Deriv> >::applyCreateFunction;
-        void applyCreateFunction(unsigned int triangleIndex,
-                                 type::vector<triangleInfo> & ,
-                                 const core::topology::BaseMeshTopology::Triangle & t,
-                                 const sofa::type::vector< unsigned int > &,
-                                 const sofa::type::vector< double > &);
-
-    protected:
-        TriangularAnisotropicFEMForceField<DataTypes>* ff;
-    };
+    void createTriangleInfo(Index triangleIndex,
+        TriangleFiberDirection&,
+        const core::topology::BaseMeshTopology::Triangle& t,
+        const sofa::type::vector< unsigned int >&,
+        const sofa::type::vector< double >&);
 
     /// Inherited member
     /// Bring inherited member in the current lookup context.
     /// otherwise any access to the Inherit1::member would require "this->".
     /// @see https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     using Inherit1::m_topology;
-
-    TRQSTriangleHandler* triangleHandler;
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARANISOTROPICFEMFORCEFIELD_CPP)

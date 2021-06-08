@@ -40,222 +40,191 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(Index, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
+void TetrahedralTensorMassForceField<DataTypes>::createEdgeRestInformation(Index, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
-    if (ff)
+    unsigned int u,v;
+    /// set to zero the stiffness matrix
+    for (u=0; u<3; ++u)
     {
-
-        unsigned int u,v;
-        /// set to zero the stiffness matrix
-        for (u=0; u<3; ++u)
+        for (v=0; v<3; ++v)
         {
-            for (v=0; v<3; ++v)
-            {
-                ei.DfDx[u][v]=0;
-            }
+            ei.DfDx[u][v]=0;
         }
-
     }
+
     ei.vertices[0] =(float) edge[0];
     ei.vertices[1] =(float) edge[1];
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronCreation(const sofa::type::vector<Index> &tetrahedronAdded,
+void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const sofa::type::vector<Index> &tetrahedronAdded,
         const sofa::type::vector<Tetrahedron> &,
         const sofa::type::vector<sofa::type::vector<Index> > &,
         const sofa::type::vector<sofa::type::vector<double> > &)
 {
-    if (ff)
+    unsigned int i,j,k,l,u,v;
+
+    typename DataTypes::Real val1,volume;
+    typename DataTypes::Real lambda=getLambda();
+    typename DataTypes::Real mu=getMu();
+    typename DataTypes::Real lambdastar, mustar;
+    typename DataTypes::Coord point[4],shapeVector[4];
+
+    const typename DataTypes::VecCoord restPosition=mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
+
+    for (i=0; i<tetrahedronAdded.size(); ++i)
     {
 
-        unsigned int i,j,k,l,u,v;
-
-        typename DataTypes::Real val1,volume;
-        typename DataTypes::Real lambda=ff->getLambda();
-        typename DataTypes::Real mu=ff->getMu();
-        typename DataTypes::Real lambdastar, mustar;
-        typename DataTypes::Coord point[4],shapeVector[4];
-
-        const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-        edgeRestInfoVector& edgeData = *(ff->edgeInfo.beginEdit());
-
-        for (i=0; i<tetrahedronAdded.size(); ++i)
+        /// get a reference on the edge set of the ith added tetrahedron
+        const EdgesInTetrahedron &te= m_topology->getEdgesInTetrahedron(tetrahedronAdded[i]);
+        ///get a reference on the vertex set of the ith added tetrahedron
+        const Tetrahedron &t= m_topology->getTetrahedron(tetrahedronAdded[i]);
+        // store points
+        for(j=0; j<4; ++j)
+            point[j]=(restPosition)[t[j]];
+        /// compute 6 times the rest volume
+        volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
+        // store shape vectors
+        for(j=0; j<4; ++j)
         {
-
-            /// get a reference on the edge set of the ith added tetrahedron
-            const EdgesInTetrahedron &te= ff->m_topology->getEdgesInTetrahedron(tetrahedronAdded[i]);
-            ///get a reference on the vertex set of the ith added tetrahedron
-            const Tetrahedron &t= ff->m_topology->getTetrahedron(tetrahedronAdded[i]);
-            // store points
-            for(j=0; j<4; ++j)
-                point[j]=(restPosition)[t[j]];
-            /// compute 6 times the rest volume
-            volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
-            // store shape vectors
-            for(j=0; j<4; ++j)
-            {
-                if ((j%2)==0)
-                    shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
-                else
-                    shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
-            }
-
-            lambdastar=lambda*fabs(volume)/6;
-            mustar=mu*fabs(volume)/6;
-
-
-            for(j=0; j<6; ++j)
-            {
-                /// local indices of the edge
-                k = ff->m_topology->getLocalEdgesInTetrahedron(j)[0];
-                l = ff->m_topology->getLocalEdgesInTetrahedron(j)[1];
-
-                Mat3 &m=edgeData[te[j]].DfDx;
-
-                val1= dot(shapeVector[k],shapeVector[l])*mustar;
-
-                // print if obtuse tetrahedron along that edge
-                msg_info_when(val1<0, ff) << "negative cotangent["<<tetrahedronAdded[i]<<"]["<<j<<"]" ;
-
-                if (ff->m_topology->getEdge(te[j])[0]!=t[l])
-                {
-                    for (u=0; u<3; ++u)
-                    {
-                        for (v=0; v<3; ++v)
-                        {
-                            m[u][v]+= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
-                        }
-                        m[u][u]+=val1;
-                    }
-                }
-                else
-                {
-                    for (u=0; u<3; ++u)
-                    {
-                        for (v=0; v<3; ++v)
-                        {
-                            m[v][u]+= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
-                        }
-                        m[u][u]+=val1;
-                    }
-                }
-
-
-            }
+            if ((j%2)==0)
+                shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+            else
+                shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
         }
-        ff->edgeInfo.endEdit();
+
+        lambdastar=lambda*fabs(volume)/6;
+        mustar=mu*fabs(volume)/6;
+
+
+        for(j=0; j<6; ++j)
+        {
+            /// local indices of the edge
+            k = m_topology->getLocalEdgesInTetrahedron(j)[0];
+            l = m_topology->getLocalEdgesInTetrahedron(j)[1];
+
+            Mat3 &m=edgeData[te[j]].DfDx;
+
+            val1= dot(shapeVector[k],shapeVector[l])*mustar;
+
+            // print if obtuse tetrahedron along that edge
+            msg_info_when(val1<0) << "negative cotangent["<<tetrahedronAdded[i]<<"]["<<j<<"]" ;
+
+            if (m_topology->getEdge(te[j])[0]!=t[l])
+            {
+                for (u=0; u<3; ++u)
+                {
+                    for (v=0; v<3; ++v)
+                    {
+                        m[u][v]+= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
+                    }
+                    m[u][u]+=val1;
+                }
+            }
+            else
+            {
+                for (u=0; u<3; ++u)
+                {
+                    for (v=0; v<3; ++v)
+                    {
+                        m[v][u]+= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
+                    }
+                    m[u][u]+=val1;
+                }
+            }
+
+
+        }
     }
+    edgeInfo.endEdit();
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronDestruction(const sofa::type::vector<Index> &tetrahedronRemoved)
+void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(const sofa::type::vector<Index> &tetrahedronRemoved)
 {
-    if (ff)
+    unsigned int i,j,k,l,u,v;
+
+    typename DataTypes::Real val1,volume;
+    typename DataTypes::Real lambda=getLambda();
+    typename DataTypes::Real mu=getMu();
+    typename DataTypes::Real lambdastar, mustar;
+    typename DataTypes::Coord point[4],shapeVector[4];
+
+    const typename DataTypes::VecCoord restPosition=mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
+
+    for (i=0; i<tetrahedronRemoved.size(); ++i)
     {
-
-        unsigned int i,j,k,l,u,v;
-
-        typename DataTypes::Real val1,volume;
-        typename DataTypes::Real lambda=ff->getLambda();
-        typename DataTypes::Real mu=ff->getMu();
-        typename DataTypes::Real lambdastar, mustar;
-        typename DataTypes::Coord point[4],shapeVector[4];
-
-        const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-        edgeRestInfoVector& edgeData = *(ff->edgeInfo.beginEdit());
-
-        for (i=0; i<tetrahedronRemoved.size(); ++i)
+        /// get a reference on the edge set of the ith added tetrahedron
+        const EdgesInTetrahedron &te= m_topology->getEdgesInTetrahedron(tetrahedronRemoved[i]);
+        ///get a reference on the vertex set of the ith added tetrahedron
+        const Tetrahedron &t= m_topology->getTetrahedron(tetrahedronRemoved[i]);
+        // store points
+        for(j=0; j<4; ++j)
+            point[j]=(restPosition)[t[j]];
+        /// compute 6 times the rest volume
+        volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
+        // store shape vectors
+        for(j=0; j<4; ++j)
         {
+            if ((j%2)==0)
+                shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+            else
+                shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+        }
 
-            /// get a reference on the edge set of the ith added tetrahedron
-            const EdgesInTetrahedron &te= ff->m_topology->getEdgesInTetrahedron(tetrahedronRemoved[i]);
-            ///get a reference on the vertex set of the ith added tetrahedron
-            const Tetrahedron &t= ff->m_topology->getTetrahedron(tetrahedronRemoved[i]);
-            // store points
-            for(j=0; j<4; ++j)
-                point[j]=(restPosition)[t[j]];
-            /// compute 6 times the rest volume
-            volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
-            // store shape vectors
-            for(j=0; j<4; ++j)
+        lambdastar=lambda*fabs(volume)/6;
+        mustar=mu*fabs(volume)/6;
+
+
+        for(j=0; j<6; ++j)
+        {
+            /// local indices of the edge
+            k = m_topology->getLocalEdgesInTetrahedron(j)[0];
+            l = m_topology->getLocalEdgesInTetrahedron(j)[1];
+
+            Mat3 &m=edgeData[te[j]].DfDx;
+
+            val1= dot(shapeVector[k],shapeVector[l])*mustar;
+            // print if obtuse tetrahedron along that edge
+            msg_info_when(val1<0) <<"negative cotangent["<<tetrahedronRemoved[i]<<"]["<<j<<"]" ;
+
+            if (m_topology->getEdge(te[j])[0]!=t[l])
             {
-                if ((j%2)==0)
-                    shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
-                else
-                    shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+                for (u=0; u<3; ++u)
+                {
+                    for (v=0; v<3; ++v)
+                    {
+                        m[u][v]-= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
+                    }
+                    m[u][u]-=val1;
+                }
+            }
+            else
+            {
+                for (u=0; u<3; ++u)
+                {
+                    for (v=0; v<3; ++v)
+                    {
+                        m[v][u]-= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
+                    }
+                    m[u][u]-=val1;
+                }
             }
 
-            lambdastar=lambda*fabs(volume)/6;
-            mustar=mu*fabs(volume)/6;
-
-
-            for(j=0; j<6; ++j)
-            {
-                /// local indices of the edge
-                k = ff->m_topology->getLocalEdgesInTetrahedron(j)[0];
-                l = ff->m_topology->getLocalEdgesInTetrahedron(j)[1];
-
-                Mat3 &m=edgeData[te[j]].DfDx;
-
-                val1= dot(shapeVector[k],shapeVector[l])*mustar;
-                // print if obtuse tetrahedron along that edge
-                msg_info_when(val1<0, ff) <<"negative cotangent["<<tetrahedronRemoved[i]<<"]["<<j<<"]" ;
-
-                if (ff->m_topology->getEdge(te[j])[0]!=t[l])
-                {
-                    for (u=0; u<3; ++u)
-                    {
-                        for (v=0; v<3; ++v)
-                        {
-                            m[u][v]-= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
-                        }
-                        m[u][u]-=val1;
-                    }
-                }
-                else
-                {
-                    for (u=0; u<3; ++u)
-                    {
-                        for (v=0; v<3; ++v)
-                        {
-                            m[v][u]-= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
-                        }
-                        m[u][u]-=val1;
-                    }
-                }
-
-
-            }
 
         }
-        ff->edgeInfo.endEdit();
+
     }
-}
-
-template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::ApplyTopologyChange(const core::topology::TetrahedraAdded* e)
-{
-    const auto &tetraAdded = e->getIndexArray();
-    const sofa::type::vector<Tetrahedron> &elems = e->getElementArray();
-    const auto & ancestors = e->ancestorsList;
-    const sofa::type::vector<sofa::type::vector<double> > & coefs = e->coefs;
-
-    applyTetrahedronCreation(tetraAdded, elems, ancestors, coefs);
-}
-
-template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::ApplyTopologyChange(const core::topology::TetrahedraRemoved* e)
-{
-    const auto &tetraRemoved = e->getArray();
-
-    applyTetrahedronDestruction(tetraRemoved);
+    edgeInfo.endEdit();
 }
 
 
-template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
+template <class DataTypes> 
+TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
     : _initialPoints(0)
     , updateMatrix(true)
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
@@ -266,15 +235,17 @@ template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::Tetrahedr
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
-    edgeHandler = new TetrahedralTMEdgeHandler(this, &edgeInfo);
+    m_edgeHandler = new TetrahedralTMEdgeHandler(&edgeInfo);
 }
 
-template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::~TetrahedralTensorMassForceField()
+template <class DataTypes> 
+TetrahedralTensorMassForceField<DataTypes>::~TetrahedralTensorMassForceField()
 {
-    if(edgeHandler) delete edgeHandler;
+    if(m_edgeHandler) delete m_edgeHandler;
 }
 
-template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init()
+template <class DataTypes> void 
+TetrahedralTensorMassForceField<DataTypes>::init()
 {
     this->Inherited::init();
 
@@ -294,7 +265,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
         return;
     }
 
-    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology, m_edgeHandler);
     edgeInfo.linkToTetrahedronDataArray();
 
     if (m_topology->getNbTetrahedra()==0)
@@ -321,7 +292,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     // set edge tensor to 0
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
-        edgeHandler->applyCreateFunction(i, edgeInf[i],
+        createEdgeRestInformation(i, edgeInf[i],
                 m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
                 (const sofa::type::vector< double >)0);
     }
@@ -330,10 +301,25 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     for (i=0; i<m_topology->getNbTetrahedra(); ++i)
         tetrahedronAdded.push_back(i);
 
-    edgeHandler->applyTetrahedronCreation(tetrahedronAdded,
-            (const sofa::type::vector<Tetrahedron>)0,
-            (const sofa::type::vector<sofa::type::vector<Index> >)0,
-            (const sofa::type::vector<sofa::type::vector<double> >)0);
+    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
+        const core::topology::BaseMeshTopology::Edge& edge,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createEdgeRestInformation(edgeIndex, ei, edge, ancestors, coefs);
+    });
+
+    m_edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) 
+    {
+        const core::topology::TetrahedraAdded* tAdd = static_cast<const core::topology::TetrahedraAdded*>(eventTopo);
+        applyTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
+    });
+
+    m_edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) 
+    {
+        const core::topology::TetrahedraRemoved* tRemove = static_cast<const core::topology::TetrahedraRemoved*>(eventTopo);
+        applyTetrahedronDestruction(tRemove->getArray());
+    });
 
     edgeInfo.endEdit();
 

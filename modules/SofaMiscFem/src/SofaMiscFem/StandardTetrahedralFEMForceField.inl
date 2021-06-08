@@ -47,75 +47,6 @@
 namespace sofa::component::forcefield
 {
 
-template< class DataTypes>
-void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
-                                                                                            TetrahedronRestInformation & tinfo,
-                                                                                            const core::topology::BaseMeshTopology::Tetrahedron &,
-                                                                                            const sofa::type::vector<Index> &,
-                                                                                            const sofa::type::vector<double> &)
-{
-    if (ff) {
-        const type::vector< core::topology::BaseMeshTopology::Tetrahedron > &tetrahedronArray=ff->m_topology->getTetrahedra() ;
-        const std::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=ff->m_topology->getEdges() ;
-        unsigned int j;
-        typename DataTypes::Real volume;
-        typename DataTypes::Coord point[4];
-        const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-        ///describe the indices of the 4 tetrahedron vertices
-        const core::topology::BaseMeshTopology::Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
-        core::topology::BaseMeshTopology::EdgesInTetrahedron te=ff->m_topology->getEdgesInTetrahedron(tetrahedronIndex);
-
-        //store point indices
-        tinfo.tetraIndices[0] = (float)t[0];
-        tinfo.tetraIndices[1] = (float)t[1];
-        tinfo.tetraIndices[2] = (float)t[2];
-        tinfo.tetraIndices[3] = (float)t[3];
-        //store edges
-        tinfo.tetraEdges[0] = (float)te[0];
-        tinfo.tetraEdges[1] = (float)te[1];
-        tinfo.tetraEdges[2] = (float)te[2];
-        tinfo.tetraEdges[3] = (float)te[3];
-        tinfo.tetraEdges[4] = (float)te[4];
-        tinfo.tetraEdges[5] = (float)te[5];
-
-        // store the point position
-        for(j=0;j<4;++j)
-        {
-            point[j]=(restPosition)[t[j]];
-        }
-        /// compute 6 times the rest volume
-        volume=dot(cross(point[2]-point[0],point[3]-point[0]),point[1]-point[0]);
-        /// store the rest volume
-        tinfo.volScale =(Real)(1.0/volume);
-        tinfo.restVolume = fabs(volume/6);
-        // store shape vectors at the rest configuration
-        for(j=0;j<4;++j) {
-            if (!(j%2))
-                tinfo.shapeVector[j]=-cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
-            else
-                tinfo.shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
-        }
-
-
-        for(j=0;j<6;++j) {
-            core::topology::BaseMeshTopology::Edge e=ff->m_topology->getLocalEdgesInTetrahedron(j);
-            int k=e[0];
-            //l=e[1];
-            if (edgeArray[te[j]][0]!=t[k]) {
-                k=e[1];
-                //l=e[0];
-            }
-        }
-
-
-
-
-    }//end if(ff)
-
-}
-
-
 template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::StandardTetrahedralFEMForceField()
     : m_topology(nullptr)
     , _initialPoints(0)
@@ -129,12 +60,12 @@ template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::Standard
     , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
 {
-    tetrahedronHandler = new GHTetrahedronHandler(this,&tetrahedronInfo);
+    
 }
 
 template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::~StandardTetrahedralFEMForceField()
 {
-    if (tetrahedronHandler) delete tetrahedronHandler;
+    
 }
 
 template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::init()
@@ -156,7 +87,14 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
         return;
     }
 
-    tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
+    tetrahedronInfo.createTopologyHandler(m_topology);
+    tetrahedronInfo.setCreationCallback([this](Index tetrahedronIndex, TetrahedronRestInformation& tetraInfo,
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createTetrahedronRestInformation(tetrahedronIndex, tetraInfo, tetra, ancestors, coefs);
+    });
     edgeInfo.createTopologyHandler(m_topology);
 
     /** parse the parameter set */
@@ -243,9 +181,8 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
 
     /// initialize the data structure associated with each tetrahedron
     for (size_t i=0;i<m_topology->getNbTetrahedra();++i) {
-            tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                        m_topology->getTetrahedron(i),  (const type::vector< Index > )0,
-                        (const type::vector< double >)0);
+        createTetrahedronRestInformation(i, tetrahedronInf[i], m_topology->getTetrahedron(i),  
+            (const type::vector< Index > )0, (const type::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
 
@@ -256,6 +193,71 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
     this->initNeighbourhoodPoints();
     this->initNeighbourhoodEdges();
 }
+
+
+template< class DataTypes>
+void StandardTetrahedralFEMForceField<DataTypes>::createTetrahedronRestInformation(Index tetrahedronIndex,
+    TetrahedronRestInformation& tinfo,
+    const core::topology::BaseMeshTopology::Tetrahedron&,
+    const sofa::type::vector<Index>&,
+    const sofa::type::vector<double>&)
+{
+
+    const type::vector< core::topology::BaseMeshTopology::Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();
+    const std::vector< core::topology::BaseMeshTopology::Edge>& edgeArray = m_topology->getEdges();
+    unsigned int j;
+    /*int l*/;
+    typename DataTypes::Real volume;
+    typename DataTypes::Coord point[4];
+    const typename DataTypes::VecCoord restPosition = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    ///describe the indices of the 4 tetrahedron vertices
+    const core::topology::BaseMeshTopology::Tetrahedron& t = tetrahedronArray[tetrahedronIndex];
+    core::topology::BaseMeshTopology::EdgesInTetrahedron te = m_topology->getEdgesInTetrahedron(tetrahedronIndex);
+
+    //store point indices
+    tinfo.tetraIndices[0] = (float)t[0];
+    tinfo.tetraIndices[1] = (float)t[1];
+    tinfo.tetraIndices[2] = (float)t[2];
+    tinfo.tetraIndices[3] = (float)t[3];
+    //store edges
+    tinfo.tetraEdges[0] = (float)te[0];
+    tinfo.tetraEdges[1] = (float)te[1];
+    tinfo.tetraEdges[2] = (float)te[2];
+    tinfo.tetraEdges[3] = (float)te[3];
+    tinfo.tetraEdges[4] = (float)te[4];
+    tinfo.tetraEdges[5] = (float)te[5];
+
+    // store the point position
+    for (j = 0; j < 4; ++j)
+    {
+        point[j] = (restPosition)[t[j]];
+    }
+    /// compute 6 times the rest volume
+    volume = dot(cross(point[2] - point[0], point[3] - point[0]), point[1] - point[0]);
+    /// store the rest volume
+    tinfo.volScale = (Real)(1.0 / volume);
+    tinfo.restVolume = fabs(volume / 6);
+    // store shape vectors at the rest configuration
+    for (j = 0; j < 4; ++j) {
+        if (!(j % 2))
+            tinfo.shapeVector[j] = -cross(point[(j + 2) % 4] - point[(j + 1) % 4], point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;
+        else
+            tinfo.shapeVector[j] = cross(point[(j + 2) % 4] - point[(j + 1) % 4], point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;;
+    }
+
+
+    for (j = 0; j < 6; ++j) {
+        core::topology::BaseMeshTopology::Edge e = m_topology->getLocalEdgesInTetrahedron(j);
+        int k = e[0];
+        //l=e[1];
+        if (edgeArray[te[j]][0] != t[k]) {
+            k = e[1];
+            //l=e[0];
+        }
+    }
+}
+
 
 template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::initNeighbourhoodPoints(){}

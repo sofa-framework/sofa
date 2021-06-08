@@ -53,60 +53,6 @@ using namespace	sofa::component::topology;
 using namespace core::topology;
 
 
-template< class DataTypes >
-void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
-                                                                                              TetrahedronRestInformation &tinfo,
-                                                                                              const Tetrahedron &,
-                                                                                              const sofa::type::vector<Index> &,
-                                                                                              const sofa::type::vector<double> &)
-{
-
-  if (ff) {
-      const type::vector< Tetrahedron > &tetrahedronArray=ff->m_topology->getTetrahedra() ;
-      const std::vector< Edge> &edgeArray=ff->m_topology->getEdges() ;
-      unsigned int j;
-//      int k;
-      typename DataTypes::Real volume;
-      typename DataTypes::Coord point[4];
-      const typename DataTypes::VecCoord restPosition = ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-      ///describe the indices of the 4 tetrahedron vertices
-      const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
-      BaseMeshTopology::EdgesInTetrahedron te=ff->m_topology->getEdgesInTetrahedron(tetrahedronIndex);
-
-      // store the point position
-
-      for(j=0;j<4;++j)
-          point[j]=(restPosition)[t[j]];
-      /// compute 6 times the rest volume
-      volume=dot(cross(point[2]-point[0],point[3]-point[0]),point[1]-point[0]);
-      /// store the rest volume
-      tinfo.m_volScale =(Real)(1.0/volume);
-      tinfo.m_restVolume = fabs(volume/6);
-      // store shape vectors at the rest configuration
-      for(j=0;j<4;++j) {
-          if (!(j%2))
-              tinfo.m_shapeVector[j]=-cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
-          else
-              tinfo.m_shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
-      }
-
-
-      for(j=0;j<6;++j) {
-          Edge e=ff->m_topology->getLocalEdgesInTetrahedron(j);
-          int k=e[0];
-          //int l=e[1];
-          if (edgeArray[te[j]][0]!=t[k]) {
-              k=e[1];
-              //l=e[0];
-          }
-      }
-
-
-  }//end if(ff)
-
-}
-
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHyperelasticityFEMForceField() 
     : m_topology(nullptr)
     , m_initialPoints(0)
@@ -119,14 +65,13 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_tetrahedronHandler(nullptr)
 {
-    m_tetrahedronHandler = new TetrahedronHandler(this,&m_tetrahedronInfo);
+
 }
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::~TetrahedronHyperelasticityFEMForceField()
 {
-    if(m_tetrahedronHandler) delete m_tetrahedronHandler;
+
 }
 
 template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
@@ -243,16 +188,72 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     /// initialize the data structure associated with each tetrahedron
     for (Topology::TetrahedronID i=0;i<m_topology->getNbTetrahedra();++i)
     {
-        m_tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                                                m_topology->getTetrahedron(i),  (const type::vector< Index > )0,
-                                                (const type::vector< double >)0);
+        createTetrahedronRestInformation(i, tetrahedronInf[i],
+            m_topology->getTetrahedron(i),  (const type::vector< Index > )0,
+            (const type::vector< double >)0);
     }
 
     /// set the call back function upon creation of a tetrahedron
-    m_tetrahedronInfo.createTopologyHandler(m_topology,m_tetrahedronHandler);
+    m_tetrahedronInfo.createTopologyHandler(m_topology);
+    m_tetrahedronInfo.setCreationCallback([this](Index tetrahedronIndex, TetrahedronRestInformation& tetraInfo,
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createTetrahedronRestInformation(tetrahedronIndex, tetraInfo, tetra, ancestors, coefs);
+    });
     m_tetrahedronInfo.endEdit();
     //testDerivatives();
+}
 
+
+template< class DataTypes >
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::createTetrahedronRestInformation(Index tetrahedronIndex,
+    TetrahedronRestInformation& tinfo,
+    const Tetrahedron&,
+    const sofa::type::vector<Index>&,
+    const sofa::type::vector<double>&)
+{
+
+    const type::vector< Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();
+    const std::vector< Edge>& edgeArray = m_topology->getEdges();
+    unsigned int j;
+    //      int k;
+    typename DataTypes::Real volume;
+    typename DataTypes::Coord point[4];
+    const typename DataTypes::VecCoord restPosition = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    ///describe the indices of the 4 tetrahedron vertices
+    const Tetrahedron& t = tetrahedronArray[tetrahedronIndex];
+    BaseMeshTopology::EdgesInTetrahedron te = m_topology->getEdgesInTetrahedron(tetrahedronIndex);
+
+    // store the point position
+
+    for (j = 0; j < 4; ++j)
+        point[j] = (restPosition)[t[j]];
+    /// compute 6 times the rest volume
+    volume = dot(cross(point[2] - point[0], point[3] - point[0]), point[1] - point[0]);
+    /// store the rest volume
+    tinfo.m_volScale = (Real)(1.0 / volume);
+    tinfo.m_restVolume = fabs(volume / 6);
+    // store shape vectors at the rest configuration
+    for (j = 0; j < 4; ++j) {
+        if (!(j % 2))
+            tinfo.m_shapeVector[j] = -cross(point[(j + 2) % 4] - point[(j + 1) % 4], point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;
+        else
+            tinfo.m_shapeVector[j] = cross(point[(j + 2) % 4] - point[(j + 1) % 4], point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;;
+    }
+
+
+    for (j = 0; j < 6; ++j) {
+        Edge e = m_topology->getLocalEdgesInTetrahedron(j);
+        int k = e[0];
+        //int l=e[1];
+        if (edgeArray[te[j]][0] != t[k]) {
+            k = e[1];
+            //l=e[0];
+        }
+    }
 }
 
 template <class DataTypes> 
