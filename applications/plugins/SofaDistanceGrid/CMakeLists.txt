@@ -42,7 +42,6 @@ set(SOURCE_FILES
     ${SOFADISTANCEGRID_SRC}/components/collision/RigidDistanceGridDiscreteIntersection.cpp
     ${SOFADISTANCEGRID_SRC}/components/collision/DistanceGridCollisionModel.cpp
     ${SOFADISTANCEGRID_SRC}/components/collision/BarycentricPenalityContact_DistanceGrid.cpp
-    ${SOFADISTANCEGRID_SRC}/components/collision/FrictionContact_DistanceGrid.cpp
 )
 
 set(EXTRA_FILES
