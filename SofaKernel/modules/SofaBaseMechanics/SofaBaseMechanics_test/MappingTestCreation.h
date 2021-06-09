@@ -65,7 +65,7 @@ namespace sofa::mapping_test {
   and a failure is issued if the error is greater than errorMax*epsilon,
   where epsilon=std::numeric_limits<Real>::epsilon() is 1.19209e-07 for float and 2.22045e-16 for double.
 
-  @author François Faure @date 2013
+  @author FranÃ§ois Faure @date 2013
   */
 
 template< class _Mapping>
@@ -269,8 +269,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // get position data
         sofa::testing::copyFromData( xp, inDofs->readPositions() );
         sofa::testing::copyFromData( xc, outDofs->readPositions() ); // positions and have already been propagated
-        //          cout<<"parent positions xp = "<< xp << endl;
-        //          cout<<"child  positions xc = "<< xc << endl;
 
         // set random child forces and propagate them to the parent
         for( unsigned i=0; i<Nc; i++ ){
@@ -279,22 +277,20 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         fp2.fill( InDeriv() );
         WriteInVecDeriv fin = inDofs->writeForces();
         sofa::testing::copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
-        //        cout<<"random child forces  fc = "<<fc<<endl;
+
         WriteOutVecDeriv fout = outDofs->writeForces();
         sofa::testing::copyToData( fout, fc );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         sofa::testing::copyFromData( fp, inDofs->readForces() );
-        //          cout<<"parent forces fp = "<<fp<<endl;
 
         // set small parent velocities and use them to update the child
         for( unsigned i=0; i<Np; i++ ){
             vp[i] = In::randomDeriv(this->epsilon() * deltaRange.first, this->epsilon() * deltaRange.second );
         }
-//        cout<<"parent velocities vp = " << vp << endl;
+
         for( unsigned i=0; i<Np; i++ ){             // and small displacements
             xp1[i] = xp[i] + vp[i];
         }
-        //          cout<<"new parent positions xp1 = " << xp1 << endl;
 
         // propagate small velocity
         WriteInVecDeriv vin = inDofs->writeVelocities();
@@ -302,7 +298,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
         ReadOutVecDeriv vout = outDofs->readVelocities();
         sofa::testing::copyFromData( vc, vout);
-        //          cout<<"child velocity vc = " << vc << endl;
 
         // apply geometric stiffness
         inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
@@ -313,7 +308,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         sofa::testing::copyFromData( dfp, inDofs->readForces() ); // fp + df due to geometric stiffness
-        //        cout<<"dfp = " << dfp << endl;
 
         // Jacobian will be obsolete after applying new positions
         if( flags & TEST_getJs )
@@ -375,12 +369,10 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         // propagate small displacement
         WriteInVecCoord pin (inDofs->writePositions());
         sofa::testing::copyToData( pin, xp1 );
-        //            cout<<"new parent positions xp1 = " << xp1 << endl;
+
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
         ReadOutVecCoord pout = outDofs->readPositions();
         sofa::testing::copyFromData( xc1, pout );
-        //            cout<<"old child positions xc = " << xc << endl;
-        //            cout<<"new child positions xc1 = " << xc1 << endl;
 
         // ================ test applyJ: compute the difference between propagated displacements and velocities
         OutVecDeriv dxc(Nc);
@@ -403,13 +395,11 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         sofa::testing::copyToData( fout, preTreatment(fc) );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         sofa::testing::copyFromData( fp2, inDofs->readForces() );
-        //        cout<<"updated parent forces fp2 = "<< fp2 << endl;
+
         InVecDeriv fp12(Np);
         for(unsigned i=0; i<Np; i++){
             fp12[i] = fp2[i]-fp[i];       // fp2 - fp
         }
-        //        cout<<"fp2 - fp = " << fp12 << endl;
-
 
 
         // ================ test applyDJT()
