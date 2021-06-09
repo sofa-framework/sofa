@@ -50,7 +50,10 @@ public:
     void setFilename(std::string f)  ;
     const std::string &getFilename() ;
 
-    objectmodel::DataFileName m_filename;
+    objectmodel::DataFileName d_filename;
+
+    SOFA_ATTRIBUTE_DISABLED__LOADER_FILENAME("To fix your code, use d_filename")
+    DeprecatedAndRemoved f_filename;
 
 protected:
     BaseLoader() ;

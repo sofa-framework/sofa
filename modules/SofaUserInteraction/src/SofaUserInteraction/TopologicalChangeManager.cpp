@@ -53,7 +53,7 @@ using helper::vector;
 TopologicalChangeManager::TopologicalChangeManager()
 {
     incision.firstCut = true;
-    incision.indexPoint = core::topology::BaseMeshTopology::InvalidID;
+    incision.indexPoint = sofa::InvalidID;
 }
 
 TopologicalChangeManager::~TopologicalChangeManager()
@@ -549,7 +549,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
 
         // -- STEP 5: Splitting elements along path (incision path is stored inside "new_edges")
         sofa::helper::vector< Index > new_edges;
-        int result = triangleGeometry->SplitAlongPath(last_indexPoint, coord_a, core::topology::BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
+        int result = triangleGeometry->SplitAlongPath(last_indexPoint, coord_a, sofa::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
 
         if (result == -1)
         {

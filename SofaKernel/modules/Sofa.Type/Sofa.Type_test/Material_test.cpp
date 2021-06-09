@@ -31,8 +31,8 @@ using sofa::core::objectmodel::Data ;
 #include <sofa/helper/types/Material.h>
 using sofa::helper::types::Material ;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 
 namespace sofa {

@@ -1,0 +1,2 @@
+# We can't use Geomagic on the CI build, so let's just ignore all scenes
+ignore ".*"

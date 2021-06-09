@@ -199,7 +199,7 @@ void Hexa2TetraTopologicalMapping::init()
 Index Hexa2TetraTopologicalMapping::getFromIndex(Index /*ind*/)
 {
 
-    return Topology::InvalidID;
+    return sofa::InvalidID;
 }
 
 void Hexa2TetraTopologicalMapping::updateTopologicalMappingTopDown()

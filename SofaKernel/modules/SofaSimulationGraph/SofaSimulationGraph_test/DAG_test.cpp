@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include "Node_test.h"
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/simulation/Visitor.h>

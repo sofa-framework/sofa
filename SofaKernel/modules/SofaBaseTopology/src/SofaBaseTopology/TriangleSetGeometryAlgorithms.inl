@@ -1665,7 +1665,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
 
     // In case the ind_t is not the good one.
-    if ( (!is_intersected || indices[0] == last_point || indices[1] == last_point) && (last_point != core::topology::BaseMeshTopology::InvalidID))
+    if ( (!is_intersected || indices[0] == last_point || indices[1] == last_point) && (last_point != sofa::InvalidID))
     {
 
         const sofa::helper::vector< TriangleID >& shell = this->m_topology->getTrianglesAroundVertex (last_point);
@@ -1923,7 +1923,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         }
     }
 
-    if (ind_tb == core::topology::BaseMeshTopology::InvalidID)
+    if (ind_tb == sofa::InvalidID)
         ind_tb = ind_triangle;
 
     bool is_reached = (ind_tb==ind_triangle && coord_k_test>=1.0);
@@ -1992,7 +1992,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         sofa::defaulttype::Vec<3,double> baryCoords;
 
         // 1 - First point a (for the moment: always a point in a triangle)
-        if (last_point != core::topology::BaseMeshTopology::InvalidID)
+        if (last_point != sofa::InvalidID)
         {
             topoPath_list.push_back (core::topology::TopologyElementType::POINT);
             indices_list.push_back (last_point);
@@ -2416,7 +2416,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::RemoveAlongTrianglesList(const 
 
     ind_tb_final = ind_tb;
     TriangleID ind_ta_final = ind_ta;
-    is_intersected = computeIntersectedPointsList(core::topology::BaseMeshTopology::InvalidID, a, b, ind_ta_final, ind_tb_final, triangles_list, edges_list, coords_list, is_on_boundary);
+    is_intersected = computeIntersectedPointsList(sofa::InvalidID, a, b, ind_ta_final, ind_tb_final, triangles_list, edges_list, coords_list, is_on_boundary);
 
     if (is_intersected)
     {
@@ -2463,7 +2463,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
         {
             // Call the method "computeIntersectedPointsList" to get the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
             ind_tb_final = ind_tpb;
-            bool is_intersected = computeIntersectedPointsList(core::topology::BaseMeshTopology::InvalidID, pa, pb, ind_tpa, ind_tb_final, triangles_list, edges_list, coords_list, is_on_boundary);
+            bool is_intersected = computeIntersectedPointsList(sofa::InvalidID, pa, pb, ind_tpa, ind_tb_final, triangles_list, edges_list, coords_list, is_on_boundary);
             is_validated = is_intersected;
         }
         else

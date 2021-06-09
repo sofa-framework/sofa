@@ -25,8 +25,8 @@
 #include <sofa/helper/vectorData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/types/RGBAColor.h>
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 
 namespace sofa {

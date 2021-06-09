@@ -763,7 +763,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::ENDING_EVENT:
             {
-                pointsToRemove.erase(BaseMeshTopology::InvalidID);
+                pointsToRemove.erase(sofa::InvalidID);
                 if (toPointMod != nullptr && !pointsToRemove.empty())
                 {
                     // TODO: This will fail to work if add and
