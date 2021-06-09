@@ -501,13 +501,15 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                     m_triangles.push_back(Triangle(nodes[0], nodes[1], nodes[2]));
                     {
                         HighOrderEdgePosition hoep;
-                        for (size_t j = 0; j < 3; ++j) {
+                        for (size_t j = 0; j < 3; ++j)
+                        {
                             auto v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
                                 nodes[edgesInQuadraticTriangle[j][1]]);
                             auto v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
                                 nodes[edgesInQuadraticTriangle[j][1]]);
                             Edge e(v0, v1);
-                            if (edgeSet.find(e) == edgeSet.end()) {
+                            if (edgeSet.find(e) == edgeSet.end())
+                            {
                                 edgeSet.insert(e);
                                 m_edges.push_back(Edge(v0, v1));
                                 hoep[0] = nodes[j + 3];
@@ -525,13 +527,15 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                     m_tetrahedra.push_back(Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
                     {
                         HighOrderEdgePosition hoep;
-                        for (size_t j = 0; j < 6; ++j) {
+                        for (size_t j = 0; j < 6; ++j)
+                        {
                             auto v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
                                 nodes[edgesInQuadraticTetrahedron[j][1]]);
                             auto v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
                                 nodes[edgesInQuadraticTetrahedron[j][1]]);
                             Edge e(v0, v1);
-                            if (edgeSet.find(e) == edgeSet.end()) {
+                            if (edgeSet.find(e) == edgeSet.end())
+                            {
                                 edgeSet.insert(e);
                                 m_edges.push_back(Edge(v0, v1));
                                 hoep[0] = nodes[j + 4];
