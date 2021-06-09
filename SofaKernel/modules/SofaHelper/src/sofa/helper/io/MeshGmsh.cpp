@@ -77,7 +77,15 @@ void MeshGmsh::init (std::string filename)
             // Reading the file until the node section is hit. In recent versions of MSH file format,
             // we may encounter various sections between $MeshFormat and $Nodes
             while (cmd != std::string("$Nodes"))
+            {
                 std::getline(file, cmd); // First Command
+                if (file.eof())
+                {
+                    msg_error("MeshGmsh") << "End of file reached without finding the $Nodes section expected in MSH file format. Closing file.";
+                    file.close();
+                    return;
+                }
+            }
         }
     }
     else
