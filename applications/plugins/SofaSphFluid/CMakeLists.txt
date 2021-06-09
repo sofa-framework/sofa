@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaSphFluid VERSION 1.0)
 
-find_package(SofaBase REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaMiscCollision QUIET)
 sofa_find_package(SofaOpenglVisual QUIET)
 sofa_find_package(Sofa.GL QUIET)
  
@@ -42,6 +43,14 @@ if(SofaOpenglVisual_FOUND)
     list(APPEND SOURCE_FILES
             ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.cpp
         )
+endif()
+
+if(SofaMiscCollision_FOUND)
+    list(APPEND HEADER_FILES ${PLUGIN_SPH_SRC_DIR}/SpatialGridPointModel.h)
+    list(APPEND SOURCE_FILES ${PLUGIN_SPH_SRC_DIR}/SpatialGridPointModel.cpp)
+    message(STATUS "SofaSphFluid: optional dependency SofaMiscCollision found activing: <SpatialGridPointModel>")
+else()
+    message(STATUS "SofaSphFluid: optional dependency SofaMiscCollision not found de-activing: <SpatialGridPointModel>")
 endif()
 
 
