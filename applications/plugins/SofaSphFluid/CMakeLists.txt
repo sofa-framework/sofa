@@ -70,7 +70,9 @@ target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics)
 if(SofaOpenglVisual_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
 endif()
-
+if(SofaMiscCollision_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaMiscCollision)
+endif()
 
 
 sofa_create_package_with_targets(
