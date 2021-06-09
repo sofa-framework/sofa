@@ -84,17 +84,17 @@ MeshObjLoader::~MeshObjLoader()
 
 bool MeshObjLoader::doLoad()
 {
-    dmsg_info() << "Loading OBJ file: " << m_filename;
+    dmsg_info() << "Loading OBJ file: " << d_filename;
 
     bool fileRead = false;
 
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
     if (!file.good())
     {
-        msg_error() << "Cannot read file '" << m_filename << "'.";
+        msg_error() << "Cannot read file '" << d_filename << "'.";
         return false;
     }
 

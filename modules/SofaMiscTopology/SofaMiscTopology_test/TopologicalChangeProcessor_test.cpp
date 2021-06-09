@@ -26,7 +26,7 @@
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <sofa/simulation/Node.h>
 
-using sofa::helper::testing::BaseSimulationTest;
+using sofa::testing::BaseSimulationTest;
 
 namespace 
 {

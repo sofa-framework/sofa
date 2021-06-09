@@ -28,8 +28,8 @@ using sofa::core::objectmodel::Data ;
 #include <sofa/helper/types/RGBAColor.h>
 using sofa::helper::types::RGBAColor ;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 class Color_Test : public BaseTest,
                    public ::testing::WithParamInterface<std::vector<std::string>>

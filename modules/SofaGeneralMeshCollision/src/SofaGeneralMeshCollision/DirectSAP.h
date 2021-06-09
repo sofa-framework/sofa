@@ -35,6 +35,8 @@ class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP :
 {
 public:
     SOFA_CLASS2(DirectSAP, BruteForceBroadPhase, DirectSAPNarrowPhase);
+
+    bool needsDeepBoundingTree() const override { return BruteForceBroadPhase::needsDeepBoundingTree() || DirectSAPNarrowPhase::needsDeepBoundingTree(); }
 };
 
 } // namespace sofa::component::collision

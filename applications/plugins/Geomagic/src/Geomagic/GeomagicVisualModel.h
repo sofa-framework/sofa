@@ -73,7 +73,7 @@ public:
     void initDisplay(sofa::simulation::Node::SPtr node, const std::string& _deviceName, double _scale);
 
     /// Method to update the visualNode using the current device position and the angles of the different node of the device. Updated by Geomagic UpdatePosition()
-    void updateDisplay(const GeomagicDriver::Coord& posDevice, HDdouble angle1[3], HDdouble angle2[3]);
+    void updateDisplay(const GeomagicDriver::Coord& posDevice, GeomagicDriver::SHDdouble angle1[3], GeomagicDriver::SHDdouble angle2[3]);
 
     /// Method called by Geomagic Draw method to display the geomagic OglModel
     void drawDevice(bool button1Status = false, bool button2Status = false);

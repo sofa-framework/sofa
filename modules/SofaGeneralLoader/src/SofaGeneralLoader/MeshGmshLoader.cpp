@@ -46,11 +46,11 @@ bool MeshGmshLoader::doLoad()
 
     if (!canLoad())
     {
-        msg_error(this) << "Can't load file " << m_filename.getFullPath().c_str();
+        msg_error(this) << "Can't load file " << d_filename.getFullPath().c_str();
         return false;
     }
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
     // -- Looking for Gmsh version of this file.
@@ -84,7 +84,7 @@ bool MeshGmshLoader::doLoad()
     }
     else // If the first line is neither "$MeshFormat" or "$NOD", then the file is not in a registered MSH format
     {
-        msg_error() << "File '" << m_filename << "' finally appears not to be a Gmsh file (first line doesn't match known formats).";
+        msg_error() << "File '" << d_filename << "' finally appears not to be a Gmsh file (first line doesn't match known formats).";
         file.close();
         return false;
     }

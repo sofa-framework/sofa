@@ -476,9 +476,9 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
         }
     }
     if (!pointsLineIn.empty())
-        vparams->drawTool()->drawLines(pointsLineIn, 1, defaulttype::Vec<4,float>(1,0,0,1));
+        vparams->drawTool()->drawLines(pointsLineIn, 1, sofa::type::RGBAColor(1.,0.,0.,1.));
     if (!pointsLineOut.empty())
-        vparams->drawTool()->drawLines(pointsLineOut, 1, defaulttype::Vec<4,float>(1,0,1,1));
+        vparams->drawTool()->drawLines(pointsLineOut, 1, sofa::type::RGBAColor(1.,0.,1.,1.));
 
     const sofa::helper::vector<TContact>& tcontacts = this->tcontacts.getValue();
     if (!tcontacts.empty())

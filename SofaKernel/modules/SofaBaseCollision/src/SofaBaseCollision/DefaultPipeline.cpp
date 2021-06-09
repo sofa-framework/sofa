@@ -53,6 +53,8 @@ int DefaultPipelineClass = core::RegisterObject("The default collision detection
         .addAlias("CollisionPipeline")
         ;
 
+const int DefaultPipeline::defaultDepthValue = 6;
+
 DefaultPipeline::DefaultPipeline()
     : d_doPrintInfoMessage(initData(&d_doPrintInfoMessage, false, "verbose",
                                     "Display extra informations at each computation step. (default=false)"))
@@ -60,8 +62,8 @@ DefaultPipeline::DefaultPipeline()
                              "Draw the detected collisions. (default=false)"))
 
     //TODO(dmarchal 2017-05-16) Fix the min & max value with response from a github issue. Remove in 1 year if not done.
-    , d_depth(initData(&d_depth, 6, "depth",
-                       "Max depth of bounding trees. (default=6, min=?, max=?)"))
+    , d_depth(initData(&d_depth, defaultDepthValue, "depth",
+               ("Max depth of bounding trees. (default=" + std::to_string(defaultDepthValue) + ", min=?, max=?)").c_str()))
 {
 }
 
@@ -97,8 +99,8 @@ void DefaultPipeline::checkDataValues()
     if(d_depth.getValue() < 0)
     {
         msg_warning() << "Invalid value 'depth'=" << d_depth.getValue() << "." << msgendl
-                      << "Replaced with the default value = 6." ;
-        d_depth.setValue(6) ;
+                      << "Replaced with the default value = " << defaultDepthValue;
+        d_depth.setValue(defaultDepthValue) ;
     }
 }
 
@@ -152,6 +154,11 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
         const helper::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
         int nActive = 0;
 
+        const int used_depth = (
+                    (broadPhaseDetection && broadPhaseDetection->needsDeepBoundingTree()) ||
+                    (narrowPhaseDetection && narrowPhaseDetection->needsDeepBoundingTree())
+            ) ? d_depth.getValue() : 0;
+
         for (it = collisionModels.begin(); it != itEnd; ++it)
         {
             msg_info_when(d_doPrintInfoMessage.getValue())
@@ -159,14 +166,14 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
 
             if (!(*it)->isActive()) continue;
 
-            int used_depth = broadPhaseDetection->needsDeepBoundingTree() ? d_depth.getValue() : 0;
-
-            if (continuous){
-                std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
+            if (continuous)
+            {
+                const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, used_depth);
             }
-            else {
+            else
+            {
                 std::string msg = "Compute BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);

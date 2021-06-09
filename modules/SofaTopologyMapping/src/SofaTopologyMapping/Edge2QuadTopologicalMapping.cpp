@@ -81,16 +81,16 @@ void Edge2QuadTopologicalMapping::init()
         msg_error() << "Radius is zero or negative";
         return;
     }
-    else if (d_radiusFocal.isSet() && d_radiusFocal.getValue() < std::numeric_limits<double>::min())
+    if (d_radiusFocal.isSet() && d_radiusFocal.getValue() < std::numeric_limits<double>::min())
     {
-        msg_error() << "Focal Radius is zero or negative";
-        return;
+        msg_warning() << "Focal Radius is zero or negative";
     }
+
     double rho = d_radius.getValue();
 
     bool ellipse = false;
     double rhoFocal;
-    if (d_radiusFocal.isSet())
+    if (d_radiusFocal.isSet() && d_radiusFocal.getValue() >= std::numeric_limits<double>::min())
     {
         ellipse = true;
         rhoFocal = d_radiusFocal.getValue();
