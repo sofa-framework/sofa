@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/map.h>
+#include <sofa/helper/ColorMap.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -63,6 +64,13 @@ public:
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+
+    typedef core::topology::BaseMeshTopology::Tetra Element;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
+    typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+
+    typedef defaulttype::Mat<4, 4, Real> Mat44;
+    typedef defaulttype::Mat<3, 3, Real> Mat33;
 
     using Index = sofa::Index;
 
@@ -105,6 +113,8 @@ protected:
         Transformation rotation;
         /// polar method
         Transformation initialTransformation;
+        /// von Mises stress
+        Real vonMisesStress;
 
         TetrahedronInformation()
         {
@@ -256,6 +266,30 @@ protected:
     void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0 );
 
     void printStiffnessMatrix(int idTetra);
+
+public:
+    Data<bool> _computeVonMisesStress;
+    void computeVonMisesStress();
+    bool updateVonMisesStress;
+    void handleEvent(core::objectmodel::Event* event) override;
+    Data< VecCoord > _initialPoints; ///< the initial positions of the points
+    const VecElement* _indexedElements;
+
+    /// to compute vonMises stress for visualization
+    /// two options: either using corotational strain (TODO)
+    ///              or full Green strain tensor (which must be therefore computed for each element and requires some pre-calculations in reinit)
+    helper::vector<Real> elemLambda;
+    helper::vector<Real> elemMu;
+    helper::vector<Mat44> elemShapeFun;
+
+    /// Symmetrical tensor written as a vector following the Voigt notation
+    typedef defaulttype::VecNoInit<6, Real> VoigtTensor;
+
+    Data<helper::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
+    Data<helper::vector<defaulttype::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
+
+    Real prevMaxStress;
+    Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
 
 };
 
