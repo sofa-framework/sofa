@@ -88,9 +88,9 @@ template <>
 void DisplacementTransformEngine<defaulttype::Rigid3Types,defaulttype::Rigid3Types::Coord >::mult( defaulttype::Rigid3Types::Coord& out, const defaulttype::Rigid3Types::Coord& inv, const Coord& x );
 /////////
 template <>
-void DisplacementTransformEngine<defaulttype::Rigid3Types, defaulttype::Mat4x4 >::setInverse( defaulttype::Mat4x4& inv, const Coord& x0 );
+void DisplacementTransformEngine<defaulttype::Rigid3Types, type::Mat4x4 >::setInverse( type::Mat4x4& inv, const Coord& x0 );
 template <>
-void DisplacementTransformEngine<defaulttype::Rigid3Types,defaulttype::Mat4x4 >::mult( defaulttype::Mat4x4& out, const defaulttype::Mat4x4& inv, const Coord& x );
+void DisplacementTransformEngine<defaulttype::Rigid3Types,type::Mat4x4 >::mult( type::Mat4x4& out, const type::Mat4x4& inv, const Coord& x );
 
 /////////////////////////////////////////////
 
@@ -98,13 +98,13 @@ void DisplacementTransformEngine<defaulttype::Rigid3Types,defaulttype::Mat4x4 >:
  * kept for backward compatibility
  */
 template < class DataTypes >
-class DisplacementMatrixEngine : public DisplacementTransformEngine<DataTypes, defaulttype::Mat4x4>
+class DisplacementMatrixEngine : public DisplacementTransformEngine<DataTypes, type::Mat4x4>
 {
 
 public:
-    SOFA_CLASS( SOFA_TEMPLATE( DisplacementMatrixEngine, DataTypes ),SOFA_TEMPLATE2( DisplacementTransformEngine, DataTypes, defaulttype::Mat4x4 ) );
+    SOFA_CLASS( SOFA_TEMPLATE( DisplacementMatrixEngine, DataTypes ),SOFA_TEMPLATE2( DisplacementTransformEngine, DataTypes, type::Mat4x4 ) );
 
-    typedef DisplacementTransformEngine<DataTypes, defaulttype::Mat4x4> Inherit;
+    typedef DisplacementTransformEngine<DataTypes, type::Mat4x4> Inherit;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord; // rigid
     typedef typename DataTypes::VecCoord VecCoord;

@@ -82,10 +82,10 @@ extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 4> >;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 8> >;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<double>;
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec2d>;
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec3d>;
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec4d>;
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec6d>;
+extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec2d>;
+extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec3d>;
+extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec4d>;
+extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec6d>;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Rigid2Types::Coord>;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Rigid2Types::Deriv>;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Rigid3Types::Coord>;

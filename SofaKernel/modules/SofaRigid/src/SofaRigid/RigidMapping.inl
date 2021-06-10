@@ -601,7 +601,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
         for( unsigned int w=0 ; w<it->second.size() ; ++w )
         {
             const unsigned pointIdx = it->second[w];
-            block += defaulttype::crossProductMatrix<Real>( childForces[pointIdx] ) * defaulttype::crossProductMatrix<Real>( rotatedPoints[pointIdx] );
+            block += type::crossProductMatrix<Real>( childForces[pointIdx] ) * type::crossProductMatrix<Real>( rotatedPoints[pointIdx] );
         }
 
         if( geomStiff == 2 )

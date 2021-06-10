@@ -29,6 +29,7 @@
 namespace sofa::component::forcefield
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 

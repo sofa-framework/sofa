@@ -106,7 +106,7 @@ protected:
     /// @{
 
     /// Displacement vector (deformation of the 4 corners of a tetrahedron
-    typedef defaulttype::VecNoInit<12, Real> Displacement;
+    typedef type::VecNoInit<12, Real> Displacement;
 
     /// Material stiffness matrix of a tetrahedron
     typedef type::Mat<6, 6, Real> MaterialStiffness;
@@ -114,16 +114,16 @@ protected:
     /// Strain-displacement matrix
     typedef type::Mat<12, 6, Real> StrainDisplacement;
 
-    defaulttype::MatNoInit<3, 3, Real> R0;
+    type::MatNoInit<3, 3, Real> R0;
 
     /// Rigid transformation (rotation) matrix
-    typedef defaulttype::MatNoInit<3, 3, Real> Transformation;
+    typedef type::MatNoInit<3, 3, Real> Transformation;
 
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
     typedef type::Mat<12, 12, Real> StiffnessMatrix;
 
     /// Symmetrical tensor written as a vector following the Voigt notation
-    typedef defaulttype::VecNoInit<6,Real> VoigtTensor;
+    typedef type::VecNoInit<6,Real> VoigtTensor;
 
     /// @}
 

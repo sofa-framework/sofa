@@ -37,7 +37,8 @@ namespace sofa::component::forcefield
 {
 
 using sofa::core::objectmodel::ComponentState ;
-using sofa::defaulttype::Vec ;
+using namespace sofa::type; 
+using sofa::type::Vec ;
 
 template<class DataTypes>
 PlaneForceField<DataTypes>::PlaneForceField() :
@@ -289,9 +290,9 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     // find a first vector inside the plane
     type::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = defaulttype::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
-    else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, -normal[0]/normal[1],0.0);
-    else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
+    if( 0.0 != normal[0] ) v1 = type::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
+    else if ( 0.0 != normal[1] ) v1 = type::Vec3d(1.0, -normal[0]/normal[1],0.0);
+    else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
     v1.normalize();
 
     // find a second vector inside the plane and orthogonal to the first
@@ -370,9 +371,9 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
 
     // find a first vector inside the plane
     type::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = defaulttype::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
-    else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, -normal[0]/normal[1],0.0);
-    else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
+    if( 0.0 != normal[0] ) v1 = type::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
+    else if ( 0.0 != normal[1] ) v1 = type::Vec3d(1.0, -normal[0]/normal[1],0.0);
+    else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
     v1.normalize();
 
     // find a second vector inside the plane and orthogonal to the first

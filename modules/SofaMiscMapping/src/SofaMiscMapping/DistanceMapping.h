@@ -186,7 +186,7 @@ public:
     Data< type::vector< Real > >             f_restLengths;		///< rest length of each link
     Data< Real >                               d_showObjectScale;   ///< drawing size
     Data< sofa::type::RGBAColor >             d_color;         ///< drawing color
-    Data< type::vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
+    Data< type::vector<type::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
     Data< unsigned >                           d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     /// Link to be set to the topology container in the component graph. 

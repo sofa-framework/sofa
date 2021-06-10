@@ -36,7 +36,7 @@ TransformEngine<DataTypes>::TransformEngine()
     , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points") )
     , translation(initData(&translation, type::Vector3(0,0,0),"translation", "translation vector ") )
     , rotation(initData(&rotation, type::Vector3(0,0,0), "rotation", "rotation vector ") )
-    , quaternion(initData(&quaternion, defaulttype::Quat<SReal>(0,0,0,1), "quaternion", "rotation quaternion ") )
+    , quaternion(initData(&quaternion, type::Quat<SReal>(0,0,0,1), "quaternion", "rotation quaternion ") )
     , scale(initData(&scale, type::Vector3(1,1,1),"scale", "scale factor") )
     , inverse(initData(&inverse, false, "inverse", "true to apply inverse transformation"))
 {
@@ -122,7 +122,7 @@ struct RotationSpecialized : public TransformOperation<DataTypes>
             q = q.inverse();
     }
 
-    void configure(const defaulttype::Quat<SReal> &qi, bool inverse, sofa::core::objectmodel::Base*)
+    void configure(const type::Quat<SReal> &qi, bool inverse, sofa::core::objectmodel::Base*)
     {
         q=qi;
         if (inverse)
@@ -130,7 +130,7 @@ struct RotationSpecialized : public TransformOperation<DataTypes>
     }
 
 private:
-    defaulttype::Quat<SReal> q;
+    type::Quat<SReal> q;
 };
 
 template <class DataTypes>
@@ -156,16 +156,16 @@ struct RotationSpecialized<DataTypes, 2, false> : public TransformOperation<Data
             rotZ = -rotZ;
     }
 
-    void configure(const defaulttype::Quat<SReal> &/*qi*/, bool /*inverse*/, sofa::core::objectmodel::Base* pBase)
+    void configure(const type::Quat<SReal> &/*qi*/, bool /*inverse*/, sofa::core::objectmodel::Base* pBase)
     {
         assert(pBase);
-        msg_error(pBase) << "'void RotationSpecialized::configure(const defaulttype::Quat<SReal> &qi, bool inverse)' is not implemented for two-dimensional data types";
+        msg_error(pBase) << "'void RotationSpecialized::configure(const type::Quat<SReal> &qi, bool inverse)' is not implemented for two-dimensional data types";
         assert(false && "This method should not be called without been implemented");
     }
 
 private:
     Real rotZ;
-	defaulttype::Quat<SReal> q;
+	type::Quat<SReal> q;
 };
 
 template <class DataTypes>
@@ -186,14 +186,14 @@ struct RotationSpecialized<DataTypes, 3, false> : public TransformOperation<Data
             q = q.inverse();
     }
 
-    void configure(const defaulttype::Quat<SReal> &qi, bool inverse, sofa::core::objectmodel::Base*)
+    void configure(const type::Quat<SReal> &qi, bool inverse, sofa::core::objectmodel::Base*)
     {
         q=qi;
         if (inverse)
             q = q.inverse();
     }
 private:
-	defaulttype::Quat<SReal> q;
+	type::Quat<SReal> q;
 };
 
 template <class DataTypes>
@@ -267,7 +267,7 @@ void TransformEngine<DataTypes>::doUpdate()
     const type::Vector3 &s=scale.getValue();
     const type::Vector3 &r=rotation.getValue();
     const type::Vector3 &t=translation.getValue();
-    const defaulttype::Quat<SReal> &q=quaternion.getValue();
+    const type::Quat<SReal> &q=quaternion.getValue();
 
     //Create the object responsible for the transformations
     Transform<DataTypes> transformation;
@@ -278,7 +278,7 @@ void TransformEngine<DataTypes>::doUpdate()
     if (r != type::Vector3(0,0,0))
         transformation.add(new Rotation<DataTypes>, inv)->configure(r, inv);
 
-    if (q != defaulttype::Quat<SReal>(0,0,0,1))
+    if (q != type::Quat<SReal>(0,0,0,1))
         transformation.add(new Rotation<DataTypes>, inv)->configure(q, inv, this);
 
     if (t != type::Vector3(0,0,0))

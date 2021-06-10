@@ -57,8 +57,8 @@ public:
     Data<bool> d_loadMaterial;
     Data<sofa::type::Material> d_material;
     Data <type::vector<sofa::type::Material> > d_materials;
-    Data <helper::SVector <helper::SVector <int> > > d_faceList;
-    Data <helper::SVector <helper::SVector <int> > > d_texIndexList;
+    Data <type::SVector <type::SVector <int> > > d_faceList;
+    Data <type::SVector <type::SVector <int> > > d_texIndexList;
     Data <type::vector<sofa::type::Vector3> > d_positionsList;
     Data< type::vector<sofa::type::Vector2> > d_texCoordsList;
     Data <type::SVector<type::SVector<int> > > d_normalsIndexList;

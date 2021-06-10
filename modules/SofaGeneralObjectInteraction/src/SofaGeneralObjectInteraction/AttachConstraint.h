@@ -67,7 +67,7 @@ public:
     type::vector<bool> activeFlags;
     type::vector<bool> constraintReleased;
     type::vector<Real> lastDist;
-    type::vector<defaulttype::Quat> restRotations;
+    type::vector<type::Quat<SReal>> restRotations;
 
 protected:
     AttachConstraint();

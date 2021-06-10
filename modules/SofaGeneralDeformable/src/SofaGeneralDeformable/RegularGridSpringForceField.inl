@@ -432,6 +432,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
 template<class DataTypes>
 void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
 
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;

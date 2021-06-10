@@ -51,7 +51,7 @@ public:
     Data<type::Vec<2, int> > p_screenPosition; ///< Viewport position
     Data<type::Vec<2, unsigned int> > p_screenSize; ///< Viewport size
     Data<type::Vec3f> p_cameraPosition; ///< Camera's position in eye's space
-    Data<defaulttype::Quat> p_cameraOrientation; ///< Camera's orientation
+    Data<type::Quat<SReal>> p_cameraOrientation; ///< Camera's orientation
     Data<RigidCoord > p_cameraRigid; ///< Camera's rigid coord
     Data<double> p_zNear; ///< Camera's ZNear
     Data<double> p_zFar; ///< Camera's ZFar

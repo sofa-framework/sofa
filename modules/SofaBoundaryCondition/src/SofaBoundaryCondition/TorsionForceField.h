@@ -33,7 +33,7 @@
 namespace sofa::component::forcefield
 {
 
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 using sofa::type::Mat;
 using sofa::core::behavior::ForceField;
 using sofa::core::MechanicalParams;

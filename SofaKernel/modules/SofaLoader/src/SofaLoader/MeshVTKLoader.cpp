@@ -44,13 +44,14 @@ using sofa::component::loader::BaseVTKReader ;
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::type::Vector3 ;
-using sofa::defaulttype::Vec ;
+using sofa::type::Vec ;
 using std::istringstream;
 using std::istream;
 using std::ofstream;

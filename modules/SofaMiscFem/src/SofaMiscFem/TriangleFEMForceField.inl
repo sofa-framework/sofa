@@ -692,10 +692,10 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot )
 {
-    defaulttype::MatNoInit<3, 6, Real> Jt;
+    type::MatNoInit<3, 6, Real> Jt;
     Jt.transpose( J );
 
-    defaulttype::MatNoInit<6, 6, Real> JKJt;
+    type::MatNoInit<6, 6, Real> JKJt;
     JKJt = J*K*Jt;  // in-plane stiffness matrix, 6x6
 
     // stiffness JKJt expanded to 3 dimensions

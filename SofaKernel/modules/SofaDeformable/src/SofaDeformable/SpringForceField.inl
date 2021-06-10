@@ -190,7 +190,7 @@ template<class DataTypes>
 void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     using namespace sofa::defaulttype;
-    using namespace sofa::helper::types;
+    using namespace sofa::type;
 
     if (!((this->mstate1 == this->mstate2) ? vparams->displayFlags().getShowForceFields() : vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();

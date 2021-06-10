@@ -94,8 +94,8 @@ protected:
     struct TetrahedronInfo
     {
         type::Vector3 coord0;
-        defaulttype::Matrix3 coord2bary;
-        defaulttype::Matrix3 bary2coord;
+        type::Matrix3 coord2bary;
+        type::Matrix3 bary2coord;
     };
 
     sofa::type::vector<TetrahedronInfo> elems;

@@ -47,8 +47,8 @@ using sofa::core::ConstraintParams ;
 using sofa::core::ConstVecCoordId;
 
 using sofa::defaulttype::BaseVector ;
-using sofa::type::Quat<SReal> ;
-using sofa::type::Vec3d ;
+using sofa::type::Vec3d;
+using sofa::type::Quat ;
 
 using sofa::defaulttype::Rigid3Types ;
 using sofa::defaulttype::Vec3Types ;
@@ -88,7 +88,7 @@ public:
 
 protected:
     std::vector<Deriv> dfree;
-    Quaternion q;
+    Quat<SReal> q;
 
     std::vector<unsigned int> cid;
 

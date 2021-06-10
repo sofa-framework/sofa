@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySparseData.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/MatSym.h>
+#include <sofa/type/MatSym.h>
 
 namespace sofa::component::forcefield
 {
@@ -43,7 +43,7 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
     typedef type::Mat<3,3,Real> Mat33;
-    typedef defaulttype::MatSym<3,Real> MatSym3;
+    typedef type::MatSym<3,Real> MatSym3;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;

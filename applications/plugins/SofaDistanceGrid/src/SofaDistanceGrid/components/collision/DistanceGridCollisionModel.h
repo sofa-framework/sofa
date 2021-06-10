@@ -66,7 +66,7 @@ public:
     DistanceGrid* getGrid();
 
     bool isTransformed();
-    const defaulttype::Matrix3& getRotation();
+    const type::Matrix3& getRotation();
     const type::Vector3& getTranslation();
     bool isFlipped();
 
@@ -76,13 +76,13 @@ public:
     /// Used to estimate velocity in case the distance grid itself is dynamic
     /// @{
     DistanceGrid* getPrevGrid();
-    const defaulttype::Matrix3& getPrevRotation();
+    const type::Matrix3& getPrevRotation();
     const type::Vector3& getPrevTranslation();
     double getPrevDt();
     /// @}
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const type::Vector3& translation);
+    void setNewState(double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vector3& translation);
 };
 
 class SOFA_SOFADISTANCEGRID_API RigidDistanceGridCollisionModel : public core::CollisionModel
@@ -95,7 +95,7 @@ protected:
     class ElementData
     {
     public:
-        defaulttype::Matrix3 rotation;
+        type::Matrix3 rotation;
         type::Vector3 translation;
         DistanceGrid* grid;
 
@@ -103,7 +103,7 @@ protected:
         /// Used to estimate velocity in case the distance grid itself is dynamic
         /// @{
         DistanceGrid* prevGrid; ///< Previous grid
-        defaulttype::Matrix3 prevRotation; ///< Previous rotation
+        type::Matrix3 prevRotation; ///< Previous rotation
         type::Vector3 prevTranslation; ///< Previous translation
         double prevDt; ///< Time difference between previous and current state
         /// @}
@@ -159,7 +159,7 @@ public:
     {
         return elems[index].isTransformed;
     }
-    const defaulttype::Matrix3& getRotation(Index index=0) const
+    const type::Matrix3& getRotation(Index index=0) const
     {
         return elems[index].rotation;
     }
@@ -173,15 +173,15 @@ public:
         return translation.getValue();
     }
 
-    const defaulttype::Matrix3 getInitRotation() const
+    const type::Matrix3 getInitRotation() const
     {
         SReal x = rotation.getValue()[0] * M_PI / 180;
         SReal y = rotation.getValue()[1] * M_PI / 180;
         SReal z = rotation.getValue()[2] * M_PI / 180;
 
-        defaulttype::Matrix3 X(type::Vector3(1,0,0), type::Vector3(0, cos(x), -sin(x)), type::Vector3(0, sin(x), cos(x)));
-        defaulttype::Matrix3 Y(type::Vector3(cos(y), 0, sin(y)), type::Vector3(0, 1, 0), type::Vector3(-sin(y), 0, cos(y)));
-        defaulttype::Matrix3 Z(type::Vector3(cos(z), -sin(z), 0), type::Vector3(sin(z), cos(z), 0), type::Vector3(0, 0, 1));
+        type::Matrix3 X(type::Vector3(1,0,0), type::Vector3(0, cos(x), -sin(x)), type::Vector3(0, sin(x), cos(x)));
+        type::Matrix3 Y(type::Vector3(cos(y), 0, sin(y)), type::Vector3(0, 1, 0), type::Vector3(-sin(y), 0, cos(y)));
+        type::Matrix3 Z(type::Vector3(cos(z), -sin(z), 0), type::Vector3(sin(z), cos(z), 0), type::Vector3(0, 0, 1));
 
         return X * Y * Z;
     }
@@ -197,7 +197,7 @@ public:
     {
         return elems[index].prevGrid;
     }
-    const defaulttype::Matrix3& getPrevRotation(Index index=0) const
+    const type::Matrix3& getPrevRotation(Index index=0) const
     {
         return elems[index].prevRotation;
     }
@@ -211,7 +211,7 @@ public:
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(Index index, double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const type::Vector3& translation);
+    void setNewState(Index index, double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vector3& translation);
 
     /// @}
 
@@ -246,16 +246,16 @@ inline DistanceGrid* RigidDistanceGridCollisionElement::getGrid() { return model
 inline void RigidDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
 
 inline bool RigidDistanceGridCollisionElement::isTransformed() { return model->isTransformed(index); }
-inline const defaulttype::Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
+inline const type::Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
 inline const type::Vector3& RigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
 inline bool RigidDistanceGridCollisionElement::isFlipped() { return model->isFlipped(); }
 
 inline DistanceGrid* RigidDistanceGridCollisionElement::getPrevGrid() { return model->getPrevGrid(index); }
-inline const defaulttype::Matrix3& RigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
+inline const type::Matrix3& RigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
 inline const type::Vector3& RigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
 inline double RigidDistanceGridCollisionElement::getPrevDt() { return model->getPrevDt(index); }
 
-inline void RigidDistanceGridCollisionElement::setNewState(double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const type::Vector3& translation)
+inline void RigidDistanceGridCollisionElement::setNewState(double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vector3& translation)
 {
     return model->setNewState(this->getIndex(), dt, grid, rotation, translation);
 }

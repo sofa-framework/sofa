@@ -22,6 +22,8 @@
 #pragma once
 #include <SofaRigid/config.h>
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa::component::interactionforcefield
 {
 
@@ -104,7 +106,7 @@ public:
     }
     void setInitLength( const Vector& l) { initTrans=l; }
     void setInitOrientation( const type::Quat<SReal>& o) { initRot=o; }
-    void setInitOrientation( const Vector& o) { initRot=defaulttype::Quat::createFromRotationVector(o); }
+    void setInitOrientation( const Vector& o) { initRot=type::Quat<SReal>::createFromRotationVector(o); }
     void setFreeAxis(const sofa::type::Vec<6,bool>& axis) { freeMovements = axis; }
     void setFreeAxis(bool isFreeTx, bool isFreeTy, bool isFreeTz, bool isFreeRx, bool isFreeRy, bool isFreeRz)
     {
@@ -117,7 +119,7 @@ public:
         //default joint is a free rotation joint --> translation is bloqued, rotation is free
         s.freeMovements = sofa::type::Vec<6,bool>(false, false, false, true, true, true);
         s.initTrans = Vector(0,0,0);
-        s.initRot = defaulttype::Quat(0,0,0,1);
+        s.initRot = type::Quat<SReal>(0,0,0,1);
         s.blocStiffnessRot = 0.0;
         //by default no angle limitation is set (bi values for initialisation)
         s.limitAngles = sofa::type::Vec<6,Real>(-100000., 100000., -100000., 100000., -100000., 100000.);

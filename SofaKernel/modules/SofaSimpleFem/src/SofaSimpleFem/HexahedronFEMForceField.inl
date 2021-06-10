@@ -43,6 +43,7 @@ namespace sofa::component::forcefield
 {
 
 using std::set;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 template <class DataTypes>

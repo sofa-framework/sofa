@@ -79,7 +79,7 @@ protected:
     Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame
 
     // data for linear blending
-    helper:: vector<type::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
+    type::vector<type::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
     type::vector<type::vector<OutCoord> > f_rotatedPos;  /// rotated child coordinates :  dp = Omega_i x f_rotatedPos  :
     SparseJMatrixEigen   _J; /// jacobian matrix for compliant API
 

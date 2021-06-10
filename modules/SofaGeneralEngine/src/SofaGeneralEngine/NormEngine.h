@@ -69,7 +69,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API NormEngine<defaulttype::Vec3d>;
+extern template class SOFA_SOFAGENERALENGINE_API NormEngine<type::Vec3d>;
 
 #endif
 

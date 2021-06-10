@@ -180,7 +180,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
     sofa::type::Quat<SReal> Cq = vars.pos6D.getOrientation();
     sofa::type::Vec3d Cx = (Coord1) vars.pos6D.getCenter();
     Deriv2 V6D = v2[object2_dof_index.getValue()];
-    sofa::type::Vec3d Cv = (sofa::defaulttype::Vec3d) getVCenter(V6D);
+    sofa::type::Vec3d Cv = (sofa::type::Vec3d) getVCenter(V6D);
     Cv.clear();
 
     initCalcF();
@@ -262,7 +262,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDe
     }
 
     sofa::type::Quat<SReal> Cq = C.getOrientation();
-    sofa::type::Vec3d Cx = (sofa::defaulttype::Vec3d) C.getCenter();
+    sofa::type::Vec3d Cx = (sofa::type::Vec3d) C.getCenter();
 
     f1.clear();
     f2.clear();
@@ -323,7 +323,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
         const Contact& c = contacts[i];
         assert((unsigned)c.index<dx1.size());
         sofa::type::Vec3d du;
-        du = (sofa::defaulttype::Vec3d) dx1[c.index] - (sofa::defaulttype::Vec3d) getVCenter(dx2i); //- c.bras_levier.cross(dx2i.getVOrientation());
+        du = (sofa::type::Vec3d) dx1[c.index] - (sofa::type::Vec3d) getVCenter(dx2i); //- c.bras_levier.cross(dx2i.getVOrientation());
         Deriv1 dforce = c.m * Cq.inverseRotate(du);
         dforce *= kFactor;
         Deriv1 DF = Cq.rotate(dforce);

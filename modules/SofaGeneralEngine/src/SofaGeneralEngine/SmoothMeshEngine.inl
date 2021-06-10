@@ -163,7 +163,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 {    
     if (!vparams->displayFlags().getShowVisualModels() || m_topology == nullptr) return;
 
-    using sofa::defaulttype::Vec;
+    using sofa::type::Vec;
     vparams->drawTool()->saveLastState();
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();

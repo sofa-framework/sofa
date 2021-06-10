@@ -29,7 +29,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
+#include <sofa/type/MatSym.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <string>
@@ -62,7 +62,7 @@ class StandardTetrahedralFEMForceField: public core::behavior::ForceField<DataTy
     typedef type::Mat<3,3,Real> Matrix3;
     typedef type::Mat<6,6,Real> Matrix6;
     typedef type::Mat<6,3,Real> Matrix63;
-    typedef defaulttype::MatSym<3,Real> MatrixSym;
+    typedef type::MatSym<3,Real> MatrixSym;
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv; 
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord; 

@@ -68,7 +68,7 @@ protected :
     Data< bool > FixedXRotation; ///< Prevent Rotation around X axis
     Data< bool > FixedYRotation; ///< Prevent Rotation around Y axis
     Data< bool > FixedZRotation; ///< Prevent Rotation around Z axis
-    type::vector<defaulttype::Quat> previousOrientation;
+    type::vector<type::Quat<SReal>> previousOrientation;
 };
 
 

@@ -29,7 +29,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
+#include <sofa/type/MatSym.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <string>
@@ -38,6 +38,7 @@
 namespace sofa::component::forcefield
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;

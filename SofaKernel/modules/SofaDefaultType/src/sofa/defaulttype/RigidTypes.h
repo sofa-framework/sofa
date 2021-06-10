@@ -910,7 +910,7 @@ public:
         // Transformation between c2 and c1 frames
         quat = quat1*quat2.inverse();
         quat.normalize();
-        type::Vector3 axis; defaulttype::Quat::value_type angle; quat.quatToAxis(axis, angle);
+        type::Vector3 axis; type::Quat<SReal>::value_type angle; quat.quatToAxis(axis, angle);
         axis*=angle;
         return Deriv(vCenter, axis);
     }

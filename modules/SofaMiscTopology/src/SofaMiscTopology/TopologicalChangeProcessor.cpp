@@ -46,6 +46,7 @@
 namespace sofa::component::misc
 {
 
+using namespace sofa::type;
 using namespace defaulttype;
 
 

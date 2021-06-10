@@ -906,7 +906,7 @@ void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::
     }
 
     sofa::type::Quat<SReal> q;
-    q = sofa::defaulttype::Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
+    q = sofa::type::Quat<SReal>::createQuaterFromFrame(xAxis, yAxis, zAxis);
 
     Vector3 origin = q.inverseRotate(-position);
 

@@ -31,10 +31,10 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
     .add< MergeVectors< type::vector<int> > >()
     .add< MergeVectors< type::vector<bool> > >()
     //.add< MergeVectors< type::vector<std::string> > >()
-    .add< MergeVectors< type::vector<defaulttype::Vec2u> > >()
-    .add< MergeVectors< type::vector<defaulttype::Vec2d> > >()
-    .add< MergeVectors< type::vector<defaulttype::Vec3d> > >()
-    .add< MergeVectors< type::vector<defaulttype::Vec4d> > >()
+    .add< MergeVectors< type::vector<type::Vec2u> > >()
+    .add< MergeVectors< type::vector<type::Vec2d> > >()
+    .add< MergeVectors< type::vector<type::Vec3d> > >()
+    .add< MergeVectors< type::vector<type::Vec4d> > >()
     .add< MergeVectors< defaulttype::Rigid2Types::VecCoord > >()
     .add< MergeVectors< defaulttype::Rigid2Types::VecDeriv > >()
     .add< MergeVectors< defaulttype::Rigid3Types::VecCoord > >()
@@ -45,12 +45,12 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<int> >;
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<bool> >;
 //template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<std::string> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<defaulttype::Vec2u> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec2u> >;
 
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<double> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<defaulttype::Vec2d> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<defaulttype::Vec3d> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<defaulttype::Vec4d> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec2d> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec3d> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec4d> >;
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;

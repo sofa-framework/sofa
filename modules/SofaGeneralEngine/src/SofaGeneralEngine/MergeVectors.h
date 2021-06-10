@@ -79,11 +79,11 @@ public:
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<int> >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<bool> >;
 //extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<std::string> >;
-extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<defaulttype::Vec2u> >;
+extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec2u> >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<double> >;
-extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<defaulttype::Vec2d> >;
-extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<defaulttype::Vec3d> >;
-extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<defaulttype::Vec4d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec2d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec3d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec4d> >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;

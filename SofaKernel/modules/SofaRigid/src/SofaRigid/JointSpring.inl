@@ -43,7 +43,7 @@ JointSpring<DataTypes>::JointSpring(sofa::Index m1 , sofa::Index m2,
             freeMovements[3+i] = false;
     }
     initTrans = Vector(0,0,0);
-    initRot = defaulttype::Quat(0,0,0,1);
+    initRot = type::Quat<SReal>(0,0,0,1);
 }
 
 } // namespace sofa::component::interactionforcefield

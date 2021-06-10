@@ -100,7 +100,7 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
             sofa::type::Quat<SReal> twist(projected[0], projected[1], projected[2], q[3]);
             // Singularity : A perpendicular angle would give you quaternion (0, 0, 0, 0)
             if(std::none_of(twist.ptr(), twist.ptr() + 4 * sizeof(double), [](double x) {return x != 0. ;})) {
-                twist = sofa::defaulttype::Quat::identity();
+                twist = sofa::type::Quat<SReal>::identity();
             }
             twist.normalize();
             sofa::type::Quat<SReal> swing = q * twist.inverse();
@@ -111,7 +111,7 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
 
         sofa::type::Quat<SReal> Q_remaining = Q;
         sofa::type::Quat<SReal> Qp_remaining = Q_prev;
-        sofa::type::Quat<SReal> to_keep = sofa::defaulttype::Quat::identity();
+        sofa::type::Quat<SReal> to_keep = sofa::type::Quat<SReal>::identity();
 
         auto remove_rotation = [&](const Vec3 axis) {
             Q_remaining = decompose_ts(Q_remaining, axis).second;

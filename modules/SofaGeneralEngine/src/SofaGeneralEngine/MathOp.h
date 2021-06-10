@@ -81,8 +81,8 @@ protected:
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<int> >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<bool> >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<double> >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<defaulttype::Vec2d> >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<defaulttype::Vec3d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<type::Vec2d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<type::Vec3d> >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecCoord >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;

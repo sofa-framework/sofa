@@ -61,7 +61,7 @@ public:
     Data<sofa::helper::OptionsGroup> f_colorScheme; ///< Color scheme to use
 
     Data<bool> f_showLegend; ///< Activate rendering of color scale legend on the side
-    Data<defaulttype::Vec2f> f_legendOffset; ///< Draw the legend on screen with an x,y offset
+    Data<type::Vec2f> f_legendOffset; ///< Draw the legend on screen with an x,y offset
     Data<std::string> f_legendTitle; ///< Add a title to the legend
     Data<float> d_min; ///< min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min
     Data<float> d_max; ///< max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max

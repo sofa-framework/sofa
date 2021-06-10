@@ -81,7 +81,7 @@ void BVHJoint::display(int frameNum)
 
     core::visual::VisualParams::defaultInstance()->getModelViewMatrix(matrix);
 
-    defaulttype::Quatf q;
+    type::Quatf q;
     float rotmat[16];
     if (channels != nullptr)
     {

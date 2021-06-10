@@ -255,7 +255,7 @@ void OglFloat2Variable::initVisual()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
-    const defaulttype::Vec2f& v = value.getValue();
+    const type::Vec2f& v = value.getValue();
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setFloat2(idShader, idstr.c_str(), v[0], v[1]);
 }
@@ -419,7 +419,7 @@ void OglFloatVectorVariable::init()
 
 void OglFloatVector2Variable::init()
 {
-    OglVariable<type::vector<defaulttype::Vec2f> >::init();
+    OglVariable<type::vector<type::Vec2f> >::init();
 }
 
 void OglFloatVector3Variable::init()
@@ -447,7 +447,7 @@ void OglFloatVector2Variable::initVisual()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
-    const type::vector<defaulttype::Vec2f>& v = value.getValue();
+    const type::vector<type::Vec2f>& v = value.getValue();
     const float* vptr = v.empty() ? nullptr : &(v[0][0]);
     int count = int(v.size());
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
@@ -783,13 +783,13 @@ OglMatrix4VectorVariable::OglMatrix4VectorVariable()
 
 void OglMatrix4VectorVariable::init()
 {
-    OglVariable<type::vector<defaulttype::Mat4x4f> >::init();
+    OglVariable<type::vector<type::Mat4x4f> >::init();
 }
 void OglMatrix4VectorVariable::initVisual()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
-    const type::vector<defaulttype::Mat4x4f>& v = value.getValue();
+    const type::vector<type::Mat4x4f>& v = value.getValue();
 
     const float* vptr = v.empty() ? nullptr : &(v[0][0][0]);
     bool transp = transpose.getValue();

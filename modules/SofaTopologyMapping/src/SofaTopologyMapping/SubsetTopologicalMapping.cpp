@@ -169,7 +169,7 @@ void SubsetTopologicalMapping::init()
         {
             if (fromModel->hasPos() && toModel->hasPos())
             {
-                std::map<sofa::defaulttype::Vec3d,Index> pmapS;
+                std::map<sofa::type::Vec3d,Index> pmapS;
                 for (Index ps = 0; ps < npS; ++ps)
                 {
                     type::Vec3d key(fromModel->getPX(ps),fromModel->getPY(ps),fromModel->getPZ(ps));
@@ -179,7 +179,7 @@ void SubsetTopologicalMapping::init()
                 for (Index pd = 0; pd < npD; ++pd)
                 {
                     type::Vec3d key(toModel->getPX(pd),toModel->getPY(pd),toModel->getPZ(pd));
-                    std::map<sofa::defaulttype::Vec3d,Index>::const_iterator it = pmapS.find(key);
+                    std::map<sofa::type::Vec3d,Index>::const_iterator it = pmapS.find(key);
                     if (it == pmapS.end())
                     {
                         msg_error() << "Point " << pd << " not found in source topology";

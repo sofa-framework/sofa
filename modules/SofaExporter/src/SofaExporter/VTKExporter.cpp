@@ -171,12 +171,12 @@ void VTKExporter::writeData(const type::vector<std::string>& objects, const type
                 line = "double 1";
                 sizeSeg = 1;
             }
-            if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< defaulttype::Vec2f > >* > (field))
+            if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec2f > >* > (field))
             {
                 line = "float 2";
                 sizeSeg = 2;
             }
-            if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< defaulttype::Vec2d > >* >(field))
+            if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec2d > >* >(field))
             {
                 line = "double 2";
                 sizeSeg = 2;
@@ -267,23 +267,23 @@ void VTKExporter::writeDataArray(const type::vector<std::string>& objects, const
             //Vectors
             if (type.empty())
             {
-                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< defaulttype::Vec1f> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec1f> >* >(field))
                 {
                     type = "Float32";
                     sizeSeg = 1;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< defaulttype::Vec1d> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec1d> >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 1;
                 }
 
-                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< defaulttype::Vec2f> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec2f> >* >(field))
                 {
                     type = "Float32";
                     sizeSeg = 2;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< defaulttype::Vec2d> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec2d> >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 2;

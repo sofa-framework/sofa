@@ -856,7 +856,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
                 Acorrection(l+1+offset)=A(l+1);
                 Acorrection(l+2+offset)=A(l+2);
 
-                defaulttype::Quat<SReal> q=defaulttype::Quat<SReal>::createQuaterFromEuler(type::Vector3(A(l+3),A(l+4),A(l+5)));
+                type::Quat<SReal> q=type::Quat<SReal>::createQuaterFromEuler(type::Vector3(A(l+3),A(l+4),A(l+5)));
 
                 Acorrection(l+3+offset)=q[0];
                 Acorrection(l+4+offset)=q[1];

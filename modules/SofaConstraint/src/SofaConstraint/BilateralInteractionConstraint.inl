@@ -38,7 +38,7 @@ namespace sofa::component::constraintset::bilateralinteractionconstraint
 using sofa::core::objectmodel::KeypressedEvent ;
 using sofa::core::objectmodel::Event ;
 using sofa::helper::WriteAccessor ;
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 
 template<class DataTypes>
 BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)

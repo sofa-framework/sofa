@@ -34,6 +34,7 @@
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
@@ -83,7 +84,7 @@ int  RigidDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, Output
     //Box
     const Vector3 v3HalfExtents = rObb.extents();
     const Vector3& v3BoxCenter = rObb.center();
-    const Quaternion& qOrientation = rObb.orientation();
+    const Quat<SReal>& qOrientation = rObb.orientation();
     Mat33 m33Orientation;
     qOrientation.toMatrix(m33Orientation);
 

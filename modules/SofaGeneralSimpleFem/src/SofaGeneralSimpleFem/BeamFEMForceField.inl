@@ -41,7 +41,7 @@ namespace sofa::component::forcefield::_beamfemforcefield_
 {
 
 using core::objectmodel::BaseContext;
-using defaulttype::Quat;
+using type::Quat;
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField()
@@ -209,7 +209,7 @@ void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(Index 
 }
 
 template<class DataTypes>
-Quat& BeamFEMForceField<DataTypes>::beamQuat(int i)
+Quat<SReal>& BeamFEMForceField<DataTypes>::beamQuat(int i)
 {
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     return bd[i].quat;
@@ -476,11 +476,11 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 
 
     // Apply lambda transpose (we use the rotation value of point a for the beam)
-    Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0],force[1],force[2]));
-    Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3],force[4],force[5]));
+    Vec3 fa1 = x[a].getOrientation().rotate(type::Vec3d(force[0],force[1],force[2]));
+    Vec3 fa2 = x[a].getOrientation().rotate(type::Vec3d(force[3],force[4],force[5]));
 
-    Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6],force[7],force[8]));
-    Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9],force[10],force[11]));
+    Vec3 fb1 = x[a].getOrientation().rotate(type::Vec3d(force[6],force[7],force[8]));
+    Vec3 fb2 = x[a].getOrientation().rotate(type::Vec3d(force[9],force[10],force[11]));
 
     f[a] += Deriv(-fa1, -fa2);
     f[b] += Deriv(-fb1, -fb2);
@@ -517,10 +517,10 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
 
     Displacement local_force = m_beamsData.getValue()[i]._k_loc * local_depl;
 
-    Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
-    Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
-    Vec3 fb1 = q.rotate(defaulttype::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
-    Vec3 fb2 = q.rotate(defaulttype::Vec3d(local_force[9],local_force[10],local_force[11]));
+    Vec3 fa1 = q.rotate(type::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
+    Vec3 fa2 = q.rotate(type::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
+    Vec3 fb1 = q.rotate(type::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
+    Vec3 fb2 = q.rotate(type::Vec3d(local_force[9],local_force[10],local_force[11]));
 
 
     df[a] += Deriv(-fa1,-fa2) * fact;

@@ -58,6 +58,7 @@ bool CapsuleIntTool::shareSameVertex(const TCapsule<DataTypes1>&, const TCapsule
 
 template <class DataTypes1,class DataTypes2>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<DataTypes2> & sph,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
     Vector3 sph_center = sph.center();
     Vector3 cap_p1 = cap.point1();

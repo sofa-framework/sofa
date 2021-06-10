@@ -162,13 +162,13 @@ typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<Data
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot )
 {
-    defaulttype::MatNoInit<6, 12, Real> Jt;
+    type::MatNoInit<6, 12, Real> Jt;
     Jt.transpose( J );
 
-    defaulttype::MatNoInit<12, 12, Real> JKJt;
+    type::MatNoInit<12, 12, Real> JKJt;
     JKJt = J*K*Jt;
 
-    defaulttype::MatNoInit<12, 12, Real> RR,RRt;
+    type::MatNoInit<12, 12, Real> RR,RRt;
     RR.clear();
     RRt.clear();
     for(int i=0; i<3; ++i)
@@ -502,7 +502,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
     J[11][0]  J[11][1]            J[11][3]
     */
 
-    defaulttype::VecNoInit<6,Real> JtD;
+    type::VecNoInit<6,Real> JtD;
     JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
             J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
             J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
@@ -528,7 +528,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
             J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
             J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
 
-    defaulttype::VecNoInit<6,Real> KJtD;
+    type::VecNoInit<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
             /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
     KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
@@ -1601,7 +1601,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
                     matVert[k][l] = X0[ix][l-1];
             }
 
-            defaulttype::invertMatrix(elemShapeFun[i], matVert);
+            type::invertMatrix(elemShapeFun[i], matVert);
         }
         computeVonMisesStress();
     }

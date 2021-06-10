@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
+#include <sofa/type/MatSym.h>
 #include <string>
 
 //#include <Eigen/Core>
@@ -56,7 +56,7 @@ public:
 
   typedef typename DataTypes::Coord Coord;
   typedef typename Coord::value_type Real;
-  typedef defaulttype::MatSym<3,Real> MatrixSym;
+  typedef type::MatSym<3,Real> MatrixSym;
   typedef type::Mat<3,3,Real> Matrix3;
   typedef type::Mat<6,6,Real> Matrix6;
 
@@ -110,7 +110,7 @@ public:
 
   typedef typename DataTypes::Coord Coord;
   typedef typename Coord::value_type Real;
-  typedef defaulttype::MatSym<3,Real> MatrixSym;
+  typedef type::MatSym<3,Real> MatrixSym;
   typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
   typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
   /// Trace of C = I1

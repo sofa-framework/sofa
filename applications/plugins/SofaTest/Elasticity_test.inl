@@ -333,12 +333,12 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     double eps = (endPoint[0]-startPoint[0])/(numX*2);
 
     // first box, x=xmin
-    boxes[0] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-            sofa::defaulttype::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[0] = sofa::defaulttype::BoundingBox(sofa::type::Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+            sofa::type::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
 
     // second box, x=xmax
-    boxes[1] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-            sofa::defaulttype::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[1] = sofa::defaulttype::BoundingBox(sofa::type::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+            sofa::type::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
     rigid_dof->resize(numRigid);
     MechanicalObjectRigid3::WriteVecCoord xrigid = rigid_dof->writePositions();
     xrigid[0].getCenter()=Coord(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));

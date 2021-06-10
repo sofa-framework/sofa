@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/type/Vec.h>
-using sofa::defaulttype::Vec4d ;
+using sofa::type::Vec4d ;
 
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data ;

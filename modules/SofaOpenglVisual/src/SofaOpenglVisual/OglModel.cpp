@@ -43,6 +43,7 @@ namespace visualmodel
 
 using sofa::type::RGBAColor;
 using sofa::type::Material;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")

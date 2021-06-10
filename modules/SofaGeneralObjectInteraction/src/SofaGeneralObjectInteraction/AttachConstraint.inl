@@ -59,7 +59,7 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::doProjectPosition(Coord&
                 Real fact = -lastDist[index] / (lastDist[index+1]-lastDist[index]);
                 sofa::type::Vector3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
                 Real angle = acos(restRotations[index][3])*2;
-                x2.getOrientation() = x1.getOrientation()*sofa::defaulttype::Quat(axis,angle*fact);
+                x2.getOrientation() = x1.getOrientation()*sofa::type::Quat<SReal>(axis,angle*fact);
             }
         }
         else

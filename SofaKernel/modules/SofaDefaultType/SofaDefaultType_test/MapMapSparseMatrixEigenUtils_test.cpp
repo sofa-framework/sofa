@@ -291,21 +291,21 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkAddMultTransposeEigenForCumulativeWr
     {
         RhsType rhs;
         auto col = rhs.writeLine(0);
-        col.addCol(0, sofa::defaulttype::Vec3d(1, 0, 0));
+        col.addCol(0, sofa::type::Vec3d(1, 0, 0));
         sofa::defaulttype::addMultTransposeEigen(lhs, jacobian, rhs);
     }
 
     {
         RhsType rhs;
         auto col = rhs.writeLine(1);
-        col.addCol(0, sofa::defaulttype::Vec3d(0, 1, 0));
+        col.addCol(0, sofa::type::Vec3d(0, 1, 0));
         sofa::defaulttype::addMultTransposeEigen(lhs, jacobian, rhs);
     }
 
     {
         RhsType rhs;
         auto col = rhs.writeLine(2);
-        col.addCol(0, sofa::defaulttype::Vec3d(0, 0, 1));
+        col.addCol(0, sofa::type::Vec3d(0, 0, 1));
         sofa::defaulttype::addMultTransposeEigen(lhs, jacobian, rhs);
     }
 

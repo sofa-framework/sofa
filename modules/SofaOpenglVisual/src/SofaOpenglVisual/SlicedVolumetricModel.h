@@ -83,9 +83,9 @@ protected:
 
     unsigned char *texture_data;
 
-    typedef type::Vec3fTypes::Coord Coord;
-    typedef type::Vec3fTypes::VecCoord VecCoord;
-    typedef type::Vec3fTypes::Real Real;
+    typedef defaulttype::Vec3fTypes::Coord Coord;
+    typedef defaulttype::Vec3fTypes::VecCoord VecCoord;
+    typedef defaulttype::Vec3fTypes::Real Real;
 
 
     bool _first;

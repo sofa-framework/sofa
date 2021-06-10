@@ -210,9 +210,9 @@ public:
 };
 
 typedef sofa::type::Vec3f Vec3f;
-typedef sofa::defaulttype::Vec1f Vec1f;
-typedef sofa::defaulttype::Vec2f Vec2f;
-typedef sofa::defaulttype::Vec6f Vec6f;
+typedef sofa::type::Vec1f Vec1f;
+typedef sofa::type::Vec2f Vec2f;
+typedef sofa::type::Vec6f Vec6f;
 
 using defaulttype::Vec;
 using defaulttype::NoInit;
@@ -626,9 +626,9 @@ inline const char* CudaRigid3fTypes::Name()
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 using sofa::type::Vec3d;
-using sofa::defaulttype::Vec1d;
-using sofa::defaulttype::Vec2d;
-using sofa::defaulttype::Vec6d;
+using sofa::type::Vec1d;
+using sofa::type::Vec2d;
+using sofa::type::Vec6d;
 typedef Vec3r1<double> Vec3d1;
 
 typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;

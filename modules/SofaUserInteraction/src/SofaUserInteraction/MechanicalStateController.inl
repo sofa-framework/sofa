@@ -66,8 +66,8 @@ void MechanicalStateController<DataTypes>::init()
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::applyController()
 {
-    using sofa::defaulttype::Quat;
-    using sofa::defaulttype::Vec;
+    using sofa::type::Quat;
+    using sofa::type::Vec;
 
     if(device)
     {
@@ -107,8 +107,8 @@ void MechanicalStateController<DataTypes>::applyController()
 
             if (mouseMode==BtLeft)
             {
-                xfree[i].getOrientation() = x[i].getOrientation() * Quat(vy, dx * (Real)0.001) * Quat(vz, dy * (Real)0.001);
-                x[i].getOrientation() = x[i].getOrientation() * Quat(vy, dx * (Real)0.001) * Quat(vz, dy * (Real)0.001);
+                xfree[i].getOrientation() = x[i].getOrientation() * Quat<SReal>(vy, dx * (Real)0.001) * Quat<SReal>(vz, dy * (Real)0.001);
+                x[i].getOrientation() = x[i].getOrientation() * Quat<SReal>(vy, dx * (Real)0.001) * Quat<SReal>(vz, dy * (Real)0.001);
             }
             else
             {
@@ -117,12 +117,12 @@ void MechanicalStateController<DataTypes>::applyController()
                 vectrans = quatrot.rotate(vectrans);
 
                 x[i].getCenter() += vectrans;
-                x[i].getOrientation() = x[i].getOrientation() * Quat(vx, dx * (Real)0.001);
+                x[i].getOrientation() = x[i].getOrientation() * Quat<SReal>(vx, dx * (Real)0.001);
 
                 if(xfree.size() > 0)
                 {
                     xfree[i].getCenter() += vectrans;
-                    xfree[i].getOrientation() = x[i].getOrientation() * Quat(vx, dx * (Real)0.001);
+                    xfree[i].getOrientation() = x[i].getOrientation() * Quat<SReal>(vx, dx * (Real)0.001);
                 }
             }
         }

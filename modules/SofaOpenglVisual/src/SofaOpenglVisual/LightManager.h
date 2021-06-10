@@ -54,8 +54,8 @@ public:
 
 private:
     std::vector<Light::SPtr>          m_lights;
-    std::vector<defaulttype::Mat4x4f> m_lightModelViewMatrix;
-    std::vector<defaulttype::Mat4x4f> m_lightProjectionMatrix;
+    std::vector<type::Mat4x4f> m_lightModelViewMatrix;
+    std::vector<type::Mat4x4f> m_lightProjectionMatrix;
     std::vector<unsigned short>       m_mapShadowTextureUnit;
 
     //OglShadowShader* shadowShader;

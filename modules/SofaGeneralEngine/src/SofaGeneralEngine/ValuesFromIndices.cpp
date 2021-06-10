@@ -37,10 +37,10 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
         .add< ValuesFromIndices< type::fixed_array<unsigned int, 4> > >()
         .add< ValuesFromIndices< type::fixed_array<unsigned int, 8> > >()
         .add< ValuesFromIndices<double> >()
-        .add< ValuesFromIndices<defaulttype::Vec2d> >()
-        .add< ValuesFromIndices<defaulttype::Vec3d> >()
-		.add< ValuesFromIndices<defaulttype::Vec4d> >()
-		.add< ValuesFromIndices<defaulttype::Vec6d> >()
+        .add< ValuesFromIndices<type::Vec2d> >()
+        .add< ValuesFromIndices<type::Vec3d> >()
+		.add< ValuesFromIndices<type::Vec4d> >()
+		.add< ValuesFromIndices<type::Vec6d> >()
         .add< ValuesFromIndices<defaulttype::Rigid2Types::Coord> >()
         .add< ValuesFromIndices<defaulttype::Rigid2Types::Deriv> >()
         .add< ValuesFromIndices<defaulttype::Rigid3Types::Coord> >()
@@ -56,10 +56,10 @@ template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<u
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 4> >;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 8> >;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<double>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec2d>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec3d>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec4d>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec6d>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec2d>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec3d>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec4d>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec6d>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Rigid2Types::Coord>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Rigid2Types::Deriv>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Rigid3Types::Coord>;

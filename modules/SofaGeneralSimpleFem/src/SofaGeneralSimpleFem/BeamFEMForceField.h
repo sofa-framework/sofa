@@ -36,10 +36,10 @@ using core::MechanicalParams;
 using core::behavior::MultiMatrixAccessor;
 using core::behavior::ForceField;
 using core::topology::BaseMeshTopology;
-using defaulttype::Vec;
-using defaulttype::Mat;
+using type::Vec;
+using type::Mat;
 using type::Vector3;
-using defaulttype::Quat;
+using type::Quat;
 using topology::EdgeData;
 
 /** Compute Finite Element forces based on 6D beam elements.
@@ -174,7 +174,7 @@ public:
     bool m_assembling;
     double m_lastUpdatedStep;
 
-    Quat& beamQuat(int i);
+    Quat<SReal>& beamQuat(int i);
 
     BaseMeshTopology* m_topology;
     BeamFFEdgeHandler* m_edgeHandler;
