@@ -246,7 +246,7 @@ void BeamPlasticFEMForceField<DataTypes>::reinitBeam(unsigned int i)
         computeVDStiffness(i, a, b);
     // Initialisation of the tangent stiffness matrix
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
-    StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
+    Matrix12x12& Kt_loc = bd[i]._Kt_loc;
     Kt_loc.clear();
     m_beamsData.endEdit();
 
@@ -703,7 +703,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeStiffness(int i, Index, Index)
     }
 
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
-    StiffnessMatrix& k_loc = bd[i]._k_loc;
+    Matrix12x12& k_loc = bd[i]._k_loc;
 
     // Define stiffness matrix 'k' in local coordinates
     k_loc.clear();
@@ -831,10 +831,10 @@ void BeamPlasticFEMForceField<DataTypes>::addKToMatrix(const sofa::core::Mechani
             Transformation R,Rt;
             q.toMatrix(R);
             Rt.transpose(R);
-            StiffnessMatrix K;
+            Matrix12x12 K;
             bool exploitSymmetry = d_useSymmetricAssembly.getValue();
 
-            StiffnessMatrix K0;
+            Matrix12x12 K0;
             if (beamMechanicalState == MechanicalState::PLASTIC)
                 K0 = m_beamsData.getValue()[i]._Kt_loc;
             else
@@ -1078,7 +1078,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeVDStiffness(int i, Index, Index
 
     const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[i]._materialBehaviour;
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
-    StiffnessMatrix& Ke_loc = bd[i]._Ke_loc;
+    Matrix12x12& Ke_loc = bd[i]._Ke_loc;
     Ke_loc.clear();
 
     // Reduced integration
@@ -1588,7 +1588,7 @@ void BeamPlasticFEMForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
 
     //Passes the contribution to the global system
-    nodalForces force;
+    Vec12 force;
 
     for (int i = 0; i < 12; i++)
         force[i] = fint(i);
@@ -1614,7 +1614,7 @@ void BeamPlasticFEMForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
     //of the beam element
 
     //Computes displacement increment, from last system solution
-    Displacement local_depl;
+    Vec12 local_depl;
     defaulttype::Vec<3, Real> u;
     defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
     q.normalize();
@@ -1672,7 +1672,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                                                             Index b)
 {
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
-    StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
+    Matrix12x12& Kt_loc = bd[i]._Kt_loc;
     const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
     const double E = bd[i]._E;
     const double nu = bd[i]._nu;
@@ -1828,7 +1828,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
 }
 
 template< class DataTypes>
-void BeamPlasticFEMForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x, Displacement &localDisp,
+void BeamPlasticFEMForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x, Vec12 &localDisp,
                                                               int i, Index a, Index b)
 {
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -1877,8 +1877,8 @@ void BeamPlasticFEMForceField<DataTypes>::computeLocalDisplacement(const VecCoor
 
 
 template< class DataTypes>
-void BeamPlasticFEMForceField<DataTypes>::computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp,
-                                                                  Displacement &lastDisp, Displacement &dispIncrement, int i, Index a, Index b)
+void BeamPlasticFEMForceField<DataTypes>::computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Vec12 &currentDisp,
+                                                                  Vec12 &lastDisp, Vec12 &dispIncrement, int i, Index a, Index b)
 {
     // ***** Displacement for current position *****//
 
@@ -2107,9 +2107,9 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Eige
                                                                             const VecCoord& x, int index, Index a, Index b)
 {
     // Computes displacement increment, from last system solution
-    Displacement currentDisp;
-    Displacement lastDisp;
-    Displacement dispIncrement;
+    Vec12 currentDisp;
+    Vec12 lastDisp;
+    Vec12 dispIncrement;
     computeDisplacementIncrement(x, m_lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
 
     // Converts to Eigen data structure
@@ -2271,9 +2271,9 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Eigen::Matri
                                                                     const VecCoord& x, int index, Index a, Index b)
 {
     // Computes displacement increment, from last system solution
-    Displacement currentDisp;
-    Displacement lastDisp;
-    Displacement dispIncrement;
+    Vec12 currentDisp;
+    Vec12 lastDisp;
+    Vec12 dispIncrement;
     computeDisplacementIncrement(x, m_lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
 
     // Converts to Eigen data structure

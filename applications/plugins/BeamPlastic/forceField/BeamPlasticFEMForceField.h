@@ -81,6 +81,20 @@ public:
     typedef defaulttype::Vec<3, Real> Vec3;
     typedef sofa::helper::types::RGBAColor RGBAColor;
 
+    /// Stiffness matrix associated to a beam element.
+    typedef defaulttype::Mat<12, 12, Real> Matrix12x12;
+        /// Matrix form of the beam element shape functions
+    typedef Eigen::Matrix<double, 3, 12> EigenMat3x12;
+    /// Homogeneous type to a 4th order tensor, in Voigt notation.
+    typedef Eigen::Matrix<double, 6, 6> EigenMat6x6;
+    /// Vector representing the displacement of a beam element.
+    typedef defaulttype::Vec<12, Real> Vec12;
+    /// Matrix for rigid transformations like rotations.
+    typedef defaulttype::Mat<3, 3, Real> Transformation;
+    /// Homogeneous to the derivative of the shape function matrix
+    typedef Eigen::Matrix<double, 6, 12> EigenMat6x12;
+
+
     /** \enum class MechanicalState
      *  \brief Types of mechanical state associated with the (Gauss) integration
      *  points. The POSTPLASTIC state corresponds to points which underwent plastic
@@ -94,12 +108,6 @@ public:
     };
 
 protected:
-    /// Vector representing the displacement of a beam element.
-    typedef defaulttype::Vec<12, Real> Displacement;
-    /// Matrix for rigid transformations like rotations.
-    typedef defaulttype::Mat<3, 3, Real> Transformation;
-    /// Stiffness matrix associated to a beam element.
-    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
 
     /**
      * \struct BeamInfo
@@ -116,20 +124,18 @@ protected:
         /*********************************************************************/
 
         /// Precomputed stiffness matrix, used for elastic deformation.
-        StiffnessMatrix _Ke_loc;
+        Matrix12x12 _Ke_loc;
         /**
          * Linearised stiffness matrix (tangent stiffness), updated at each time
          * step for plastic deformation.
          */
-        StiffnessMatrix _Kt_loc;
+        Matrix12x12 _Kt_loc;
 
-        /// Homogeneous type to a 4th order tensor, in Voigt notation.
-        typedef Eigen::Matrix<double, 6, 6> BehaviourMatrix;
         /**
          * Generalised Hooke's law (4th order tensor connecting strain and stress,
          * expressed in Voigt notation)
          */
-        BehaviourMatrix _materialBehaviour;
+        EigenMat6x6 _materialBehaviour;
 
         /**
          * \brief Integration ranges for Gaussian reduced integration.
@@ -141,16 +147,12 @@ protected:
          */
         ozp::quadrature::detail::Interval<3> _integrationInterval;
 
-        /// Matrix form of the beam element shape functions
-        typedef Eigen::Matrix<double, 3, 12> shapeFunction;
         /// Shape function matrices, evaluated in each Gauss point used in reduced integration.
-        helper::fixed_array<shapeFunction, 27> _N;
+        helper::fixed_array<EigenMat3x12, 27> _N;
         // TO DO : define the "27" constant properly ! static const ? ifdef global definition ?
 
-        /// Homogeneous to the derivative of shapeFunction type
-        typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction;
         /// Derivatives of the shape function matrices in _N, also evaluated in each Gauss point
-        helper::fixed_array<deformationGradientFunction, 27> _BeMatrices;
+        helper::fixed_array<EigenMat6x12, 27> _BeMatrices;
 
         /// Mechanical states (elastic, plastic, or postplastic) of all gauss points in the beam element.
         helper::fixed_array<MechanicalState, 27> _pointMechanicalState;
@@ -185,7 +187,7 @@ protected:
         int _nbCentrelineSeg = 10;
 
         /// Precomputation of the shape functions matrices for each centreline point coordinates.
-        helper::fixed_array<shapeFunction, 9> _drawN; //TO DO: allow parameterisation of the number of segments
+        helper::fixed_array<EigenMat3x12, 9> _drawN; //TO DO: allow parameterisation of the number of segments
                                                       //       which discretise the centreline (here : 10)
                                                       // NB: we use 9 shape functions because extremity points are known
 
@@ -201,7 +203,7 @@ protected:
         double _Iz; ///< 2nd moment of area with regard to the z axis, for a rectangular beam section
         double _J; ///< Polar moment of inertia (J = Iy + Iz)
         double _A; ///< Cross-sectional area
-        StiffnessMatrix _k_loc; ///< Precomputed stiffness matrix, used only for elastic deformation if d_usePrecomputedStiffness = true
+        Matrix12x12 _k_loc; ///< Precomputed stiffness matrix, used only for elastic deformation if d_usePrecomputedStiffness = true
 
         defaulttype::Quat quat; // TO DO : supress ? Apparently it is not used effectively in the computation, only updated
 
@@ -273,9 +275,6 @@ protected:
     /**************************************************************************/
 
 public:
-
-    typedef defaulttype::Vec<12, Real> nodalForces; ///<  Intensities of the nodal forces in the Timoshenko beam element
-    // TO DO : is this type really useful ?
 
     typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
     typedef Eigen::Matrix<double, 9, 1> VectTensor2; ///< Symmetrical tensor of order 2, written with vector notation
@@ -364,10 +363,10 @@ protected:
     bool goToPlastic(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
 
     /// Computes local displacement of a beam element using the corotational model
-    void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);
+    void computeLocalDisplacement(const VecCoord& x, Vec12 &localDisp, int i, Index a, Index b);
     /// Computes a displacement increment between to positions of a beam element (with respect to its local frame)
-    void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
-                                      Displacement &dispIncrement, int i, Index a, Index b);
+    void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Vec12 &currentDisp, Vec12 &lastDisp,
+                                      Vec12 &dispIncrement, int i, Index a, Index b);
 
     //---------- Force computation ----------//
 
