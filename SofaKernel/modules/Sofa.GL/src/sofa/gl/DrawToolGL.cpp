@@ -39,6 +39,7 @@ template class SOFA_GL_API BasicShapesGL_Sphere< sofa::type::Vector3 >;
 template class SOFA_GL_API BasicShapesGL_FakeSphere< sofa::type::Vector3 >;
 
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::type::RGBAColor;
 

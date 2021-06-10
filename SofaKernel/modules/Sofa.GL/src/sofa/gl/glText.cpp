@@ -23,7 +23,7 @@
 
 namespace sofa::gl
 {
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 using std::string;
 
 SOFA_GL_API const std::string GlText::ASCII_TEXTURE_PATH("textures/texture_ascii_smooth.png");
