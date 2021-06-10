@@ -77,7 +77,7 @@ public:
     Size getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
 
     /// Get the indices of the particles located in the given bounding box
-    virtual void getIndicesInSpace(sofa::helper::vector<Index>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
+    virtual void getIndicesInSpace(sofa::type::vector<Index>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
 
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)

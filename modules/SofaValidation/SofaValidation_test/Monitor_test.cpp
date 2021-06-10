@@ -36,7 +36,7 @@ struct MonitorTest : public Monitor<Rigid3Types>
 
     void testModif(MechanicalObject<Rigid3Types>* mo)
     {
-        helper::vector<unsigned int> idx = d_indices.getValue();
+        type::vector<unsigned int> idx = d_indices.getValue();
         const Rigid3Types::VecCoord& i1 = *m_X;
         const Rigid3Types::VecCoord& i2 = mo->x.getValue();
         const Rigid3Types::VecDeriv& f1 = *m_F;

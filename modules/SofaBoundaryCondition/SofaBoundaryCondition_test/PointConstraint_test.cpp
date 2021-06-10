@@ -58,7 +58,7 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
     typedef typename MechanicalObject::VecDeriv  VecDeriv;
     typedef typename MechanicalObject::Deriv  Deriv;
     typedef typename DataTypes::Real  Real;
-    typedef sofa::helper::fixed_array<bool,Deriv::total_size> VecBool;
+    typedef sofa::type::fixed_array<bool,Deriv::total_size> VecBool;
 
     bool test(double epsilon)
     {
@@ -72,7 +72,7 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
 
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
-        root->setGravity( defaulttype::Vector3(0,0,0) );
+        root->setGravity( type::Vector3(0,0,0) );
 
         simulation::Node::SPtr node = createEulerSolverNode(root,"test");
 
@@ -91,7 +91,7 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
         sofa::simulation::getSimulation()->init(root.get());
 
         unsigned int dofsNbr = dofs->getSize();
-        helper::vector<unsigned int> fixed_indices;
+        type::vector<unsigned int> fixed_indices;
 
         for(unsigned i=0; i<dofsNbr; i++)
         {

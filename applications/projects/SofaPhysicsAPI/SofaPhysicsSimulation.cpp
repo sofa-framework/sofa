@@ -825,7 +825,7 @@ void SofaPhysicsSimulation::drawGL()
 
         vparams->sceneBBox() = groot->f_bbox.getValue();
 
-        vparams->viewport() = sofa::helper::make_array(viewport[0], viewport[1], viewport[2], viewport[3]);
+        vparams->viewport() = sofa::type::make_array(viewport[0], viewport[1], viewport[2], viewport[3]);
 
         if (vWidth != lastW || vHeight != lastH)
         {
@@ -913,7 +913,7 @@ void SofaPhysicsSimulation::calcProjection()
             yFactor = 1.0;
         }
     }
-    vparams->viewport() = sofa::helper::make_array(0,0,width,height);
+    vparams->viewport() = sofa::type::make_array(0,0,width,height);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

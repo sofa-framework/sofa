@@ -80,7 +80,7 @@ public:
     typedef TMassType MassType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename helper::vector<MassType> VecMass;
+    typedef typename type::vector<MassType> VecMass;
     typedef DiagonalMass<TDataTypes, TMassType> TheDiagonalMass ;
 
     simulation::Simulation* simulation;

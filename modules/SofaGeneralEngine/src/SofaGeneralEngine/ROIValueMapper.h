@@ -25,7 +25,7 @@
 
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/vectorData.h>
 
 
@@ -47,11 +47,11 @@ public:
 
     //Input
     Data<unsigned int> nbROIs; ///< size of indices/value vector
-    helper::vectorData<helper::vector<Index> > f_indices;
+    helper::vectorData<type::vector<Index> > f_indices;
     helper::vectorData<Real> f_value;
 
     //Output
-    Data<sofa::helper::vector<Real> > f_outputValues; ///< New vector of values
+    Data<sofa::type::vector<Real> > f_outputValues; ///< New vector of values
 
     //Parameter
     Data<Real> p_defaultValue; ///< Default value for indices out of ROIs
@@ -111,12 +111,12 @@ protected:
         if(!nb) return;
 
         const Real& defaultValue = p_defaultValue.getValue();
-        helper::WriteOnlyAccessor< Data< helper::vector<Real> > > outputValues = f_outputValues;
+        helper::WriteOnlyAccessor< Data< type::vector<Real> > > outputValues = f_outputValues;
         outputValues.clear();
 
         for(size_t j=0; j<nb;j++)
         {
-            helper::ReadAccessor< Data< helper::vector<Index> > > indices = f_indices[j];
+            helper::ReadAccessor< Data< type::vector<Index> > > indices = f_indices[j];
             const Real& value = f_value[j]->getValue();
 
             for(size_t i=0 ; i<indices.size() ; i++)

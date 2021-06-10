@@ -76,13 +76,13 @@ public:
     Data<bool> d_writeTetras; ///< write tetra topology
     Data<bool> d_writeHexas; ///< write hexa topology
 
-    helper::vector<std::string> pointsDataObject;
-    helper::vector<std::string> pointsDataField;
-    helper::vector<std::string> pointsDataName;
+    type::vector<std::string> pointsDataObject;
+    type::vector<std::string> pointsDataField;
+    type::vector<std::string> pointsDataName;
 
-    helper::vector<std::string> cellsDataObject;
-    helper::vector<std::string> cellsDataField;
-    helper::vector<std::string> cellsDataName;
+    type::vector<std::string> cellsDataObject;
+    type::vector<std::string> cellsDataField;
+    type::vector<std::string> cellsDataName;
 
     void doInit() override ;
     void doReInit() override ;

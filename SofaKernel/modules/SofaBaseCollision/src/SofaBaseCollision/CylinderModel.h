@@ -83,7 +83,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecReal VecReal;
-    typedef typename helper::vector<typename DataTypes::Vec3> VecAxisCoord;
+    typedef typename type::vector<typename DataTypes::Vec3> VecAxisCoord;
 
     typedef TCylinder<DataTypes> Element;
     friend class TCylinder<DataTypes>;
@@ -124,7 +124,7 @@ public:
     //Returns the direction of the cylinder at index in local coordinates
     Coord local_axis(Index index) const;
 
-    const sofa::defaulttype::Quaternion orientation(Index index)const;
+    const sofa::type::Quat<SReal> orientation(Index index)const;
 
     Real height(Index index)const;
 

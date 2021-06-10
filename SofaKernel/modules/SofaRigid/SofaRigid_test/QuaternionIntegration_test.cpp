@@ -57,7 +57,7 @@ struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
 
     void test_quaternion_angle() const {
         using real = typename data_types::Real;
-        defaulttype::Vec<3, real> axis; real angle;
+        type::Vec<3, real> axis; real angle;
         coord.getOrientation().quatToAxis(axis, angle);
 
         const real expected_angle = dt * deriv.getVOrientation().norm();

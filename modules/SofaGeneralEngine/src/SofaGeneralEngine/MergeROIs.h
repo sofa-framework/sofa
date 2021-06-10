@@ -25,9 +25,9 @@
 
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/vectorData.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/SVector.h>
 
 
 namespace sofa::component::engine
@@ -47,10 +47,10 @@ public:
 
     //Input
     Data<unsigned int> d_nbROIs; ///< size of indices/value vector
-    helper::vectorData<helper::vector<Index> > f_indices;
+    helper::vectorData<type::vector<Index> > f_indices;
 
     //Output
-    Data<helper::vector<helper::SVector<Index> > > d_outputIndices; ///< Vector of ROIs
+    Data<type::vector<type::SVector<Index> > > d_outputIndices; ///< Vector of ROIs
 
     void init() override;
     void reinit() override;

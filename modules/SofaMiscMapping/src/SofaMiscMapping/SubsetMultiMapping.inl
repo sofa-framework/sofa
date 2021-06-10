@@ -48,7 +48,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
 
     typedef linearsolver::EigenSparseMatrix<TIn,TOut> Jacobian;
     baseMatrices.resize( this->getFrom().size() );
-    helper::vector<Jacobian*> jacobians( this->getFrom().size() );
+    type::vector<Jacobian*> jacobians( this->getFrom().size() );
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
         baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
@@ -77,7 +77,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
     : Inherit()
-    , indexPairs( initData( &indexPairs, helper::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
+    , indexPairs( initData( &indexPairs, type::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
 {}
 
 template <class TIn, class TOut>
@@ -90,7 +90,7 @@ SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
 }
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* SubsetMultiMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* SubsetMultiMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -117,7 +117,7 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from < this->fromModels.size());
-    helper::vector<unsigned>& indexPairsVector = *indexPairs.beginEdit();
+    type::vector<unsigned>& indexPairsVector = *indexPairs.beginEdit();
     indexPairsVector.push_back(from);
     indexPairsVector.push_back(index);
     indexPairs.endEdit();
@@ -125,7 +125,7 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( int from, int index)
 
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
+void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos)
 {
     SOFA_UNUSED(mparams);
 
@@ -144,7 +144,7 @@ void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
+void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel)
 {
     SOFA_UNUSED(mparams);
 
@@ -161,9 +161,9 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const helper::vector< InDataMatrixDeriv* >& dOut, const helper::vector< const OutDataMatrixDeriv* >& dIn)
+void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const type::vector< InDataMatrixDeriv* >& dOut, const type::vector< const OutDataMatrixDeriv* >& dIn)
 {
-    helper::vector<unsigned>  indexP = indexPairs.getValue();
+    type::vector<unsigned>  indexP = indexPairs.getValue();
 
     // hypothesis: one child only:
     const OutMatrixDeriv& in = dIn[0]->getValue();
@@ -211,7 +211,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cpa
 
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
     SOFA_UNUSED(mparams);
 

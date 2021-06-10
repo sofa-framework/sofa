@@ -22,9 +22,9 @@
 #pragma once
 #include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/RGBAColor.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
 #include <map>
 
 
@@ -66,7 +66,7 @@ template <class DataTypes>
 void BoxStiffSpringForceField<DataTypes>::bwdInit()
 {
     Inherit::bwdInit();
-    sofa::helper::vector <Index> indices1;
+    sofa::type::vector<Index> indices1;
     Vec6& b1=*(box_object1.beginEdit());
 
     if (b1[0] > b1[3]) std::swap(b1[0],b1[3]);
@@ -76,7 +76,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 
     this->mstate1->getIndicesInSpace( indices1, b1[0],b1[3],b1[1],b1[4],b1[2],b1[5] );
 
-    sofa::helper::vector <Index> indices2;
+    sofa::type::vector<Index> indices2;
     Vec6& b2=*(box_object2.beginEdit());
     if (b2[0] > b2[3]) std::swap(b2[0],b2[3]);
     if (b2[1] > b2[4]) std::swap(b2[1],b2[4]);
@@ -93,7 +93,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
     Real min_dist=0;
     if (indices1.size() < indices2.size())
     {
-        sofa::helper::vector< std::map<Real, Index> > distance_spring(indices1.size());
+        sofa::type::vector< std::map<Real, Index> > distance_spring(indices1.size());
         for(unsigned int i = 0; i < indices1.size(); ++i)
         {
             for(unsigned int j = 0; j < indices2.size(); ++j)
@@ -103,7 +103,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
             if (i==0 || min_dist> distance_spring[i].begin()->first) min_dist = distance_spring[i].begin()->first;
 
         }
-        sofa::helper::vector< bool > indice_unused(indices2.size(),true);
+        sofa::type::vector< bool > indice_unused(indices2.size(),true);
 
         for(unsigned int i = 0; i<indices1.size(); ++i)
         {
@@ -124,7 +124,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
     }
     else
     {
-        sofa::helper::vector< std::map<Real, Index> > distance_spring(indices2.size());
+        sofa::type::vector< std::map<Real, Index> > distance_spring(indices2.size());
         for(unsigned int i = 0; i < indices2.size(); ++i)
         {
             for(unsigned int j = 0; j < indices1.size(); ++j)
@@ -134,7 +134,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 
             if (i==0 || min_dist> distance_spring[i].begin()->first) min_dist = distance_spring[i].begin()->first;
         }
-        sofa::helper::vector< bool > indice_unused(indices1.size(),true);
+        sofa::type::vector< bool > indice_unused(indices1.size(),true);
 
         for(unsigned int i = 0; i<indices2.size(); ++i)
         {
@@ -167,8 +167,8 @@ void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     vparams->drawTool()->saveLastState();
 
-    sofa::helper::types::RGBAColor color;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::type::RGBAColor color;
+    std::vector<sofa::type::Vector3> vertices;
 
     ///draw the constraint box
     const Vec6& b1=box_object1.getValue();
@@ -187,60 +187,60 @@ void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams*
     const Real& Zmin2=b2[2];
     const Real& Zmax2=b2[5];
 
-    color = sofa::helper::types::RGBAColor(0,0.5,0.5,1);
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmax1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmin1));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmax1));
+    color = sofa::type::RGBAColor(0,0.5,0.5,1);
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymin1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymin1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymin1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymin1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymin1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymax1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymax1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymax1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymax1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymax1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymax1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymin1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymin1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymin1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymin1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymax1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymin1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymin1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmin1,Ymax1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymax1,Zmax1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymax1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymin1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymax1,Zmin1));
+    vertices.push_back(sofa::type::Vector3(Xmax1,Ymax1,Zmax1));
     vparams->drawTool()->drawLines(vertices,1,color);
     vertices.clear();
 
-    color = sofa::helper::types::RGBAColor(0.5,0.5,0,1);
+    color = sofa::type::RGBAColor(0.5,0.5,0,1);
 
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmax2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmin2));
-    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymin2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymin2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymin2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymin2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymin2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymax2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymax2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymax2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymax2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymax2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymax2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymin2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymin2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymin2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymin2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymax2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymin2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymin2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmin2,Ymax2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymax2,Zmax2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymax2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymin2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymax2,Zmin2));
+    vertices.push_back(sofa::type::Vector3(Xmax2,Ymax2,Zmax2));
 
     vparams->drawTool()->drawLines(vertices,1,color);
 

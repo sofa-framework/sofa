@@ -32,7 +32,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -106,8 +106,8 @@ void Hexa2QuadTopologicalMapping::init()
     // Set the same number of points
     toModel->setNbPoints(fromModel->getNbPoints());
 
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
-    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    const sofa::type::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
+    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
@@ -243,7 +243,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[Loc2GlobVec.size() - 1]));
                     Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
 
-                    sofa::helper::vector< Index > quads_to_remove;
+                    sofa::type::vector< Index > quads_to_remove;
                     quads_to_remove.push_back(ind_k);
 
                     to_tstm->removeQuads(quads_to_remove, true, false);
@@ -261,12 +261,12 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::HEXAHEDRAREMOVED:
         {
-            const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron> &hexahedronArray=fromModel->getHexahedra();
+            const sofa::type::vector<core::topology::BaseMeshTopology::Hexahedron> &hexahedronArray=fromModel->getHexahedra();
 
             const Topology::SetIndices & tab = ( static_cast< const HexahedraRemoved *>( *itBegin ) )->getArray();
 
-            sofa::helper::vector< core::topology::BaseMeshTopology::Quad > quads_to_create;
-            sofa::helper::vector< Index > quadsIndexList;
+            sofa::type::vector< core::topology::BaseMeshTopology::Quad > quads_to_create;
+            sofa::type::vector< Index > quadsIndexList;
             auto nb_elems = toModel->getNbQuads();
             const bool flipN = flipNormals.getValue();
 
@@ -374,8 +374,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
             const Topology::SetIndices & tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
             const Topology::SetIndices & inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-            sofa::helper::vector<Index> indices;
-            sofa::helper::vector<Index> inv_indices;
+            sofa::type::vector<Index> indices;
+            sofa::type::vector<Index> inv_indices;
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {

@@ -58,7 +58,7 @@ DataDisplay::DataDisplay()
     , f_quadData(initData(&f_quadData, "quadData", "Data associated with quads"))
     , f_pointTriangleData(initData(&f_pointTriangleData, "pointTriangleData", "Data associated with nodes per triangle"))
     , f_pointQuadData(initData(&f_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
-    , f_colorNaN(initData(&f_colorNaN, sofa::helper::types::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
+    , f_colorNaN(initData(&f_colorNaN, sofa::type::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
     , d_userRange(initData(&d_userRange, defaulttype::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
     , d_currentMin(initData(&d_currentMin, Real(0.0), "currentMin", "Current min range"))
     , d_currentMax(initData(&d_currentMax, Real(0.0), "currentMax", "Current max range"))
@@ -116,7 +116,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     const VecCellData &quadData = f_quadData.getValue();
     const VecPointData &pointTriData = f_pointTriangleData.getValue();
     const VecPointData &pointQuadData = f_pointQuadData.getValue();
-    typedef sofa::helper::types::RGBAColor RGBAColor;
+    typedef sofa::type::RGBAColor RGBAColor;
     const float& transparency = d_transparency.getValue();
 
     glEnable ( GL_LIGHTING );

@@ -29,8 +29,8 @@
 #include <sofa/core/collision/Intersection.inl>
 
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 
 
 #include <iostream>

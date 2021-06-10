@@ -29,7 +29,7 @@ void BroadPhaseDetection::beginBroadPhase()
     cmPairs.clear();
 }
 
-void BroadPhaseDetection::addCollisionModels(const sofa::helper::vector<core::CollisionModel *>& v)
+void BroadPhaseDetection::addCollisionModels(const sofa::type::vector<core::CollisionModel *>& v)
 {
     for (auto* collisionModel : v)
     {
@@ -41,12 +41,12 @@ void BroadPhaseDetection::endBroadPhase()
 {
 }
 
-auto BroadPhaseDetection::getCollisionModelPairs() -> sofa::helper::vector<CollisionModelPair>&
+auto BroadPhaseDetection::getCollisionModelPairs() -> sofa::type::vector<CollisionModelPair>&
 {
     return cmPairs;
 }
 
-auto BroadPhaseDetection::getCollisionModelPairs() const -> const sofa::helper::vector<CollisionModelPair>&
+auto BroadPhaseDetection::getCollisionModelPairs() const -> const sofa::type::vector<CollisionModelPair>&
 {
     return cmPairs;
 }

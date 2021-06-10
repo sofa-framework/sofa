@@ -79,9 +79,9 @@ Elasticity_test<DataTypes>::createRegularGridScene(
         int numX,
         int numY,
         int numZ,
-        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
-        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
-        sofa::defaulttype::Vec<6,SReal> includedBox)
+        sofa::type::Vec<6,SReal> entireBoxRoi,
+        sofa::type::Vec<6,SReal> inclusiveBox,
+        sofa::type::Vec<6,SReal> includedBox)
 {
     // Definitions
     PatchTestStruct<DataTypes> patchStruct;
@@ -125,7 +125,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     patchStruct.dofs->setSrc("@"+gridMesh->getName(), gridMesh.get());
 
     //BoxRoi to find all mesh points
-    helper::vector < defaulttype::Vec<6,Real> > vecBox;
+    type::vector< type::Vec<6,Real> > vecBox;
     vecBox.push_back(entireBoxRoi);
     typename BoxRoi::SPtr boxRoi = modeling::addNew<BoxRoi>(SquareNode,"boxRoi");
     boxRoi->d_alignedBoxes.setValue(vecBox);
@@ -198,15 +198,15 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     tractionStruct.dofs=meca1;
     // MeshMatrixMass
     typename sofa::component::mass::MeshMatrixMass<DataTypes,Real>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes,Real> >(root,"BezierMass");
-    sofa::helper::vector< Real > massDensity;
+    sofa::type::vector< Real > massDensity;
     massDensity.clear();
     massDensity.resize(1);
     massDensity[0] = 1.0;
     mass->d_massDensity.setValue(massDensity);
     mass->d_lumping=false;
     /// box fixed
-    helper::vector < defaulttype::Vec<6,Real> > vecBox;
-    defaulttype::Vec<6,Real> box;
+    type::vector< type::Vec<6,Real> > vecBox;
+    type::Vec<6,Real> box;
     box[0]= -0.01;box[1]= -0.01;box[2]= -0.01;box[3]= 0.01;box[4]= 0.01;box[5]= 0.01;
     vecBox.push_back(box);
     typename BoxRoi::SPtr boxRoi1 = modeling::addNew<BoxRoi>(root,"boxRoiFix");
@@ -239,7 +239,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
             modeling::addNew<typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes> >(root);
     ptlc->f_direction=Coord(1,0,0);
     ptlc->f_origin=Coord(0,0,0);
-    sofa::helper::vector<sofa::Index> vArray;
+    sofa::type::vector<sofa::Index> vArray;
     vArray.push_back(resolutionCircumferential*(resolutionRadial-1)+1);
     ptlc->f_indices.setValue(vArray);
 
@@ -259,7 +259,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
         SReal stiffnessValue,
         SReal dampingRatio )
 {
-    using helper::vector;
+    using type::vector;
     using core::objectmodel::New;
 
     // The graph root node

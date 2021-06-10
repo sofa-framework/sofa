@@ -36,7 +36,7 @@ using sofa::simulation::graph::DAGSimulation;
 #include <SofaGeneralEngine/ExtrudeEdgesAndGenerateQuads.h>
 using sofa::component::engine::ExtrudeEdgesAndGenerateQuads ;
 
-using sofa::helper::vector;
+using sofa::type::vector;
 
 
 namespace sofa

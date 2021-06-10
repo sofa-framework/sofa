@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaConstraint/config.h>
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <Eigen/Core>
@@ -75,7 +75,7 @@ public:
     }
     void init(int line, double** w, double *force) override
     {
-        sofa::defaulttype::Mat<3,3,double> temp;
+        sofa::type::Mat<3,3,double> temp;
         temp[0][0] = w[line][line];
         temp[0][1] = w[line][line+1];
         temp[0][2] = w[line][line+2];
@@ -124,7 +124,7 @@ public:
     }
 
 protected:
-    sofa::defaulttype::Mat<3,3,double> invW;
+    sofa::type::Mat<3,3,double> invW;
     sofa::defaulttype::Vec3d* _f;
 };
 

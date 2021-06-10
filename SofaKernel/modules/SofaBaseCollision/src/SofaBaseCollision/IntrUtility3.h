@@ -26,16 +26,16 @@
 #pragma once
 #include <SofaBaseCollision/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <SofaBaseCollision/OBBModel.h>
 
 namespace sofa::component::collision{
 
 template <class TReal>
 struct MyBox{
-    defaulttype::Vec<3,TReal> Extent;
-    defaulttype::Vec<3,TReal> Axis[3];
-    defaulttype::Vec<3,TReal> Center;
+    type::Vec<3,TReal> Extent;
+    type::Vec<3,TReal> Axis[3];
+    type::Vec<3,TReal> Center;
 
     void showVertices()const;
 };
@@ -86,15 +86,15 @@ template <typename Real>
 class CapIntrConfiguration : public IntrConfiguration<Real>{
 public:
     bool have_naxis;
-    defaulttype::Vec<3,Real> axis;
+    type::Vec<3,Real> axis;
 
     CapIntrConfiguration();
 
-    defaulttype::Vec<3,Real> leftContactPoint(const defaulttype::Vec<3,Real> * seg,Real radius)const;
-    defaulttype::Vec<3,Real> rightContactPoint(const defaulttype::Vec<3,Real> * seg,Real radius)const;
+    type::Vec<3,Real> leftContactPoint(const type::Vec<3,Real> * seg,Real radius)const;
+    type::Vec<3,Real> rightContactPoint(const type::Vec<3,Real> * seg,Real radius)const;
 
-    void leftSegment(const defaulttype::Vec<3,Real> * seg,Real radius,defaulttype::Vec<3,Real> * lseg)const;
-    void rightSegment(const defaulttype::Vec<3,Real> * seg,Real radius,defaulttype::Vec<3,Real> * lseg)const;
+    void leftSegment(const type::Vec<3,Real> * seg,Real radius,type::Vec<3,Real> * lseg)const;
+    void rightSegment(const type::Vec<3,Real> * seg,Real radius,type::Vec<3,Real> * lseg)const;
 
     CapIntrConfiguration & operator=(const CapIntrConfiguration & other);
 };
@@ -108,70 +108,70 @@ public:
     inline static Real ZERO_TOLERANCE(){return (Real)(1e-6);}
     inline static Real SQ_ZERO_TOLERANCE(){return ZERO_TOLERANCE() * ZERO_TOLERANCE();}
 
-    inline static void normalize(defaulttype::Vec<3,Real> & vec){
+    inline static void normalize(type::Vec<3,Real> & vec){
         Real n2 = vec.norm2();
 
         if(n2 < 1- SQ_ZERO_TOLERANCE() || n2 > 1 + SQ_ZERO_TOLERANCE())
             vec.normalize();
     }
 
-    inline static bool normalized(const defaulttype::Vec<3,Real> & vec){
+    inline static bool normalized(const type::Vec<3,Real> & vec){
         Real n2 = vec.norm2();
 
         return n2 < 1 - SQ_ZERO_TOLERANCE() || n2 > 1 + SQ_ZERO_TOLERANCE();
     }
 
-    static void ColinearSegments (const defaulttype::Vec<3,Real> segment0[2],
-        const defaulttype::Vec<3,Real> segment1[2], int& quantity, defaulttype::Vec<3,Real>* P);
+    static void ColinearSegments (const type::Vec<3,Real> segment0[2],
+        const type::Vec<3,Real> segment1[2], int& quantity, type::Vec<3,Real>* P);
 
-    static void SegmentThroughPlane (const defaulttype::Vec<3,Real> segment[2],
-        const defaulttype::Vec<3,Real>& planeOrigin, const defaulttype::Vec<3,Real>& planeNormal,
-        int& quantity, defaulttype::Vec<3,Real>* P);
+    static void SegmentThroughPlane (const type::Vec<3,Real> segment[2],
+        const type::Vec<3,Real>& planeOrigin, const type::Vec<3,Real>& planeNormal,
+        int& quantity, type::Vec<3,Real>* P);
 
-    static void SegmentSegment (const defaulttype::Vec<3,Real> segment0[2],
-        const defaulttype::Vec<3,Real> segment1[2], int& quantity, defaulttype::Vec<3,Real>* P);
+    static void SegmentSegment (const type::Vec<3,Real> segment0[2],
+        const type::Vec<3,Real> segment1[2], int& quantity, type::Vec<3,Real>* P);
 
-    static void ColinearSegmentTriangle (const defaulttype::Vec<3,Real> segment[2],
-        const defaulttype::Vec<3,Real> triangle[3], int& quantity, defaulttype::Vec<3,Real>* P);
+    static void ColinearSegmentTriangle (const type::Vec<3,Real> segment[2],
+        const type::Vec<3,Real> triangle[3], int& quantity, type::Vec<3,Real>* P);
 
-    static void CoplanarSegmentRectangle (const defaulttype::Vec<3,Real> segment[2],
-        const defaulttype::Vec<3,Real> rectangle[4], int& quantity, defaulttype::Vec<3,Real>* P);
+    static void CoplanarSegmentRectangle (const type::Vec<3,Real> segment[2],
+        const type::Vec<3,Real> rectangle[4], int& quantity, type::Vec<3,Real>* P);
 
-    static void CoplanarTriangleRectangle (const defaulttype::Vec<3,Real> triangle[3],
-        const defaulttype::Vec<3,Real> rectangle[4], int& quantity, defaulttype::Vec<3,Real>* P);
+    static void CoplanarTriangleRectangle (const type::Vec<3,Real> triangle[3],
+        const type::Vec<3,Real> rectangle[4], int& quantity, type::Vec<3,Real>* P);
 
     static void CoplanarRectangleRectangle (
-        const defaulttype::Vec<3,Real> rectangle0[4],
-        const defaulttype::Vec<3,Real> rectangle1[4], int& quantity, defaulttype::Vec<3,Real>* P);
+        const type::Vec<3,Real> rectangle0[4],
+        const type::Vec<3,Real> rectangle1[4], int& quantity, type::Vec<3,Real>* P);
 
-    static void projectIntPoints(const defaulttype::Vec<3, Real> & velocity,Real contactTime,const defaulttype::Vec<3,Real> * points,int n,defaulttype::Vec<3,Real> & proj_pt);
+    static void projectIntPoints(const type::Vec<3, Real> & velocity,Real contactTime,const type::Vec<3,Real> * points,int n,type::Vec<3,Real> & proj_pt);
 
-    static void projectPointOnCapsuleAndFindCapNormal(const defaulttype::Vec<3,Real> & pt,const defaulttype::Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> & capCfg,defaulttype::Vec<3,Real> & pt_on_capsule);
+    static void projectPointOnCapsuleAndFindCapNormal(const type::Vec<3,Real> & pt,const type::Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> & capCfg,type::Vec<3,Real> & pt_on_capsule);
 
-    static Real projectOnTriangle(defaulttype::Vec<3,Real> & pt,const defaulttype::Vec<3,Real> & t_p0,const defaulttype::Vec<3,Real> & t_p1,const defaulttype::Vec<3,Real> & t_p2,Real & s,Real & t);
+    static Real projectOnTriangle(type::Vec<3,Real> & pt,const type::Vec<3,Real> & t_p0,const type::Vec<3,Real> & t_p1,const type::Vec<3,Real> & t_p2,Real & s,Real & t);
 
-    static defaulttype::Vec<3,Real> nearestPointOnSeg(const defaulttype::Vec<3,Real> & seg0,const defaulttype::Vec<3,Real> & seg1,const defaulttype::Vec<3,Real> & point);
+    static type::Vec<3,Real> nearestPointOnSeg(const type::Vec<3,Real> & seg0,const type::Vec<3,Real> & seg1,const type::Vec<3,Real> & point);
 
-    static void segNearestPoints(const defaulttype::Vec<3,Real> * p, const defaulttype::Vec<3,Real> * q,defaulttype::Vec<3,Real> & P,defaulttype::Vec<3,Real> & Q);
+    static void segNearestPoints(const type::Vec<3,Real> * p, const type::Vec<3,Real> * q,type::Vec<3,Real> & P,type::Vec<3,Real> & Q);
 
-    static void segNearestPoints(const defaulttype::Vec<3,Real> & p0,const defaulttype::Vec<3,Real> & p1, const defaulttype::Vec<3,Real> & q0,const defaulttype::Vec<3,Real> & q1,defaulttype::Vec<3,Real> & P,defaulttype::Vec<3,Real> & Q);
+    static void segNearestPoints(const type::Vec<3,Real> & p0,const type::Vec<3,Real> & p1, const type::Vec<3,Real> & q0,const type::Vec<3,Real> & q1,type::Vec<3,Real> & P,type::Vec<3,Real> & Q);
 
-    static void segNearestPoints(const defaulttype::Vec<3,Real> & p0,const defaulttype::Vec<3,Real> & p1, const defaulttype::Vec<3,Real> & q0,const defaulttype::Vec<3,Real> & q1,defaulttype::Vec<3,Real> & P,defaulttype::Vec<3,Real> & Q,
+    static void segNearestPoints(const type::Vec<3,Real> & p0,const type::Vec<3,Real> & p1, const type::Vec<3,Real> & q0,const type::Vec<3,Real> & q1,type::Vec<3,Real> & P,type::Vec<3,Real> & Q,
                                  SReal & alpha,SReal & beta);
 
     /**
       *Returns the squared distance between pt_on_face and pt_on_seg. Use only if the both faces lay on the same plane.
       */
-    static Real facesNearestPoints(const defaulttype::Vec<3,Real> * first_face,int first_size,const defaulttype::Vec<3,Real> * second_face,int second_size,defaulttype::Vec<3,Real> & pt_on_first,defaulttype::Vec<3,Real> & pt_on_second);
+    static Real facesNearestPoints(const type::Vec<3,Real> * first_face,int first_size,const type::Vec<3,Real> * second_face,int second_size,type::Vec<3,Real> & pt_on_first,type::Vec<3,Real> & pt_on_second);
 
     /**
       *Returns the squared distance between pt_on_face and pt_on_seg. Use only if the face and the segment lay on the same plane.
       */
-    static Real faceSegNearestPoints(const defaulttype::Vec<3,Real> face[4],const defaulttype::Vec<3,Real> seg[2],defaulttype::Vec<3,Real> & pt_on_face,defaulttype::Vec<3,Real> & pt_on_seg);
+    static Real faceSegNearestPoints(const type::Vec<3,Real> face[4],const type::Vec<3,Real> seg[2],type::Vec<3,Real> & pt_on_face,type::Vec<3,Real> & pt_on_seg);
 
-    static Real faceSegNearestPoints(const defaulttype::Vec<3,Real> * face,int n,const defaulttype::Vec<3,Real> seg[2], defaulttype::Vec<3,Real> & pt_on_face,defaulttype::Vec<3,Real> & pt_on_seg);
+    static Real faceSegNearestPoints(const type::Vec<3,Real> * face,int n,const type::Vec<3,Real> seg[2], type::Vec<3,Real> & pt_on_face,type::Vec<3,Real> & pt_on_seg);
 
-    static bool equal(const defaulttype::Vec<3,Real> & vec0,const defaulttype::Vec<3,Real> & vec1);
+    static bool equal(const type::Vec<3,Real> & vec0,const type::Vec<3,Real> & vec1);
 
     static bool nequal(Real a,Real b);
 
@@ -188,7 +188,7 @@ struct IntrUtil<TOBB<DataType> >{
     /**
       *Project pt on the Box box, caution,  works only if pt is outside the box.
       */
-    static void project(defaulttype::Vec<3,Real> & pt,const Box & box);
+    static void project(type::Vec<3,Real> & pt,const Box & box);
 };
 
 //----------------------------------------------------------------------------
@@ -220,7 +220,7 @@ public:
         IntrConfiguration<Real>& box1CfgFinal,bool & config_modified);
 
     static bool Find (const Coord& axis,
-        const defaulttype::Vec<3,Real> segment[2],Real radius, const Box& box,
+        const type::Vec<3,Real> segment[2],Real radius, const Box& box,
         Real dmax, Real& dfirst,
         int& side, CapIntrConfiguration<Real> &segCfgFinal,
         IntrConfiguration<Real>& boxCfgFinal,bool & config_modified);
@@ -240,7 +240,7 @@ struct IntrConfigManager<TOBB<TDataTypes> >{
     typedef TOBB<TDataTypes> Box;
     typedef typename Box::Real Real;
 
-    static void init(const defaulttype::Vec<3,Real> & axis,
+    static void init(const type::Vec<3,Real> & axis,
                    const Box & box, IntrConfiguration<Real>& cfg);
 };
 
@@ -249,11 +249,11 @@ struct IntrConfigManager{
     /**
     *The axis must be normalized when testing a capsule !.
     */
-    static void init(const defaulttype::Vec<3,Real> & axis,
-                    const defaulttype::Vec<3,Real> segment[2], Real radius,CapIntrConfiguration<Real>& cfg);
+    static void init(const type::Vec<3,Real> & axis,
+                    const type::Vec<3,Real> segment[2], Real radius,CapIntrConfiguration<Real>& cfg);
 
-    static void init (const defaulttype::Vec<3,Real>& axis,
-                    const defaulttype::Vec<3,Real> segment[2], IntrConfiguration<Real>& cfg);
+    static void init (const type::Vec<3,Real>& axis,
+                    const type::Vec<3,Real> segment[2], IntrConfiguration<Real>& cfg);
 
 
     template <class Config0,class Config1>
@@ -279,16 +279,16 @@ public:
     typedef typename TDataTypes::Real Real;
     typedef TOBB<TDataTypes> Box;
 
-    FindContactSet (const defaulttype::Vec<3,Real> segment[2], Real radius,const Box& box,const defaulttype::Vec<3,Real> & axis,
+    FindContactSet (const type::Vec<3,Real> segment[2], Real radius,const Box& box,const type::Vec<3,Real> & axis,
         int side, CapIntrConfiguration<Real> &capCfg,
         const IntrConfiguration<Real>& boxCfg,
-        Real tfirst, defaulttype::Vec<3,Real> & pt_on_capsule,defaulttype::Vec<3,Real> & pt_on_box);
+        Real tfirst, type::Vec<3,Real> & pt_on_capsule,type::Vec<3,Real> & pt_on_box);
 
-    FindContactSet (const Box& box0, const Box& box1,const defaulttype::Vec<3,Real> & axis,
+    FindContactSet (const Box& box0, const Box& box1,const type::Vec<3,Real> & axis,
         int side, const IntrConfiguration<Real>& box0Cfg,
         const IntrConfiguration<Real>& box1Cfg,
         Real tfirst,
-        defaulttype::Vec<3,Real> & pt_on_first,defaulttype::Vec<3,Real> & pt_on_second);
+        type::Vec<3,Real> & pt_on_first,type::Vec<3,Real> & pt_on_second);
 
 private:
 
@@ -297,8 +297,8 @@ private:
       *capsule segment which is the nearest to the OBB. This function is launched when the a semi-sphere is in intersection with the OBB.
       *The separating axis is axis, but it may be different after this method, it is stored in capCfg.
       */
-    static void FindContactConfig(const defaulttype::Vec<3,Real> & axis,const defaulttype::Vec<3,Real> & segP0, Real radius,const Box & box,CapIntrConfiguration<Real> &capCfg,int side,
-        defaulttype::Vec<3, Real> & pt_on_capsule,defaulttype::Vec<3, Real> & pt_on_box);
+    static void FindContactConfig(const type::Vec<3,Real> & axis,const type::Vec<3,Real> & segP0, Real radius,const Box & box,CapIntrConfiguration<Real> &capCfg,int side,
+        type::Vec<3, Real> & pt_on_capsule,type::Vec<3, Real> & pt_on_box);
 };
 //----------------------------------------------------------------------------
 // Miscellaneous support.
@@ -308,15 +308,15 @@ private:
 // For now the maximum array size is 8 to support the current intersection
 // algorithms.
 template <typename Real>
-void ClipConvexPolygonAgainstPlane (const defaulttype::Vec<3,Real>& normal,
-    Real bonstant, int& quantity, defaulttype::Vec<3,Real>* P);
+void ClipConvexPolygonAgainstPlane (const type::Vec<3,Real>& normal,
+    Real bonstant, int& quantity, type::Vec<3,Real>* P);
 
 // Translates an index into the box back into real coordinates.
 template <typename TReal>
-defaulttype::Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal>& box);
+type::Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal>& box);
 
 template <typename TDataTypes>
-defaulttype::Vec<3,typename TDataTypes::Real> getPointFromIndex (int index, const TOBB<TDataTypes>& box);
+type::Vec<3,typename TDataTypes::Real> getPointFromIndex (int index, const TOBB<TDataTypes>& box);
 //----------------------------------------------------------------------------
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRUTILITY3_CPP)
@@ -329,9 +329,9 @@ extern template class SOFA_SOFABASECOLLISION_API IntrAxis<TOBB<defaulttype::Rigi
 extern template class SOFA_SOFABASECOLLISION_API IntrConfiguration<double>;
 extern template struct SOFA_SOFABASECOLLISION_API IntrConfigManager<double>;
 extern template struct SOFA_SOFABASECOLLISION_API IntrConfigManager<TOBB<defaulttype::Rigid3Types> >;
-extern template SOFA_SOFABASECOLLISION_API void ClipConvexPolygonAgainstPlane(const defaulttype::Vec<3,SReal>&, SReal, int&,defaulttype::Vec<3,SReal>*);
-extern template SOFA_SOFABASECOLLISION_API defaulttype::Vec<3,SReal> GetPointFromIndex (int, const MyBox<SReal>& );
-extern template SOFA_SOFABASECOLLISION_API defaulttype::Vec<3,defaulttype::Rigid3Types::Real> getPointFromIndex (int, const TOBB<defaulttype::Rigid3Types>& );
+extern template SOFA_SOFABASECOLLISION_API void ClipConvexPolygonAgainstPlane(const type::Vec<3,SReal>&, SReal, int&,type::Vec<3,SReal>*);
+extern template SOFA_SOFABASECOLLISION_API type::Vec<3,SReal> GetPointFromIndex (int, const MyBox<SReal>& );
+extern template SOFA_SOFABASECOLLISION_API type::Vec<3,defaulttype::Rigid3Types::Real> getPointFromIndex (int, const TOBB<defaulttype::Rigid3Types>& );
 extern template class SOFA_SOFABASECOLLISION_API CapIntrConfiguration<SReal>;
 
 #endif

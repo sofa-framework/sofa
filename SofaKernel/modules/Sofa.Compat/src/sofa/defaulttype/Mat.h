@@ -26,7 +26,7 @@
 // Lots of code does not include Vec because they include Mat
 // So it makes sense to do that for them implicitly
 // And it will generate a warning as well
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
 
 // The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.

@@ -25,7 +25,7 @@
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <set>
 
@@ -51,7 +51,7 @@ class SOFA_SOFATOPOLOGYMAPPING_API Mesh2PointTopologicalMapping : public sofa::c
 {
 public:
     SOFA_CLASS(Mesh2PointTopologicalMapping,sofa::core::topology::TopologicalMapping);
-    typedef sofa::defaulttype::Vec3d Vec3d;
+    typedef sofa::type::Vec3d Vec3d;
 
 protected:
     /** \brief Constructor.
@@ -100,38 +100,38 @@ public:
         NB_ELEMENTS
     };
 
-    const helper::vector< helper::vector<Index> >& getPointsMappedFromPoint() const { return pointsMappedFrom[POINT]; }
-    const helper::vector< helper::vector<Index> >& getPointsMappedFromEdge() const { return pointsMappedFrom[EDGE]; }
-    const helper::vector< helper::vector<Index> >& getPointsMappedFromTriangle() const { return pointsMappedFrom[TRIANGLE]; }
-    const helper::vector< helper::vector<Index> >& getPointsMappedFromQuad() const { return pointsMappedFrom[QUAD]; }
-    const helper::vector< helper::vector<Index> >& getPointsMappedFromTetra() const { return pointsMappedFrom[TETRA]; }
-    const helper::vector< helper::vector<Index> >& getPointsMappedFromHexa() const { return pointsMappedFrom[HEXA]; }
+    const type::vector< type::vector<Index> >& getPointsMappedFromPoint() const { return pointsMappedFrom[POINT]; }
+    const type::vector< type::vector<Index> >& getPointsMappedFromEdge() const { return pointsMappedFrom[EDGE]; }
+    const type::vector< type::vector<Index> >& getPointsMappedFromTriangle() const { return pointsMappedFrom[TRIANGLE]; }
+    const type::vector< type::vector<Index> >& getPointsMappedFromQuad() const { return pointsMappedFrom[QUAD]; }
+    const type::vector< type::vector<Index> >& getPointsMappedFromTetra() const { return pointsMappedFrom[TETRA]; }
+    const type::vector< type::vector<Index> >& getPointsMappedFromHexa() const { return pointsMappedFrom[HEXA]; }
 
-    const helper::vector< Vec3d >& getPointBaryCoords() const { return pointBaryCoords.getValue(); }
-    const helper::vector< Vec3d >& getEdgeBaryCoords() const { return edgeBaryCoords.getValue(); }
-    const helper::vector< Vec3d >& getTriangleBaryCoords() const { return triangleBaryCoords.getValue(); }
-    const helper::vector< Vec3d >& getQuadBaryCoords() const { return quadBaryCoords.getValue(); }
-    const helper::vector< Vec3d >& getTetraBaryCoords() const { return tetraBaryCoords.getValue(); }
-    const helper::vector< Vec3d >& getHexaBaryCoords() const { return hexaBaryCoords.getValue(); }
+    const type::vector< Vec3d >& getPointBaryCoords() const { return pointBaryCoords.getValue(); }
+    const type::vector< Vec3d >& getEdgeBaryCoords() const { return edgeBaryCoords.getValue(); }
+    const type::vector< Vec3d >& getTriangleBaryCoords() const { return triangleBaryCoords.getValue(); }
+    const type::vector< Vec3d >& getQuadBaryCoords() const { return quadBaryCoords.getValue(); }
+    const type::vector< Vec3d >& getTetraBaryCoords() const { return tetraBaryCoords.getValue(); }
+    const type::vector< Vec3d >& getHexaBaryCoords() const { return hexaBaryCoords.getValue(); }
 
-    const helper::vector< std::pair<Element, Index> >& getPointSource() const { return pointSource;}
+    const type::vector< std::pair<Element, Index> >& getPointSource() const { return pointSource;}
 
 protected:
 
-    Data< helper::vector< Vec3d > > pointBaryCoords; ///< Coordinates for the points of the output topology created from the points of the input topology
-    Data< helper::vector< Vec3d > > edgeBaryCoords; ///< Coordinates for the points of the output topology created from the edges of the input topology
-    Data< helper::vector< Vec3d > > triangleBaryCoords; ///< Coordinates for the points of the output topology created from the triangles of the input topology
-    Data< helper::vector< Vec3d > > quadBaryCoords; ///< Coordinates for the points of the output topology created from the quads of the input topology
-    Data< helper::vector< Vec3d > > tetraBaryCoords; ///< Coordinates for the points of the output topology created from the tetra of the input topology
-    Data< helper::vector< Vec3d > > hexaBaryCoords; ///< Coordinates for the points of the output topology created from the hexa of the input topology
+    Data< type::vector< Vec3d > > pointBaryCoords; ///< Coordinates for the points of the output topology created from the points of the input topology
+    Data< type::vector< Vec3d > > edgeBaryCoords; ///< Coordinates for the points of the output topology created from the edges of the input topology
+    Data< type::vector< Vec3d > > triangleBaryCoords; ///< Coordinates for the points of the output topology created from the triangles of the input topology
+    Data< type::vector< Vec3d > > quadBaryCoords; ///< Coordinates for the points of the output topology created from the quads of the input topology
+    Data< type::vector< Vec3d > > tetraBaryCoords; ///< Coordinates for the points of the output topology created from the tetra of the input topology
+    Data< type::vector< Vec3d > > hexaBaryCoords; ///< Coordinates for the points of the output topology created from the hexa of the input topology
 
     Data< bool > copyEdges; ///< Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)
     Data< bool > copyTriangles; ///< Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)
 	Data< bool > copyTetrahedra; ///< Activate mapping of input tetrahedras into the output topology (requires at least one item in pointBaryCoords)
 
-    helper::fixed_array< helper::vector< helper::vector<Index> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
+    type::fixed_array< type::vector< type::vector<Index> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
 
-    helper::vector< std::pair<Element, Index> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
+    type::vector< std::pair<Element, Index> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
 
     std::set<unsigned int> pointsToRemove;
 
@@ -141,18 +141,18 @@ protected:
     void addInputTetrahedron(Index i, PointSetTopologyModifier* toPointMod=nullptr);
 
     void swapInput(Element elem, Index i1, Index i2);
-    void removeInput(Element elem, const sofa::helper::vector<Index>& tab );
-    void renumberInput(Element elem, const sofa::helper::vector<Index>& index );
+    void removeInput(Element elem, const sofa::type::vector<Index>& tab );
+    void renumberInput(Element elem, const sofa::type::vector<Index>& index );
 
     void swapOutputPoints(Index i1, Index i2, bool removeLast = false);
-    void removeOutputPoints( const sofa::helper::vector<Index>& tab );
+    void removeOutputPoints( const sofa::type::vector<Index>& tab );
 
 protected:
-    bool internalCheck(const char* step, const helper::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved);
+    bool internalCheck(const char* step, const type::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved);
     
     bool internalCheck(const char* step)
     {
-        helper::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
+        type::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
         nbInputRemoved.assign(0);
         return internalCheck(step, nbInputRemoved);
     }

@@ -250,8 +250,8 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glGetFloatv(GL_COLOR_CLEAR_VALUE,bgcol);
 
     Color textcolor(1.0f, 1.0f, 1.0f, 1.0f);
-    static const sofa::defaulttype::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
-    float backgroundLuminance = sofa::defaulttype::Vec3f(bgcol[0], bgcol[1], bgcol[2]) * luminanceMatrix;
+    static const sofa::type::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
+    float backgroundLuminance = sofa::type::Vec3f(bgcol[0], bgcol[1], bgcol[2]) * luminanceMatrix;
     if(backgroundLuminance > 0.5f)
         textcolor = Color(0.0f, 0.0f, 0.0f, 1.0f);
 

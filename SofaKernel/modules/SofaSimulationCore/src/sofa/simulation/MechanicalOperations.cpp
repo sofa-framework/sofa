@@ -419,7 +419,7 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams
 {
     cparams.setOrder(order);
 
-    helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
+    type::vector< core::behavior::ConstraintSolver* > constraintSolverList;
 
     ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
     if (constraintSolverList.empty())
@@ -427,7 +427,7 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams
         return;
     }
 
-    for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
+    for (type::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
     {
         (*it)->solveConstraint(&cparams, id);
     }
@@ -535,7 +535,7 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     }
 }
 
-void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const helper::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact)
+void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const type::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact)
 {
     mparams.setMFactor(mFact);
     mparams.setBFactor(bFact);

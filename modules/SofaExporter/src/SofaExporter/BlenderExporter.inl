@@ -156,8 +156,8 @@ namespace sofa
                                 if((simulationType.getValue() == Hair && (i%nbPtsByHair.getValue()==0)))
                                 {
 
-                                   defaulttype::Vector3  x0 = T::getCPos(posData[i]);
-                                   defaulttype::Vector3  x1 = T::getCPos(posData[i+1]);
+                                   type::Vector3  x0 = T::getCPos(posData[i]);
+                                   type::Vector3  x1 = T::getCPos(posData[i+1]);
 
                                     x1 = x1-x0;
                                     x1.normalize();

@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaValidation/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <SofaValidation/DevMonitor.h>

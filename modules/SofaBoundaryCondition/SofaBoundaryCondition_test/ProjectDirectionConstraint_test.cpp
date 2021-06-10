@@ -136,7 +136,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
 
        projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
 
-       helper::vector<CPos> m_origin;
+       type::vector<CPos> m_origin;
 
        // particle original position
        const VecCoord& xOrigin = projection->getMState()->read(core::ConstVecCoordId::position())->getValue();

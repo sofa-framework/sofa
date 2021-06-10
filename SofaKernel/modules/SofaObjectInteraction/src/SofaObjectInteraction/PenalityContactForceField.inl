@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <cassert>
 #include <iostream>
 
@@ -73,7 +73,7 @@ void PenalityContactForceField<DataTypes>::addForce(const sofa::core::Mechanical
     VecDeriv&       f2 = *data_f2.beginEdit();
     const VecCoord& x2 =  data_x2.getValue();
 
-    helper::vector<Contact>& cc = *contacts.beginEdit();
+    type::vector<Contact>& cc = *contacts.beginEdit();
 
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -107,7 +107,7 @@ void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::Mechanica
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    const helper::vector<Contact>& cc = contacts.getValue();
+    const type::vector<Contact>& cc = contacts.getValue();
 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
@@ -144,13 +144,13 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) 
         return;
     
-    using sofa::helper::types::RGBAColor;
+    using sofa::type::RGBAColor;
 
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    const helper::vector<Contact>& cc = contacts.getValue();
+    const type::vector<Contact>& cc = contacts.getValue();
 
-    std::vector< defaulttype::Vector3 > points[4];
+    std::vector< type::Vector3 > points[4];
 
     for (sofa::Index i=0; i<cc.size(); i++)
     {
@@ -184,7 +184,7 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     vparams->drawTool()->drawLines(points[3], 1, RGBAColor::green());
 
 
-    std::vector< defaulttype::Vector3 > pointsN;
+    std::vector< type::Vector3 > pointsN;
     if (vparams->displayFlags().getShowNormals())
     {
         for (unsigned int i=0; i<cc.size(); i++)
@@ -207,10 +207,10 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::grabPoint(
     const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
-    const helper::vector< sofa::Index > &index,
-    helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
-    helper::vector< sofa::Index > &triangle,
-    helper::vector< sofa::Index > &index_point)
+    const type::vector< sofa::Index > &index,
+    type::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,
+    type::vector< sofa::Index > &triangle,
+    type::vector< sofa::Index > &index_point)
 {
     const auto& contactsRef = contacts.getValue();
 
@@ -254,7 +254,7 @@ void PenalityContactForceField<DataTypes>::grabPoint(
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::updateForceMask()
 {
-    const helper::vector<Contact>& cc = contacts.getValue();
+    const type::vector<Contact>& cc = contacts.getValue();
     for (sofa::Index i=0; i<cc.size(); i++)
     {
         const Contact& c = cc[i];

@@ -159,7 +159,7 @@ void RestShapeSpringsForceField<Rigid3Types>::draw(const core::visual::VisualPar
     sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
-    sofa::helper::vector< Vector3 > vertices;
+    sofa::type::vector< Vector3 > vertices;
 
     for (sofa::Index i=0; i<m_indices.size(); i++)
     {

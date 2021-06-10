@@ -29,7 +29,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <iostream>
 #include <fstream>
@@ -109,7 +109,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public Sofa_test<ty
 
         // Add a Mooney-Rivlin constitutive law
         typename sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes>::SPtr FF = sofa::core::objectmodel::New< sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes> >();
-        sofa::helper::vector<Real> param_vector;
+        sofa::type::vector<Real> param_vector;
         param_vector.resize(3);
         // Experimental data gave a deflexion of y=-0.11625 with the following parameters (C01 = 151065.460 ; C10 = 101709.668 1e07 ; D0 = 1e07)
         param_vector[0] = 151065.460;   // Monney parameter C01

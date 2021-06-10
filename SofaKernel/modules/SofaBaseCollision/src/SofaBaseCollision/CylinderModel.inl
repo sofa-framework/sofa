@@ -171,7 +171,7 @@ template<class DataTypes>
 void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index i)
 {
     using namespace sofa::defaulttype;
-    sofa::helper::types::RGBAColor colour(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+    sofa::type::RGBAColor colour(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
     SReal h2 = height(i)/2.0;
 
     Vector3 p1(center(i));
@@ -261,7 +261,7 @@ template<class DataTypes>
 const typename TCylinder<DataTypes>::Coord & TCylinder<DataTypes >::v() const {return this->model->velocity(this->index);}
 
 template<class DataTypes>
-const sofa::defaulttype::Quaternion CylinderCollisionModel<DataTypes >::orientation(Index index)const{
+const sofa::type::Quat<SReal> CylinderCollisionModel<DataTypes >::orientation(Index index)const{
     return m_mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
@@ -269,7 +269,7 @@ template<class DataTypes>
 typename CylinderCollisionModel<DataTypes>::Coord CylinderCollisionModel<DataTypes >::axis(Index index) const {
     Coord ax = d_cylinder_local_axes.getValue()[index];
 
-    const sofa::defaulttype::Quaternion & ori = orientation(index);
+    const sofa::type::Quat<SReal> & ori = orientation(index);
     return ori.rotate(ax);
 }
 

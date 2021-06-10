@@ -23,8 +23,8 @@
 #define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID3D_H
 #include "config.h"
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
 
@@ -50,7 +50,7 @@ class SOFA_EULERIAN_FLUID_API Grid3D
 public:
 
     typedef float real;
-    typedef sofa::defaulttype::Vec<3,real> vec3;
+    typedef sofa::type::Vec<3,real> vec3;
 
     struct Cell
     {

@@ -137,10 +137,10 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     double normb = b.norm();
 
 
-    std::map < std::string, sofa::helper::vector<SReal> >& graph = *f_graph.beginEdit();
-    sofa::helper::vector<SReal>& graph_error = graph[std::string("Error")];
+    std::map < std::string, sofa::type::vector<SReal> >& graph = *f_graph.beginEdit();
+    sofa::type::vector<SReal>& graph_error = graph[std::string("Error")];
     graph_error.clear();
-    sofa::helper::vector<SReal>& graph_den = graph[std::string("Denominator")];
+    sofa::type::vector<SReal>& graph_den = graph[std::string("Denominator")];
     graph_den.clear();
     graph_error.push_back(1);
     unsigned nb_iter = 0;

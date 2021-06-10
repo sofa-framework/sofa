@@ -58,19 +58,19 @@ public:
     enum { N    = OutDataTypes::spatial_dimensions               };
     enum { NIn  = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
     enum { NOut = sofa::defaulttype::DataTypeInfo<Deriv>::Size   };
-    typedef defaulttype::Mat<N, N, Real> Mat;
-    typedef defaulttype::Vec<N, Real> Vector;
-    typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
+    typedef type::Mat<N, N, Real> Mat;
+    typedef type::Vec<N, Real> Vector;
+    typedef type::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
 protected:
-    helper::vector<Coord> points;
+    type::vector<Coord> points;
     //Coord translation;
     //Real orientation[4];
     //Mat rotation;
-    sofa::helper::vector<Real> beamLength;
-    sofa::helper::vector<Coord> rotatedPoints0;
-    sofa::helper::vector<Coord> rotatedPoints1;
+    sofa::type::vector<Real> beamLength;
+    sofa::type::vector<Coord> rotatedPoints0;
+    sofa::type::vector<Coord> rotatedPoints1;
 
     std::unique_ptr<MatrixType> matrixJ;
     bool updateJ;

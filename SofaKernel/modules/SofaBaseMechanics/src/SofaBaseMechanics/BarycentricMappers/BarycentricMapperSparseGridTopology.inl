@@ -28,7 +28,7 @@
 namespace sofa::component::mapping
 {
 
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::core::visual::VisualParams;
 using sofa::defaulttype::Vec;
 
@@ -147,7 +147,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw  (const VisualParams* vpa
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor::blue());
+    vparams->drawTool()->drawLines ( points, 1, sofa::type::RGBAColor::blue());
 }
 
 
@@ -323,7 +323,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord
 {
     out.resize( m_map.size() );
 
-    typedef helper::vector< CubeData > CubeDataVector;
+    typedef type::vector< CubeData > CubeDataVector;
     typedef typename CubeDataVector::const_iterator CubeDataVectorIt;
 
     CubeDataVectorIt it = m_map.begin();

@@ -100,7 +100,7 @@ void DiagonalMass<RigidTypes, RigidMass>::drawRigid3dImpl(const VisualParams* vp
     {
         gravityCenter /= totalMass;
 
-        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), sofa::helper::types::RGBAColor::yellow());
+        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), sofa::type::RGBAColor::yellow());
     }
 }
 
@@ -195,7 +195,7 @@ Vector6 DiagonalMass<RigidTypes,RigidMass>::getMomentumRigid3Impl ( const Mechan
 
     const MassVector &masses = d_vertexMass.getValue();
 
-    defaulttype::Vector6 momentum;
+    type::Vector6 momentum;
 
     for ( unsigned int i=0 ; i<v.size() ; i++ )
     {

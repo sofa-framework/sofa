@@ -28,7 +28,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
 
 #include <Flexible/types/AffineTypes.h>
@@ -43,7 +43,7 @@ using namespace core;
 using namespace component;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using sofa::helper::vector;
+using sofa::type::vector;
 typedef std::size_t Index;
 
 /**  Test suite for Multi2Mapping.

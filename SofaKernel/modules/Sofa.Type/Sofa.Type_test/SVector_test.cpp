@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/SVector.h>
+#include <sofa/type/SVector.h>
 #include <gtest/gtest.h>
 #include <cstdlib>
 

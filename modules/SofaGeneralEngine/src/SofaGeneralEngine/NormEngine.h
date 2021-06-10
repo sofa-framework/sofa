@@ -24,7 +24,7 @@
 #include <SofaGeneralEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::engine
 {
@@ -38,8 +38,8 @@ public:
 
     typedef TDataType DataType;
     typedef typename DataType::value_type Real;
-    typedef helper::vector<DataType> VecData;
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<DataType> VecData;
+    typedef type::vector<Real> VecReal;
 
     NormEngine();
 

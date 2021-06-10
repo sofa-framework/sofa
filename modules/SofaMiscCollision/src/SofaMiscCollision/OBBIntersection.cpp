@@ -232,7 +232,7 @@ using FixParticlePerformer3d = sofa::component::collision::FixParticlePerformer<
 
 int obbFixParticle = FixParticlePerformer3d::RegisterSupportedModel<OBBCollisionModel<sofa::defaulttype::Rigid3Types>>(
     []
-(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
+(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, type::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
     {
         auto* obb = dynamic_cast<OBBCollisionModel<sofa::defaulttype::Rigid3Types>*>(model.get());
 

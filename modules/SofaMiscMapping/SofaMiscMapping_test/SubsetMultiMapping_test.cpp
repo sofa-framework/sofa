@@ -33,7 +33,7 @@ using namespace core;
 using namespace component;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using sofa::helper::vector;
+using sofa::type::vector;
 
 
 /**  Test suite for SubsetMultiMapping.

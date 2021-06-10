@@ -94,7 +94,7 @@ IdentityMultiMapping<TIn, TOut>::~IdentityMultiMapping()
 
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
+void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos)
 {
     SOFA_UNUSED(mparams);
 
@@ -116,7 +116,7 @@ void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparam
 }
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
+void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel)
 {
     SOFA_UNUSED(mparams);
 
@@ -139,7 +139,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
 }
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
     SOFA_UNUSED(mparams);
 
@@ -165,14 +165,14 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
 }
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const helper::vector< InDataMatrixDeriv* >& /*dOut*/, const helper::vector< const OutDataMatrixDeriv* >& /*dIn*/)
+void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const type::vector< InDataMatrixDeriv* >& /*dOut*/, const type::vector< const OutDataMatrixDeriv* >& /*dIn*/)
 {
 
 }
 
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
 {
 // it looks like it is more costly to update the Jacobian matrix than using the full, unfiltered matrix in assembly
 //    size_t currentHash = this->maskTo[0]->getHash();

@@ -25,7 +25,7 @@
 #include <SofaBaseCollision/BruteForceBroadPhase.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <set>
 
 
@@ -49,7 +49,7 @@ private:
     Data < bool > bDraw;
 
 public:
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput>    OutputVector;
+    typedef sofa::type::vector<sofa::core::collision::DetectionOutput>    OutputVector;
 
 protected:
     RayTraceDetection ();

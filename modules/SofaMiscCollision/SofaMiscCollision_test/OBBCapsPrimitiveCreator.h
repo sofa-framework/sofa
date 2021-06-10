@@ -31,7 +31,7 @@ using sofa::simulation::Node;
 
 #include <array>
 
-using sofa::defaulttype::Vec3;
+using sofa::type::Vec3;
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;

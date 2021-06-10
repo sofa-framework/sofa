@@ -22,8 +22,8 @@
 #include <SofaGeneralLoader/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
-#include <sofa/helper/Quater.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Quat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/ObjectFactory.h>
 
 using namespace sofa::core::loader;
@@ -85,7 +85,7 @@ void SphereLoader::applyTransform()
             }
         }
         Matrix4 transformation = Matrix4::transformTranslation(translation) *
-            Matrix4::transformRotation(helper::Quater< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
+            Matrix4::transformRotation(type::Quat< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
             Matrix4::transformScale(scale);
 
         auto my_positions = getWriteOnlyAccessor(d_positions);

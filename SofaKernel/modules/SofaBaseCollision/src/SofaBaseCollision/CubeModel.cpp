@@ -178,7 +178,7 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
         color *= 0.8f;
     }
 
-    sofa::helper::types::RGBAColor c(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+    sofa::type::RGBAColor c(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
 
     std::vector< Vector3 > points;
     for (Index i=0; i<size; i++)

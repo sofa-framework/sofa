@@ -84,9 +84,9 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
     /// Tested simulation
     simulation::Simulation* simulation;  
     /// Position and velocity array
-    helper::vector<Real> positionsArray;
-    helper::vector<Real> velocitiesArray;
-    helper::vector<Real> energiesArray;
+    type::vector<Real> positionsArray;
+    type::vector<Real> velocitiesArray;
+    type::vector<Real> energiesArray;
 
     // Variational solver
     VariationalSymplecticSolver::SPtr variationalSolver;

@@ -36,7 +36,7 @@
 #include <iostream>
 #include <cmath>
 
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 namespace sofa
 {

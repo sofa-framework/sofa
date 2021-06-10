@@ -24,7 +24,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vectorData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;
 
@@ -40,8 +40,8 @@ public:
     Data<float> dataFloat;
     Data<bool> dataBool;
     Data<sofa::defaulttype::Vec3> dataVec3;
-    Data<sofa::helper::vector<sofa::defaulttype::Vec3>> dataVectorVec3;
-    Data<sofa::helper::vector<sofa::helper::types::RGBAColor>> dataVectorColor;
+    Data<sofa::type::vector<sofa::defaulttype::Vec3>> dataVectorVec3;
+    Data<sofa::type::vector<sofa::type::RGBAColor>> dataVectorColor;
 };
 
 TEST_F(Data_test, getValueTypeString)

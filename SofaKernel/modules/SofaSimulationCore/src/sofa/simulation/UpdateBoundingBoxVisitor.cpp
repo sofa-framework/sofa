@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -41,8 +41,8 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     std::string msg = "BoundingBoxVisitor - ProcessTopDown: " + node->getName();
     sofa::helper::ScopedAdvancedTimer timer(msg.c_str());
     using namespace sofa::core::objectmodel;
-    helper::vector<BaseObject*> objectList;
-    helper::vector<BaseObject*>::iterator object;
+    type::vector<BaseObject*> objectList;
+    type::vector<BaseObject*>::iterator object;
     node->get<BaseObject>(&objectList,BaseContext::Local);
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
     if(!node->f_bbox.isSet()) // bmarques: Without invalidating the bbox, the node's bbox will only be sized up, and never down with this visitor, to my understanding..

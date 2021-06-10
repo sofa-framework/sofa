@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::forcefield
 {
@@ -62,7 +62,7 @@ public:
     typedef typename DataTypes::DPos DPos;
 
 protected:
-    sofa::helper::vector<unsigned int> m_contacts;
+    sofa::type::vector<unsigned int> m_contacts;
 
     PlaneForceFieldInternalData<DataTypes> m_data;
 
@@ -78,10 +78,10 @@ public:
 
     /// optional range of local DOF indices. Any computation involving indices outside of this
     /// range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > d_localRange;
+    Data< type::Vec<2,int> > d_localRange;
 
     Data<bool>                   d_drawIsEnabled; ///< enable/disable drawing of plane. (default=false)
-    Data<sofa::helper::types::RGBAColor> d_drawColor; ///< plane color. (default=[0.0,0.5,0.2,1.0])
+    Data<sofa::type::RGBAColor> d_drawColor; ///< plane color. (default=[0.0,0.5,0.2,1.0])
     Data<Real>                   d_drawSize; ///< plane display size if draw is enabled. (default=10)
 
 protected:
@@ -97,8 +97,8 @@ public:
     void setDamping(Real damp){ d_damping.setValue( damp ); }
     Real getDamping() const { return d_damping.getValue(); }
 
-    void setDrawColor(const sofa::helper::types::RGBAColor& newvalue){ d_drawColor.setValue(newvalue); }
-    const sofa::helper::types::RGBAColor& getDrawColor() const { return d_drawColor.getValue(); }
+    void setDrawColor(const sofa::type::RGBAColor& newvalue){ d_drawColor.setValue(newvalue); }
+    const sofa::type::RGBAColor& getDrawColor() const { return d_drawColor.getValue(); }
 
     //TODO(dmarchal): do we really need a rotate operation into a plan class ?
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)

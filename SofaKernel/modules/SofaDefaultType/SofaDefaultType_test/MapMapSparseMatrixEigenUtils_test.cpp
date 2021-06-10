@@ -90,7 +90,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkEigenSparseMatrixLowLeveAPI)
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec1d)
 {
-    typedef sofa::defaulttype::Vec<1, double > TVec;
+    typedef sofa::type::Vec<1, double > TVec;
 
     typedef sofa::defaulttype::EigenSparseToMapMapSparseMatrix< TVec > EigenSparseToMapMapSparseVec1d;
     EigenSparseToMapMapSparseVec1d eigenSparseToMapMapVec1d;
@@ -127,7 +127,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec3d)
 {
-    typedef  sofa::defaulttype::Vec<3, double > TVec;
+    typedef  sofa::type::Vec<3, double > TVec;
     typedef sofa::defaulttype::EigenSparseToMapMapSparseMatrix< TVec > EigenSparseToMapMapSparseVec3d;
     EigenSparseToMapMapSparseVec3d eigenSparseToMapMapVec3d;
     typedef typename EigenSparseToMapMapSparseVec3d::EigenSparseMatrix EigenSparseMatrix;
@@ -162,7 +162,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSparse)
 {
-    typedef sofa::defaulttype::Vec<1, double > TVec;
+    typedef sofa::type::Vec<1, double > TVec;
     typedef sofa::defaulttype::MapMapSparseMatrixToEigenSparse< TVec > MapMapSparseMatrixToEigenSparseVec1d;
     MapMapSparseMatrixToEigenSparseVec1d mapmapSparseToEigenSparse;
     typedef typename MapMapSparseMatrixToEigenSparseVec1d::EigenSparseMatrix EigenSparseMatrix;
@@ -213,7 +213,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSpar
 
 TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSparse)
 {
-    typedef sofa::defaulttype::Vec<1, double > TVec;
+    typedef sofa::type::Vec<1, double > TVec;
     typedef sofa::defaulttype::MapMapSparseMatrixToEigenSparse< TVec > checkConversionMapMapSparseVec3dEigenSparse;
     checkConversionMapMapSparseVec3dEigenSparse mapmapSparseToEigenSparse;
     typedef typename checkConversionMapMapSparseVec3dEigenSparse::EigenSparseMatrix EigenSparseMatrix;

@@ -38,7 +38,7 @@ namespace core
 namespace collision
 {
 
-using defaulttype::Vec3f;
+using type::Vec3f;
 
 /**
  *  \brief Generic description of a contact point using GPU.

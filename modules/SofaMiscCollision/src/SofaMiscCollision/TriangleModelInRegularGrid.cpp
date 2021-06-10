@@ -47,7 +47,7 @@ namespace collision
 
 using namespace sofa::core::topology;
 using namespace sofa::defaulttype;
-using helper::vector;
+using type::vector;
 
 int TriangleModelInRegularGridClass = core::RegisterObject ( "collision model using a triangular mesh in a regular grid, as described in BaseMeshTopology" )
         .add< TriangleModelInRegularGrid >()

@@ -24,7 +24,7 @@
 #include <SofaMiscEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::engine
@@ -61,7 +61,7 @@ public:
     Data< VecCoord > d_x;   ///< current bone positions
 
     // outputs
-    Data< helper::vector< OutputType > > d_displacements; ///< displacement
+    Data< type::vector< OutputType > > d_displacements; ///< displacement
 
     // methods
     DisplacementTransformEngine();
@@ -73,7 +73,7 @@ public:
     static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = nullptr) { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
 
 protected:
-    helper::vector<OutputType> inverses;  ///< inverse initial positions
+    type::vector<OutputType> inverses;  ///< inverse initial positions
 
     /// functions that depends on OutputType and must be specialized
     void setInverse( OutputType& inv, const Coord& x0 ); ///< inv = x0^{-1}
@@ -123,8 +123,8 @@ public:
     static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = nullptr) { return DataTypes::Name(); }
 
     // inputs
-    Data< helper::vector< sofa::defaulttype::Vec<3,Real> > > d_scales; ///< scale matrices
-    helper::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
+    Data< type::vector< sofa::type::Vec<3,Real> > > d_scales; ///< scale matrices
+    type::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
 };
 
 } // namespace sofa::component::engine

@@ -66,7 +66,7 @@ public :
     csn *N;
     int * A_i;
     int * A_p;
-    helper::vector<double> A_x,z_tmp,r_tmp,tmp;
+    type::vector<double> A_x,z_tmp,r_tmp,tmp;
 
     void solveT(double * z, double * r);
     void solveT(float * z, float * r);

@@ -130,11 +130,11 @@ bool STLExporter::writeSTL(bool autonumbering)
         return false;
     }
 
-    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
-    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
-    helper::vector< BaseMeshTopology::Triangle > vecTri;
+    type::vector< BaseMeshTopology::Triangle > vecTri;
 
     if(positionIndices.empty())
     {
@@ -219,11 +219,11 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
         return false;
     }
 
-    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
-    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
     helper::ReadAccessor< Data< defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
-    helper::vector< BaseMeshTopology::Triangle > vecTri;
+    type::vector< BaseMeshTopology::Triangle > vecTri;
 
     if(positionIndices.empty())
     {

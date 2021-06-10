@@ -96,7 +96,7 @@ protected:
 //		int tRight, tLeft;
     };
 
-    sofa::helper::vector<LineData> elems;
+    sofa::type::vector<LineData> elems;
     bool needsUpdate;
     virtual void updateFromTopology();
 

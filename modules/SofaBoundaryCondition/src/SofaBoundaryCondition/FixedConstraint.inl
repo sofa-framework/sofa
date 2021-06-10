@@ -40,7 +40,7 @@ namespace sofa::component::projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
+bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
     if (fc)
     {
@@ -398,8 +398,8 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
 
         if( d_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
@@ -415,14 +415,14 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(point);
             }
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
         vparams->drawTool()->setLightingEnabled(true);
 
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
@@ -437,7 +437,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(point);
             }
         }
-        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
     vparams->drawTool()->restoreLastState();

@@ -54,8 +54,8 @@ public:
     void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
     bool applyTestCreateFunction(Index /*index*/,
-                                 const helper::vector< Index > & /*ancestors*/,
-                                 const helper::vector< double > & /*coefs*/);
+                                 const type::vector< Index > & /*ancestors*/,
+                                 const type::vector< double > & /*coefs*/);
 protected:
     FixedPlaneConstraint<DataTypes> *fc;
 };
@@ -72,7 +72,7 @@ void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index
 
 /// Define TestNewPointFunction
 template< class DataTypes>
-bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const helper::vector<Index> &, const helper::vector<double> &)
+bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const type::vector<Index> &, const type::vector<double> &)
 {
     if (fc)
     {
@@ -287,13 +287,13 @@ void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->disableLighting();
 
-    helper::vector<sofa::defaulttype::Vector3> points;
+    type::vector<sofa::type::Vector3> points;
     for(auto& index : d_indices.getValue())
     {
         points.push_back({x[index][0], x[index][1], x[index][2]});
     }
 
-    vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor{1,1.0,0.5,1});
+    vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor{1,1.0,0.5,1});
 }
 
 /// This function are there to provide kind of type translation to the vector one so we can
@@ -301,19 +301,19 @@ void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
 /// this solution is not really satisfactory but for the moment it does the job.
 /// A better solution would that all the used types are following the same iterface which
 /// requires to touch core sofa classes.
-sofa::defaulttype::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Deriv& i){ return i.getVCenter(); }
-sofa::defaulttype::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
-const sofa::defaulttype::Vec3d& getVec(const sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
-sofa::defaulttype::Vec3d& getVec(sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
-const sofa::defaulttype::Vec3d& getVec(const sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
+sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Deriv& i){ return i.getVCenter(); }
+sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
+const sofa::type::Vec3d& getVec(const sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
+sofa::type::Vec3d& getVec(sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
+const sofa::type::Vec3d& getVec(const sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
 sofa::defaulttype::Vec6d& getVec(sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
 const sofa::defaulttype::Vec6d& getVec(const sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
 
-sofa::defaulttype::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Deriv& i){ return i.getVCenter(); }
-sofa::defaulttype::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
-const sofa::defaulttype::Vec3f& getVec(const sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
-sofa::defaulttype::Vec3f& getVec(sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
-const sofa::defaulttype::Vec3f& getVec(const sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
+sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Deriv& i){ return i.getVCenter(); }
+sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
+const sofa::type::Vec3f& getVec(const sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
+sofa::type::Vec3f& getVec(sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
+const sofa::type::Vec3f& getVec(const sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
 sofa::defaulttype::Vec6f& getVec(sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
 const sofa::defaulttype::Vec6f& getVec(const sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
 

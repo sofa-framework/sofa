@@ -325,10 +325,10 @@ public:
     void addAlias( BaseLink* link, const char* alias);
 
 
-    typedef helper::vector<BaseData*> VecData;
+    typedef type::vector<BaseData*> VecData;
     typedef std::multimap<std::string, BaseData*> MapData;
 
-    typedef helper::vector<BaseLink*> VecLink;
+    typedef type::vector<BaseLink*> VecLink;
     typedef std::multimap<std::string, BaseLink*> MapLink;
 
 

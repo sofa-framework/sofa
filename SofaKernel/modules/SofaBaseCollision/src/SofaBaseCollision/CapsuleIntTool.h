@@ -33,7 +33,7 @@ namespace sofa::component::collision
 class SOFA_SOFABASECOLLISION_API CapsuleIntTool
 {
 public:
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
+    typedef sofa::type::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
     template <class DataTypes1,class DataTypes2>
     static int computeIntersection(TCapsule<DataTypes1>&, TCapsule<DataTypes2>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);

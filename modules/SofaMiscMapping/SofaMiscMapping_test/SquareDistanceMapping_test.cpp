@@ -78,7 +78,7 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 ////        map->f_computeDistance.setValue(true);
 //        map->d_geometricStiffness.setValue(1);
 
-//        helper::vector< SReal > restLength(2);
+//        type::vector< SReal > restLength(2);
 //        restLength[0] = .5;
 //        restLength[1] = 2;
 //        map->f_restLengths.setValue( restLength );

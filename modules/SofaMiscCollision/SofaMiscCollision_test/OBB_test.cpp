@@ -162,7 +162,7 @@ bool TestOBB::faceVertex(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
@@ -220,7 +220,7 @@ bool TestOBB::vertexVertex(){
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT)){
         return false;
@@ -259,7 +259,7 @@ bool TestOBB::faceFace(){
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -313,7 +313,7 @@ bool TestOBB::faceEdge(){
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -367,7 +367,7 @@ bool TestOBB::edgeEdge(){
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -406,7 +406,7 @@ bool TestOBB::edgeVertex(){
     sofa::component::collision::OBB obb0(obbmodel0.get(),0);
     sofa::component::collision::OBB obb1(obbmodel1.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::OBBIntTool::computeIntersection(obb0,obb1,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -439,7 +439,7 @@ bool TestCapOBB::faceVertex(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::CapsuleIntTool::computeIntersection(cap,obb,1.0,1.0,&detectionOUTPUT))
@@ -479,7 +479,7 @@ bool TestCapOBB::faceEdge(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::CapsuleIntTool::computeIntersection(cap,obb,1.0,1.0,&detectionOUTPUT))
@@ -527,7 +527,7 @@ bool TestCapOBB::edgeVertex(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::CapsuleIntTool::computeIntersection(cap,obb,1.0,1.0,&detectionOUTPUT))
@@ -575,7 +575,7 @@ bool TestCapOBB::edgeEdge(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::CapsuleIntTool::computeIntersection(cap,obb,1.0,1.0,&detectionOUTPUT))
@@ -623,7 +623,7 @@ bool TestCapOBB::vertexEdge(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::CapsuleIntTool::computeIntersection(cap,obb,1.0,1.0,&detectionOUTPUT))
@@ -671,7 +671,7 @@ bool TestCapOBB::vertexVertex(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::CapsuleIntTool::computeIntersection(cap,obb,1.0,1.0,&detectionOUTPUT))
@@ -717,7 +717,7 @@ bool TestSphereOBB::vertex(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::OBBIntTool::computeIntersection(sph,obb,1.0,1.0,&detectionOUTPUT))
@@ -767,7 +767,7 @@ bool TestSphereOBB::edge(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::OBBIntTool::computeIntersection(sph,obb,1.0,1.0,&detectionOUTPUT))
@@ -808,7 +808,7 @@ bool TestSphereOBB::face(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!sofa::component::collision::OBBIntTool::computeIntersection(sph,obb,1.0,1.0,&detectionOUTPUT))
@@ -841,7 +841,7 @@ bool TestTriOBB::faceFace(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -871,7 +871,7 @@ bool TestTriOBB::faceVertex_out(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -906,7 +906,7 @@ bool TestTriOBB::faceVertex_out2(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -941,7 +941,7 @@ bool TestTriOBB::faceEdge(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -971,7 +971,7 @@ bool TestTriOBB::faceVertex(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -1008,7 +1008,7 @@ bool TestTriOBB::edgeFace(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -1045,7 +1045,7 @@ bool TestTriOBB::edgeEdge(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -1082,7 +1082,7 @@ bool TestTriOBB::edgeEdge2(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -1118,7 +1118,7 @@ bool TestTriOBB::edgeVertex(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -1155,7 +1155,7 @@ bool TestTriOBB::vertexFace(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -1192,7 +1192,7 @@ bool TestTriOBB::vertexEdge(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;
@@ -1229,7 +1229,7 @@ bool TestTriOBB::vertexVertex(){
     sofa::component::collision::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
     if(!sofa::component::collision::MeshIntTool::computeIntersection(tri,tri_flg,obb,1.0,1.0,&detectionOUTPUT))
         return false;

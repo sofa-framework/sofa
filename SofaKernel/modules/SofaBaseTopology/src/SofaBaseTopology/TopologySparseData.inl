@@ -37,7 +37,7 @@ void TopologySparseData <TopologyElementType, VecT>::swap(Index i1, Index i2)
 {
     // get access to data and its map
     container_type& data = *(this->beginEdit());
-    sofa::helper::vector <Index>& keys = this->getMap2Elements();
+    sofa::type::vector<Index>& keys = this->getMap2Elements();
 
     value_type tmp = data[i1];
     data[i1] = data[i2];
@@ -54,15 +54,15 @@ void TopologySparseData <TopologyElementType, VecT>::swap(Index i1, Index i2)
 
 template <typename TopologyElementType, typename VecT>
 void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
-    const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
-    const sofa::helper::vector<sofa::helper::vector<double> >& coefs)
+    const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
+    const sofa::type::vector<sofa::type::vector<double> >& coefs)
 {
     // get access to data and its map
     if (!this->getSparseDataStatus())
         return;
 
     container_type& data = *(this->beginEdit());
-    sofa::helper::vector <Index>& keys = this->getMap2Elements();
+    sofa::type::vector<Index>& keys = this->getMap2Elements();
 
     Size size = data.size();
     data.resize(size + nbElements);
@@ -74,8 +74,8 @@ void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
             value_type t;
             if (ancestors.empty() || coefs.empty())
             {
-                const sofa::helper::vector< Index > empty_vecint;
-                const sofa::helper::vector< double > empty_vecdouble;
+                const sofa::type::vector< Index > empty_vecint;
+                const sofa::type::vector< double > empty_vecdouble;
                 this->m_topologyHandler->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
             }
             else
@@ -104,20 +104,20 @@ void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
 
 template <typename TopologyElementType, typename VecT>
 void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
-    const sofa::helper::vector< TopologyElementType >&,
-    const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
-    const sofa::helper::vector<sofa::helper::vector<double> >& coefs)
+    const sofa::type::vector< TopologyElementType >&,
+    const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
+    const sofa::type::vector<sofa::type::vector<double> >& coefs)
 {
     this->add(nbElements, ancestors, coefs);
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::add(const sofa::helper::vector<Index>& index,
-    const sofa::helper::vector< TopologyElementType >& elems,
-    const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-    const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
-    const sofa::helper::vector< AncestorElem >& ancestorElems)
+void TopologySparseData <TopologyElementType, VecT>::add(const sofa::type::vector<Index>& index,
+    const sofa::type::vector< TopologyElementType >& elems,
+    const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+    const sofa::type::vector< sofa::type::vector< double > >& coefs,
+    const sofa::type::vector< AncestorElem >& ancestorElems)
 {
     SOFA_UNUSED(elems);
     SOFA_UNUSED(ancestorElems);
@@ -126,19 +126,19 @@ void TopologySparseData <TopologyElementType, VecT>::add(const sofa::helper::vec
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::move(const sofa::helper::vector<Index>&,
-    const sofa::helper::vector< sofa::helper::vector< Index > >&,
-    const sofa::helper::vector< sofa::helper::vector< double > >&)
+void TopologySparseData <TopologyElementType, VecT>::move(const sofa::type::vector<Index>&,
+    const sofa::type::vector< sofa::type::vector< Index > >&,
+    const sofa::type::vector< sofa::type::vector< double > >&)
 {
     msg_warning("TopologySparseData") << "Move event on topology SparseData is not yet handled.";
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::remove(const sofa::helper::vector<Index>& index)
+void TopologySparseData <TopologyElementType, VecT>::remove(const sofa::type::vector<Index>& index)
 {
     // get the sparseData map
-    sofa::helper::vector <Index>& keys = this->getMap2Elements();
+    sofa::type::vector<Index>& keys = this->getMap2Elements();
     container_type& data = *(this->beginEdit());
     Size last = data.size() - 1;
 
@@ -170,15 +170,15 @@ void TopologySparseData <TopologyElementType, VecT>::remove(const sofa::helper::
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::renumber(const sofa::helper::vector<Index>&)
+void TopologySparseData <TopologyElementType, VecT>::renumber(const sofa::type::vector<Index>&)
 {
     msg_warning("TopologySparseData") << "renumber event on topology SparseData is not yet handled";
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index>&,
-    const sofa::helper::vector<TopologyElementType>&)
+void TopologySparseData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::type::vector<Index>&,
+    const sofa::type::vector<TopologyElementType>&)
 {
     msg_warning("TopologySparseData") << "addOnMovedPosition event on topology SparseData is not yet handled";
 }
@@ -186,7 +186,7 @@ void TopologySparseData <TopologyElementType, VecT>::addOnMovedPosition(const so
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index>&)
+void TopologySparseData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::type::vector<Index>&)
 {
     msg_warning("TopologySparseData") << "removeOnMovedPosition event on topology SparseData is not yet handled";
 }

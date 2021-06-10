@@ -36,7 +36,7 @@ using sofa::simulation::graph::DAGSimulation;
 #include <SofaGeneralEngine/DilateEngine.h>
 using sofa::component::engine::DilateEngine ;
 
-using sofa::helper::vector;
+using sofa::type::vector;
 
 
 namespace sofa

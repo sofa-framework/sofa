@@ -27,10 +27,10 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/ColorMap.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/gl/template.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <string>
 
 
@@ -48,9 +48,9 @@ class SOFA_OPENGL_VISUAL_API OglColorMap : public sofa::core::visual::VisualMode
 public:
     SOFA_CLASS(OglColorMap, sofa::core::visual::VisualModel);
 
-    typedef defaulttype::Vec3f Color3;  // Color tripplet
-    typedef sofa::helper::types::RGBAColor Color;   // ... with alpha value
-    typedef sofa::helper::vector<Color> VecColor;
+    typedef type::Vec3f Color3;  // Color tripplet
+    typedef sofa::type::RGBAColor Color;   // ... with alpha value
+    typedef sofa::type::vector<Color> VecColor;
     
 protected:
     OglColorMap();

@@ -110,7 +110,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename sofa::core::behavior::MechanicalState<DataTypes> MState;
 
-    typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
+    typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
 
     Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
     Data<bool> f_verbose; ///< Dump system state at each iteration

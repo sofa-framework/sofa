@@ -35,7 +35,7 @@
 #include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.h>
 #include <SofaBaseMechanics/DiagonalMass.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <iostream>
 #include <fstream>
@@ -86,7 +86,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
     /// {
     Real diffusionCoefficient;
     SReal massDensity;
-    defaulttype::Vec<3,SReal> beamDimension;
+    type::Vec<3,SReal> beamDimension;
     defaulttype::Vec3i beamResolution;
     SReal errorMax;
     SReal timeEvaluation;

@@ -28,8 +28,8 @@
 // (PR #1790)
 SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.h")
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 
 namespace sofa::helper
 {

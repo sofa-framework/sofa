@@ -26,7 +26,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 #include <SofaUserInteraction/RayContact.h>
 

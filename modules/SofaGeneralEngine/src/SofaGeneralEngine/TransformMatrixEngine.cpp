@@ -25,7 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/accessor.h>
 
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 namespace sofa::component::engine
 {

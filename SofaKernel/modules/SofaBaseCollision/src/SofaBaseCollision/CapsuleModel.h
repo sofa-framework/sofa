@@ -96,7 +96,7 @@ public:
 protected:
     Data<VecReal > _capsule_radii; ///< Radius of each capsule
     Data<Real> _default_radius; ///< The default radius
-    sofa::helper::vector<std::pair<Index, Index> > _capsule_points;
+    sofa::type::vector<std::pair<Index, Index> > _capsule_points;
 
     CapsuleCollisionModel();
     CapsuleCollisionModel(core::behavior::MechanicalState<TDataTypes>* mstate );
@@ -129,7 +129,7 @@ public:
     //Returns the point1-point2 normalized vector
     Coord axis(Index index)const;
 
-    sofa::defaulttype::Quaternion orientation(Index index)const;
+    sofa::type::Quat<SReal> orientation(Index index)const;
 
     Index point1Index(Index index)const;
 

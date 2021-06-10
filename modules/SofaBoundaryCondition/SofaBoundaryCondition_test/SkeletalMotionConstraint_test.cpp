@@ -60,7 +60,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
-    helper::SVector<SkeletonJoint> joints;        ///< skeletal joint
+    type::SVector<SkeletonJoint> joints;        ///< skeletal joint
     typename SkeletalMotionConstraint::SPtr projection;
     typename MechanicalObject::SPtr dofs;
 
@@ -113,7 +113,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
         joints[1].setRestPosition(x[1]);
         joints[1].mParentIndex = 0;
 
-        helper::vector<int> bones(2,0); bones[1] = 1;
+        type::vector<int> bones(2,0); bones[1] = 1;
         projection->setSkeletalMotion(joints, bones);
 
         /// Init

@@ -26,7 +26,7 @@ namespace sofa::component::engine
 {
 
 template <class container>
-inline void parseIndices(helper::vector<unsigned int>& pairs, const container& indices, const unsigned int parentIndex)
+inline void parseIndices(type::vector<unsigned int>& pairs, const container& indices, const unsigned int parentIndex)
 {
     for(size_t i=0;i<indices.size();++i)
         if(2*indices[i]<pairs.size())
@@ -34,7 +34,7 @@ inline void parseIndices(helper::vector<unsigned int>& pairs, const container& i
 }
 
 template <class container1,class container2>
-inline void parseIndices(helper::vector<unsigned int>& pairs, const container1& indices,const container2& cells, const unsigned int parentIndex)
+inline void parseIndices(type::vector<unsigned int>& pairs, const container1& indices,const container2& cells, const unsigned int parentIndex)
 {
     for(size_t i=0;i<indices.size();++i)
         for(size_t j=0;j<cells[indices[i]].size();++j)
@@ -58,7 +58,7 @@ MeshSplittingEngine<DataTypes>::MeshSplittingEngine()
     , quadIndices(this, "quadIndices", "input quad indices", helper::DataEngineInput)
     , tetrahedronIndices(this, "tetrahedronIndices", "input tetrahedron indices", helper::DataEngineInput)
     , hexahedronIndices(this, "hexahedronIndices", "input hexahedron indices", helper::DataEngineInput)
-    , indexPairs( initData( &indexPairs, helper::vector<unsigned>(), "indexPairs", "couples for input vertices: ROI index + index in the ROI"))
+    , indexPairs( initData( &indexPairs, type::vector<unsigned>(), "indexPairs", "couples for input vertices: ROI index + index in the ROI"))
     , position(this, "position", "output vertices", helper::DataEngineOutput)
 {
     resizeData();
@@ -75,7 +75,7 @@ void MeshSplittingEngine<DataTypes>::doUpdate()
     helper::ReadAccessor<Data< SeqPositions > > i_pos(this->inputPosition);
     const size_t& nb = nbInputs.getValue();
 
-    helper::WriteOnlyAccessor<Data< helper::vector<unsigned int> > > indPairs(this->indexPairs);
+    helper::WriteOnlyAccessor<Data< type::vector<unsigned int> > > indPairs(this->indexPairs);
     indPairs.resize(2*i_pos.size());
     for(size_t i=0;i<i_pos.size();++i) indPairs[2*i]=nb; // assign to remaining sub mesh
 

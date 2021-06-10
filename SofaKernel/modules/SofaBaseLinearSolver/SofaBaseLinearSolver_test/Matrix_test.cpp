@@ -32,8 +32,8 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/testing/NumericTest.h>
@@ -82,18 +82,18 @@ struct TestSparseMatrices : public NumericTest<_Real>
     typedef sofa::component::linearsolver::SparseMatrix<Real> MapMatrix;
 
     // Blockwise Compressed Sparse Row format
-    typedef sofa::defaulttype::Mat<BROWS,BCOLS,Real> BlockMN;
+    typedef sofa::type::Mat<BROWS,BCOLS,Real> BlockMN;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockMN> CRSMatrixMN;
-    typedef sofa::defaulttype::Mat<BCOLS,BROWS,Real> BlockNM;
+    typedef sofa::type::Mat<BCOLS,BROWS,Real> BlockNM;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockNM> CRSMatrixNM;
-    typedef sofa::defaulttype::Mat<BROWS,BROWS,Real> BlockMM;
+    typedef sofa::type::Mat<BROWS,BROWS,Real> BlockMM;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockMM> CRSMatrixMM;
-    typedef sofa::defaulttype::Mat<BCOLS,BCOLS,Real> BlockNN;
+    typedef sofa::type::Mat<BCOLS,BCOLS,Real> BlockNN;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockNN> CRSMatrixNN;
 
     // Implementation based on Eigen
-    typedef sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<BCOLS,Real>, sofa::defaulttype::Vec<BCOLS,Real> > InTypes;
-    typedef sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<BROWS,Real>, sofa::defaulttype::Vec<BROWS,Real> > OutTypes;
+    typedef sofa::defaulttype::StdVectorTypes< sofa::type::Vec<BCOLS,Real>, sofa::type::Vec<BCOLS,Real> > InTypes;
+    typedef sofa::defaulttype::StdVectorTypes< sofa::type::Vec<BROWS,Real>, sofa::type::Vec<BROWS,Real> > OutTypes;
     typedef sofa::component::linearsolver::EigenSparseMatrix<InTypes,OutTypes> EigenBlockSparseMatrix;
     typedef sofa::component::linearsolver::EigenBaseSparseMatrix<Real> EigenBaseSparseMatrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic> EigenDenseMatrix;
@@ -101,12 +101,12 @@ struct TestSparseMatrices : public NumericTest<_Real>
 
 
     // Regular Mat implementation
-    typedef sofa::defaulttype::Mat<NROWS,NCOLS,Real> MatMN;
-    typedef sofa::defaulttype::Mat<NCOLS,NROWS,Real> MatNM;
-    typedef sofa::defaulttype::Mat<NROWS,NROWS,Real> MatMM;
-    typedef sofa::defaulttype::Mat<NCOLS,NCOLS,Real> MatNN;
-    typedef sofa::defaulttype::Vec<NROWS,Real> VecM;
-    typedef sofa::defaulttype::Vec<NCOLS,Real> VecN;
+    typedef sofa::type::Mat<NROWS,NCOLS,Real> MatMN;
+    typedef sofa::type::Mat<NCOLS,NROWS,Real> MatNM;
+    typedef sofa::type::Mat<NROWS,NROWS,Real> MatMM;
+    typedef sofa::type::Mat<NCOLS,NCOLS,Real> MatNN;
+    typedef sofa::type::Vec<NROWS,Real> VecM;
+    typedef sofa::type::Vec<NCOLS,Real> VecN;
 
 
     // The matrices used in the tests
@@ -143,7 +143,7 @@ struct TestSparseMatrices : public NumericTest<_Real>
     /// generating a random Mat
     /// if sparse=0 a lot a null entries will be created
     template<Size nbrows,Size nbcols>
-    static void generateRandomMat( defaulttype::Mat<nbrows,nbcols,Real>& mat, bool sparse=false )
+    static void generateRandomMat( type::Mat<nbrows,nbcols,Real>& mat, bool sparse=false )
     {
         for( Size j=0; j<mat.nbCols; j++)
         {
@@ -158,7 +158,7 @@ struct TestSparseMatrices : public NumericTest<_Real>
 
     /// filling a BaseMatrix from a given Mat
     template<Size nbrows,Size nbcols>
-    static void copyFromMat( defaulttype::BaseMatrix& baseMat, const defaulttype::Mat<nbrows,nbcols,Real>& mat )
+    static void copyFromMat( defaulttype::BaseMatrix& baseMat, const type::Mat<nbrows,nbcols,Real>& mat )
     {
         baseMat.resize(mat.nbLines,mat.nbCols);
 

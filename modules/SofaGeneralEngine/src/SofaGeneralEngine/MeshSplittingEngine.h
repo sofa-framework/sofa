@@ -24,7 +24,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/vectorData.h>
@@ -76,7 +76,7 @@ public:
     helper::vectorData<SetIndices> hexahedronIndices;
 
     /// outputs
-    Data< helper::vector<unsigned int> > indexPairs;
+    Data< type::vector<unsigned int> > indexPairs;
     helper::vectorData<SeqPositions> position;
 
 protected:

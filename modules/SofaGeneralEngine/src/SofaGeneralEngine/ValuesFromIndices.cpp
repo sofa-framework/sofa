@@ -32,10 +32,10 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
         .add< ValuesFromIndices<std::string> >()
         .add< ValuesFromIndices<int> >()
         .add< ValuesFromIndices<unsigned int> >()
-        .add< ValuesFromIndices< helper::fixed_array<unsigned int, 2> > >()
-        .add< ValuesFromIndices< helper::fixed_array<unsigned int, 3> > >()
-        .add< ValuesFromIndices< helper::fixed_array<unsigned int, 4> > >()
-        .add< ValuesFromIndices< helper::fixed_array<unsigned int, 8> > >()
+        .add< ValuesFromIndices< type::fixed_array<unsigned int, 2> > >()
+        .add< ValuesFromIndices< type::fixed_array<unsigned int, 3> > >()
+        .add< ValuesFromIndices< type::fixed_array<unsigned int, 4> > >()
+        .add< ValuesFromIndices< type::fixed_array<unsigned int, 8> > >()
         .add< ValuesFromIndices<double> >()
         .add< ValuesFromIndices<defaulttype::Vec2d> >()
         .add< ValuesFromIndices<defaulttype::Vec3d> >()
@@ -51,10 +51,10 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<std::string>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<int>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<unsigned int>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 2> >;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 3> >;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 4> >;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 8> >;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 2> >;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 3> >;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 4> >;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 8> >;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<double>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec2d>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec3d>;

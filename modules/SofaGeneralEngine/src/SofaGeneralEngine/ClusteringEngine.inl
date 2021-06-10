@@ -23,7 +23,7 @@
 #include <SofaGeneralEngine/ClusteringEngine.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <fstream>
 
 #include <sofa/helper/logging/Messaging.h>
@@ -167,7 +167,7 @@ void ClusteringEngine<DataTypes>::AddNeighborhoodFromNeighborhood(VI& lastNgb, c
     bool inserted=false;
     for (VI::const_iterator it = lastNgb.begin() ; it != lastNgb.end() ; ++it)
     {
-        const helper::vector<ID>& ngb = this->topo->getVerticesAroundVertex(*it);
+        const type::vector<ID>& ngb = this->topo->getVerticesAroundVertex(*it);
         for (unsigned int j=0 ; j<ngb.size(); ++j)
         {
             ID pt = ngb[j];
@@ -258,7 +258,7 @@ void ClusteringEngine<DataTypes>::dijkstra(const VI& ptIndices , VD& distances, 
         q.erase(q.begin());
         ID v = top.second;
 
-        const helper::vector<ID>& ngb = this->topo->getVerticesAroundVertex(v);
+        const type::vector<ID>& ngb = this->topo->getVerticesAroundVertex(v);
         for (i=0 ; i<ngb.size(); ++i)
         {
             ID v2 = ngb[i];
@@ -374,8 +374,8 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
         ReadAccessor< Data< VVI > > clust = this->d_cluster;
         const unsigned int nbp = currentPositions.size();
 
-        std::vector<sofa::defaulttype::Vector3> vertices;
-        std::vector<sofa::helper::types::RGBAColor> colors;
+        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::RGBAColor> colors;
         vparams->drawTool()->disableLighting();
         
         float r, g, b;
@@ -386,8 +386,8 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
             g = (float)((i*1357)%13)/13;
             b = (float)((i*4829)%17)/17;
 
-            colors.push_back(sofa::helper::types::RGBAColor(r, g, b, 1.0));
-            colors.push_back(sofa::helper::types::RGBAColor(r, g, b, 1.0));
+            colors.push_back(sofa::type::RGBAColor(r, g, b, 1.0));
+            colors.push_back(sofa::type::RGBAColor(r, g, b, 1.0));
 
             VI::const_iterator it, itEnd;
             for (it = clust[i].begin()+1, itEnd = clust[i].end(); it != itEnd ; ++it)

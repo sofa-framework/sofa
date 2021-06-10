@@ -72,9 +72,9 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public Elasticity_test<
     /// Tested simulation
     simulation::Simulation* simulation;  
     /// Position and velocity array
-    helper::vector<Real> positionsArray;
-    helper::vector<Real> velocitiesArray;
-    helper::vector<Real> energiesArray;
+    type::vector<Real> positionsArray;
+    type::vector<Real> velocitiesArray;
+    type::vector<Real> energiesArray;
     
     /// Create the context for the scene
     void createScene(double K, double m, double l0, double rm=0)

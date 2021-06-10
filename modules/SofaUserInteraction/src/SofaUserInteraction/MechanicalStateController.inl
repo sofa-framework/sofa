@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -46,7 +46,7 @@ MechanicalStateController<DataTypes>::MechanicalStateController()
     : index( initData(&index, (unsigned int)0, "index", "Index of the controlled DOF") )
     , onlyTranslation( initData(&onlyTranslation, false, "onlyTranslation", "Controlling the DOF only in translation") )
     , buttonDeviceState(initData(&buttonDeviceState, false, "buttonDeviceState", "state of ths device button"))
-    , mainDirection( initData(&mainDirection, sofa::defaulttype::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
+    , mainDirection( initData(&mainDirection, sofa::type::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
 {
     mainDirection.beginEdit()->normalize();
     mainDirection.endEdit();
@@ -112,8 +112,8 @@ void MechanicalStateController<DataTypes>::applyController()
             }
             else
             {
-                sofa::helper::Quater<Real>& quatrot = x[i].getOrientation();
-                sofa::defaulttype::Vec<3,Real> vectrans(dy * mainDirection.getValue()[0] * (Real)0.05, dy * mainDirection.getValue()[1] * (Real)0.05, dy * mainDirection.getValue()[2] * (Real)0.05);
+                sofa::type::Quat<Real>& quatrot = x[i].getOrientation();
+                sofa::type::Vec<3,Real> vectrans(dy * mainDirection.getValue()[0] * (Real)0.05, dy * mainDirection.getValue()[1] * (Real)0.05, dy * mainDirection.getValue()[2] * (Real)0.05);
                 vectrans = quatrot.rotate(vectrans);
 
                 x[i].getCenter() += vectrans;
@@ -209,7 +209,7 @@ void MechanicalStateController<DataTypes>::setIndex(const unsigned int _index)
 
 
 template <class DataTypes>
-const sofa::defaulttype::Vec<3, typename MechanicalStateController<DataTypes>::Real > &MechanicalStateController<DataTypes>::getMainDirection() const
+const sofa::type::Vec<3, typename MechanicalStateController<DataTypes>::Real > &MechanicalStateController<DataTypes>::getMainDirection() const
 {
     return mainDirection.getValue();
 }
@@ -217,7 +217,7 @@ const sofa::defaulttype::Vec<3, typename MechanicalStateController<DataTypes>::R
 
 
 template <class DataTypes>
-void MechanicalStateController<DataTypes>::setMainDirection(const sofa::defaulttype::Vec<3,Real> _mainDirection)
+void MechanicalStateController<DataTypes>::setMainDirection(const sofa::type::Vec<3,Real> _mainDirection)
 {
     mainDirection.setValue(_mainDirection);
 }

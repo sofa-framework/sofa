@@ -24,7 +24,7 @@
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <SofaBaseCollision/CubeModel.h>
 
 namespace sofa::component::collision
@@ -167,7 +167,7 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 template<class DataTypes>
 void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index index)
 {
-    sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+    sofa::type::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
     sofa::core::visual::visualparams::getDrawTool(vparams)->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
 }
 
@@ -178,7 +178,7 @@ void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vp
     auto dt = sofa::core::visual::visualparams::getDrawTool(vparams);
     if (df.getShowCollisionModels())
     {
-        sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+        sofa::type::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
         dt->setPolygonMode(0,df.getShowWireFrame());//maybe ??
         dt->setLightingEnabled(true); //Enable lightning
 
@@ -285,7 +285,7 @@ bool TCapsule<DataTypes>::shareSameVertex(const TCapsule<DataTypes> & other)cons
 }
 
 template<class DataTypes>
-sofa::defaulttype::Quaternion CapsuleCollisionModel<DataTypes>::orientation(Index index) const {
+sofa::type::Quat<SReal> CapsuleCollisionModel<DataTypes>::orientation(Index index) const {
     Coord ax(point2(index) - point1(index));
     ax.normalize();
 
@@ -303,7 +303,7 @@ sofa::defaulttype::Quaternion CapsuleCollisionModel<DataTypes>::orientation(Inde
         rx2 = cross(rx1,ax);
     }
 
-    return sofa::defaulttype::Quaternion::createQuaterFromFrame(rx1,ax,rx2);
+    return sofa::type::Quat<SReal>::createQuaterFromFrame(rx1,ax,rx2);
 }
 
 template<class DataTypes>

@@ -25,11 +25,11 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/gl/RAII.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <cstring>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 //#define DEBUG_DRAW
 namespace sofa
@@ -41,15 +41,15 @@ namespace component
 namespace visualmodel
 {
 
-using sofa::helper::types::RGBAColor;
-using sofa::helper::types::Material;
+using sofa::type::RGBAColor;
+using sofa::type::Material;
 using namespace sofa::defaulttype;
 
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
     .add< sofa::component::visualmodel::OglModel >();
 
 template<class T>
-const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
+const T* getData(const sofa::type::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
@@ -319,7 +319,7 @@ void OglModel::drawGroup(int ig, bool transparent)
 
 void OglModel::drawGroups(bool transparent)
 {
-    helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
+    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
 
     if (groups.empty())
     {

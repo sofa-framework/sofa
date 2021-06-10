@@ -43,9 +43,9 @@ class ValuesFromIndices : public core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ValuesFromIndices,T),core::DataEngine);
     typedef T Value;
-    typedef sofa::helper::vector<T> VecValue;
+    typedef sofa::type::vector<T> VecValue;
     typedef unsigned int Index;
-    typedef sofa::helper::vector<Index> VecIndex;
+    typedef sofa::type::vector<Index> VecIndex;
 
 protected:
 
@@ -77,10 +77,10 @@ public:
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<std::string>;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<int>;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<unsigned int>;
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 2> >;
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 3> >;
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 4> >;
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 8> >;
+extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 2> >;
+extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 3> >;
+extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 4> >;
+extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::fixed_array<unsigned int, 8> >;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<double>;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec2d>;
 extern template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec3d>;

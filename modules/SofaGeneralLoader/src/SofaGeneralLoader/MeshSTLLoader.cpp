@@ -123,7 +123,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(this->d_triangles);
 
-    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::Index > my_map;
+    std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
     core::topology::Topology::Index positionCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 
@@ -155,7 +155,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 #endif
 
     // temporaries
-    sofa::defaulttype::Vec3f vertex, normal;
+    sofa::type::Vec3f vertex, normal;
 
     // reserve vector before filling it
     my_triangles.reserve( nbrFacet );
@@ -239,7 +239,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(d_triangles);
 
-    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::Index > my_map;
+    std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
     core::topology::Topology::Index positionCounter = 0, vertexCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 

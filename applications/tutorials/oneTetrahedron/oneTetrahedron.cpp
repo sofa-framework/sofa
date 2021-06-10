@@ -23,11 +23,11 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
 using sofa::core::VecId;
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
-using Coord3 = sofa::defaulttype::Vector3;
-using VecCoord3 = sofa::helper::vector<Coord3>;
+using Coord3 = sofa::type::Vector3;
+using VecCoord3 = sofa::type::vector<Coord3>;
 #include <sofa/gui/GUIManager.h>
 #include <SofaGui/initSofaGui.h>
 #include <sofa/gui/ArgumentParser.h>
@@ -88,7 +88,7 @@ int main(int argc, char** argv)
     // The graph root node : gravity already exists in a GNode by default
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     auto groot = sofa::simulation::getSimulation()->createNewGraph("root");
-    groot->setGravity( sofa::defaulttype::Vector3(0,-10,0) );
+    groot->setGravity( sofa::type::Vector3(0,-10,0) );
 
     // One solver for all the graph
     EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<EulerImplicitSolver>();

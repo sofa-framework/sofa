@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/helper/types/PrimitiveGroup.h>
+#include <sofa/type/PrimitiveGroup.h>
 
 namespace sofa::core::loader
 {
@@ -29,7 +29,7 @@ namespace sofa::core::loader
 ///The following lines is there to provide backward compatibility with existing code base.
 ///This is just there for a transitional period of time and will be removed after 2018-01-07
 //TODO(dmarchal 2020-12-29): Delete that around 2021-05-01
-using sofa::helper::types::PrimitiveGroup;
+using sofa::type::PrimitiveGroup;
 
 } // namespace sofa
 

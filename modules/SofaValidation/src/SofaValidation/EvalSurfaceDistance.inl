@@ -91,7 +91,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
     intersection->setContactDistance(0.0);
     detection->setInstance(this);
     detection->setIntersectionMethod(intersection.get());
-    sofa::helper::vector<std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> > vectCMPair;
+    sofa::type::vector<std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> > vectCMPair;
     vectCMPair.push_back(std::make_pair(surfaceCM->getFirst(), pointsCM->getFirst()));
 
     detection->beginNarrowPhase();
@@ -106,7 +106,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
     core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator itend = detectionOutputs.end();
 
     xproj = x1;
-    sofa::helper::vector<Real> dmin(xproj.size());
+    sofa::type::vector<Real> dmin(xproj.size());
     std::fill(dmin.begin(),dmin.end(),(Real)(2*maxDist.getValue()));
 
     while (it != itend)

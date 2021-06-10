@@ -33,7 +33,7 @@ bool TIntrSphereOBB<TDataTypes,TDataTypes2>::Find(){
 
     _pt_on_second = mBox->center();
     _pt_on_first = _sph->center();
-    const defaulttype::Vec<3,Real> centeredPt = _pt_on_first - _pt_on_second;
+    const type::Vec<3,Real> centeredPt = _pt_on_first - _pt_on_second;
 
     //projecting the center of the sphere on the OBB
     Real coord_i;

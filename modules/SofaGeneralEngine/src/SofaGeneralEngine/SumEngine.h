@@ -23,7 +23,7 @@
 #pragma once
 #include <SofaGeneralEngine/config.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::engine
 {
@@ -37,7 +37,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(SumEngine,TDataType),core::DataEngine);
 
     typedef TDataType DataType;
-    typedef helper::vector<DataType> VecData;
+    typedef type::vector<DataType> VecData;
 
 
     SumEngine();

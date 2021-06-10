@@ -24,14 +24,14 @@
 #include <PluginExample/config.h>
 
 #include <sofa/core/Mapping.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
 
 namespace sofa::component::mapping
 {
 
-using helper::vector;
+using type::vector;
 using defaulttype::Vec;
 
 /** input: pendulum angle; output: coordinates of the endpoint of the pendulum

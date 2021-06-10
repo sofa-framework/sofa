@@ -44,7 +44,7 @@ public:
     typedef typename IntrCap::Real Real;
     typedef typename IntrCap::Coord Coord;
     typedef TOBB<TDataTypes2> Box;
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::type::Vec<3,Real> Vec3;
 
     TIntrCapsuleOBB (const IntrCap& capsule, const Box & box);
 

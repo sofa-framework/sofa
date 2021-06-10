@@ -59,14 +59,14 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
 {
     //Input
     const std::string& strMap = p_mapGroupModulus.getValue();
-    const helper::vector<unsigned int>& primitives = f_primitives.getValue();
-    const helper::vector<sofa::core::loader::PrimitiveGroup >& groups = f_groups.getValue();
-    const helper::vector<int >& elementsGroup = f_elementsGroup.getValue();
+    const type::vector<unsigned int>& primitives = f_primitives.getValue();
+    const type::vector<sofa::core::loader::PrimitiveGroup >& groups = f_groups.getValue();
+    const type::vector<int >& elementsGroup = f_elementsGroup.getValue();
 
     const Real& defaultModulus =  p_defaultModulus.getValue();
 
     //Output
-    helper::vector<Real>& youngModulusVector = *f_youngModulus.beginWriteOnly();
+    type::vector<Real>& youngModulusVector = *f_youngModulus.beginWriteOnly();
 
     //1st method : with Group definition
     if (!groups.empty())
@@ -151,7 +151,7 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
         int gid;
         Real youngModulus;
 
-        helper::vector<Real> mapMG;
+        type::vector<Real> mapMG;
         youngModulusVector.resize(1);
 
         //read string and tokenize

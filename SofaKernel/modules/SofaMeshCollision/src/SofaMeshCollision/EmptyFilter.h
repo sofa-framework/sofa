@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaMeshCollision/config.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::collision
 {
@@ -36,7 +36,7 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validPoint(const Index /*pointIndex*/, const type::Vector3 &/*PQ*/)
     {
         return true;
     }
@@ -44,7 +44,7 @@ public:
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validLine(const Index /*lineIndex*/, const type::Vector3 &/*PQ*/)
     {
         return true;
     }
@@ -52,7 +52,7 @@ public:
     /**
      * @brief Triangle Collision Primitive validation method.
      */
-    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validTriangle(const Index /*triangleIndex*/, const type::Vector3 &/*PQ*/)
     {
         return true;
     }

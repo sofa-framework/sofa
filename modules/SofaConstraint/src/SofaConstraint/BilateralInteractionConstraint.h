@@ -25,9 +25,9 @@
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <deque>
@@ -47,8 +47,8 @@ using sofa::core::ConstraintParams ;
 using sofa::core::ConstVecCoordId;
 
 using sofa::defaulttype::BaseVector ;
-using sofa::defaulttype::Quaternion ;
-using sofa::defaulttype::Vec3d ;
+using sofa::type::Quat<SReal> ;
+using sofa::type::Vec3d ;
 
 using sofa::defaulttype::Rigid3Types ;
 using sofa::defaulttype::Vec3Types ;
@@ -92,8 +92,8 @@ protected:
 
     std::vector<unsigned int> cid;
 
-    Data<helper::vector<int> > m1; ///< index of the constraint on the first model
-    Data<helper::vector<int> > m2; ///< index of the constraint on the second model
+    Data<type::vector<int> > m1; ///< index of the constraint on the first model
+    Data<type::vector<int> > m2; ///< index of the constraint on the second model
     Data<VecDeriv> restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 

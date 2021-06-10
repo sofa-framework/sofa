@@ -85,7 +85,7 @@ void ParallelBruteForceBroadPhase::addCollisionModel(core::CollisionModel *cm)
     m_collisionModels.emplace_back(cm, finalCollisionModel);
 }
 
-void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::helper::vector<core::CollisionModel *>& v)
+void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<core::CollisionModel *>& v)
 {
     ScopedAdvancedTimer timer("ParallelBruteForceBroadPhase::addCollisionModels");
 

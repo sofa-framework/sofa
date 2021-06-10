@@ -628,11 +628,11 @@ void QtGLViewer::DisplayOBJs()
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            sofa::defaulttype::Quaternion sofaQuat( this->camera()->orientation()[0]
+            sofa::type::Quat<SReal> sofaQuat( this->camera()->orientation()[0]
                     , this->camera()->orientation()[1]
                     , this->camera()->orientation()[2]
                     , this->camera()->orientation()[3]);
-            gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);

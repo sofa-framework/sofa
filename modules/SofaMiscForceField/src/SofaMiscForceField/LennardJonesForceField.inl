@@ -208,7 +208,7 @@ void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     vparams->drawTool()->saveLastState();
 
-    std::vector< defaulttype::Vector3 > points[2];
+    std::vector< type::Vector3 > points[2];
 
     const Real d02 = this->d0.getValue()*this->d0.getValue();
     for (unsigned int i=0; i<this->dforces.size(); i++)
@@ -225,8 +225,8 @@ void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* v
             points[1].push_back(p1[df.b]);
         }
     }
-    vparams->drawTool()->drawLines(points[0], 1, sofa::helper::types::RGBAColor::white());
-    vparams->drawTool()->drawLines(points[1], 1, sofa::helper::types::RGBAColor::blue());
+    vparams->drawTool()->drawLines(points[0], 1, sofa::type::RGBAColor::white());
+    vparams->drawTool()->drawLines(points[1], 1, sofa::type::RGBAColor::blue());
 
     vparams->drawTool()->restoreLastState();
 }

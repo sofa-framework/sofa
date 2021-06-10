@@ -89,7 +89,7 @@ void OglTexture::init()
             // "Procedural" texture (actually inline texture data inside the scene file).
             unsigned int height = proceduralTextureHeight.getValue();
             unsigned int width = proceduralTextureWidth.getValue();
-            helper::vector<unsigned int> textureData = proceduralTextureData.getValue();
+            type::vector<unsigned int> textureData = proceduralTextureData.getValue();
             unsigned int nbb = proceduralTextureNbBits.getValue();
 
             if (height > 0 && width > 0 && !textureData.empty() )

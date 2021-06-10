@@ -65,13 +65,13 @@ unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getRegularGridIndex
 }
 
 template < class DataTypes >
-int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
+int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const
 {
     int index = -1;
     distance = 1e10;
 
     defaulttype::Vec3i resolution = topoContainer->resolution.getValue();
-    const sofa::defaulttype::Vec3d& translation = dof->getTranslation();
+    const sofa::type::Vec3d& translation = dof->getTranslation();
     defaulttype::Vec3i currentIndex = defaulttype::Vec3i( (int)((pos[0] - translation[0]) / topoContainer->voxelSize.getValue()[0]), (int)((pos[1] - translation[1]) / topoContainer->voxelSize.getValue()[1]), (int)((pos[2] - translation[2]) / topoContainer->voxelSize.getValue()[2]));
 
     // Projection sur la bbox si l'element est en dehors.

@@ -157,7 +157,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     auto my_faceList = getWriteOnlyAccessor(d_faceList);
     auto my_normalsList = getWriteOnlyAccessor(d_normalsIndexList);
     auto my_texturesList  = getWriteOnlyAccessor(d_texIndexList);
-    helper::vector<int> nodes, nIndices, tIndices;
+    type::vector<int> nodes, nIndices, tIndices;
 
     auto my_edges = getWriteOnlyAccessor(d_edges);
     auto my_triangles = getWriteOnlyAccessor(d_triangles);
@@ -182,7 +182,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
     int vtn[3];
     Vector3 result;
-    helper::WriteAccessor<Data<helper::vector< PrimitiveGroup> > > my_faceGroups[NBFACETYPE] =
+    helper::WriteAccessor<Data<type::vector< PrimitiveGroup> > > my_faceGroups[NBFACETYPE] =
     {
         d_edgesGroups,
         d_trianglesGroups,
@@ -247,8 +247,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             {
                 values >> curMaterialName;
                 curMaterialId = -1;
-                helper::vector<Material>::iterator it = my_materials.begin();
-                helper::vector<Material>::iterator itEnd = my_materials.end();
+                type::vector<Material>::iterator it = my_materials.begin();
+                type::vector<Material>::iterator itEnd = my_materials.end();
                 for (; it != itEnd; ++it)
                 {
                     if (it->name == curMaterialName)
@@ -398,9 +398,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         }
         for (size_t fi=0; fi<my_faceList->size(); ++fi)
         {
-            const helper::SVector<int>& nodes = (*my_faceList)[fi];
-            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
-            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
+            const type::SVector<int>& nodes = (*my_faceList)[fi];
+            const type::SVector<int>& nIndices = (*my_normalsList)[fi];
+            const type::SVector<int>& tIndices = (*my_texturesList)[fi];
             for (size_t i = 0; i < nodes.size(); ++i)
             {
                 unsigned int pi = nodes[i];
@@ -430,9 +430,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         vertTexNormMap.resize(nbVIn);
         for (size_t fi=0; fi<my_faceList->size(); ++fi)
         {
-            const helper::SVector<int>& nodes = (*my_faceList)[fi];
-            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
-            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
+            const type::SVector<int>& nodes = (*my_faceList)[fi];
+            const type::SVector<int>& nIndices = (*my_normalsList)[fi];
+            const type::SVector<int>& tIndices = (*my_texturesList)[fi];
             for (size_t i = 0; i < nodes.size(); ++i)
             {
                 unsigned int pi = nodes[i];
@@ -457,7 +457,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             vsplit = true;
 
         // Then we can create the final arrays
-        helper::vector<sofa::defaulttype::Vector3> vertices2;
+        type::vector<sofa::type::Vector3> vertices2;
         auto vnormals = getWriteAccessor(d_normals);
         auto vtexcoords = getWriteAccessor(d_texCoords);
         auto vertPosIdx = getWriteOnlyAccessor(d_vertPosIdx);
@@ -504,7 +504,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
         // replace the original (non duplicated) vector with the new one
         my_positions.clear();
-        for(const sofa::defaulttype::Vector3& c : vertices2)
+        for(const sofa::type::Vector3& c : vertices2)
             my_positions.push_back(c);
 
         if( vsplit && nbNOut == nbVOut )
@@ -514,9 +514,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         
         for (size_t fi=0; fi<my_faceList->size(); ++fi)
         {
-            const helper::SVector<int>& verts = (*my_faceList)[fi];
-            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
-            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
+            const type::SVector<int>& verts = (*my_faceList)[fi];
+            const type::SVector<int>& nIndices = (*my_normalsList)[fi];
+            const type::SVector<int>& tIndices = (*my_texturesList)[fi];
             std::vector<int> nodes;
             nodes.resize(verts.size());
             for (size_t i = 0; i < verts.size(); ++i)
@@ -559,13 +559,13 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     if (d_computeMaterialFaces.getValue())
     {
         // create subset lists
-        std::map< std::string, helper::vector<unsigned int> > materialFaces[NBFACETYPE];
+        std::map< std::string, type::vector<unsigned int> > materialFaces[NBFACETYPE];
         for (int ft = 0; ft < NBFACETYPE; ++ft)
         {
             for (size_t gi=0; gi<my_faceGroups[ft].size(); ++gi)
             {
                 PrimitiveGroup g = my_faceGroups[ft][gi];
-                helper::vector<unsigned int>& out = materialFaces[ft][g.materialName];
+                type::vector<unsigned int>& out = materialFaces[ft][g.materialName];
                 for (int f=g.p0; f<g.p0+g.nbp; ++f)
                     out.push_back(f);
             }
@@ -580,14 +580,14 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             case MeshObjLoader::QUAD:     fname = "quad"; break;
             default: break;
             }
-            for (std::map< std::string, helper::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
+            for (std::map< std::string, type::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
             {
                 std::string materialName = it->first;
-                const helper::vector<unsigned>& faces = it->second;
+                const type::vector<unsigned>& faces = it->second;
                 if (faces.empty()) continue;
                 std::ostringstream oname;
                 oname << "material_" << materialName << "_" << fname << "Indices";
-                Data< helper::vector<unsigned int> >* dOut = new Data< helper::vector<unsigned int> >("list of face indices corresponding to a given material");
+                Data< type::vector<unsigned int> >* dOut = new Data< type::vector<unsigned int> >("list of face indices corresponding to a given material");
                 dOut->setName(oname.str());
 
                 this->addData(dOut);
@@ -608,7 +608,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 //    model - properly initialized GLMmodel structure
 //    name  - name of the material library
 // -----------------------------------------------------
-bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& materials)
+bool MeshObjLoader::readMTL(const char* filename, type::vector<Material>& materials)
 {
     FILE* file;
     char buf[128]; // Note: in the strings below, 127 is sizeof(buf)-1

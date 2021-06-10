@@ -389,7 +389,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     // ---- Display a "X" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
 
-    gl::GlText::draw('X', sofa::defaulttype::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('X', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
 
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
@@ -405,7 +405,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Y" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    gl::GlText::draw('Y', sofa::defaulttype::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('Y', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -420,7 +420,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Z" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    gl::GlText::draw('Z', sofa::defaulttype::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('Z', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -674,7 +674,7 @@ void QtViewer::DisplayOBJs()
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vector3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -811,8 +811,8 @@ void QtViewer::drawScene(void)
             {
                 width /= 2;
                 viewport = true;
-                vpleft = sofa::helper::make_array(0,0,width,height);
-                vpright = sofa::helper::make_array(_W-width,0,width,height);
+                vpleft = sofa::type::make_array(0,0,width,height);
+                vpright = sofa::type::make_array(_W-width,0,width,height);
                 if (smode == sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF)
                     width = _W; // keep the original ratio for camera
                 break;
@@ -828,8 +828,8 @@ void QtViewer::drawScene(void)
                 else // other resolutions
                     height /= 2;
                 viewport = true;
-                vpleft = sofa::helper::make_array(0,0,width,height);
-                vpright = sofa::helper::make_array(0,_H-height,width,height);
+                vpleft = sofa::type::make_array(0,0,width,height);
+                vpright = sofa::type::make_array(0,_H-height,width,height);
                 if (smode == sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF)
                     height = _H; // keep the original ratio for camera
                 break;
@@ -946,7 +946,7 @@ void QtViewer::drawScene(void)
         }
         if (viewport)
         {
-            vparams->viewport() = sofa::helper::make_array(0,0,_W,_H);
+            vparams->viewport() = sofa::type::make_array(0,0,_W,_H);
             glViewport(0, 0, _W, _H);
             glScissor(0, 0, _W, _H);
             glDisable(GL_SCISSOR_TEST);
@@ -1016,7 +1016,7 @@ void QtViewer::calcProjection(int width, int height)
     //Update vparams
     vparams->zNear() = currentCamera->getZNear();
     vparams->zFar() = currentCamera->getZFar();
-    vparams->viewport() = sofa::helper::make_array(0, 0, width, height);
+    vparams->viewport() = sofa::type::make_array(0, 0, width, height);
     vparams->setProjectionMatrix(projectionMatrix);
 }
 
