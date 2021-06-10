@@ -26,8 +26,6 @@
  * (float/Real) and BlockMN size in CompressedRowSparse.
 */
 
-#include <SofaTest/Sofa_test.h>
-
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
@@ -38,8 +36,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <gtest/gtest.h>
-
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
 
 #define BENCHMARK_MATRIX_PRODUCT 0
 
@@ -64,8 +62,10 @@ namespace sofa
   Perform matrix-vector products and compare the results.
   */
 template <typename _Real, unsigned NumRows, unsigned NumCols, unsigned BlockRows, unsigned BlockCols>
-struct TestSparseMatrices : public Sofa_test<_Real>
+struct TestSparseMatrices : public NumericTest<_Real>
 {
+    using Inherit = NumericTest<_Real>;
+
     // Scalar type and dimensions of the matrices to test
     typedef _Real Real;
     static const unsigned NROWS=NumRows;   // matrix size
@@ -264,7 +264,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
             }
         }
         b.compress();
-        return Sofa_test<_Real>::matrixMaxDiff(a,b) < 100 * Sofa_test<_Real>::epsilon();
+        return Inherit::matrixMaxDiff(a,b) < 100 * Inherit::epsilon();
     }
 
     /** Check the filling of EigenMatrix per rows of blocks. */
@@ -299,7 +299,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         }
         mb.compress();
 
-        ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
+        ASSERT_TRUE( Inherit::matrixMaxDiff(ma,mb) < 100*Inherit::epsilon() );
 
         // building with ordered blocks
 
@@ -325,7 +325,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         }
         mb.compress();
 
-        ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
+        ASSERT_TRUE( Inherit::matrixMaxDiff(ma,mb) < 100*Inherit::epsilon() );
 
 
 
@@ -353,7 +353,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         }
         mb.compress();
 
-        ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
+        ASSERT_TRUE( Inherit::matrixMaxDiff(ma,mb) < 100*Inherit::epsilon() );
 
 
 
@@ -384,12 +384,12 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         }
         mb.compress();
 
-        ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
+        ASSERT_TRUE( Inherit::matrixMaxDiff(ma,mb) < 100*Inherit::epsilon() );
     }
 
     bool checkEigenMatrixBlockFromCompressedRowSparseMatrix()
     {
-        return Sofa_test<_Real>::matrixMaxDiff(crs1,eiBlock3) < 100*Sofa_test<_Real>::epsilon();
+        return Inherit::matrixMaxDiff(crs1,eiBlock3) < 100*Inherit::epsilon();
     }
 
     bool checkEigenDenseMatrix()

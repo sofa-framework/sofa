@@ -21,13 +21,13 @@
 ******************************************************************************/
 
 #include "fake_TopologyScene.h"
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/helper/system/FileRepository.h>
 
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 
 class TetrahedronSetTopology_test : public BaseTest

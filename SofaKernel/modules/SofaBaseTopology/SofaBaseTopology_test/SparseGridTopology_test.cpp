@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/testing/config.h>
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <SofaBaseTopology/SparseGridTopology.h>
 
@@ -35,7 +35,7 @@ using sofa::component::loader::MeshSTLLoader;
 using sofa::core::objectmodel::New ;
 using sofa::defaulttype::Vector3 ;
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 
 struct SparseGridTopology_test : public BaseTest

@@ -23,8 +23,8 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 
 struct BaseObjectDescription_test: public BaseTest

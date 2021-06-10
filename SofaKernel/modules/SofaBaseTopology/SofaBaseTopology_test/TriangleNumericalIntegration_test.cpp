@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
+
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -29,8 +29,9 @@
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <ctime>
-#include <SceneCreator/SceneCreator.h>
+
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
 
 
 namespace sofa {
@@ -41,8 +42,10 @@ using namespace defaulttype;
 A movement is applied to the borders of a mesh. The points within should have a bilinear movement relative to the border movements.*/
 
 template <typename _DataTypes>
-struct TriangleNumericalIntegration_test : public Sofa_test<typename _DataTypes::Real>
+struct TriangleNumericalIntegration_test : public NumericTest<typename _DataTypes::Real>
 {
+    using Inherit = NumericTest<typename _DataTypes::Real>;
+
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -70,7 +73,8 @@ struct TriangleNumericalIntegration_test : public Sofa_test<typename _DataTypes:
     // create the TriangleSetGeometryAlgorithms object
     void createScene()
     {
-        geo = sofa::modeling::addNew<TriangleSetGeometryAlgorithms>(root);
+        geo = core::objectmodel::New<TriangleSetGeometryAlgorithms>();
+        root->addObject(geo);
     }
     bool testNumericalIntegration()
     {
@@ -119,7 +123,7 @@ struct TriangleNumericalIntegration_test : public Sofa_test<typename _DataTypes:
                 if (fabs(realIntegral - integral) > 1e-8) {
                     ADD_FAILURE() << "Error in numerical integration on triangle for integration method " << (*itio) <<
                         "  and integration order " << (*itio) << " for polynomial defined by " << randomPolynomial << std::endl
-                        << "Got  " << integral << " instead of " << realIntegral << std::endl << "Failed seed number = " << BaseSofa_test::seed << std::endl;
+                        << "Got  " << integral << " instead of " << realIntegral << std::endl << "Failed seed number = " << Inherit::seed << std::endl;
                     return false;
                 }
             }
