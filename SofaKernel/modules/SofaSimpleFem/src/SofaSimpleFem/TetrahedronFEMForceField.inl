@@ -1201,7 +1201,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
 
     type::Mat<3,3,Real> F = A * _initialTransformation[elementIndex];
 
-    if(defaulttype::determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
+    if(type::determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
     {
         helper::Decompose<Real>::polarDecomposition_stable( F, R_0_2 );
         R_0_2 = R_0_2.multTransposed( _initialRotations[elementIndex] );

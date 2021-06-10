@@ -115,6 +115,7 @@ Size CapsuleCollisionModel<DataTypes>::nbCap()const
 template <class DataTypes>
 void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const auto ncap = l_topology.get()->getNbEdges();

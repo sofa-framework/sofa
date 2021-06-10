@@ -51,8 +51,8 @@ using core::visual::VisualParams;
 using core::ConstVecCoordId;
 
 using defaulttype::BaseVector;
-using defaulttype::Vec;
-using defaulttype::Vec3d;
+using type::Vec;
+using type::Vec3d;
 using defaulttype::DataTypeInfo;
 using defaulttype::BaseMatrix;
 

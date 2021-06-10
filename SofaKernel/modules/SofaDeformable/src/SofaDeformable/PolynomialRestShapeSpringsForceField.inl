@@ -404,7 +404,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
         positions.push_back(type::Vector3(p0[index][0], p0[index][1], p0[index][2] ));
     }
 
-    vparams->drawTool()->draw3DText_Indices(positions, float(scale), helper::types::RGBAColor::white());
+    vparams->drawTool()->draw3DText_Indices(positions, float(scale), type::RGBAColor::white());
     vparams->drawTool()->restoreLastState();
 }
 

@@ -350,7 +350,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
             J[c][1] = ly[c]/2;
             J[c][2] = lz[c]/2;
         }
-        detJ = defaulttype::determinant(J);
+        detJ = type::determinant(J);
         J_1.invert(J);
         J_1t.transpose(J_1);
 
@@ -384,7 +384,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                         J[c][1] =(Real)( (nodes[3][c]-nodes[0][c])*(1-x1)*(1-x3)/8+(nodes[2][c]-nodes[1][c])*(1+x1)*(1-x3)/8+(nodes[7][c]-nodes[4][c])*(1-x1)*(1+x3)/8+(nodes[6][c]-nodes[5][c])*(1+x1)*(1+x3)/8);
                         J[c][2] =(Real)( (nodes[4][c]-nodes[0][c])*(1-x1)*(1-x2)/8+(nodes[5][c]-nodes[1][c])*(1+x1)*(1-x2)/8+(nodes[6][c]-nodes[2][c])*(1+x1)*(1+x2)/8+(nodes[7][c]-nodes[3][c])*(1-x1)*(1+x2)/8);
                     }
-                    detJ = defaulttype::determinant(J);
+                    detJ = type::determinant(J);
                     J_1.invert(J);
                     J_1t.transpose(J_1);
 

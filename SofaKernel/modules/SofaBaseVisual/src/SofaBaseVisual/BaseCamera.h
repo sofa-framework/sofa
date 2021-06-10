@@ -41,9 +41,9 @@ public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
     typedef defaulttype::Ray Ray;
-    typedef defaulttype::Vector4 Vec4;
+    typedef type::Vector4 Vec4;
     typedef type::Vector3 Vec3;
-    typedef defaulttype::Vector2 Vec2;
+    typedef type::Vector2 Vec2;
     typedef type::Quat<SReal> Quat;
 
     enum Side {LEFT, RIGHT, MONO};

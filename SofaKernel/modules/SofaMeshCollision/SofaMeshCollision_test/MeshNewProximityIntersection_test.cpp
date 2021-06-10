@@ -34,7 +34,7 @@ namespace sofa{
     struct MeshNewProximityIntersectionTest : public BaseTest
     {
         typedef sofa::type::Vector3 Vec3;
-        typedef sofa::defaulttype::Vector2 Vec2;
+        typedef sofa::type::Vector2 Vec2;
         typedef sofa::component::collision::MeshNewProximityIntersection ProximityIntersection;
 
         MeshNewProximityIntersectionTest(){

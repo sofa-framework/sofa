@@ -541,7 +541,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         return;
 
     using type::Vector3;
-    using defaulttype::Vec3i;
+    using type::Vec3i;
     using type::Vec4f;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

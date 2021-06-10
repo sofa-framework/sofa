@@ -138,6 +138,7 @@ void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
 template<class DataTypes>
 void OBBCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index index){
 
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
 
     std::vector<Coord> p;

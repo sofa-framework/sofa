@@ -77,7 +77,7 @@ void BVHJoint::display(int frameNum)
 
     drawtool->pushMatrix();
     drawtool->disableLighting();
-    drawtool->drawLine({ 0.0f, 0.0f, 0.0f }, { float(offset->x), float(offset->y), float(offset->z) }, helper::types::RGBAColor::black());
+    drawtool->drawLine({ 0.0f, 0.0f, 0.0f }, { float(offset->x), float(offset->y), float(offset->z) }, type::RGBAColor::black());
 
     core::visual::VisualParams::defaultInstance()->getModelViewMatrix(matrix);
 

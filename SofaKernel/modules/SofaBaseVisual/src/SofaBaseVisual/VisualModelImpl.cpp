@@ -51,6 +51,7 @@ namespace sofa::component::visualmodel
 using sofa::type::RGBAColor;
 using sofa::type::Material;
 using sofa::type::PrimitiveGroup;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using type::vector;
@@ -686,11 +687,11 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
 {
-    Quaternion q = type::Quat<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
+    auto q = type::Quat<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
-void VisualModelImpl::applyRotation(const Quat q)
+void VisualModelImpl::applyRotation(const Quat<SReal> q)
 {
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();

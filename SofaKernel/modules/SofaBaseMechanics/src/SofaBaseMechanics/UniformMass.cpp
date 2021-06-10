@@ -34,6 +34,7 @@ using std::string ;
 using std::ostringstream ;
 using sofa::component::mass::Vec3d ;
 using sofa::helper::system::DataRepository ;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 namespace sofa::component::mass
@@ -331,7 +332,7 @@ Vector6 UniformMass<RigidTypes,MassType>::getMomentumRigid3DImpl( const Mechanic
     Real m = d_vertexMass.getValue().mass;
     const typename MassType::Mat3x3& I = d_vertexMass.getValue().inertiaMassMatrix;
 
-    defaulttype::Vec6d momentum;
+    type::Vec6d momentum;
 
     for ( unsigned int i=0 ; i<indices.size() ; i++ )
     {
@@ -356,7 +357,7 @@ Vector6 UniformMass<Vec3Types, MassType>::getMomentumVec3DImpl ( const Mechanica
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     const MassType& m = d_vertexMass.getValue();
-    defaulttype::Vec6d momentum;
+    type::Vec6d momentum;
 
     for ( unsigned int i=0 ; i<indices.size() ; i++ )
     {

@@ -27,8 +27,8 @@
 namespace sofa::component::mapping::_barycentricmappertopologycontainer_
 {
 
-using defaulttype::Vec3d;
-using defaulttype::Vec3i;
+using type::Vec3d;
+using type::Vec3i;
 typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
 
 template <class In, class Out, class MappingDataType, class Element>

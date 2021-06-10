@@ -124,14 +124,14 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
     const type::Vector3 AB = p2-p1;
     const type::Vector3 AC = p3-p1;
     const type::Vector3 AQ = q -p1;
-    defaulttype::Matrix2 A;
-    defaulttype::Vector2 b;
+    type::Matrix2 A;
+    type::Vector2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -226,14 +226,14 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
     const type::Vector3 AB = p2-p1;
     const type::Vector3 AC = p3-p1;
     const type::Vector3 AQ = q -p1;
-    defaulttype::Matrix2 A;
-    defaulttype::Vector2 b;
+    type::Matrix2 A;
+    type::Vector2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -399,14 +399,14 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& 
     const type::Vector3 AB = e1.p2() - e1.p1();
     const type::Vector3 AC = e1.p3() - e1.p1();
     const type::Vector3 AQ = e2.center() - e1.p1();
-    defaulttype::Matrix2 A;
-    defaulttype::Vector2 b;
+    type::Matrix2 A;
+    type::Vector2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;

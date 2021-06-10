@@ -804,15 +804,15 @@ void IntrUtil<Real>::segNearestPoints(const type::Vec<3,Real> & p0,const type::V
     const type::Vec<3,Real> CD = q1-q0;
     const type::Vec<3,Real> AC = q0-p0;
 
-    defaulttype::Matrix2 Amat;//matrix helping us to find the two nearest points lying on the segments of the two segments
-    defaulttype::Vector2 b;
+    type::Matrix2 Amat;//matrix helping us to find the two nearest points lying on the segments of the two segments
+    type::Vector2 b;
 
     Amat[0][0] = AB*AB;
     Amat[1][1] = CD*CD;
     Amat[0][1] = Amat[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const SReal det = defaulttype::determinant(Amat);
+    const SReal det = type::determinant(Amat);
 
     SReal AB_norm2 = AB.norm2();
     SReal CD_norm2 = CD.norm2();

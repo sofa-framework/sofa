@@ -116,7 +116,7 @@ public:
 
     // If using STEP loader, include also uv coordinates
     typedef Index					UVID;
-    typedef defaulttype::Vector2						UV;
+    typedef type::Vector2						UV;
     typedef type::vector<UV>				SeqUV;
     virtual const SeqUV& getUVs();
     virtual Size getNbUVs();

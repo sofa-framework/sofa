@@ -94,8 +94,8 @@ void RestStiffSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo
     ReadAccessor< Data<typename Type::VecCoord> > rest_positions = mo.x0;
     for(size_t i=0;i<positions.size();i++)
     {
-        sofa::defaulttype::Vec3 pos = Type::getCPos(positions[i]) ;
-        sofa::defaulttype::Vec3 rpos = Type::getCPos(rest_positions[i]) ;
+        sofa::type::Vec3 pos = Type::getCPos(positions[i]) ;
+        sofa::type::Vec3 rpos = Type::getCPos(rest_positions[i]) ;
 
         if(isFixed)
         {

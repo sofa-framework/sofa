@@ -364,7 +364,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
 
     msg_info() << "Compute distance map.";
 
-    sofa::defaulttype::Vec3i res = hexaContainer->resolution.getValue();
+    sofa::type::Vec3i res = hexaContainer->resolution.getValue();
     bool convergence = false;
 
     double*** distMap = new double** [res[0]];
@@ -573,7 +573,7 @@ template<class DataTypes>
 void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, type::vector<double>& distances, VecCoord& gradients, const type::vector<core::topology::BaseMeshTopology::HexaID>& hexaGoal, const VecCoord& goals )
 {
     // Store the distance and compute gradient for each goal.
-    sofa::defaulttype::Vec3i res = hexaContainer->resolution.getValue();
+    sofa::type::Vec3i res = hexaContainer->resolution.getValue();
     const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
     for ( unsigned int i = 0; i < hexaGoal.size(); i++ )
     {
@@ -672,7 +672,7 @@ void Distances< DataTypes >::findCorrespondingHexas ( type::vector<core::topolog
 template<class DataTypes>
 void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& point )
 {
-    const sofa::defaulttype::Vec3i& res = hexaContainer->resolution.getValue();
+    const sofa::type::Vec3i& res = hexaContainer->resolution.getValue();
     const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
 
     int x = int ( ( point[0] - offset.getValue()[0]) / voxelSize[0]);

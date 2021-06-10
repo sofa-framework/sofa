@@ -38,7 +38,7 @@ AngularSpringForceField<DataTypes>::AngularSpringForceField()
     , angularStiffness(initData(&angularStiffness, "angularStiffness", "angular stiffness for the controlled nodes"))
     , angularLimit(initData(&angularLimit, "limit", "angular limit (max; min) values where the force applies"))
     , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
-    , springColor(initData(&springColor, helper::types::RGBAColor::green(), "springColor","spring color"))
+    , springColor(initData(&springColor, type::RGBAColor::green(), "springColor","spring color"))
 {    
 }
 

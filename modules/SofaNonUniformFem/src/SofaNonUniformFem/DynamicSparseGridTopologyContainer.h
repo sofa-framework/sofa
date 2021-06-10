@@ -43,7 +43,7 @@ public:
     typedef EdgesInHexahedron EdgesInHexahedron;
     typedef QuadsInHexahedron QuadsInHexahedron;
 
-    Data<sofa::defaulttype::Vec3i> resolution; ///< voxel grid resolution
+    Data<sofa::type::Vec3i> resolution; ///< voxel grid resolution
 
     Data< sofa::type::vector<unsigned char> > valuesIndexedInRegularGrid; ///< values indexed in the Regular Grid
     HexahedronData< sofa::type::vector<unsigned char> > valuesIndexedInTopology; ///< values indexed in the topology

@@ -114,6 +114,7 @@ void CylinderCollisionModel<DataTypes>::init()
 template<class DataTypes>
 void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const auto ncyl = m_mstate->getSize();
@@ -170,6 +171,7 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 template<class DataTypes>
 void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index i)
 {
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
     sofa::type::RGBAColor colour(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
     SReal h2 = height(i)/2.0;

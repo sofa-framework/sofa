@@ -87,7 +87,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
     Real diffusionCoefficient;
     SReal massDensity;
     type::Vec<3,SReal> beamDimension;
-    defaulttype::Vec3i beamResolution;
+    type::Vec3i beamResolution;
     SReal errorMax;
     SReal timeEvaluation;
     SReal timeStep;
@@ -107,7 +107,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
         , diffusionCoefficient( 1.0 )
         , massDensity( 1.0 )
         , beamDimension(1.0, 0.5, 0.5)
-        , beamResolution( defaulttype::Vec3i(21,11,11) )
+        , beamResolution( type::Vec3i(21,11,11) )
         , errorMax( 1e-3 )
         , timeEvaluation( 0.05 )
     {

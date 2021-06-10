@@ -26,6 +26,7 @@ namespace sofa::component::collision
 
 template <class DataTypes1,class DataTypes2>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & e1,TCapsule<DataTypes2> & e2,SReal alarmDist,SReal contactDist,OutputVector * contacts){
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
     if(shareSameVertex(e1,e2))
         return 0;
@@ -47,7 +48,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & e1,TCapsule<DataT
     Amat[0][1] = Amat[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const SReal det = defaulttype::determinant(Amat);
+    const SReal det = type::determinant(Amat);
 
     SReal AB_norm2 = AB.norm2();
     SReal CD_norm2 = CD.norm2();

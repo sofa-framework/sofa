@@ -72,14 +72,14 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, TSphere<T>& e1
     const type::Vector3 x13 = e2.p1()-e2.p2();
     const type::Vector3 x23 = e2.p1()-e2.p3();
     const type::Vector3 x03 = e2.p1()-e1.center();
-    defaulttype::Matrix2 A;
-    defaulttype::Vector2 b;
+    type::Matrix2 A;
+    type::Vector2 b;
     A[0][0] = x13*x13;
     A[1][1] = x23*x23;
     A[0][1] = A[1][0] = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -115,14 +115,14 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, TSphere<T>& 
     const type::Vector3 x13 = e2.p1()-e2.p2();
     const type::Vector3 x23 = e2.p1()-e2.p3();
     const type::Vector3 x03 = e2.p1()-e1.center();
-    defaulttype::Matrix2 A;
-    defaulttype::Vector2 b;
+    type::Matrix2 A;
+    type::Vector2 b;
     A[0][0] = x13*x13;
     A[1][1] = x23*x23;
     A[0][1] = A[1][0] = x13*x23;
     b[0] = x13*x03;
     b[1] = x23*x03;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;

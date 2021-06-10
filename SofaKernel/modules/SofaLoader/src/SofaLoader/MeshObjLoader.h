@@ -60,10 +60,10 @@ public:
     Data <helper::SVector <helper::SVector <int> > > d_faceList;
     Data <helper::SVector <helper::SVector <int> > > d_texIndexList;
     Data <type::vector<sofa::type::Vector3> > d_positionsList;
-    Data< type::vector<sofa::defaulttype::Vector2> > d_texCoordsList;
+    Data< type::vector<sofa::type::Vector2> > d_texCoordsList;
     Data <type::SVector<type::SVector<int> > > d_normalsIndexList;
     Data <type::vector<sofa::type::Vector3> > d_normalsList;
-    Data< type::vector<sofa::defaulttype::Vector2> > d_texCoords;
+    Data< type::vector<sofa::type::Vector2> > d_texCoords;
     Data< bool > d_computeMaterialFaces;
     type::vector< Data <type::vector<unsigned int> >* > d_subsets_indices;
 

@@ -33,6 +33,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalVMultiOpVisitor;
 namespace sofa::component::linearsolver
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::core::MultiVecDerivId;
 

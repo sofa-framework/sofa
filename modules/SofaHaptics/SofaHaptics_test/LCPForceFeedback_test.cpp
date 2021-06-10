@@ -67,9 +67,9 @@ public:
     /// values to exchange info with haptic thread test
     int m_cptLoop = 0;
     int m_cptLoopContact = 0;
-    sofa::defaulttype::Vec3 m_meanForceFFBack = sofa::defaulttype::Vec3(0, 0, 0);
+    sofa::type::Vec3 m_meanForceFFBack = sofa::type::Vec3(0, 0, 0);
     
-    sofa::defaulttype::Vec3 m_currentPosition = sofa::defaulttype::Vec3(0, 0, 0);
+    sofa::type::Vec3 m_currentPosition = sofa::type::Vec3(0, 0, 0);
     std::mutex mtxPosition;
 protected:
     /// Internal method to load a scene test file
@@ -104,9 +104,9 @@ void LCPForceFeedback_test::HapticsThread(std::atomic<bool>& terminate, void * p
         ctime_t startTime = CTime::getRefTime();
 
         driverTest->mtxPosition.lock();
-        sofa::defaulttype::Vec3 posInSofa = driverTest->m_currentPosition; // will apply -1 on y to simulate penetration
+        sofa::type::Vec3 posInSofa = driverTest->m_currentPosition; // will apply -1 on y to simulate penetration
         driverTest->mtxPosition.unlock();
-        sofa::defaulttype::Vec3 force;
+        sofa::type::Vec3 force;
         driverTest->m_LCPFFBack->computeForce(posInSofa[0], posInSofa[1]-1.0, posInSofa[2], 0, 0, 0, 0,
             force[0], force[1], force[2]);
 
@@ -278,13 +278,13 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_EQ(cons.size(), 84);
 
     // check LCP computeForce method
-    sofa::defaulttype::Vec3 position;
-    sofa::defaulttype::Vec3 force;
-    sofa::defaulttype::Vec3 trueForce;
+    sofa::type::Vec3 position;
+    sofa::type::Vec3 force;
+    sofa::type::Vec3 trueForce;
 
     // check out of problem position
     m_LCPFFBack->computeForce(position[0], position[1], position[2], 0, 0, 0, 0, force[0], force[1], force[2]);
-    trueForce = sofa::defaulttype::Vec3(0.0, 0.0, 0.0);
+    trueForce = sofa::type::Vec3(0.0, 0.0, 0.0);
     EXPECT_EQ(force, trueForce);
     
     
@@ -305,7 +305,7 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_FLOAT_EQ(coords[0][6], coordT[6]);
 
     //// force
-    trueForce = sofa::defaulttype::Vec3(-0.001655988795, 0.002759984308, -2.431849862e-06);
+    trueForce = sofa::type::Vec3(-0.001655988795, 0.002759984308, -2.431849862e-06);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);
@@ -328,7 +328,7 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_FLOAT_EQ(inside[6], coordT[6]);
 
     //// force
-    trueForce = sofa::defaulttype::Vec3(-0.1450155705, 8.930516304, 0.1567013005);
+    trueForce = sofa::type::Vec3(-0.1450155705, 8.930516304, 0.1567013005);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);

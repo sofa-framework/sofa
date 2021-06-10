@@ -68,7 +68,7 @@ public:
     Data< VecReal > angularStiffness; ///< angular stiffness for the controlled nodes
     Data<VecReal> angularLimit; ///< angular limit (max; min) values where the force applies
     Data< bool > drawSpring; ///< draw Spring
-    Data< helper::types::RGBAColor > springColor; ///< spring color
+    Data< type::RGBAColor > springColor; ///< spring color
 
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 

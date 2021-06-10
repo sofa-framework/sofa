@@ -50,7 +50,7 @@ class SOFA_SOFABASETOPOLOGY_API SparseGridTopology : public MeshTopology
 public:
     SOFA_CLASS(SparseGridTopology,MeshTopology);
     typedef sofa::type::Vector3 Vector3;
-    typedef sofa::defaulttype::Vec3i   Vec3i;
+    typedef sofa::type::Vec3i   Vec3i;
     typedef sofa::type::fixed_array<Vector3,8> CubeCorners;
     typedef sofa::defaulttype::BoundingBox BoundingBox;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio

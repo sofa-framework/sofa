@@ -45,13 +45,13 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     const type::Vector3 CD = q2-q1;
     const type::Vector3 AC = q1-p1;
     sofa::type::Matrix2 A;
-    sofa::defaulttype::Vector2 b;
+    sofa::type::Vector2 b;
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
     A[0][1] = A[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const double det = defaulttype::determinant(A);
+    const double det = type::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -194,13 +194,13 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     const type::Vector3 AC = p3-p1;
     const type::Vector3 AQ = q -p1;
     sofa::type::Matrix2 A;
-    sofa::defaulttype::Vector2 b;
+    sofa::type::Vector2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const double det = defaulttype::determinant(A);
+    const double det = type::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;

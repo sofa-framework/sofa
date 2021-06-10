@@ -29,7 +29,7 @@ namespace sofa::component::mapping
 
 using sofa::type::Vector3;
 using sofa::core::visual::VisualParams;
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 using sofa::type::Vector3;
 using sofa::type::Matrix3;
 using sofa::type::Mat3x3d;
@@ -365,7 +365,7 @@ BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Ou
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const typename In::Real det = sofa::defaulttype::determinant(A);
+    const typename In::Real det = sofa::type::determinant(A);
 
     baryCoords[0] = (b[0]*A[1][1] - b[1]*A[0][1])/det;
     baryCoords[1]  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
