@@ -2463,4 +2463,202 @@ defaulttype::Quat& BeamPlasticFEMForceField<DataTypes>::beamQuat(int i)
 
 /**************************************************************************/
 
+
+/*****************************************************************************/
+/*                               GaussPoint3                                 */
+/*****************************************************************************/
+
+template <class DataTypes>
+BeamPlasticFEMForceField<DataTypes>::GaussPoint3::GaussPoint3(Real x, Real y, Real z, Real w1, Real w2, Real w3)
+{
+    m_coordinates = { x, y, z };
+    m_weights = { w1, w2, w3 };
+    m_mechanicalState = MechanicalState::ELASTIC; //By default, before any deformation occurs
+    m_prevStress = Vec9(); //By default, no deformation => 0 stress tensor
+    m_backStress = Vec9(); //By default, no plastic deformation => back stress is 0
+    m_yieldStress = 0; //Changed by initialiseGaussPoints, depends on the material
+    m_plasticStrain = Vec9(); //By default, no plastic deformation => no history
+    m_effectivePlasticStrain = 0; //By default, no plastic deformation => no history
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getNx() const -> const EigenMat3x12&
+{
+    return m_Nx;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setNx(EigenMat3x12 Nx)
+{
+    m_Nx = Nx;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getGradN() const -> const EigenMat9x12&
+{
+    return m_gradN;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setGradN(EigenMat9x12 gradN)
+{
+    m_gradN = gradN;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getMechanicalState() const -> const MechanicalState
+{
+    return m_mechanicalState;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setMechanicalState(MechanicalState newState)
+{
+    m_mechanicalState = newState;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getPrevStress() const -> const Vec9&
+{
+    return m_prevStress;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setPrevStress(Vec9 newStress)
+{
+    m_prevStress = newStress;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getCoord() const -> const Vec3&
+{
+    return m_coordinates;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setCoord(Vec3 coord)
+{
+    m_coordinates = coord;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getWeights() const -> const Vec3&
+{
+    return m_weights;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setWeights(Vec3 weights)
+{
+    m_weights = weights;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getBackStress() const -> const Vec9&
+{
+    return m_backStress;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setBackStress(Vec9 backStress)
+{
+    m_backStress = backStress;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getYieldStress() const ->const Real
+{
+    return m_yieldStress;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setYieldStress(Real yieldStress)
+{
+    m_yieldStress = yieldStress;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getPlasticStrain() const -> const Vec9&
+{
+    return m_plasticStrain;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setPlasticStrain(Vec9 plasticStrain)
+{
+    m_plasticStrain = plasticStrain;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getEffectivePlasticStrain() const ->const Real
+{
+    return m_effectivePlasticStrain;
+}
+
+template <class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setEffectivePlasticStrain(Real effectivePlasticStrain)
+{
+    m_effectivePlasticStrain = effectivePlasticStrain;
+}
+
+
+/*****************************************************************************/
+/*                                Interval3                                  */
+/*****************************************************************************/
+
+template <class DataTypes>
+BeamPlasticFEMForceField<DataTypes>::Interval3::Interval3()
+{
+    //By default, integration is considered over [-1,1]*[-1,1]*[-1,1].
+    m_a1 = m_a2 = m_a3 = -1;
+    m_b1 = m_b2 = m_b3 = 1;
+}
+
+template <class DataTypes>
+BeamPlasticFEMForceField<DataTypes>::Interval3::Interval3(Real a1, Real b1, Real a2, Real b2, Real a3, Real b3)
+{
+    m_a1 = a1;
+    m_b1 = b1;
+    m_a2 = a2;
+    m_b2 = b2;
+    m_a3 = a3;
+    m_b3 = b3;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::Interval3::geta1() const -> Real
+{
+    return m_a1;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::Interval3::getb1() const -> Real
+{
+    return m_b1;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::Interval3::geta2() const -> Real
+{
+    return m_a2;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::Interval3::getb2() const -> Real
+{
+    return m_b2;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::Interval3::geta3() const -> Real
+{
+    return m_a3;
+}
+
+template <class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::Interval3::getb3() const -> Real
+{
+    return m_b3;
+}
+
 } // namespace sofa::plugin::beamplastic::component::forcefield::_beamplasticfemforcefield_
