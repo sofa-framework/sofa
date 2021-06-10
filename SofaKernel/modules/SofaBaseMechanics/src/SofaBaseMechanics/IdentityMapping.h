@@ -153,11 +153,11 @@ namespace sofa::helper
 
 #define SOFA_ATTRIBUTE_DISABLED__HELPER_EQ() \
     SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#21XX)", "v21.06", "You need to include <sofa/core/MappingHelper.h> and use sofa::core::eq(...) instead)")
+        "v21.06 (PR#2137)", "v21.06 (PR#2137)", "You need to include <sofa/core/MappingHelper.h> and use sofa::core::eq(...) instead.")
 
 #define SOFA_ATTRIBUTE_DISABLED__HELPER_PEQ() \
     SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#21XX)", "v21.06", "You need to include <sofa/core/MappingHelper.h> and use sofa::core::peq(...) instead)")
+        "v21.06 (PR#2137)", "v21.06 (PR#2137)", "You need to include <sofa/core/MappingHelper.h> and use sofa::core::peq(...) instead.")
 
     // Those static functions have been moved in MappingHelper.h
     template<class T1, class T2>
