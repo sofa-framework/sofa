@@ -27,10 +27,13 @@ using sofa::core::ExecParams ;
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
@@ -648,15 +651,94 @@ public:
         return ;
     }
 
+
+    void checkTopologicalChanges_Hexa()
+    {
+        string scene =
+            "<?xml version='1.0'?>                                                                              "
+            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+            "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+            "    <Node name='Hexa' >                                                                            "
+            "            <MechanicalObject position = '@../grid.position' />                                    "
+            "            <HexahedronSetTopologyContainer name='Container' src='@../grid' />                     "
+            "            <HexahedronSetTopologyModifier name='Modifier' />                                      "
+            "            <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+            "            <DiagonalMass name='m_mass' massDensity='1.0'/>                                        "
+            "    </Node>                                                                                        "
+            "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
+            scene.c_str(),
+            scene.size());
+        ASSERT_NE(root.get(), nullptr);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
+        EXPECT_TRUE(mass != nullptr);
+
+        if (mass != nullptr) {
+            EXPECT_EQ(mass->getMassCount(), 27);
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 8);
+        }
+
+        HexahedronSetTopologyModifier* modifier = root->getTreeObject<HexahedronSetTopologyModifier>();
+        EXPECT_TRUE(modifier != nullptr);
+
+        SReal refValue = SReal(1.0 / 8.0);  // 0.125
+
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+
+        // check value at init
+        EXPECT_EQ(vMasses.size(), 27);
+        EXPECT_NEAR(vMasses[0], refValue, 1e-4);
+        EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
+        
+        sofa::helper::vector<sofa::Index> hexaIds = { 0 };        
+        // remove hexahedron id: 0
+        modifier->removeHexahedra(hexaIds);
+        EXPECT_EQ(vMasses.size(), 26);
+        EXPECT_NEAR(vMasses[0], refValue, 1e-4); // check update of Mass when removing tetra
+        EXPECT_NEAR(vMasses[1], refValue, 1e-4);
+
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), 7.0);
+
+        // remove hexahedron id: 0
+        modifier->removeHexahedra(hexaIds);
+        EXPECT_EQ(vMasses.size(), 25);
+        EXPECT_NEAR(vMasses[0], refValue, 1e-4); // check update of Mass when removing tetra
+        EXPECT_NEAR(vMasses[1], refValue, 1e-4);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), 6.0);
+
+        hexaIds.push_back(1);
+        // remove hexahedron id: 0, 1
+        modifier->removeHexahedra(hexaIds);
+        EXPECT_EQ(vMasses.size(), 21);
+        EXPECT_NEAR(vMasses[0], refValue, 1e-4);
+        EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), 4.0);
+
+        hexaIds.push_back(2);
+        hexaIds.push_back(3);
+        // remove hexahedron id: 0, 1, 2, 3
+        modifier->removeHexahedra(hexaIds);
+        EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
+        
+        return;
+    }
+
+
     void checkTopologicalChanges_Tetra()
     {
         string scene =
             "<?xml version='1.0'?>                                                                              "
             "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
             "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
-            "    <MechanicalObject />                                                                           "
             "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
             "    <Node name='Tetra' >                                                                           "
+            "            <MechanicalObject position='@../grid.position' />                                      "
             "            <TetrahedronSetTopologyContainer name='Container' />                                   "
             "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
             "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
@@ -678,7 +760,7 @@ public:
 
         if (mass != nullptr) {
             EXPECT_EQ(mass->getMassCount(), 8);
-            EXPECT_EQ((float)mass->getTotalMass(), 8);
+            EXPECT_EQ(mass->getTotalMass(), 8);
         }
 
         TetrahedronSetTopologyModifier* modifier = root->getTreeObject<TetrahedronSetTopologyModifier>();
@@ -690,27 +772,36 @@ public:
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
        
+        // check value at init
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_NEAR(vMasses[0], refValue2, 1e-4);
 
         sofa::helper::vector<sofa::Index> tetraIds = { 0 };
-        modifier->removeTetrahedra(tetraIds); // remove tetra 0
+        // remove tetrahedron id: 0
+        modifier->removeTetrahedra(tetraIds); 
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_NEAR(vMasses[0], refValue2 - refValue, 1e-4); // check update of Mass when removing tetra
+        EXPECT_NEAR(mass->getTotalMass(), 8.0 - (4 * refValue), 1e-4);
         SReal lastV = vMasses[7];
         
-        modifier->removeTetrahedra(tetraIds);  // remove tetra 0
+        // remove tetrahedron id: 0
+        modifier->removeTetrahedra(tetraIds);
         EXPECT_EQ(vMasses.size(), 7);
         EXPECT_NEAR(vMasses[0], refValue2 - 2 *refValue, 1e-4); // check update of Mass when removing tetra
         EXPECT_NEAR(vMasses[4], lastV, 1e-4); // vertex 4 has been removed because isolated, check swap value
+        EXPECT_NEAR(mass->getTotalMass(), 8.0 - (8 * refValue), 1e-4);
 
         tetraIds.push_back(1);
-        modifier->removeTetrahedra(tetraIds);  // remove tetra 0, 1
+        // remove tetrahedron id: 0, 1
+        modifier->removeTetrahedra(tetraIds);
         EXPECT_EQ(vMasses.size(), 6);
         EXPECT_NEAR(vMasses[0], refValue, 1e-4);
+        EXPECT_NEAR(mass->getTotalMass(), 8.0 - (16 * refValue), 1e-4);
 
+        // remove tetrahedron id: 0, 1
         modifier->removeTetrahedra(tetraIds); // remove tetra 0, 1
         EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
 
         return;
     }
@@ -896,10 +987,16 @@ TEST_F(DiagonalMass3_test, singleHexahedron)
 //    checkWrongSizeVertexMass_Tetra();
 //}
 
+TEST_F(DiagonalMass3_test, checkTopologicalChanges_Hexa) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Hexa();
+}
+
+
 TEST_F(DiagonalMass3_test, checkTopologicalChanges_Tetra) {
     EXPECT_MSG_NOEMIT(Error);
     checkTopologicalChanges_Tetra();
-    }
+}
 
 
 /// Rigid file are not handled only xs3....
