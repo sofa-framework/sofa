@@ -84,10 +84,11 @@ public:
     typedef TMassType MassType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Real Real;
     typedef typename helper::vector<MassType> VecMass;
     typedef DiagonalMass<TDataTypes, TMassType> TheDiagonalMass ;
 
-    simulation::Simulation* simulation;
+    simulation::Simulation* simulation = nullptr;
     simulation::Node::SPtr root;
     simulation::Node::SPtr node;
     typename MechanicalObject<DataTypes>::SPtr mstate;
@@ -128,11 +129,11 @@ public:
         ASSERT_EQ(mstate->x.getValue().size(), expectedMass.size());
 
         // Check the total mass.
-        EXPECT_FLOAT_EQ(expectedTotalMass, mass->d_totalMass.getValue());
+        EXPECT_NEAR(expectedTotalMass, mass->d_totalMass.getValue(), 1e-4);
 
         // Check the mass at each index.
         for (size_t i = 0 ; i < mstate->x.getValue().size() ; i++)
-            EXPECT_FLOAT_EQ(expectedMass[i], mass->d_vertexMass.getValue()[i]);
+            EXPECT_NEAR(expectedMass[i], mass->d_vertexMass.getValue()[i], 1e-4);
     }
 
     void runTest(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms,
@@ -157,7 +158,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -194,7 +195,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -222,7 +223,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -249,7 +250,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -282,7 +283,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -315,7 +316,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -349,7 +350,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -383,7 +384,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -417,7 +418,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -452,7 +453,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -486,7 +487,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -521,7 +522,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -556,7 +557,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -591,7 +592,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          sofa::Size(scene.size()));
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -620,7 +621,7 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.str().c_str(),
-                                                          scene.str().size()) ;
+                                                          sofa::Size(scene.str().size())) ;
         ASSERT_NE(root.get(), nullptr) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
@@ -669,31 +670,26 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
-            scene.size());
+            sofa::Size(scene.size()));
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
-        EXPECT_TRUE(mass != nullptr);
-
-        if (mass != nullptr) {
-            EXPECT_EQ(mass->getMassCount(), 27);
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 8);
-        }
+        ASSERT_NE(mass, nullptr);
 
         HexahedronSetTopologyModifier* modifier = root->getTreeObject<HexahedronSetTopologyModifier>();
-        EXPECT_TRUE(modifier != nullptr);
-
-        SReal refValue = SReal(1.0 / 8.0);  // 0.125
+        ASSERT_NE(modifier, nullptr);
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
+        Real refValue = Real(1.0 / 8.0);  // 0.125        
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 27);
         EXPECT_NEAR(vMasses[0], refValue, 1e-4);
         EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
+        EXPECT_NEAR(mass->getTotalMass(), 8, 1e-4);
         
         sofa::helper::vector<sofa::Index> hexaIds = { 0 };        
         // remove hexahedron id: 0
@@ -702,14 +698,14 @@ public:
         EXPECT_NEAR(vMasses[0], refValue, 1e-4); // check update of Mass when removing tetra
         EXPECT_NEAR(vMasses[1], refValue, 1e-4);
 
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), 7.0);
+        EXPECT_NEAR(mass->getTotalMass(), 7.0, 1e-4);
 
         // remove hexahedron id: 0
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 25);
         EXPECT_NEAR(vMasses[0], refValue, 1e-4); // check update of Mass when removing tetra
         EXPECT_NEAR(vMasses[1], refValue, 1e-4);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), 6.0);
+        EXPECT_NEAR(mass->getTotalMass(), 6.0, 1e-4);
 
         hexaIds.push_back(1);
         // remove hexahedron id: 0, 1
@@ -717,7 +713,7 @@ public:
         EXPECT_EQ(vMasses.size(), 21);
         EXPECT_NEAR(vMasses[0], refValue, 1e-4);
         EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), 4.0);
+        EXPECT_NEAR(mass->getTotalMass(), 4.0, 1e-4);
 
         hexaIds.push_back(2);
         hexaIds.push_back(3);
@@ -749,32 +745,26 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
-            scene.size());
+            sofa::Size(scene.size()));
         ASSERT_NE(root.get(), nullptr);
         
         /// Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
-        EXPECT_TRUE(mass != nullptr);
+        ASSERT_NE(mass, nullptr);
 
-        if (mass != nullptr) {
-            EXPECT_EQ(mass->getMassCount(), 8);
-            EXPECT_EQ(mass->getTotalMass(), 8);
-        }
-
-        TetrahedronSetTopologyModifier* modifier = root->getTreeObject<TetrahedronSetTopologyModifier>();
-        //mass->getContext()->get(modifier);
-        EXPECT_TRUE(modifier != nullptr);
-
-        SReal refValue = SReal(1.0/3.0);  //0.3333
-        SReal refValue2 = 2 - refValue; // 1.6667
+        TetrahedronSetTopologyModifier* modifier = root->getTreeObject<TetrahedronSetTopologyModifier>();        
+        ASSERT_NE(modifier, nullptr);
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
+        Real refValue = Real(1.0/3.0);  //0.3333
+        Real refValue2 = 2 - refValue; // 1.6667
        
         // check value at init
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_NEAR(vMasses[0], refValue2, 1e-4);
+        EXPECT_NEAR(mass->getTotalMass(), 8.0, 1e-4);
 
         sofa::helper::vector<sofa::Index> tetraIds = { 0 };
         // remove tetrahedron id: 0
@@ -782,7 +772,7 @@ public:
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_NEAR(vMasses[0], refValue2 - refValue, 1e-4); // check update of Mass when removing tetra
         EXPECT_NEAR(mass->getTotalMass(), 8.0 - (4 * refValue), 1e-4);
-        SReal lastV = vMasses[7];
+        Real lastV = vMasses[7];
         
         // remove tetrahedron id: 0
         modifier->removeTetrahedra(tetraIds);
@@ -823,32 +813,27 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
-            scene.size());
+            sofa::Size(scene.size()));
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
-        EXPECT_TRUE(mass != nullptr);
-
-        if (mass != nullptr) {
-            EXPECT_EQ(mass->getMassCount(), 9);
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 4);
-        }
+        ASSERT_NE(mass, nullptr);
 
         QuadSetTopologyModifier* modifier = root->getTreeObject<QuadSetTopologyModifier>();
-        EXPECT_TRUE(modifier != nullptr);
-
-        SReal refValue = SReal(1.0 / 4.0);  // 0.125
-        SReal initMass = mass->getTotalMass();
+        ASSERT_NE(modifier, nullptr);
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
+        Real refValue = Real(1.0 / 4.0);  // 0.125
+        Real initMass = mass->getTotalMass();
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 9);
         EXPECT_NEAR(vMasses[0], refValue, 1e-4);
         EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
+        EXPECT_NEAR(initMass, 4, 1e-4);
 
         sofa::helper::vector<sofa::Index> ids = { 0 };
         // remove quad id: 0
@@ -856,15 +841,15 @@ public:
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_NEAR(vMasses[0], refValue, 1e-4); // check update of Mass when removing tetra
         EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - refValue);
-        SReal lastV = vMasses[7];
+        EXPECT_NEAR(mass->getTotalMass(), initMass - refValue, 1e-4);
+        Real lastV = vMasses[7];
 
         // remove quad id: 0
         modifier->removeQuads(ids, true, true);
         EXPECT_EQ(vMasses.size(), 7);
         EXPECT_NEAR(vMasses[0], lastV, 1e-4); // check swap value
         EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - 2*refValue);
+        EXPECT_NEAR(mass->getTotalMass(), initMass - 2*refValue, 1e-4);
 
         ids.push_back(1);
         // remove quad id: 0, 1
@@ -900,26 +885,21 @@ public:
         sofa::simulation::getSimulation()->init(root.get());
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
-        EXPECT_TRUE(mass != nullptr);
-
-        if (mass != nullptr) {
-            EXPECT_EQ(mass->getMassCount(), 9);
-            EXPECT_FLOAT_EQ(SReal(mass->getTotalMass()), 4);
-        }
+        ASSERT_NE(mass, nullptr);
 
         TriangleSetTopologyModifier* modifier = root->getTreeObject<TriangleSetTopologyModifier>();
-        EXPECT_TRUE(modifier != nullptr);
-
-        SReal refValue = SReal(1.0 / 3.0);  // 0.3333
-        SReal refValue2 = SReal(1.0 / 2.0);  // 0.5
-        SReal initMass = mass->getTotalMass();
+        ASSERT_NE(modifier, nullptr);
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
+        Real refValue = Real(1.0 / 3.0);  // 0.3333
+        Real refValue2 = Real(1.0 / 2.0);  // 0.5
+        Real initMass = mass->getTotalMass();
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 9);
         EXPECT_NEAR(vMasses[0], refValue, 1e-4);
         EXPECT_NEAR(vMasses[1], refValue2, 1e-4);
+        EXPECT_NEAR(initMass, 4, 1e-4);
 
         sofa::helper::vector<sofa::Index> ids = { 0 };
         // remove Triangle id: 0
@@ -927,14 +907,14 @@ public:
         EXPECT_EQ(vMasses.size(), 9);
         EXPECT_NEAR(vMasses[0], refValue * 0.5, 1e-4); // check update of Mass when removing tetra
         EXPECT_NEAR(vMasses[1], refValue, 1e-4);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - refValue2);
+        EXPECT_NEAR(mass->getTotalMass(), initMass - refValue2, 1e-4);
 
         // remove Triangle id: 0
         modifier->removeTriangles(ids, true, true);
         EXPECT_EQ(vMasses.size(), 9);
         EXPECT_NEAR(vMasses[0], refValue * 0.5, 1e-4); // check swap value
         EXPECT_NEAR(vMasses[1], refValue, 1e-4);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - 2 * refValue2);
+        EXPECT_NEAR(mass->getTotalMass(), initMass - 2 * refValue2, 1e-4);
 
         ids.push_back(1);
         // remove Triangle id: 0, 1
@@ -942,7 +922,7 @@ public:
         EXPECT_EQ(vMasses.size(), 7);
         EXPECT_NEAR(vMasses[0], refValue, 1e-4);
         EXPECT_NEAR(vMasses[1], refValue, 1e-4);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - 4 * refValue2);
+        EXPECT_NEAR(mass->getTotalMass(), initMass - 4 * refValue2, 1e-4);
 
         ids.push_back(2);
         ids.push_back(3);
