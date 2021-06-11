@@ -845,13 +845,13 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
     if(_mu==0.0)
     {
-        msg_error() << "WARNING: frictionless case with unbuilt nlcp is not implemented";
+        msg_error() << "frictionless case with unbuilt nlcp is not implemented";
         return 0;
     }
 
     if (_numConstraints%3 != 0)
     {
-        msg_error() << " WARNING dim should be dividable by 3 in nlcp_gaussseidel";
+        msg_error() << "dim should be dividable by 3 in nlcp_gaussseidel";
         return 0;
     }
     int numContacts =  _numConstraints/3;

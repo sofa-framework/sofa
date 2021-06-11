@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <sofa/helper/system/FileRepository.h>
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
 
 #include <SofaLoader/MeshObjLoader.h>
 

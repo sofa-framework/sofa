@@ -25,8 +25,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/random.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 
 namespace sofa {

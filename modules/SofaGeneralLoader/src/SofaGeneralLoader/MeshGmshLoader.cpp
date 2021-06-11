@@ -46,11 +46,11 @@ bool MeshGmshLoader::doLoad()
 
     if (!canLoad())
     {
-        msg_error(this) << "Can't load file " << m_filename.getFullPath().c_str();
+        msg_error(this) << "Can't load file " << d_filename.getFullPath().c_str();
         return false;
     }
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
     // -- Looking for Gmsh version of this file.
@@ -106,7 +106,7 @@ bool MeshGmshLoader::doLoad()
     }
     else //if it enter this "else", it means there is a problem before in the factory or in canLoad()
     {
-        msg_error() << "File '" << m_filename << "' finally appears not to be a Gmsh file.";
+        msg_error() << "File '" << d_filename << "' finally appears not to be a Gmsh file.";
         file.close();
         return false;
     }

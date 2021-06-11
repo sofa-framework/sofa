@@ -30,7 +30,9 @@
 //force feedback
 #include <SofaHaptics/ForceFeedback.h>
 
+#if GEOMAGIC_HAVE_OPENHAPTICS
 #include <HD/hd.h>
+#endif
 
 namespace sofa::component::controller
 {
@@ -54,6 +56,17 @@ public:
     SOFA_CLASS(GeomagicDriver, Controller);
     typedef RigidTypes::Coord Coord;
     typedef RigidTypes::VecCoord VecCoord;
+
+#if GEOMAGIC_HAVE_OPENHAPTICS
+    typedef HDdouble SHDdouble;
+    typedef HDSchedulerHandle SHDSchedulerHandle;
+    typedef HHD SHHD;
+#else // This is just a compatibility layer to be able to compile the plugin without Openhaptics for the continuous integration. The plugin won't work without Openhaptics. 
+    typedef double SHDdouble;
+    typedef unsigned long SHDSchedulerHandle;
+    typedef unsigned int SHHD;
+    unsigned int HD_INVALID_HANDLE = 0;
+#endif
     
     GeomagicDriver();
     virtual ~GeomagicDriver();
@@ -121,9 +134,9 @@ public:
     ///These data are written by the omni they cnnot be accessed in the simulation loop
     struct DeviceData
     {
-        HDdouble angle1[3];
-        HDdouble angle2[3];
-        HDdouble transform[16];
+        SHDdouble angle1[3];
+        SHDdouble angle2[3];
+        SHDdouble transform[16];
         int buttonState;
     };
 
@@ -132,8 +145,8 @@ public:
     bool m_isInContact; ///< Boolean to warn SOFA side when scheduler has computer contact (forcefeedback no null)
     DeviceData m_hapticData; ///< data structure used by scheduler
     DeviceData m_simuData; ///< data structure used by SOFA loop, values are copied from @sa m_hapticData
-    HHD m_hHD; ///< ID the device
-    std::vector< HDSchedulerHandle > m_hStateHandles; ///< List of ref to the workers scheduled
+    SHHD m_hHD; ///< ID the device
+    std::vector< SHDSchedulerHandle > m_hStateHandles; ///< List of ref to the workers scheduled
 };
 
 } // namespace sofa::component::controller

@@ -485,7 +485,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::draw(const co
             points.push_back(point2);
         }
 
-        const defaulttype::Vec<4,float> c(0,1,0.5,1);
+        const sofa::type::RGBAColor c(0.,1.,0.5,1.);
         if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)	vparams->drawTool()->drawLines(points, 1, c);
         else if (drawMode.getValue() == 1)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawCylinder(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
         else if (drawMode.getValue() == 2)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawArrow(points[2*i+1], points[2*i], showArrowSize.getValue(), c);

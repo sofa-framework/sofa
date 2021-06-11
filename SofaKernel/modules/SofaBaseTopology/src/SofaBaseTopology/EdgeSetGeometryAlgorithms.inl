@@ -899,5 +899,50 @@ void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const c
     }
 }
 
+template<class DataTypes>
+bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID edgeID,
+    const sofa::defaulttype::Vec<3, Real>& a,
+    const sofa::defaulttype::Vec<3, Real>& b,
+    Real &baryCoef)
+{
+    const double EPS = 1e-05;
+    bool is_intersect = false;
+    
+    const Edge& e = this->m_topology->getEdge(edgeID);
+    const VecCoord& p = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::Coord& c0 = p[e[0]];
+    const typename DataTypes::Coord& c1 = p[e[1]];
+    
+    sofa::defaulttype::Vec<3, Real> p0{ c0[0],c0[1],c0[2] };
+    sofa::defaulttype::Vec<3, Real> p1{ c1[0],c1[1],c1[2] };
+    sofa::defaulttype::Vec<3, Real> pa{ a[0],a[1],a[2] };
+    sofa::defaulttype::Vec<3, Real> pb{ b[0],b[1],b[2] };
+  
+    sofa::defaulttype::Vec<3, Real> v_0a = p0 - pa;
+    sofa::defaulttype::Vec<3, Real> v_ba = pb - pa;
+    sofa::defaulttype::Vec<3, Real> v_10 = p1 - p0;
+  
+    Real d0aba, dba10, d0a10, dbaba, d1010;
+
+    d0aba = v_0a * v_ba;
+    dba10 = v_ba * v_ba;
+    d0a10 = v_0a * v_10;
+    dbaba = v_ba * v_ba;
+    d1010 = v_10 * v_10;
+
+    Real deno, num;
+    deno = d1010 * dbaba - dba10 * dba10;
+    if (!abs(deno) <= EPS)
+    {
+        num = d0aba * dba10 - d0a10 * dbaba;
+
+        //baryCoef= (d0aba + dba10 * (num / deno)) / dbaba;
+        baryCoef = num / deno;
+        //if (baryCoef >= 0.0 && baryCoef <= 1.0)
+            is_intersect = true;
+    }
+    return is_intersect;
+}
+
 
 } //namespace sofa::component::topology
