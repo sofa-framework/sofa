@@ -61,7 +61,7 @@ void BruteForceDetection::init()
             narrowPhaseComponents[0],
             comma_fold);
 
-    msg_deprecated() << this->getClassName() << " component is deprecated." << msgendl
+    msg_deprecated() << this->getClassName() << " component is deprecated. It will be removed in v21.12." << msgendl
                      << "  As a replacement, use a BroadPhase component, such as [" << broadPhaseComponentsString
                      << "]," << msgendl
                      << "  AND a NarrowPhase component, such as [" << narrowPhaseComponentsString << "]." << msgendl
