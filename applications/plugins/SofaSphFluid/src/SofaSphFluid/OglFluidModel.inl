@@ -20,6 +20,9 @@ namespace component
 namespace visualmodel
 {
 
+using namespace sofa::type;
+using namespace sofa::defaulttype;
+
 const float SPRITE_SCALE_DIV = tanf(65.0f * ((float)M_PI_2 / 180.0f));
 
 template<class DataTypes>

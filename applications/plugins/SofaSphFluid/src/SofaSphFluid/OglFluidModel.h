@@ -14,7 +14,6 @@ namespace component
 {
 namespace visualmodel
 {
-using namespace sofa::defaulttype;
 /**
  *  \brief Render volume using particles
  *
