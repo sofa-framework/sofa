@@ -29,7 +29,8 @@ namespace sofa::gui::qt
 {
 
 using sofa::helper::Creator;
-using sofa::type::fixed_array;
+using sofa::type::fixed_array; 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<int>, TABLE_HORIZONTAL > > DWClass_vectori("default",true);

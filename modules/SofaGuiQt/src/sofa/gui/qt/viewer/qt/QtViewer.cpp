@@ -56,6 +56,7 @@ namespace sofa::gui::qt::viewer::qt
 {
 using std::cout;
 using std::endl;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 using sofa::simulation::getSimulation;
@@ -71,7 +72,7 @@ const std::string QtViewer::VIEW_FILE_EXTENSION = "view";
 // Mouse Interactor
 bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
-Quaternion QtViewer::_mouseInteractorNewQuat;
+Quat<SReal> QtViewer::_mouseInteractorNewQuat;
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x050400
 QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
@@ -1080,7 +1081,7 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
     if (sceneBBox.isValid() && ! sceneBBox.isFlat())
         coeffDeplacement *= 0.001 * (sceneBBox.maxBBox()
                 - sceneBBox.minBBox()).norm();
-    Quaternion conjQuat, resQuat, _newQuatBckUp;
+    Quat<SReal> conjQuat, resQuat, _newQuatBckUp;
 
     float x1, x2, y1, y2;
 
@@ -1521,7 +1522,7 @@ void QtViewer::moveRayPickInteractor(int eventX, int eventY)
     transform[2][3] = p0[2];
     Mat3x3d mat;
     mat = transform;
-    Quat q;
+    Quat<SReal> q;
     q.fromMatrix(mat);
 
     Vec3d position, direction;
@@ -1537,7 +1538,7 @@ void QtViewer::moveRayPickInteractor(int eventX, int eventY)
 void QtViewer::resetView()
 {
     Vec3d position;
-    Quat orientation;
+    Quat<SReal> orientation;
     bool fileRead = false;
 
     if (!sceneFileName.empty())
@@ -1565,17 +1566,17 @@ void QtViewer::newView()
     SofaViewer::newView();
 }
 
-void QtViewer::getView(Vector3& pos, Quat& ori) const
+void QtViewer::getView(Vector3& pos, Quat<SReal>& ori) const
 {
     SofaViewer::getView(pos, ori);
 }
 
-void QtViewer::setView(const Vector3& pos, const Quat &ori)
+void QtViewer::setView(const Vector3& pos, const Quat<SReal> &ori)
 {
     SofaViewer::setView(pos, ori);
 }
 
-void QtViewer::moveView(const Vector3& pos, const Quat &ori)
+void QtViewer::moveView(const Vector3& pos, const Quat<SReal> &ori)
 {
     SofaViewer::moveView(pos, ori);
 }

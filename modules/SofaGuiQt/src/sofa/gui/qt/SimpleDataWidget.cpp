@@ -30,6 +30,7 @@ namespace sofa::gui::qt
 
 using sofa::helper::Creator;
 using sofa::type::fixed_array;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 Creator<DataWidgetFactory, SimpleDataWidget<bool> > DWClass_bool("default",true);

@@ -31,6 +31,7 @@ namespace sofa::gui::qt
 
 using sofa::helper::Creator;
 using sofa::type::fixed_array;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::type::vector<float> > > > DWClass_mapvectorf("graph",true);

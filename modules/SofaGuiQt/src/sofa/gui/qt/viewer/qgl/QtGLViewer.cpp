@@ -52,6 +52,7 @@ namespace sofa::gui::qt::viewer::qgl
 {
 
 using std::endl;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::gl;
 using sofa::simulation::getSimulation;
@@ -987,7 +988,7 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     transform[1][3] = p0[1];
     transform[2][3] = p0[2];
     Mat3x3d mat; mat = transform;
-    Quat q; q.fromMatrix(mat);
+    Quat<SReal> q; q.fromMatrix(mat);
 
 
     Vec3d position, direction;
@@ -1083,7 +1084,7 @@ void QtGLViewer::saveView()
     }
 }
 
-void QtGLViewer::getView(Vec3d& pos, Quat& ori) const
+void QtGLViewer::getView(Vec3d& pos, Quat<SReal>& ori) const
 {
     qglviewer::Vec position = camera()->position();
     for(int i = 0; i < 3; ++i) pos[i] = position[i];
@@ -1091,7 +1092,7 @@ void QtGLViewer::getView(Vec3d& pos, Quat& ori) const
     for(int i = 0; i < 4; ++i) ori[i] = orientation[i];
 }
 
-void QtGLViewer::setView(const Vec3d& pos, const Quat &ori)
+void QtGLViewer::setView(const Vec3d& pos, const Quat<SReal> &ori)
 {
     camera()->setPosition(qglviewer::Vec(pos[0],pos[1],pos[2]));
     camera()->setOrientation(qglviewer::Quaternion(ori[0],ori[1],ori[2],ori[3]));

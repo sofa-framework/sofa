@@ -47,7 +47,7 @@
 namespace sofa::gui::qt
 {
 
-using sofa::helper::Quater;
+using sofa::type::Quat;
 
 /// This class is used to specify how to graphically represent a data type,
 /// by default using a simple QLineEdit
@@ -745,10 +745,10 @@ class data_widget_container < sofa::type::Vec<N, T> > : public fixed_vector_data
 ////////////////////////////////////////////////////////////////
 
 template<class T>
-class vector_data_trait < Quater<T> >
+class vector_data_trait < Quat<T> >
 {
 public:
-    typedef Quater<T> data_type;
+    typedef Quat<T> data_type;
     typedef T value_type;
     enum { NDIM = 1 };
     enum { SIZE = 4 };
@@ -779,7 +779,7 @@ public:
 };
 
 template<class T>
-class data_widget_container < Quater<T> > : public fixed_vector_data_widget_container < Quater<T> >
+class data_widget_container < Quat<T> > : public fixed_vector_data_widget_container < Quat<T> >
 {};
 
 

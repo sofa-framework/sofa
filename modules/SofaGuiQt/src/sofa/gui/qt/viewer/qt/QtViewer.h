@@ -60,7 +60,7 @@ namespace sofa::gui::qt::viewer::qt
 
 //using namespace sofa::defaulttype;
 using sofa::type::Vector3;
-using sofa::type::Quat<SReal>;
+using sofa::type::Quat;
 using namespace sofa::gl;
 using namespace sofa::helper::visual;
 using namespace sofa::helper::system::thread;
@@ -230,12 +230,12 @@ public:
     bool _mouseInteractorTranslationMode;
     bool _mouseInteractorRotationMode;
     int _translationMode;
-    Quaternion _mouseInteractorCurrentQuat;
+    Quat<SReal> _mouseInteractorCurrentQuat;
     Vector3 _mouseInteractorAbsolutePosition;
     Trackball _mouseInteractorTrackball;
     void ApplyMouseInteractorTransformation(int x, int y);
 
-    static Quaternion _mouseInteractorNewQuat;
+    static Quat<SReal> _mouseInteractorNewQuat;
     static bool _mouseTrans;
     static bool _mouseRotate;
 
