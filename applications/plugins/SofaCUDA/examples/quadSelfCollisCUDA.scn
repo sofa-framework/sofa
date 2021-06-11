@@ -2,7 +2,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	<DefaultPipeline verbose="0" />
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager name="Response" />
 	<CudaProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
 	<Node name="Floor">

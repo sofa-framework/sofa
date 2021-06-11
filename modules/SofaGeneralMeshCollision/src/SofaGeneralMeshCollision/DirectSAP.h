@@ -29,14 +29,40 @@
 namespace sofa::component::collision
 {
 
-class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP :
-    public BruteForceBroadPhase,
-    public DirectSAPNarrowPhase
+class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP final : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS2(DirectSAP, BruteForceBroadPhase, DirectSAPNarrowPhase);
+    SOFA_CLASS(DirectSAP, sofa::core::objectmodel::BaseObject);
 
-    bool needsDeepBoundingTree() const override { return BruteForceBroadPhase::needsDeepBoundingTree() || DirectSAPNarrowPhase::needsDeepBoundingTree(); }
+    void init() override;
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
+        broadPhase->setName("bruteForceBroadPhase");
+        if (context) context->addObject(broadPhase);
+
+        DirectSAPNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<DirectSAPNarrowPhase>();
+        narrowPhase->setName("directSAPNarrowPhase");
+        if (context) context->addObject(narrowPhase);
+
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+
+        return obj;
+    }
+
+protected:
+    DirectSAP() = default;
+    ~DirectSAP() override = default;
+
+private:
+
+    void findAllDetectionComponents(std::vector<std::string>& broadPhaseComponents, std::vector<std::string>& narrowPhaseComponents);
+
 };
 
 } // namespace sofa::component::collision

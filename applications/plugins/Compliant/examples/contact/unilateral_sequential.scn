@@ -8,7 +8,8 @@
   
   <VisualStyle displayFlags="showCollisionModels showMappings hideVisual" />
   <DefaultPipeline depth="6" />
-  <BruteForceDetection />
+  <BruteForceBroadPhase/>
+  <BVHNarrowPhase/>
 <!--   <DiscreteIntersection/> -->
   <NewProximityIntersection alarmDistance=".5" contactDistance=".05" />
   <DefaultContactManager responseParams="damping=0&amp;compliance=0&amp;restitution=0&amp;holonomic=0" response="CompliantContact" />

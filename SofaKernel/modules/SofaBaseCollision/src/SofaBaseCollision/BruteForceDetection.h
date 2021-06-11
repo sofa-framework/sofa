@@ -28,20 +28,39 @@
 namespace sofa::component::collision
 {
 
-class SOFA_SOFABASECOLLISION_API BruteForceDetection :
-    public BruteForceBroadPhase,
-    public BVHNarrowPhase
+class SOFA_SOFABASECOLLISION_API BruteForceDetection final : public sofa::core::objectmodel::BaseObject
 {
-
 public:
-    SOFA_CLASS2(BruteForceDetection, BruteForceBroadPhase, BVHNarrowPhase);
+    SOFA_CLASS(BruteForceDetection, sofa::core::objectmodel::BaseObject);
 
-    bool needsDeepBoundingTree() const override { return BruteForceBroadPhase::needsDeepBoundingTree() || BVHNarrowPhase::needsDeepBoundingTree(); }
+    void init() override;
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
+        broadPhase->setName("bruteForceBroadPhase");
+        if (context) context->addObject(broadPhase);
+
+        BVHNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<BVHNarrowPhase>();
+        narrowPhase->setName("BVHNarrowPhase");
+        if (context) context->addObject(narrowPhase);
+
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+
+        return obj;
+    }
 
 protected:
-    BruteForceDetection();
-
+    BruteForceDetection() = default;
     ~BruteForceDetection() override = default;
+
+private:
+
+    void findAllDetectionComponents(std::vector<std::string>& broadPhaseComponents, std::vector<std::string>& narrowPhaseComponents);
 
 };
 

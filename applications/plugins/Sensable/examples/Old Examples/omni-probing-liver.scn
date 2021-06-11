@@ -3,7 +3,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<OmniDriver name="default38"  listening="1"  scale="15"  positionBase="0 5.5 0"  omniVisu="0"  forceScale="0.01"  deviceIndex="0" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-	<BruteForceDetection name="Detection" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
 	<DefaultContactManager name="Response"  response="default" />
 	<TreeCollisionGroupManager name="Group" />

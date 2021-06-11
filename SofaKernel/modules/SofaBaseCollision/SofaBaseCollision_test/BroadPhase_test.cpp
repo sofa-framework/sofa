@@ -20,11 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "BroadPhase_test.h"
-#include <SofaBaseCollision/BruteForceDetection.h>
-#include <SofaGeneralMeshCollision/DirectSAP.h>
+#include <SofaBaseCollision/BruteForceBroadPhase.h>
+#include <SofaBaseCollision/BVHNarrowPhase.h>
+#include <SofaGeneralMeshCollision/DirectSAPNarrowPhase.h>
 #include <SofaGeneralMeshCollision/IncrSAP.h>
 
-typedef BroadPhaseTest<sofa::component::collision::BruteForceDetection> Brut;
+typedef BroadPhaseTest<sofa::component::collision::BruteForceBroadPhase, sofa::component::collision::BVHNarrowPhase> Brut;
 TEST_F(Brut, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
 TEST_F(Brut, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 
@@ -32,6 +33,6 @@ typedef BroadPhaseTest<sofa::component::collision::IncrSAP> IncrSAPTest;
 TEST_F(IncrSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
 TEST_F(IncrSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }
 
-typedef BroadPhaseTest<sofa::component::collision::DirectSAP> DirectSAPTest;
+typedef BroadPhaseTest<sofa::component::collision::BruteForceBroadPhase, sofa::component::collision::DirectSAPNarrowPhase> DirectSAPTest;
 TEST_F(DirectSAPTest, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }
 TEST_F(DirectSAPTest, rand_dense_test ) { ASSERT_TRUE( randDense()); }

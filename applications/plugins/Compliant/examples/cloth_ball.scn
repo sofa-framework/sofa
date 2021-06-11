@@ -9,7 +9,8 @@
 <CompliantAttachButton arrowSize=".007" isCompliance="1"/>
 
 <DefaultPipeline />
-<BruteForceDetection />
+<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 <NewProximityIntersection alarmDistance="1" contactDistance="0.01" />
 <DefaultContactManager response = "CompliantContact" />
 
