@@ -25,6 +25,7 @@
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
 
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaMiscCollision/initSofaMiscCollision.h>
