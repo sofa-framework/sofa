@@ -805,6 +805,154 @@ public:
 
         return;
     }
+
+    void checkTopologicalChanges_Quad()
+    {
+        string scene =
+            "<?xml version='1.0'?>                                                                              "
+            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+            "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+            "    <Node name='Quad' >                                                                            "
+            "            <MechanicalObject position = '@../grid.position' />                                    "
+            "            <QuadSetTopologyContainer name='Container' src='@../grid' />                     "
+            "            <QuadSetTopologyModifier name='Modifier' />                                      "
+            "            <QuadSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+            "            <DiagonalMass name='m_mass' massDensity='1.0'/>                                        "
+            "    </Node>                                                                                        "
+            "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
+            scene.c_str(),
+            scene.size());
+        ASSERT_NE(root.get(), nullptr);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
+        EXPECT_TRUE(mass != nullptr);
+
+        if (mass != nullptr) {
+            EXPECT_EQ(mass->getMassCount(), 9);
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 4);
+        }
+
+        QuadSetTopologyModifier* modifier = root->getTreeObject<QuadSetTopologyModifier>();
+        EXPECT_TRUE(modifier != nullptr);
+
+        SReal refValue = SReal(1.0 / 4.0);  // 0.125
+        SReal initMass = mass->getTotalMass();
+
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+
+        // check value at init
+        EXPECT_EQ(vMasses.size(), 9);
+        EXPECT_NEAR(vMasses[0], refValue, 1e-4);
+        EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
+
+        sofa::helper::vector<sofa::Index> ids = { 0 };
+        // remove quad id: 0
+        modifier->removeQuads(ids, true, true);
+        EXPECT_EQ(vMasses.size(), 8);
+        EXPECT_NEAR(vMasses[0], refValue, 1e-4); // check update of Mass when removing tetra
+        EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - refValue);
+        SReal lastV = vMasses[7];
+
+        // remove quad id: 0
+        modifier->removeQuads(ids, true, true);
+        EXPECT_EQ(vMasses.size(), 7);
+        EXPECT_NEAR(vMasses[0], lastV, 1e-4); // check swap value
+        EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - 2*refValue);
+
+        ids.push_back(1);
+        // remove quad id: 0, 1
+        modifier->removeQuads(ids, true, true);
+        EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
+
+        return;
+    }
+
+
+    void checkTopologicalChanges_Triangle()
+    {
+        string scene =
+            "<?xml version='1.0'?>                                                                              "
+            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+            "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+            "    <Node name='Triangle' >                                                                            "
+            "            <MechanicalObject position = '@../grid.position' />                                    "
+            "            <TriangleSetTopologyContainer name='Container' src='@../grid' />                     "
+            "            <TriangleSetTopologyModifier name='Modifier' />                                      "
+            "            <TriangleSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+            "            <DiagonalMass name='m_mass' massDensity='1.0'/>                                        "
+            "    </Node>                                                                                        "
+            "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
+            scene.c_str(),
+            sofa::Size(scene.size()));
+        ASSERT_NE(root.get(), nullptr);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
+        EXPECT_TRUE(mass != nullptr);
+
+        if (mass != nullptr) {
+            EXPECT_EQ(mass->getMassCount(), 9);
+            EXPECT_FLOAT_EQ(SReal(mass->getTotalMass()), 4);
+        }
+
+        TriangleSetTopologyModifier* modifier = root->getTreeObject<TriangleSetTopologyModifier>();
+        EXPECT_TRUE(modifier != nullptr);
+
+        SReal refValue = SReal(1.0 / 3.0);  // 0.3333
+        SReal refValue2 = SReal(1.0 / 2.0);  // 0.5
+        SReal initMass = mass->getTotalMass();
+
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+
+        // check value at init
+        EXPECT_EQ(vMasses.size(), 9);
+        EXPECT_NEAR(vMasses[0], refValue, 1e-4);
+        EXPECT_NEAR(vMasses[1], refValue2, 1e-4);
+
+        sofa::helper::vector<sofa::Index> ids = { 0 };
+        // remove Triangle id: 0
+        modifier->removeTriangles(ids, true, true);
+        EXPECT_EQ(vMasses.size(), 9);
+        EXPECT_NEAR(vMasses[0], refValue * 0.5, 1e-4); // check update of Mass when removing tetra
+        EXPECT_NEAR(vMasses[1], refValue, 1e-4);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - refValue2);
+
+        // remove Triangle id: 0
+        modifier->removeTriangles(ids, true, true);
+        EXPECT_EQ(vMasses.size(), 9);
+        EXPECT_NEAR(vMasses[0], refValue * 0.5, 1e-4); // check swap value
+        EXPECT_NEAR(vMasses[1], refValue, 1e-4);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - 2 * refValue2);
+
+        ids.push_back(1);
+        // remove Triangle id: 0, 1
+        modifier->removeTriangles(ids, true, true);
+        EXPECT_EQ(vMasses.size(), 7);
+        EXPECT_NEAR(vMasses[0], refValue, 1e-4);
+        EXPECT_NEAR(vMasses[1], refValue, 1e-4);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), initMass - 4 * refValue2);
+
+        ids.push_back(2);
+        ids.push_back(3);
+        // remove Triangle id: 0, 1, 2, 3
+        modifier->removeTriangles(ids, true, true);
+        EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
+
+        return;
+    }
 };
 
 
@@ -931,72 +1079,83 @@ TEST_F(DiagonalMass3_test, singleHexahedron)
             expectedMass);
 }
 
-//TEST_F(DiagonalMass3_test, checkAttributes){
-//    checkAttributes() ;
-//}
-//
-//TEST_F(DiagonalMass3_test, checkTotalMassFromMassDensity_Hexa){
-//    checkTotalMassFromMassDensity_Hexa();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkMassDensityFromTotalMass_Hexa){
-//    checkMassDensityFromTotalMass_Hexa();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkTotalMassOverwritesMassDensity_Hexa){
-//    checkTotalMassOverwritesMassDensity_Hexa();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkTotalMassFromMassDensity_Tetra){
-//    checkTotalMassFromMassDensity_Tetra();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkTotalMassFromNegativeMassDensity_Tetra){
-//    checkTotalMassFromNegativeMassDensity_Tetra();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkMassDensityFromTotalMass_Tetra){
-//    checkMassDensityFromTotalMass_Tetra();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkMassDensityFromNegativeTotalMass_Tetra){
-//    checkMassDensityFromNegativeTotalMass_Tetra();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkDoubleDeclaration_MassDensityTotalMass_Tetra){
-//    checkDoubleDeclaration_MassDensityTotalMass_Tetra();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra){
-//    checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra){
-//    checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkMassDensityTotalMassFromVertexMass_Tetra){
-//    checkMassDensityTotalMassFromVertexMass_Tetra();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkTotalMassFromNegativeMassDensityVertexMass_Tetra){
-//    checkTotalMassFromNegativeMassDensityVertexMass_Tetra();
-//}
-//
-//TEST_F(DiagonalMass3_test, checkWrongSizeVertexMass_Tetra){
-//    checkWrongSizeVertexMass_Tetra();
-//}
+TEST_F(DiagonalMass3_test, checkAttributes){
+    checkAttributes() ;
+}
+
+TEST_F(DiagonalMass3_test, checkTotalMassFromMassDensity_Hexa){
+    checkTotalMassFromMassDensity_Hexa();
+}
+
+TEST_F(DiagonalMass3_test, checkMassDensityFromTotalMass_Hexa){
+    checkMassDensityFromTotalMass_Hexa();
+}
+
+TEST_F(DiagonalMass3_test, checkTotalMassOverwritesMassDensity_Hexa){
+    checkTotalMassOverwritesMassDensity_Hexa();
+}
+
+TEST_F(DiagonalMass3_test, checkTotalMassFromMassDensity_Tetra){
+    checkTotalMassFromMassDensity_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkTotalMassFromNegativeMassDensity_Tetra){
+    checkTotalMassFromNegativeMassDensity_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkMassDensityFromTotalMass_Tetra){
+    checkMassDensityFromTotalMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkMassDensityFromNegativeTotalMass_Tetra){
+    checkMassDensityFromNegativeTotalMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkDoubleDeclaration_MassDensityTotalMass_Tetra){
+    checkDoubleDeclaration_MassDensityTotalMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra){
+    checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra){
+    checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkMassDensityTotalMassFromVertexMass_Tetra){
+    checkMassDensityTotalMassFromVertexMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkTotalMassFromNegativeMassDensityVertexMass_Tetra){
+    checkTotalMassFromNegativeMassDensityVertexMass_Tetra();
+}
+
+TEST_F(DiagonalMass3_test, checkWrongSizeVertexMass_Tetra){
+    checkWrongSizeVertexMass_Tetra();
+}
+
 
 TEST_F(DiagonalMass3_test, checkTopologicalChanges_Hexa) {
     EXPECT_MSG_NOEMIT(Error);
     checkTopologicalChanges_Hexa();
 }
 
-
 TEST_F(DiagonalMass3_test, checkTopologicalChanges_Tetra) {
     EXPECT_MSG_NOEMIT(Error);
     checkTopologicalChanges_Tetra();
 }
+
+TEST_F(DiagonalMass3_test, checkTopologicalChanges_Quad) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Quad();
+}
+
+TEST_F(DiagonalMass3_test, checkTopologicalChanges_Triangle) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Triangle();
+}
+
 
 
 /// Rigid file are not handled only xs3....
