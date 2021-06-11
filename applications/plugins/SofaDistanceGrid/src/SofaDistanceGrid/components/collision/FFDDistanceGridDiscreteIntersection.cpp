@@ -37,6 +37,7 @@ namespace component
 namespace collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 

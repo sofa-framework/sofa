@@ -29,6 +29,7 @@ using namespace sofa::testing ;
 
 
 using namespace sofa;
+using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
@@ -46,7 +47,7 @@ TEST(MatTypesTest, transformInverse)
     test_transformInverse(Matrix4::s_identity);
     test_transformInverse(Matrix4::transformTranslation(Vector3(1.,2.,3.)));
     test_transformInverse(Matrix4::transformScale(Vector3(1.,2.,3.)));
-    test_transformInverse(Matrix4::transformRotation(Quat::fromEuler(M_PI_4,M_PI_2,M_PI/3.)));
+    test_transformInverse(Matrix4::transformRotation(Quat<SReal>::fromEuler(M_PI_4,M_PI_2,M_PI/3.)));
 }
 
 TEST(MatTypesTest, setsub_vec)

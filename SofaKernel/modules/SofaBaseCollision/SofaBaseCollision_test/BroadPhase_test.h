@@ -33,9 +33,9 @@
 
 using sofa::core::objectmodel::New;
 using sofa::core::objectmodel::Data;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::defaulttype::Rigid3Types;
-using sofa::defaulttype::Quaternion;
+using sofa::type::Quat;
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
 typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
@@ -168,7 +168,7 @@ void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Ve
     for(size_t i = 0 ; i < dof->getSize() ; ++i){
         if( (sofa::helper::irand()) < RAND_MAX/2.0){//make it move !
             velocities[i] = Vector3(1,1,1);//velocity is used only to know if a primitive moves, its direction is not important
-            positions[i] = Rigid3Types::Coord(randVect(min_vect,max_vect),Quaternion(0,0,0,1));
+            positions[i] = Rigid3Types::Coord(randVect(min_vect,max_vect),Quat<SReal>(0,0,0,1));
         }
     }
 
@@ -311,25 +311,25 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 
     std::vector<std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > broadPhaseInter;
 
-    sofa::helper::vector<sofa::core::collision::DetectionOutput> * res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm1,cm1));
+    sofa::type::vector<sofa::core::collision::DetectionOutput> * res = dynamic_cast<sofa::type::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm1,cm1));
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             broadPhaseInter.push_back(((*res)[i]).elem);
 
 
-    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm1,cm2));
+    res = dynamic_cast<sofa::type::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm1,cm2));
 
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             broadPhaseInter.push_back(((*res)[i]).elem);
 
-    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm2,cm1));
+    res = dynamic_cast<sofa::type::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm2,cm1));
 
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             broadPhaseInter.push_back(((*res)[i]).elem);
 
-    res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm2,cm2));
+    res = dynamic_cast<sofa::type::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm2,cm2));
     if(res != 0x0)
         for(unsigned int i = 0 ; i < res->size() ; ++i)
             broadPhaseInter.push_back(((*res)[i]).elem);
@@ -409,7 +409,7 @@ sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::S
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     for(int i = 0 ; i < n ; ++i)
-        positions[i] = Rigid3Types::Coord(p[i],Quaternion(0,0,0,1));
+        positions[i] = Rigid3Types::Coord(p[i],Quat<SReal>(0,0,0,1));
 
     dpositions.endEdit();
 

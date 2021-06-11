@@ -98,7 +98,7 @@ sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>
     Data<MechanicalObjectRigid3::VecCoord> & dpositions = *sphDOF->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
-    positions[0] = Rigid3Types::Coord(center,Quaternion(0,0,0,1));
+    positions[0] = Rigid3Types::Coord(center,Quat<SReal>(0,0,0,1));
 
     dpositions.endEdit();
 

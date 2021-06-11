@@ -23,7 +23,7 @@
 #include <gtest/gtest.h>
 #include <cstdlib>
 
-using sofa::helper::SVector;
+using sofa::type::SVector;
 
 
 /// testing SVector::read/write

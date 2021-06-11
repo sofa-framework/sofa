@@ -59,6 +59,7 @@ int FFDDistanceGridCollisionModelClass = core::RegisterObject("Grid-based deform
         .addAlias("FFDDistanceGrid")
         ;
 
+using namespace sofa::type;
 using namespace defaulttype;
 
 ////////////////////////////////////////////////////////////////////////////////

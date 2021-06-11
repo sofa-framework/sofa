@@ -64,8 +64,8 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 
         // expected child positions
         OutVecCoord expectedoutcoord;
-        expectedoutcoord.push_back( defaulttype::Vector1( 3 ) );
-        expectedoutcoord.push_back( defaulttype::Vector1( 33 ) );
+        expectedoutcoord.push_back( type::Vector1( 3 ) );
+        expectedoutcoord.push_back( type::Vector1( 33 ) );
 
         return this->runTest( incoord, expectedoutcoord );
     }
@@ -95,8 +95,8 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 
 //        // expected child positions
 //        OutVecCoord expectedoutcoord;
-//        expectedoutcoord.push_back( defaulttype::Vector1( (sqrt(3.)-.5) * (sqrt(3.)-.5) ) );
-//        expectedoutcoord.push_back( defaulttype::Vector1( (sqrt(33.)-2.) * (sqrt(33.)-2.) ) );
+//        expectedoutcoord.push_back( type::Vector1( (sqrt(3.)-.5) * (sqrt(3.)-.5) ) );
+//        expectedoutcoord.push_back( type::Vector1( (sqrt(33.)-2.) * (sqrt(33.)-2.) ) );
 
 //        return this->runTest( incoord, expectedoutcoord );
 //    }

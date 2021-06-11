@@ -20,11 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/type/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <gtest/gtest.h>
 #include <cstdlib>
 #include <ctime>
 
-using sofa::helper::Quater;
+using sofa::type::Quat;
 
 double errorThreshold = 1e-6;
 
@@ -36,12 +38,12 @@ TEST(QuaterTest, EulerAngles)
     for (int i = 0; i < 100; ++i)
     {
         // Generate random Quater and avoid singular values
-        Quater<double> q0 (((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f);
+        Quat<double> q0 (((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f);
         while( fabs(q0[0]) == 0.5 && fabs(q0[1]) == 0.5 && fabs(q0[2]) == 0.5 && fabs(q0[3]) == 0.5 )
         {
-            q0 = Quater<double>( ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f );
+            q0 = Quat<double>( ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f );
         }
-        q0.Quater<double>::normalize();
+        q0.Quat<double>::normalize();
 
         for(std::size_t i = 0 ; i < q0.size() ; ++i)
         {
@@ -49,7 +51,7 @@ TEST(QuaterTest, EulerAngles)
         }
 
         // Transform q0 into Euler angles and back to a quaternion (q1)
-        Quater<double> q1 = Quater<double>::createQuaterFromEuler(q0.toEulerVector());
+        Quat<double> q1 = Quat<double>::createQuaterFromEuler(q0.toEulerVector());
 
         for(std::size_t i = 0 ; i < q1.size() ; ++i)
         {
@@ -58,15 +60,15 @@ TEST(QuaterTest, EulerAngles)
 
         // Compute a random rotation with each Quater
         sofa::type::Vec<3,double> p(((rand()%101)/100.f)+1.f, ((rand()%101)/100.f)+1.f, ((rand()%101)/100.f)+1.f);
-        sofa::type::Vec<3,double> p0 = q0.Quater<double>::rotate(p);
-        sofa::type::Vec<3,double> p1 = q1.Quater<double>::rotate(p);
+        sofa::type::Vec<3,double> p0 = q0.Quat<double>::rotate(p);
+        sofa::type::Vec<3,double> p1 = q1.Quat<double>::rotate(p);
         // Compare the result of the two rotations
         EXPECT_EQ(p0, p1);
 
         // Specific check for a certain value of p
         sofa::type::Vec<3,double> p2(2,1,1);
-        p0 = q0.Quater<double>::rotate(p2);
-        p1 = q1.Quater<double>::rotate(p2);
+        p0 = q0.Quat<double>::rotate(p2);
+        p1 = q1.Quat<double>::rotate(p2);
         EXPECT_EQ(p0,p1);
     }
 }
@@ -78,7 +80,7 @@ TEST(QuaterTest, EulerAngles)
 
 TEST(QuaterTest, QuaterdSet)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     quat.set(0.0, 0.0, 0.0, 1.0);
 
     EXPECT_DOUBLE_EQ(0.0, quat[0]);
@@ -89,10 +91,10 @@ TEST(QuaterTest, QuaterdSet)
 
 TEST(QuaterTest, QuaterdIdentity)
 {
-    Quater<double> id;
+    Quat<double> id;
     id.set(0.0, 0.0, 0.0, 1.0);
 
-    Quater<double> quat = Quater<double>::identity();
+    Quat<double> quat = Quat<double>::identity();
     EXPECT_DOUBLE_EQ(id[0], quat[0]);
     EXPECT_DOUBLE_EQ(id[1], quat[1]);
     EXPECT_DOUBLE_EQ(id[2], quat[2]);
@@ -101,7 +103,7 @@ TEST(QuaterTest, QuaterdIdentity)
 
 TEST(QuaterTest, QuaterdConstPtr)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     quat.set(0.0, 0.0, 0.0, 1.0);
 
     const double* quatptr = quat.ptr();
@@ -114,7 +116,7 @@ TEST(QuaterTest, QuaterdConstPtr)
 
 TEST(QuaterTest, QuaterdPtr)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     quat.set(0.0, 0.0, 0.0, 1.0);
 
     double* quatptr = quat.ptr();
@@ -131,7 +133,7 @@ TEST(QuaterTest, QuaterdPtr)
 
 TEST(QuaterTest, QuaterdNormalize)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     quat.set(1.0, 0.0, 1.0, 0.0);
 
     quat.normalize();
@@ -144,7 +146,7 @@ TEST(QuaterTest, QuaterdNormalize)
 
 TEST(QuaterTest, QuaterdClear)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     quat.set(1.0, 2.0, 3.0, 4.0);
 
     quat.clear();
@@ -160,7 +162,7 @@ TEST(QuaterTest, QuaterdClear)
 
 TEST(QuaterTest, QuaterdFromFrame)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //90 deg around Z from Identity
     sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
     sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
@@ -175,7 +177,7 @@ TEST(QuaterTest, QuaterdFromFrame)
 
 TEST(QuaterTest, QuaterdFromMatrix)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //30deg X, 30deg Y and 30deg Z
     double mat[9]  = { 0.750000000000000, -0.216506350946110, 0.625000000000000,
                        0.433012701892219, 0.875000000000000, -0.216506350946110,
@@ -190,7 +192,7 @@ TEST(QuaterTest, QuaterdFromMatrix)
 
 TEST(QuaterTest, QuaterdToMatrix)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     sofa::type::Mat3x3d mat;
@@ -210,7 +212,7 @@ TEST(QuaterTest, QuaterdToMatrix)
 
 TEST(QuaterTest, QuaterdRotateVec)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
     sofa::type::Vec3d p(3, 6, 9);
@@ -223,7 +225,7 @@ TEST(QuaterTest, QuaterdRotateVec)
 
 TEST(QuaterTest, QuaterdInvRotateVec)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
     sofa::type::Vec3d p(3, 6, 9);
@@ -236,7 +238,7 @@ TEST(QuaterTest, QuaterdInvRotateVec)
 
 TEST(QuaterTest, QuaterdOperatorAdd)
 {
-    Quater<double> quat1, quat2, quatAdd;
+    Quat<double> quat1, quat2, quatAdd;
     //30deg X, 15deg Y and 30deg Z
     quat1.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
     //60deg X, 30deg Y and 60deg Z
@@ -255,7 +257,7 @@ TEST(QuaterTest, QuaterdOperatorAdd)
 
 TEST(QuaterTest, QuaterdOperatorMultQuat)
 {
-    Quater<double> quat1, quat2, quatMult;
+    Quat<double> quat1, quat2, quatMult;
     //30deg X, 15deg Y and 30deg Z
     quat1.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
     //60deg X, 30deg Y and 60deg Z
@@ -270,7 +272,7 @@ TEST(QuaterTest, QuaterdOperatorMultQuat)
 
 TEST(QuaterTest, QuaterdOperatorMultReal)
 {
-    Quater<double> quat, quatMult;
+    Quat<double> quat, quatMult;
     double r = 2.0;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
@@ -285,7 +287,7 @@ TEST(QuaterTest, QuaterdOperatorMultReal)
 
 TEST(QuaterTest, QuaterdOperatorDivReal)
 {
-    Quater<double> quat, quatDiv;
+    Quat<double> quat, quatDiv;
     double r = 3.0;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
@@ -300,7 +302,7 @@ TEST(QuaterTest, QuaterdOperatorDivReal)
 
 TEST(QuaterTest, QuaterdOperatorMultRealSelf)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     double r = 2.0;
     //30deg X, 15deg Y and 30deg Z
     quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
@@ -315,7 +317,7 @@ TEST(QuaterTest, QuaterdOperatorMultRealSelf)
 
 TEST(QuaterTest, QuaterdOperatorDivRealSelf)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     double r = 3.0;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
@@ -330,7 +332,7 @@ TEST(QuaterTest, QuaterdOperatorDivRealSelf)
 
 //TEST(QuaterTest, QuaterdQuatVecMult)
 //{
-//    Quater<double> quat, quatMult;
+//    Quat<double> quat, quatMult;
 //    sofa::type::Vec<3, double> vec(1,2,3);
 //    //30deg X, 15deg Y and 30deg Z
 //    quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
@@ -340,7 +342,7 @@ TEST(QuaterTest, QuaterdOperatorDivRealSelf)
 //
 //TEST(QuaterTest, QuaterdVecQuatMult)
 //{
-//    Quater<double> quat, quatMult;
+//    Quat<double> quat, quatMult;
 //    sofa::type::Vec<3, double> vec(1, 2, 3);
 //    //30deg X, 15deg Y and 30deg Z
 //    quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
@@ -350,7 +352,7 @@ TEST(QuaterTest, QuaterdOperatorDivRealSelf)
 
 TEST(QuaterTest, QuaterdInverse)
 {
-    Quater<double> quat, quatInv;
+    Quat<double> quat, quatInv;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
 
@@ -364,7 +366,7 @@ TEST(QuaterTest, QuaterdInverse)
 
 TEST(QuaterTest, QuaterdToRotationVector)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     sofa::type::Vec3d p;
@@ -378,7 +380,7 @@ TEST(QuaterTest, QuaterdToRotationVector)
 
 TEST(QuaterTest, QuaterdToEulerVector)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     sofa::type::Vec3d p;
@@ -392,7 +394,7 @@ TEST(QuaterTest, QuaterdToEulerVector)
 
 TEST(QuaterTest, QuaterdSlerpExt)
 {
-    Quater<double> quat1, quat2, quatinterp;
+    Quat<double> quat1, quat2, quatinterp;
     //60deg X, 30deg Y and 60deg Z
     quat1.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     //30deg X, 15deg Y and 30deg Z
@@ -422,7 +424,7 @@ TEST(QuaterTest, QuaterdSlerpExt)
 
 TEST(QuaterTest, QuaterdBuildRotationMatrix)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     double mat[4][4];
@@ -442,7 +444,7 @@ TEST(QuaterTest, QuaterdBuildRotationMatrix)
 
 TEST(QuaterTest, QuaterdWriteOpenglMatrix)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     double mat[16];
@@ -469,7 +471,7 @@ TEST(QuaterTest, QuaterdWriteOpenglMatrix)
 
 TEST(QuaterTest, QuaterdAxisToQuat)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //axang2quat([0 2 4 pi/3])
     sofa::type::Vec3d axis(0, 2, 4);
     double phi = 1.047197551196598; //60deg
@@ -484,7 +486,7 @@ TEST(QuaterTest, QuaterdAxisToQuat)
 
 TEST(QuaterTest, QuaterdQuatToAxis)
 {
-    Quater<double> quat;
+    Quat<double> quat;
     //60deg X, 30deg Y and 60deg Z
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     sofa::type::Vec3d axis;
@@ -506,7 +508,7 @@ TEST(QuaterTest, QuaterdCreateQuaterFromFrame)
     sofa::type::Vec3d xAxis(1.0, 0.0, 0.0);
     sofa::type::Vec3d yAxis(0.0, 0.0, -1.0);
     sofa::type::Vec3d zAxis(0.0, 1.0, 0.0);
-    Quater<double> quat = Quater<double>::createQuaterFromFrame(xAxis, yAxis, zAxis);
+    Quat<double> quat = Quat<double>::createQuaterFromFrame(xAxis, yAxis, zAxis);
 
     EXPECT_NEAR(-0.707106781186548, quat[0], errorThreshold);
     EXPECT_NEAR(0.0, quat[1], errorThreshold);
@@ -520,7 +522,7 @@ TEST(QuaterTest, QuaterdCreateQuaterFromFrame)
 //    sofa::type::Vec3d axis(1, 2, 5);
 //    double phi = 0.261799387799149; //15deg
 //
-//    Quater<double> quat = Quater<double>::createFromRotationVector(axis * phi);
+//    Quat<double> quat = Quat<double>::createFromRotationVector(axis * phi);
 //
 //    EXPECT_NEAR(0.023830713274726, quat[0], errorThreshold);
 //    EXPECT_NEAR(0.047661426549452, quat[1], errorThreshold);
@@ -532,7 +534,7 @@ TEST(QuaterTest, QuaterdCreateQuaterFromEuler)
 {
     //90deg X, 30deg Y and 60deg Z
     sofa::type::Vec3d euler(1.570796326794897, 0.523598775598299, 1.047197551196598);
-    Quater<double> quat = Quater<double>::createQuaterFromEuler(euler);
+    Quat<double> quat = Quat<double>::createQuaterFromEuler(euler);
 
     EXPECT_NEAR(0.500000000000000, quat[0], errorThreshold);
     EXPECT_NEAR(0.500000000000000, quat[1], errorThreshold);
@@ -547,7 +549,7 @@ TEST(QuaterTest, QuaterdCreateQuaterFromEuler)
 //    sofa::type::Vec3d axis(1, 2, 5);
 //    double phi = 0.261799387799149; //15deg
 //
-//    Quater<double> quat = Quater<double>::createFromRotationVector(axis * phi);
+//    Quat<double> quat = Quat<double>::createFromRotationVector(axis * phi);
 //
 //    EXPECT_NEAR(0.023830713274726, quat[0], errorThreshold);
 //    EXPECT_NEAR(0.047661426549452, quat[1], errorThreshold);
@@ -557,7 +559,7 @@ TEST(QuaterTest, QuaterdCreateQuaterFromEuler)
 
 TEST(QuaterTest, QuaterdQuatDiff)
 {
-    Quater<double> quat1, quat2, quatres;
+    Quat<double> quat1, quat2, quatres;
     //60deg X, 30deg Y and 60deg Z
     quat1.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     //30deg X, 15deg Y and 30deg Z
@@ -574,7 +576,7 @@ TEST(QuaterTest, QuaterdQuatDiff)
 
 //TEST(QuaterTest, QuaterdAngularDisplacement)
 //{
-//    Quater<double> quat1, quat2;
+//    Quat<double> quat1, quat2;
 //    sofa::type::Vec3d displacement;
 //    //60deg X, 30deg Y and 60deg Z
 //    quat1.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
@@ -591,7 +593,7 @@ TEST(QuaterTest, QuaterdQuatDiff)
 //
 //TEST(QuaterTest, QuaterdSlerp)
 //{
-//    Quater<double> quat1, quat2, quatinterp;
+//    Quat<double> quat1, quat2, quatinterp;
 //    //60deg X, 30deg Y and 60deg Z
 //    quat1.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
 //    //30deg X, 15deg Y and 30deg Z
@@ -621,7 +623,7 @@ TEST(QuaterTest, QuaterdQuatDiff)
 
 TEST(QuaterTest, QuaterdSlerp2)
 {
-    Quater<double> quat1, quat2, quatinterp;
+    Quat<double> quat1, quat2, quatinterp;
     //60deg X, 30deg Y and 60deg Z
     quat1.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     //30deg X, 15deg Y and 30deg Z
@@ -654,7 +656,7 @@ TEST(QuaterTest, QuaterdFromUnitVectors)
     sofa::type::Vec<3, double> vFrom(1, 0, 0);
     sofa::type::Vec<3, double> vTo(0, 1, 0);
 
-    Quater<double> quat1;
+    Quat<double> quat1;
     quat1.setFromUnitVectors(vFrom, vTo);
 
     EXPECT_NEAR(0, quat1[0], errorThreshold);

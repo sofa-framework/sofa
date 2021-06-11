@@ -31,9 +31,9 @@ namespace {
 
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using sofa::type::vector;
+using type::Vec;
+using type::Mat;
+using type::vector;
 
 
 /**  Test suite for SubsetMultiMapping.

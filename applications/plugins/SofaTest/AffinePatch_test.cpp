@@ -42,6 +42,7 @@
 namespace sofa {
 
 using namespace component;
+using namespace type;
 using namespace defaulttype;
 using namespace modeling;
 

@@ -34,7 +34,7 @@
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Rigid3Mass;
 using sofa::defaulttype::Vec3Types;
-using sofa::type::Vec1Types;
+using sofa::defaulttype::Vec1Types;
 
 namespace sofa
 {
