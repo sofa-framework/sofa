@@ -66,7 +66,7 @@ protected:
     SReal dt;
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId v;
-    bool m_isSolvedConcurrently { false };
+    bool m_parallelSolve {false };
 
     /// Container for the parallel tasks
     std::list<SolveVisitorTask> m_tasks;

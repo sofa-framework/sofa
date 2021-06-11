@@ -39,7 +39,7 @@ Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (! node->solver.empty())
     {
-        if (m_isSolvedConcurrently)
+        if (m_parallelSolve)
         {
             parallelSolve(node);
         }
@@ -85,16 +85,16 @@ SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, sofa
         , dt(_dt)
         , x(X)
         , v(V)
-        , m_isSolvedConcurrently(_parallelSolve)
+        , m_parallelSolve(_parallelSolve)
 {
-    if (m_isSolvedConcurrently)
+    if (m_parallelSolve)
     {
         initializeTaskScheduler();
     }
 }
 
 SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve)
-: Visitor(params), dt(_dt), m_isSolvedConcurrently(_parallelSolve)
+: Visitor(params), dt(_dt), m_parallelSolve(_parallelSolve)
 {
     if(free)
     {
@@ -107,7 +107,7 @@ SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool
         v = sofa::core::VecDerivId::velocity();
     }
 
-    if (m_isSolvedConcurrently)
+    if (m_parallelSolve)
     {
         initializeTaskScheduler();
     }

@@ -45,7 +45,7 @@ public:
             simulation::common::MechanicalOperations* mop,
             sofa::core::objectmodel::BaseContext* context,
             sofa::simulation::CpuTask::Status* status,
-            bool solveConcurrently = false);
+            bool parallelSolve = false);
     ~FreeMotionTask() override = default;
     sofa::simulation::Task::MemoryAlloc run() final;
 
@@ -63,7 +63,7 @@ private:
 
     sofa::core::objectmodel::BaseContext* m_context;
 
-    bool m_solveODEConcurrently { false };
+    bool m_parallelSolve {false };
 };
 
 }

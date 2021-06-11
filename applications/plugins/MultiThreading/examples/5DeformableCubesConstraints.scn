@@ -18,7 +18,9 @@ In this scene, collision is detected in parallel.
 
     <VisualStyle displayFlags="showCollisionModels"/>
 
-    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallel="false" solveODEConcurrently="true"/>
+    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop"
+                             parallelCollisionDetectionAndFreeMotion="false"
+                             parallelODESolving="true"/>
     <DefaultPipeline/>
     <ParallelBruteForceBroadPhase/>
     <ParallelBVHNarrowPhase/>

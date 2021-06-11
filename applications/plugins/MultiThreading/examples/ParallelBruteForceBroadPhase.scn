@@ -26,7 +26,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
     <OglSceneFrame/>
 
     <!-- Basic Components to perform the collision detection -->
-    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" solveODEConcurrently="true" />
+    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" />
     <DefaultPipeline name="CollisionPipeline" />
 
     <ParallelBruteForceBroadPhase/>
