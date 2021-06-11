@@ -79,7 +79,7 @@ public:
     typedef DataType Histotype;
     typedef typename Histotype::T T;
 
-    THistogramSetting(QWidget * parent )	:histo(NULL),channel(0),channelmax(0),currentpos(0),clamp(defaulttype::Vec<2,T>(0,0))
+    THistogramSetting(QWidget * parent )	:histo(NULL),channel(0),channelmax(0),currentpos(0),clamp(type::Vec<2,T>(0,0))
     {
         label1=new QLabel(parent);
         label2=new QLabel(parent);
@@ -169,7 +169,7 @@ protected:
     unsigned int channel;
     unsigned int channelmax;
     T currentpos;
-    defaulttype::Vec<2,T> clamp;
+    type::Vec<2,T> clamp;
 
     QLabel *label1;
     QLabel *label2;

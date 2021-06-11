@@ -115,7 +115,7 @@ public:
     typedef component::visualmodel::VisualModelImpl VisuModelType;
     
      typedef sofa::component::engine::LabelImageToolBox Label;
-    typedef helper::vector<Label*> VecLabel;
+    typedef type::vector<Label*> VecLabel;
 
     ImageToolBox() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))

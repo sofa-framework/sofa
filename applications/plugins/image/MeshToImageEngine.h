@@ -32,8 +32,8 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/helper/SVector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
@@ -67,9 +67,9 @@ public:
 
     typedef SReal Real;
 
-    Data< helper::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
-    typedef helper::WriteOnlyAccessor<Data< helper::vector<Real> > > waVecReal;
-    Data< defaulttype::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
+    Data< type::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
+    typedef helper::WriteOnlyAccessor<Data< type::vector<Real> > > waVecReal;
+    Data< type::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
     Data< bool > rotateImage; ///< orient the image bounding box according to the mesh (OBB)
     Data< unsigned int > padSize; ///< size of border in number of voxels
     Data< unsigned int > subdiv; ///< number of subdivisions for face rasterization (if needed, increase to avoid holes)
@@ -87,7 +87,7 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     Data< TransformType > transform;
 
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef type::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     helper::vectorData< SeqPositions > vf_positions;
@@ -105,7 +105,7 @@ public:
     helper::vectorData< SeqTriangles > vf_triangles;
 
     typedef double ValueType;
-    typedef helper::vector<ValueType> SeqValues;
+    typedef type::vector<ValueType> SeqValues;
     typedef helper::ReadAccessor<Data< SeqValues > > raValues;
     helper::vectorData< SeqValues > vf_values;
 
@@ -113,7 +113,7 @@ public:
     helper::vectorData< ValueType > vf_InsideValues;
 
     typedef helper::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex; ///< one roi defined as an index list
-    typedef helper::vector<SeqIndex> VecSeqIndex;  ///< vector of rois
+    typedef type::vector<SeqIndex> VecSeqIndex;  ///< vector of rois
     helper::vectorData<VecSeqIndex> vf_roiIndices;  ///< vector of rois for each mesh
     helper::vectorData<SeqValues> vf_roiValue;   ///< values for each roi
     typedef helper::ReadAccessor<Data< VecSeqIndex > > raIndex;
@@ -127,8 +127,8 @@ public:
     Data<bool> worldGridAligned; ///< perform rasterization on a world aligned grid using nbVoxels and voxelSize
 
     MeshToImageEngine()    :   Inherited()
-      , voxelSize(initData(&voxelSize,helper::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
-      , nbVoxels(initData(&nbVoxels,defaulttype::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
+      , voxelSize(initData(&voxelSize,type::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
+      , nbVoxels(initData(&nbVoxels,type::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
       , rotateImage(initData(&rotateImage,false,"rotateImage","orient the image bounding box according to the mesh (OBB)"))
       , padSize(initData(&padSize,(unsigned int)(0),"padSize","size of border in number of voxels"))
       , subdiv(initData(&subdiv,(unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))
@@ -314,7 +314,7 @@ protected:
             }
             mean/=(Real)nbpTotal;
 
-            defaulttype::Mat<3,3,Real> M; M.fill(0);
+            type::Mat<3,3,Real> M; M.fill(0);
             for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
             {
                 raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
@@ -329,11 +329,11 @@ protected:
             NEWMAT::Matrix V(3,3); V = 0.0;
             NEWMAT::Jacobi(e, D, V);
             for(size_t j=0; j<3; j++) for(size_t k=0; k<3; k++) M[j][k]=V(j+1,k+1);
-            if(defaulttype::determinant(M)<0) M*=(Real)-1.0;
-            defaulttype::Mat<3,3,Real> MT=M.transposed();
+            if(type::determinant(M)<0) M*=(Real)-1.0;
+            type::Mat<3,3,Real> MT=M.transposed();
 
             // get orientation from eigen vectors
-            helper::Quater< Real > q; q.fromMatrix(M);
+            type::Quat< Real > q; q.fromMatrix(M);
             tr->getRotation()=q.toEulerVector()* (Real)180.0 / (Real)M_PI;
 
             // get bb

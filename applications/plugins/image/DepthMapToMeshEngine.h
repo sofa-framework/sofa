@@ -32,7 +32,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #if IMAGE_HAVE_SOFA_GL == 1
 #include <sofa/gl/Texture.h>
@@ -81,13 +81,13 @@ public:
     typedef helper::ReadAccessor<Data< TextureTypes > > raTexture;
     Data< TextureTypes > texImage;
 
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef type::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position; ///< output positions
 
-    typedef helper::fixed_array<Real,2> TexCoord;
-    typedef helper::vector<TexCoord> SeqTexCoords;
+    typedef type::fixed_array<Real,2> TexCoord;
+    typedef type::vector<TexCoord> SeqTexCoords;
     typedef helper::ReadAccessor<Data< SeqTexCoords > > raTexCoords;
     typedef helper::WriteOnlyAccessor<Data< SeqTexCoords > > waTexCoords;
     Data< SeqTexCoords > texCoord; ///< output texture coordinates
@@ -183,7 +183,7 @@ protected:
         unsigned int count=0,p1,p2,p3;
         pos.resize(dimx*dimy);
         tc.resize(dimx*dimy);
-        helper::vector<bool> isValid(dimx*dimy);
+        type::vector<bool> isValid(dimx*dimy);
         Real cameraZ= 0.5; // camera position relative to image plane = offset for depth
         Real minT= minThreshold.getValue();
         for(unsigned int y=0; y<dimy; y++)
@@ -256,7 +256,7 @@ protected:
         raTriangles tri(this->triangles);
         raTexture inTex(this->texImage);
 
-        vparams->drawTool()->setMaterial(sofa::helper::types::RGBAColor{0.5,0.5,0.5,0.});
+        vparams->drawTool()->setMaterial(sofa::type::RGBAColor{0.5,0.5,0.5,0.});
 
         vparams->drawTool()->enableLighting();
 
@@ -268,10 +268,10 @@ protected:
         glBegin(GL_TRIANGLES);
         for (std::size_t i=0; i<tri.size(); ++i)
         {
-            const defaulttype::Vec<3,Real>& a = pos[ tri[i][0] ];
-            const defaulttype::Vec<3,Real>& b = pos[ tri[i][1] ];
-            const defaulttype::Vec<3,Real>& c = pos[ tri[i][2] ];
-            defaulttype::Vec<3,Real> n = cross((c-a),(b-a));	n.normalize();
+            const type::Vec<3,Real>& a = pos[ tri[i][0] ];
+            const type::Vec<3,Real>& b = pos[ tri[i][1] ];
+            const type::Vec<3,Real>& c = pos[ tri[i][2] ];
+            type::Vec<3,Real> n = cross((c-a),(b-a));	n.normalize();
             glNormal3d(n[0],n[1],n[2]);
 
             glTexCoord2d(tc[tri[i][0]][0],tc[tri[i][0]][1]); glVertex3d(a[0],a[1],a[2]);
