@@ -22,7 +22,7 @@
 #include <sofa/testing/config.h>
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/vectorData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/testing/BaseTest.h>
@@ -71,7 +71,7 @@ TEST_F(Data_test, getNameWithValueTypeInfo)
 struct vectorData_test: public ::testing::Test
 {
     Data<int> data1;
-    helper::vectorData<int> vDataInt;
+    core::objectmodel::vectorData<int> vDataInt;
 
     vectorData_test()
         : vDataInt(nullptr,"","")

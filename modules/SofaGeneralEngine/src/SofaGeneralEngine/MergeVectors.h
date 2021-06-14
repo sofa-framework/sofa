@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 namespace sofa::component::engine
 {
@@ -69,7 +69,7 @@ public:
     }
 
     Data<unsigned int> f_nbInputs; ///< Number of input vectors
-    helper::vectorData<VecValue> vf_inputs;
+    core::objectmodel::vectorData<VecValue> vf_inputs;
     Data<VecValue> f_output; ///< Output vector
 
 };

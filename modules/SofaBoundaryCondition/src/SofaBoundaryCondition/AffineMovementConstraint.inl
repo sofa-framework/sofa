@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <iostream>
 #include <sofa/helper/cast.h>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 

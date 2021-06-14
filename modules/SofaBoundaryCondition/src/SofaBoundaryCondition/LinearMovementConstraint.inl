@@ -28,7 +28,7 @@
 #include <sofa/type/RGBAColor.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::projectiveconstraintset
@@ -100,7 +100,7 @@ void LinearMovementConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::removeIndex(Index index)
 {
-    sofa::helper::removeValue(*m_indices.beginEdit(),index);
+    sofa::type::removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
 }
 

@@ -24,7 +24,7 @@
 
 #include "CudaCommon.h"
 #include "mycuda.h"
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/type/vector.h>
@@ -34,7 +34,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
-#include <sofa/helper/vector_device.h>
+#include <sofa/type/vector_device.h>
 
 namespace sofa
 {
@@ -58,10 +58,10 @@ struct DataTypeInfoManager
 };
 
 template<class T>
-class CudaVector : public helper::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
+class CudaVector : public type::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
 {
 public :
-    using Inherit = helper::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
+    using Inherit = type::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
     typedef size_t Size;
 
     CudaVector() : Inherit() {}

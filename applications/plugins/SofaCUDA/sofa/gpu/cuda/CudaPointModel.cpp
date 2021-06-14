@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <fstream>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 
 namespace sofa
 {

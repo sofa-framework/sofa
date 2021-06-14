@@ -28,7 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa::component::projectiveconstraintset
@@ -166,7 +166,7 @@ void FixedPlaneConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*d_indices.beginEdit(),(unsigned int)index);
+    sofa::type::removeValue(*d_indices.beginEdit(),(unsigned int)index);
     d_indices.endEdit();
 }
 

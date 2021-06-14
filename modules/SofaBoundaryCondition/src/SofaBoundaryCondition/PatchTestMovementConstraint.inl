@@ -28,7 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 #include <sofa/helper/cast.h>
 
 namespace sofa::component::projectiveconstraintset
@@ -100,7 +100,7 @@ void PatchTestMovementConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*d_indices.beginEdit(),index);
+    sofa::type::removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();
 }
 

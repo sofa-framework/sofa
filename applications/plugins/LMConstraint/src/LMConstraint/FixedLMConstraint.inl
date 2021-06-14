@@ -23,7 +23,7 @@
 #include <LMConstraint/FixedLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::constraintset
@@ -84,7 +84,7 @@ void FixedLMConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void FixedLMConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 

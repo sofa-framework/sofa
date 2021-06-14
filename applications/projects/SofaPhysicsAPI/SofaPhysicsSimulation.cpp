@@ -22,8 +22,8 @@
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsSimulation.h"
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <sofa/helper/io/Image.h>
 #include <sofa/gl/RAII.h>
 

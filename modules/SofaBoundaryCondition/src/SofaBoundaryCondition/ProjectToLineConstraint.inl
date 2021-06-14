@@ -28,7 +28,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -97,7 +97,7 @@ void ProjectToLineConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void ProjectToLineConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 

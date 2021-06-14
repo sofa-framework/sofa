@@ -22,7 +22,7 @@
 #include <SofaOpenglVisual/Light.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaOpenglVisual/LightManager.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/glu.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
