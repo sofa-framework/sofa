@@ -24,13 +24,11 @@
 #include <SofaGeneralMeshCollision/config.h>
 
 #include <SofaBaseCollision/MinProximityIntersection.h>
-#include <SofaMeshCollision/MeshIntTool.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/IntrUtility3.h>
 
 namespace sofa::component::collision
 {

@@ -57,17 +57,17 @@ MeshSTEPLoader::MeshSTEPLoader():MeshLoader()
 
 bool MeshSTEPLoader::doLoad()
 {
-    dmsg_info() << "Loading STEP file: " << m_filename;
+    dmsg_info() << "Loading STEP file: " << d_filename;
 
     bool fileRead = false;
 
     // Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
     if (!file.good())
     {
-        msg_error() << "Error: MeshSTEPLoader: Cannot read file '" << m_filename << "'.";
+        msg_error() << "Error: MeshSTEPLoader: Cannot read file '" << d_filename << "'.";
         return false;
     }
 

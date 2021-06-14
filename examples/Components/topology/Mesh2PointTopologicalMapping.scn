@@ -6,7 +6,8 @@
     <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showVisual" />
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection/>
     <Node name="MeshTopology">

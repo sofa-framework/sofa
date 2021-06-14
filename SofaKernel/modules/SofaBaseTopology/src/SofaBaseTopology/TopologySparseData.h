@@ -82,7 +82,7 @@ public:
             if (index == m_map2Elements[i])
                 return i;
 
-        return sofa::core::topology::Topology::InvalidID;
+        return sofa::InvalidID;
     }
 
 

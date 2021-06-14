@@ -3,7 +3,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle name="visualStyle1"  displayFlags="showVisual showBehaviorModels showInteractionForceFields showCollisionModels" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-	<BruteForceDetection name="Detection" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<MinProximityIntersection name="Proximity"  alarmDistance="3"  contactDistance="2" />
 	<DefaultContactManager name="Response"  response="default" />
 	<Node 	 name="Object"  gravity="0 -9.81 0"  >

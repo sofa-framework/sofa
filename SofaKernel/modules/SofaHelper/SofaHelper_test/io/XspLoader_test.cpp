@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/testing/config.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 #include <sofa/helper/system/FileRepository.h>
 

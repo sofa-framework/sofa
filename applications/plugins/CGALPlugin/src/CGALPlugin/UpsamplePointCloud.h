@@ -19,61 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
-#define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
-#include <SofaMiscCollision/config.h>
+#pragma once
 
-#include <sofa/core/collision/CollisionGroupManager.h>
-#include <sofa/simulation/DeleteVisitor.h>
-#include <sofa/simulation/CleanupVisitor.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
-
-namespace sofa
+namespace cgal
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-class SOFA_MISC_COLLISION_API DefaultCollisionGroupManager : public core::collision::CollisionGroupManager
+///
+/// \brief The UpsamplePointCloud class generates a denser point cloud from an input point cloud
+/// More info here: https://doc.cgal.org/latest/Point_set_processing_3/index.html#Point_set_processing_3Upsampling
+///
+class UpsamplePointCloud : public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
+    SOFA_CLASS(UpsamplePointCloud,sofa::core::DataEngine);
 
-    typedef std::map<simulation::Node*, simulation::Node*> GroupMap; 
-    // this map stores the deformable object node and its collision group <deformable object node*, collison group node*>
-    GroupMap groupMap; 
+    typedef typename sofa::defaulttype::Vec3Types::Real Real;
+    typedef typename sofa::defaulttype::Vec3Types::Coord Point;
+    typedef typename sofa::defaulttype::Vec3Types::Coord Coord;
+    typedef typename sofa::defaulttype::Vec3Types::VecCoord VecCoord;
+
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
 
 public:
-    void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
-    void clearGroups(core::objectmodel::BaseContext* scene) override;
+    UpsamplePointCloud();
+    virtual ~UpsamplePointCloud() { };
 
-protected:
-    DefaultCollisionGroupManager();
-    ~DefaultCollisionGroupManager() override;
+    void init() override;
+    void doUpdate() override;
 
-    //Find the node containing the ode solver used to animate the mechanical model associated to the collision model
-    virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
+    //Inputs
+    sofa::core::objectmodel::Data<VecCoord> d_positionsIn; ///< Input point cloud positions
+    sofa::core::objectmodel::Data<VecCoord> d_normalsIn; ///< Input point cloud normals
 
-    void changeInstance(Instance inst) override;
-
-    void clearCollisionGroup(simulation::NodeSPtr group);
-
-    std::map<Instance,GroupMap> storedGroupSet;
-
-private:
-    DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;
-    DefaultCollisionGroupManager& operator=(const DefaultCollisionGroupManager& n) ;
-
-
+    //Outputs
+    sofa::core::objectmodel::Data<VecCoord> d_positionsOut; ///< Output denser point cloud positions
+    sofa::core::objectmodel::Data<VecCoord> d_normalsOut; ///< Output normals of denser point cloud positions
 };
 
-} // namespace collision
+} //cgal
 
-} // namespace component
-
-} // namespace sofa
-
-#endif

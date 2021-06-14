@@ -518,7 +518,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
             }
         }
     }
-    vparams->drawTool()->drawPoints(points1, 3, sofa::defaulttype::Vec<4,float>(1,1,1,1));
+    vparams->drawTool()->drawPoints(points1, 3, sofa::type::RGBAColor(1.,1.,1.,1.));
 
 
     std::vector< sofa::defaulttype::Vector3 > points2;
@@ -527,7 +527,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
     {
         points2.push_back(out[i]);
     }
-    vparams->drawTool()->drawPoints(points2, 5, sofa::defaulttype::Vec<4,float>(0.5,1,0.5,1));
+    vparams->drawTool()->drawPoints(points2, 5, sofa::type::RGBAColor(0.5,1,0.5,1));
 
 
     std::vector< sofa::defaulttype::Vector3 > points3;
@@ -566,7 +566,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
             }
         }
     }
-    vparams->drawTool()->drawLines(points3, 1, sofa::defaulttype::Vec<4,float>(0,1,0,1));
+    vparams->drawTool()->drawLines(points3, 1, sofa::type::RGBAColor(0.,1.,0.,1.));
 }
 
 } // namespace mapping

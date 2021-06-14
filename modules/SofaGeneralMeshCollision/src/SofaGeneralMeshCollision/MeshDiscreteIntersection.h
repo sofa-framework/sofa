@@ -25,21 +25,18 @@
 
 #include <sofa/core/collision/Intersection.h>
 
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/PointModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaBaseCollision/SphereModel.h>
 
 namespace sofa::component::collision
 {
 
+class DiscreteIntersection;
+
 class SOFA_SOFAGENERALMESHCOLLISION_API MeshDiscreteIntersection : public core::collision::BaseIntersector
 {
-
-    typedef DiscreteIntersection::OutputVector OutputVector;
+    typedef core::collision::BaseIntersector::OutputVector OutputVector;
 
 public:
     MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
@@ -51,7 +48,6 @@ public:
     template<class T> int computeIntersection(TSphere<T>&, Triangle&, OutputVector*);
 
 protected:
-
     DiscreteIntersection* intersection;
 
 };

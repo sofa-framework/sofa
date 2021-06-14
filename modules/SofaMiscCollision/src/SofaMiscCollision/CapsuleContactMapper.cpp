@@ -19,29 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_SOFAMISCCOLLISION_CAPSULECONTACTMAPPER_CPP
+#include <SofaMiscCollision/CapsuleContactMapper.h>
 
-#include <sofa/helper/system/atomic.h>
-#include <gtest/gtest.h>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/RigidCapsuleModel.h>
 
-using sofa::helper::system::atomic;
+using namespace sofa::core::collision;
 
-TEST(atomitTest, dec_and_test_null)
+namespace sofa::component::collision
 {
-    atomic<int> value(3);
-    EXPECT_EQ(value.dec_and_test_null(), false);
-    EXPECT_EQ(value, 2);
-    EXPECT_EQ(value.dec_and_test_null(), false);
-    EXPECT_EQ(value, 1);
-    EXPECT_EQ(value.dec_and_test_null(), true);
-    EXPECT_EQ(value, 0);
-}
 
-TEST(atomitTest, compare_and_swap)
-{
-    atomic<int> value(-1);
-    EXPECT_EQ(value.compare_and_swap(-1, 10), -1);
-    EXPECT_EQ(value, 10);
+ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleContactMapperClass("default", true);
+ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > RigidCapsuleContactMapperClass("default", true);
+template class SOFA_MISC_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class SOFA_MISC_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 
-    EXPECT_EQ(value.compare_and_swap(5, 25), 10);
-    EXPECT_EQ(value, 10);
-}
+} // namespace sofa::component::collision

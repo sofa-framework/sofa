@@ -51,10 +51,23 @@ void NewProximityIntersection::init()
 {
     intersectors.add<CubeCollisionModel, CubeCollisionModel, NewProximityIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, NewProximityIntersection>(this);
+    intersectors.add<RigidSphereModel, RigidSphereModel, NewProximityIntersection>(this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, NewProximityIntersection>(this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 
 	BaseProximityIntersection::init();
 }
+
+bool NewProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+{
+    return BaseProximityIntersection::testIntersection(cube1, cube2);
+}
+
+int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts) 
+{ 
+    return BaseProximityIntersection::testIntersection(cube1, cube2); 
+}
+
 
 } // namespace sofa::component::collision

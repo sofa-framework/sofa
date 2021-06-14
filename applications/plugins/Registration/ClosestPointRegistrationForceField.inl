@@ -110,9 +110,13 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
         if (meshobjLoader)
         {
             if(sourceTriangles.setParent(&meshobjLoader->d_triangles))
+            {
                 msg_info()<<"imported triangles from "<<meshobjLoader->getName();
+            }
             else
+            {
                 msg_warning()<<"unable to import triangles from "<<meshobjLoader->getName();
+            }
         }
     }
     // Get source normals

@@ -7,6 +7,6 @@ set(SOURCE_FILES
     MeshObjLoader_test.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaLoader)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

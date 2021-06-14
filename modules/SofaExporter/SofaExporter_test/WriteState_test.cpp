@@ -24,8 +24,8 @@
 #include <iterator>
 #include <algorithm>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 

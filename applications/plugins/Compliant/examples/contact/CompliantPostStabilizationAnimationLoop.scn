@@ -10,7 +10,8 @@
     <CompliantPostStabilizationAnimationLoop />
   
   <DefaultPipeline depth="6" />
-  <BruteForceDetection />
+  <BruteForceBroadPhase/>
+  <BVHNarrowPhase/>
   <DiscreteIntersection />
 <!--   <NewProximityIntersection alarmDistance=".5" contactDistance="0"/> -->
   <DefaultContactManager responseParams="compliance=0&amp;restitution=0&amp;holonomic=1" response="CompliantContact" />
