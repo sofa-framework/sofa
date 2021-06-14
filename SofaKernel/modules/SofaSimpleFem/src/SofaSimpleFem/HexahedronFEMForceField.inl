@@ -54,7 +54,7 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     , f_assembling(initData(&f_assembling,false,"assembling",""))
     , _gatherPt(initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
     , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
-    , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
+    , f_drawing(initData(&f_drawing,true,"drawing","draw the forcefield if true"))
     , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
     , needUpdateTopology(false)
     , l_topology(initLink("topology", "link to the topology container"))
@@ -313,7 +313,7 @@ const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEM
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice, double stiffnessFactor)
+void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice, double stiffnessFactor) const
 {
     const bool verbose = elementIndice==0;
     // X = n0 (1-x1)(1-x2)(1-x3)/8 + n1 (1+x1)(1-x2)(1-x3)/8 + n2 (1+x1)(1+x2)(1-x3)/8 + n3 (1-x1)(1+x2)(1-x3)/8 + n4 (1-x1)(1-x2)(1+x3)/8 + n5 (1+x1)(1-x2)(1+x3)/8 + n6 (1+x1)(1+x2)(1+x3)/8 + n7 (1-x1)(1+x2)(1+x3)/8
