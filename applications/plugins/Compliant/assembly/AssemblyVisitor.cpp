@@ -63,7 +63,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
 	if( !node->mechanicalMapping ) return res;
 
-	using helper::vector;
+    using type::vector;
 
 	assert( node->mechanicalMapping->getTo().size() == 1 &&
 	        "only n -> 1 mappings are handled");

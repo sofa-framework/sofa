@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/random.h>
@@ -50,7 +50,7 @@ public:
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<Real> VecReal;
 
     // ------------    Types and methods defined for easier data access
     typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
@@ -168,12 +168,12 @@ public:
         void operator=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
 
     static const char* Name();
 
 
-    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
+    static Coord interpolate ( const type::vector< Coord > & ancestors, const type::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
         Coord c;
@@ -321,10 +321,10 @@ public:
 
     };
 
-    typedef helper::vector<Deriv> VecDeriv;
+    typedef type::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
+    static Deriv interpolate ( const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;

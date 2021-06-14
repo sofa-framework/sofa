@@ -120,7 +120,7 @@ class LinearJacobianBlock< Rigid3(InReal) , V3(OutReal) > :
         MatBlock J = MatBlock();
         for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
 
-        cpMatrix W = -defaulttype::crossProductMatrix(Pa);
+        cpMatrix W = -type::crossProductMatrix(Pa);
         for(unsigned int l=0; l<adim; ++l) for (unsigned int i=0; i<dim; ++i) J(i,l+dim)=W(i,l);
         return J;
     }
@@ -128,7 +128,7 @@ class LinearJacobianBlock< Rigid3(InReal) , V3(OutReal) > :
     KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         // will only work for 3d rigids
-        Mat<adim,adim,Real> block = defaulttype::crossProductMatrix( childForce ) * defaulttype::crossProductMatrix( Pa );
+        Mat<adim,adim,Real> block = type::crossProductMatrix( childForce ) * type::crossProductMatrix( Pa );
 
         if( stabilization )
         {
@@ -225,7 +225,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F331(OutReal) > :
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W = defaulttype::crossProductMatrix(getAngular(data));
+        const cpMatrix W = type::crossProductMatrix(getAngular(data));
         result.getF() += covMN(getLinear(data),Ft) + W * PFa.getF();
     }
 
@@ -247,7 +247,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F331(OutReal) > :
 
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W = -defaulttype::crossProductMatrix(PFa.getF().col(j));
+            cpMatrix W = -type::crossProductMatrix(PFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         return J;
@@ -260,7 +260,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F331(OutReal) > :
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = defaulttype::crossProductMatrix( childForce.getF().col(k) ) * defaulttype::crossProductMatrix( PFa.getF().col(k) );
+            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFa.getF().col(k) );
 
             if( stabilization )
             {
@@ -358,7 +358,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F321(OutReal) > :
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W = defaulttype::crossProductMatrix(getAngular(data));
+        const cpMatrix W = type::crossProductMatrix(getAngular(data));
         result.getF() += covMN(getLinear(data),Ft) + W * PFa.getF();
     }
 
@@ -375,7 +375,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F321(OutReal) > :
 
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W = -defaulttype::crossProductMatrix(PFa.getF().col(j));
+            cpMatrix W = -type::crossProductMatrix(PFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         return J;
@@ -387,7 +387,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F321(OutReal) > :
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = defaulttype::crossProductMatrix( childForce.getF().col(k) ) * defaulttype::crossProductMatrix( PFa.getF().col(k) );
+            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFa.getF().col(k) );
 
             if( stabilization )
             {
@@ -485,7 +485,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F311(OutReal) > :
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W = defaulttype::crossProductMatrix(getAngular(data));
+        const cpMatrix W = type::crossProductMatrix(getAngular(data));
         result.getF() += covMN(getLinear(data),Ft) + W * PFa.getF();
     }
 
@@ -502,7 +502,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F311(OutReal) > :
 
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W = -defaulttype::crossProductMatrix(PFa.getF().col(j));
+            cpMatrix W = -type::crossProductMatrix(PFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         return J;
@@ -514,7 +514,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F311(OutReal) > :
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = defaulttype::crossProductMatrix( childForce.getF().col(k) ) * defaulttype::crossProductMatrix( PFa.getF().col(k) );
+            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFa.getF().col(k) );
 
             if( stabilization )
             {
@@ -632,7 +632,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F332(OutReal) > :
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W = defaulttype::crossProductMatrix(getAngular(data));
+        const cpMatrix W = type::crossProductMatrix(getAngular(data));
 
         result.getF() += covMN(getLinear(data),Ft) + W * PFdFa.getF();
         for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN(getLinear(data),dFt[k]) + W * PFdFa.getGradientF(k);
@@ -656,7 +656,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F332(OutReal) > :
         for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+i*mdim,i)=Ft[j];
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W = -defaulttype::crossProductMatrix(PFdFa.getF().col(j));
+            cpMatrix W = -type::crossProductMatrix(PFdFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         unsigned int offset=dim*mdim;
@@ -665,7 +665,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F332(OutReal) > :
             for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=dFt[k][j];
             for(unsigned int j=0; j<mdim; ++j)
             {
-                cpMatrix W = -defaulttype::crossProductMatrix(PFdFa.getGradientF(k).col(j));
+                cpMatrix W = -type::crossProductMatrix(PFdFa.getGradientF(k).col(j));
                 for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+offset+i*mdim,l+dim)+=W(i,l);
             }
             offset+=dim*mdim;
@@ -679,8 +679,8 @@ class LinearJacobianBlock< Rigid3(InReal) , F332(OutReal) > :
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = defaulttype::crossProductMatrix( childForce.getF().col(k) ) * defaulttype::crossProductMatrix( PFdFa.getF().col(k) );
-            for (unsigned int m = 0; m < dim; ++m) block += defaulttype::crossProductMatrix( childForce.getGradientF(m).col(k) ) * defaulttype::crossProductMatrix( PFdFa.getGradientF(m).col(k) );
+            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFdFa.getF().col(k) );
+            for (unsigned int m = 0; m < dim; ++m) block += type::crossProductMatrix( childForce.getGradientF(m).col(k) ) * type::crossProductMatrix( PFdFa.getGradientF(m).col(k) );
 
             if( stabilization )
             {
@@ -791,7 +791,7 @@ class LinearJacobianBlock< Rigid3(InReal) , Affine3(OutReal) > :
     {
         result.getVCenter() += getLinear(data) * Pt + cross(getAngular(data), Pa.getCenter());
 
-        const cpMatrix W = defaulttype::crossProductMatrix(getAngular(data));
+        const cpMatrix W = type::crossProductMatrix(getAngular(data));
         result.getVAffine() += W * Pa.getAffine();
     }
 
@@ -808,12 +808,12 @@ class LinearJacobianBlock< Rigid3(InReal) , Affine3(OutReal) > :
         MatBlock J = MatBlock();
         for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
 
-        cpMatrix W = -defaulttype::crossProductMatrix(Pa.getCenter());
+        cpMatrix W = -type::crossProductMatrix(Pa.getCenter());
         for(unsigned int l=0; l<adim; ++l) for (unsigned int i=0; i<dim; ++i) J(i,l+dim)=W(i,l);
 
         for(unsigned int j=0; j<dim; ++j)
         {
-            W = -defaulttype::crossProductMatrix(Pa.getAffine().col(j));
+            W = -type::crossProductMatrix(Pa.getAffine().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+(i+1)*dim,l+dim)+=W(i,l);
         }
         return J;
@@ -824,7 +824,7 @@ class LinearJacobianBlock< Rigid3(InReal) , Affine3(OutReal) > :
     {
         // will only work for 3d rigids
         KBlock K;
-        Mat<adim,adim,Real> block = defaulttype::crossProductMatrix( childForce.getVCenter() ) * defaulttype::crossProductMatrix( Pa.getCenter() );
+        Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getVCenter() ) * type::crossProductMatrix( Pa.getCenter() );
 
         if( stabilization )
         {
@@ -837,7 +837,7 @@ class LinearJacobianBlock< Rigid3(InReal) , Affine3(OutReal) > :
                 K[dim+i][dim+j] = block[i][j];
         for(unsigned int k=0; k<dim; ++k)
         {
-            Mat<adim,adim,Real> block = defaulttype::crossProductMatrix( childForce.getVAffine().col(k) ) * defaulttype::crossProductMatrix( Pa.getAffine().col(k) );
+            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getVAffine().col(k) ) * type::crossProductMatrix( Pa.getAffine().col(k) );
 
             if( stabilization )
             {

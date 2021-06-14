@@ -4,7 +4,7 @@
 #include "../shapeFunction/BaseShapeFunction.h"
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 
 
@@ -58,9 +58,9 @@ public:
 protected:
 
     // Indices
-    Data< helper::vector< Indices > > d_indices; ///< Indices
+    Data< type::vector< Indices > > d_indices; ///< Indices
     // Weights
-    Data< helper::vector< Weights > > d_weights; ///< Weights
+    Data< type::vector< Weights > > d_weights; ///< Weights
 
 };
 

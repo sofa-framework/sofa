@@ -39,7 +39,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #if IMAGE_HAVE_SOFA_GL == 1
 #include <sofa/gl/Texture.h>

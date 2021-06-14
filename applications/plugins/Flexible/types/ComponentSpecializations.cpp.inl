@@ -194,9 +194,9 @@ namespace component
 namespace container
 {
 
-using defaulttype::Vector3;
+using type::Vector3;
 using defaulttype::Quat;
-using defaulttype::Vec4f;
+using type::Vec4f;
 
 // ==========================================================================
 // Draw Specializations
@@ -296,7 +296,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
     SReal e = 0;
     const MassType& m = d_vertexMass.getValue();
     // gravity
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
 

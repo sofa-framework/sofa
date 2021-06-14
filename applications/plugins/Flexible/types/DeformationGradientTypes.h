@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <SofaBaseMechanics/MechanicalObject.inl>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/random.h>
 
@@ -61,7 +61,7 @@ struct DefGradientTypes
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
 
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<Real> VecReal;
 
     /** Time derivative of a (generalized) deformation gradient, or other vector-like associated quantities, such as generalized forces.
     */
@@ -160,10 +160,10 @@ struct DefGradientTypes
 
     };
 
-    typedef helper::vector<Deriv> VecDeriv;
+    typedef type::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
+    static Deriv interpolate ( const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
@@ -175,7 +175,7 @@ struct DefGradientTypes
 
 //    void clear(){ v.clear(); b.clear(); for( unsigned int i = 0; i < material_dimensions; ++i) getF()[i][i] = (Real)1.0;}
 
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
 
     static const char* Name();
 

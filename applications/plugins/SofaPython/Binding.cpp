@@ -90,7 +90,7 @@ void bindSofaPythonModule(PyObject * module)
     SP_ADD_CLASS_IN_FACTORY(DataFileName,sofa::core::objectmodel::DataFileName)
     SP_ADD_CLASS_IN_FACTORY(DataFileNameVector,sofa::core::objectmodel::DataFileNameVector)
     SP_ADD_CLASS_IN_SOFAMODULE(PointAncestorElem)
-    SP_ADD_CLASS_IN_FACTORY(VectorLinearSpringData,sofa::core::objectmodel::Data<sofa::helper::vector<sofa::component::interactionforcefield::LinearSpring<SReal>>>)
+    SP_ADD_CLASS_IN_FACTORY(VectorLinearSpringData,sofa::core::objectmodel::Data<sofa::type::vector<sofa::component::interactionforcefield::LinearSpring<SReal>>>)
 
     SP_ADD_CLASS_IN_SOFAMODULE(Link)
     SP_ADD_CLASS_IN_SOFAMODULE(Vector3)

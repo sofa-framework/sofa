@@ -55,7 +55,7 @@ class MyCfExportVisitor : public sofa::simulation::Visitor
 {
 public:
 	// type def
-	typedef helper::vector<sofa::core::objectmodel::BaseData*> VecData;
+	typedef type::vector<sofa::core::objectmodel::BaseData*> VecData;
 
     MyCfExportVisitor(const sofa::core::ExecParams* params)
         : Visitor(params)

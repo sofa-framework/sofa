@@ -58,10 +58,10 @@ namespace sofa {
         typedef component::container::MechanicalObject<In> InDOFs;
         typedef component::container::MechanicalObject<Out> OutDOFs;
         typedef defaulttype::Quat Quat;
-        typedef defaulttype::Vector3 Vec3;
+        typedef type::Vector3 Vec3;
 
         /// Tested Rotation: random rotation matrix  
-        defaulttype::Mat<3,3,Real> testedRotation; 
+        type::Mat<3,3,Real> testedRotation; 
         Quat testedQuaternion;
         /// Tested Translation: random translation
         Vec3 testedTranslation;

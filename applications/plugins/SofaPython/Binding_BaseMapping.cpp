@@ -39,7 +39,7 @@ static PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    helper::vector<BaseState*> from = mapping->getFrom();
+    type::vector<BaseState*> from = mapping->getFrom();
 
     PyObject *list = PyList_New(from.size());
 
@@ -53,7 +53,7 @@ static PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    helper::vector<BaseState*> to = mapping->getTo();
+    type::vector<BaseState*> to = mapping->getTo();
 
     PyObject *list = PyList_New(to.size());
 
@@ -152,7 +152,7 @@ static PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
 static PyObject * BaseMapping_getJs(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
-    const helper::vector<sofa::defaulttype::BaseMatrix*>* Js = mapping->getJs();
+    const type::vector<sofa::defaulttype::BaseMatrix*>* Js = mapping->getJs();
 
     PyObject* Jspython = PyList_New(Js->size());
     for( size_t i=0 ; i<Js->size() ; ++i )

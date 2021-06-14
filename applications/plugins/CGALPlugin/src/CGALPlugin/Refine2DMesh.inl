@@ -133,8 +133,8 @@ namespace cgal
         helper::WriteAccessor< Data< SeqEdges > > newEdges = d_newEdges;
         helper::WriteAccessor< Data< VecReal > > newEdgesData1 = d_newEdgesData1;
         helper::WriteAccessor< Data< VecReal > > newEdgesData2 = d_newEdgesData2;
-        helper::WriteAccessor< Data< sofa::helper::vector<int> > > m_tags = d_trianglesRegion;
-        helper::WriteAccessor< Data< sofa::helper::vector<PointID> > > newBdPoints = d_newBdPoints;
+        helper::WriteAccessor< Data< sofa::type::vector<int> > > m_tags = d_trianglesRegion;
+        helper::WriteAccessor< Data< sofa::type::vector<PointID> > > newBdPoints = d_newBdPoints;
         
         newPoints.clear();
         newTriangles.clear();
@@ -240,7 +240,7 @@ namespace cgal
         for(unsigned int i = 0; i < seedFaces.size(); ++i)
         {
             std::vector<Face_handle> region;
-            sofa::helper::vector<bool> flags;
+            sofa::type::vector<bool> flags;
             flags.resize(cdt.number_of_faces());
             flags.fill(0);
             region.push_back(seedFaces[i]);
@@ -384,8 +384,8 @@ namespace cgal
             vparams->drawTool()->saveLastState();
 
             const VecCoord& seeds = d_seedPoints.getValue();
-            sofa::helper::vector<sofa::defaulttype::Vec3> points;
-            sofa::helper::types::RGBAColor color(0.0, 0.0, 1.0, 1);
+            sofa::type::vector<sofa::defaulttype::Vec3> points;
+            sofa::type::RGBAColor color(0.0, 0.0, 1.0, 1);
 
             for (unsigned int i = 0; i < seeds.size(); i++)
                 points.push_back(seeds[i]);
@@ -399,8 +399,8 @@ namespace cgal
             vparams->drawTool()->saveLastState();
 
             const VecCoord& regions = d_regionPoints.getValue();
-            sofa::helper::vector<sofa::defaulttype::Vec3> points;
-            sofa::helper::types::RGBAColor color(1.0, 0.0, 0.0, 1);
+            sofa::type::vector<sofa::defaulttype::Vec3> points;
+            sofa::type::RGBAColor color(1.0, 0.0, 0.0, 1);
 
             for (unsigned int i = 0; i < regions.size(); i++)
                 points.push_back(regions[i]);

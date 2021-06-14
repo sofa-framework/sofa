@@ -35,7 +35,7 @@ public:
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::Coord::Pos Coord;
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::Quat Quaternion;

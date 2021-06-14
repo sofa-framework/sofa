@@ -38,7 +38,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     enum { N=DataTypes::deriv_total_size };
-//    typedef defaulttype::Mat<N,N,Real> Block;
+//    typedef type::Mat<N,N,Real> Block;
 
     Data< Real > stiffness;    ///< Same Stiffness applied to all the DOFs
 

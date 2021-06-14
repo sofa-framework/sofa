@@ -214,7 +214,7 @@ typedef sofa::type::Vec1f Vec1f;
 typedef sofa::type::Vec2f Vec2f;
 typedef sofa::type::Vec6f Vec6f;
 
-using defaulttype::Vec;
+using type::Vec;
 using defaulttype::NoInit;
 using defaulttype::NOINIT;
 

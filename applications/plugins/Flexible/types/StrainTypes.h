@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <SofaBaseMechanics/MechanicalObject.inl>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/random.h>
 
@@ -67,7 +67,7 @@ public:
     enum { deriv_total_size = VSize };
     enum { order = _order };
 
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<Real> VecReal;
 
     class Deriv
     {
@@ -168,10 +168,10 @@ public:
         /// @}
     };
 
-    typedef helper::vector<Deriv> VecDeriv;
+    typedef type::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
+    static Deriv interpolate ( const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
@@ -181,7 +181,7 @@ public:
 
     typedef Deriv Coord;
 
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
 
     static const char* Name();
 
@@ -247,7 +247,7 @@ public:
 
     static const Size material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
     typedef Vec<material_dimensions, Real> MaterialCoord;
-    typedef helper::vector<MaterialCoord> VecMaterialCoord;
+    typedef type::vector<MaterialCoord> VecMaterialCoord;
     typedef Mat<material_dimensions,material_dimensions,Real> StrainMat;    ///< Strain in matrix form
 };
 
@@ -370,7 +370,7 @@ public:
 
     static const Size material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
     typedef Vec<material_dimensions, _Real> MaterialCoord;
-    typedef helper::vector<MaterialCoord> VecMaterialCoord;
+    typedef type::vector<MaterialCoord> VecMaterialCoord;
     typedef Mat<material_dimensions,material_dimensions,_Real> StrainMat;    ///< Strain in matrix form
 };
 
@@ -563,9 +563,9 @@ static inline Mat<1,1, Real> StressVoigtToMat( const Vec<1, Real>& s )
 
 /// \return 0.5 * ( A + At )
 template<Size N, class Real>
-static defaulttype::Mat<N,N,Real> cauchyStrainTensor( const defaulttype::Mat<N,N,Real>& A )
+static type::Mat<N,N,Real> cauchyStrainTensor( const type::Mat<N,N,Real>& A )
 {
-    defaulttype::Mat<N,N,Real> B;
+    type::Mat<N,N,Real> B;
     for( Size i=0 ; i<N ; i++ )
     {
         B[i][i] = A[i][i];

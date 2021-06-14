@@ -416,12 +416,12 @@ void GeomagicDriver::updatePosition()
 void GeomagicDriver::updateButtonStates()
 {
     int nbrButton = 2;
-    sofa::helper::fixed_array<bool, 2> buttons;
+    sofa::type::fixed_array<bool, 2> buttons;
     buttons[0] = d_button_1.getValue();
     buttons[1] = d_button_2.getValue();
 
     //copy button state
-    sofa::helper::fixed_array<bool, 2> oldStates;
+    sofa::type::fixed_array<bool, 2> oldStates;
     for (int i = 0; i < nbrButton; i++)
         oldStates[i] = buttons[i];
 

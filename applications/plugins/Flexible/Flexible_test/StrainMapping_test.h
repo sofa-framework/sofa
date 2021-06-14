@@ -20,8 +20,8 @@ namespace sofa {
     using std::endl;
     using namespace core;
     using namespace component;
-    using defaulttype::Vec;
-    using defaulttype::Mat;
+    using type::Vec;
+    using type::Mat;
     using ::testing::Types;
 
     using namespace component::mapping;
@@ -41,7 +41,7 @@ namespace sofa {
         typedef typename In::Frame InFrame;
 
         using Inherited::runTest;
-        bool runTest( defaulttype::Mat<3,3,Real>& rotation, defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real>& strain, const OutVecCoord& expectedChildCoords)
+        bool runTest( type::Mat<3,3,Real>& rotation, type::Mat<In::material_dimensions,In::material_dimensions,Real>& strain, const OutVecCoord& expectedChildCoords)
         {
             InVecCoord xin(1);
             OutVecCoord xout(1);

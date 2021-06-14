@@ -229,7 +229,7 @@ int main(int argc, char** argv)
 
 
     const SReal contactFriction=sqrt(friction);
-    sofa::helper::vector< sofa::core::CollisionModel* > listCollisionModels;
+    sofa::type::vector< sofa::core::CollisionModel* > listCollisionModels;
     root->getTreeObjects<sofa::core::CollisionModel>(&listCollisionModels);
     for (unsigned int i=0; i<listCollisionModels.size(); ++i) listCollisionModels[i]->setContactFriction(contactFriction);
     root->setAnimate(false);

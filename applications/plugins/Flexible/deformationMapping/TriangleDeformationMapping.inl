@@ -211,7 +211,7 @@ const sofa::defaulttype::BaseMatrix* TriangleDeformationMapping<TIn, TOut>::getJ
 }
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* TriangleDeformationMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* TriangleDeformationMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -227,7 +227,7 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
 
 
     // x axes
-    helper::vector< Vector3 > points;
+    type::vector< Vector3 > points;
     for(unsigned i=0; i<triangles.size(); i++ )
     {
 //        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getF() << endl;

@@ -156,7 +156,7 @@ protected:
         this->isCompliance.setValue(false);
     }
 
-    helper::vector<bool> m_violated;
+    type::vector<bool> m_violated;
 
 };
 

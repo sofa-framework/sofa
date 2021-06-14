@@ -51,7 +51,7 @@ public:
     Data<SReal> compliance; ///< Compliance of the manipulator. 0 is rigid, the bigger the softer. Negative values make no sense.
     Data<bool> isCompliance; ///< Is the mouse interaction treated as a compliance? (otherwise as a stiffness)
     Data<SReal> arrowSize;
-    Data<sofa::helper::types::RGBAColor> color;
+    Data<sofa::type::RGBAColor> color;
     Data<bool> visualmodel;
 };
 

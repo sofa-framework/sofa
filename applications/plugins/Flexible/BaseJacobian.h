@@ -105,7 +105,7 @@ protected:
 
 
     template<typename Real>
-    static Eigen::Matrix<Real,6,9,Eigen::RowMajor> assembleJ(const defaulttype::Mat<3,3,Real>& f) // 3D->3D
+    static Eigen::Matrix<Real,6,9,Eigen::RowMajor> assembleJ(const type::Mat<3,3,Real>& f) // 3D->3D
     {
         static const unsigned int spatial_dimensions = 3;
         static const unsigned int material_dimensions = 3;
@@ -125,7 +125,7 @@ protected:
     }
 
     template<typename Real>
-    static Eigen::Matrix<Real,3,4,Eigen::RowMajor> assembleJ(const defaulttype::Mat<2,2,Real>& f) // 2D->2D
+    static Eigen::Matrix<Real,3,4,Eigen::RowMajor> assembleJ(const type::Mat<2,2,Real>& f) // 2D->2D
     {
         static const unsigned int spatial_dimensions = 2;
         static const unsigned int material_dimensions = 2;
@@ -144,7 +144,7 @@ protected:
     }
 
     template<typename Real>
-    static Eigen::Matrix<Real,3,6,Eigen::RowMajor> assembleJ(const defaulttype::Mat<3,2,Real>& f) // 3D->2D
+    static Eigen::Matrix<Real,3,6,Eigen::RowMajor> assembleJ(const type::Mat<3,2,Real>& f) // 3D->2D
     {
         static const unsigned int spatial_dimensions = 3;
         static const unsigned int material_dimensions = 2;
@@ -163,7 +163,7 @@ protected:
     }
 
     template<typename Real>
-    static Eigen::Matrix<Real,1,3,Eigen::RowMajor> assembleJ(const defaulttype::Mat<3,1,Real>& f) // 3D->1D
+    static Eigen::Matrix<Real,1,3,Eigen::RowMajor> assembleJ(const type::Mat<3,1,Real>& f) // 3D->1D
     {
         static const unsigned int spatial_dimensions = 3;
         static const unsigned int material_dimensions = 1;

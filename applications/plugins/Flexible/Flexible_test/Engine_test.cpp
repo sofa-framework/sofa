@@ -125,7 +125,7 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
     typedef FlexibleDataEngine_test< TestDataEngine< component::engine::GaussPointContainer > > TestDataEngineType;
     static void run( TestDataEngineType* tested )
     {
-        tested->m_engineInput->f_inputVolume.setValue( helper::vector<SReal>(1,1) );
+        tested->m_engineInput->f_inputVolume.setValue( type::vector<SReal>(1,1) );
     }
 };
 
@@ -143,7 +143,7 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
         childNode->addObject( tested->m_engine );
         childNode->addObject( tested->m_engineInput );
 
-        tested->m_engineInput->dimensions.setValue( defaulttype::Vector3(1,1,1) );
+        tested->m_engineInput->dimensions.setValue( type::Vector3(1,1,1) );
         tested->m_engineInput->inputImage.setParent( "@../image.inputImage" );
         tested->m_engineInput->inputTransform.setParent( "@../image.inputTransform" );
     }

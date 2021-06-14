@@ -81,10 +81,10 @@ public:
     sofa::core::objectmodel::Data<SeqTriangles> d_triangles1Out; ///< Output triangles of transformation on the first surface mesh
     sofa::core::objectmodel::Data<VecCoord> d_positions2Out; ///< Output positions of transformation on the second surface mesh
     sofa::core::objectmodel::Data<SeqTriangles> d_triangles2Out; ///< Output triangles of transformation the on second surface mesh
-    sofa::core::objectmodel::Data<sofa::helper::vector<int>> d_indices1Out; ///< Indices of the surface mesh points that are on the first object
-    sofa::core::objectmodel::Data<sofa::helper::vector<int>> d_indices2Out; ///< Indices of the surface mesh points that are on the second object
+    sofa::core::objectmodel::Data<sofa::type::vector<int>> d_indices1Out; ///< Indices of the surface mesh points that are on the first object
+    sofa::core::objectmodel::Data<sofa::type::vector<int>> d_indices2Out; ///< Indices of the surface mesh points that are on the second object
 
-    sofa::helper::vector<std::pair<int, std::pair<int, int>>> m_distribution;
+    sofa::type::vector<std::pair<int, std::pair<int, int>>> m_distribution;
     // List of pairs:
     //      - first: index in child
     //      - second: pair:

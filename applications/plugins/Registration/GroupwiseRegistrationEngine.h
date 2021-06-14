@@ -58,7 +58,7 @@ public:
     typedef typename T::Real Real;
     enum {sizeT = T::deriv_total_size };
 
-    typedef defaulttype::Mat<sizeT,sizeT,Real> affine;
+    typedef type::Mat<sizeT,sizeT,Real> affine;
 
     Data<unsigned int> f_nbInputs; ///< Number of input vectors
     helper::vectorData<VecCoord> vf_inputs;
@@ -139,10 +139,10 @@ protected:
         {
             Xcm+=target[i];
             Xcm0+=source[i];
-            M += defaulttype::dyad(target[i],source[i]);
+            M += type::dyad(target[i],source[i]);
         }
         Xcm /= (Real)N;
-        M -= defaulttype::dyad(Xcm,Xcm0); // sum (X-Xcm)(X0-Xcm0)^T = sum X.X0^T - N.Xcm.Xcm0^T
+        M -= type::dyad(Xcm,Xcm0); // sum (X-Xcm)(X0-Xcm0)^T = sum X.X0^T - N.Xcm.Xcm0^T
         Xcm0 /= (Real)N;
         helper::Decompose<Real>::polarDecomposition(M, R);
         t = Xcm - R*Xcm0;

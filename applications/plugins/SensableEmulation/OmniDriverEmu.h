@@ -65,7 +65,7 @@ typedef struct
 
 typedef struct
 {
-    helper::vector<ForceFeedback*> forceFeedbacks;
+    type::vector<ForceFeedback*> forceFeedbacks;
     int forceFeedbackIndice;
     simulation::Node *context;
 
@@ -123,7 +123,7 @@ public:
     void draw(const core::visual::VisualParams*) override;
 
     int initDevice(OmniData& data);
-    void setForceFeedbacks(helper::vector<ForceFeedback*> ffs);
+    void setForceFeedbacks(type::vector<ForceFeedback*> ffs);
 
     void setDataValue();
 
@@ -144,7 +144,7 @@ public:
     double lastStep;
     bool executeAsynchro;
     Data<VecCoord> trajPts; ///< Trajectory positions
-    Data<helper::vector<double> > trajTim; ///< Trajectory timing
+    Data<type::vector<double> > trajTim; ///< Trajectory timing
 
     int getCurrentToolIndex() { return currentToolIndex;}
     void handleEvent(core::objectmodel::Event *) override ;

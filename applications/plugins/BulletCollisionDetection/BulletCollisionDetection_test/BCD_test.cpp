@@ -14,7 +14,7 @@
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
-typedef sofa::defaulttype::Vector3 Vec3;
+typedef sofa::type::Vector3 Vec3;
 
 using namespace sofa::PrimitiveCreationTest;
 using sofa::core::objectmodel::New;
@@ -69,7 +69,7 @@ sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Typ
 
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = sofa::defaulttype::Rigid3Types::Coord(p, sofa::defaulttype::Quaternion::createQuaterFromFrame(x,y,z));
+    positions[0] = sofa::defaulttype::Rigid3Types::Coord(p, sofa::type::Quat<SReal>::createQuaterFromFrame(x,y,z));
 
     dpositions.endEdit();
 

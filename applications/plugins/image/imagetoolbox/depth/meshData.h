@@ -6,7 +6,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 
 #include <string>

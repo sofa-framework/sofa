@@ -41,8 +41,8 @@ namespace sofa {
 namespace {
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
-using defaulttype::Mat;
+using type::Vec;
+using type::Mat;
 using sofa::type::vector;
 typedef std::size_t Index;
 

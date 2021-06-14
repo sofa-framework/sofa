@@ -45,7 +45,7 @@ namespace sofa
 			return sofa::defaulttype::Vec3f(v.x,v.y,v.z);
 		}
 
-		extern inline sofa::defaulttype::Vec3d conv(const H3DUtil::Vec3d& v)
+		extern inline sofa::type::Vec3d conv(const H3DUtil::Vec3d& v)
 		{
 			return sofa::defaulttype::Vec3d(v.x,v.y,v.z);
 		}

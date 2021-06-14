@@ -39,7 +39,7 @@ public:
 
     Data< VecDeriv > diagonal; ///< diagonal values
 
-    Data< helper::vector<SReal> > damping; ///< diagonal damping
+    Data< type::vector<SReal> > damping; ///< diagonal damping
 
     virtual void init() override;
 

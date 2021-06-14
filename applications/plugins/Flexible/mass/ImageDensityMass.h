@@ -8,7 +8,7 @@
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
@@ -74,7 +74,7 @@ public:
     /** @name Interpolation stuff */
     //@{
     typedef defaulttype::LinearJacobianBlock<DataTypes,defaulttype::Vec3Types > LinearJacobianBlock;
-    typedef helper::vector<LinearJacobianBlock> VecLinearJacobianBlock;
+    typedef type::vector<LinearJacobianBlock> VecLinearJacobianBlock;
     //@}
 
 

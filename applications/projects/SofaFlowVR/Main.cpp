@@ -79,13 +79,13 @@ namespace Type
 {
 
 template<int N, typename real>
-Type get(const sofa::defaulttype::Vec<N,real>&)
+Type get(const sofa::type::Vec<N,real>&)
 {
     return (Type)vector(get(real()),N);
 }
 
 template<int L, int C, typename real>
-Type get(const sofa::defaulttype::Mat<L,C,real>&)
+Type get(const sofa::type::Mat<L,C,real>&)
 {
     return (Type)matrix(get(real()),L,C);
 }
@@ -393,7 +393,7 @@ public:
     sofa::component::collision::PointModel * newPointsCM;
     sofa::component::collision::MinProximityIntersection * intersection;
     sofa::component::collision::BruteForceDetection * detection;
-    sofa::helper::vector<double> newPointsDist;
+    sofa::type::vector<double> newPointsDist;
 
     Mat4x4f matrix;
     int facetsLastIt;
@@ -1487,7 +1487,7 @@ public:
                 memcpy(vb->data(), &(n[0]), vb->dataSize());
             }
 
-            const sofa::helper::vector<TexCoord>& t = vtexcoords;
+            const sofa::type::vector<TexCoord>& t = vtexcoords;
             if (!t.empty() && !idVBT) // only send texcoords once
             {
                 *scratch = false;
@@ -1510,9 +1510,9 @@ public:
                     scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "tangent", 0);
                 }
 
-                sofa::helper::vector<Vec4f> tangent; tangent.resize(t.size());
-                sofa::helper::vector<Coord> tangent1; tangent1.resize(t.size());
-                sofa::helper::vector<Coord> tangent2; tangent2.resize(t.size());
+                sofa::type::vector<Vec4f> tangent; tangent.resize(t.size());
+                sofa::type::vector<Coord> tangent1; tangent1.resize(t.size());
+                sofa::type::vector<Coord> tangent2; tangent2.resize(t.size());
 
                 // see http://www.terathon.com/code/tangent.php
                 for (unsigned int i=0; i<triangles.size(); i++)

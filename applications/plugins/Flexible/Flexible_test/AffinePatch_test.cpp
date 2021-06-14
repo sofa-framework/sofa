@@ -61,15 +61,15 @@ namespace sofa {
         typedef typename DataTypes::Real Real;
         typedef projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
         typedef container::MechanicalObject<DataTypes> MechanicalObject;
-        typedef defaulttype::Quat Quat;
-        typedef defaulttype::Vector3 Vec3;
+        typedef type::Quat<SReal> Quat;
+        typedef type::Vector3 Vec3;
 
         /// Root of the scene graph
         simulation::Node::SPtr root;      
         /// Simulation
         simulation::Simulation* simulation; 
         /// Tested Rotation: random rotation matrix
-        defaulttype::Mat<3,3,Real> testedRotation;
+        type::Mat<3,3,Real> testedRotation;
         /// Tested Translation: random translation
         Vec3 testedTranslation;
 
