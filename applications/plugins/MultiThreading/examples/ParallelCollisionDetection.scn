@@ -88,9 +88,9 @@
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" dy="-10" scale="0.5"/>
-        <TriangleCollisionModel simulated="false"/>
-        <LineCollisionModel simulated="false"/>
-        <PointCollisionModel simulated="false"/>
+        <TriangleCollisionModel simulated="false" moving="false"/>
+        <LineCollisionModel simulated="false" moving="false"/>
+        <PointCollisionModel simulated="false" moving="false"/>
     </Node>
 
 </Node>
