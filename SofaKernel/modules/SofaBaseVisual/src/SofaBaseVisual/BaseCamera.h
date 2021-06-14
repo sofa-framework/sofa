@@ -25,7 +25,7 @@
 #include <SofaBaseVisual/BackgroundSetting.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Vec.h>
-#include <sofa/defaulttype/Ray.h>
+#include <sofa/type/Ray.h>
 #include <sofa/type/Quat.h>
 
 #include <sofa/core/fwd.h>
@@ -40,7 +40,7 @@ class SOFA_SOFABASEVISUAL_API BaseCamera : public core::objectmodel::BaseObject
 public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
-    typedef defaulttype::Ray Ray;
+    typedef type::Ray Ray;
     typedef type::Vector4 Vec4;
     typedef type::Vector3 Vec3;
     typedef type::Vector2 Vec2;

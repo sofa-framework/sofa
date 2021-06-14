@@ -143,8 +143,8 @@ protected:
     /// time value for the distance computations
     double lastTime;
 
-    sofa::defaulttype::BoundingBox box1;
-    sofa::defaulttype::BoundingBox box2;
+    sofa::type::BoundingBox box1;
+    sofa::type::BoundingBox box2;
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP)

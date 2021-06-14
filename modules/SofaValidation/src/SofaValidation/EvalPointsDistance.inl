@@ -60,8 +60,8 @@ EvalPointsDistance<DataTypes>::EvalPointsDistance()
 
     mstate1.setPath("@./"); // default path: state in the same node
     mstate2.setPath("@./"); // default path: state in the same node
-    box1 = sofa::defaulttype::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
-    box2 = sofa::defaulttype::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+    box1 = sofa::type::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+    box2 = sofa::type::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 }
 
 template<class DataTypes>

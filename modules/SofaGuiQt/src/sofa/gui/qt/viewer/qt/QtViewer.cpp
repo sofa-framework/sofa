@@ -1077,7 +1077,7 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 {
     // Mouse Interaction
     double coeffDeplacement = 0.025;
-    const sofa::defaulttype::BoundingBox sceneBBox = vparams->sceneBBox();
+    const sofa::type::BoundingBox sceneBBox = vparams->sceneBBox();
     if (sceneBBox.isValid() && ! sceneBBox.isFlat())
         coeffDeplacement *= 0.001 * (sceneBBox.maxBBox()
                 - sceneBBox.minBBox()).norm();

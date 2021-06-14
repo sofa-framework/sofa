@@ -113,7 +113,7 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
 
     if (p_swapMainView.getValue())
     {
-        const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+        const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
         Vec3f cameraPosition;
         Quat<SReal> cameraOrientation;
 
@@ -221,7 +221,7 @@ void OglViewport::postDrawScene(core::visual::VisualParams* vp)
 
 void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 {
-    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
 
     const Viewport viewport = vp->viewport();
     //Launch FBO process

@@ -26,7 +26,7 @@
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/defaulttype/Ray.h>
+
 namespace sofa::component::collision
 {
 

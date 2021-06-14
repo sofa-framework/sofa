@@ -440,7 +440,7 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
 {
     //1-compute bounding box
     sofa::core::visual::VisualParams* vp = sofa::core::visual::visualparams::defaultInstance();
-    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
     Vector3 center = (sceneBBox.minBBox() + sceneBBox.maxBBox()) * 0.5;
     Vector3 posLight = center;
 
@@ -538,7 +538,7 @@ void DirectionalLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float& lef
 
 void DirectionalLight::computeClippingPlane(const core::visual::VisualParams* vp, float& left, float& right, float& top, float& bottom, float& zNear, float& zFar )
 {
-    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
     Vector3 minBBox = sceneBBox.minBBox();
     Vector3 maxBBox = sceneBBox.maxBBox();
 
@@ -773,7 +773,7 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
     zNear = 1e10;
     zFar = -1e10;
 
-    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
     const Vector3 &pos = d_position.getValue();
     Vector3 dir = d_direction.getValue();
     if (d_lookat.getValue())

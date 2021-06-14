@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
@@ -32,7 +32,7 @@ namespace sofa::defaulttype
 
 struct BoundingBoxTypeInfo
 {
-    typedef BoundingBox DataType;
+    typedef type::BoundingBox DataType;
     typedef type::Vector3 BaseType;
     typedef DataTypeInfo<type::Vec3d> BaseTypeInfo;
     typedef SReal ValueType;
@@ -140,7 +140,7 @@ struct BoundingBoxTypeInfo
 };
 
 template <>
-struct DataTypeInfo<BoundingBox> : public BoundingBoxTypeInfo
+struct DataTypeInfo<type::BoundingBox> : public BoundingBoxTypeInfo
 {
     static std::string name() { return "BoundingBox"; }
     static std::string GetTypeName() { return "BoundingBox"; }

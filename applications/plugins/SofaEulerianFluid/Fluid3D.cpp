@@ -25,7 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include <cstring>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 
 namespace sofa
 {
@@ -472,7 +472,7 @@ void Fluid3D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
     {
         maxBBox[c] = minBBox[c]+size[c];
     }
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 } // namespace eulerianfluid

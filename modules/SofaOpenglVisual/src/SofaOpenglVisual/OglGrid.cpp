@@ -120,7 +120,7 @@ void OglGrid::updateVisual()
 //            max = Coord(s*0.5, s*0.5, s*0.1);
 //            break;
 //    }
-//    f_bbox.setValue(sofa::defaulttype::BoundingBox(min,max));
+//    f_bbox.setValue(sofa::type::BoundingBox(min,max));
 
 }
 

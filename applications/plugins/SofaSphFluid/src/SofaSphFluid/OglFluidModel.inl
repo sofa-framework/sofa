@@ -749,7 +749,7 @@ void OglFluidModel<DataTypes>::computeBBox(const core::ExecParams* params, bool 
         }
     }
 
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 
 }
 

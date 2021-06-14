@@ -125,8 +125,8 @@ public:
     DisplayFlags& displayFlags() { return m_displayFlags; }
     const DisplayFlags& displayFlags() const { return m_displayFlags; }
 
-    sofa::defaulttype::BoundingBox&  sceneBBox()    { return m_sceneBoundingBox; }
-    const sofa::defaulttype::BoundingBox&  sceneBBox() const   { return m_sceneBoundingBox; }
+    sofa::type::BoundingBox&  sceneBBox()    { return m_sceneBoundingBox; }
+    const sofa::type::BoundingBox&  sceneBBox() const   { return m_sceneBoundingBox; }
 
     /// Store the ModelView matrix used to draw the scene. This OpenGL matrix defines the world coordinate system with respect to the camera.
     void setModelViewMatrix( const double m[16] ) { for(unsigned i=0; i<16; i++) m_modelViewMatrix[i] = m[i]; }
@@ -167,7 +167,7 @@ public:
     }
 
 protected:
-    sofa::defaulttype::BoundingBox      m_sceneBoundingBox;
+    sofa::type::BoundingBox      m_sceneBoundingBox;
     helper::visual::Transformation          m_sceneTransform;
     Viewport                            m_viewport;
     SReal                              m_zNear;

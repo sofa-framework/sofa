@@ -23,7 +23,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa
@@ -39,7 +39,7 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
 
     node->initialize();
 
-    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
+    sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
     if(!node->f_bbox.isSet())
         nodeBBox->invalidate();
 
@@ -58,7 +58,7 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
 {
     // init all the components in reverse order
     node->setDefaultVisualContextValue();
-    sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
+    sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
 
     for(std::size_t i=node->object.size(); i>0; --i)
     {

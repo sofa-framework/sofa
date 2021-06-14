@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 
 #include <sofa/gl/FrameBufferObject.h>
 #include <sofa/core/visual/VisualParams.h>

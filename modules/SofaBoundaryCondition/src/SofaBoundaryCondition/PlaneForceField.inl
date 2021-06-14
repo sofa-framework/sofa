@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <cassert>
 #include <iostream>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <limits>
 #include <sofa/simulation/Node.h>
 
@@ -396,7 +396,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
             if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
         }
     }
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } // namespace sofa::component::forcefield

@@ -86,7 +86,7 @@ void PointSetGeometryAlgorithms< DataTypes >::reinit()
 template <class DataTypes>
 float PointSetGeometryAlgorithms< DataTypes >::getIndicesScale() const
 {
-    const sofa::defaulttype::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
+    const sofa::type::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
     float bbDiff = float((bbox.maxBBox() - bbox.minBBox()).norm());
     if (std::isinf(bbDiff))
         return d_showIndicesScale.getValue();

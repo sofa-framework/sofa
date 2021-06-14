@@ -27,7 +27,7 @@
 #include <sstream>
 #include <sofa/gl/GLSLShader.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <limits>
 
@@ -342,7 +342,7 @@ void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params
             }
         }
 
-        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox, maxBBox));
+        this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox, maxBBox));
     }
 }
 

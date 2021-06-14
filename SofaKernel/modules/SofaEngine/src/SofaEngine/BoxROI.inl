@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaEngine/BoxROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
@@ -39,7 +39,7 @@ using core::objectmodel::BaseData ;
 using core::objectmodel::Event ;
 using core::loader::MeshLoader ;
 using core::ExecParams ;
-using defaulttype::TBoundingBox ;
+using type::TBoundingBox ;
 using type::Vector3 ;
 using type::Vec4f ;
 using helper::WriteOnlyAccessor ;

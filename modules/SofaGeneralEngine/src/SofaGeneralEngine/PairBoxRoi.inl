@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/PairBoxRoi.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <sofa/type/RGBAColor.h>
 #include <limits>
 

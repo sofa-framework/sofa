@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
@@ -524,7 +524,7 @@ public:
 
     Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
 
-    Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
+    Data< sofa::type::BoundingBox > f_bbox; ///< this object bounding box
 
     Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
 
