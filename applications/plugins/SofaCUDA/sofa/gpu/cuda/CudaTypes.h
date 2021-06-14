@@ -215,8 +215,8 @@ typedef sofa::type::Vec2f Vec2f;
 typedef sofa::type::Vec6f Vec6f;
 
 using type::Vec;
-using defaulttype::NoInit;
-using defaulttype::NOINIT;
+using type::NoInit;
+using type::NOINIT;
 
 template<class Real>
 class Vec3r1 : public sofa::type::Vec<3,Real>

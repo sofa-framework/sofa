@@ -39,6 +39,7 @@ namespace collision
 {
 
 using type::Vec3f;
+using type::Mat3x3f;
 
 /**
  *  \brief Generic description of a contact point using GPU.

@@ -49,8 +49,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-
 template <class TCoord, class TDeriv, class TReal>
 class TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
@@ -67,8 +65,8 @@ public:
 
     typedef typename Main::Element Element;
     typedef typename Main::VecElement VecElement;
-    typedef Mat<6, 6, Real> MaterialStiffness;
-    typedef Mat<12, 6, Real> StrainDisplacement;
+    typedef type::Mat<6, 6, Real> MaterialStiffness;
+    typedef type::Mat<12, 6, Real> StrainDisplacement;
 
     typedef gpu::cuda::CudaKernelsTetrahedronFEMForceField<DataTypes> Kernels;
 
@@ -193,7 +191,7 @@ public:
     /// Varying data associated with each element
     struct GPUElementForce
     {
-        Vec<4,Real> fA,fB,fC,fD;
+        type::Vec<4, Real> fA, fB, fC, fD;
     };
 
     gpu::cuda::CudaVector<GPUElementState> initState;
