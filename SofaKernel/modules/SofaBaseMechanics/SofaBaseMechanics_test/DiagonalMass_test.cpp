@@ -933,6 +933,69 @@ public:
 
         return;
     }
+
+    void checkTopologicalChanges_Edge()
+    {
+        string scene =
+            "<?xml version='1.0'?>                                                                              "
+            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+            "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+            "    <Node name='Edge' >                                                                            "
+            "            <MechanicalObject position = '@../grid.position' />                                    "
+            "            <EdgeSetTopologyContainer name='Container' src='@../grid' />                     "
+            "            <EdgeSetTopologyModifier name='Modifier' />                                      "
+            "            <EdgeSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+            "            <DiagonalMass name='m_mass' massDensity='1.0'/>                                        "
+            "    </Node>                                                                                        "
+            "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
+            scene.c_str(),
+            sofa::Size(scene.size()));
+        ASSERT_NE(root.get(), nullptr);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
+        ASSERT_NE(mass, nullptr);
+
+        EdgeSetTopologyModifier* modifier = root->getTreeObject<EdgeSetTopologyModifier>();
+        ASSERT_NE(modifier, nullptr);
+
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+        Real refValue = Real(2.0 / 3.0);  // Medge (length/(n-1)): 2/3
+        Real refValue2 = Real(1.0 / 3.0);  // Mpoint = Medge/2
+        Real initMass = mass->getTotalMass();
+
+        // check value at init
+        EXPECT_EQ(vMasses.size(), 4);
+        EXPECT_NEAR(vMasses[0], refValue2, 1e-4);
+        EXPECT_NEAR(vMasses[1], refValue, 1e-4);
+        EXPECT_NEAR(initMass, 2, 1e-4);
+
+        sofa::helper::vector<sofa::Index> ids = { 0 };
+        // remove Edge id: 0
+        modifier->removeEdges(ids, true);
+        EXPECT_EQ(vMasses.size(), 3);
+        EXPECT_NEAR(vMasses[0], refValue2, 1e-4); // check swap point
+        EXPECT_NEAR(vMasses[1], refValue2, 1e-4); // check edge remove update
+        EXPECT_NEAR(mass->getTotalMass(), initMass - refValue, 1e-4);
+
+        // remove Edge id: 0
+        modifier->removeEdges(ids, true);
+        EXPECT_EQ(vMasses.size(), 2);
+        EXPECT_NEAR(vMasses[0], refValue2, 1e-4); 
+        EXPECT_NEAR(vMasses[1], refValue2, 1e-4);
+        EXPECT_NEAR(mass->getTotalMass(), initMass - 2 * refValue, 1e-4);
+
+        // remove Edge id: 0
+        modifier->removeEdges(ids, true);
+        EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
+
+        return;
+    }
 };
 
 
@@ -1136,6 +1199,10 @@ TEST_F(DiagonalMass3_test, checkTopologicalChanges_Triangle) {
     checkTopologicalChanges_Triangle();
 }
 
+TEST_F(DiagonalMass3_test, checkTopologicalChanges_Edge) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Edge();
+}
 
 
 /// Rigid file are not handled only xs3....
