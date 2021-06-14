@@ -2,7 +2,8 @@
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels hideMappings showForceFields"/>
     <RequiredPlugin name="ManifoldTopologies"/>
 	<DefaultPipeline verbose="0" name="CollisionPipeline"/>
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager response="default" name="collision response"/>
 	<Node name="TetraTopology1">
 		<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1" />

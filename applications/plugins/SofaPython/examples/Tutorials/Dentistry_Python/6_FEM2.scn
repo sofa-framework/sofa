@@ -12,7 +12,8 @@ FEM force field of the tongue
     <VisualStyle displayFlags="showVisualModels showForceFields" /> 
 
     <DefaultPipeline name="pipeline" depth="6" verbose="0" />
-    <BruteForceDetection name="detection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" />
 

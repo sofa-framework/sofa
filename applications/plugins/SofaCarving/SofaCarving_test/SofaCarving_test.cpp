@@ -74,7 +74,8 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
 
     // create collision pipeline
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
-    createObject(m_root, "BruteForceDetection", { { "name","Detection" } });
+    createObject(m_root, "BruteForceBroadPhase", { { "name","Broad Phase Detection" } });
+    createObject(m_root, "BVHNarrowPhase", { { "name","Narrow Phase Detection" } });
     createObject(m_root, "CollisionResponse", {
         { "name", "Contact Manager" },
         { "response", "default" }

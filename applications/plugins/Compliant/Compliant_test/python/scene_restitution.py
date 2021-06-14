@@ -23,7 +23,8 @@ def createScene(root):
         ########################    global components    ########################
         
         root.createObject('DefaultPipeline', name='DefaultCollisionPipeline', depth="6")
-        root.createObject('BruteForceDetection')
+        root.createObject('BruteForceBroadPhase', name='N2')
+        root.createObject('BVHNarrowPhase')
         root.createObject('NewProximityIntersection', name="Proximity", alarmDistance="0.2", contactDistance="0")
         root.createObject('DefaultCollisionGroupManager')
         

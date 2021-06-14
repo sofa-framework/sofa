@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_STANDARDTEST_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_TEST_H
-#define SOFA_STANDARDTEST_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_TEST_H
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
-
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
-
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
@@ -40,6 +35,11 @@
 #include <iostream>
 #include <fstream>
 
+#include <SofaBase/initSofaBase.h>
+#include <SofaEngine/initSofaEngine.h>
+#include <SofaMeshCollision/initSofaMeshCollision.h>
+#include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
+ 
 
 #if defined(WIN32) && _MSC_VER<=1700  // before or equal to visual studio 2012
    #include <boost/math/special_functions/erf.hpp>
@@ -59,7 +59,7 @@ namespace sofa {
  *
  */
 template <typename _ForceFieldType>
-struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::Real>
+struct TetrahedronDiffusionFEMForceField_test : public BaseTest
 {
     typedef _ForceFieldType ForceField;
     typedef typename ForceField::DataTypes DataTypes;
@@ -127,6 +127,11 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
 
     void init_scene()
     {
+        sofa::component::initSofaBase();
+        sofa::component::initSofaEngine();
+        sofa::component::initSofaMeshCollision();
+        sofa::component::initSofaImplicitOdeSolver();
+        
         tetraNode = root->getChild("Tetra");
         temperatureNode = tetraNode->getChild("Temperature");
 
@@ -224,5 +229,3 @@ TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 } // namespace sofa
 
 #undef ERFC
-
-#endif /* SOFA_STANDARDTEST_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_TEST_H */

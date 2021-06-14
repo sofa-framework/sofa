@@ -6,7 +6,8 @@
     <RequiredPlugin name="SofaAssimp"/>
     
     <DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-    <BruteForceDetection name="Detection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity"  alarmDistance="5.0"  contactDistance="2.5" />
     <DefaultContactManager name="Response"  response="default" />
 

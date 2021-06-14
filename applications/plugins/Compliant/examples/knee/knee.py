@@ -33,7 +33,8 @@ def setup(node, **kwargs):
     style = node.createObject('VisualStyle', **kwargs)
     
     node.createObject('DefaultPipeline', name = 'pipeline')
-    node.createObject('BruteForceDetection', name = 'detection')
+    node.createObject('BruteForceBroadPhase', name='N2')
+    node.createObject('BVHNarrowPhase')
 
     proximity = node.createObject('NewProximityIntersection',
                                   name = 'proximity' )

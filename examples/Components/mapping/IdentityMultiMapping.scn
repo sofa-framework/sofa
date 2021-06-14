@@ -7,7 +7,8 @@
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels showForceFields" />
     
     <DefaultPipeline/>
-    <BruteForceDetection/>
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <DiscreteIntersection/>
     

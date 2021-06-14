@@ -1,10 +1,8 @@
 #include <SofaTest/BroadPhase_test.h>
 #include <SofaTest/PrimitiveCreation.h>
-#include <SofaBaseCollision/BruteForceDetection.h>
 #include "../BulletCollisionDetection.h"
 #include <SofaTest/PrimitiveCreation.h>
 #include <SofaBaseCollision/DefaultPipeline.h>
-#include <SofaBaseCollision/BruteForceDetection.h>
 #include <sofa/helper/random.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/CollisionVisitor.h>
@@ -318,7 +316,8 @@ bool BCD_test::randTest(int seed,int nb_move){
     sofa::core::ExecParams * default_params = sofa::core::ExecParams::defaultInstance();
 
     //elements within the sofa scene
-    sofa::component::collision::BruteForceDetection::SPtr bfd = New<sofa::component::collision::BruteForceDetection>();
+    sofa::component::collision::BruteForceBroadPhase::SPtr broadPhase = New<sofa::component::collision::BruteForceBroadPhase>();
+    sofa::component::collision::BVHNarrowPhase::SPtr narrowPhase = New<sofa::component::collision::BVHNarrowPhase>();
     sofa::component::collision::DefaultPipeline::SPtr sofa_pipeline = New<sofa::component::collision::DefaultPipeline>();
     sofa::component::collision::NewProximityIntersection::SPtr new_prox = New<sofa::component::collision::NewProximityIntersection>();
 
@@ -327,7 +326,8 @@ bool BCD_test::randTest(int seed,int nb_move){
     new_prox->setAlarmDistance((SReal)0.5);
 
     //adding elements to the scene
-    sofa_scn->addObject(bfd);
+    sofa_scn->addObject(broadPhase);
+    sofa_scn->addObject(narrowPhase);
     sofa_scn->addObject(sofa_pipeline);
     sofa_scn->addObject(new_prox);
 
@@ -395,12 +395,12 @@ bool BCD_test::randTest(int seed,int nb_move){
 
         //////////////////////////////////////////Checking the results//////////////////////////////////////////////////
         //recovering contacts of sofa and bullet
-        const sofa::component::collision::BruteForceDetection::DetectionOutputMap & sofa_contacts = bfd->getDetectionOutputs();
-        const sofa::component::collision::BruteForceDetection::DetectionOutputMap & bullet_contacts = bcd->getDetectionOutputs();
+        const auto & sofa_contacts = narrowPhase->getDetectionOutputs();
+        const auto & bullet_contacts = bcd->getDetectionOutputs();
 
         if(!(sofa_contacts.size() == 0 && bullet_contacts.size() == 0)){
-            sofa::component::collision::BruteForceDetection::DetectionOutputMap::const_iterator it_sofa_contacts = sofa_contacts.begin();
-            sofa::component::collision::BulletCollisionDetection::DetectionOutputMap::const_iterator it_bullet_contacts = bullet_contacts.begin();
+            auto it_sofa_contacts = sofa_contacts.begin();
+            auto it_bullet_contacts = bullet_contacts.begin();
 
             for(;it_sofa_contacts != sofa_contacts.end() ; ++it_sofa_contacts){
                 if((*it_sofa_contacts).first.first != (*it_sofa_contacts).first.second){//the only possible collision

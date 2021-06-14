@@ -121,6 +121,11 @@ public:
     */
     sofa::type::vector< double > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,double> &p) const;
 
+    /** \brief Computes barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
+    *
+    */
+    sofa::type::vector< double > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, double>& p) const;
+
     /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
      *
      */
@@ -230,6 +235,22 @@ public:
             const TriangleID ind_t,
             sofa::type::vector<PointID> &indices,
             double &baryCoef, double& coord_kmin) const;
+
+    /** \brief Computes the intersections of the vector from point a to point b and the triangle indexed by t
+    *
+    * @param a : first input point
+    * @param b : last input point
+    * @param ind_t : triangle indice
+    * @param indices : indices of edges (belonging to ind_t) crossed by the vecteur AB
+    * @param baryCoef : barycoef of intersections points on the edge
+    */
+    bool computeIntersectionsLineTriangle(bool is_entered,
+        const sofa::type::Vec<3, Real>& a,
+        const sofa::type::Vec<3, Real>& b,
+        const TriangleID ind_t,
+        sofa::type::vector<PointID>& indices,
+        sofa::type::vector<Real>& vecBaryCoef,
+        sofa::type::vector<Real>& vecCoordKmin) const;
 
     /** \brief Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
      *

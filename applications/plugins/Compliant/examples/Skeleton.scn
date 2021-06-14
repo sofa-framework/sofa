@@ -4,9 +4,10 @@
 <Node gravity="0 -9.8 0" name="Root" dt="0.01">
   <VisualStyle displayFlags="hideCollisionModels showVisual showBehaviorModels" />
   <DefaultPipeline depth="6" />
-  <BruteForceDetection />
-        <RequiredPlugin pluginName="Flexible"/>
-      <RequiredPlugin pluginName="Compliant"/>
+  <BruteForceBroadPhase/>
+  <BVHNarrowPhase/>
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="Compliant"/>
   <MinProximityIntersection alarmDistance="0.4" contactDistance="0.2" />
   <DefaultContactManager response="ContactResponse" />
   <TreeCollisionGroupManager />
