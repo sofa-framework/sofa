@@ -308,7 +308,7 @@ void LeapMotionDriver::computeBBox(const core::ExecParams * params, bool /*onlyV
         minBBox[c] = ((handPalmCoordinate.getValue()[c] - palmDiag) < minBBox[c]) ? (handPalmCoordinate.getValue()[c] - palmDiag) : minBBox[c] ;
         maxBBox[c] = ((handPalmCoordinate.getValue()[c] + palmDiag) > maxBBox[c]) ? (handPalmCoordinate.getValue()[c] + palmDiag) : maxBBox[c] ;
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<double>(minBBox,maxBBox));
+    this->f_bbox.setValue(params,sofa::type::TBoundingBox<double>(minBBox,maxBBox));
 }
 
 

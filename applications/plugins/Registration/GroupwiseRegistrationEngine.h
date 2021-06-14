@@ -27,8 +27,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/type/Quat.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 namespace sofa
 {
@@ -61,8 +61,8 @@ public:
     typedef type::Mat<sizeT,sizeT,Real> affine;
 
     Data<unsigned int> f_nbInputs; ///< Number of input vectors
-    helper::vectorData<VecCoord> vf_inputs;
-    helper::vectorData<VecCoord> vf_outputs;
+    core::objectmodel::vectorData<VecCoord> vf_inputs;
+    core::objectmodel::vectorData<VecCoord> vf_outputs;
 
     virtual std::string getTemplateName() const override { return templateName(this);    }
     static std::string templateName(const GroupwiseRegistrationEngine<T>* = NULL) { return T::Name();   }
@@ -86,8 +86,8 @@ protected:
 
     GroupwiseRegistrationEngine()    :   Inherited()
       , f_nbInputs (initData(&f_nbInputs, (unsigned)2, "nbInputs", "Number of input vectors"))
-      , vf_inputs(this, "input", "input vector ", helper::DataEngineInput)
-      , vf_outputs(this, "output", "output vector", helper::DataEngineOutput)
+      , vf_inputs(this, "input", "input vector ", core::objectmodel::DataEngineDataType::DataEngineInput)
+      , vf_outputs(this, "output", "output vector", core::objectmodel::DataEngineDataType::DataEngineOutput)
     {
         vf_inputs.resize(f_nbInputs.getValue());
         vf_outputs.resize(f_nbInputs.getValue());

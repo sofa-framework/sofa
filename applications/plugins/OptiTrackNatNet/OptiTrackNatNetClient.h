@@ -30,8 +30,8 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 //#include <sofa/core/behavior/BaseController.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 #include <SofaUserInteraction/Controller.h>
 
 namespace SofaOptiTrackNatNet
@@ -145,7 +145,7 @@ struct RigidDef
     const char* name;
     int ID;
     int parentID;
-    sofa::defaulttype::Vec3f offset;
+    sofa::type::Vec3f offset;
 };
 
 struct SkeletonDef
@@ -170,16 +170,16 @@ struct PointCloudData
 {
     const char* name;
     int nMarkers;
-    const sofa::defaulttype::Vec3f* markersPos;
+    const sofa::type::Vec3f* markersPos;
 };
 
 struct RigidData
 {
     int ID;
-    sofa::defaulttype::Vec3f pos;
-    sofa::defaulttype::Quatf rot;
+    sofa::type::Vec3f pos;
+    sofa::type::Quat<SReal> rot;
     int nMarkers;
-    const sofa::defaulttype::Vec3f* markersPos;
+    const sofa::type::Vec3f* markersPos;
     const int* markersID; // optional (2.0+)
     const float* markersSize; // optional (2.0+)
     float meanError; // optional (2.0+)
@@ -205,7 +205,7 @@ struct FrameData
     float latency;
     // unidentified markers
     int nOtherMarkers;
-    const sofa::defaulttype::Vec3f* otherMarkersPos;
+    const sofa::type::Vec3f* otherMarkersPos;
 };
 
 } // namespace SofaOptiTrackNatNet

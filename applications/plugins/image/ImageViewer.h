@@ -439,7 +439,7 @@ public:
                 if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
                 if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
             }
-        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
+        this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(bbmin,bbmax));
     }
     
     

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include "stdafx.h"
 #include <SofaTest/Mapping_test.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 #include <image/ImageTypes.h>
 #include <image/ImageContainer.h>
 #include "../shapeFunction/VoronoiShapeFunction.h"
@@ -62,7 +62,7 @@ namespace sofa {
         typedef typename Out::Frame OutFrame;
         typedef component::container::MechanicalObject<In> InDOFs;
         typedef component::container::MechanicalObject<Out> OutDOFs;
-        typedef defaulttype::Quat Quat;
+        typedef type::Quat<SReal> Quat;
         typedef type::Vector3 Vec3;
 
         /// Tested quaternion: random quaternion

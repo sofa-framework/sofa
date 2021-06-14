@@ -28,8 +28,8 @@
 
 #include <sofa/gui/PickHandler.h>
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 #include <sofa/gl/Texture.h>
 #include <sofa/gl/Capture.h>
 #include <sofa/helper/system/thread/CTime.h>

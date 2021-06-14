@@ -31,7 +31,7 @@
 //Default files containing the declaration of the vector type
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 
 #ifdef SOFA_GPU_CUDA

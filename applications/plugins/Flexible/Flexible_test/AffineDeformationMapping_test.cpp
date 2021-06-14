@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "stdafx.h"
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 // Including component
 #include "../deformationMapping/LinearMapping.h"
@@ -54,7 +54,7 @@ namespace sofa {
         typedef typename Out::Frame OutFrame;
         typedef component::container::MechanicalObject<In> InDOFs;
         typedef component::container::MechanicalObject<Out> OutDOFs;
-        typedef defaulttype::Quat Quat;
+        typedef type::Quat<SReal> Quat;
         typedef type::Vector3 Vec3;
 
         /// Tested quaternion: random quaternion

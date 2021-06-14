@@ -27,7 +27,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 #include <fstream>
@@ -76,7 +76,7 @@ OptiTrackNatNetDevice::OptiTrackNatNetDevice()
     , jointOpenAngle(initData(&jointOpenAngle, (Real)10, "jointOpenAngle", "Input: rotation angle when opened (for articulated instruments)"))
     , jointClosedAngle(initData(&jointClosedAngle, (Real)-10, "jointClosedAngle", "Input: rotation angle when closed (for articulated instruments)"))
 
-    , drawAxisSize(initData(&drawAxisSize, sofa::defaulttype::Vec3f(1,1,1), "drawAxisSize", "Size of displayed axis"))
+    , drawAxisSize(initData(&drawAxisSize, sofa::type::Vec3f(1,1,1), "drawAxisSize", "Size of displayed axis"))
     , drawMarkersSize(initData(&drawMarkersSize, 0.1f, "drawMarkersSize", "Size of displayed markers"))
     , drawMarkersIDSize(initData(&drawMarkersIDSize, 0.0f, "drawMarkersIDSize", "Size of displayed markers ID"))
     , drawMarkersColor(initData(&drawMarkersColor, sofa::type::Vec4f(1,1,1,1), "drawMarkersColor", "Color of displayed markers"))
@@ -667,8 +667,8 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
         this->position.setValue(pos);
         this->orientation.setValue(rot);
 
-        sofa::defaulttype::BoundingBox bb(pos, pos);
-        const sofa::defaulttype::Vec3f axisSize = drawAxisSize.getValue();
+        sofa::type::BoundingBox bb(pos, pos);
+        const sofa::type::Vec3f axisSize = drawAxisSize.getValue();
         if (axisSize.norm2() > 0.0f)
         {
             bb.include(pos+rot.rotate(CPos(axisSize[0],0,0)));
@@ -764,7 +764,7 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
 {
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
     if (!this->tracked.getValue()) return;
-    const sofa::defaulttype::Vec3f axisSize = drawAxisSize.getValue();
+    const sofa::type::Vec3f axisSize = drawAxisSize.getValue();
     const float markersSize = drawMarkersSize.getValue();
     const float markersIDSize = drawMarkersIDSize.getValue();
     if (isGlobalFrame.getValue())
@@ -801,7 +801,7 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
         const float scale = markersIDSize/50;
         for (unsigned int i =0; i<markersID.size() && i<markers.size(); i++)
         {
-            sofa::defaulttype::Vec3f center; center = markers[i];
+            sofa::type::Vec3f center; center = markers[i];
             std::ostringstream oss;
             oss << std::hex << markersID[i];
             if ((int)i + 1 != markersID[i]) oss << "-" << (i + 1);

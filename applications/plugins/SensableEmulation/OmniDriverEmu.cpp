@@ -24,7 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 #include <sofa/core/visual/VisualParams.h>
 
@@ -62,9 +62,9 @@ namespace component
 namespace controller
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
-using namespace sofa::defaulttype;
 using type::vector;
 
 OmniDriverEmu::OmniDriverEmu()

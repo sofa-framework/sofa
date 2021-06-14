@@ -25,8 +25,8 @@
 #include <Flexible/config.h>
 #include "../types/PolynomialBasis.h"
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/type/vector.h>
@@ -52,8 +52,8 @@ struct DefGradientTypes
     static const Size material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
     typedef _Real Real;
 
-    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
-    typedef Mat<spatial_dimensions,material_dimensions, Real> Frame;      ///< Matrix representing a deformation gradient
+    typedef type::Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
+    typedef type::Mat<spatial_dimensions,material_dimensions, Real> Frame;      ///< Matrix representing a deformation gradient
     typedef PolynomialBasis<spatial_dimensions*material_dimensions, Real, spatial_dimensions, _order> Basis;    ///< deformation gradient, expressed on a certain basis
     typedef typename Basis::TotalVec BasisVec;                            ///< decomposed deformation gradient in a single vector
 

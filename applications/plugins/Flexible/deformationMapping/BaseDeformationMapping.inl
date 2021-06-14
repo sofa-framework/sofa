@@ -816,8 +816,15 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
             {
                 if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
 
-                if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(type::trace(F.transposed()*F)-3.);
-                else  val[i]=sqrt(defaulttype::determinant(F.transposed()*F))-1.;
+                if(showColorOnTopology.getValue().getSelectedId()==1)
+                    val[i]=(type::trace(F.transposed()*F)-3.);
+                else
+                {
+                    if constexpr(spatial_dimensions > 1 && material_dimensions > 1)
+                    {
+                        val[i]=sqrt(type::determinant(F.transposed()*F))-1.;
+                    }
+                }
 
                 //if (val[i]<0) val[i]=2*val[i]/(val[i]+1.);
                 val[i]*=240 * this->showColorScale.getValue();

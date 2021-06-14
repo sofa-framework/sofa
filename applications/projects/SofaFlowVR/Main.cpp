@@ -31,7 +31,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>

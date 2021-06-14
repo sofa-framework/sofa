@@ -41,7 +41,7 @@ namespace
 		//Default files containing the declaration of the vector type\n\
 		#include <sofa/defaulttype/VecTypes.h>\n\
 		#include <sofa/defaulttype/RigidTypes.h>\n\
-		#include <sofa/defaulttype/Mat.h>\n\n\
+		#include <sofa/type/Mat.h>\n\n\
 		\n\
 		#ifdef SOFA_GPU_CUDA\n\
 		#include <sofa/gpu/cuda/CudaTypes.h>\n\

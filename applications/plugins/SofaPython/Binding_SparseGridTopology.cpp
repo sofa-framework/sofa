@@ -23,7 +23,7 @@
 #include "Binding_SparseGridTopology.h"
 #include "Binding_MeshTopology.h"
 #include "Binding_RegularGridTopology.h"
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include "PythonToSofa.inl"
 #include "Binding_Vector.h"
 

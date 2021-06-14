@@ -28,6 +28,7 @@
 #include "PythonToSofa.inl"
 
 #include <sofa/defaulttype/VecTypes.h>
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 #include <sofa/core/ObjectFactory.h>

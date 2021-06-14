@@ -4,7 +4,7 @@
 
 
 #include "stdafx.h"
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"

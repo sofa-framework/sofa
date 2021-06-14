@@ -26,8 +26,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <Eigen/Dense>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -69,7 +69,7 @@ public:
 protected:
 
     typedef type::Vector3 Vector3;
-    typedef defaulttype::Matrix4 Matrix4;
+    typedef type::Matrix4 Matrix4;
 
     SReal computeDistances(type::vector<sofa::type::Vec<3,SReal> >, type::vector<sofa::type::Vec<3,SReal> >);
     SReal distance(sofa::type::Vec<3,SReal>, type::vector<sofa::type::Vec<3,SReal> >);

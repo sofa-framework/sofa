@@ -1,7 +1,7 @@
 #ifndef SOFA_MAP_H
 #define SOFA_MAP_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <Eigen/Core>
 
 namespace utils {

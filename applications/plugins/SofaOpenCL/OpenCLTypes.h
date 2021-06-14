@@ -23,7 +23,7 @@
 #define SOFAOPENCL_OPENCLTYPES_H
 
 #include <sofa/gl/gl.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/Base.h>
@@ -140,12 +140,12 @@ public:
     static const char* Name();
 };
 
-typedef sofa::defaulttype::Vec3f Vec3f;
+typedef sofa::type::Vec3f Vec3f;
 typedef sofa::defaulttype::Vec2f Vec2f;
 
 using type::Vec;
 using defaulttype::NoInit;
-using defaulttype::NOINIT;
+using type::NOINIT;
 
 template<class Real>
 class Vec3r1 : public sofa::type::Vec<3,Real>

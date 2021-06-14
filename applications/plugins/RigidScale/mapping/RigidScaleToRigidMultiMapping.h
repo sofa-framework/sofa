@@ -91,11 +91,11 @@ public:
     typedef typename Inherit::OutDataVecDeriv OutDataVecDeriv;
     typedef typename Inherit::OutDataMatrixDeriv OutDataMatrixDeriv;
 
-    typedef Mat<OutDeriv::total_size, InDeriv1::total_size, SReal> MatBlock1;
-    typedef Mat<OutDeriv::total_size, InDeriv2::total_size, SReal> MatBlock2;
+    typedef type::Mat<OutDeriv::total_size, InDeriv1::total_size, SReal> MatBlock1;
+    typedef type::Mat<OutDeriv::total_size, InDeriv2::total_size, SReal> MatBlock2;
 
-    typedef Mat<InDeriv1::total_size, InDeriv1::total_size, SReal> MatKBlock1;
-    typedef Mat<InDeriv2::total_size, InDeriv2::total_size, SReal> MatKBlock2;
+    typedef type::Mat<InDeriv1::total_size, InDeriv1::total_size, SReal> MatKBlock1;
+    typedef type::Mat<InDeriv2::total_size, InDeriv2::total_size, SReal> MatKBlock2;
 
     typedef component::linearsolver::EigenSparseMatrix<In1, Out> SparseJMatrixEigen1;
     typedef component::linearsolver::EigenSparseMatrix<In2, Out> SparseJMatrixEigen2;

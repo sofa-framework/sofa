@@ -24,8 +24,8 @@
 
 #include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/Mapping.h>

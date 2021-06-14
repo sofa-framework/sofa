@@ -89,6 +89,7 @@ namespace component
 namespace projectiveconstraintset
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
@@ -131,7 +132,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
                 x[i].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
                 vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat<SReal>(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
         else
@@ -144,7 +145,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
                     x[indices[i]].writeOpenGlMatrix ( glTransform );
                     vparams->drawTool()->multMatrix( glTransform );
                     vparams->drawTool()->scale ( d_drawSize.getValue() );
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat<SReal>(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                     vparams->drawTool()->popMatrix();
                 }
             else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -154,7 +155,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
                 x[*it].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
                 vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat<SReal>(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
         }
@@ -195,7 +196,7 @@ namespace container
 {
 
 using type::Vector3;
-using defaulttype::Quat;
+using type::Quat;
 using type::Vec4f;
 
 // ==========================================================================
@@ -229,16 +230,16 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
             switch( drawMode.getValue() )
             {
                 case 1:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat<SReal>(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
                     break;
                 case 2:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat<SReal>(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
                     break;
                 case 3:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat<SReal>(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                     break;
                 default:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat<SReal>(), Vector3 ( 1,1,1 ) );
             }
 
             vparams->drawTool()->popMatrix();

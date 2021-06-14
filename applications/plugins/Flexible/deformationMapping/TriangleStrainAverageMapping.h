@@ -26,8 +26,8 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/State.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <Flexible/config.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../shapeFunction/BaseShapeFunction.h"

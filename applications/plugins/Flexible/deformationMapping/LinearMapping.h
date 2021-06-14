@@ -91,8 +91,8 @@ public :
         PointMapperType mapper;
 
         // empty variables (not used in init)
-        typename PointMapperType::OutCoord o(defaulttype::NOINIT);
-        typename PointMapperType::MaterialToSpatial M0(defaulttype::NOINIT);
+        typename PointMapperType::OutCoord o(type::NOINIT);
+        typename PointMapperType::MaterialToSpatial M0(type::NOINIT);
         VGradient dw(1);
         VHessian ddw(1);
 

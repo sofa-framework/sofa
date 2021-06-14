@@ -24,8 +24,8 @@
 
 #include "PythonMacros.h"
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/BoundingBox.h>
 
 SP_DECLARE_CLASS_TYPE(BoundingBox)
 

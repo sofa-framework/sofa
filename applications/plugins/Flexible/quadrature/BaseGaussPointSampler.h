@@ -25,7 +25,7 @@
 #include <Flexible/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>

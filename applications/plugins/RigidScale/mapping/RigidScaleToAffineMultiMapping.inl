@@ -12,7 +12,9 @@ namespace component
 {
 namespace mapping
 {
-    using namespace defaulttype;
+
+using namespace type;
+using namespace defaulttype;
 
 //*********************************************************************
 // ********************* Constructor / Destructor *********************

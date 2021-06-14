@@ -22,7 +22,7 @@
 
 #include "EnslavementForceFeedback.h"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {

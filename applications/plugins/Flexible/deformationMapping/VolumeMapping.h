@@ -26,9 +26,9 @@
 #include <sofa/core/MechanicalParams.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 
 namespace sofa
@@ -252,8 +252,8 @@ protected:
     Data<type::vector<Real> > offset; ///< offsets added to output volumes
 
     Data<unsigned int> f_nbMeshes; ///< number of meshes to compute the volume for
-    helper::vectorData< SeqTriangles > vf_triangles;
-    helper::vectorData< SeqQuads > vf_quads;
+    core::objectmodel::vectorData< SeqTriangles > vf_triangles;
+    core::objectmodel::vectorData< SeqQuads > vf_quads;
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping

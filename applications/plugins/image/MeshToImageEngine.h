@@ -34,10 +34,10 @@
 #include <sofa/type/SVector.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -90,32 +90,32 @@ public:
     typedef type::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    helper::vectorData< SeqPositions > vf_positions;
+    core::objectmodel::vectorData< SeqPositions > vf_positions;
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
-    helper::vectorData< SeqEdges > vf_edges;
+    core::objectmodel::vectorData< SeqEdges > vf_edges;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    helper::vectorData< SeqTriangles > vf_triangles;
+    core::objectmodel::vectorData< SeqTriangles > vf_triangles;
 
     typedef double ValueType;
     typedef type::vector<ValueType> SeqValues;
     typedef helper::ReadAccessor<Data< SeqValues > > raValues;
-    helper::vectorData< SeqValues > vf_values;
+    core::objectmodel::vectorData< SeqValues > vf_values;
 
-    helper::vectorData< bool > vf_FillInside;
-    helper::vectorData< ValueType > vf_InsideValues;
+    core::objectmodel::vectorData< bool > vf_FillInside;
+    core::objectmodel::vectorData< ValueType > vf_InsideValues;
 
     typedef type::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex; ///< one roi defined as an index list
     typedef type::vector<SeqIndex> VecSeqIndex;  ///< vector of rois
-    helper::vectorData<VecSeqIndex> vf_roiIndices;  ///< vector of rois for each mesh
-    helper::vectorData<SeqValues> vf_roiValue;   ///< values for each roi
+    core::objectmodel::vectorData<VecSeqIndex> vf_roiIndices;  ///< vector of rois for each mesh
+    core::objectmodel::vectorData<SeqValues> vf_roiValue;   ///< values for each roi
     typedef helper::ReadAccessor<Data< VecSeqIndex > > raIndex;
 
     Data< ValueType > backgroundValue; ///< pixel value at background
@@ -134,14 +134,14 @@ public:
       , subdiv(initData(&subdiv,(unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))
       , image(initData(&image,ImageTypes(),"image",""))
       , transform(initData(&transform,TransformType(),"transform",""))
-      , vf_positions(this, "position", "input positions for mesh ", helper::DataEngineInput)
-      , vf_edges(this,"edges", "input edges for mesh ", helper::DataEngineInput)
-      , vf_triangles(this,"triangles", "input triangles for mesh ", helper::DataEngineInput)
-      , vf_values(this,"value", "pixel value on mesh surface ", helper::DataEngineInput, SeqValues((size_t)1,(ValueType)1.0))
-      , vf_FillInside(this,"fillInside", "fill the mesh using insideValue?", helper::DataEngineInput, true)
-      , vf_InsideValues(this,"insideValue", "pixel value inside the mesh", helper::DataEngineInput, (ValueType)1.0)
-      , vf_roiIndices(this,"roiIndices", "List of Regions Of Interest, vertex indices", helper::DataEngineInput)
-      , vf_roiValue(this,"roiValue", "pixel value for ROIs, list of values", helper::DataEngineInput)
+      , vf_positions(this, "position", "input positions for mesh ", core::objectmodel::DataEngineDataType::DataEngineInput)
+      , vf_edges(this,"edges", "input edges for mesh ", core::objectmodel::DataEngineDataType::DataEngineInput)
+      , vf_triangles(this,"triangles", "input triangles for mesh ", core::objectmodel::DataEngineDataType::DataEngineInput)
+      , vf_values(this,"value", "pixel value on mesh surface ", core::objectmodel::DataEngineDataType::DataEngineInput, SeqValues((size_t)1,(ValueType)1.0))
+      , vf_FillInside(this,"fillInside", "fill the mesh using insideValue?", core::objectmodel::DataEngineDataType::DataEngineInput, true)
+      , vf_InsideValues(this,"insideValue", "pixel value inside the mesh", core::objectmodel::DataEngineDataType::DataEngineInput, (ValueType)1.0)
+      , vf_roiIndices(this,"roiIndices", "List of Regions Of Interest, vertex indices", core::objectmodel::DataEngineDataType::DataEngineInput)
+      , vf_roiValue(this,"roiValue", "pixel value for ROIs, list of values", core::objectmodel::DataEngineDataType::DataEngineInput)
       , backgroundValue(initData(&backgroundValue,0.,"backgroundValue","pixel value at background"))
       , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
       , gridSnap(initData(&gridSnap,true,"gridSnap","align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)"))

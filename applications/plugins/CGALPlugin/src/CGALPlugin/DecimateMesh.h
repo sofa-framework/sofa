@@ -23,7 +23,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>

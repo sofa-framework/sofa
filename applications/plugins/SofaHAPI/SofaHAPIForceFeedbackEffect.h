@@ -38,8 +38,8 @@ namespace sofa
 	{
 
 		using sofa::type::vector;
-		using sofa::defaulttype::Vec3d;
-		using sofa::defaulttype::Quat;
+        using sofa::type::Vec3d;
+        using sofa::type::Quat;
 		typedef sofa::defaulttype::SolidTypes<double>::Transform Transform;
 		using sofa::core::objectmodel::Data;
 		using sofa::core::objectmodel::BaseLink;

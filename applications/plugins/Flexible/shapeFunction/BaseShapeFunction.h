@@ -26,9 +26,9 @@
 #include <Flexible/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/MatSym.h>
+#include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/SVector.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>

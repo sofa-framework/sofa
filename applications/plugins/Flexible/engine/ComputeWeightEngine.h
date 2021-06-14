@@ -45,8 +45,8 @@ public:
     LinkVisual l_visualModel;
 
     // Typedefs
-    typedef defaulttype::Vec4u Indices;
-    typedef defaulttype::Vector4 Weights;
+    typedef type::Vec4u Indices;
+    typedef type::Vector4 Weights;
 
 
 

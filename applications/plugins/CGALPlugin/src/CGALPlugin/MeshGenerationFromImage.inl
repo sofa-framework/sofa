@@ -22,7 +22,7 @@
 #pragma once
 
 #include <CGALPlugin/MeshGenerationFromImage.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 
 using namespace sofa;
 

@@ -2,7 +2,7 @@
 
 #include "../types/AffineTypes.h"
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/DualQuat.h>
+#include <sofa/type/DualQuat.h>
 
 namespace
 {
@@ -61,7 +61,7 @@ ComputeDualQuatEngine< DataTypes >::ComputeDualQuatEngine()
 template < class DataTypes >
 void ComputeDualQuatEngine< DataTypes >::doUpdate()
 {
-    typedef sofa::helper::DualQuatCoord3<Real> DualQuat;
+    typedef sofa::type::DualQuatCoord3<Real> DualQuat;
 
 
     const VecCoord& x = d_x.getValue();

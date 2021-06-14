@@ -25,8 +25,8 @@
 #include <image/ImageTypes.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
@@ -329,7 +329,7 @@ protected:
             df[1] = - p[0]*g[0]*g[2] - p[1]*w[0]*g[2] - p[2]*w[0]*w[2] - p[3]*g[0]*w[2] + p[4]*g[0]*g[2] + p[5]*w[0]*g[2] + p[6]*w[0]*w[2] + p[7]*g[0]*w[2];
             df[2] = - p[0]*g[0]*g[1] - p[1]*w[0]*g[1] + p[2]*w[0]*g[1] + p[3]*g[0]*g[1] - p[4]*g[0]*w[1] - p[5]*w[0]*w[1] + p[6]*w[0]*w[1] + p[7]*g[0]*w[1];
 
-            Real det=defaulttype::determinant(df);
+            Real det=type::determinant(df);
             if ( -MIN_DETERMINANT<=det && det<=MIN_DETERMINANT) { return; }
             type::Mat<3,3,Real> dfinv;
             dfinv(0,0)= (df(1,1)*df(2,2) - df(2,1)*df(1,2))/det;

@@ -128,7 +128,7 @@ protected :
     Data<bool> projectToPlane; ///< project closest points in the plane defined by the normal.
     Data<bool> rejectBorders; ///< ignore border vertices.
     Data<bool> rejectOutsideBbox; ///< ignore source points outside bounding box of target points.
-    defaulttype::BoundingBox targetBbox;
+    type::BoundingBox targetBbox;
 
     // source mesh data
     Data< type::vector< tri > > sourceTriangles; ///< Triangles of the source mesh.

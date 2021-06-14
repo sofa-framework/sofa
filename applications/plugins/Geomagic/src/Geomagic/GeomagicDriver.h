@@ -23,8 +23,8 @@
 
 //Geomagic include
 #include <Geomagic/config.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 #include <SofaUserInteraction/Controller.h>
 
 //force feedback

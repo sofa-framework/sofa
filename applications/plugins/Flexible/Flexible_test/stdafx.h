@@ -4,7 +4,7 @@
 // To speed up compilation time for tests on Windows (using precompiled headers)
 #ifdef WIN32
 
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 #include <sofa/helper/RandomGenerator.h>
 #include <sofa/defaulttype/VecTypes.h>
 

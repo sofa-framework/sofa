@@ -35,7 +35,7 @@ namespace sofa
 {
 
 /** determinant for 1x1 matrix  to complement 2x2 and 3x3 implementations (used for visualization of  det F ) **/
-namespace defaulttype { template<class real> inline real determinant(const Mat<1,1,real>& m) { return m(0,0);} }
+namespace defaulttype { template<class real> inline real determinant(const type::Mat<1,1,real>& m) { return m(0,0);} }
 
 namespace component
 {

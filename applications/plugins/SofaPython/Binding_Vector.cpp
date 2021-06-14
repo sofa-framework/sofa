@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include "Binding_Vector.h"
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include "PythonToSofa.inl"
 
 using sofa::type::Vector3 ;

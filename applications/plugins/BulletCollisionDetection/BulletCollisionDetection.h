@@ -26,7 +26,7 @@
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include "BulletCollisionModel.h"
 #include "BulletTriangleModel.h"

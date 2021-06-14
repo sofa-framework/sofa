@@ -29,7 +29,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 #ifdef _OPENMP
     #include <omp.h>
@@ -84,8 +84,8 @@ public:
     Data<helper::OptionsGroup> Interpolation; ///< Interpolation method.
     Data<unsigned int> nbImages; ///< number of images to merge
 
-    helper::vectorData<ImageTypes> inputImages;
-    helper::vectorData<TransformType> inputTransforms;
+    core::objectmodel::vectorData<ImageTypes> inputImages;
+    core::objectmodel::vectorData<TransformType> inputTransforms;
 
     Data<ImageTypes> image; ///< Image
     Data<TransformType> transform; ///< Transform

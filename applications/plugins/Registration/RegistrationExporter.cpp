@@ -9,8 +9,8 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <SofaLoader/MeshObjLoader.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 
 #include <sofa/helper/system/FileRepository.h>
 

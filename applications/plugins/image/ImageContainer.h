@@ -29,12 +29,12 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/type/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -531,7 +531,7 @@ protected:
                 if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
                 if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
             }
-        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
+        this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(bbmin,bbmax));
     }
 
     void draw(const core::visual::VisualParams* vparams) override

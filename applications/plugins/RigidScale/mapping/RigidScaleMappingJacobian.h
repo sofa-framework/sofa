@@ -23,8 +23,8 @@
 #define MAPPINGJACOBIAN_H
 
 #include <Flexible/types/AffineTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

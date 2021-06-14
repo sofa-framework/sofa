@@ -22,7 +22,7 @@
 #ifndef CGALPLUGIN_CUBOIDMESH_H
 #define CGALPLUGIN_CUBOIDMESH_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

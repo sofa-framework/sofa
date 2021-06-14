@@ -26,7 +26,7 @@
 #include "BaseDeformationImpl.inl"
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/gl/Color.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/glu.h>
 #include <sofa/helper/IndexOpenMP.h>
 
 #ifdef _OPENMP
@@ -769,7 +769,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
             if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
 
             if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(type::trace(F.transposed()*F)-3.);
-            else  val[i]=sqrt(defaulttype::determinant(F.transposed()*F))-1.;
+            else
+            {
+                if constexpr(spatial_dimensions > 1 && material_dimensions > 1)
+                {
+                    val[i]=sqrt(type::determinant(F.transposed()*F))-1.;
+                }
+            }
 
             //if (val[i]<0) val[i]=2*val[i]/(val[i]+1.);
             val[i]*=240 * this->showColorScale.getValue();

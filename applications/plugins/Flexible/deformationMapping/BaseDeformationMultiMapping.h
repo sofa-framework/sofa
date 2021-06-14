@@ -25,8 +25,8 @@
 #include <Flexible/config.h>
 #include <sofa/core/Multi2Mapping.h>
 #include <sofa/type/vector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include <sofa/simulation/Simulation.h>
 

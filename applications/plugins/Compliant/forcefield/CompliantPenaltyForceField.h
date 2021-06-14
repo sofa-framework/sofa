@@ -3,7 +3,7 @@
 
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include "../utils/edit.h"

@@ -24,7 +24,7 @@
 
 #include "ClosestPointRegistrationForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>

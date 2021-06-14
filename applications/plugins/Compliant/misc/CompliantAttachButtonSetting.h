@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa
 {

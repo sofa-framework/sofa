@@ -36,7 +36,7 @@
 
 #include <SofaSphFluid/SpatialGridContainer.h>
 #include "OpenCLTypes.h"
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include "oclRadixSort/RadixSort.h"
 
 namespace sofa

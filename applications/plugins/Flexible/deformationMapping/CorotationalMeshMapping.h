@@ -25,8 +25,8 @@
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/decompose.h>
 
 

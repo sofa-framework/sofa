@@ -34,6 +34,7 @@ namespace component
 {
 
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int InertiaAlignClass = core::RegisterObject("An engine computing inertia matrix and the principal direction of a mesh.")
@@ -296,7 +297,7 @@ void InertiaAlign::init()
 
 
     Eigen::Matrix3d MRotationSource, MRotationTarget;
-    defaulttype::Matrix4 MTransformSource,MTransformTarget,MTransformTargetTest,MTransform,Mscale;
+    type::Matrix4 MTransformSource,MTransformTarget,MTransformTargetTest,MTransform,Mscale;
     MRotationSource =  eigenvectorsSource;
     MRotationTarget =  eigenvectorsTarget;
     Eigen::Vector3d u,v,w;
@@ -412,7 +413,7 @@ void InertiaAlign::init()
         }
         sout << sendl;
     }
-    defaulttype::Matrix4 MTranslation;
+    type::Matrix4 MTranslation;
     for(unsigned int i=0;i<4;i++)
     {
         for(unsigned int j=0;j<4;j++)
@@ -483,7 +484,7 @@ void InertiaAlign::init()
         positionDistSource = (*m_positions.beginEdit());
         for (size_t j = 0; j < waPositions.size(); j++)
         {
-            defaulttype::Vector4 pointS,pointT;
+            type::Vector4 pointS,pointT;
             pointS(0) = (*m_positions.beginEdit())[j][0];
             pointS(1) = (*m_positions.beginEdit())[j][1];
             pointS(2) = (*m_positions.beginEdit())[j][2];
@@ -575,7 +576,7 @@ void InertiaAlign::init()
         sout << "The MTransformSourceMatrix is not a Transformation matrix" << sendl;
     for (size_t i = 0; i < waPositions.size(); i++)
     {
-        defaulttype::Vector4 pointS,pointT;
+        type::Vector4 pointS,pointT;
         pointS(0) = (*m_positions.beginEdit())[i][0];
         pointS(1) = (*m_positions.beginEdit())[i][1];
         pointS(2) = (*m_positions.beginEdit())[i][2];
@@ -665,7 +666,7 @@ Matrix4 InertiaAlign::inverseTransform(Matrix4 transformToInvert)
         Translation(i)=transformToInvert(i,3);
     }
 
-    bool bS = defaulttype::invertMatrix(rotationInverted,rotationToInvert);
+    bool bS = type::invertMatrix(rotationInverted,rotationToInvert);
 
     sout << "Translation = " << Translation;
     if(!bS)

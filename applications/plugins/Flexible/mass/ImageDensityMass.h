@@ -9,7 +9,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/type/vector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
@@ -173,7 +173,7 @@ protected:
 
 
 #if  !defined(SOFA_FLEXIBLE_ImageDensityMass_CPP)
-extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3Types,core::behavior::ShapeFunction3d,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
+extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3Types,core::behavior::ShapeFunction3d,type::Mat3x3d>; // volume FEM (tetra, hexa)
 #endif
 
 } // namespace mass

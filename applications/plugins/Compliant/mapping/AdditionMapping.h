@@ -4,7 +4,7 @@
 
 #include "ConstantAssembledMapping.h"
 #include "ConstantAssembledMultiMapping.h"
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.inl>
 

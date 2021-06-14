@@ -23,8 +23,8 @@
 #define FLEXIBLE_LinearJacobianBlock_rigid_INL
 
 #include "LinearJacobianBlock.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include "../types/AffineTypes.h"
@@ -64,12 +64,12 @@ class LinearJacobianBlock< Rigid3(InReal) , V3(OutReal) > :
     enum { dim = Out::spatial_dimensions };
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,dim,Real> MaterialToSpatial;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
 
     /**
     Mapping:   \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
@@ -128,7 +128,7 @@ class LinearJacobianBlock< Rigid3(InReal) , V3(OutReal) > :
     KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         // will only work for 3d rigids
-        Mat<adim,adim,Real> block = type::crossProductMatrix( childForce ) * type::crossProductMatrix( Pa );
+        type::Mat<adim,adim,Real> block = type::crossProductMatrix( childForce ) * type::crossProductMatrix( Pa );
 
         if( stabilization )
         {
@@ -174,15 +174,15 @@ class LinearJacobianBlock< Rigid3(InReal) , F331(OutReal) > :
     enum { mdim = Out::material_dimensions };
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:
@@ -260,7 +260,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F331(OutReal) > :
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFa.getF().col(k) );
+            type::Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFa.getF().col(k) );
 
             if( stabilization )
             {
@@ -307,15 +307,15 @@ class LinearJacobianBlock< Rigid3(InReal) , F321(OutReal) > :
     enum { mdim = Out::material_dimensions };
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:
@@ -387,7 +387,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F321(OutReal) > :
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFa.getF().col(k) );
+            type::Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFa.getF().col(k) );
 
             if( stabilization )
             {
@@ -434,15 +434,15 @@ class LinearJacobianBlock< Rigid3(InReal) , F311(OutReal) > :
     enum { mdim = Out::material_dimensions };
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:
@@ -514,7 +514,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F311(OutReal) > :
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFa.getF().col(k) );
+            type::Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFa.getF().col(k) );
 
             if( stabilization )
             {
@@ -561,16 +561,16 @@ class LinearJacobianBlock< Rigid3(InReal) , F332(OutReal) > :
     enum { mdim = Out::material_dimensions };
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
-    typedef Mat<dim,mdim,Real> mHessian;
+    typedef type::Vec<mdim,Real> mGradient;
+    typedef type::Mat<dim,mdim,Real> mHessian;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:
@@ -679,7 +679,7 @@ class LinearJacobianBlock< Rigid3(InReal) , F332(OutReal) > :
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFdFa.getF().col(k) );
+            type::Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getF().col(k) ) * type::crossProductMatrix( PFdFa.getF().col(k) );
             for (unsigned int m = 0; m < dim; ++m) block += type::crossProductMatrix( childForce.getGradientF(m).col(k) ) * type::crossProductMatrix( PFdFa.getGradientF(m).col(k) );
 
             if( stabilization )
@@ -730,13 +730,13 @@ class LinearJacobianBlock< Rigid3(InReal) , Affine3(OutReal) > :
     enum { dim = Out::spatial_dimensions };
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,dim,Real> MaterialToSpatial;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:
@@ -824,7 +824,7 @@ class LinearJacobianBlock< Rigid3(InReal) , Affine3(OutReal) > :
     {
         // will only work for 3d rigids
         KBlock K;
-        Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getVCenter() ) * type::crossProductMatrix( Pa.getCenter() );
+        type::Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getVCenter() ) * type::crossProductMatrix( Pa.getCenter() );
 
         if( stabilization )
         {
@@ -837,7 +837,7 @@ class LinearJacobianBlock< Rigid3(InReal) , Affine3(OutReal) > :
                 K[dim+i][dim+j] = block[i][j];
         for(unsigned int k=0; k<dim; ++k)
         {
-            Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getVAffine().col(k) ) * type::crossProductMatrix( Pa.getAffine().col(k) );
+            type::Mat<adim,adim,Real> block = type::crossProductMatrix( childForce.getVAffine().col(k) ) * type::crossProductMatrix( Pa.getAffine().col(k) );
 
             if( stabilization )
             {

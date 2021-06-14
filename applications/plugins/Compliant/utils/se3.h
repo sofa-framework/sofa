@@ -10,7 +10,7 @@
 #include <Eigen/Geometry>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 
 #include <limits>
 

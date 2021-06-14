@@ -98,8 +98,8 @@ protected:
         PointMapperType2 mapper2;
 
         // empty variables (not used in init)
-        typename PointMapperType1::OutCoord o(defaulttype::NOINIT);
-        typename PointMapperType2::MaterialToSpatial M0(defaulttype::NOINIT);
+        typename PointMapperType1::OutCoord o(type::NOINIT);
+        typename PointMapperType2::MaterialToSpatial M0(type::NOINIT);
         VGradient dw(1);
         VHessian ddw(1);
 

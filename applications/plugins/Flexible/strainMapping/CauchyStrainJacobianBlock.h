@@ -23,8 +23,8 @@
 #define FLEXIBLE_CauchyStrainJacobianBlock_H
 
 #include "../BaseJacobian.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
 

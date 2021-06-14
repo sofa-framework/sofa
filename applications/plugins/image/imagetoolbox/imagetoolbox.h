@@ -33,7 +33,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/CollisionModel.h>
 
 #include "imagetoolboxdata.h"

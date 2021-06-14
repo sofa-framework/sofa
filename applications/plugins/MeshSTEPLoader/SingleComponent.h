@@ -26,7 +26,7 @@
 #include <vector>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {

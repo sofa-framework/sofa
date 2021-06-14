@@ -24,7 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 //
 ////force feedback
 #include <SofaHaptics/ForceFeedback.h>

@@ -37,7 +37,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/type/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/helper/rmath.h>
 
 namespace sofa

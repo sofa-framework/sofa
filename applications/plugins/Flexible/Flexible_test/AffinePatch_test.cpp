@@ -23,7 +23,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation

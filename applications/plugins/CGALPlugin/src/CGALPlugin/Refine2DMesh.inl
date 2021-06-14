@@ -23,7 +23,7 @@
 
 #include <CGALPlugin/Refine2DMesh.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 #define CGAL_MESH_2_VERBOSE
 

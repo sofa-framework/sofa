@@ -113,7 +113,7 @@ static void transMechaRigid(const Vec3 & angles,const Vec3 & new_pos,sofa::simul
     Data<MechanicalObjectRigid3::VecCoord> & dpositions = *mecha->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
-    sofa::defaulttype::Quat & quat = positions[0].getOrientation();
+    auto & quat = positions[0].getOrientation();
     Vec3 & pos  = positions[0].getCenter();
 
     quat.rotate(angles);
