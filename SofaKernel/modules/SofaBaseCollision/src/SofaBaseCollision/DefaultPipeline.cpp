@@ -154,6 +154,11 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
         const helper::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
         int nActive = 0;
 
+        const int used_depth = (
+                    (broadPhaseDetection && broadPhaseDetection->needsDeepBoundingTree()) ||
+                    (narrowPhaseDetection && narrowPhaseDetection->needsDeepBoundingTree())
+            ) ? d_depth.getValue() : 0;
+
         for (it = collisionModels.begin(); it != itEnd; ++it)
         {
             msg_info_when(d_doPrintInfoMessage.getValue())
@@ -161,14 +166,14 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
 
             if (!(*it)->isActive()) continue;
 
-            int used_depth = broadPhaseDetection->needsDeepBoundingTree() ? d_depth.getValue() : 0;
-
-            if (continuous){
-                std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
+            if (continuous)
+            {
+                const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, used_depth);
             }
-            else {
+            else
+            {
                 std::string msg = "Compute BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);

@@ -11,7 +11,8 @@
 
     <!--
     <DefaultPipeline verbose="0" name="CollisionPipeline"/>
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DiscreteIntersection/>
     <DefaultContactManager response="default" name="collision response"/>
 -->

@@ -64,7 +64,8 @@ class Script(Sofa.PythonScriptController):
 
 def contacts(node, **kwargs):
     node.createObject('DefaultPipeline')
-    node.createObject('BruteForceDetection')
+    node.createObject('BruteForceBroadPhase', name='N2')
+    node.createObject('BVHNarrowPhase')
     node.createObject('NewProximityIntersection',
                       alarmDistance = kwargs.get('alarm_dist', 0.02),
                       contactDistance = kwargs.get('contact_dist', 0.01))

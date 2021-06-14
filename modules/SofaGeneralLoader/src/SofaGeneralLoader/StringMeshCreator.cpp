@@ -39,6 +39,16 @@ int StringMeshCreatorClass = core::RegisterObject("Procedural creation of a one-
 StringMeshCreator::StringMeshCreator(): MeshLoader()
   , resolution( initData(&resolution,(unsigned)2,"resolution","Number of vertices"))
 {
+    addUpdateCallback("updateResolution", {&resolution}, [this](const core::DataTracker& )
+    {
+        if(load())
+        {
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+
+        return sofa::core::objectmodel::ComponentState::Invalid;
+
+    }, {&d_positions, &d_edges});
 }
 
 void StringMeshCreator::doClearBuffers()

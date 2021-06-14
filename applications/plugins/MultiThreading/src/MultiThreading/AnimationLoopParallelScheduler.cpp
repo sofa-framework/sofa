@@ -39,7 +39,6 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PipeProcess.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/helper/system/atomic.h>
 
 #include <sofa/core/visual/VisualParams.h>
 

@@ -36,25 +36,25 @@ int MeshOffLoaderClass = core::RegisterObject("Specific mesh loader for Off file
 
 bool MeshOffLoader::doLoad()
 {
-    msg_info() << "Loading OFF file: " << m_filename;
+    msg_info() << "Loading OFF file: " << d_filename;
 
     bool fileRead = false;
 
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::string cmd;
     std::ifstream file(filename);
 
     if (!file.good())
     {
-        msg_error() << "Cannot read file '" << m_filename << "'.";
+        msg_error() << "Cannot read file '" << d_filename << "'.";
         return false;
     }
 
     file >> cmd;
     if (cmd != "OFF")
     {
-        msg_error() << "Not a OFF file (header problem) '" << m_filename << "'.";
+        msg_error() << "Not a OFF file (header problem) '" << d_filename << "'.";
         return false;
     }
 

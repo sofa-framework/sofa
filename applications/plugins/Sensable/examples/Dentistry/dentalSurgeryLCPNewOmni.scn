@@ -6,7 +6,8 @@
 
 	<Gravity name="G"  gravity="0 -9.8 0" />
 	<DefaultPipeline name="pipeline"  verbose="0"  depth="6" />
-	<BruteForceDetection name="detection" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager name="response"  response="FrictionContact" />
 	<LocalMinDistance name="proximity"  alarmDistance="0.3"  contactDistance="0.15"  angleCone="0" />
 	<FreeMotionAnimationLoop name="default37" />

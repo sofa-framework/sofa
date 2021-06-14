@@ -72,7 +72,7 @@ void OffSequenceLoader::init()
     MeshOffLoader::init();
 
     //parse the file name to get the index part
-    std::string file = this->m_filename.getFullPath();
+    std::string file = this->d_filename.getFullPath();
     m_filenameAndNb = file.substr(0, file.find("."));
     size_t indCar = m_filenameAndNb.size();
     std::string fileNb;
@@ -148,14 +148,14 @@ bool OffSequenceLoader::load(const char * filename)
 
     if (!file.good())
     {
-        msg_error() << "Cannot read file '" << m_filename << "'.";
+        msg_error() << "Cannot read file '" << d_filename << "'.";
         return false;
     }
 
     file >> cmd;
     if (cmd != "OFF")
     {
-        msg_error() << "Not a OFF file (header problem) '" << m_filename << "'.";
+        msg_error() << "Not a OFF file (header problem) '" << d_filename << "'.";
         return false;
     }
 

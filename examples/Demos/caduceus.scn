@@ -16,7 +16,8 @@
     <LCPConstraintSolver tolerance="1e-3" maxIt="1000" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
     <FreeMotionAnimationLoop />
     <DefaultPipeline depth="15" verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="1.5" contactDistance="1" />
 
     <DefaultContactManager name="Response" response="FrictionContact" />

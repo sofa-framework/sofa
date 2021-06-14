@@ -19,29 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/helper/system/atomic.h>
-#include <gtest/gtest.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
-using sofa::helper::system::atomic;
-
-TEST(atomitTest, dec_and_test_null)
+namespace cgal
 {
-    atomic<int> value(3);
-    EXPECT_EQ(value.dec_and_test_null(), false);
-    EXPECT_EQ(value, 2);
-    EXPECT_EQ(value.dec_and_test_null(), false);
-    EXPECT_EQ(value, 1);
-    EXPECT_EQ(value.dec_and_test_null(), true);
-    EXPECT_EQ(value, 0);
-}
 
-TEST(atomitTest, compare_and_swap)
+///
+/// \brief The UpsamplePointCloud class generates a denser point cloud from an input point cloud
+/// More info here: https://doc.cgal.org/latest/Point_set_processing_3/index.html#Point_set_processing_3Upsampling
+///
+class UpsamplePointCloud : public sofa::core::DataEngine
 {
-    atomic<int> value(-1);
-    EXPECT_EQ(value.compare_and_swap(-1, 10), -1);
-    EXPECT_EQ(value, 10);
+public:
+    SOFA_CLASS(UpsamplePointCloud,sofa::core::DataEngine);
 
-    EXPECT_EQ(value.compare_and_swap(5, 25), 10);
-    EXPECT_EQ(value, 10);
-}
+    typedef typename sofa::defaulttype::Vec3Types::Real Real;
+    typedef typename sofa::defaulttype::Vec3Types::Coord Point;
+    typedef typename sofa::defaulttype::Vec3Types::Coord Coord;
+    typedef typename sofa::defaulttype::Vec3Types::VecCoord VecCoord;
+
+    typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+
+public:
+    UpsamplePointCloud();
+    virtual ~UpsamplePointCloud() { };
+
+    void init() override;
+    void doUpdate() override;
+
+    //Inputs
+    sofa::core::objectmodel::Data<VecCoord> d_positionsIn; ///< Input point cloud positions
+    sofa::core::objectmodel::Data<VecCoord> d_normalsIn; ///< Input point cloud normals
+
+    //Outputs
+    sofa::core::objectmodel::Data<VecCoord> d_positionsOut; ///< Output denser point cloud positions
+    sofa::core::objectmodel::Data<VecCoord> d_normalsOut; ///< Output normals of denser point cloud positions
+};
+
+} //cgal
+

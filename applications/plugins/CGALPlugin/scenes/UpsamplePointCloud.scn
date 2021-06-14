@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="1"  >
+	<RequiredPlugin pluginName="CGALPlugin"/>
+  <RequiredPlugin pluginName='SofaOpenglVisual'/>
+
+	<VisualStyle displayFlags="showVisual" />
+
+	<Node name="PointCloud">
+		<MeshObjLoader name="loader" filename="mesh/liver.obj"/>
+		<MeshTopology src="@loader"/>
+		<MechanicalObject showObject="1" showObjectScale="5" showColor="1 0 0"/>
+	</Node>
+
+	<Node name="UpsamplePointCloud">
+		<UpsamplePointCloud name="engine" src="@../PointCloud/loader"/>
+		<MeshTopology name="topology" position="@engine.outputPosition"/>
+		<MechanicalObject src="@topology" showObject="1" showObjectScale="5"/>
+	</Node>
+
+</Node>

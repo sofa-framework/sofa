@@ -36,7 +36,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/gl/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <cmath>
 #include <cstdlib>
@@ -63,7 +63,7 @@ class SimpleGUI : public sofa::gui::BaseGUI
 
 public:
     typedef sofa::core::visual::VisualParams VisualParams;
-    typedef sofa::core::visual::DrawToolGL   DrawToolGL;
+    typedef sofa::gl::DrawToolGL   DrawToolGL;
 
     /// @name methods each GUI must implement
     /// @{

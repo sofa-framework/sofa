@@ -162,7 +162,7 @@ void GeomagicVisualModel::activateDisplay(bool value)
 }
 
 
-void GeomagicVisualModel::updateDisplay(const GeomagicDriver::Coord& posDevice, HDdouble angle1[3], HDdouble angle2[3])
+void GeomagicVisualModel::updateDisplay(const GeomagicDriver::Coord& posDevice, GeomagicDriver::SHDdouble angle1[3], GeomagicDriver::SHDdouble angle2[3])
 {
     sofa::defaulttype::SolidTypes<double>::Transform tampon;
     m_posDeviceVisu[0] = posDevice;
