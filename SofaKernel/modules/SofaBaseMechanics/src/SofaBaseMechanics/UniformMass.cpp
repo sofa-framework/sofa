@@ -217,7 +217,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid2DImpl(const VisualParams* vpar
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
-        Quat orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
+        Quatd orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
         Vec3d center; center = x[indices[i]].getCenter();
 
         vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
