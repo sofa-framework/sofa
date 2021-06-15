@@ -21,7 +21,7 @@
     <ParallelBruteForceBroadPhase/>
     <ParallelBVHNarrowPhase/>
 
-    <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <DefaultContactManager name="Response" response="default"/>
     <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
 
