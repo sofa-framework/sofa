@@ -50,6 +50,7 @@ std::string HeadlessRecorder::recordTypeRaw = "wallclocktime";
 RecordMode HeadlessRecorder::recordType = RecordMode::wallclocktime;
 float HeadlessRecorder::skipTime = 0;
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::simulation::getSimulation;
 
@@ -459,7 +460,7 @@ void HeadlessRecorder::calcProjection()
             yFactor = 1.0;
         }
     }
-    vparams->viewport() = sofa::helper::make_array(0, 0, s_width, s_height);
+    vparams->viewport() = sofa::type::make_array(0, 0, s_width, s_height);
 
     glViewport(0, 0, s_width, s_height);
     glMatrixMode(GL_PROJECTION);
@@ -643,7 +644,7 @@ void HeadlessRecorder::initVideoRecorder()
     requestVideoRecorderInit = false;
 }
 
-void HeadlessRecorder::setBackgroundColor(const helper::types::RGBAColor &color)
+void HeadlessRecorder::setBackgroundColor(const type::RGBAColor &color)
 {
     m_backgroundColor = color;
     glClearColor(m_backgroundColor.r(), m_backgroundColor.g(), m_backgroundColor.b(), m_backgroundColor.a());

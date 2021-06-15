@@ -116,7 +116,7 @@ private:
     bool initTexturesDone;
     bool requestVideoRecorderInit;
     sofa::gl::Capture m_screencapture;
-    helper::types::RGBAColor m_backgroundColor;
+    type::RGBAColor m_backgroundColor;
 
 
     static GLsizei s_height;
