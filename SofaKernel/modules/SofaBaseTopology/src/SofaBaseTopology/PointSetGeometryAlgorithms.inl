@@ -231,7 +231,7 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const helper::vector
 
     for (size_t i=0; i < indices.size(); i++)
     {
-        if (ancestorElems[i].index != BaseMeshTopology::InvalidID)
+        if (ancestorElems[i].index != sofa::InvalidID)
         {
             initPointAdded(indices[i], ancestorElems[i], pointsAddedVecCoords, pointsAddedVecDerivs);
         }

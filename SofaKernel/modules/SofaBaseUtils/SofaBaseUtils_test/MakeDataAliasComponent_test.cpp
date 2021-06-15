@@ -24,6 +24,11 @@
 #include <string>
 using std::string ;
 
+#include <sofa/testing/BaseTest.h>
+#include <sofa/testing/TestMessageHandler.h>
+
+#include <SofaBase/initSofaBase.h>
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
@@ -39,11 +44,8 @@ using sofa::simulation::SceneLoaderXML ;
 #include <SofaBaseUtils/MakeDataAliasComponent.h>
 using sofa::component::MakeDataAliasComponent ;
 
-//TODO(dmarchal): all these lines are ugly...this is too much for simple initialization stuff.
-#include <SofaTest/TestMessageHandler.h>
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::MessageDispatcher;
-using sofa::helper::logging::MainGtestMessageHandler;
 using sofa::helper::logging::MessageHandler;
 using sofa::helper::logging::ConsoleMessageHandler;
 using sofa::helper::logging::Message ;
@@ -70,6 +72,8 @@ bool inited = doInit();
 
 void perTestInit()
 {
+    sofa::component::initSofaBase();
+
     if(theSimulation==nullptr){
         theSimulation = new DAGSimulation();
         sofa::simulation::setSimulation(theSimulation);
@@ -80,7 +84,7 @@ void perTestInit()
 
     /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
     /// DO NO REMOVE
-    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() );
+    MessageDispatcher::addHandler( sofa::testing::MainGtestMessageHandler::getInstance() );
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)

@@ -127,7 +127,8 @@ class poutreGridSofa(Sofa.PythonScriptController):
         node.createObject('DefaultAnimationLoop')
         node.createObject('CollisionPipeline', depth='6', verbose='0', 
         draw='0')
-        node.createObject('BruteForceDetection')
+        node.createObject('BruteForceBroadPhase', name='N2')
+        node.createObject('BVHNarrowPhase'))
         node.createObject('CollisionResponse', response='default')
         node.createObject('DiscreteIntersection')
         node.createObject('VisualStyle', displayFlags="showBehaviorModels 

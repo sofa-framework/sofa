@@ -22,8 +22,8 @@
 
 #include <SofaBase/initSofaBase.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 using sofa::component::collision::DefaultCollisionGroupManager;

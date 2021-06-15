@@ -336,7 +336,7 @@ void ParticleSource<DataTypes>::draw(const core::visual::VisualParams* vparams)
         point = DataTypes::getCPos(m_lastpos[s] + dpos);
         pointsInit.push_back(point);
     }
-    vparams->drawTool()->drawPoints(pointsInit, 10, sofa::defaulttype::Vec<4, float>(1, 0.5, 0.5, 1));
+    vparams->drawTool()->drawPoints(pointsInit, 10, sofa::type::RGBAColor(1., 0.5, 0.5, 1.));
 }
 
 } // namespace misc

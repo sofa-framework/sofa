@@ -61,7 +61,6 @@ using sofa::gui::GUIManager;
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/atomic.h>
 
 using sofa::core::ExecParams ;
 

@@ -4,7 +4,8 @@
   <RequiredPlugin pluginName="optiTrackNatNet"/>
   <VisualStyle displayFlags="showVisual showCollisionModels" />
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
 
@@ -110,7 +111,8 @@
         </Node>
         <MICSCuttingManager modelSurface="cmTriangles" modelTool="/Cystitome/CutEdges/CM" pointedTip="1" minDistance="0.5" maxDistance="5" printLog="1" triangleInfo="@FEM.triangleInfo" fractureStress="-9000" radius="50"/>
 <!--        <CuttingManager modelSurface="cmTriangles" modelTool="/Cystitome/CutEdges/CM" pointedTip="1" minDistance="1" maxDistance="10" printLog="1" />-->
-        <BruteForceDetection name="N2" />
+        <BruteForceBroadPhase/>
+        <BVHNarrowPhase/>
         <DiscreteIntersection name="CutIntersection" />
     </Node>
 

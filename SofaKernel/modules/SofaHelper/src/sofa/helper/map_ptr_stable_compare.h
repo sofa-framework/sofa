@@ -26,10 +26,7 @@
 #include <map>
 #include <memory>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 /// An object transforming pointers to stable ids, i.e. whose value depend on the order the pointers
@@ -38,25 +35,21 @@ template <typename T>
 class ptr_stable_id
 {
 public:
-	ptr_stable_id() 
-		: counter(new unsigned int(0))
-		, idMap(new std::map<T*, unsigned int>) {}
+    ptr_stable_id()
+        : counter(0)
+        , idMap() {}
 
-	unsigned int operator()(T* p)
-	{
-		unsigned int id = 0;
-        typename std::map<T*,unsigned int>::iterator it = idMap->find(p);
-		if (it != idMap->end())
-		{
-			id = it->second;
-		}
-		else
-		{
-			id = ++(*counter);
-			idMap->insert(std::make_pair(p, id));
-		}
-		return id;
-	}
+    unsigned int operator()(T* p)
+    {
+        const typename std::map<T*,unsigned int>::const_iterator it = idMap.find(p);
+        if (it != idMap.cend())
+        {
+            return it->second;
+        }
+
+        idMap.insert({p, counter});
+        return counter++;
+    }
 
     inline unsigned int id(T* p)
     {
@@ -64,8 +57,8 @@ public:
     }
 
 protected:
-    mutable std::shared_ptr<unsigned int> counter;
-    mutable std::shared_ptr< std::map<T*,unsigned int> > idMap;
+    mutable unsigned int counter;
+    mutable std::map<T*,unsigned int> idMap;
 };
 
 /// A comparison object that order pointers in a stable way, i.e. in the order pointers are presented
@@ -78,12 +71,11 @@ class ptr_stable_compare<T*>
 public:
     // wrap the ptr_stable_id<T> into an opaque type
     typedef ptr_stable_id<T> stable_map_type;
-	// This operator must be declared const in order to be used within const methods
-	// such as std::map::find()
-	bool operator()(T* a, T* b) const
-	{
-		return (m_ids->id(a) < m_ids->id(b));
-	}
+
+    bool operator()(T* a, T* b) const
+    {
+        return m_ids->id(a) < m_ids->id(b);
+    }
 
     explicit ptr_stable_compare( const ptr_stable_id<T>* ids ):m_ids(ids)
     {
@@ -91,7 +83,7 @@ public:
 
 protected:
     /// memory is owned by the map_ptr_stable_compare instance
-	mutable ptr_stable_id<T>* m_ids;
+    mutable ptr_stable_id<T>* m_ids;
 };
 
 template <typename T>
@@ -100,12 +92,12 @@ class ptr_stable_compare< std::pair<T*,T*> >
 public:
     // wrap the ptr_stable_id<T> into an opaque type
     typedef ptr_stable_id<T> stable_id_map_type;
-	// This operator must be declared const in order to be used within const methods
-	// such as std::map::find()
-	bool operator()(const std::pair<T*,T*>& a, const std::pair<T*,T*>& b) const
-	{
-		return (std::make_pair(m_ids->id(a.first), m_ids->id(a.second)) < std::make_pair(m_ids->id(b.first), m_ids->id(b.second)) );
-	}
+
+    bool operator()(const std::pair<T*,T*>& a, const std::pair<T*,T*>& b) const
+    {
+        return std::make_pair(m_ids->id(b.first), m_ids->id(b.second)) >
+               std::make_pair(m_ids->id(a.first), m_ids->id(a.second));
+    }
 
     explicit ptr_stable_compare( ptr_stable_id<T>* ids):m_ids(ids)
     {
@@ -118,7 +110,7 @@ public:
 
 protected:
     /// memory is owned by the map_ptr_stable_compare instance
-	mutable ptr_stable_id<T>* m_ids;
+    mutable ptr_stable_id<T>* m_ids;
 
 private:
     ptr_stable_compare():m_ids(nullptr){}
@@ -129,13 +121,13 @@ template< typename Key, typename Tp >
 class map_ptr_stable_compare : public std::map<Key, Tp, ptr_stable_compare<Key> >
 {
 public:
-	typedef std::map<Key, Tp, ptr_stable_compare<Key> > Inherit;
+    typedef std::map<Key, Tp, ptr_stable_compare<Key> > Inherit;
     /// Key
-	typedef typename Inherit::key_type               key_type;
+    typedef typename Inherit::key_type               key_type;
     /// Tp
-	typedef typename Inherit::mapped_type            mapped_type;
+    typedef typename Inherit::mapped_type            mapped_type;
     /// pair<Key,Tp>
-	typedef typename Inherit::value_type             value_type;
+    typedef typename Inherit::value_type             value_type;
     /// reference to a value (read-write)
     typedef typename Inherit::reference              reference;
     /// const reference to a value (read only)
@@ -186,8 +178,6 @@ private:
     std::unique_ptr<stable_id_map_type> m_stable_id_map;
 };
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 
 #endif

@@ -133,6 +133,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
 
         }
         else
+        {
 #endif // IMAGE_HAVE_ZLIB
             if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
                     || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
@@ -174,11 +175,17 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 wimage->getCImgList().push_back(cimg_library::CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
             }
             else if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
+            {
                 wimage->getCImgList().load_cimg(fname.c_str());
+            }
             else if(fname.find(".par")!=std::string::npos || fname.find(".rec")!=std::string::npos)
+            {
                 wimage->getCImgList().load_parrec(fname.c_str());
+            }
             else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
+            {
                 wimage->getCImgList().load_ffmpeg_external(fname.c_str());
+            }
             else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
             {
                 float voxsize[3];
@@ -194,7 +201,13 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 if (!container->transformIsSet)
                     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
             }
-            else wimage->getCImgList().push_back(cimg_library::CImg<T>().load(fname.c_str()));
+            else
+            {
+                wimage->getCImgList().push_back(cimg_library::CImg<T>().load(fname.c_str()));
+            }
+#if IMAGE_HAVE_ZLIB
+        }
+#endif // IMAGE_HAVE_ZLIB
 
         const bool isImageEmpty = wimage->isEmpty();
         msg_info_when(!isImageEmpty, container) << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")";
@@ -362,8 +375,14 @@ public:
         Inherited::parse(arg);
 
         this->transformIsSet = false;
-        if (this->transform.isSet()) this->transformIsSet = true;
-        if (!this->transformIsSet) this->transform.unset();
+        if (this->transform.isSet())
+        {
+            this->transformIsSet = true;
+        }
+        if (!this->transformIsSet)
+        {
+            this->transform.unset();
+        }
 
         if (this->transformIsSet)
         {
@@ -523,7 +542,7 @@ protected:
 
         vparams->drawTool()->saveLastState();
 
-        const sofa::defaulttype::Vec4f color(1.,0.5,0.5,0.5);
+        const sofa::type::RGBAColor color(1.,0.5,0.5,0.5);
         vparams->drawTool()->setMaterial(color);
 
         std::vector<defaulttype::Vector3> corners;

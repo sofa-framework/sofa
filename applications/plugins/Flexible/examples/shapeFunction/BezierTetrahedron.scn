@@ -5,7 +5,8 @@
     <RequiredPlugin name="SofaHighOrderTopology"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showVisual" />
 <!--     <DefaultPipeline verbose="0" name="CollisionPipeline" /> -->
-<!--     <BruteForceDetection name="N2" /> -->
+<!--     <BruteForceBroadPhase/>
+    <BVHNarrowPhase/> -->
 <!--     <DefaultContactManager response="default" name="collision response" /> -->
     <Node name="MeshTopology">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

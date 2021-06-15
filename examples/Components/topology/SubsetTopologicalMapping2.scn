@@ -10,7 +10,8 @@
     <RequiredPlugin pluginName='SofaTopologyMapping'/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showVisual" />
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
 <!--    <SplitAndAttachBodyButtonSetting button="Middle" stiffness="5000" arrowSize="0.2" snapDistance="2" />-->
