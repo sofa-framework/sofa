@@ -61,6 +61,7 @@ namespace component
 namespace loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using namespace sofa::component::container;
@@ -232,7 +233,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                 aiVector3D aiScale, aiTranslation;
                 aiQuaternion aiRotation;
                 currentTransformation.Decompose(aiScale, aiRotation, aiTranslation);
-                Quaternion quat(aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w);
+                Quat<SReal> quat(aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w);
 
                 Vec3d translation(aiTranslation.x, aiTranslation.y, aiTranslation.z);
                 Vec3d rotation(quat.toEulerVector() / (M_PI / 180.0));
@@ -302,7 +303,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                     offsetMatrix.Decompose(aiBoneScale, aiBoneRotation, aiBoneTranslation);
 
                                     Vec3d boneTranslation(aiBoneTranslation.x, aiBoneTranslation.y, aiBoneTranslation.z);
-                                    Quaternion boneQuat(aiBoneRotation.x, aiBoneRotation.y, aiBoneRotation.z, aiBoneRotation.w);
+                                    Quat<SReal> boneQuat(aiBoneRotation.x, aiBoneRotation.y, aiBoneRotation.z, aiBoneRotation.w);
 
                                     x[k] = Rigid3Types::Coord(boneTranslation, boneQuat);
                                 }
@@ -369,7 +370,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                 type::vector<Rigid3Types::Coord> &x = *d_x->beginEdit();
 
                                 Vec3d boneTranslation(0.0, 0.0, 0.0);
-                                Quaternion boneQuat(0.0, 0.0, 1.0, 1.0);
+                                Quat<SReal> boneQuat(0.0, 0.0, 1.0, 1.0);
 
                                 x[0] = Rigid3Types::Coord(boneTranslation, boneQuat);
 
