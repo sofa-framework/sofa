@@ -45,15 +45,12 @@ using namespace sofa::core::topology;
 
 template <class DataTypes, class MassType>
 MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
-    : d_vertexMass( initData(&d_vertexMass, "vertexMass", "Specify a vector giving the mass of each vertex. \n"
-                                                          "If unspecified or wrongly set, another mass information is used.") )
-    , d_massDensity( initData(&d_massDensity, "massDensity", "Specify real and strictly positive value(s) for the mass density. \n"
+    : d_massDensity( initData(&d_massDensity, "massDensity", "Specify real and strictly positive value(s) for the mass density. \n"
                                                              "If unspecified or wrongly set, the totalMass information is used.") )
     , d_totalMass( initData(&d_totalMass, Real(1.0), "totalMass", "Specify the total mass resulting from all particles. \n"
                                                                   "If unspecified or wrongly set, the default value is used: totalMass = 1.0") )
-    , d_vertexMassInfo( initData(&d_vertexMassInfo, "vertexMassInfo", "internal values of the particles masses on vertices, supporting topological changes") )
-    , d_edgeMassInfo( initData(&d_edgeMassInfo, "edgeMassInfo", "internal values of the particles masses on edges, supporting topological changes") )
-    , d_edgeMass( initData(&d_edgeMass, "edgeMass", "values of the particles masses on edges") )
+    , d_vertexMass( initData(&d_vertexMass, "vertexMassInfo", "internal values of the particles masses on vertices, supporting topological changes") )
+    , d_edgeMass( initData(&d_edgeMass, "edgeMassInfo", "internal values of the particles masses on edges, supporting topological changes") )
     , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, Real(1.0), "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
@@ -69,8 +66,6 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     f_graph.setWidget("graph");
 
     /// Internal data, not supposed to be accessed by the user
-    d_vertexMassInfo.setDisplayed(false);
-    d_edgeMassInfo.setDisplayed(false);
 }
 
 template <class DataTypes, class MassType>
@@ -114,7 +109,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
 
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -155,7 +150,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
 
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -192,7 +187,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -229,7 +224,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruct
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -315,7 +310,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
 
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -356,7 +351,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
 
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -393,7 +388,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -430,7 +425,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -518,7 +513,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
 
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -559,7 +554,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
 
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -596,7 +591,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -633,7 +628,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestr
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -720,7 +715,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
 
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -761,7 +756,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
 
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -798,7 +793,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -835,7 +830,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestru
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
-        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -1040,12 +1035,12 @@ template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers(sofa::core::topology::TopologyElementType topologyType)
 {
     // add the functions to handle topology changes for Vertex informations
-    m_vertexMassHandler = new VertexMassHandler(this, &d_vertexMassInfo);
-    d_vertexMassInfo.createTopologyHandler(m_topology, m_vertexMassHandler);
+    m_vertexMassHandler = new VertexMassHandler(this, &d_vertexMass);
+    d_vertexMass.createTopologyHandler(m_topology, m_vertexMassHandler);
 
     // add the functions to handle topology changes for Edge informations
-    m_edgeMassHandler = new EdgeMassHandler(this, &d_edgeMassInfo);
-    d_edgeMassInfo.createTopologyHandler(m_topology, m_edgeMassHandler);
+    m_edgeMassHandler = new EdgeMassHandler(this, &d_edgeMass);
+    d_edgeMass.createTopologyHandler(m_topology, m_edgeMassHandler);
 
 
     // register engines to the corresponding toplogy containers depending on current topology type
@@ -1053,32 +1048,32 @@ void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers(sofa::core::topol
     bool hasQuads = false;
     if (topologyType == TopologyElementType::HEXAHEDRON)
     {
-        d_vertexMassInfo.linkToHexahedronDataArray();
-        d_edgeMassInfo.linkToHexahedronDataArray();
+        d_vertexMass.linkToHexahedronDataArray();
+        d_edgeMass.linkToHexahedronDataArray();
         hasQuads = true; // hexahedron imply quads
     }
     else if (topologyType == TopologyElementType::TETRAHEDRON)
     {
-        d_vertexMassInfo.linkToTetrahedronDataArray();
-        d_edgeMassInfo.linkToTetrahedronDataArray();
+        d_vertexMass.linkToTetrahedronDataArray();
+        d_edgeMass.linkToTetrahedronDataArray();
 
         hasTriangles = true; // Tetrahedron imply triangles
     }
 
     if (topologyType == TopologyElementType::QUAD || hasQuads)
     {
-        d_vertexMassInfo.linkToQuadDataArray();
-        d_edgeMassInfo.linkToQuadDataArray();
+        d_vertexMass.linkToQuadDataArray();
+        d_edgeMass.linkToQuadDataArray();
     }
 
     if (topologyType == TopologyElementType::TRIANGLE || hasTriangles)
     {
-        d_vertexMassInfo.linkToTriangleDataArray();
-        d_edgeMassInfo.linkToTriangleDataArray();
+        d_vertexMass.linkToTriangleDataArray();
+        d_edgeMass.linkToTriangleDataArray();
     }
 
-    // PointData need to be linked to Edge container in any topology. d_edgeMassInfo as EdgeData is automatically register to Edge container
-    d_vertexMassInfo.linkToEdgeDataArray();
+    // PointData need to be linked to Edge container in any topology. d_edgeMass as EdgeData is automatically register to Edge container
+    d_vertexMass.linkToEdgeDataArray();
 }
 
 
@@ -1161,8 +1156,6 @@ void MeshMatrixMass<DataTypes, MassType>::massInitialization()
         initFromTotalMass();
     }
 
-    d_vertexMass.setValue(d_vertexMassInfo.getValue());
-    d_edgeMass.setValue(d_edgeMassInfo.getValue());
 
     //Info post-init
     printMass();
@@ -1226,8 +1219,8 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     clear();
 
     // prepare to store info in the vertex array
-    helper::vector<MassType>& my_vertexMassInfo = *d_vertexMassInfo.beginEdit();
-    helper::vector<MassType>& my_edgeMassInfo = *d_edgeMassInfo.beginEdit();
+    helper::vector<MassType>& my_vertexMassInfo = *d_vertexMass.beginEdit();
+    helper::vector<MassType>& my_edgeMassInfo = *d_edgeMass.beginEdit();
 
     unsigned int ndof = this->mstate->getSize();
     unsigned int nbEdges=m_topology->getNbEdges();
@@ -1306,8 +1299,8 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         m_massLumpingCoeff = 2.0;
     }
 
-    d_vertexMassInfo.endEdit();
-    d_edgeMassInfo.endEdit();
+    d_vertexMass.endEdit();
+    d_edgeMass.endEdit();
 }
 
 
@@ -1348,6 +1341,7 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         }
     }
+
     else if(this->hasDataChanged(d_vertexMass))
     {
         if(this->hasDataChanged(d_edgeMass))
@@ -1383,8 +1377,6 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
         }
     }
 
-    d_vertexMass.setValue(d_vertexMassInfo.getValue());
-    d_edgeMass.setValue(d_edgeMassInfo.getValue());
 
     //Info post-init
     msg_info() << "mass information updated";
@@ -1463,7 +1455,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexMass()
 
     computeMass();
 
-    helper::WriteAccessor<Data<MassVector> > vertexMassInfo = d_vertexMassInfo;
+    helper::WriteAccessor<Data<MassVector> > vertexMassInfo = d_vertexMass;
     //Compute volume = mass since massDensity = 1.0
     Real volume = 0.0;
     for(size_t i=0; i<vertexMassInfo.size(); i++)
@@ -1525,8 +1517,8 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexAndEdgeMass()
 
     computeMass();
 
-    helper::WriteAccessor<Data<MassVector> > vertexMassInfo = d_vertexMassInfo;
-    helper::WriteAccessor<Data<MassVector> > edgeMassInfo = d_edgeMassInfo;
+    helper::WriteAccessor<Data<MassVector> > vertexMassInfo = d_vertexMass;
+    helper::WriteAccessor<Data<MassVector> > edgeMassInfo = d_edgeMass;
     //Compute volume = mass since massDensity = 1.0
     Real volume = 0.0;
     for(size_t i=0; i<vertexMassInfo.size(); i++)
@@ -1642,7 +1634,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromMassDensity()
 
     computeMass();
 
-    const MassVector &vertexMassInfo = d_vertexMassInfo.getValue();
+    const MassVector &vertexMassInfo = d_vertexMass.getValue();
     Real sumMass = 0.0;
     for (size_t i=0; i<size_t(m_topology->getNbPoints()); i++)
     {
@@ -1663,7 +1655,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromTotalMass()
 
     computeMass();
 
-    const MassVector &vertexMassInfo = d_vertexMassInfo.getValue();
+    const MassVector &vertexMassInfo = d_vertexMass.getValue();
     for (size_t i=0; i<size_t(m_topology->getNbPoints()); i++)
     {
         sumMass += vertexMassInfo[i]*m_massLumpingCoeff;
@@ -1688,7 +1680,7 @@ void MeshMatrixMass<DataTypes, MassType>::setVertexMass(sofa::helper::vector< Re
     }
     else
     {
-        d_vertexMassInfo.setValue(vertexMass);
+        d_vertexMass.setValue(vertexMass);
     }
 }
 
@@ -1768,12 +1760,12 @@ void MeshMatrixMass<DataTypes, MassType>::copyVertexMass(){}
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::clear()
 {
-    MassVector& vertexMass = *d_vertexMassInfo.beginEdit();
-    MassVector& edgeMass = *d_edgeMassInfo.beginEdit();
+    MassVector& vertexMass = *d_vertexMass.beginEdit();
+    MassVector& edgeMass = *d_edgeMass.beginEdit();
     vertexMass.clear();
     edgeMass.clear();
-    d_vertexMassInfo.endEdit();
-    d_edgeMassInfo.endEdit();
+    d_vertexMass.endEdit();
+    d_edgeMass.endEdit();
 }
 
 
@@ -1781,8 +1773,8 @@ void MeshMatrixMass<DataTypes, MassType>::clear()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, SReal factor)
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
-    const MassVector &edgeMass= d_edgeMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMass.getValue();
+    const MassVector &edgeMass= d_edgeMass.getValue();
 
     helper::WriteAccessor< DataVecDeriv > res = vres;
     helper::ReadAccessor< DataVecDeriv > dx = vdx;
@@ -1856,7 +1848,7 @@ void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*
 
     helper::WriteAccessor< DataVecDeriv > _a = a;
     const VecDeriv& _f = f.getValue();
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMass.getValue();
 
     for (unsigned int i=0; i<vertexMass.size(); i++)
     {
@@ -1875,7 +1867,7 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
 
     helper::WriteAccessor< DataVecDeriv > f = vf;
 
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMass.getValue();
 
     // gravity
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
@@ -1891,8 +1883,8 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& vv ) const
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
-    const MassVector &edgeMass= d_edgeMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMass.getValue();
+    const MassVector &edgeMass= d_edgeMass.getValue();
 
     helper::ReadAccessor< DataVecDeriv > v = vv;
 
@@ -1922,7 +1914,7 @@ SReal MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::Mechani
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx) const
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMass.getValue();
 
     helper::ReadAccessor< DataVecCoord > x = vx;
 
@@ -1974,8 +1966,8 @@ void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPa
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
-    const MassVector &edgeMass= d_edgeMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMass.getValue();
+    const MassVector &edgeMass= d_edgeMass.getValue();
 
     size_t nbEdges=m_topology->getNbEdges();
     size_t v0,v1;
@@ -2058,7 +2050,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(Index index) const
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMass.getValue();
     SReal mass = vertexMass[index] * m_massLumpingCoeff;
 
     return mass;
@@ -2073,7 +2065,7 @@ void MeshMatrixMass<DataTypes, MassType>::getElementMass(Index index, defaulttyp
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>()(m, d_vertexMassInfo.getValue()[index] * m_massLumpingCoeff, 0, 1);
+    AddMToMatrixFunctor<Deriv,MassType>()(m, d_vertexMass.getValue()[index] * m_massLumpingCoeff, 0, 1);
 }
 
 
@@ -2090,7 +2082,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMass.getValue();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord gravityCenter;
