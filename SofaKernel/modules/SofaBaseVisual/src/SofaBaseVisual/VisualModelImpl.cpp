@@ -1488,7 +1488,6 @@ void VisualModelImpl::handleTopologyChange()
 
             const sofa::core::topology::QuadsAdded *qa = static_cast< const sofa::core::topology::QuadsAdded * >( *itBegin );
 
-            VisualQuad q;
             const std::size_t nbAddedQuads = qa->getNbAddedQuads();
             const std::size_t nbQuaduads = quads.size();
 
