@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="1"  >
+	<RequiredPlugin pluginName="CGALPlugin"/>
+  <RequiredPlugin pluginName='SofaOpenglVisual'/>
+
+	<VisualStyle displayFlags="showVisual" />
+
+	<Node name="PointCloud">
+		<MeshObjLoader name="loader" filename="mesh/liver.obj"/>
+		<MeshTopology src="@loader"/>
+		<MechanicalObject showObject="1" showObjectScale="5"/>
+	</Node>
+
+	<Node name="PoissonSurfaceReconstruction">
+		<PoissonSurfaceReconstruction name="engine" src="@../PointCloud/loader" angle="20" radius="30" distance="0.375"/>
+		<MeshTopology position="@engine.outputPosition" triangles="@engine.outputTriangles"/>
+		<OglModel color="1 0 0"/>
+	</Node>
+
+</Node>

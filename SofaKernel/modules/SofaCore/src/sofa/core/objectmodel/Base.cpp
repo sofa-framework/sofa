@@ -162,10 +162,13 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     res.helpMsg = help;
     res.dataFlags = dataFlags;
 
-    uint32_t prefix = *reinterpret_cast<const uint32_t*>(name);
+    if (strlen(name) >= 3)
+    {
+        uint32_t prefix = *reinterpret_cast<const uint32_t*>(name);
 
-    if (prefix == draw_prefix || prefix == show_prefix)
-        res.group = "Visualization";
+        if (prefix == draw_prefix || prefix == show_prefix)
+            res.group = "Visualization";
+    }
 }
 
 /// Add a data field.

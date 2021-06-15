@@ -3,7 +3,8 @@
   <RequiredPlugin name='SofaMiscCollision'/>
   <VisualStyle name="displayFlags"  displayFlags="showAll" />
   <DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-  <BruteForceDetection name="Detection" />
+  <BruteForceBroadPhase/>
+  <BVHNarrowPhase/>
   <DefaultContactManager name="Response"  response="default" />
   <TreeCollisionGroupManager name="Group" />
   <EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />

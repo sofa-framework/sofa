@@ -50,6 +50,7 @@ set(SOFACOMPONENTALL_MODULES
     SofaNonUniformFem
 
     # SofaMisc
+    SofaMiscCollision
     SofaMiscEngine
     SofaMiscExtra
     SofaMiscFem

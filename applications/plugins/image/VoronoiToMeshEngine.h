@@ -410,7 +410,7 @@ protected:
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!this->showMesh.getValue()) return;
 
-        vparams->drawTool()->drawPoints(this->position.getValue(),5,defaulttype::Vec4f(0.2,1,0.2,1));
+        vparams->drawTool()->drawPoints(this->position.getValue(),5,sofa::type::RGBAColor(0.2,1.,0.2,1.));
 
         raPositions pos(this->position);
         std::vector<defaulttype::Vector3> points;
@@ -421,7 +421,7 @@ protected:
             points[2*i][0]=pos[Edges[i][0]][0];            points[2*i][1]=pos[Edges[i][0]][1];            points[2*i][2]=pos[Edges[i][0]][2];
             points[2*i+1][0]=pos[Edges[i][1]][0];          points[2*i+1][1]=pos[Edges[i][1]][1];          points[2*i+1][2]=pos[Edges[i][1]][2];
         }
-        vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,1,0.7,1));
+        vparams->drawTool()->drawLines(points,2.0,sofa::type::RGBAColor(0.7,1.,0.7,1.));
     }
 };
 
