@@ -94,6 +94,8 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , _indexedElements(nullptr)
     , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
+    , _showStressColorMap(initData(&_showStressColorMap, std::string("Blue to Red"), "showStressColorMap", "Color map used to show stress values"))
+    , m_VonMisesColorMap(nullptr)
 {
     this->addAlias(&_assembling, "assembling");
     _poissonRatio.setWidget("poissonRatio");
@@ -131,6 +133,68 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 
         return;
     }
+
+    if (!m_topology->getTetrahedra().empty())
+    {
+        _indexedElements = &(m_topology->getTetrahedra());
+    }
+    else
+    {
+        core::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::topology::BaseMeshTopology::SeqTetrahedra;
+        auto nbcubes = m_topology->getNbHexahedra();
+
+        // These values are only correct if the mesh is a grid topology
+        int nx = 2;
+        int ny = 1;
+        {
+            topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(m_topology);
+            if (grid != nullptr)
+            {
+                nx = grid->getNx() - 1;
+                ny = grid->getNy() - 1;
+            }
+        }
+
+        // Tesselation of each cube into 6 tetrahedra
+        tetrahedra->reserve(size_t(nbcubes) * 6);
+        for (sofa::Size i = 0; i < nbcubes; i++)
+        {
+            core::topology::BaseMeshTopology::Hexa c = m_topology->getHexahedron(i);
+            if (!((i % nx) & 1))
+            {
+                // swap all points on the X edges
+                std::swap(c[0], c[1]);
+                std::swap(c[3], c[2]);
+                std::swap(c[4], c[5]);
+                std::swap(c[7], c[6]);
+            }
+            if (((i / nx) % ny) & 1)
+            {
+                // swap all points on the Y edges
+                std::swap(c[0], c[3]);
+                std::swap(c[1], c[2]);
+                std::swap(c[4], c[7]);
+                std::swap(c[5], c[6]);
+            }
+            if ((i / (nx * ny)) & 1)
+            {
+                // swap all points on the Z edges
+                std::swap(c[0], c[4]);
+                std::swap(c[1], c[5]);
+                std::swap(c[2], c[6]);
+                std::swap(c[3], c[7]);
+            }
+            typedef core::topology::BaseMeshTopology::Tetra Tetra;
+            tetrahedra->push_back(Tetra(c[0], c[5], c[1], c[6]));
+            tetrahedra->push_back(Tetra(c[0], c[1], c[3], c[6]));
+            tetrahedra->push_back(Tetra(c[1], c[3], c[6], c[2]));
+            tetrahedra->push_back(Tetra(c[6], c[3], c[0], c[7]));
+            tetrahedra->push_back(Tetra(c[6], c[7], c[0], c[5]));
+            tetrahedra->push_back(Tetra(c[7], c[5], c[4], c[0]));
+        }
+        _indexedElements = tetrahedra;
+    }
+
     reinit(); // compute per-element stiffness matrices and other precomputed values
 }
 
@@ -138,12 +202,35 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
 {
+    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    _initialPoints.setValue(p);
 
     if (f_method.getValue() == "small")
         this->setMethod(SMALL);
     else if (f_method.getValue() == "polar")
         this->setMethod(POLAR);
     else this->setMethod(LARGE);
+
+    /// initialization of structures for vonMises stress computations
+    if (_computeVonMisesStress.getValue()) {
+        elemLambda.resize(_indexedElements->size());
+        elemMu.resize(_indexedElements->size());
+
+        helper::WriteAccessor<Data<helper::vector<Real> > > vMN = _vonMisesPerNode;
+        vMN.resize(this->mstate->getSize());
+
+        prevMaxStress = -1.0;
+        updateVonMisesStress = true;
+        minVM = (Real)1e20;
+        maxVM = (Real)-1e20;
+
+        if (m_VonMisesColorMap == nullptr)
+        {
+            m_VonMisesColorMap = new helper::ColorMap(256, _showStressColorMap.getValue());
+        }
+    }
+
+
 
     // Need to initialize the _stiffnesses vector before using it
     std::size_t sizeMO=this->mstate->getSize();
@@ -163,15 +250,34 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
                 (const std::vector< double >)0);
     }
 
-    /// initialization of structures for vonMises stress computations
-    if (_computeVonMisesStress.getValue() > 0) {
-        updateVonMisesStress = true;
-    }
+    
 
+    if (_computeVonMisesStress.getValue()) {
+        //elemDisplacements.resize(_indexedElements->size());
+
+        helper::ReadAccessor<Data<VecCoord> > X0 = _initialPoints;
+
+        elemShapeFun.resize(_indexedElements->size());
+        unsigned int i = 0;
+        typename VecElement::const_iterator it;
+        for (it = _indexedElements->begin(), i = 0; it != _indexedElements->end(); ++it, ++i)
+        {
+            Mat44 matVert;
+
+            for (Index k = 0; k < 4; k++) {
+                Index ix = (*it)[k];
+                matVert[k][0] = 1.0;
+                for (Index l = 1; l < 4; l++)
+                    matVert[k][l] = X0[ix][l - 1];
+            }
+
+            defaulttype::invertMatrix(elemShapeFun[i], matVert);
+        }
+        computeVonMisesStress();
+    }
 
     tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
     tetrahedronInfo.registerTopologicalData();
-
     tetrahedronInfo.endEdit();
 }
 
@@ -210,6 +316,8 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     }
     }
     d_f.endEdit();
+
+    updateVonMisesStress = true;
 }
 
 template<class DataTypes>
@@ -387,6 +495,12 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     computeMaterialStiffness(tetrahedronInf[i].materialMatrix, a, b, c, d, (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/m_topology->getNbTetrahedra()]));
+
+    const Real poissonRatio = _poissonRatio.getValue();
+    if (_computeVonMisesStress.getValue()) {
+        elemLambda[i] = poissonRatio / (1 - poissonRatio);
+        elemMu[i] = (1 - 2 * poissonRatio) / (2 * (1 - poissonRatio));
+    }
 
     tetrahedronInfo.endEdit();
 }
@@ -1417,7 +1531,7 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event* event)
 {
     if (sofa::simulation::AnimateEndEvent::checkEventType(event)) {
-        if (_computeVonMisesStress.getValue() > 0) {
+        if (_computeVonMisesStress.getValue()) {
             if (updateVonMisesStress)
                 computeVonMisesStress();
         }
@@ -1441,7 +1555,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
 
     typename VecElement::const_iterator it;
     Index el;
-    helper::WriteAccessor<Data<helper::vector<Real> > > vME = _vonMisesPerElement;
     const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
     for (it = _indexedElements->begin(), el = 0; it != _indexedElements->end(); ++it, ++el)
     {
@@ -1455,59 +1568,60 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
             // Rotation matrix (deformed and displaced Tetrahedron/world)
             Transformation R_0_2;
             Displacement D;
-            if (method == LARGE) {
-                computeRotationLarge(R_0_2, X, index[0], index[1], index[2]);
-
-                // positions of the deformed and displaced Tetrahedron in its frame
-                helper::fixed_array<Coord, 4> deforme;
-                for (int i = 0; i < 4; ++i)
-                    deforme[i] = R_0_2 * X[index[i]];
-
-                deforme[1][0] -= deforme[0][0];
-                deforme[2][0] -= deforme[0][0];
-                deforme[2][1] -= deforme[0][1];
-                deforme[3] -= deforme[0];
-
-                // displacement
-                D[0] = 0;
-                D[1] = 0;
-                D[2] = 0;
-                D[3] = tetrahedronInf[elementIndex].rotatedInitialElements[1][0] - deforme[1][0];
-                D[4] = 0;
-                D[5] = 0;
-                D[6] = tetrahedronInf[elementIndex].rotatedInitialElements[2][0] - deforme[2][0];
-                D[7] = tetrahedronInf[elementIndex].rotatedInitialElements[2][1] - deforme[2][1];
-                D[8] = 0;
-                D[9] = tetrahedronInf[elementIndex].rotatedInitialElements[3][0] - deforme[3][0];
-                D[10] = tetrahedronInf[elementIndex].rotatedInitialElements[3][1] - deforme[3][1];
-                D[11] = tetrahedronInf[elementIndex].rotatedInitialElements[3][2] - deforme[3][2];
-            }
-            else // POLAR / SVD
+            helper::fixed_array<Coord, 4> deforme;
+            switch (method)
             {
-                Transformation A;
-                A[0] = X[index[1]] - X[index[0]];
-                A[1] = X[index[2]] - X[index[0]];
-                A[2] = X[index[3]] - X[index[0]];
+            case LARGE :
+                    computeRotationLarge(R_0_2, X, index[0], index[1], index[2]);
 
-                helper::Decompose<Real>::polarDecomposition(A, R_0_2);
+                    // positions of the deformed and displaced Tetrahedron in its frame
+                    for (int i = 0; i < 4; ++i)
+                        deforme[i] = R_0_2 * X[index[i]];
 
-                // positions of the deformed and displaced Tetrahedron in its frame
-                helper::fixed_array<Coord, 4> deforme;
-                for (int i = 0; i < 4; ++i)
-                    deforme[i] = R_0_2 * X[index[i]];
+                    deforme[1][0] -= deforme[0][0];
+                    deforme[2][0] -= deforme[0][0];
+                    deforme[2][1] -= deforme[0][1];
+                    deforme[3] -= deforme[0];
 
-                D[0] = _rotatedInitialElements[elementIndex][0][0] - deforme[0][0];
-                D[1] = _rotatedInitialElements[elementIndex][0][1] - deforme[0][1];
-                D[2] = _rotatedInitialElements[elementIndex][0][2] - deforme[0][2];
-                D[3] = _rotatedInitialElements[elementIndex][1][0] - deforme[1][0];
-                D[4] = _rotatedInitialElements[elementIndex][1][1] - deforme[1][1];
-                D[5] = _rotatedInitialElements[elementIndex][1][2] - deforme[1][2];
-                D[6] = _rotatedInitialElements[elementIndex][2][0] - deforme[2][0];
-                D[7] = _rotatedInitialElements[elementIndex][2][1] - deforme[2][1];
-                D[8] = _rotatedInitialElements[elementIndex][2][2] - deforme[2][2];
-                D[9] = _rotatedInitialElements[elementIndex][3][0] - deforme[3][0];
-                D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
-                D[11] = _rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
+                    // displacement
+                    D[0] = 0;
+                    D[1] = 0;
+                    D[2] = 0;
+                    D[3] = tetrahedronInf[elementIndex].rotatedInitialElements[1][0] - deforme[1][0];
+                    D[4] = 0;
+                    D[5] = 0;
+                    D[6] = tetrahedronInf[elementIndex].rotatedInitialElements[2][0] - deforme[2][0];
+                    D[7] = tetrahedronInf[elementIndex].rotatedInitialElements[2][1] - deforme[2][1];
+                    D[8] = 0;
+                    D[9] = tetrahedronInf[elementIndex].rotatedInitialElements[3][0] - deforme[3][0];
+                    D[10] = tetrahedronInf[elementIndex].rotatedInitialElements[3][1] - deforme[3][1];
+                    D[11] = tetrahedronInf[elementIndex].rotatedInitialElements[3][2] - deforme[3][2];
+                    break;
+            case POLAR:
+                    Transformation A;
+                    A[0] = X[index[1]] - X[index[0]];
+                    A[1] = X[index[2]] - X[index[0]];
+                    A[2] = X[index[3]] - X[index[0]];
+
+                    helper::Decompose<Real>::polarDecomposition(A, R_0_2);
+
+                    // positions of the deformed and displaced Tetrahedron in its frame
+                    for (int i = 0; i < 4; ++i)
+                        deforme[i] = R_0_2 * X[index[i]];
+
+                    D[0] = tetrahedronInf[elementIndex].rotatedInitialElements[0][0] - deforme[0][0];
+                    D[1] = tetrahedronInf[elementIndex].rotatedInitialElements[0][1] - deforme[0][1];
+                    D[2] = tetrahedronInf[elementIndex].rotatedInitialElements[0][2] - deforme[0][2];
+                    D[3] = tetrahedronInf[elementIndex].rotatedInitialElements[1][0] - deforme[1][0];
+                    D[4] = tetrahedronInf[elementIndex].rotatedInitialElements[1][1] - deforme[1][1];
+                    D[5] = tetrahedronInf[elementIndex].rotatedInitialElements[1][2] - deforme[1][2];
+                    D[6] = tetrahedronInf[elementIndex].rotatedInitialElements[2][0] - deforme[2][0];
+                    D[7] = tetrahedronInf[elementIndex].rotatedInitialElements[2][1] - deforme[2][1];
+                    D[8] = tetrahedronInf[elementIndex].rotatedInitialElements[2][2] - deforme[2][2];
+                    D[9] = tetrahedronInf[elementIndex].rotatedInitialElements[3][0] - deforme[3][0];
+                    D[10] = tetrahedronInf[elementIndex].rotatedInitialElements[3][1] - deforme[3][1];
+                    D[11] = tetrahedronInf[elementIndex].rotatedInitialElements[3][2] - deforme[3][2];
+                    break;
             }
 
             Mat44& shf = elemShapeFun[el];
@@ -1548,10 +1662,12 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
         for (Index k = 0; k < 3; k++)
             s[k] += lambda * traceStrain;
 
+        helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& editTetrahedronInfo = *(tetrahedronInfo.beginEdit());
+        editTetrahedronInfo[el].vonMisesStress = helper::rsqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2] - s[0] * s[1] - s[1] * s[2] - s[2] * s[0] + 3 * s[3] * s[3] + 3 * s[4] * s[4] + 3 * s[5] * s[5]);
+        if (editTetrahedronInfo[el].vonMisesStress < 1e-10)
+            editTetrahedronInfo[el].vonMisesStress = 0.0;
 
-        vME[el] = helper::rsqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2] - s[0] * s[1] - s[1] * s[2] - s[2] * s[0] + 3 * s[3] * s[3] + 3 * s[4] * s[4] + 3 * s[5] * s[5]);
-        if (vME[el] < 1e-10)
-            vME[el] = 0.0;
+        tetrahedronInfo.endEdit();
     }
 
     const VecCoord& dofs = this->mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -1563,7 +1679,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
 
         vMN[dof] = 0.0;
         for (size_t at = 0; at < tetrasAroundDOF.size(); at++)
-            vMN[dof] += vME[tetrasAroundDOF[at]];
+            vMN[dof] += tetrahedronInf[tetrasAroundDOF[at]].vonMisesStress;
         if (!tetrasAroundDOF.empty())
             vMN[dof] /= Real(tetrasAroundDOF.size());
     }
@@ -1576,9 +1692,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
 
     Real minVM = (Real)1e20, maxVM = (Real)-1e20;
 
-    for (size_t i = 0; i < vME.size(); i++) {
-        minVM = (vME[i] < minVM) ? vME[i] : minVM;
-        maxVM = (vME[i] > maxVM) ? vME[i] : maxVM;
+    for (size_t i = 0; i < tetrahedronInf.size(); i++) {
+        minVM = (tetrahedronInf[i].vonMisesStress < minVM) ? tetrahedronInf[i].vonMisesStress : minVM;
+        maxVM = (tetrahedronInf[i].vonMisesStress > maxVM) ? tetrahedronInf[i].vonMisesStress : maxVM;
     }
 
     if (maxVM < prevMaxStress)
@@ -1593,7 +1709,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
     {
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-        defaulttype::Vec4f col = evalColor(vME[i]);
+        defaulttype::Vec4f col = evalColor(tetrahedronInf[i].vonMisesStress);
         Tetrahedron tetra = (*_indexedElements)[i];
 
         for (unsigned int j = 0; j < 4; j++)

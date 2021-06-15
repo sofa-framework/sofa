@@ -290,7 +290,10 @@ public:
 
     Real prevMaxStress;
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
-
+    Data<std::string> _showStressColorMap; ///< Color map used to show stress values
+    sofa::helper::ColorMap* m_VonMisesColorMap;
+    Real minVM;
+    Real maxVM;
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
