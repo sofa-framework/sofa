@@ -153,13 +153,13 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 //constructeur
 GeomagicDriver::GeomagicDriver()
     : d_deviceName(initData(&d_deviceName, std::string("Default Device"), "deviceName","Name of device Configuration"))
-    , d_positionBase(initData(&d_positionBase, Vec3d(0,0,0), "positionBase","Position of the device base in the SOFA scene world coordinates"))
+    , d_positionBase(initData(&d_positionBase, Vec3(0,0,0), "positionBase","Position of the device base in the SOFA scene world coordinates"))
     , d_orientationBase(initData(&d_orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the device base in the SOFA scene world coordinates"))
     , d_orientationTool(initData(&d_orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool in the SOFA scene world coordinates"))
     , d_scale(initData(&d_scale, 1.0, "scale", "Default scale applied to the Device coordinates"))
     , d_forceScale(initData(&d_forceScale, 1.0, "forceScale", "Default forceScale applied to the force feedback. "))
     , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback", "Maximum value of the normed input force feedback for device security"))
-    , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3d(0, 0, 0), "inputForceFeedback", "Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
+    , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3(0, 0, 0), "inputForceFeedback", "Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
     , d_manualStart(initData(&d_manualStart, false, "manualStart", "If true, will not automatically initDevice at component init phase."))
     , d_emitButtonEvent(initData(&d_emitButtonEvent, false, "emitButtonEvent", "If true, will send event through the graph when button are pushed/released"))
     , d_frameVisu(initData(&d_frameVisu, false, "drawDeviceFrame", "Visualize the frame corresponding to the device tooltip"))
@@ -351,10 +351,10 @@ void GeomagicDriver::initDevice()
 
 void GeomagicDriver::updatePosition()
 {
-    Vector6 & angle = *d_angle.beginEdit();
+    type::Vector6 & angle = *d_angle.beginEdit();
     GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();
 
-    const Vector3 & positionBase = d_positionBase.getValue();
+    const Vec3 & positionBase = d_positionBase.getValue();
     const Quat & orientationBase = d_orientationBase.getValue();
     const Quat & orientationTool = d_orientationTool.getValue();
     const double & scale = d_scale.getValue();
@@ -371,13 +371,13 @@ void GeomagicDriver::updatePosition()
     angle[5] = -(M_PI/2)-m_simuData.angle2[2];
 
     //copy the position of the tool
-    Vector3 position;
+    Vec3 position;
     position[0] = m_simuData.transform[12+0] * 0.1;
     position[1] = m_simuData.transform[12+1] * 0.1;
     position[2] = m_simuData.transform[12+2] * 0.1;
 
     //copy rotation of the tool
-    Mat3x3d mrot;    
+    type::Mat3x3d mrot;
     for (int u=0; u<3; u++)
         for (int j=0; j<3; j++)
             mrot[u][j] = m_simuData.transform[j*4+u];
@@ -476,9 +476,9 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
         const GeomagicDriver::Coord& posDevice = d_posDevice.getValue();
 
         float glRadius = (float)d_scale.getValue()*0.1f;
-        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), glRadius, Vec4f(1,0,0,1) );
-        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), glRadius, Vec4f(0,1,0,1) );
-        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), glRadius, Vec4f(0,0,1,1) );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vec3(2,0,0)*d_scale.getValue()), glRadius, type::RGBAColor(1,0,0,1) );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vec3(0,2,0)*d_scale.getValue()), glRadius, type::RGBAColor(0,1,0,1) );
+        vparams->drawTool()->drawArrow(posDevice.getCenter(), posDevice.getCenter() + posDevice.getOrientation().rotate(Vec3(0,0,2)*d_scale.getValue()), glRadius, type::RGBAColor(0,0,1,1) );
     }
 
     if (d_omniVisu.getValue() && m_GeomagicVisualModel != nullptr)

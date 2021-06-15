@@ -75,8 +75,8 @@ public:
 
     Data <SReal> d_speedFactor; /// < factor to increase/decrease the movements speed    
 
-    void applyTranslation(sofa::defaulttype::Vec3 translation);
-    void worldToLocal(sofa::defaulttype::Vec3& vector);
+    void applyTranslation(sofa::type::Vec3 translation);
+    void worldToLocal(sofa::type::Vec3& vector);
 
     void moveJoint1(SReal value);
     void moveJoint2(SReal value);
@@ -101,7 +101,7 @@ public:
 
     bool m_terminate;
 
-    Vec3 m_toolPosition;
+    type::Vec3 m_toolPosition;
 };
 
 } // sofa::component::controller

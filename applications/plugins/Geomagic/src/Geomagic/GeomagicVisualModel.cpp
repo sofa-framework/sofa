@@ -28,6 +28,8 @@
 namespace sofa::component::controller
 {
 
+using namespace sofa::type;
+
 const char* GeomagicVisualModel::visualNodeNames[NVISUALNODE] =
 {
     "stylus",
@@ -139,7 +141,7 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
 
     for (int j = 0; j<NVISUALNODE; j++)
     {
-        sofa::type::vector< sofa::defaulttype::Vec3 > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+        sofa::type::vector< sofa::type::Vec3 > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
         for (size_t i = 0; i<scaleMapping.size(); i++)
             scaleMapping[i] *= (float)(_scale);
         visualNode[j].mapping->points.endEdit();
