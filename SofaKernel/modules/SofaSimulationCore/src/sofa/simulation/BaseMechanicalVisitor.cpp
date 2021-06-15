@@ -79,7 +79,14 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node *node
 
     if (node->mechanicalState != nullptr)
     {
-        res = runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMechanicalState, &*node->mechanicalState, fwdVisitorType);
+        if (node->mechanicalMapping != nullptr)
+        {
+            res = runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMappedMechanicalState, &*node->mechanicalState, fwdVisitorType);
+        }
+        else
+        {
+            res = runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMechanicalState, &*node->mechanicalState, fwdVisitorType);
+        }
     }
 
     if (res == RESULT_PRUNE)
