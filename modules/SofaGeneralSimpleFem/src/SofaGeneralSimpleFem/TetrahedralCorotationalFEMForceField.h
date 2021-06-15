@@ -292,6 +292,7 @@ public:
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
     Data<std::string> _showStressColorMap; ///< Color map used to show stress values
     sofa::helper::ColorMap* m_VonMisesColorMap;
+    Data<bool> _showVonMisesColorMap;
     Real minVM;
     Real maxVM;
 };

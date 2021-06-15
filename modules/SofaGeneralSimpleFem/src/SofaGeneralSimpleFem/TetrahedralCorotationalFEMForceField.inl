@@ -95,6 +95,7 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , _indexedElements(nullptr)
     , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
     , _showStressColorMap(initData(&_showStressColorMap, std::string("Blue to Red"), "showStressColorMap", "Color map used to show stress values"))
+    , _showVonMisesColorMap(initData(&_showVonMisesColorMap, true, "showVonMisesColorMap", "display von Mises stress color map"))
     , m_VonMisesColorMap(nullptr)
 {
     this->addAlias(&_assembling, "assembling");
@@ -1404,8 +1405,12 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
+    bool wireframe = false;
     if (vparams->displayFlags().getShowWireFrame())
-        vparams->drawTool()->setPolygonMode(0,true);
+    {
+        vparams->drawTool()->setPolygonMode(0, true);
+        wireframe = true;
+    }
 
 
     std::vector< defaulttype::Vector3 > points[4];
@@ -1450,6 +1455,69 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 
 
     vparams->drawTool()->restoreLastState();
+
+    if (_showVonMisesColorMap.getValue())
+    {
+        if (!_computeVonMisesStress.getValue())
+        {
+            msg_warning() << "Von Mises Stress color map can only be displayed if option computeVonMisesStress is set to true";
+        }
+
+        std::vector< defaulttype::Vector3 > points;
+        std::vector< sofa::helper::types::RGBAColor > colorVector;
+        typename VecElement::const_iterator it;
+        int i;
+        for (it = _indexedElements->begin(), i = 0; it != _indexedElements->end(); ++it, ++i)
+        {
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+            Index c = (*it)[2];
+            Index d = (*it)[3];
+            Coord center = (x[a] + x[b] + x[c] + x[d]) * 0.125;
+
+            Coord pa = x[a];
+            Coord pb = x[b];
+            Coord pc = x[c];
+            Coord pd = x[d];
+            if (!wireframe)
+            {
+                pa = (pa + center) * Real(0.6667);
+                pb = (pb + center) * Real(0.6667);
+                pc = (pc + center) * Real(0.6667);
+                pd = (pd + center) * Real(0.6667);
+            }
+
+
+            // create corresponding colors
+            sofa::helper::types::RGBAColor color[4];
+            const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+            helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
+            auto col = sofa::helper::types::RGBAColor::fromVec4(evalColor(tetrahedronInf[i].vonMisesStress));
+            col[3] = 1.0f;
+            color[0] = col;
+            color[1] = col;
+            color[2] = col;
+            color[3] = col;
+
+            // create 4 triangles per tetrahedron with corresponding colors
+            points.insert(points.end(), { pa, pb, pc });
+            colorVector.insert(colorVector.end(), { color[0], color[0], color[0] });
+
+            points.insert(points.end(), { pb, pc, pd });
+            colorVector.insert(colorVector.end(), { color[1], color[1], color[1] });
+
+            points.insert(points.end(), { pc, pd, pa });
+            colorVector.insert(colorVector.end(), { color[2], color[2], color[2] });
+
+            points.insert(points.end(), { pd, pa, pb });
+            colorVector.insert(colorVector.end(), { color[3], color[3], color[3] });
+        }
+        vparams->drawTool()->drawTriangles(points, colorVector);
+    }
+
+
+
+
 }
 
 
@@ -1690,7 +1758,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
     vonMisesStressColors.clear();
     helper::vector<unsigned int> vonMisesStressColorsCoeff;
 
-    Real minVM = (Real)1e20, maxVM = (Real)-1e20;
+    //Real minVM = (Real)1e20, maxVM = (Real)-1e20;
 
     for (size_t i = 0; i < tetrahedronInf.size(); i++) {
         minVM = (tetrahedronInf[i].vonMisesStress < minVM) ? tetrahedronInf[i].vonMisesStress : minVM;
