@@ -56,24 +56,20 @@ namespace meshgmshloader_test
             * Helper function to check mesh loading.
             * Compare basic values from a mesh with given results.
             */
-        void loadTest(std::string filename, int pointNb, int edgeNb, int triangleNb, int quadNb, int polygonNb,
-                      int tetraNb, int hexaNb, int normalPerVertexNb, int normalListNb, int texCoordListNb, int materialNb)
+        void loadTest(std::string filename, int nbPositions, int nbEdges, int nbTriangles, int nbQuads, int nbPolygons,
+                      int nbTetra, int nbHexa, int nbNormals)
         {
-            SOFA_UNUSED(normalPerVertexNb);
-            SOFA_UNUSED(texCoordListNb);
-            SOFA_UNUSED(materialNb);
-
             this->setFilename(sofa::helper::system::DataRepository.getFile(filename));
 
             EXPECT_TRUE(this->load());
-            EXPECT_EQ((size_t)pointNb, this->d_positions.getValue().size());
-            EXPECT_EQ((size_t)edgeNb, this->d_edges.getValue().size());
-            EXPECT_EQ((size_t)triangleNb, this->d_triangles.getValue().size());
-            EXPECT_EQ((size_t)quadNb, this->d_quads.getValue().size());
-            EXPECT_EQ((size_t)polygonNb, this->d_polygons.getValue().size());
-            EXPECT_EQ((size_t)tetraNb, this->d_tetrahedra.getValue().size());
-            EXPECT_EQ((size_t)hexaNb, this->d_hexahedra.getValue().size());
-            EXPECT_EQ((size_t)normalListNb, this->d_normals.getValue().size());
+            EXPECT_EQ((size_t)nbPositions, this->d_positions.getValue().size());
+            EXPECT_EQ((size_t)nbEdges, this->d_edges.getValue().size());
+            EXPECT_EQ((size_t)nbTriangles, this->d_triangles.getValue().size());
+            EXPECT_EQ((size_t)nbQuads, this->d_quads.getValue().size());
+            EXPECT_EQ((size_t)nbPolygons, this->d_polygons.getValue().size());
+            EXPECT_EQ((size_t)nbTetra, this->d_tetrahedra.getValue().size());
+            EXPECT_EQ((size_t)nbHexa, this->d_hexahedra.getValue().size());
+            EXPECT_EQ((size_t)nbNormals, this->d_normals.getValue().size());
         }
 
     };
@@ -87,8 +83,8 @@ namespace meshgmshloader_test
         this->setFilename(sofa::helper::system::DataRepository.getFile("mesh/msh4_cube.msh"));
         EXPECT_TRUE(this->load());
 
-        ////Use meshes to test : edges, triangles, quads, normals, materials NUMBER
-        loadTest("mesh/msh4_cube.msh", 14, 49, 60, 0, 0, 24, 0, 14, 0, 0, 0);
+        // Testing number of : nodes/positions, edges, triangles, quads, polygons, tetra, hexa, normals
+        loadTest("mesh/msh4_cube.msh", 14, 12, 24, 0, 0, 24, 0, 0); //Data read by Gmsh software
     }
 
 } // namespace meshgmshloader_test
