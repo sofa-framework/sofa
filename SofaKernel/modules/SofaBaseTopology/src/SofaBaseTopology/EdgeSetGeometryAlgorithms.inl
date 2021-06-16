@@ -932,7 +932,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
 
     Real deno, num;
     deno = d1010 * dbaba - dba10 * dba10;
-    if (!abs(deno) <= EPS)
+    if (!(abs(deno) <= EPS))
     {
         num = d0aba * dba10 - d0a10 * dbaba;
 
