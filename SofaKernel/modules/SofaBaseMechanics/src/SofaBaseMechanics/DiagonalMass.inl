@@ -1166,6 +1166,140 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
     }
 }
 
+
+template <class DataTypes, class MassType>
+typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassType>::computeVertexMass(const Real& md)
+{
+    Real total_mass = Real(0);
+
+    if (m_topology == nullptr)
+    {
+        msg_warning() << "No topology set. DiagonalMass can't computeMass.";
+        return total_mass;
+    }
+    
+    Real mass = Real(0);
+    MassVector& masses = *d_vertexMass.beginEdit();
+    // resize array
+    masses.clear();
+    masses.resize(this->mstate->getSize());
+    
+    // set to 0
+    for (unsigned int i = 0; i < masses.size(); ++i)
+        masses[i] = Real(0);
+
+    if (m_topology->getNbHexahedra() > 0 && hexaGeo)
+    {
+        m_massTopologyType = TopologyElementType::HEXAHEDRON;
+
+        for (Topology::HexahedronID i = 0; i < m_topology->getNbHexahedra(); ++i)
+        {
+            const Hexahedron& h = m_topology->getHexahedron(i);
+            if (hexaGeo)
+            {
+                if (d_computeMassOnRest.getValue())
+                    mass = (md * hexaGeo->computeRestHexahedronVolume(i)) / (Real(8.0));
+                else
+                    mass = (md * hexaGeo->computeHexahedronVolume(i)) / (Real(8.0));
+
+                for (unsigned int j = 0; j < h.size(); j++)
+                {
+                    masses[h[j]] += mass;
+                    total_mass += mass;
+                }
+            }
+        }
+    }
+    else if (m_topology->getNbTetrahedra() > 0 && tetraGeo)
+    {
+        m_massTopologyType = TopologyElementType::TETRAHEDRON;
+
+        for (Topology::TetrahedronID i = 0; i < m_topology->getNbTetrahedra(); ++i)
+        {
+            const Tetrahedron& t = m_topology->getTetrahedron(i);
+            if (tetraGeo)
+            {
+                if (d_computeMassOnRest.getValue())
+                    mass = (md * tetraGeo->computeRestTetrahedronVolume(i)) / (Real(4.0));
+                else
+                    mass = (md * tetraGeo->computeTetrahedronVolume(i)) / (Real(4.0));
+            }
+            for (unsigned int j = 0; j < t.size(); j++)
+            {
+                masses[t[j]] += mass;
+                total_mass += mass;
+            }
+        }
+    }
+    else if (m_topology->getNbQuads() > 0 && quadGeo) 
+    {
+        m_massTopologyType = TopologyElementType::QUAD;
+
+        for (Topology::QuadID i = 0; i < m_topology->getNbQuads(); ++i)
+        {
+            const Quad& t = m_topology->getQuad(i);
+            if (quadGeo)
+            {
+                if (d_computeMassOnRest.getValue())
+                    mass = (md * quadGeo->computeRestQuadArea(i)) / (Real(4.0));
+                else
+                    mass = (md * quadGeo->computeQuadArea(i)) / (Real(4.0));
+            }
+            for (unsigned int j = 0; j < t.size(); j++)
+            {
+                masses[t[j]] += mass;
+                total_mass += mass;
+            }
+        }
+    }
+    else if (m_topology->getNbTriangles() > 0 && triangleGeo)
+    {
+        m_massTopologyType = TopologyElementType::TRIANGLE;
+
+        for (Topology::TriangleID i = 0; i < m_topology->getNbTriangles(); ++i)
+        {
+            const Triangle& t = m_topology->getTriangle(i);
+            if (triangleGeo)
+            {
+                if (d_computeMassOnRest.getValue())
+                    mass = (md * triangleGeo->computeRestTriangleArea(i)) / (Real(3.0));
+                else
+                    mass = (md * triangleGeo->computeTriangleArea(i)) / (Real(3.0));
+            }
+            for (unsigned int j = 0; j < t.size(); j++)
+            {
+                masses[t[j]] += mass;
+                total_mass += mass;
+            }
+        }
+    }
+    else if (m_topology->getNbEdges() > 0 && edgeGeo)
+    {
+        m_massTopologyType = TopologyElementType::EDGE;
+
+        for (Topology::EdgeID i = 0; i < m_topology->getNbEdges(); ++i)
+        {
+            const Edge& e = m_topology->getEdge(i);
+            if (edgeGeo)
+            {
+                if (d_computeMassOnRest.getValue())
+                    mass = (md * edgeGeo->computeRestEdgeLength(i)) / (Real(2.0));
+                else
+                    mass = (md * edgeGeo->computeEdgeLength(i)) / (Real(2.0));
+            }
+            for (unsigned int j = 0; j < e.size(); j++)
+            {
+                masses[e[j]] += mass;
+                total_mass += mass;
+            }
+        }
+    }
+
+    d_vertexMass.endEdit();
+
+    return total_mass;
+}
+
 template <class DataTypes, class MassType>
 bool DiagonalMass<DataTypes, MassType>::checkTotalMass()
 {
@@ -1228,15 +1362,24 @@ void DiagonalMass<DataTypes, MassType>::initFromVertexMass()
 {
     msg_info() << "vertexMass information is used";
 
-    const MassVector& vertexMass = d_vertexMass.getValue();
+    // save a copy of input vertexMass vector
+    MassVector vertexMass = d_vertexMass.getValue();
     Real totalMassSave = 0.0;
     for(size_t i=0; i<vertexMass.size(); i++)
     {
         totalMassSave += vertexMass[i];
     }
 
+    // set total mass
     d_totalMass.setValue(totalMassSave);
-    initFromTotalMass();
+
+    // compute vertexMass vector with density == 1
+    Real sumMass = computeVertexMass(1.0);
+
+    // Set real density from sumMass found
+    setMassDensity(Real(totalMassSave / sumMass));
+
+    // restore input vertexMass vector
     helper::WriteAccessor<Data<MassVector> > vertexMassWrite = d_vertexMass;
     for(size_t i=0; i<vertexMassWrite.size(); i++)
     {
@@ -1269,14 +1412,10 @@ void DiagonalMass<DataTypes, MassType>::initFromMassDensity()
     msg_info() << "massDensity information is used";
 
     // Compute Mass per vertex using mesh topology
-    computeMass();
+    const Real& md = d_massDensity.getValue();
+    Real sumMass = computeVertexMass(md);
 
-    // Sum the mass per vertex to obtain total mass
-    const MassVector &vertexMass = d_vertexMass.getValue();    
-    Real sumMass = 0.0;
-    for (auto vMass : vertexMass)
-        sumMass += vMass;
-
+    // sum of mass per vertex give total mass
     d_totalMass.setValue(sumMass);
 }
 
@@ -1286,22 +1425,21 @@ void DiagonalMass<DataTypes, MassType>::initFromTotalMass()
 {
     msg_info() << "totalMass information is used";
 
-    const Real totalMassTemp = d_totalMass.getValue();
+    const Real totalMass = d_totalMass.getValue();
+    
+    // compute vertexMass vector with density == 1
+    Real sumMass = computeVertexMass(1.0);
 
-    Real sumMass = 0.0;
-    setMassDensity(1.0);
-
-    // Compute Mass per vertex using mesh topology
-    computeMass();
-
-    // Sum the mass per vertex to obtain total mass
-    const MassVector &vertexMass = d_vertexMass.getValue();
-    for (auto vMass : vertexMass)
-        sumMass += vMass;
-
-    setMassDensity(Real(totalMassTemp/sumMass));
-
-    computeMass();
+    // Set real density from sumMass found
+    setMassDensity(Real(totalMass / sumMass));
+    
+    // Update vertex mass using real density
+    helper::WriteAccessor<Data<MassVector> > vertexMass = d_vertexMass;
+    const Real& md = d_massDensity.getValue();
+    for (size_t i = 0; i < vertexMass.size(); i++)
+    {
+        vertexMass[i] *= md;
+    }
 }
 
 
