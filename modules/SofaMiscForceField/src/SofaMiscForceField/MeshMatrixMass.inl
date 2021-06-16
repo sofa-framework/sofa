@@ -93,6 +93,23 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyCreateFunction(I
 }
 
 
+template< class DataTypes, class MassType>
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyDestroyFunction(Index id, MassType& VertexMass)
+{
+    helper::WriteAccessor<Data<Real> > totalMass(this->m->d_totalMass);
+    totalMass -= VertexMass;
+}
+
+
+template< class DataTypes, class MassType>
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyDestroyFunction(Index id, MassType& EdgeMass)
+{
+    helper::WriteAccessor<Data<Real> > totalMass(this->m->d_totalMass);
+    totalMass -= EdgeMass;
+}
+
+
+
 // -------------------------------------------------------
 // ------- Triangle Creation/Destruction functions -------
 // -------------------------------------------------------
