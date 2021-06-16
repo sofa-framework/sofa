@@ -24,7 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/SolveVisitor.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 
