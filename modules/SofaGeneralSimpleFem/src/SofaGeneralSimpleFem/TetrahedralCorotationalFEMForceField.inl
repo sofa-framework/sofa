@@ -1741,27 +1741,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
         tetrahedronInfo.endEdit();
     }
 
-    const VecCoord& dofs = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    helper::WriteAccessor<Data<helper::vector<Real> > > vMN = _vonMisesPerNode;
-
-    /// compute the values of vonMises stress in nodes
-    for (Index dof = 0; dof < dofs.size(); dof++) {
-        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = m_topology->getTetrahedraAroundVertex(dof);
-
-        vMN[dof] = 0.0;
-        for (size_t at = 0; at < tetrasAroundDOF.size(); at++)
-            vMN[dof] += tetrahedronInf[tetrasAroundDOF[at]].vonMisesStress;
-        if (!tetrasAroundDOF.empty())
-            vMN[dof] /= Real(tetrasAroundDOF.size());
-    }
-
     updateVonMisesStress = false;
-
-    helper::WriteAccessor<Data<helper::vector<defaulttype::Vec4f> > > vonMisesStressColors(_vonMisesStressColors);
-    vonMisesStressColors.clear();
-    helper::vector<unsigned int> vonMisesStressColorsCoeff;
-
-    //Real minVM = (Real)1e20, maxVM = (Real)-1e20;
 
     for (size_t i = 0; i < tetrahedronInf.size(); i++) {
         minVM = (tetrahedronInf[i].vonMisesStress < minVM) ? tetrahedronInf[i].vonMisesStress : minVM;
@@ -1772,31 +1752,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
         maxVM = prevMaxStress;
 
     maxVM *= _showStressAlpha.getValue();
-    //vonMisesStressColors.resize(m_topology->getNbPoints());
-    //vonMisesStressColorsCoeff.resize(m_topology->getNbPoints());
-    //std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
-    //
-    //unsigned int i = 0;
-    //for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
-    //{
-    //    helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-    //    defaulttype::Vec4f col = evalColor(tetrahedronInf[i].vonMisesStress);
-    //    Tetrahedron tetra = (*_indexedElements)[i];
-    //
-    //    for (unsigned int j = 0; j < 4; j++)
-    //    {
-    //        vonMisesStressColors[tetra[j]] += (col);
-    //        vonMisesStressColorsCoeff[tetra[j]] ++;
-    //    }
-    //}
-    //
-    //for (unsigned int i = 0; i < vonMisesStressColors.size(); i++)
-    //{
-    //    if (vonMisesStressColorsCoeff[i] != 0)
-        //{
-        //    vonMisesStressColors[i] /= vonMisesStressColorsCoeff[i];
-        //}
-    //}
 }
 
 } // namespace sofa::component::forcefield
