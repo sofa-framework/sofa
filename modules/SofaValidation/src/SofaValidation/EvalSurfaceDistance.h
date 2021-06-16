@@ -31,7 +31,7 @@
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
-#include <SofaBaseCollision/BruteForceDetection.h>
+#include <SofaBaseCollision/BVHNarrowPhase.h>
 
 #include <fstream>
 
@@ -81,7 +81,7 @@ protected:
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> *surfaceCM;
 
     sofa::component::collision::NewProximityIntersection::SPtr intersection;
-    sofa::component::collision::BruteForceDetection::SPtr detection;
+    sofa::component::collision::BVHNarrowPhase::SPtr narrowPhaseDetection;
     typedef core::collision::TDetectionOutputVector< sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>> ContactVector;
 
 };

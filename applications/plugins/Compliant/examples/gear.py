@@ -21,7 +21,8 @@ def createScene(root):
     
     
     root.createObject('DefaultPipeline', name='DefaultCollisionPipeline', depth="6")
-    root.createObject('BruteForceDetection')
+    root.createObject('BruteForceBroadPhase', name='N2')
+    root.createObject('BVHNarrowPhase')
     root.createObject('DiscreteIntersection')
     root.createObject('DefaultContactManager', name="Response", response="CompliantContact", responseParams="compliance=0&restitution=0" )
     

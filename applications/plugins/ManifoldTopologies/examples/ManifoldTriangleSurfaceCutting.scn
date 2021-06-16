@@ -4,7 +4,8 @@
     <VisualStyle displayFlags="showBehaviorModels hideCollisionModels hideMappings hideForceFields"/>
     <RequiredPlugin name="ManifoldTopologies"/>
 	<DefaultPipeline verbose="0" />
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager response="default" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
 	<DefaultCollisionGroupManager />
