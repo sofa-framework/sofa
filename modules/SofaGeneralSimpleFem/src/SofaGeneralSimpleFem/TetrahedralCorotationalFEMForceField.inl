@@ -494,13 +494,16 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
     const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-
     computeMaterialStiffness(tetrahedronInf[i].materialMatrix, a, b, c, d, (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/m_topology->getNbTetrahedra()]));
 
+    const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i * localStiffnessFactor.size() / _indexedElements->size()]) * _youngModulus.getValue();
     const Real poissonRatio = _poissonRatio.getValue();
     if (_computeVonMisesStress.getValue()) {
         elemLambda[i] = poissonRatio / (1 - poissonRatio);
         elemMu[i] = (1 - 2 * poissonRatio) / (2 * (1 - poissonRatio));
+
+        elemLambda[i] *= (youngModulus * (1 - poissonRatio)) / ((1 + poissonRatio) * (1 - 2 * poissonRatio));
+        elemMu[i] *= (youngModulus * (1 - poissonRatio)) / ((1 + poissonRatio) * (1 - 2 * poissonRatio));
     }
 
     tetrahedronInfo.endEdit();
@@ -1769,31 +1772,31 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
         maxVM = prevMaxStress;
 
     maxVM *= _showStressAlpha.getValue();
-    vonMisesStressColors.resize(m_topology->getNbPoints());
-    vonMisesStressColorsCoeff.resize(m_topology->getNbPoints());
-    std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
-
-    unsigned int i = 0;
-    for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
-    {
-        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-        defaulttype::Vec4f col = evalColor(tetrahedronInf[i].vonMisesStress);
-        Tetrahedron tetra = (*_indexedElements)[i];
-
-        for (unsigned int j = 0; j < 4; j++)
-        {
-            vonMisesStressColors[tetra[j]] += (col);
-            vonMisesStressColorsCoeff[tetra[j]] ++;
-        }
-    }
-
-    for (unsigned int i = 0; i < vonMisesStressColors.size(); i++)
-    {
-        if (vonMisesStressColorsCoeff[i] != 0)
-        {
-            vonMisesStressColors[i] /= vonMisesStressColorsCoeff[i];
-        }
-    }
+    //vonMisesStressColors.resize(m_topology->getNbPoints());
+    //vonMisesStressColorsCoeff.resize(m_topology->getNbPoints());
+    //std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
+    //
+    //unsigned int i = 0;
+    //for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++i)
+    //{
+    //    helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
+    //    defaulttype::Vec4f col = evalColor(tetrahedronInf[i].vonMisesStress);
+    //    Tetrahedron tetra = (*_indexedElements)[i];
+    //
+    //    for (unsigned int j = 0; j < 4; j++)
+    //    {
+    //        vonMisesStressColors[tetra[j]] += (col);
+    //        vonMisesStressColorsCoeff[tetra[j]] ++;
+    //    }
+    //}
+    //
+    //for (unsigned int i = 0; i < vonMisesStressColors.size(); i++)
+    //{
+    //    if (vonMisesStressColorsCoeff[i] != 0)
+        //{
+        //    vonMisesStressColors[i] /= vonMisesStressColorsCoeff[i];
+        //}
+    //}
 }
 
 } // namespace sofa::component::forcefield
