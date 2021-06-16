@@ -1058,7 +1058,7 @@ void RealGUI::unloadScene(bool _withViewer)
 
 void RealGUI::setTitle ( std::string windowTitle )
 {
-    std::string str = "SOFA v"+std::string(SOFA_VERSION_STR);
+    std::string str = "SOFA v" + std::string(SOFA_VERSION_STR);
     if ( !windowTitle.empty() )
     {
         str += " - ";
