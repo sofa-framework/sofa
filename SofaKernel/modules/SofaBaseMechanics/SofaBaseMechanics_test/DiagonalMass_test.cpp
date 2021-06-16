@@ -202,6 +202,12 @@ public:
             EXPECT_EQ( mass->getMassCount(), 8 );
             EXPECT_EQ( float(mass->getTotalMass()), 8 );
             EXPECT_EQ(float(mass->getMassDensity()), 1);
+
+            const VecMass& vMasses = mass->d_vertexMass.getValue();
+            EXPECT_EQ(float(vMasses[0]), 1.0);
+            EXPECT_EQ(float(vMasses[1]), 1.0);
+            EXPECT_EQ(float(vMasses[2]), 1.0);
+            EXPECT_EQ(float(vMasses[3]), 1.0);
         }
 
         return ;
@@ -230,6 +236,12 @@ public:
             EXPECT_EQ(mass->getMassCount(), 8);
             EXPECT_EQ(float(mass->getTotalMass()), 10);
             EXPECT_EQ(float(mass->getMassDensity()), 1.25);
+
+            const VecMass& vMasses = mass->d_vertexMass.getValue();
+            EXPECT_EQ(float(vMasses[0]), 1.25);
+            EXPECT_EQ(float(vMasses[1]), 1.25);
+            EXPECT_EQ(float(vMasses[2]), 1.25);
+            EXPECT_EQ(float(vMasses[3]), 1.25);
         }
 
         return ;
@@ -292,6 +304,12 @@ public:
             EXPECT_EQ(mass->getMassCount(), 8);
             EXPECT_EQ(float(mass->getTotalMass()), 8);
             EXPECT_EQ(float(mass->getMassDensity()), 1);
+
+            const VecMass& vMasses = mass->d_vertexMass.getValue();
+            EXPECT_NEAR(float(vMasses[0]), 1.66667, 1e-4);
+            EXPECT_EQ(float(vMasses[1]), 1.0);
+            EXPECT_EQ(float(vMasses[2]), 1.0);
+            EXPECT_NEAR(float(vMasses[3]), 0.333333, 1e-4);
         }
 
         return ;
@@ -361,6 +379,12 @@ public:
             EXPECT_EQ(mass->getMassCount(), 8);
             EXPECT_EQ(float(mass->getTotalMass()), 10);
             EXPECT_EQ(float(mass->getMassDensity()), 1.25);
+
+            const VecMass& vMasses = mass->d_vertexMass.getValue();
+            EXPECT_NEAR(float(vMasses[0]), 2.08333, 1e-4);
+            EXPECT_EQ(float(vMasses[1]), 1.25);
+            EXPECT_EQ(float(vMasses[2]), 1.25);
+            EXPECT_NEAR(float(vMasses[3]), 0.416667, 1e-4);
         }
 
         return ;
@@ -536,6 +560,12 @@ public:
             EXPECT_EQ(mass->getMassCount(), 8);
             EXPECT_EQ(float(mass->getTotalMass()), 16.0);
             EXPECT_EQ(float(mass->getMassDensity()), 2.0);
+
+            const VecMass& vMasses = mass->d_vertexMass.getValue();
+            EXPECT_EQ(float(vMasses[0]), 2);
+            EXPECT_EQ(float(vMasses[1]), 2);
+            EXPECT_EQ(float(vMasses[2]), 2);
+            EXPECT_EQ(float(vMasses[3]), 2);
         }
 
         return ;
