@@ -2590,7 +2590,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 }
 
 template<class DataTypes>
-bool TetrahedronFEMForceField<DataTypes>::isVonMisesStressRenderingOptionValid()
+const bool TetrahedronFEMForceField<DataTypes>::isVonMisesStressRenderingOptionValid()
 {
     return _computeVonMisesStress.getValue() >= 0 && _computeVonMisesStress.getValue() <= 2;
 }

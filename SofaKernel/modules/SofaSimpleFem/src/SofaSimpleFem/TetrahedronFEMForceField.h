@@ -311,7 +311,7 @@ protected:
     void handleTopologyChange() override { needUpdateTopology = true; }
 
     void computeVonMisesStress();
-    bool isVonMisesStressRenderingOptionValid();
+    const bool isVonMisesStressRenderingOptionValid();
     void handleEvent(core::objectmodel::Event *event) override;
 };
 
