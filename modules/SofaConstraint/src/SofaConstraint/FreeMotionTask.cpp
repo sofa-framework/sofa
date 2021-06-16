@@ -44,7 +44,8 @@ FreeMotionTask::FreeMotionTask(sofa::simulation::Node* node,
                                sofa::core::MultiVecDerivId freeVel,
                                simulation::common::MechanicalOperations* mop,
                                sofa::core::objectmodel::BaseContext* context,
-                               sofa::simulation::CpuTask::Status* status)
+                               sofa::simulation::CpuTask::Status* status,
+                               bool parallelSolve)
     : sofa::simulation::CpuTask(status)
     , m_node(node)
     , m_params(params)
@@ -55,13 +56,14 @@ FreeMotionTask::FreeMotionTask(sofa::simulation::Node* node,
     , m_freeVel(freeVel)
     , m_mop(mop)
     , m_context(context)
+    , m_parallelSolve(parallelSolve)
 {}
 
 sofa::simulation::Task::MemoryAlloc FreeMotionTask::run()
 {
     {
         sofa::helper::ScopedAdvancedTimer timer("FreeMotion");
-        simulation::SolveVisitor freeMotion(m_params, m_dt, true);
+        simulation::SolveVisitor freeMotion(m_params, m_dt, true, m_parallelSolve);
         m_node->execute(&freeMotion);
     }
 
