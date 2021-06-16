@@ -77,7 +77,7 @@ void CGLinearSolver<TMatrix,TVector>::resetSystem()
 }
 
 /// For unbuilt approach (e.g. with GraphScattered types),
-/// it passes the coefficients multiplying the matrices M, B and K from the ODE to the LinearSolver (MechanicalOperations::setKFactor) adn includes a resetSystem
+/// it passes the coefficients multiplying the matrices M, B and K from the ODE to the LinearSolver (MechanicalOperations::setKFactor) and includes a resetSystem
 /// In other cases
 /// the global system matrix is setup (pass coefficients with MechanicalOperations::setKFactor) and built it by calling the addMBKToMatrix visitor
 template<class TMatrix, class TVector>
