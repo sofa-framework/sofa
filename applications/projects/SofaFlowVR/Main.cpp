@@ -47,7 +47,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
-#include <SofaBaseCollision/BruteForceDetection.h>
 #include <SofaMain/init.h>
 
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -392,7 +391,7 @@ public:
     sofa::component::container::MechanicalObject<Vec3Types> * newPoints;
     sofa::component::collision::PointModel * newPointsCM;
     sofa::component::collision::MinProximityIntersection * intersection;
-    sofa::component::collision::BruteForceDetection * detection;
+    sofa::component::collision::BVHNarrowPhase * narrowPhase;
     sofa::helper::vector<double> newPointsDist;
 
     Mat4x4f matrix;
@@ -405,7 +404,10 @@ public:
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
         , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
         , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
-        , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
+        , newPointsNode(nullptr)
+        , newPointsCM(nullptr)
+        , intersection(nullptr)
+        , narrowPhase(nullptr)
         , facetsLastIt(-20), pointsLastIt(-20), matrixLastIt(-20), motionLastTime(-1000)
     {
         matrix.identity();
@@ -441,8 +443,8 @@ public:
             intersection->setAlarmDistance(maxVDist.getValue());
             intersection->setContactDistance(0); //maxVDist.getValue());
 
-            newPointsNode->addObject ( detection = new sofa::component::collision::BruteForceDetection );
-            detection->setIntersectionMethod(intersection);
+            newPointsNode->addObject ( narrowPhase = new sofa::component::collision::BVHNarrowPhase );
+            narrowPhase->setIntersectionMethod(intersection);
 
             newPointsNode->execute<sofa::simulation::InitVisitor>();
         }
@@ -538,16 +540,16 @@ public:
                     intersection->setContactDistance(0);
                     newPointsCM->computeBoundingTree( 6 ); // compute a bbox tree of depth 6
                     //std::cout << "computeV: "<<newPointsCM->end().getIndex()<<" points"<<std::endl;
-                    detection->beginNarrowPhase();
+                    narrowPhase->beginNarrowPhase();
                     for (CMIterator it = node->collisionModel.begin(), itend = node->collisionModel.end(); it != itend ; ++it)
                     {
                         sofa::core::CollisionModel* cm2 = *it;
                         std::cout << "computeV: narrow phase detection with "<<cm2->getClassName()<<std::endl;
-                        detection->addCollisionPair(std::make_pair(newPointsCM->getFirst(), cm2->getFirst()));
-                        //detection->addCollisionPair(std::make_pair(cm2, newPointsCM));
+                        narrowPhase->addCollisionPair(std::make_pair(newPointsCM->getFirst(), cm2->getFirst()));
+                        //narrowPhase->addCollisionPair(std::make_pair(cm2, newPointsCM));
                     }
                     {
-                        sofa::core::collision::NarrowPhaseDetection::DetectionOutputMap& contactMap = detection->getDetectionOutputs();
+                        const auto& contactMap = narrowPhase->getDetectionOutputs();
                         int ncollisions = 0;
                         for (sofa::core::collision::NarrowPhaseDetection::DetectionOutputMap::iterator it1 = contactMap.begin(); it1 != contactMap.end(); ++it1)
                         {

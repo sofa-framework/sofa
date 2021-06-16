@@ -9,7 +9,8 @@
     <RequiredPlugin pluginName='SofaRigid'/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />

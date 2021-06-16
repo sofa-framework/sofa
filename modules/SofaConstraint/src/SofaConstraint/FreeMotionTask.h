@@ -44,7 +44,8 @@ public:
             sofa::core::MultiVecDerivId freeVel,
             simulation::common::MechanicalOperations* mop,
             sofa::core::objectmodel::BaseContext* context,
-            sofa::simulation::CpuTask::Status* status);
+            sofa::simulation::CpuTask::Status* status,
+            bool parallelSolve = false);
     ~FreeMotionTask() override = default;
     sofa::simulation::Task::MemoryAlloc run() final;
 
@@ -61,6 +62,8 @@ private:
     simulation::common::MechanicalOperations* m_mop;
 
     sofa::core::objectmodel::BaseContext* m_context;
+
+    bool m_parallelSolve {false };
 };
 
 }

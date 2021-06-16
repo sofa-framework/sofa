@@ -8,7 +8,8 @@
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" response="default" />
     <Node name="cubeFEM">

@@ -68,7 +68,8 @@ Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
     root = simulation::getSimulation()->createNewGraph("root");
     simpleapi::createObject(root, "DefaultPipeline", {{"name","Collision Pipeline"}}) ;
-    simpleapi::createObject(root, "BruteForceDetection", {{"name","Detection"}}) ;
+    simpleapi::createObject(root, "BruteForceBroadPhase", {{"name","Broad Phase Detection"}}) ;
+    simpleapi::createObject(root, "BVHNarrowPhase", {{"name","Narrow Phase Detection"}}) ;
     simpleapi::createObject(root, "MinProximityIntersection", {{"name","Proximity"},
                                                                {"alarmDistance", "0.3"},
                                                                {"contactDistance", "0.2"}}) ;

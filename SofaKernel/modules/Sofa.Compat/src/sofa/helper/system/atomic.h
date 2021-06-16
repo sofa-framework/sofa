@@ -19,29 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/helper/system/atomic.h>
-#include <gtest/gtest.h>
-
-using sofa::helper::system::atomic;
-
-TEST(atomitTest, dec_and_test_null)
-{
-    atomic<int> value(3);
-    EXPECT_EQ(value.dec_and_test_null(), false);
-    EXPECT_EQ(value, 2);
-    EXPECT_EQ(value.dec_and_test_null(), false);
-    EXPECT_EQ(value, 1);
-    EXPECT_EQ(value.dec_and_test_null(), true);
-    EXPECT_EQ(value, 0);
-}
-
-TEST(atomitTest, compare_and_swap)
-{
-    atomic<int> value(-1);
-    EXPECT_EQ(value.compare_and_swap(-1, 10), -1);
-    EXPECT_EQ(value, 10);
-
-    EXPECT_EQ(value.compare_and_swap(5, 25), 10);
-    EXPECT_EQ(value, 10);
-}
+#error "<sofa/helper/system/atomic.h> has been removed, please use <atomic> from the STL instead."

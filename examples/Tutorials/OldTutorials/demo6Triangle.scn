@@ -3,7 +3,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
     <DefaultPipeline depth="6" verbose="0" draw="1" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <!--<ProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="1" useLineTriangle="0"/>-->
     <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5"  />
     <Node name="Poutre1">

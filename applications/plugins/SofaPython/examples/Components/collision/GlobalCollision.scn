@@ -9,7 +9,8 @@
 
 	<VisualStyle name="displayFlags"  displayFlags="showAll" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-	<BruteForceDetection name="Detection" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager name="Response"  response="default" />
 	<DefaultCollisionGroupManager name="Group" />
 	<NewProximityIntersection name="newProximityIntersection0" alarmDistance="1" contactDistance="0.5"/>
