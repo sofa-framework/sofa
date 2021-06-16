@@ -110,6 +110,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -135,6 +136,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
             // Adding mass
             for (unsigned int j=0; j<3; ++j)
                 VertexMasses[ t[j] ] += mass;
+
+            // update total mass
+            totalMass += 3.0 * mass;
         }
     }
 }
@@ -151,6 +155,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -176,6 +181,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
             // Adding mass edges of concerne triangle
             for (unsigned int j=0; j<3; ++j)
                 EdgeMasses[ te[j] ] += mass;
+
+            // update total mass
+            totalMass += 3.0 * mass;
         }
     }
 }
@@ -188,6 +196,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -213,6 +222,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
             // Removing mass
             for (unsigned int j=0; j<3; ++j)
                 VertexMasses[ t[j] ] -= mass;
+
+            // update total mass
+            totalMass -= 3.0 * mass;
         }
     }
 }
@@ -225,6 +237,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruct
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -250,6 +263,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruct
             // Removing mass edges of concerne triangle
             for (unsigned int j=0; j<3; ++j)
                 EdgeMasses[ te[j] ] -= mass;
+
+            // update total mass
+            totalMass -= 3.0 * mass;
         }
     }
 }
@@ -311,6 +327,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -336,6 +353,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
             // Adding mass
             for (unsigned int j=0; j<4; ++j)
                 VertexMasses[ q[j] ] += mass;
+
+            // update total mass
+            totalMass += 4.0 * mass;
         }
     }
 }
@@ -352,6 +372,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -377,6 +398,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
             // Adding mass edges of concerne quad
             for (unsigned int j=0; j<4; ++j)
                 EdgeMasses[ qe[j] ] += mass;
+
+            // update total mass
+            totalMass += 4.0 * mass;
         }
     }
 }
@@ -389,6 +413,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -414,6 +439,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
             // Removing mass
             for (unsigned int j=0; j<4; ++j)
                 VertexMasses[ q[j] ] -= mass;
+
+            // update total mass
+            totalMass -= 4.0 * mass;
         }
     }
 }
@@ -426,6 +454,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -450,7 +479,10 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(
 
             // Removing mass edges of concerne quad
             for (unsigned int j=0; j<4; ++j)
-                EdgeMasses[ qe[j] ] -= mass/2;
+                EdgeMasses[ qe[j] ] -= mass;
+
+            // update total mass
+            totalMass -= 4.0 * mass;
         }
     }
 }
@@ -514,6 +546,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -539,6 +572,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
             // Adding mass
             for (unsigned int j=0; j<4; ++j)
                 VertexMasses[ t[j] ] += mass;
+
+            // update total mass
+            totalMass += 4.0 * mass;
         }
     }
 }
@@ -555,6 +591,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -580,6 +617,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
             // Adding mass edges of concerne triangle
             for (unsigned int j=0; j<6; ++j)
                 EdgeMasses[ te[j] ] += mass;
+
+            // update total mass
+            totalMass += 6.0 * mass;
         }
     }
 }
@@ -592,6 +632,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -617,6 +658,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
             // Removing mass
             for (unsigned int j=0; j<4; ++j)
                 VertexMasses[ t[j] ] -= mass;
+
+            // update total mass
+            totalMass -= 4.0 * mass;
         }
     }
 }
@@ -629,6 +673,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestr
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -654,6 +699,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestr
             // Removing mass edges of concerne triangle
             for (unsigned int j=0; j<6; ++j)
                 EdgeMasses[ te[j] ] -= mass;
+
+            // update total mass
+            totalMass -= 6.0 * mass;
         }
     }
 }
@@ -716,6 +764,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -741,6 +790,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
             // Adding mass
             for (unsigned int j=0; j<8; ++j)
                 VertexMasses[ h[j] ] += mass;
+
+            // update total mass
+            totalMass += 8.0 * mass;
         }
     }
 }
@@ -757,6 +809,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -782,6 +835,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
             // Adding mass edges of concerne triangle
             for (unsigned int j=0; j<12; ++j)
                 EdgeMasses[ he[j] ] += mass;
+
+            // update total mass
+            totalMass += 12.0 * mass;
         }
     }
 }
@@ -794,6 +850,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -819,6 +876,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
             // Removing mass
             for (unsigned int j=0; j<8; ++j)
                 VertexMasses[ h[j] ] -= mass;
+
+            // update total mass
+            totalMass -= 8.0 * mass;
         }
     }
 }
@@ -831,6 +891,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestru
     if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
+        helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -856,6 +917,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestru
             // Removing mass edges of concerne triangle
             for (unsigned int j=0; j<12; ++j)
                 EdgeMasses[ he[j] ] -= mass;
+
+            // update total mass
+            totalMass -= 12.0 * mass;
         }
     }
 }
