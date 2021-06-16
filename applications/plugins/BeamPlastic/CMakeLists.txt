@@ -28,7 +28,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BIN
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
-target_link_libraries(${PROJECT_NAME} SofaCore SofaBaseTopology SofaSimpleFem SofaEigen2Solver Sofa.GL)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaBaseTopology SofaSimpleFem SofaGeneralSimpleFem SofaEigen2Solver Sofa.GL)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME BeamPlastic
