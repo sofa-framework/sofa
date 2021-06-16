@@ -605,7 +605,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     normalizeGroup(my_tetrahedraGroups.wref());
     normalizeGroup(my_hexahedraGroups.wref());
 
-    std::getline(file, cmd);
+    file >> cmd;
     if (cmd != "$ENDELM" && cmd != "$EndElements")
     {
         msg_error("MeshGmshLoader") << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'";
