@@ -133,9 +133,9 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 
         typename CGLinearSolverType::SPtr cgLinearSolver = New<CGLinearSolverType>();
         m_root->addObject(cgLinearSolver);
-        cgLinearSolver->f_maxIter.setValue(25);
-        cgLinearSolver->f_tolerance.setValue(1e-5);
-        cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+        cgLinearSolver->d_maxIter.setValue(25);
+        cgLinearSolver->d_tolerance.setValue(1e-5);
+        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
         m_mechanicalObj = New<MechanicalObjectType>();
         m_root->addObject(m_mechanicalObj);
