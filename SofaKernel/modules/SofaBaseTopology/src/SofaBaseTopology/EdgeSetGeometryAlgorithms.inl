@@ -932,7 +932,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
     Real deno, num;
     deno = d1010 * dbaba - dba10 * dba10;
     
-    if (abs(deno) > std::numeric_limits<DataTypes::Real>::epsilon())
+    if (abs(deno) > std::numeric_limits<typename DataTypes::Real>::epsilon())
     {
         num = d0aba * dba10 - d0a10 * dbaba;
 
