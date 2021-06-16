@@ -148,8 +148,7 @@ public:
 
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    // TODO change message before PR
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2171)", "v21.06 (PR#2171)", "This method has been removed as it has never been used and is not needed.")
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2171)", "v21.06 (PR#2171)", "This method has been removed as it has never been used and is not needed. Use applyCreateFunction to add a callback.")
     bool applyTestCreateFunction(Index /*index*/, const sofa::helper::vector< Index >& /*ancestors*/, const sofa::helper::vector< double >& /*coefs*/) = delete;
 
 protected:
