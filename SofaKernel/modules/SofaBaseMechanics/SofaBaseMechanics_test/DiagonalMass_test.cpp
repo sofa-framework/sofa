@@ -199,8 +199,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 8 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_EQ( float(mass->getTotalMass()), 8 );
+            EXPECT_EQ(float(mass->getMassDensity()), 1);
         }
 
         return ;
@@ -226,8 +227,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ(mass->getMassCount(), 10);
+            EXPECT_EQ(float(mass->getTotalMass()), 8);
+            EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
 
         return ;
@@ -253,8 +255,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 10);
+            EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
 
         return ;
@@ -286,8 +289,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 8 ) ;
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 8);
+            EXPECT_EQ(float(mass->getMassDensity()), 1);
         }
 
         return ;
@@ -319,9 +323,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 0.125);
+            EXPECT_EQ(float(mass->getMassDensity()), 1);
         }
 
         return ;
@@ -354,8 +358,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 10);
+            EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
 
         return ;
@@ -388,8 +393,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 10);
+            EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
 
         return ;
@@ -422,9 +428,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 10.0 ) ;
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 10);
+            EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
 
         return ;
@@ -457,8 +463,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ;
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 10);
+            EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
 
         return ;
@@ -491,9 +498,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 1);
+            EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
 
         return ;
@@ -526,9 +533,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 16.0 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 2.0 ) ;
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 16.0);
+            EXPECT_EQ(float(mass->getMassDensity()), 2.0);
         }
 
         return ;
@@ -561,9 +568,9 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 1.0);
+            EXPECT_EQ(float(mass->getMassDensity()), 0.125);
         }
 
         return ;
