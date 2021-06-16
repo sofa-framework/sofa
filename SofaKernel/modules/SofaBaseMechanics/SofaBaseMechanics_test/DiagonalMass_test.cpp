@@ -227,8 +227,8 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ(mass->getMassCount(), 10);
-            EXPECT_EQ(float(mass->getTotalMass()), 8);
+            EXPECT_EQ(mass->getMassCount(), 8);
+            EXPECT_EQ(float(mass->getTotalMass()), 10);
             EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
 
@@ -324,8 +324,8 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ(mass->getMassCount(), 8);
-            EXPECT_EQ(float(mass->getTotalMass()), 0.125);
-            EXPECT_EQ(float(mass->getMassDensity()), 1);
+            EXPECT_EQ(float(mass->getTotalMass()), 1);
+            EXPECT_EQ(float(mass->getMassDensity()), 0.125);
         }
 
         return ;
@@ -394,8 +394,8 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ(mass->getMassCount(), 8);
-            EXPECT_EQ(float(mass->getTotalMass()), 10);
-            EXPECT_EQ(float(mass->getMassDensity()), 1.25);
+            EXPECT_EQ(float(mass->getTotalMass()), 1);
+            EXPECT_EQ(float(mass->getMassDensity()), 0.125);
         }
 
         return ;
@@ -500,7 +500,7 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ(mass->getMassCount(), 8);
             EXPECT_EQ(float(mass->getTotalMass()), 1);
-            EXPECT_EQ(float(mass->getMassDensity()), 1.25);
+            EXPECT_EQ(float(mass->getMassDensity()), 0.125);
         }
 
         return ;
