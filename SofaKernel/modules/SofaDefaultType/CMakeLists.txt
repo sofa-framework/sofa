@@ -86,6 +86,10 @@ sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaDefaultType ALIAS Sofa.DefaultType)
+
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Type)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
