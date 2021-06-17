@@ -646,8 +646,10 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"InterpolationController", Removed("v17.12", "v18.12")},
     {"MechanicalStateControllerOmni", Removed("v17.12", "v18.12")},
     {"NodeToggleController", Removed("v17.12", "v18.12")},
-};
 
+    /***********************/
+    // MOVED SINCE v21.06
+};
 
 } // namespace lifecycle
 } // namespace helper
