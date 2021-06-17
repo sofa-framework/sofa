@@ -100,7 +100,8 @@ public:
 class SOFA_HELPER_API Moved : public ComponentChange
 {
 public:
-    Moved(std::string  sinceVersion, std::string fromPlugin, std::string toPlugin) {
+    Moved(std::string sinceVersion, std::string fromPlugin, std::string toPlugin)
+    {
         std::stringstream output;
         output << "This component has been MOVED from " << fromPlugin << " to " << toPlugin << " since SOFA " << sinceVersion << ". "
                <<  "To continue using this component you may need to update your scene "
