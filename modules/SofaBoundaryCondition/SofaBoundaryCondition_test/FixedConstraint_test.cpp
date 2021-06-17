@@ -202,7 +202,7 @@ struct FixedConstraint_test : public BaseTest
         {
             for (unsigned int i = 0; i < typeSize; i++)
             {
-                writeX[id][i] = id + 0.1 * i;
+                writeX[id][i] = id + 0.1 * i;  // create position filled as a grid:  0; 0.1; 0.2 ...  \n  1; 1.1; 1.2 ... \n 2; 2.1; 2.2 ...
             }
 
             forceField->setForce(id, force);
@@ -229,7 +229,7 @@ struct FixedConstraint_test : public BaseTest
         EXPECT_EQ(readX[0][0], 0);
         EXPECT_EQ(readX[1][0], 1);
         EXPECT_EQ(readX[2][0], 2);
-        EXPECT_NEAR(readX[3][0], 4.32231, 1e-4);
+        EXPECT_NEAR(readX[3][0], 4.32231, 1e-4); // compare to computed values
         EXPECT_NEAR(readX[4][0], 5.32231, 1e-4);
 
         /// remove some points from topological mechanism
@@ -240,7 +240,7 @@ struct FixedConstraint_test : public BaseTest
         /// new positions are now: {id[4], id[1]}  because remove use swap + pop_back
         EXPECT_EQ(tCon->getPoints().size(), nbrDofs);
         EXPECT_NEAR(readX[0][0], 5.32231, 1e-4);
-        EXPECT_EQ(readX[1][0], 1);
+        EXPECT_NEAR(readX[1][0], 1.0, 1e-4);
 
         return true;
     }
@@ -289,7 +289,6 @@ TYPED_TEST(FixedConstraint_test, testTopologicalChanges)
 
 }// namespace
 }// namespace sofa
-
 
 
 
