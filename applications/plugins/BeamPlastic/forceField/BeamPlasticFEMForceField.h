@@ -542,7 +542,7 @@ protected:
 
     Data<Real> d_poissonRatio;
     Data<Real> d_youngModulus;
-    Data<Real> d_yieldStress;
+    Data<Real> d_initialYieldStress;
     Data<Real> d_zSection;
     Data<Real> d_ySection;
     Data<bool> d_useSymmetricAssembly;

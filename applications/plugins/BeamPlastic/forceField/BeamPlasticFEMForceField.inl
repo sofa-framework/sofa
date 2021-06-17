@@ -51,7 +51,7 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
     , m_indexedElements(nullptr)
     , d_poissonRatio(initData(&d_poissonRatio,(Real)0.3f,"poissonRatio","Potion Ratio"))
     , d_youngModulus(initData(&d_youngModulus, (Real)5000, "youngModulus", "Young Modulus"))
-    , d_yieldStress(initData(&d_yieldStress,(Real)6.0e8,"yieldStress","yield stress"))
+    , d_initialYieldStress(initData(&d_initialYieldStress,(Real)6.0e8,"initialYieldStress","yield stress"))
     , d_usePrecomputedStiffness(initData(&d_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                         "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
     , d_useConsistentTangentOperator(initData(&d_useConsistentTangentOperator, false, "useConsistentTangentOperator",
@@ -79,7 +79,7 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio,
     , m_indexedElements(nullptr)
     , d_poissonRatio(initData(&d_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , d_youngModulus(initData(&d_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
-    , d_yieldStress(initData(&d_yieldStress, (Real)yieldStress, "yieldStress", "yield stress"))
+    , d_initialYieldStress(initData(&d_initialYieldStress, (Real)yieldStress, "initialYieldStress", "yield stress"))
     , d_usePrecomputedStiffness(initData(&d_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                         "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
     , d_useConsistentTangentOperator(initData(&d_useConsistentTangentOperator, false, "useConsistentTangentOperator", 
@@ -151,7 +151,7 @@ void BeamPlasticFEMForceField<DataTypes>::init()
     if (constitutiveModel == "RambergOsgood")
     {
         Real youngModulus = d_youngModulus.getValue();
-        Real yieldStress = d_yieldStress.getValue();
+        Real yieldStress = d_initialYieldStress.getValue();
 
         //Initialisation of the comparison threshold for stress tensor norms to 0.
         // Plasticity computation requires to basically compare stress tensor norms to 0.
@@ -162,7 +162,7 @@ void BeamPlasticFEMForceField<DataTypes>::init()
         // available precision limit (e.g. std::numeric_limits<double>::epsilon()).
         // We rely on the value of the initial Yield stress, as we can expect plastic
         // deformation to occur inside a relatively small intervl of stresses around this value.
-        const int orderOfMagnitude = d_yieldStress.getValue(); //Should use std::abs, but d_initialYieldStress > 0
+        const int orderOfMagnitude = d_initialYieldStress.getValue(); //Should use std::abs, but d_initialYieldStress > 0
         m_stressComparisonThreshold = std::numeric_limits<double>::epsilon() * orderOfMagnitude;
 
         m_ConstitutiveLaw = std::unique_ptr<RambergOsgood<DataTypes>>(new RambergOsgood<DataTypes>(youngModulus, yieldStress));
@@ -228,7 +228,7 @@ void BeamPlasticFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 
     stiffness =  d_youngModulus.getValue();
 
-    yieldStress = d_yieldStress.getValue();
+    yieldStress = d_initialYieldStress.getValue();
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
 
     zSection = d_zSection.getValue();
