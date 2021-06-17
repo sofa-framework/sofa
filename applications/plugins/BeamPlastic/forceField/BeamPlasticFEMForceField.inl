@@ -62,6 +62,7 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
     , d_ySection(initData(&d_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , d_isTimoshenko(initData(&d_isTimoshenko,false,"isTimoshenko","implements a Timoshenko beam model"))
+    , d_sectionShape(initData(&d_sectionShape,"rectangular","sectionShape","Geometry of the section shape (rectangular or circular)"))
     , m_edgeHandler(nullptr)
 {
     m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
@@ -90,6 +91,7 @@ BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio,
     , d_ySection(initData(&d_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , d_isTimoshenko(initData(&d_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
+    , d_sectionShape(initData(&d_sectionShape, "rectangular", "sectionShape", "Geometry of the section shape (rectangular or circular)"))
     , m_edgeHandler(nullptr)
 {
     m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);

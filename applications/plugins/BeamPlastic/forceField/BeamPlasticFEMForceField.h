@@ -548,6 +548,8 @@ protected:
     Data<bool> d_useSymmetricAssembly;
     Data<bool> d_isTimoshenko;
 
+    Data<std::string> d_sectionShape;
+
     /// Link to be set to the topology container in the component graph.
     SingleLink<BeamPlasticFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
