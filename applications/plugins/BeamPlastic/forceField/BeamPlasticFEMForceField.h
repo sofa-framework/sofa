@@ -364,6 +364,8 @@ public:
     typedef Eigen::Matrix<double, 9, 9> VectTensor4; ///< Symmetrical tensor of order 4, written with vector notation
     typedef Eigen::Matrix<double, 12, 1> EigenDisplacement; ///< Nodal displacement
 
+    typedef Vec<27, GaussPoint3> beamGaussPoints;
+
 protected:
 
     // Rather than computing the elastic stiffness matrix _Ke_loc by Gaussian
@@ -467,6 +469,74 @@ protected:
                                          const VoigtTensor2 &strainIncrement, MechanicalState &pointMechanicalState);
 
     //---------------------------------------//
+
+
+    //---------- Gaussian integration ----------//
+
+    /**
+     * Vector containing a set of integration Gauss points for each beam element.
+     * These Gauss points contain both the necessary coordinates and weights for
+     * the gaussian quadrature method, and local mechanical information required
+     * for the plasticity computation (shape function matrix, yield stress,
+     * back stress, mechanical state, ...)
+     */
+    vector<beamGaussPoints> m_gaussPoints;
+    /**
+     * Vector containing a set of 3 intervals (Interval3) for each beam element,
+     * corresponding to the 3D integration intervals used in the Gaussian
+     * quadrature method.
+     */
+    vector<Interval3> m_integrationIntervals;
+
+    /// Initialises the integration intervals of a beam element, for the Gaussian quadrature method.
+    void initialiseInterval(int beam, vector<Interval3>& integrationIntervals);
+
+    /// Initialises the Gauss points of a beam element, based on its geometrical info.
+    void initialiseGaussPoints(int beam, vector<beamGaussPoints>& gaussPoints, const Interval3& integrationInterval);
+
+    /**
+     * Computes the matrix form of the beam shape functions, used to interpolate
+     * a continuous displacement inside the element from the nodes discrete
+     * displacement. A timoshenko beam model is used.
+     */
+    auto computeNx(Real x, Real y, Real z, Real L, Real A, Real Iy, Real Iz,
+                   Real E, Real nu, Real kappaY = 1.0, Real kappaZ = 1.0)->EigenMat3x12;
+
+    /**
+     * Computes the derivative of the matrix form of the beam shape functions.
+     * The derivation implements the small strain hypothesis. A timoshenko beam
+     * model is used.
+     */
+    auto computeGradN(Real x, Real y, Real z, Real L, Real A, Real Iy, Real Iz,
+                      Real E, Real nu, Real kappaY = 1.0, Real kappaZ = 1.0)->EigenMat9x12;
+
+    /**
+     * Auxiliary method to change the integration interval for Gaussian quadrature,
+     * if it differs from [-1, 1].
+     */
+    inline double changeCoordinate(double x, double a, double b)
+    {
+        return 0.5 * ((b - a) * x + a + b);
+    }
+    /**
+     * Auxiliary method to change the integration weights for Gaussian quadrature,
+     * if the integration interval is not [-1, 1].
+     */
+    inline double changeWeight(double w, double a, double b)
+    {
+        return 0.5 * (b - a) * w;
+    }
+
+    /**
+     * Generic implementation of a Gaussian quadrature. This method simply applies
+     * a lambda function to a provided set of Gauss points with precomputed weights
+     * and coordinates. The actual integration has to be implemented by the lambda
+     * function.
+     */
+    template <typename LambdaType>
+    void integrateBeam(beamGaussPoints& gaussPoints, LambdaType integrationFun);
+
+    //------------------------------------------//
 
 
     //---------- Auxiliary methods for Voigt to vector notation conversion ----------//

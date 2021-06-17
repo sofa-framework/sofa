@@ -2434,7 +2434,233 @@ void BeamPlasticFEMForceField<DataTypes>::computeHardeningStressIncrement(int in
 }
 
 
+//---------- Gaussian quadrature integration methods ----------//
 
+template< class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::initialiseInterval(int beam, vector<Interval3>& integrationIntervals)
+{
+    if (d_sectionShape.getValue() == "rectangular")
+    {
+        Real L = m_beamsData.getValue()[beam]._L;
+        Real Ly = d_ySection.getValue();
+        Real Lz = d_zSection.getValue();
+
+        // Integration interval definition for a local frame at the centre of the beam
+        integrationIntervals.push_back(Interval3(-L / 2, L / 2, -Ly / 2, Ly / 2, -Lz / 2, Lz / 2));
+    }
+    else if (d_sectionShape.getValue() == "circular")
+    {
+        //TO DO: implement quadrature method for a disc and a hollow-disc cross section
+        msg_error() << "Quadrature method for " << d_sectionShape.getValue()
+            << " shape cross section has not been implemented yet. Methods for rectangular cross sections are available";
+    }
+    else
+    {
+        msg_error() << "Quadrature method for " << d_sectionShape.getValue()
+            << " shape cross section has not been implemented yet. Methods for rectangular cross sections are available";
+    }
+}
+
+template< class DataTypes>
+void BeamPlasticFEMForceField<DataTypes>::initialiseGaussPoints(int beam, vector<beamGaussPoints>& gaussPoints, const Interval3& integrationInterval)
+{
+    //Gaussian nodes coordinates and weights for a 1D integration on [-1,1]
+    const double sqrt3_5 = helper::rsqrt(3.0 / 5);
+    Vec3 canonical3NodesCoordinates = { -sqrt3_5, 0, sqrt3_5 };
+    Vec3 canonical3NodesWeights = { 5.0 / 9, 8.0 / 9, 5.0 / 9 };
+
+    Real L = m_beamsData.getValue()[beam]._L;
+    Real A = m_beamsData.getValue()[beam]._A;
+    Real Iy = m_beamsData.getValue()[beam]._Iy;
+    Real Iz = m_beamsData.getValue()[beam]._Iz;
+
+    Real nu = m_beamsData.getValue()[beam]._nu;
+    Real E = m_beamsData.getValue()[beam]._E;
+
+    //Compute actual Gauss points coordinates and weights, with a 3D integration
+    //NB: 3 loops because integration is in 3D, 3 iterations per loop because it's a 3 point integration
+    unsigned int gaussPointIt = 0;
+    for (unsigned int i = 0; i < 3; i++)
+    {
+        double x = canonical3NodesCoordinates[i];
+        double w1 = canonical3NodesWeights[i];
+        // Changing first coordinate and weight to adapt to the integration interval
+        double a1 = integrationInterval.geta1();
+        double b1 = integrationInterval.getb1();
+        double xChanged = changeCoordinate(x, a1, b1);
+        double w1Changed = changeWeight(w1, a1, b1);
+
+        for (unsigned int j = 0; j < 3; j++)
+        {
+            double y = canonical3NodesCoordinates[j];
+            double w2 = canonical3NodesWeights[j];
+            // Changing second coordinate and weight to adapt to the integration interval
+            double a2 = integrationInterval.geta2();
+            double b2 = integrationInterval.getb2();
+            double yChanged = changeCoordinate(y, a2, b2);
+            double w2Changed = changeWeight(w2, a2, b2);
+
+            for (unsigned int k = 0; k < 3; k++)
+            {
+                double z = canonical3NodesCoordinates[k];
+                double w3 = canonical3NodesWeights[k];
+                // Changing third coordinate and weight to adapt to the integration interval
+                double a3 = integrationInterval.geta3();
+                double b3 = integrationInterval.getb3();
+                double zChanged = changeCoordinate(z, a3, b3);
+                double w3Changed = changeWeight(w3, a3, b3);
+
+                GaussPoint3 newGaussPoint = GaussPoint3(xChanged, yChanged, zChanged, w1Changed, w2Changed, w3Changed);
+                newGaussPoint.setGradN(computeGradN(xChanged, yChanged, zChanged, L, A, Iy, Iz, E, nu));
+                newGaussPoint.setNx(computeNx(xChanged, yChanged, zChanged, L, A, Iy, Iz, E, nu));
+                newGaussPoint.setYieldStress(d_initialYieldStress.getValue());
+                gaussPoints[beam][gaussPointIt] = newGaussPoint;
+                gaussPointIt++;
+            }
+        }
+    }
+}
+
+template< class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::computeNx(Real x, Real y, Real z, Real L, Real A, Real Iy, Real Iz,
+                                                    Real E, Real nu, Real kappaY, Real kappaZ)->EigenMat3x12
+{
+    EigenMat3x12 Nx = EigenMat3x12::Zero(); // Sets each element to 0
+    Real xi = x / L;
+    Real eta = y / L;
+    Real zeta = z / L;
+
+    Real xi2 = xi * xi;
+    Real xi3 = xi * xi * xi;
+
+    Real L2 = L * L;
+    Real G = E / (2.0 * (1.0 + nu));
+
+    Real phiY, phiZ;
+    if (A == 0)
+    {
+        phiY = 0.0;
+        phiZ = 0.0;
+    }
+    else
+    {
+        phiY = (12.0 * E * Iy / (kappaZ * G * A * L2));
+        phiZ = (12.0 * E * Iz / (kappaY * G * A * L2));
+    }
+    Real phiYInv = ( 1 / (phiY - 1) );
+    Real phiZInv = ( 1 / (1 + phiZ) );
+
+    Nx(0, 0) = 1 - xi;
+    Nx(0, 1) = 6 * phiZInv * (xi - xi2) * eta;
+    Nx(0, 2) = 6 * phiYInv * (xi - xi2) * zeta;
+    //Nx(0, 3) = 0;
+    Nx(0, 4) = L * phiYInv * (1 - 4 * xi + 3 * xi2 + phiY * (1 - xi)) * zeta;
+    Nx(0, 5) = - L * phiZInv * (1 - 4 * xi + 3 * xi2 + phiZ * (1 - xi)) * eta;
+    Nx(0, 6) = xi;
+    Nx(0, 7) = 6 * phiZInv * (-xi + xi2) * eta;
+    Nx(0, 8) = 6 * phiYInv * (-xi + xi2) * zeta;
+    //Nx(0, 9) = 0;
+    Nx(0, 10) = L * phiYInv * (-2 * xi + 3 * xi2 + phiY * xi) * zeta;
+    Nx(0, 11) = - L * phiZInv * (-2 * xi + 3 * xi2 + phiZ * xi) * eta;
+
+    //Nx(1, 0) = 0;
+    Nx(1, 1) = phiZInv * (1 - 3 * xi2 + 2 * xi3 + phiZ * (1 - xi));
+    //Nx(1, 2) = 0;
+    Nx(1, 3) = (xi - 1) * L * zeta;
+    //Nx(1, 4) = 0;
+    Nx(1, 5) = L * phiZInv * (xi - 2 * xi2 + xi3 + (phiZ / 2) * (xi - xi2));
+    //Nx(1, 6) = 0;
+    Nx(1, 7) = phiZInv * (3 * xi2 - 2 * xi3 + phiZ * xi);
+    //Nx(1, 8) = 0;
+    Nx(1, 9) = - L * xi * zeta;
+    //Nx(1, 10) = 0;
+    Nx(1, 11) = L * phiZInv * (-xi2 + xi3 - (phiZ / 2) * (xi - xi2));
+
+    //Nx(2, 0) = 0;
+    //Nx(2, 1) = 0;
+    Nx(2, 2) = phiYInv * (1 - 3 * xi2 + 2 * xi3 + phiY * (1 - xi));
+    Nx(2, 3) = (1 - xi) * L * eta;
+    Nx(2, 4) = - L * phiYInv * (xi - 2 * xi2 + xi3 + (phiY / 2) * (xi - xi2));
+    //Nx(2, 5) = 0;
+    //Nx(2, 6) = 0;
+    //Nx(2, 7) = 0;
+    Nx(2, 8) = phiYInv * (3 * xi2 - 2 * xi3 + phiY * xi);
+    Nx(2, 9) = L * xi * eta;
+    Nx(2, 10) = - L * phiYInv * (-xi2 + xi3 - (phiY / 2) * (xi - xi2));
+    //Nx(2, 11) = 0;
+
+    return Nx;
+}
+
+template< class DataTypes>
+auto BeamPlasticFEMForceField<DataTypes>::computeGradN(Real x, Real y, Real z, Real L, Real A, Real Iy, Real Iz,
+                                                       Real E, Real nu, Real kappaY, Real kappaZ)->EigenMat9x12
+{
+    EigenMat9x12 gradN = EigenMat9x12::Zero(); // Sets each element to 0
+    Real xi = x / L;
+    Real eta = y / L;
+    Real zeta = z / L;
+
+    Real L2 = L * L;
+    Real G = E / (2.0 * (1.0 + nu));
+
+    Real phiY, phiZ;
+    if (A == 0)
+    {
+        phiY = 0.0;
+        phiZ = 0.0;
+    }
+    else
+    {
+        phiY = (12.0 * E * Iy / (kappaZ * G * A * L2));
+        phiZ = (12.0 * E * Iz / (kappaY * G * A * L2));
+    }
+    Real phiYInv = ( 1 / (phiY - 1) );
+    Real phiZInv = ( 1 / (1 + phiZ) );
+
+    //Row 0
+    gradN(0, 0) = - 1 / L;
+    gradN(0, 1) = - ( 12*phiZInv * xi * eta ) / L;
+    gradN(0, 2) = ( 12*phiYInv * xi * zeta ) / L;
+    // gradN(0, 3) = 0;
+    gradN(0, 4) = - ( 1 + 6*phiYInv * xi ) * zeta;
+    gradN(0, 5) = ( 1 - 6*phiZInv * xi) * eta;
+    gradN(0, 6) = 1 / L;
+    gradN(0, 7) = - gradN(0, 1);
+    gradN(0, 8) = - gradN(0, 2);
+    // gradN(0, 9) = 0;
+    gradN(0, 10) = gradN(0, 4) + 2 * zeta;
+    gradN(0, 11) = gradN(0, 5) - 2 * eta;
+
+    //Rows 1 and 3
+    gradN(1, 3) = zeta / 2;
+    gradN(1, 9) = -zeta / 2;
+
+    gradN(3, 3) = zeta / 2;
+    gradN(3, 9) = -zeta / 2;
+
+    //Rows 2 and 6
+    gradN(2, 3) = -eta / 2;
+    gradN(2, 9) = eta / 2;
+
+    gradN(6, 3) = -eta / 2;
+    gradN(6, 9) = eta / 2;
+
+    //Rows 4, 5, 7, 8 are null
+
+    return gradN;
+}
+
+template <class DataTypes>
+template <typename LambdaType>
+void BeamPlasticFEMForceField<DataTypes>::integrateBeam(beamGaussPoints& gaussPoints, LambdaType integrationFun)
+{
+    //Apply a generic (lambda) integration function to each Gauss point of a beam element
+    for (unsigned int gp = 0; gp < gaussPoints.size(); gp++)
+    {
+        integrationFun(gaussPoints[gp]);
+    }
+}
 
 
 /*****************************************************************************/
