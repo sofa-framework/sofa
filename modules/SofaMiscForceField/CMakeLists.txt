@@ -25,11 +25,8 @@ list(APPEND SOURCE_FILES
 
 if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
-        ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.h
-        ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.inl
         )
     list(APPEND SOURCE_FILES
-        ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.cpp
         )
 endif()
 

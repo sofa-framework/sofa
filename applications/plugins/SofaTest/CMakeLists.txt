@@ -33,11 +33,8 @@ list(APPEND SOURCE_FILES
 
 if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
-        Elasticity_test_deprecated.h
-        Elasticity_test_deprecated.inl
         )
     list(APPEND SOURCE_FILES
-        Elasticity_test_deprecated.cpp
         )
 endif()
 

@@ -31,7 +31,6 @@ namespace lifecycle
 
 std::map<std::string, Deprecated> deprecatedComponents = {
     // SofaMiscForceField
-    {"LennardJonesForceField", Deprecated("v17.12", "v18.12")},
     {"MatrixMass", Deprecated("v19.06", "v19.12")},
 
 };
@@ -160,7 +159,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaMiscForceField was pluginized in #1520
     { "GearSpringForceField", Pluginized("v20.12", "SofaMiscForceField") },
     { "MeshMatrixMass", Pluginized("v20.12", "SofaMiscForceField") },
-    { "LennardJonesForceField", Pluginized("v20.12", "SofaMiscForceField") },
 
     // SofaMiscMapping was pluginized in #1520
     { "BeamLinearMapping", Pluginized("v20.12", "SofaMiscMapping") },
@@ -545,9 +543,17 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{ "MechanicalObject", Pluginized("v20.12", "SofaBaseMechanics") },
     //{ "SubsetMapping", Pluginized("v20.12", "SofaBaseMechanics") },
     //{ "UniformMass", Pluginized("v20.12", "SofaBaseMechanics") },
+
+
+
+    /***********************/
+    // REMOVED SINCE v21.06
+
+    {"LennardJonesForceField", Removed("v17.12", "v21.06")},
         
     /***********************/
     // REMOVED SINCE v20.12
+
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
     { "HexahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
     { "TetrahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },

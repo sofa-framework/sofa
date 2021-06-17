@@ -14,7 +14,6 @@ list(APPEND SOURCE_FILES
 
 if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND SOURCE_FILES
-        VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp
         )
 endif()
 
