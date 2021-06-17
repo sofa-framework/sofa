@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_VISITOR_H
-#define SOFA_SIMULATION_VISITOR_H
+#pragma once
 
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/fwd.h>
@@ -304,5 +303,3 @@ Visitor::Result Visitor::for_each(VisitorType *visitor,
 }
 
 } // namespace sofa::simulation
-
-#endif
