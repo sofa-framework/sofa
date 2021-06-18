@@ -6,7 +6,6 @@ set(SRC_ROOT "src/sofa/simulation")
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/fwd.h
-    ${SRC_ROOT}/simulationcore.h
     ${SRC_ROOT}/AnimateBeginEvent.h
     ${SRC_ROOT}/AnimateEndEvent.h
     ${SRC_ROOT}/AnimateVisitor.h

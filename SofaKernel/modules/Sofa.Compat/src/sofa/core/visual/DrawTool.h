@@ -24,7 +24,7 @@
 #include <sofa/helper/visual/DrawTool.h>
 
 
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/visual/DrawTool.h")
+SOFA_DEPRECATED_HEADER(v21. 06, "sofa/helper/visual/DrawTool.h")
 
 namespace sofa::core::visual
 {

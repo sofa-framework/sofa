@@ -89,7 +89,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/core.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/loader/BaseLoader.h
