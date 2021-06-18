@@ -652,6 +652,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "OBBCollisionModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
     { "RigidCapsuleCollisionModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
     { "CapsuleModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
+    { "SpatialGridPointModel", Moved("v21.06", "SofaMiscCollision", "SofaSphFluid") },
 
 };
 
