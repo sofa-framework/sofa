@@ -26,12 +26,16 @@ using sofa::core::execparams::defaultInstance;
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 
 #include <sofa/simulation/Node.h>
@@ -40,13 +44,16 @@ using sofa::simulation::Node ;
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <string>
 using std::string ;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
@@ -68,17 +75,18 @@ namespace sofa {
 // Given the positions and the topology, it then checks the expected values for
 // the mass.
 template <class TDataTypes, class TMassType>
-class MeshMatrixMass_test : public Sofa_test<>
+class MeshMatrixMass_test : public BaseTest
 {
 public:
     typedef TDataTypes DataTypes;
     typedef TMassType MassType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Real Real;
     typedef typename helper::vector<MassType> VecMass;
     typedef MeshMatrixMass<TDataTypes, TMassType> TheMeshMatrixMass ;
 
-    simulation::Simulation* simulation;
+    simulation::Simulation* simulation = nullptr;
     simulation::Node::SPtr root;
     simulation::Node::SPtr node;
     typename MechanicalObject<DataTypes>::SPtr mstate;
@@ -86,6 +94,8 @@ public:
 
     virtual void SetUp()
     {
+        sofa::simpleapi::importPlugin("SofaComponentAll");
+
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
     }
