@@ -271,6 +271,15 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     include( "custom.cmake" )
 endif()
 
+# Regroup all test-related projects into an IDE folder
+if(TARGET Sofa.Testing) # No need to search for test targets if tests are not enabled
+    sofa_get_all_targets(all_targets)
+    foreach(target ${all_targets})
+        if(target MATCHES ".*_test" OR target MATCHES ".*_simutest")
+            set_target_properties(${target} PROPERTIES FOLDER Testing) # IDE folder
+        endif()
+    endforeach()
+endif()
 
 # Install configuration
 #install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION . COMPONENT headers)
