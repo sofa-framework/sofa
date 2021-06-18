@@ -118,27 +118,43 @@ public:
         node->addObject(mass);
     }
 
-    void check(MassType expectedTotalMass, const VecMass& expectedMass)
+    void check(MassType expectedTotalMass, MassType expectedMassDensity, const VecMass& expectedVMass, const VecMass& expectedEMass)
     {
         // Check that the mass vector has the right size.
-        ASSERT_EQ(mstate->x.getValue().size(), mass->d_vertexMass.getValue().size());
-        // Safety check...
-        ASSERT_EQ(mstate->x.getValue().size(), expectedMass.size());
+        if (mstate != nullptr)
+        {
+            ASSERT_EQ(mstate->x.getValue().size(), mass->d_vertexMass.getValue().size());
+        }
 
         // Check the total mass.
         EXPECT_FLOAT_EQ(expectedTotalMass, mass->d_totalMass.getValue());
 
+        // Check mass density
+        EXPECT_FLOAT_EQ(expectedMassDensity, mass->getMassDensity()[0]);
+
         // Check the mass at each index.
-        for (size_t i = 0 ; i < mstate->x.getValue().size() ; i++)
-            EXPECT_FLOAT_EQ(expectedMass[i], mass->d_vertexMass.getValue()[i]);
+        auto vertexMass = mass->d_vertexMass.getValue();
+        ASSERT_EQ(expectedVMass.size(), vertexMass.size());
+
+        for (size_t i = 0 ; i < vertexMass.size(); i++)
+            EXPECT_FLOAT_EQ(expectedVMass[i], vertexMass[i]);
+
+        // Check edge mass 
+        auto edgeMass = mass->d_edgeMass.getValue();
+        ASSERT_EQ(expectedEMass.size(), edgeMass.size());
+
+        for (size_t i = 0; i < edgeMass.size(); i++) {
+            if (edgeMass[i] != 0.0) // == 0 is possible if edge is not part of the element structure (for example in grid)
+                EXPECT_FLOAT_EQ(expectedEMass[i], edgeMass[i]);
+        }
     }
 
     void runTest(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms,
-                 MassType expectedTotalMass, const VecMass& expectedMass)
+                 MassType expectedTotalMass, MassType expectedMassDensity, const VecMass& expectedVMass, const VecMass& expectedEMass)
     {
         createSceneGraph(positions, topologyContainer, geometryAlgorithms);
         simulation::getSimulation()->init(root.get());
-        check(expectedTotalMass, expectedMass);
+        check(expectedTotalMass, expectedMassDensity, expectedVMass, expectedEMass);
     }
 
 
@@ -158,27 +174,29 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
-        EXPECT_TRUE( mass->findData("vertexMass") != nullptr ) ;
-        EXPECT_TRUE( mass->findData("totalMass") != nullptr ) ;
-        EXPECT_TRUE( mass->findData("massDensity") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("vertexMass") != nullptr );
+        EXPECT_TRUE( mass->findData("totalMass") != nullptr );
+        EXPECT_TRUE( mass->findData("massDensity") != nullptr );
 
-        EXPECT_TRUE( mass->findData("showGravityCenter") != nullptr ) ;
-        EXPECT_TRUE( mass->findData("showAxisSizeFactor") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("showGravityCenter") != nullptr );
+        EXPECT_TRUE( mass->findData("showAxisSizeFactor") != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], 0.05 ) ;
-            EXPECT_EQ( mass->getVertexMass()[7], 0.05 ) ;
+            const MassType volume = 8.0;
+            const MassType expectedTotalMass = 1.0f;
+            const MassType expectedDensity = expectedTotalMass / volume;
+            const VecMass expectedVMass(8, (MassType)(expectedDensity * volume * 1 / 20));
+            const VecMass expectedEMass(18, (MassType)(expectedDensity * volume * 1 / 40));
+
+            check(expectedTotalMass, expectedDensity, expectedVMass, expectedEMass);
         }
         return ;
     }
@@ -1236,14 +1254,14 @@ TEST_F(MeshMatrixMass3_test, singleTriangle)
     TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TriangleSetGeometryAlgorithms<Vec3Types> >();
 
+    const MassType volume = 0.5;
     const MassType expectedTotalMass = 1.0f;
-    const VecMass expectedMass(3, (MassType)(expectedTotalMass/(3.0*2.0)));
+    const MassType density = expectedTotalMass / volume;
 
-    runTest(positions,
-            topologyContainer,
-            geometryAlgorithms,
-            expectedTotalMass,
-            expectedMass);
+    const VecMass expectedVMass(3, (MassType)(density * volume * 1 / 6));
+    const VecMass expectedEMass(3, (MassType)(density * volume * 1 / 12));
+
+    runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
 
 TEST_F(MeshMatrixMass3_test, singleQuad)
@@ -1260,14 +1278,13 @@ TEST_F(MeshMatrixMass3_test, singleQuad)
     QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<QuadSetGeometryAlgorithms<Vec3Types> >();
 
+    const MassType volume = 1.0;
     const MassType expectedTotalMass = 1.0f;
-    const VecMass expectedMass(4, (MassType)(expectedTotalMass/(4.0*2.0)));
+    const MassType density = expectedTotalMass / volume;
+    const VecMass expectedVMass(4, (MassType)(density * volume * 1 / 8));
+    const VecMass expectedEMass(4, (MassType)(density * volume * 1 / 16));
 
-    runTest(positions,
-            topologyContainer,
-            geometryAlgorithms,
-            expectedTotalMass,
-            expectedMass);
+    runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
 
 TEST_F(MeshMatrixMass3_test, singleTetrahedron)
@@ -1284,14 +1301,13 @@ TEST_F(MeshMatrixMass3_test, singleTetrahedron)
     TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TetrahedronSetGeometryAlgorithms<Vec3Types> >();
 
+    const MassType volume = MassType(1.0/3.0) * 0.5; // V = 1/3 * B * h
     const MassType expectedTotalMass = 1.0f;
-    const VecMass expectedMass(4, (MassType)(expectedTotalMass/(4.0*2.5)));
+    const MassType density = expectedTotalMass / volume;
+    const VecMass expectedVMass(4, (MassType)(density * volume * 1 / 10));
+    const VecMass expectedEMass(6, (MassType)(density * volume * 1 / 20));
 
-    runTest(positions,
-            topologyContainer,
-            geometryAlgorithms,
-            expectedTotalMass,
-            expectedMass);
+    runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
 
 TEST_F(MeshMatrixMass3_test, singleHexahedron)
@@ -1312,14 +1328,13 @@ TEST_F(MeshMatrixMass3_test, singleHexahedron)
     HexahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<HexahedronSetGeometryAlgorithms<Vec3Types> >();
 
+    const MassType volume = 1.0;
     const MassType expectedTotalMass = 1.0f;
-    const VecMass expectedMass(8, (MassType)(expectedTotalMass/(8.0*2.5)));
+    const MassType density = expectedTotalMass / volume;
+    const VecMass expectedVMass(8, (MassType)(density * volume * 1 / 20));
+    const VecMass expectedEMass(12, (MassType)(density * volume * 1 / 40));
 
-    runTest(positions,
-            topologyContainer,
-            geometryAlgorithms,
-            expectedTotalMass,
-            expectedMass);
+    runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
 
 TEST_F(MeshMatrixMass3_test, check_DefaultAttributes_Hexa){
