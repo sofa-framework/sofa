@@ -23,7 +23,7 @@
 
 #include <sofa/type/Frame.h>
 
-// SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Frame.h")
+// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/Frame.h")
 
 namespace sofa::defaulttype
 {

@@ -127,14 +127,15 @@ typedef unsigned __int64	uint64_t;
 
 /************* DEPRECATION MACROS *************/
 
-#define SOFA_DEPRECATED_HEADER(untilVersion, newHeader) \
+#define SOFA_DEPRECATED_HEADER(deprecateDate, disableDate, newHeader) \
     SOFA_PRAGMA_WARNING( \
-        "This header is DEPRECATED and will be removed in " #untilVersion ". " \
+        "This header has been DEPRECATED since " deprecateDate ". " \
+        "You have until " disableDate " to fix your code. " \
         "To fix this warning you must include " newHeader " instead." )
 
 #define SOFA_DISABLED_HEADER(deprecateDate, disableDate, newHeader) \
     SOFA_PRAGMA_ERROR( \
-        "This header is DISABLED since " disableDate " " \
+        "This header has been DISABLED since " disableDate " " \
         "after being deprecated on " deprecateDate ". " \
         "To fix this error you must include " newHeader " instead. " )
 
