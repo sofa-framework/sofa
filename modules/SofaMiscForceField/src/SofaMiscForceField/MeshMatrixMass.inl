@@ -1732,6 +1732,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromMassDensity()
 {
     msg_info() << "massDensity information is used";
 
+    // compute vertexMass and edgeMass vector with input density
     computeMass();
 
     const MassVector &vertexMassInfo = d_vertexMass.getValue();
@@ -1749,20 +1750,42 @@ void MeshMatrixMass<DataTypes, MassType>::initFromTotalMass()
 {
     msg_info() << "totalMass information is used";
 
-    const Real totalMassTemp = d_totalMass.getValue();
-    Real sumMass = 0.0;
+    // copy input totalMass
+    Real totalMassCpy = d_totalMass.getValue();
+
+    // set temporary density mass to 1 for every element
     setMassDensity(1.0);
+    d_totalMass.setValue(0.0); // force totalMass to 0 to compute it with density = 1
 
+    // compute vertexMass and edgeMass vector with density == 1. Will update totalMass as well
     computeMass();
 
-    const MassVector &vertexMassInfo = d_vertexMass.getValue();
-    for (size_t i=0; i<size_t(m_topology->getNbPoints()); i++)
+    // total mass from geometry with density = 1
+    Real sumMass = d_totalMass.getValue();
+
+    // Set real density from sumMass found
+    Real md = Real(totalMassCpy / sumMass);
+    setMassDensity(md);
+
+    // restore input total mass (was changed by computeMass())
+    setTotalMass(totalMassCpy);
+
+    // Apply the real density no nead to recompute vertexMass from the geometry as all vertices have the same density in this case
+    sumMass = 0.0;
+    helper::WriteAccessor<Data<MassVector> > vertexMass = d_vertexMass;
+    for (size_t i = 0; i < vertexMass.size(); i++)
     {
-        sumMass += vertexMassInfo[i]*m_massLumpingCoeff;
+        vertexMass[i] *= md;
+        sumMass += vertexMass[i];
     }
-    setMassDensity(Real(totalMassTemp/sumMass));
 
-    computeMass();
+    // Same for edgeMass
+    helper::WriteAccessor<Data<MassVector> > edgeMass = d_edgeMass;
+    for (size_t i = 0; i < edgeMass.size(); i++)
+    {
+        edgeMass[i] *= md;
+        sumMass += edgeMass[i] * 2;
+    }
 }
 
 
@@ -2106,8 +2129,6 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
             f_graph.endEdit();
         }
     }
-
-
     else
     {
 
