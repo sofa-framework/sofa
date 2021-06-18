@@ -744,20 +744,20 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.5/3.0) ) ;
-            EXPECT_EQ( mass->getVertexMass()[1], 0.1 ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 2.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.25 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[1], 0.1 );
         }
 
         return ;
@@ -783,19 +783,19 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 8.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 1.0 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (2.0/3.0) ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 8.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 1.0 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
         }
 
         return ;
@@ -821,20 +821,20 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->isLumped(), true ) ;
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 8.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 1.0 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], 1.0 ) ;
+            EXPECT_EQ( mass->isLumped(), true );
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 8.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 1.0 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 1.0 );
         }
 
         return ;
@@ -865,19 +865,19 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.5/3.0) ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 2.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.25 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
         }
 
         return ;
@@ -903,20 +903,20 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->isLumped(), true ) ;
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.5/3.0) ) ;
+            EXPECT_EQ( mass->isLumped(), true );
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 2.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.25 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
         }
 
         return ;
@@ -942,20 +942,20 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->isLumped(), true ) ;
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 8.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 1.0 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (2.0/3.0) ) ;
+            EXPECT_EQ( mass->isLumped(), true );
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 8.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 1.0 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
         }
 
         return ;
@@ -984,19 +984,19 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1022,19 +1022,19 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1060,19 +1060,19 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1098,19 +1098,19 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1135,19 +1135,19 @@ public:
                 "</Node>                                                                                            ";
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1177,19 +1177,19 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1217,26 +1217,25 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.size());
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(sofa::core::execparams::defaultInstance()) ;
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
 
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
-            EXPECT_EQ( mass->getVertexMass()[0], (0.5/3.0) ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 );
+            EXPECT_FLOAT_EQ(mass->getTotalMass(), 2.0 );
+            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.25 );
+            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
         }
 
         return ;
     }
 
-}
-;
+};
 
 
 typedef MeshMatrixMass_test<Vec3Types, Vec3Types::Real> MeshMatrixMass3_test;
@@ -1337,140 +1336,142 @@ TEST_F(MeshMatrixMass3_test, singleHexahedron)
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
 
+
+
 TEST_F(MeshMatrixMass3_test, check_DefaultAttributes_Hexa){
-    check_DefaultAttributes_Hexa() ;
+    check_DefaultAttributes_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_TotalMass_Initialization_Hexa){
-    check_TotalMass_Initialization_Hexa() ;
+    check_TotalMass_Initialization_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_MassDensity_Initialization_Hexa){
-    check_MassDensity_Initialization_Hexa() ;
+    check_MassDensity_Initialization_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_VertexMass_Lumping_Initialization_Hexa){
-    check_VertexMass_Lumping_Initialization_Hexa() ;
+    check_VertexMass_Lumping_Initialization_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_Hexa){
-    check_DoubleDeclaration_TotalMassAndMassDensity_Hexa() ;
+    check_DoubleDeclaration_TotalMassAndMassDensity_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndVertexMass_Hexa){
-    check_DoubleDeclaration_TotalMassAndVertexMass_Hexa() ;
+    check_DoubleDeclaration_TotalMassAndVertexMass_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_MassDensityAndVertexMass_Hexa){
-    check_DoubleDeclaration_MassDensityAndVertexMass_Hexa() ;
+    check_DoubleDeclaration_MassDensityAndVertexMass_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_TotalMass_WrongValue_Hexa){
-    check_TotalMass_WrongValue_Hexa() ;
+    check_TotalMass_WrongValue_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongValue_Hexa){
-    check_MassDensity_WrongValue_Hexa() ;
+    check_MassDensity_WrongValue_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongSize_Hexa){
-    check_MassDensity_WrongSize_Hexa() ;
+    check_MassDensity_WrongSize_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongValue_Hexa){
-    check_VertexMass_WrongValue_Hexa() ;
+    check_VertexMass_WrongValue_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongSize_Hexa){
-    check_VertexMass_WrongSize_Hexa() ;
+    check_VertexMass_WrongSize_Hexa();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Hexa){
-    check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Hexa() ;
+    check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Hexa();
 }
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Hexa){
-    check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Hexa() ;
+    check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Hexa();
 }
 
 TEST_F(MeshMatrixMass3_test, check_DefaultAttributes_Tetra){
-    check_DefaultAttributes_Tetra() ;
+    check_DefaultAttributes_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_TotalMass_Initialization_Tetra){
-    check_TotalMass_Initialization_Tetra() ;
+    check_TotalMass_Initialization_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_MassDensity_Initialization_Tetra){
-    check_MassDensity_Initialization_Tetra() ;
+    check_MassDensity_Initialization_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_VertexMass_Lumping_Initialization_Tetra){
-    check_VertexMass_Lumping_Initialization_Tetra() ;
+    check_VertexMass_Lumping_Initialization_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_Tetra){
-    check_DoubleDeclaration_TotalMassAndMassDensity_Tetra() ;
+    check_DoubleDeclaration_TotalMassAndMassDensity_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndVertexMass_Tetra){
-    check_DoubleDeclaration_TotalMassAndVertexMass_Tetra() ;
+    check_DoubleDeclaration_TotalMassAndVertexMass_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_MassDensityAndVertexMass_Tetra){
-    check_DoubleDeclaration_MassDensityAndVertexMass_Tetra() ;
+    check_DoubleDeclaration_MassDensityAndVertexMass_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_TotalMass_WrongValue_Tetra){
-    check_TotalMass_WrongValue_Tetra() ;
+    check_TotalMass_WrongValue_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongValue_Tetra){
-    check_MassDensity_WrongValue_Tetra() ;
+    check_MassDensity_WrongValue_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongSize_Tetra){
-    check_MassDensity_WrongSize_Tetra() ;
+    check_MassDensity_WrongSize_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongValue_Tetra){
-    check_VertexMass_WrongValue_Tetra() ;
+    check_VertexMass_WrongValue_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongSize_Tetra){
-    check_VertexMass_WrongSize_Tetra() ;
+    check_VertexMass_WrongSize_Tetra();
 }
 
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Tetra){
-    check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Tetra() ;
+    check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Tetra();
 }
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra){
-    check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra() ;
+    check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra();
 }
 
 
