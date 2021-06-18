@@ -21,73 +21,44 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/MultiVecId.h>
-#include <sofa/core/behavior/MechanicalMatrix.h>
+#include <SofaGeneralMeshCollision/config.h>
 
-namespace sofa::core::behavior
+#include <sofa/core/collision/NarrowPhaseDetection.h>
+
+namespace sofa::component::collision
 {
 
-/// Helper class providing a high-level view of underlying linear system matrices.
-///
-/// It is used to convert math-like operations to call to computation methods.
-template<class Parent>
-class MultiMatrix
+class CubeCollisionModel;
+
+/**
+ *  \brief It is a Ray Trace based collision detection algorithm
+ *
+ *   For each point in one object, we trace a ray following the oposite of the point's normal
+ *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
+ *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
+ */
+class SOFA_SOFAGENERALMESHCOLLISION_API RayTraceNarrowPhase : public core::collision::NarrowPhaseDetection
 {
 public:
-    typedef sofa::core::VecId VecId;
+    SOFA_CLASS(RayTraceNarrowPhase, core::collision::NarrowPhaseDetection);
+
+private:
+    Data < bool > bDraw;
 
 protected:
-    /// Solver who is using this matrix
-    Parent* parent;
-
-    /// Copy-constructor is forbidden
-    MultiMatrix(const MultiMatrix<Parent>&);
+    RayTraceNarrowPhase();
 
 public:
+    void addCollisionPair (const std::pair < core::CollisionModel *,
+            core::CollisionModel * >&cmPair) override;
 
-    MultiMatrix(Parent* parent) : parent(parent)
-    {
-    }
+    void findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2);
 
-    ~MultiMatrix()
+    void draw (const core::visual::VisualParams* vparams) override;
+    void setDraw (bool val)
     {
-    }
-
-    /// m = 0
-    void clear()
-    {
-        parent->m_resetSystem();
-    }
-
-    /// m = 0
-    void reset()
-    {
-        parent->m_resetSystem();
-    }
-
-    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#2167)", "v21.12", "Use setSystemMBKMatrix instead.")
-    void operator=(const MechanicalMatrix& m)
-    {
-        setSystemMBKMatrix(m);
-    }
-
-    void setSystemMBKMatrix(const MechanicalMatrix& m)
-    {
-        parent->m_setSystemMBKMatrix(m.getMFact(), m.getBFact(), m.getKFact());
-    }
-
-    void solve(MultiVecDerivId solution, MultiVecDerivId rh)
-    {
-        parent->m_setSystemRHVector(rh);
-        parent->m_setSystemLHVector(solution);
-        parent->m_solveSystem();
-    }
-
-    friend std::ostream& operator << (std::ostream& out, const MultiMatrix<Parent>& m )
-    {
-        m.parent->m_print(out);
-        return out;
+        bDraw.setValue (val);
     }
 };
 
-} /// namespace sofa::core::behavior
+}

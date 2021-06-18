@@ -9,7 +9,7 @@ set(SOURCE_FILES
 add_definitions("-DSOFASIMULATION_TEST_SCENES_DIR=\"${CMAKE_SOURCE_DIR}/examples/Components/constraint\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaHelper SofaComponentAll)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaHelper SofaComponentAll)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 

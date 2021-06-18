@@ -256,6 +256,10 @@ set(SOURCE_FILES
 sofa_find_package(Sofa.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)
+
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
 
 # is this a compiler/linker version specific problem?

@@ -110,9 +110,9 @@ void FEMGridBehaviorModel<DataTypes>::init()
     odesolver->f_rayleighMass.setValue(0);
     odesolver->f_velocityDamping.setValue(0);
     typename component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::SPtr cg = sofa::core::objectmodel::New< component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
-    cg->f_maxIter.setValue(100);
-    cg->f_smallDenominatorThreshold.setValue(1e-10);
-    cg->f_tolerance.setValue(1e-10);
+    cg->d_maxIter.setValue(100);
+    cg->d_smallDenominatorThreshold.setValue(1e-10);
+    cg->d_tolerance.setValue(1e-10);
 
 
     m_internalNode->addObject( m_internalDofs );
