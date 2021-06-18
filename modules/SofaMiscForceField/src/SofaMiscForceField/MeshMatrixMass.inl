@@ -1334,8 +1334,11 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
             hexahedraAdded.push_back(i);
 
         m_vertexMassHandler->applyHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
-        m_edgeMassHandler->applyHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
         m_massLumpingCoeff = 2.5;
+        
+        if (!isLumped()) {
+            m_edgeMassHandler->applyHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
+        }
     }
     else if (m_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
     {
@@ -1348,8 +1351,11 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
             tetrahedraAdded.push_back(i);
 
         m_vertexMassHandler->applyTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
-        m_edgeMassHandler->applyTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
         m_massLumpingCoeff = 2.5;
+        
+        if (!isLumped()) {
+            m_edgeMassHandler->applyTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
+        }
     }
     else if (m_topology->getNbQuads()>0 && quadGeo)  // Quad topology
     {
@@ -1362,8 +1368,11 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
             quadsAdded.push_back(i);
 
         m_vertexMassHandler->applyQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
-        m_edgeMassHandler->applyQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
         m_massLumpingCoeff = 2.0;
+
+        if (!isLumped()) {
+            m_edgeMassHandler->applyQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
+        }
     }
     else if (m_topology->getNbTriangles()>0 && triangleGeo) // Triangle topology
     {
@@ -1376,8 +1385,11 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
             trianglesAdded.push_back(i);
 
         m_vertexMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
-        m_edgeMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
         m_massLumpingCoeff = 2.0;
+
+        if (!isLumped()) {
+            m_edgeMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
+        }
     }
 
     d_vertexMass.endEdit();
@@ -1423,7 +1435,7 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
         }
     }
 
-    else if(this->hasDataChanged(d_vertexMass))
+    /*else if(this->hasDataChanged(d_vertexMass))
     {
         if(this->hasDataChanged(d_edgeMass))
         {
@@ -1456,7 +1468,7 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             msg_error() << "Initialization using vertexMass requires the lumping option or the edgeMass information";
         }
-    }
+    }*/
 
 
     //Info post-init
