@@ -155,7 +155,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
                 VertexMasses[ t[j] ] += mass;
 
             // update total mass: 
-            totalMass += 3.0 * mass;
+            totalMass += 3.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -241,7 +241,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
                 VertexMasses[ t[j] ] -= mass;
 
             // update total mass
-            totalMass -= 3.0 * mass;
+            totalMass -= 3.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -372,7 +372,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
                 VertexMasses[ q[j] ] += mass;
 
             // update total mass
-            totalMass += 4.0 * mass;
+            totalMass += 4.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -458,7 +458,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
                 VertexMasses[ q[j] ] -= mass;
 
             // update total mass
-            totalMass -= 4.0 * mass;
+            totalMass -= 4.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -591,7 +591,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
                 VertexMasses[ t[j] ] += mass;
 
             // update total mass
-            totalMass += 4.0 * mass;
+            totalMass += 4.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -677,7 +677,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
                 VertexMasses[ t[j] ] -= mass;
 
             // update total mass
-            totalMass -= 4.0 * mass;
+            totalMass -= 4.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -809,7 +809,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
                 VertexMasses[ h[j] ] += mass;
 
             // update total mass
-            totalMass += 8.0 * mass;
+            totalMass += 8.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -895,7 +895,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
                 VertexMasses[ h[j] ] -= mass;
 
             // update total mass
-            totalMass -= 8.0 * mass;
+            totalMass -= 8.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -1337,12 +1337,14 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         for (Index i = 0; i<n; ++i)
             hexahedraAdded.push_back(i);
 
-        m_vertexMassHandler->applyHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
         m_massLumpingCoeff = 2.5;
-        
-        if (!isLumped()) {
+        if (!isLumped())
+        {
             m_edgeMassHandler->applyHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
+            m_massLumpingCoeff = 1.0;
         }
+        
+        m_vertexMassHandler->applyHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
     }
     else if (m_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
     {
@@ -1354,12 +1356,14 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         for (Index i = 0; i<n; ++i)
             tetrahedraAdded.push_back(i);
 
-        m_vertexMassHandler->applyTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
         m_massLumpingCoeff = 2.5;
-        
-        if (!isLumped()) {
+        if (!isLumped())
+        {
             m_edgeMassHandler->applyTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
+            m_massLumpingCoeff = 1.0;
         }
+
+        m_vertexMassHandler->applyTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
     }
     else if (m_topology->getNbQuads()>0 && quadGeo)  // Quad topology
     {
@@ -1371,12 +1375,14 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         for (Index i = 0; i<n; ++i)
             quadsAdded.push_back(i);
 
-        m_vertexMassHandler->applyQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
         m_massLumpingCoeff = 2.0;
-
-        if (!isLumped()) {
+        if (!isLumped())
+        {
             m_edgeMassHandler->applyQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
+            m_massLumpingCoeff = 1.0;
         }
+
+        m_vertexMassHandler->applyQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
     }
     else if (m_topology->getNbTriangles()>0 && triangleGeo) // Triangle topology
     {
@@ -1388,12 +1394,14 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         for (Index i = 0; i<n; ++i)
             trianglesAdded.push_back(i);
 
-        m_vertexMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
         m_massLumpingCoeff = 2.0;
-
-        if (!isLumped()) {
+        if (!isLumped())
+        {
             m_edgeMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
+            m_massLumpingCoeff = 1.0;
         }
+
+        m_vertexMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
     }
 
     d_vertexMass.registerTopologicalData();
@@ -1776,7 +1784,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromTotalMass()
     for (size_t i = 0; i < vertexMass.size(); i++)
     {
         vertexMass[i] *= md;
-        sumMass += vertexMass[i];
+        sumMass += vertexMass[i] * m_massLumpingCoeff;
     }
 
     // Same for edgeMass
