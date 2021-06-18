@@ -649,6 +649,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
 
     /***********************/
     // MOVED SINCE v21.06
+    { "SpatialGridPointModel", Moved("v21.06", "SofaMiscCollision", "SofaSphFluid") },
 };
 
 } // namespace lifecycle
