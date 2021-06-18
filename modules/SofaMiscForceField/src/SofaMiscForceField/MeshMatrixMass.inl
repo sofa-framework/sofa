@@ -1749,6 +1749,14 @@ void MeshMatrixMass<DataTypes, MassType>::initFromMassDensity()
     {
         sumMass += vertexMassInfo[i]*m_massLumpingCoeff;
     }
+
+    // Same for edgeMass
+    helper::WriteAccessor<Data<MassVector> > edgeMass = d_edgeMass;
+    for (size_t i = 0; i < edgeMass.size(); i++)
+    {
+        sumMass += edgeMass[i] * 2;
+    }
+
     d_totalMass.setValue(sumMass);
 }
 
