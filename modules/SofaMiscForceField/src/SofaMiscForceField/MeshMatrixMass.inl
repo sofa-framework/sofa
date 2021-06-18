@@ -154,7 +154,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
             for (unsigned int j=0; j<3; ++j)
                 VertexMasses[ t[j] ] += mass;
 
-            // update total mass
+            // update total mass: 
             totalMass += 3.0 * mass;
         }
     }
@@ -199,8 +199,8 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
             for (unsigned int j=0; j<3; ++j)
                 EdgeMasses[ te[j] ] += mass;
 
-            // update total mass
-            totalMass += 3.0 * mass;
+            // update total mass: *2 because added to 2 vertices
+            totalMass += 3.0 * 2.0 * mass;
         }
     }
 }
@@ -281,8 +281,8 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruct
             for (unsigned int j=0; j<3; ++j)
                 EdgeMasses[ te[j] ] -= mass;
 
-            // update total mass
-            totalMass -= 3.0 * mass;
+            // update total mass: *2 because added to 2 vertices
+            totalMass -= 3.0 * 2.0 * mass;
         }
     }
 }
@@ -416,8 +416,8 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
             for (unsigned int j=0; j<4; ++j)
                 EdgeMasses[ qe[j] ] += mass;
 
-            // update total mass
-            totalMass += 4.0 * mass;
+            // update total mass: *2 because added to 2 vertices
+            totalMass += 4.0 * mass * 2.0;
         }
     }
 }
@@ -498,8 +498,8 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(
             for (unsigned int j=0; j<4; ++j)
                 EdgeMasses[ qe[j] ] -= mass;
 
-            // update total mass
-            totalMass -= 4.0 * mass;
+            // update total mass: *2 because added to 2 vertices
+            totalMass -= 4.0 * mass * 2.0;
         }
     }
 }
@@ -636,7 +636,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
                 EdgeMasses[ te[j] ] += mass;
 
             // update total mass
-            totalMass += 6.0 * mass;
+            totalMass += 6.0 * mass * 2.0;
         }
     }
 }
@@ -718,7 +718,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestr
                 EdgeMasses[ te[j] ] -= mass;
 
             // update total mass
-            totalMass -= 6.0 * mass;
+            totalMass -= 6.0 * mass * 2.0;
         }
     }
 }
@@ -854,7 +854,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
                 EdgeMasses[ he[j] ] += mass;
 
             // update total mass
-            totalMass += 12.0 * mass;
+            totalMass += 12.0 * mass * 2.0;
         }
     }
 }
@@ -936,7 +936,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestru
                 EdgeMasses[ he[j] ] -= mass;
 
             // update total mass
-            totalMass -= 12.0 * mass;
+            totalMass -= 12.0 * mass * 2.0;
         }
     }
 }
