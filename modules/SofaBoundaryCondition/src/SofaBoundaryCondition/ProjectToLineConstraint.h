@@ -132,9 +132,6 @@ public:
         using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >::applyDestroyFunction;
         void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::type::vector< Index > & /*ancestors*/,
-                const sofa::type::vector< double > & /*coefs*/);
     protected:
         ProjectToLineConstraint<DataTypes> *fc;
     };

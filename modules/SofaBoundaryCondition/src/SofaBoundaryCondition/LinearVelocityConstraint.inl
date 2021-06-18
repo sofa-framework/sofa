@@ -34,14 +34,6 @@
 namespace sofa::component::projectiveconstraintset
 {
 
-
-// Define TestNewPointFunction
-template< class TDataTypes>
-bool LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    return lc != 0;
-}
-
 // Define RemovalFunction
 template< class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)

@@ -151,9 +151,6 @@ public:
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
 
         void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::type::vector< Index > & /*ancestors*/,
-                const sofa::type::vector< double > & /*coefs*/);
     protected:
         PartialLinearMovementConstraint<DataTypes> *lc;
     };

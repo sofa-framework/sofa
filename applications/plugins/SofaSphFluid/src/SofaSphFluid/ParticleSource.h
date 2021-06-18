@@ -119,10 +119,6 @@ public:
         }
 
 
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::type::vector< Index > & /*ancestors*/,
-                const sofa::type::vector< double > & /*coefs*/) {return false;}
-
     protected:
         ParticleSource<DataTypes> *ps;
     };

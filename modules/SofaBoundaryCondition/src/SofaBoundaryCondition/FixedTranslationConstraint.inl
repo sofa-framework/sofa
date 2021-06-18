@@ -31,13 +31,6 @@
 namespace sofa::component::projectiveconstraintset
 {
 
-// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    return fc != 0;
-}
-
 // Define RemovalFunction
 template< class DataTypes>
 void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
