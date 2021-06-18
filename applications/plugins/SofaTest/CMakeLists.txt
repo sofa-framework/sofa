@@ -31,13 +31,6 @@ list(APPEND SOURCE_FILES
     AffinePatch_test.cpp
     )
 
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    list(APPEND HEADER_FILES
-        )
-    list(APPEND SOURCE_FILES
-        )
-endif()
-
 sofa_find_package(SofaFramework REQUIRED)
 sofa_find_package(SofaMiscForceField REQUIRED)
 sofa_find_package(SofaMiscMapping REQUIRED)

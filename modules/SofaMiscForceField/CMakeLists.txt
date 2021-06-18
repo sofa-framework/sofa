@@ -23,13 +23,6 @@ list(APPEND SOURCE_FILES
     ${SOFAMISCFORCEFIELD_SRC}/MeshMatrixMass.cpp
     )
 
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    list(APPEND HEADER_FILES
-        )
-    list(APPEND SOURCE_FILES
-        )
-endif()
-
 sofa_find_package(SofaFramework REQUIRED) # SofaHelper
 sofa_find_package(SofaBaseMechanics REQUIRED)
 sofa_find_package(SofaDeformable REQUIRED)
