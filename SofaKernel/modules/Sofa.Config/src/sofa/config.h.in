@@ -245,6 +245,17 @@ typedef unsigned __int64	uint64_t;
         "v20.12 (PR#1627)", "v21.06", \
         "This should use a reference instead of a pointer. ")
 
+
+#define SOFA_ATTRIBUTE_DEPRECATED__DRAWTOOL_USES_RGBACOLOR() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v20.12 (PR#1626)", "v21.06", \
+        "Use RGBAColor to define colors. ")
+
+#define SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR() \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v20.12 (PR#1626)", "v21.06", \
+        "Use RGBAColor to define colors. ")
+
 /**********************************************/
 
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
