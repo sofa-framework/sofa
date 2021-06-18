@@ -145,6 +145,11 @@ typedef unsigned __int64	uint64_t;
         "v20.06 (PR#1283)", "v21.06", \
         "Information on how to update your code is provided in the PR description. ")
 
+#define SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION() \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v20.06 (PR#1283)", "v21.06", \
+        "Information on how to update your code is provided in the PR description. ")
+
 
 #define SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE(msg) \
     SOFA_ATTRIBUTE_DISABLED( \

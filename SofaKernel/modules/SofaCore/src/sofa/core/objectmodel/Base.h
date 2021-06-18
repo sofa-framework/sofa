@@ -435,12 +435,8 @@ public:
     /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
-    static std::string typeName(const T* ptr = nullptr)
-    {
-        SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
-    }
+    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
+    static std::string typeName(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the class name of a type derived from this class
     ///
@@ -448,12 +444,8 @@ public:
     /// \code  std::string type = Base::className<B>(); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
-    static std::string className(const T* ptr = nullptr)
-    {
-        SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::decodeClassName(typeid(T));
-    }
+    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
+    static std::string className(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the namespace name of a type derived from this class
     ///
@@ -461,12 +453,8 @@ public:
     /// \code  std::string type = Base::namespaceName<T>(); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
-    static std::string namespaceName(const T* ptr = nullptr)
-    {
-        SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::decodeNamespaceName(typeid(T));
-    }
+    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
+    static std::string namespaceName(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the template name of a type derived from this class
     ///
@@ -474,12 +462,8 @@ public:
     /// \code  std::string type = Base::templateName<B>); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION()
-    static std::string templateName(const T* ptr = nullptr)
-    {
-        SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::decodeTemplateName(typeid(T));
-    }
+    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
+    static std::string templateName(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the shortname of a type derived from this class.
     /// The default implementation return the class name.
