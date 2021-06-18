@@ -128,10 +128,6 @@ public:
         using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >::applyDestroyFunction;
         void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
     protected:
         ProjectToPointConstraint<DataTypes> *fc;
     };

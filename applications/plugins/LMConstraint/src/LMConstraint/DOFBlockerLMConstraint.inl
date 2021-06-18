@@ -30,20 +30,6 @@
 namespace sofa::component::constraintset
 {
 
-// Define TestNewPointFunction
-template< class DataTypes>
-bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(Index /*nbPoints*/, const sofa::helper::vector< Index > &, const sofa::helper::vector< double >& )
-{
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 // Define RemovalFunction
 template< class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(Index pointIndex, value_type &)

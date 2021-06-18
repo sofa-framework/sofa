@@ -34,19 +34,6 @@ namespace sofa::component::projectiveconstraintset
 {
 
 template< class DataTypes>
-bool ProjectToLineConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    if (fc)
-    {
-        return false;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-template< class DataTypes>
 void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type> &)
 {
     if (fc)
