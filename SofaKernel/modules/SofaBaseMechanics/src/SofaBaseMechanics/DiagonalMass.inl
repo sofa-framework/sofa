@@ -552,25 +552,22 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(con
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::clear()
 {
-    MassVector& masses = *d_vertexMass.beginEdit();
+    helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
     masses.clear();
-    d_vertexMass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
 {
-    MassVector& masses = *d_vertexMass.beginEdit();
+    helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
     masses.push_back(m);
-    d_vertexMass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 {
-    MassVector& masses = *d_vertexMass.beginEdit();
+    helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
     masses.resize(vsize);
-    d_vertexMass.endEdit();
 }
 
 // -- Mass interface
@@ -867,13 +864,12 @@ void DiagonalMass<DataTypes, MassType>::init()
         // TODO(dmarchal 2018-11-10): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
         if (this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < unsigned(this->mstate->getSize()))
         {
-            MassVector &masses= *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             size_t i = masses.size()-1;
             size_t n = size_t(this->mstate->getSize());
             masses.reserve(n);
             while (masses.size() < n)
                 masses.push_back(masses[i]);
-            d_vertexMass.endEdit();
         }
 
         massInitialization();
@@ -988,8 +984,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
     {
         if (m_topology->getNbHexahedra()>0 && hexaGeo)
         {
-
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::HEXAHEDRON;
 
             masses.resize(this->mstate->getSize());
@@ -1019,13 +1014,10 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             }
 
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
-
         }
         else if (m_topology->getNbTetrahedra()>0 && tetraGeo)
         {
-
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::TETRAHEDRON;
 
             // resize array
@@ -1056,10 +1048,9 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
         }
         else if (m_topology->getNbQuads()>0 && quadGeo) {
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::QUAD;
 
             // resize array
@@ -1090,11 +1081,10 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
         }
         else if (m_topology->getNbTriangles()>0 && triangleGeo)
         {
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::TRIANGLE;
 
             // resize array
@@ -1125,12 +1115,10 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
         }
         else if (m_topology->getNbEdges()>0 && edgeGeo)
         {
-
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::EDGE;
 
             // resize array
@@ -1161,7 +1149,6 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
         }
     }
 }
@@ -1179,7 +1166,7 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
     }
     
     Real mass = Real(0);
-    MassVector& masses = *d_vertexMass.beginEdit();
+    helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
     // resize array
     masses.clear();
     masses.resize(this->mstate->getSize());
@@ -1295,8 +1282,6 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
         }
     }
 
-    d_vertexMass.endEdit();
-
     return total_mass;
 }
 
@@ -1377,7 +1362,10 @@ void DiagonalMass<DataTypes, MassType>::initFromVertexMass()
     Real sumMass = computeVertexMass(1.0);
 
     // Set real density from sumMass found
-    setMassDensity(Real(totalMassSave / sumMass));
+    if (sumMass < std::numeric_limits<typename DataTypes::Real>::epsilon())
+        setMassDensity(1.0);
+    else
+        setMassDensity(Real(totalMassSave / sumMass));
 
     // restore input vertexMass vector
     helper::WriteAccessor<Data<MassVector> > vertexMassWrite = d_vertexMass;
