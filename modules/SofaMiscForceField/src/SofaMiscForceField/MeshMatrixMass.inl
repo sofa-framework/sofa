@@ -1076,8 +1076,8 @@ void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers(sofa::core::topol
     d_vertexMass.linkToEdgeDataArray();
     
     // Register topological Data
-    d_vertexMassInfo.registerTopologicalData();
-    d_edgeMassInfo.registerTopologicalData();
+    d_vertexMass.registerTopologicalData();
+    d_edgeMass.registerTopologicalData();
 }
 
 
@@ -1303,8 +1303,8 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         m_massLumpingCoeff = 2.0;
     }
 
-    d_vertexMassInfo.registerTopologicalData();
-    d_edgeMassInfo.registerTopologicalData();
+    d_vertexMass.registerTopologicalData();
+    d_edgeMass.registerTopologicalData();
 
     d_vertexMass.endEdit();
     d_edgeMass.endEdit();
