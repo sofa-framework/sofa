@@ -1169,18 +1169,16 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
         for (Topology::HexahedronID i = 0; i < m_topology->getNbHexahedra(); ++i)
         {
             const Hexahedron& h = m_topology->getHexahedron(i);
-            if (hexaGeo)
-            {
-                if (d_computeMassOnRest.getValue())
-                    mass = (density * hexaGeo->computeRestHexahedronVolume(i)) / (Real(8.0));
-                else
-                    mass = (density * hexaGeo->computeHexahedronVolume(i)) / (Real(8.0));
 
-                for (unsigned int j = 0; j < h.size(); j++)
-                {
-                    masses[h[j]] += mass;
-                    total_mass += mass;
-                }
+            if (d_computeMassOnRest.getValue())
+                mass = (density * hexaGeo->computeRestHexahedronVolume(i)) / (Real(8.0));
+            else
+                mass = (density * hexaGeo->computeHexahedronVolume(i)) / (Real(8.0));
+
+            for (unsigned int j = 0; j < h.size(); j++)
+            {
+                masses[h[j]] += mass;
+                total_mass += mass;
             }
         }
     }
@@ -1191,13 +1189,12 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
         for (Topology::TetrahedronID i = 0; i < m_topology->getNbTetrahedra(); ++i)
         {
             const Tetrahedron& t = m_topology->getTetrahedron(i);
-            if (tetraGeo)
-            {
-                if (d_computeMassOnRest.getValue())
-                    mass = (density * tetraGeo->computeRestTetrahedronVolume(i)) / (Real(4.0));
-                else
-                    mass = (density * tetraGeo->computeTetrahedronVolume(i)) / (Real(4.0));
-            }
+
+            if (d_computeMassOnRest.getValue())
+                mass = (density * tetraGeo->computeRestTetrahedronVolume(i)) / (Real(4.0));
+            else
+                mass = (density * tetraGeo->computeTetrahedronVolume(i)) / (Real(4.0));
+
             for (unsigned int j = 0; j < t.size(); j++)
             {
                 masses[t[j]] += mass;
@@ -1212,13 +1209,12 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
         for (Topology::QuadID i = 0; i < m_topology->getNbQuads(); ++i)
         {
             const Quad& t = m_topology->getQuad(i);
-            if (quadGeo)
-            {
-                if (d_computeMassOnRest.getValue())
-                    mass = (density * quadGeo->computeRestQuadArea(i)) / (Real(4.0));
-                else
-                    mass = (density * quadGeo->computeQuadArea(i)) / (Real(4.0));
-            }
+
+            if (d_computeMassOnRest.getValue())
+                mass = (density * quadGeo->computeRestQuadArea(i)) / (Real(4.0));
+            else
+                mass = (density * quadGeo->computeQuadArea(i)) / (Real(4.0));
+
             for (unsigned int j = 0; j < t.size(); j++)
             {
                 masses[t[j]] += mass;
@@ -1233,13 +1229,12 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
         for (Topology::TriangleID i = 0; i < m_topology->getNbTriangles(); ++i)
         {
             const Triangle& t = m_topology->getTriangle(i);
-            if (triangleGeo)
-            {
-                if (d_computeMassOnRest.getValue())
-                    mass = (density * triangleGeo->computeRestTriangleArea(i)) / (Real(3.0));
-                else
-                    mass = (density * triangleGeo->computeTriangleArea(i)) / (Real(3.0));
-            }
+
+            if (d_computeMassOnRest.getValue())
+                mass = (density * triangleGeo->computeRestTriangleArea(i)) / (Real(3.0));
+            else
+                mass = (density * triangleGeo->computeTriangleArea(i)) / (Real(3.0));
+
             for (unsigned int j = 0; j < t.size(); j++)
             {
                 masses[t[j]] += mass;
@@ -1254,13 +1249,12 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
         for (Topology::EdgeID i = 0; i < m_topology->getNbEdges(); ++i)
         {
             const Edge& e = m_topology->getEdge(i);
-            if (edgeGeo)
-            {
-                if (d_computeMassOnRest.getValue())
-                    mass = (density * edgeGeo->computeRestEdgeLength(i)) / (Real(2.0));
-                else
-                    mass = (density * edgeGeo->computeEdgeLength(i)) / (Real(2.0));
-            }
+
+            if (d_computeMassOnRest.getValue())
+                mass = (density * edgeGeo->computeRestEdgeLength(i)) / (Real(2.0));
+            else
+                mass = (density * edgeGeo->computeEdgeLength(i)) / (Real(2.0));
+
             for (unsigned int j = 0; j < e.size(); j++)
             {
                 masses[e[j]] += mass;
