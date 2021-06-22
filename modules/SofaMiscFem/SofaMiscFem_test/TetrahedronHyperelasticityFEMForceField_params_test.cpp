@@ -29,6 +29,12 @@ using sofa::testing::BaseSimulationTest;
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
 
+#include <SofaBase/initSofaBase.h>
+#include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
+#include <SofaBoundaryCondition/initSofaBoundaryCondition.h>
+#include <SofaMiscForceField/initSofaMiscForceField.h>
+#include <SofaEngine/initSofaEngine.h>
+
 #include <sofa/defaulttype/Vec.h>
 
 #include <iostream>
@@ -77,6 +83,14 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
     unsigned char flags; ///< testing options. (all by default). To be used with precaution.
     /// }
 
+    void SetUp() override
+    {
+        sofa::component::initSofaBase();
+        sofa::component::initSofaImplicitOdeSolver();
+        sofa::component::initSofaBoundaryCondition();
+        sofa::component::initSofaMiscForceField();
+        sofa::component::initSofaEngine();
+    }
 
     TetrahedronHyperelasticityFEMForceField_params_test()
         : sceneFilename(std::string(SOFAMISCFEM_TEST_SCENES_DIR) + "/" + "TetrahedronHyperelasticityFEMForceField_base.scn")

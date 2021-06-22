@@ -31,7 +31,11 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/defaulttype/Vec.h>
 
-#include <SofaBaseUtils/initSofaBaseUtils.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
+#include <SofaBoundaryCondition/initSofaBoundaryCondition.h>
+#include <SofaMiscForceField/initSofaMiscForceField.h>
+#include <SofaEngine/initSofaEngine.h>
 
 #include <iostream>
 #include <fstream>
@@ -78,6 +82,14 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
     unsigned char flags; ///< testing options. (all by default). To be used with precaution.
     /// }
 
+    void SetUp() override
+    {
+        sofa::component::initSofaBase();
+        sofa::component::initSofaImplicitOdeSolver();
+        sofa::component::initSofaBoundaryCondition();
+        sofa::component::initSofaMiscForceField();
+        sofa::component::initSofaEngine();
+    }
 
     TetrahedronHyperelasticityFEMForceField_scene_test()
         : sceneFilename(std::string(SOFAMISCFEM_TEST_SCENES_DIR) + "/" + "TetrahedronHyperelasticityFEMForceField_test.scn")
@@ -87,7 +99,6 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         //Tip position practice : -0.000373234, -0.106832, 0.141393
 
     {
-        sofa::component::initSofaBaseUtils();
         timeEvaluation = 3.60;
         timeStep = 0.02;
         tipPoint = 2677;
