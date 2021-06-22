@@ -175,7 +175,7 @@ void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const f
 
 template <typename V>
 void drawEmptyParallelepiped(const V& vert1, const V& vert2, const V& vert3, const V& vert4, const V& vecFromFaceToOppositeFace, const float& rad=1.0, const int precision=8,
-                             const V& color=sofa::type::fixed_array<int, 3>(255,0,0))
+                             const V& color = sofa::type::RGBAColor::red())
 {
     glColor3ub(255, 255, 255);
     gluQuadricDrawStyle(quadric, GLU_FILL);
