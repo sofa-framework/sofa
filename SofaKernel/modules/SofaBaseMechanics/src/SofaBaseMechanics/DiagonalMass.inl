@@ -1329,8 +1329,12 @@ void DiagonalMass<DataTypes, MassType>::initFromVertexMass()
     msg_info() << "vertexMass information is used";
 
     // save a copy of input vertexMass vector
-    helper::ReadAccessor< MassVector > vertexMass = d_vertexMass;
-    const Real totalMassSave = std::accumulate(vertexMass.begin(), vertexMass.end(), (Real)0, std::plus<Real>());
+    const MassVector& vertexMass = d_vertexMass.getValue();
+    Real totalMassSave = 0.0;
+    for (auto vm : vertexMass)
+    {
+        totalMassSave += vm;
+    }
 
     // set total mass
     d_totalMass.setValue(totalMassSave);
