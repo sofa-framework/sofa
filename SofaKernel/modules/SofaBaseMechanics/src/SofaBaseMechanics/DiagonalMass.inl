@@ -1172,9 +1172,9 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
             if (hexaGeo)
             {
                 if (d_computeMassOnRest.getValue())
-                    mass = (md * hexaGeo->computeRestHexahedronVolume(i)) / (Real(8.0));
+                    mass = (density * hexaGeo->computeRestHexahedronVolume(i)) / (Real(8.0));
                 else
-                    mass = (md * hexaGeo->computeHexahedronVolume(i)) / (Real(8.0));
+                    mass = (density * hexaGeo->computeHexahedronVolume(i)) / (Real(8.0));
 
                 for (unsigned int j = 0; j < h.size(); j++)
                 {
@@ -1194,9 +1194,9 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
             if (tetraGeo)
             {
                 if (d_computeMassOnRest.getValue())
-                    mass = (md * tetraGeo->computeRestTetrahedronVolume(i)) / (Real(4.0));
+                    mass = (density * tetraGeo->computeRestTetrahedronVolume(i)) / (Real(4.0));
                 else
-                    mass = (md * tetraGeo->computeTetrahedronVolume(i)) / (Real(4.0));
+                    mass = (density * tetraGeo->computeTetrahedronVolume(i)) / (Real(4.0));
             }
             for (unsigned int j = 0; j < t.size(); j++)
             {
@@ -1215,9 +1215,9 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
             if (quadGeo)
             {
                 if (d_computeMassOnRest.getValue())
-                    mass = (md * quadGeo->computeRestQuadArea(i)) / (Real(4.0));
+                    mass = (density * quadGeo->computeRestQuadArea(i)) / (Real(4.0));
                 else
-                    mass = (md * quadGeo->computeQuadArea(i)) / (Real(4.0));
+                    mass = (density * quadGeo->computeQuadArea(i)) / (Real(4.0));
             }
             for (unsigned int j = 0; j < t.size(); j++)
             {
@@ -1236,9 +1236,9 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
             if (triangleGeo)
             {
                 if (d_computeMassOnRest.getValue())
-                    mass = (md * triangleGeo->computeRestTriangleArea(i)) / (Real(3.0));
+                    mass = (density * triangleGeo->computeRestTriangleArea(i)) / (Real(3.0));
                 else
-                    mass = (md * triangleGeo->computeTriangleArea(i)) / (Real(3.0));
+                    mass = (density * triangleGeo->computeTriangleArea(i)) / (Real(3.0));
             }
             for (unsigned int j = 0; j < t.size(); j++)
             {
@@ -1257,9 +1257,9 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
             if (edgeGeo)
             {
                 if (d_computeMassOnRest.getValue())
-                    mass = (md * edgeGeo->computeRestEdgeLength(i)) / (Real(2.0));
+                    mass = (density * edgeGeo->computeRestEdgeLength(i)) / (Real(2.0));
                 else
-                    mass = (md * edgeGeo->computeEdgeLength(i)) / (Real(2.0));
+                    mass = (density * edgeGeo->computeEdgeLength(i)) / (Real(2.0));
             }
             for (unsigned int j = 0; j < e.size(); j++)
             {
@@ -1337,9 +1337,9 @@ void DiagonalMass<DataTypes, MassType>::initFromVertexMass()
     // save a copy of input vertexMass vector
     MassVector vertexMass = d_vertexMass.getValue();
     Real totalMassSave = 0.0;
-    for(size_t i=0; i<vertexMass.size(); i++)
+    for (auto vm : vertexMass)
     {
-        totalMassSave += vertexMass[i];
+        totalMassSave += vm;
     }
 
     // set total mass
@@ -1406,14 +1406,17 @@ void DiagonalMass<DataTypes, MassType>::initFromTotalMass()
     const Real sumMass = computeVertexMass(1.0);
 
     // Set real density from sumMass found
-    setMassDensity(Real(totalMass / sumMass));
+    if (sumMass < std::numeric_limits<typename DataTypes::Real>::epsilon())
+        setMassDensity(1.0);
+    else
+        setMassDensity(Real(totalMass / sumMass));
     
     // Update vertex mass using real density
     helper::WriteAccessor<Data<MassVector> > vertexMass = d_vertexMass;
-    const Real& md = d_massDensity.getValue();
-    for (size_t i = 0; i < vertexMass.size(); i++)
+    const Real& density = d_massDensity.getValue();
+    for (auto vm : vertexMass)
     {
-        vertexMass[i] *= md;
+        vm *= density;
     }
 }
 
