@@ -244,8 +244,8 @@ protected:
     void initTopologyHandlers();
     void massInitialization();
 
-    /// Will compute the vertexMass using input denstiy and return the corresponding full mass.
-    Real computeVertexMass(const Real& density);
+    /// Compute the vertexMass using input density and return the corresponding full mass.
+    Real computeVertexMass(Real density);
 
 public:
 
@@ -256,7 +256,7 @@ public:
     void printMass();
 
     /// Compute the mass from input values
-    SOFA_ATTRIBUTE_DEPRECATED("v21.06", "v21.12", "ComputeMass should not be call from outside. Changing one of the Data: density, totalMass or vertexMass will recompute the mass.")
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06", "v21.12", "ComputeMass should not be called from outside. Changing one of the Data: density, totalMass or vertexMass will recompute the mass.")
     void computeMass();
 
 

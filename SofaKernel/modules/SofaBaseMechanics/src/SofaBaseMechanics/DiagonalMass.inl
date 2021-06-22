@@ -1146,7 +1146,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
 
 
 template <class DataTypes, class MassType>
-typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassType>::computeVertexMass(const Real& md)
+typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassType>::computeVertexMass(Real density)
 {
     Real total_mass = Real(0);
 
@@ -1160,11 +1160,7 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
     helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
     // resize array
     masses.clear();
-    masses.resize(this->mstate->getSize());
-    
-    // set to 0
-    for (unsigned int i = 0; i < masses.size(); ++i)
-        masses[i] = Real(0);
+    masses.resize(this->mstate->getSize(), Real(0));
 
     if (m_topology->getNbHexahedra() > 0 && hexaGeo)
     {
@@ -1350,7 +1346,7 @@ void DiagonalMass<DataTypes, MassType>::initFromVertexMass()
     d_totalMass.setValue(totalMassSave);
 
     // compute vertexMass vector with density == 1
-    Real sumMass = computeVertexMass(1.0);
+    const Real sumMass = computeVertexMass(1.0);
 
     // Set real density from sumMass found
     if (sumMass < std::numeric_limits<typename DataTypes::Real>::epsilon())
@@ -1392,7 +1388,7 @@ void DiagonalMass<DataTypes, MassType>::initFromMassDensity()
 
     // Compute Mass per vertex using mesh topology
     const Real& md = d_massDensity.getValue();
-    Real sumMass = computeVertexMass(md);
+    const Real sumMass = computeVertexMass(md);
 
     // sum of mass per vertex give total mass
     d_totalMass.setValue(sumMass);
@@ -1407,7 +1403,7 @@ void DiagonalMass<DataTypes, MassType>::initFromTotalMass()
     const Real totalMass = d_totalMass.getValue();
     
     // compute vertexMass vector with density == 1
-    Real sumMass = computeVertexMass(1.0);
+    const Real sumMass = computeVertexMass(1.0);
 
     // Set real density from sumMass found
     setMassDensity(Real(totalMass / sumMass));
