@@ -29,6 +29,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <numeric>
 
 namespace sofa::component::mass
 {
@@ -1330,11 +1331,7 @@ void DiagonalMass<DataTypes, MassType>::initFromVertexMass()
 
     // save a copy of input vertexMass vector
     const MassVector& vertexMass = d_vertexMass.getValue();
-    Real totalMassSave = 0.0;
-    for (auto vm : vertexMass)
-    {
-        totalMassSave += vm;
-    }
+    const Real totalMassSave = std::accumulate(vertexMass.begin(), vertexMass.end(), Real(0));
 
     // set total mass
     d_totalMass.setValue(totalMassSave);
