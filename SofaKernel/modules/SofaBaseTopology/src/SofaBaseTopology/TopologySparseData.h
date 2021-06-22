@@ -27,7 +27,7 @@
 namespace sofa::component::topology
 {
 
-//SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2114", "This class has been removed. TopologySubsetData should be used instead.")
+//SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06", "This class has been removed. TopologySubsetData should be used instead.")
 template< class VecT > using PointSparseData = TopologySubsetData<core::topology::BaseMeshTopology::Point, VecT>;
 template< class VecT > using EdgeSparseData = TopologySubsetData<core::topology::BaseMeshTopology::Edge, VecT>;
 template< class VecT > using TriangleSparseData = TopologySubsetData<core::topology::BaseMeshTopology::Triangle, VecT>;
