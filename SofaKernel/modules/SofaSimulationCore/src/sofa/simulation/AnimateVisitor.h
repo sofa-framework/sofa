@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_ANIMATEACTION_H
-#define SOFA_SIMULATION_ANIMATEACTION_H
+#pragma once
 
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/fwd.h>
@@ -34,10 +33,7 @@
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/collision/Pipeline.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API AnimateVisitor : public Visitor
@@ -46,20 +42,17 @@ class SOFA_SIMULATION_CORE_API AnimateVisitor : public Visitor
 protected :
     SReal dt;
     bool firstNodeVisited;
+
 public:
-    AnimateVisitor(const core::ExecParams* params = core::execparams::defaultInstance());
     AnimateVisitor(const core::ExecParams* params, SReal dt);
 
     void setDt(SReal v) { dt = v; }
     SReal getDt() const { return dt; }
 
     virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
-    virtual void processBehaviorModel(simulation::Node* node, core::BehaviorModel* obj);
     virtual void fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* obj);
-    virtual void processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
-    //virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override { return true; }
@@ -70,8 +63,4 @@ public:
     const char* getClassName() const override { return "AnimateVisitor"; }
 };
 
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation
