@@ -38,6 +38,7 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <numeric>
 
 namespace sofa::component::mass
 {
@@ -1304,8 +1305,8 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     clear();
 
     // prepare to store info in the vertex array
-    helper::vector<MassType>& my_vertexMassInfo = *d_vertexMass.beginEdit();
-    helper::vector<MassType>& my_edgeMassInfo = *d_edgeMass.beginEdit();
+    helper::WriteAccessor < Data < MassVector > > my_vertexMassInfo = d_vertexMass;
+    helper::WriteAccessor < Data < MassVector > > my_edgeMassInfo = d_edgeMass;
 
     unsigned int ndof = this->mstate->getSize();
     unsigned int nbEdges=m_topology->getNbEdges();
@@ -1406,9 +1407,6 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
 
     d_vertexMass.registerTopologicalData();
     d_edgeMass.registerTopologicalData();
-
-    d_vertexMass.endEdit();
-    d_edgeMass.endEdit();
 }
 
 
@@ -1744,17 +1742,15 @@ void MeshMatrixMass<DataTypes, MassType>::initFromMassDensity()
     computeMass();
 
     const MassVector &vertexMassInfo = d_vertexMass.getValue();
-    Real sumMass = 0.0;
-    for (size_t i=0; i<size_t(m_topology->getNbPoints()); i++)
-    {
-        sumMass += vertexMassInfo[i]*m_massLumpingCoeff;
-    }
+    
+    // Sum the mass per vertices and apply massLumping coef
+    Real sumMass = std::accumulate(vertexMassInfo.begin(), vertexMassInfo.end(), Real(0)) * m_massLumpingCoeff;
 
-    // Same for edgeMass
-    helper::WriteAccessor<Data<MassVector> > edgeMass = d_edgeMass;
-    for (size_t i = 0; i < edgeMass.size(); i++)
+    if (!d_lumping.getValue())
     {
-        sumMass += edgeMass[i] * 2;
+        // Add mass per edges if not lumped, *2 as it is added to both edge vertices
+        helper::WriteAccessor<Data<MassVector> > edgeMass = d_edgeMass;
+        sumMass += std::accumulate(edgeMass.begin(), edgeMass.end(), Real(0)) * 2;
     }
 
     d_totalMass.setValue(sumMass);
@@ -1777,30 +1773,30 @@ void MeshMatrixMass<DataTypes, MassType>::initFromTotalMass()
     computeMass();
 
     // total mass from geometry with density = 1
-    Real sumMass = d_totalMass.getValue();
+    const Real& sumMass = d_totalMass.getValue();
 
     // Set real density from sumMass found
-    Real md = Real(totalMassCpy / sumMass);
+    Real md = 1.0;
+    if (sumMass > std::numeric_limits<typename DataTypes::Real>::epsilon())
+        md = Real(totalMassCpy / sumMass);
+    
     setMassDensity(md);
 
     // restore input total mass (was changed by computeMass())
     setTotalMass(totalMassCpy);
 
     // Apply the real density no nead to recompute vertexMass from the geometry as all vertices have the same density in this case
-    sumMass = 0.0;
     helper::WriteAccessor<Data<MassVector> > vertexMass = d_vertexMass;
-    for (size_t i = 0; i < vertexMass.size(); i++)
+    for (auto& vm : vertexMass)
     {
-        vertexMass[i] *= md;
-        sumMass += vertexMass[i] * m_massLumpingCoeff;
+        vm *= md;
     }
 
     // Same for edgeMass
     helper::WriteAccessor<Data<MassVector> > edgeMass = d_edgeMass;
-    for (size_t i = 0; i < edgeMass.size(); i++)
+    for (auto& em : edgeMass)
     {
-        edgeMass[i] *= md;
-        sumMass += edgeMass[i] * 2;
+        em *= md;
     }
 }
 
@@ -1899,12 +1895,10 @@ void MeshMatrixMass<DataTypes, MassType>::copyVertexMass(){}
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::clear()
 {
-    MassVector& vertexMass = *d_vertexMass.beginEdit();
-    MassVector& edgeMass = *d_edgeMass.beginEdit();
+    helper::WriteAccessor < Data < MassVector > > vertexMass = d_vertexMass;
+    helper::WriteAccessor < Data < MassVector > > edgeMass = d_edgeMass;
     vertexMass.clear();
     edgeMass.clear();
-    d_vertexMass.endEdit();
-    d_edgeMass.endEdit();
 }
 
 
