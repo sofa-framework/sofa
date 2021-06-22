@@ -162,7 +162,7 @@ public:
     // HEXA topology
     //---------------------------------------------------------------
     void check_DefaultAttributes_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -190,11 +190,11 @@ public:
         EXPECT_TRUE( mass->findData("showAxisSizeFactor") != nullptr );
 
         if(mass!=nullptr){
-            const MassType volume = 8.0;
-            const MassType expectedTotalMass = 1.0f;
-            const MassType expectedDensity = expectedTotalMass / volume;
-            const VecMass expectedVMass(8, (MassType)(expectedDensity * volume * 1 / 20));
-            const VecMass expectedEMass(18, (MassType)(expectedDensity * volume * 1 / 40));
+            static const MassType volume = 8.0;
+            static const MassType expectedTotalMass = 1.0f;
+            static const MassType expectedDensity = expectedTotalMass / volume;
+            static const VecMass expectedVMass(8, (MassType)(expectedDensity * volume * 1 / 20));
+            static const VecMass expectedEMass(18, (MassType)(expectedDensity * volume * 1 / 40));
 
             check(expectedTotalMass, expectedDensity, expectedVMass, expectedEMass);
         }
@@ -203,7 +203,7 @@ public:
 
 
     void check_TotalMass_Initialization_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -224,10 +224,10 @@ public:
         EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            const MassType volume = 8.0;
-            const MassType volumeElem = volume / 8.0; // 8 hexa in the grid
-            const MassType expectedTotalMass = 2.0f;
-            const MassType expectedDensity = expectedTotalMass / volume;
+            static const MassType volume = 8.0;
+            static const MassType volumeElem = volume / 8.0; // 8 hexa in the grid
+            static const MassType expectedTotalMass = 2.0f;
+            static const MassType expectedDensity = expectedTotalMass / volume;
 
             EXPECT_EQ( mass->d_vertexMass.getValue().size(), 27 );
             EXPECT_EQ( mass->d_edgeMass.getValue().size(), 90);
@@ -246,7 +246,7 @@ public:
 
 
     void check_MassDensity_Initialization_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -267,10 +267,10 @@ public:
         EXPECT_TRUE( mass != nullptr );
 
         if(mass!=nullptr){
-            const MassType volume = 8.0;
-            const MassType volumeElem = volume / 8.0; // 8 hexa in the grid            
-            const MassType expectedDensity = 1.0;
-            const MassType expectedTotalMass = expectedDensity * volume;
+            static const MassType volume = 8.0;
+            static const MassType volumeElem = volume / 8.0; // 8 hexa in the grid            
+            static const MassType expectedDensity = 1.0;
+            static const MassType expectedTotalMass = expectedDensity * volume;
 
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_EQ( mass->d_edgeMass.getValue().size(), 90);
@@ -289,7 +289,7 @@ public:
 
 
     void check_VertexMass_Lumping_Initialization_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -312,10 +312,10 @@ public:
 
         if(mass!=nullptr){
 
-            const MassType volume = 8.0;
-            const MassType volumeElem = volume / 8.0; // 8 hexa in the grid
-            const MassType expectedTotalMass = 27.0;
-            const MassType expectedDensity = expectedTotalMass / volume;
+            static const MassType volume = 8.0;
+            static const MassType volumeElem = volume / 8.0; // 8 hexa in the grid
+            static const MassType expectedTotalMass = 27.0;
+            static const MassType expectedDensity = expectedTotalMass / volume;
 
             EXPECT_EQ(mass->getMassCount(), 27);
             EXPECT_EQ(mass->d_edgeMass.getValue().size(), 90);
@@ -341,7 +341,7 @@ public:
     /// at last the vertexMass info
 
     void check_DoubleDeclaration_TotalMassAndMassDensity_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -373,7 +373,7 @@ public:
 
 
     void check_DoubleDeclaration_TotalMassAndVertexMass_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -407,7 +407,7 @@ public:
 
 
     void check_DoubleDeclaration_MassDensityAndVertexMass_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -444,7 +444,7 @@ public:
     /// using the default totalMass value = 1.0
 
     void check_TotalMass_WrongValue_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -476,7 +476,7 @@ public:
 
 
     void check_MassDensity_WrongValue_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -508,7 +508,7 @@ public:
 
 
     void check_MassDensity_WrongSize_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -540,7 +540,7 @@ public:
 
 
     void check_VertexMass_WrongValue_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -573,7 +573,7 @@ public:
 
 
     void check_VertexMass_WrongSize_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -607,7 +607,7 @@ public:
     /// Check coupling of wrong data values/size and concurrent data
 
     void check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -641,7 +641,7 @@ public:
 
 
     void check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -681,7 +681,7 @@ public:
     // TETRA topology
     //---------------------------------------------------------------
     void check_DefaultAttributes_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -726,7 +726,7 @@ public:
 
 
     void check_TotalMass_Initialization_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -765,7 +765,7 @@ public:
 
 
     void check_MassDensity_Initialization_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -803,7 +803,7 @@ public:
 
 
     void check_VertexMass_Lumping_Initialization_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -847,7 +847,7 @@ public:
     /// at last the vertexMass info
 
     void check_DoubleDeclaration_TotalMassAndMassDensity_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -885,7 +885,7 @@ public:
 
 
     void check_DoubleDeclaration_TotalMassAndVertexMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -924,7 +924,7 @@ public:
 
 
     void check_DoubleDeclaration_MassDensityAndVertexMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -966,7 +966,7 @@ public:
     /// using the default totalMass value = 1.0
 
     void check_TotalMass_WrongValue_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -1004,7 +1004,7 @@ public:
 
 
     void check_MassDensity_WrongValue_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -1042,7 +1042,7 @@ public:
 
 
     void check_MassDensity_WrongSize_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -1080,7 +1080,7 @@ public:
 
 
     void check_VertexMass_WrongValue_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -1118,7 +1118,7 @@ public:
 
 
     void check_VertexMass_WrongSize_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -1157,7 +1157,7 @@ public:
     /// Check coupling of wrong data values/size and concurrent data
 
     void check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -1197,7 +1197,7 @@ public:
 
 
     void check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -1253,12 +1253,12 @@ TEST_F(MeshMatrixMass3_test, singleTriangle)
     TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TriangleSetGeometryAlgorithms<Vec3Types> >();
 
-    const MassType volume = 0.5;
-    const MassType expectedTotalMass = 1.0f;
-    const MassType density = expectedTotalMass / volume;
+    static const MassType volume = 0.5;
+    static const MassType expectedTotalMass = 1.0f;
+    static const MassType density = expectedTotalMass / volume;
 
-    const VecMass expectedVMass(3, (MassType)(density * volume * 1 / 6));
-    const VecMass expectedEMass(3, (MassType)(density * volume * 1 / 12));
+    static const VecMass expectedVMass(3, (MassType)(density * volume * 1 / 6));
+    static const VecMass expectedEMass(3, (MassType)(density * volume * 1 / 12));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -1277,11 +1277,11 @@ TEST_F(MeshMatrixMass3_test, singleQuad)
     QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<QuadSetGeometryAlgorithms<Vec3Types> >();
 
-    const MassType volume = 1.0;
-    const MassType expectedTotalMass = 1.0f;
-    const MassType density = expectedTotalMass / volume;
-    const VecMass expectedVMass(4, (MassType)(density * volume * 1 / 8));
-    const VecMass expectedEMass(4, (MassType)(density * volume * 1 / 16));
+    static const MassType volume = 1.0;
+    static const MassType expectedTotalMass = 1.0f;
+    static const MassType density = expectedTotalMass / volume;
+    static const VecMass expectedVMass(4, (MassType)(density * volume * 1 / 8));
+    static const VecMass expectedEMass(4, (MassType)(density * volume * 1 / 16));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -1300,11 +1300,11 @@ TEST_F(MeshMatrixMass3_test, singleTetrahedron)
     TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TetrahedronSetGeometryAlgorithms<Vec3Types> >();
 
-    const MassType volume = MassType(1.0/3.0) * 0.5; // V = 1/3 * B * h
-    const MassType expectedTotalMass = 1.0f;
-    const MassType density = expectedTotalMass / volume;
-    const VecMass expectedVMass(4, (MassType)(density * volume * 1 / 10));
-    const VecMass expectedEMass(6, (MassType)(density * volume * 1 / 20));
+    static const MassType volume = MassType(1.0/3.0) * 0.5; // V = 1/3 * B * h
+    static const MassType expectedTotalMass = 1.0f;
+    static const MassType density = expectedTotalMass / volume;
+    static const VecMass expectedVMass(4, (MassType)(density * volume * 1 / 10));
+    static const VecMass expectedEMass(6, (MassType)(density * volume * 1 / 20));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -1327,11 +1327,11 @@ TEST_F(MeshMatrixMass3_test, singleHexahedron)
     HexahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<HexahedronSetGeometryAlgorithms<Vec3Types> >();
 
-    const MassType volume = 1.0;
-    const MassType expectedTotalMass = 1.0f;
-    const MassType density = expectedTotalMass / volume;
-    const VecMass expectedVMass(8, (MassType)(density * volume * 1 / 20));
-    const VecMass expectedEMass(12, (MassType)(density * volume * 1 / 40));
+    static const MassType volume = 1.0;
+    static const MassType expectedTotalMass = 1.0f;
+    static const MassType density = expectedTotalMass / volume;
+    static const VecMass expectedVMass(8, (MassType)(density * volume * 1 / 20));
+    static const VecMass expectedEMass(12, (MassType)(density * volume * 1 / 40));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -1473,8 +1473,6 @@ TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_Wro
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra){
     check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra();
 }
-
-
 
 
 } // namespace sofa
