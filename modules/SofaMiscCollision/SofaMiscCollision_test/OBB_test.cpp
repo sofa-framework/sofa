@@ -19,8 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/OBBIntTool.h>
-#include <SofaBaseCollision/CapsuleIntTool.h>
+#include <SofaMiscCollision/OBBIntTool.h>
+#include <SofaMiscCollision/CapsuleIntTool.h>
+#include <SofaMiscCollision/BaseIntTool.h>
+#include <SofaMiscCollision/MeshIntTool.h>
+
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
@@ -29,9 +32,6 @@ using sofa::testing::BaseTest;
 
 #include "OBBCapsPrimitiveCreator.h"
 #include <SofaMeshCollision_test/MeshPrimitiveCreator.h>
-
-#include <SofaBaseCollision/BaseIntTool.h>
-#include <SofaMeshCollision/MeshIntTool.h>
 
 using namespace sofa::defaulttype;
 
