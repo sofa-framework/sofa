@@ -22,7 +22,9 @@
 #ifndef SOFA_LENNARDJONESFORCEFIELD_TEST_H
 #define SOFA_LENNARDJONESFORCEFIELD_TEST_H
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -32,7 +34,7 @@
 namespace sofa {
 
 	template< class DataTypes>
-	struct LennardJonesForceField_test : public Sofa_test<typename DataTypes::Real>
+	struct LennardJonesForceField_test : public BaseSimulationTest
 	{
 		typedef component::container::MechanicalObject<DataTypes> DOFs;
 		typedef typename DOFs::Real  Real;
