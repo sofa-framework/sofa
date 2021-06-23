@@ -1,5 +1,0 @@
-# Those scene are crashing for the moment. See issue https://github.com/sofa-framework/sofa/issues/2189
-# To be removed when scenes are fixed.
-ignore "ProjectToPlaneConstraint_RemovingMeshTest.scn"
-ignore "FixedPlaneConstraint_RemovingMeshTest.scn"
-
