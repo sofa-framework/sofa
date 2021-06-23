@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <LMConstraint/BarycentricDistanceLMConstraintContact.inl>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/CapsuleModel.h>
+#include <SofaMiscCollision/RigidCapsuleModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMiscCollision/CapsuleContactMapper.h>
 #include <SofaMiscCollision/OBBContactMapper.h>

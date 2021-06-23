@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_CONSTRAINTSOLVER_H
-#define SOFA_CORE_BEHAVIOR_CONSTRAINTSOLVER_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 class BaseConstraintCorrection;
@@ -49,7 +42,9 @@ public:
 
     SOFA_ABSTRACT_CLASS(ConstraintSolver, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(ConstraintSolver)
+
 protected:
+
     ConstraintSolver();
 
     ~ConstraintSolver() override;
@@ -121,19 +116,10 @@ public:
     /// @param c is the ConstraintCorrection
     virtual void removeConstraintCorrection(BaseConstraintCorrection *s) = 0;
 
-
-protected:
-
 public:
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

@@ -353,12 +353,12 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     int buf_maxIter=0;
     if(CGlinearSolver)
     {
-        buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
-        buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
-        buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
-        CGlinearSolver->f_tolerance.setValue(1e-35);
-        CGlinearSolver->f_maxIter.setValue(5000);
-        CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-25);
+        buf_tolerance = (double) CGlinearSolver->d_tolerance.getValue();
+        buf_maxIter   = (int) CGlinearSolver->d_maxIter.getValue();
+        buf_threshold = (double) CGlinearSolver->d_smallDenominatorThreshold.getValue();
+        CGlinearSolver->d_tolerance.setValue(1e-35);
+        CGlinearSolver->d_maxIter.setValue(5000);
+        CGlinearSolver->d_smallDenominatorThreshold.setValue(1e-25);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -439,9 +439,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
     if(CGlinearSolver)
     {
-        CGlinearSolver->f_tolerance.setValue(buf_tolerance);
-        CGlinearSolver->f_maxIter.setValue(buf_maxIter);
-        CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+        CGlinearSolver->d_tolerance.setValue(buf_tolerance);
+        CGlinearSolver->d_maxIter.setValue(buf_maxIter);
+        CGlinearSolver->d_smallDenominatorThreshold.setValue(buf_threshold);
     }
 
     //Reset the velocity

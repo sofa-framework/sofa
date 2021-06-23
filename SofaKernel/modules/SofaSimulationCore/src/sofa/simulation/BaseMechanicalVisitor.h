@@ -240,6 +240,10 @@ protected:
     sofa::type::vector< sofa::core::ConstMultiVecId > readVector;
     sofa::type::vector< sofa::core::MultiVecId > writeVector;
 #endif
+
+private:
+    static const std::string fwdVisitorType;
+    static const std::string bwdVisitorType;
 };
 
 } // namespace sofa::simulation

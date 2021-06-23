@@ -27,7 +27,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include <SofaMiscCollision/initSofaMiscCollision.h>
 
 #include <gtest/gtest.h>

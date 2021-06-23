@@ -107,9 +107,9 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     solver->f_rayleighStiffness.setValue(0.5);
     solver->f_rayleighMass.setValue(0.5);
     CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
-    cgLinearSolver->f_maxIter.setValue(25);
-    cgLinearSolver->f_tolerance.setValue(1e-5);
-    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+    cgLinearSolver->d_maxIter.setValue(25);
+    cgLinearSolver->d_tolerance.setValue(1e-5);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
     // Mass
     typename UniformMass::SPtr mass = modeling::addNew<UniformMass>(SquareNode,"mass");
@@ -187,9 +187,9 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
 
     // CGLinearSolver
     typename CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(root,"linearSolver");
-    cgLinearSolver->f_maxIter=maxIter;
-    cgLinearSolver->f_tolerance =1e-9;
-    cgLinearSolver->f_smallDenominatorThreshold=1e-9;
+    cgLinearSolver->d_maxIter.setValue(maxIter);
+    cgLinearSolver->d_tolerance.setValue(1e-9);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
     // StaticSolver
     typename component::odesolver::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::StaticSolver>(root,"StaticSolver");
     // mechanicalObject object

@@ -1,7 +1,7 @@
 #ifndef BULLET_OBB_MODEL
 #define BULLET_OBB_MODEL
 
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <BulletCollisionDetection/config.h>

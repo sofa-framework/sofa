@@ -114,9 +114,9 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
         variationalSolver->f_saveEnergyInFile.setValue(0);
 
         CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
-        cgLinearSolver->f_maxIter=3000;
-        cgLinearSolver->f_tolerance =1e-12;
-        cgLinearSolver->f_smallDenominatorThreshold=1e-12;
+        cgLinearSolver->d_maxIter.setValue(3000);
+        cgLinearSolver->d_tolerance.setValue(1e-12);
+        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-12);
 
         // Set initial positions and velocities of fixed point and mass
         Coord xSun = Coord(0,0,0);

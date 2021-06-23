@@ -47,6 +47,9 @@ using sofa::component::collision::Sphere;
 using sofa::component::collision::SphereCollisionModel ;
 using sofa::component::collision::RigidSphere;
 
+#include <SofaMiscCollision/BaseIntTool.h>
+using sofa::component::collision::BaseIntTool;
+
 using sofa::core::collision::DetectionOutput;
 using sofa::type::Vec3d;
 

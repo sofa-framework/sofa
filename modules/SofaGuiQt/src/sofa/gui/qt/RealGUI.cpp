@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "RealGUI.h"
+#include <sofa/version.h>
 
 #ifdef SOFA_PML
 #  include <sofa/filemanager/sofapml/PMLReader.h>
@@ -1057,7 +1058,7 @@ void RealGUI::unloadScene(bool _withViewer)
 
 void RealGUI::setTitle ( std::string windowTitle )
 {
-    std::string str = "Sofa";
+    std::string str = "SOFA v" + std::string(SOFA_VERSION_STR);
     if ( !windowTitle.empty() )
     {
         str += " - ";
