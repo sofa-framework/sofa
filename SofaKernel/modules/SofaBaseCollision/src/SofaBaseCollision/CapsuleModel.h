@@ -71,6 +71,7 @@ public:
 
     bool shareSameVertex(const TCapsule<TDataTypes> & other)const;
 };
+using Capsule = TCapsule<sofa::defaulttype::Vec3Types>;
 
 /**
   *A capsule model is a set of capsules. It is linked to a topology more precisely edge topology since a capsule
@@ -187,15 +188,9 @@ inline TCapsule<DataTypes>::TCapsule(ParentModel* model, Index index)
 template<class DataTypes>
 inline TCapsule<DataTypes>::TCapsule(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
-{
-}
+{}
 
-template <class TDataTypes> using TCapsuleModel [[deprecated("The TCapsuleModel is now deprecated, please use CapsuleCollisionModel instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<TDataTypes>;
-using CapsuleModel [[deprecated("The CapsuleModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Vec3Types>;
-using Capsule = TCapsule<sofa::defaulttype::Vec3Types>;
-
-
-#if  !defined(SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP)
 extern template class SOFA_SOFABASECOLLISION_API TCapsule<defaulttype::Vec3Types>;
 extern template class SOFA_SOFABASECOLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
 #endif

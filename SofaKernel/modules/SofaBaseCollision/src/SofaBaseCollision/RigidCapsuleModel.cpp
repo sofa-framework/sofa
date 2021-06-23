@@ -32,10 +32,6 @@ using namespace helper;
 
 int RigidCapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of rigid capsules")
         .add<  CapsuleCollisionModel<defaulttype::Rigid3Types> >()
-
-        .addAlias("RigidCapsule")
-        .addAlias("RigidCapsuleModel")
-        .addAlias("RigidCapsuleCollisionModel")
         ;
 
 template class SOFA_SOFABASECOLLISION_API TCapsule<defaulttype::Rigid3Types>;

@@ -30,11 +30,6 @@ using namespace sofa::defaulttype;
 
 int CapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of Capsules")
         .add< CapsuleCollisionModel<sofa::defaulttype::Vec3Types> >()
-
-        .addAlias("Capsule")
-        .addAlias("CapsuleModel")
-        .addAlias("TCapsuleModel")
-
         ;
 
 template class SOFA_SOFABASECOLLISION_API TCapsule<defaulttype::Vec3Types>;
