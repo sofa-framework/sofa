@@ -17,6 +17,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/ExecParams.h
     ${SRC_ROOT}/Mapping.h
     ${SRC_ROOT}/Mapping.inl
+    ${SRC_ROOT}/MappingHelper.h
     ${SRC_ROOT}/MechanicalParams.h
     ${SRC_ROOT}/Multi2Mapping.h
     ${SRC_ROOT}/Multi2Mapping.inl
