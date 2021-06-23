@@ -290,8 +290,6 @@ bool BaseLink::read( const std::string& str )
     /// tokenizing the path using '@' as a separator would solve  the issue.
     while (istr >> path)
     {
-        //TODO(alxbilger): check that the path cannot be of type Node if the link only accepts BaseObjects
-
         if (path[0] != '@')
         {
             msg_error(owner) << "Parsing Link \"" << path <<"\": first character should be '@'.";
