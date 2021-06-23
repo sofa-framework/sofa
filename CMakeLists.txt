@@ -237,12 +237,6 @@ if(SOFA_BUILD_SCENECREATOR)
     add_subdirectory(applications/plugins/SceneCreator)
 endif()
 
-# Tests : define subdirectories
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    # Library used to write high level tests involving many components.
-    add_subdirectory(applications/plugins/SofaTest)
-endif()
-
 ## Plugins
 add_subdirectory(applications/plugins)
 
