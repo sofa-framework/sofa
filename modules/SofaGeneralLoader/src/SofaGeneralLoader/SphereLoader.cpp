@@ -47,9 +47,9 @@ SphereLoader::SphereLoader()
     addAlias(&d_positions,"sphere_centers");
     addAlias(&d_scale, "scale3d");
 
-    addUpdateCallback("updateFileNameAndTransformPosition", { &m_filename, &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker& tracker)
+    addUpdateCallback("updateFileNameAndTransformPosition", { &d_filename, &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker& tracker)
     {
-        if(tracker.hasChanged(m_filename))
+        if(tracker.hasChanged(d_filename))
         {
             if (load()) {
                 clearLoggedMessages();
@@ -111,7 +111,7 @@ bool SphereLoader::load()
     // Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::string fname = std::string(filename);
 
     if (!sofa::helper::system::DataRepository.findFile(fname))

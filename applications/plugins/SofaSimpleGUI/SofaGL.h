@@ -3,7 +3,7 @@
 
 #include <SofaSimpleGUI/config.h>
 #include "SofaScene.h"
-#include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/gl/DrawToolGL.h>
 #include <sofa/helper/system/gl.h>
 
 #include "PickedPoint.h"
@@ -122,7 +122,7 @@ protected:
     GLdouble _mvmatrix[16], _projmatrix[16];
 
     // rendering tools
-    sofa::core::visual::DrawToolGL   _drawToolGL;
+    sofa::gl::DrawToolGL   _drawToolGL;
     sofa::core::visual::VisualParams* _vparams;
     void draw(sofa::core::visual::VisualParams*);
 

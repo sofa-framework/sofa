@@ -6,7 +6,8 @@
     <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
     <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
-    <BruteForceDetection name="detection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="response" response="default" />
     <MinProximityIntersection name="proximity" alarmDistance="0.08" contactDistance="0.05" />
     <InteractiveCamera name="camera"  />
