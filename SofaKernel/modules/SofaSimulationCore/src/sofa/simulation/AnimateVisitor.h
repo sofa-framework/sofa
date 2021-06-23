@@ -61,6 +61,12 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getCategoryName() const override { return "animate"; }
     const char* getClassName() const override { return "AnimateVisitor"; }
+
+    // Deprecated functions because they are not used
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#2194)", "v21.12", "")
+    virtual void processBehaviorModel(simulation::Node* node, core::BehaviorModel* obj);
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#2194)", "v21.12", "")
+    virtual void processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
 };
 
 } // namespace sofa::simulation
