@@ -200,25 +200,25 @@ public:
     void setSystemLHVector(core::MultiVecDerivId v) override;
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    Matrix* getSystemMatrix() override { return linearSystem->systemMatrix; }
+    Matrix* getSystemMatrix() override { return linearSystem.systemMatrix; }
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemRHVector() { return linearSystem->systemRHVector; }
+    Vector* getSystemRHVector() { return linearSystem.systemRHVector; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemLHVector() { return linearSystem->systemLHVector; }
+    Vector* getSystemLHVector() { return linearSystem.systemLHVector; }
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    defaulttype::BaseMatrix* getSystemBaseMatrix() override { return linearSystem->systemMatrix; }
+    defaulttype::BaseMatrix* getSystemBaseMatrix() override { return linearSystem.systemMatrix; }
 
     /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
-    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override { return &linearSystem->matrixAccessor; }
+    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override { return &linearSystem.matrixAccessor; }
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    defaulttype::BaseVector* getSystemRHBaseVector() override { return linearSystem->systemRHVector; }
+    defaulttype::BaseVector* getSystemRHBaseVector() override { return linearSystem.systemRHVector; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    defaulttype::BaseVector* getSystemLHBaseVector() override { return linearSystem->systemLHVector; }
+    defaulttype::BaseVector* getSystemLHBaseVector() override { return linearSystem.systemLHVector; }
 
     /// Solve the system as constructed using the previous methods
     void solveSystem() override;
@@ -341,7 +341,7 @@ protected:
         }
     };
 
-    std::unique_ptr<LinearSystemData> linearSystem;
+    LinearSystemData linearSystem;
 
     double currentMFactor, currentBFactor, currentKFactor;
 

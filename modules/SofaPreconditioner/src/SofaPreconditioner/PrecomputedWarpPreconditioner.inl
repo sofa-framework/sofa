@@ -90,10 +90,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::setSystemMBKMatrix(const core::M
         init_bFact = sofa::core::mechanicalparams::bFactor(mparams);
         init_kFact = mparams->kFactor();
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->linearSystem->systemMatrix);
+        loadMatrix(*this->linearSystem.systemMatrix);
     }
 
-    this->linearSystem->needInvert = usePrecond;
+    this->linearSystem.needInvert = usePrecond;
 }
 
 //Solve x = R * M^-1 * R^t * b
