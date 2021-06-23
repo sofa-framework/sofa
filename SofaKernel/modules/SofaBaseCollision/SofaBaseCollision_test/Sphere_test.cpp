@@ -68,7 +68,6 @@ using sofa::testing::BaseSimulationTest;
 
 namespace sofa {
 
-
 struct TestSphere : public BaseSimulationTest
 {
     void SetUp() override
@@ -76,7 +75,6 @@ struct TestSphere : public BaseSimulationTest
         m_proxIntersection = sofa::core::objectmodel::New<MinProximityIntersection>();
         m_proxIntersection->setAlarmDistance(1.0);
         m_proxIntersection->setContactDistance(1.0);
-
     }
     void TearDown() override
     {

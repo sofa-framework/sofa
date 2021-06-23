@@ -20,9 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "BroadPhase_test.h"
+
 #include <SofaBaseCollision/BruteForceBroadPhase.h>
 #include <SofaBaseCollision/BVHNarrowPhase.h>
 #include <SofaGeneralMeshCollision/DirectSAPNarrowPhase.h>
+
 #include <SofaGeneralMeshCollision/IncrSAP.h>
 
 typedef BroadPhaseTest<sofa::component::collision::BruteForceBroadPhase, sofa::component::collision::BVHNarrowPhase> Brut;

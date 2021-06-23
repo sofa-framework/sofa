@@ -22,6 +22,9 @@
 #include <SofaMiscForceField/MeshMatrixMass.h>
 using sofa::core::execparams::defaultInstance; 
 
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
@@ -43,10 +46,10 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
+#include <SofaBaseUtils/initSofaBaseUtils.h>
+
 #include <string>
 using std::string ;
-
-#include <SofaTest/Sofa_test.h>
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
@@ -68,7 +71,7 @@ namespace sofa {
 // Given the positions and the topology, it then checks the expected values for
 // the mass.
 template <class TDataTypes, class TMassType>
-class MeshMatrixMass_test : public Sofa_test<>
+class MeshMatrixMass_test : public BaseSimulationTest
 {
 public:
     typedef TDataTypes DataTypes;
@@ -86,6 +89,8 @@ public:
 
     virtual void SetUp()
     {
+        sofa::component::initSofaBaseUtils();
+
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
     }

@@ -7,13 +7,16 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    BroadPhase_test.cpp
     Sphere_test.cpp
     DefaultPipeline_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+
 target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaBaseCollision SofaBaseMechanics SofaGeneralMeshCollision SofaMiscCollision)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ..)
+
 
 target_include_directories(${PROJECT_NAME} PUBLIC ..)
 

@@ -19,10 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test_deprecated.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
 #include <SceneCreator/SceneCreator.h>
-
-
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -37,6 +39,8 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
+
+#include "SunPlanetSystemCreation.h"
 
 // For atan2 ??
 //#include <sofa/helper/rmath.h>
@@ -67,7 +71,7 @@ Check if Hamiltonian energy is constant during simulation: variational solver is
 */
 
 template <typename _DataTypes>
-struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public Elasticity_test_deprecated<_DataTypes>
+struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -129,7 +133,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
         //MechanicalObject3::DataTypes::set( vPlanet[0], 0., 0.18, 0.);
 
         // Sun planet system
-        root = this->createSunPlanetSystem(
+        root = sofa::createSunPlanetSystem<DataTypes>(
                 root,           // add sun planet system to the node containing solver
                 M,              // sun mass
                 m,              // planet mass

@@ -142,7 +142,7 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
         double temp = 0.0;
         Matrix::Range rowRange = M.getRowRange(j);
         Index xi = rowRange.begin();
-        while (xi < rowRange.end() && colsIndex[xi] <= j) ++xi;
+        while (xi < rowRange.end() && (Index)colsIndex[xi] <= j) ++xi;
         for (; xi < rowRange.end(); ++xi)
         {
             Index i = colsIndex[xi];
@@ -158,7 +158,7 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
         double temp = 0.0;
         Matrix::Range rowRange = M.getRowRange(j);
         Index xi = rowRange.begin();
-        for (; xi < rowRange.end() && colsIndex[xi] < j; ++xi)
+        for (; xi < rowRange.end() && (Index)colsIndex[xi] < j; ++xi)
         {
             Index i = colsIndex[xi];
             double e = colsValue[xi];
@@ -196,7 +196,7 @@ void SSORPreconditioner< CompressedRowSparseMatrix< type::Mat<B,B,Real> >, FullV
         type::Vec<B,Real> temp;
         typename Matrix::Range rowRange = M.getRowRange(jb);
         Index xi = rowRange.begin();
-        while (xi < rowRange.end() && colsIndex[xi] < jb) ++xi;
+        while (xi < rowRange.end() && (Index)colsIndex[xi] < jb) ++xi;
         // bloc on the diagonal
         const typename Matrix::Bloc& bdiag = colsValue[xi];
         // upper triangle matrix
@@ -238,7 +238,7 @@ void SSORPreconditioner< CompressedRowSparseMatrix< type::Mat<B,B,Real> >, FullV
         typename Matrix::Range rowRange = M.getRowRange(jb);
         Index xi = rowRange.begin();
         // lower triangle matrix
-        for (; xi < rowRange.end() && colsIndex[xi] < jb; ++xi)
+        for (; xi < rowRange.end() && (Index)colsIndex[xi] < jb; ++xi)
         {
             Index i0 = colsIndex[xi]*B;
             const typename Matrix::Bloc& b = colsValue[xi];

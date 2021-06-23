@@ -811,7 +811,9 @@ void QtGLViewer::draw()
         SofaViewer::captureEvent();
 
     if (_waitForRender)
+    {
         _waitForRender = false;
+    }
 
     emit( redrawn() );
 }

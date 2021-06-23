@@ -19,10 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
+#include <SofaExplicitOdeSolver_test/MassSpringSystemCreation.h>
+
 #include <SceneCreator/SceneCreator.h>
-
-
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -31,7 +35,7 @@
 
 // Including mechanical object
 #include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
+using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 // Solvers
 #include <SofaMiscSolver/NewmarkImplicitSolver.h>
@@ -57,7 +61,7 @@ Then it compares the effective mass position to the computed mass position every
 */
 
 template <typename _DataTypes>
-struct NewmarkImplicitDynamic_test : public Elasticity_test<_DataTypes>
+struct NewmarkImplicitDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -107,7 +111,7 @@ struct NewmarkImplicitDynamic_test : public Elasticity_test<_DataTypes>
         MechanicalObject3::DataTypes::set( vFixed[0], 0.,0.,0.);
 
         // Mass spring system
-        root = this-> createMassSpringSystem(
+        root = sofa::createMassSpringSystem<DataTypes>(
                 root,   // add mass spring system to the node containing solver
                 K,      // stiffness
                 m,      // mass

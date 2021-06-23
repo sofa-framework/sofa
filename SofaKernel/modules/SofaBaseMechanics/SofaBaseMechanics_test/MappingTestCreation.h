@@ -65,7 +65,7 @@ namespace sofa::mapping_test {
   and a failure is issued if the error is greater than errorMax*epsilon,
   where epsilon=std::numeric_limits<Real>::epsilon() is 1.19209e-07 for float and 2.22045e-16 for double.
 
-  @author FranÃ§ois Faure @date 2013
+  @author François Faure @date 2013
   */
 
 template< class _Mapping>
