@@ -54,13 +54,6 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::parse(BaseObjectDescription* arg)
-{
-    Inherit::parse(arg) ;
-}
-
-
-template<class DataTypes>
 void ConstantForceField<DataTypes>::init()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
