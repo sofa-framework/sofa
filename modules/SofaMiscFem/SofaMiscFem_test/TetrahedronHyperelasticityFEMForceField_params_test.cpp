@@ -24,7 +24,7 @@
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>

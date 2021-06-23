@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 
 namespace sofa {

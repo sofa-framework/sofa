@@ -31,7 +31,7 @@
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
 
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 
 namespace sofa{

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 
 #include <sofa/helper/BackTrace.h>

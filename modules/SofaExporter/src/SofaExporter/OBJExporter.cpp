@@ -97,43 +97,6 @@ bool OBJExporter::writeOBJ()
 
 void OBJExporter::handleEvent(Event *event)
 {
-    if (KeypressedEvent::checkEventType(event))
-    {
-        KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
-
-        switch(ev->getKey())
-        {
-
-        case 'E':
-        case 'e':
-        {
-            //todo(18.06) remove the behavior
-            msg_deprecated() << "Hard coded interaction behavior in component is now a deprecated behavior."
-                                "Scene specific interaction should be implement using an external controller or pythonScriptController."
-                                "Please update your scene because this behavior will be removed in Sofa 18.06";
-            writeOBJ();
-            break;
-        }
-
-        case 'P':
-        case 'p':
-        {
-            //todo(18.06) remove the behavior
-            msg_deprecated() << "Hard coded interaction behavior in component is now a deprecated behavior."
-                                "Scene specific interaction should be implement using an external controller or pythonScriptController"
-                                "Please update your scene because this behavior will be removed in Sofa 18.06";
-
-            if (!d_isEnabled.getValue()){
-                msg_info() << "Starting OBJ sequence export..." ;
-            }else{
-                msg_info() << "Ending OBJ sequence export..." ;
-            }
-            d_isEnabled = !d_isEnabled.getValue() ;
-            break;
-        }
-        }
-    }
-
     BaseSimulationExporter::handleEvent(event) ;
 }
 

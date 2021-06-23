@@ -40,8 +40,7 @@
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
 // it is not super elegant, but it is way more efficient than dynamic_cast
-namespace sofa {
-namespace core {
+namespace sofa::core {
     class BaseState;
     class BaseMapping;
     class BehaviorModel;
@@ -89,12 +88,10 @@ namespace collision {
     class Intersection;
     class Pipeline;
 } // namespace collision
-namespace loader
-{
+namespace loader {
     class BaseLoader;
 } // namespace loader
-} // namespace core
-} // namespace sofa
+} // namespace sofa::core
 
 // VisitorScheduler
 
@@ -106,13 +103,7 @@ class DeprecatedAndRemoved {};
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
 virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -388,13 +379,6 @@ public:
     /// runs the stream processing
     mutable helper::system::SofaEndl<Base> sendl;
 
-    ////////////// DEPRECATED /////////////////////////////////////////////////////////////////////////////
-    const std::string getWarnings() const;  /// use getLoggedMessageAsString() or getLoggedMessage instead.
-    const std::string getOutputs() const;   /// use getLoggedMessageAsString() or getLoggedMessage instead.
-    void clearWarnings();                   /// use clearLoggedMessages() instead
-    void clearOutputs();                    /// use clearLoggedMessages() instead
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void processStream(std::ostream& out);
 
     void addMessage(const sofa::helper::logging::Message& m) const ;
@@ -582,44 +566,37 @@ public:
     /// @}
 };
 
+} // namespace sofa::core::objectmodel
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
 
 /// This allow Base object to interact with the messaging system.
-namespace sofa
+namespace sofa::helper::logging
 {
-namespace helper
-{
-namespace logging
-{
-    inline bool notMuted(const sofa::core::objectmodel::Base* t){ return t->notMuted(); }
-    inline bool notMuted(sofa::core::objectmodel::Base* t){ return t->notMuted(); }
 
-    class SOFA_CORE_API SofaComponentInfo : public ComponentInfo
+inline bool notMuted(const sofa::core::objectmodel::Base* t){ return t->notMuted(); }
+inline bool notMuted(sofa::core::objectmodel::Base* t){ return t->notMuted(); }
+
+class SOFA_CORE_API SofaComponentInfo : public ComponentInfo
+{
+public:
+    const sofa::core::objectmodel::Base* m_component ;
+    std::string                          m_name;
+
+    SofaComponentInfo(const sofa::core::objectmodel::Base* c);
+    const std::string& name() const { return m_name; }
+    std::ostream& toStream(std::ostream &out) const
     {
-    public:
-        const sofa::core::objectmodel::Base* m_component ;
-        std::string                          m_name;
-
-        SofaComponentInfo(const sofa::core::objectmodel::Base* c);
-        const std::string& name() const { return m_name; }
-        std::ostream& toStream(std::ostream &out) const
-        {
-            out << m_sender << "(" << m_name << ")" ;
-            return out ;
-        }
-    };
-
-    /// This construct a new ComponentInfo object from a Base object.
-    inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base* t)
-    {
-        return ComponentInfo::SPtr( new SofaComponentInfo(t) ) ;
+        out << m_sender << "(" << m_name << ")" ;
+        return out ;
     }
-} // logging
-} // helper
-} // sofa
+};
+
+/// This construct a new ComponentInfo object from a Base object.
+inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base* t)
+{
+    return ComponentInfo::SPtr( new SofaComponentInfo(t) ) ;
+}
+
+} // namespace sofa::helper::logging
+
 #endif

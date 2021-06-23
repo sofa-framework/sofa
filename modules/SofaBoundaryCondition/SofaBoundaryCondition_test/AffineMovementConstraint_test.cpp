@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/RandomGenerator.h>
 
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 
 using namespace sofa::defaulttype;

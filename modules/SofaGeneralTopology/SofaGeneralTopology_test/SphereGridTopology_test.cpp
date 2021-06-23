@@ -1,5 +1,5 @@
 #include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 #include <SofaGeneralTopology/SphereGridTopology.h>
 
 namespace sofa

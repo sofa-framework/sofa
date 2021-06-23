@@ -21,8 +21,6 @@ list(APPEND HEADER_FILES
     MultiMapping_test.h
     Multi2Mapping_test.h
     PrimitiveCreation.h
-    TestMessageHandler.h
-    #LogMessage.h
     )
 list(APPEND SOURCE_FILES
     Elasticity_test.cpp

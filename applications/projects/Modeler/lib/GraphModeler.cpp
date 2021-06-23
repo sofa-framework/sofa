@@ -729,7 +729,7 @@ Node::SPtr GraphModeler::buildNodeFromBaseElement(Node::SPtr node,xml::BaseEleme
             itemGraph->setText(0,name.c_str());
         }
     }
-    newNode->clearWarnings();
+    newNode->clearLoggedMessages();
 
     return newNode;
 }

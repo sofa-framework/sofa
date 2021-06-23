@@ -70,8 +70,6 @@ public:
     sofa::helper::ColorMap m_colorMap;
     GLuint texture;
 
-    void initOld(const std::string &data);
-
     void init() override;
     void reinit() override;
 

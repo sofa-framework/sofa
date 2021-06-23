@@ -46,12 +46,8 @@ namespace sofa {
 
 
 ////////////////////////////////// DECLARATION /////////////////////////////////////////////////////
-namespace sofa
+namespace sofa::component
 {
-
-namespace component
-{
-
 namespace _stlexporter_
 {
 
@@ -90,20 +86,18 @@ private:
     VisualModel*         m_inputvmodel   {nullptr};
 };
 
-} /// _stlexporter_
+} // namespace _stlexporter_
 
 //todo(18.06): remove the old namespaces...
-/// Import the object in the "old" namespace to allow smooth update of code base.
+// Import the object in the "old" namespaces to allow smooth update of code base.
 namespace misc {
     using _stlexporter_::STLExporter ;
-}
+} // namespace misc
 
 namespace exporter {
     using _stlexporter_::STLExporter ;
-}
+} // namespace exporter
 
-}
-
-}
+} // namespace sofa::component
 
 #endif /* STLEXPORTER_H_ */

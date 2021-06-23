@@ -25,26 +25,18 @@
 #include <sofa/core/config.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
+#include <sofa/type/PrimitiveGroup.h>
 #include <sofa/core/topology/Topology.h>
 
 
-namespace sofa
-{
-    namespace helper
-    {
-        namespace io
-        {
-            class Mesh;
-        }
-    }
+namespace sofa::helper::io {
+    class Mesh;
+}
 
-namespace core
+namespace sofa::core::loader
 {
 
-namespace loader
-{
-
+using sofa::type::PrimitiveGroup;
 using sofa::defaulttype::Vec3;
 using topology::Topology;
 
@@ -295,11 +287,6 @@ protected:
     void copyMeshToData(helper::io::Mesh* _mesh) = delete;
 };
 
-
-} // namespace loader
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::loader
 
 #endif

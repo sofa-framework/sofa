@@ -891,24 +891,7 @@ bool MeshExporter::writeMeshObj()
 
 void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
-    {
-        sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
-        switch(ev->getKey())
-        {
-        case 'E':
-        case 'e':
-            //done(18.12) really remove the behavior and write a message explaining the proper design.
-            //done(17.12) wrote a message to discourage the use of this behavior
-            msg_deprecated() << "Writing the mesh by pressing key is now removed from Sofa."
-                                "To implement component or scene specific interaction it is better to implement it "
-                                "using an external C++ controller or pythonScriptController."
-                                "Ask to the sofa forum for help if needed.";
-            //writeMesh();
-            break;
-        }
-    }
-      BaseSimulationExporter::handleEvent(event);
+    BaseSimulationExporter::handleEvent(event);
 }
 
 } // namespace misc

@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 
 namespace sofa {
@@ -199,7 +199,7 @@ TEST_F(Engine_test , check_propagation )
 #include <SofaGeneralEngine/config.h>
 #include <SofaGeneralEngine/AverageCoord.h>
 #include <SofaEngine/BoxROI.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 #include <SofaGeneralEngine/PairBoxRoi.h>
 #include <SofaGeneralEngine/PlaneROI.h>
 #include <SofaGeneralEngine/SphereROI.h>
