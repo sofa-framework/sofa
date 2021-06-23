@@ -27,7 +27,7 @@
 #include "mycuda.h"
 
 #if SOFACUDA_HAVE_SOFA_GL == 1
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 
 namespace sofa

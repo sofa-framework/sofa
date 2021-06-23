@@ -26,7 +26,7 @@
 #include "BaseDeformationImpl.inl"
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/gl/Color.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/glu.h>
 #include <sofa/helper/IndexOpenMP.h>
 
 #ifdef _OPENMP

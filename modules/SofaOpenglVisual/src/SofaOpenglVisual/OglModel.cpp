@@ -23,7 +23,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/gl/RAII.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/ObjectFactory.h>
