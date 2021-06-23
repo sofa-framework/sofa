@@ -76,6 +76,24 @@ public :
         return new InvertData();
     }
 
+    // Override canCreate in order to analyze if template has been set or not.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        const std::string_view templateString = arg->getAttribute("template", "");
+
+        if (templateString.empty())
+        {
+            const std::string header = "SparseLDLSolver(" + std::string(arg->getAttribute("name", "")) + ")";
+            msg_warning(header) << "By default SparseLDLSolver uses blocks with a single double (to handle all cases of simulations).";
+            msg_warning(header) << "If you are using only 3D DOFs, you may consider using blocks of Matrix3 to speedup the calculations.";
+            msg_warning(header) << "If it is the case, add " << "template=\"CompressedRowSparseMatrixMat3x3d\" " << "to this object in your scene";
+            msg_warning(header) << "Otherwise, if you want to disable this message, add " << "template=\"CompressedRowSparseMatrixd\" " << ".";
+        }
+
+        return Inherit::canCreate(obj, context, arg);
+    }
+
 protected :
     SparseLDLSolver();
 
