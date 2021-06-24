@@ -127,6 +127,9 @@ typedef unsigned __int64	uint64_t;
 
 /************* DEPRECATION MACROS *************/
 
+// Empty class to be used to highlight deprecated objects at compilation time.
+class DeprecatedAndRemoved {};
+
 #define SOFA_DEPRECATED_HEADER(deprecateDate, disableDate, newHeader) \
     SOFA_PRAGMA_WARNING( \
         "This header has been DEPRECATED since " deprecateDate ". " \

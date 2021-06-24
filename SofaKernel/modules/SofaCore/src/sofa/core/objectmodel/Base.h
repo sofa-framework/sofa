@@ -95,9 +95,6 @@ namespace loader {
 
 // VisitorScheduler
 
-// Empty class to be used to highlight deprecated objects at compilation time.
-class DeprecatedAndRemoved {};
-
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \

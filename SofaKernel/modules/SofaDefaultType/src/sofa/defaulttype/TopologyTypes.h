@@ -23,7 +23,6 @@
 #define SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 
 #include <sofa/config.h>
-#include <sofa/core/objectmodel/Base.h>
 #include <climits>
 
 namespace sofa::defaulttype
