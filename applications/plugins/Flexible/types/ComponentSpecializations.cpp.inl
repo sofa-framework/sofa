@@ -118,10 +118,10 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
             else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
         }
 
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, type::RGBAColor(1,0.5,0.5,1));
     }
     else
-//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
+//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), type::RGBAColor(0.2f,0.1f,0.9f,1.0f));
     {
         if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
@@ -131,7 +131,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
                 x[i].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
                 vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), type::RGBAColor(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
         else
@@ -144,7 +144,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
                     x[indices[i]].writeOpenGlMatrix ( glTransform );
                     vparams->drawTool()->multMatrix( glTransform );
                     vparams->drawTool()->scale ( d_drawSize.getValue() );
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), type::RGBAColor(0,0,1,1) );
                     vparams->drawTool()->popMatrix();
                 }
             else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -154,7 +154,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
                 x[*it].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
                 vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), type::RGBAColor(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
         }
@@ -196,7 +196,6 @@ namespace container
 
 using defaulttype::Vector3;
 using defaulttype::Quat;
-using defaulttype::Vec4f;
 
 // ==========================================================================
 // Draw Specializations
@@ -229,13 +228,13 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
             switch( drawMode.getValue() )
             {
                 case 1:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), type::RGBAColor(0,1,0,1) );
                     break;
                 case 2:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), type::RGBAColor(1,0,0,1) );
                     break;
                 case 3:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), type::RGBAColor(0,0,1,1) );
                     break;
                 default:
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
