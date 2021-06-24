@@ -1,19 +1,18 @@
 <?xml version="1.0" ?>
 <!-- Mechanical Tetrahedral Corotational FEM Basic Example -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 -9 0">
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaEngine'/>
-    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaTopologyMapping'/>
+    <RequiredPlugin name="SofaBoundaryCondition"/>
+    <RequiredPlugin name="SofaEngine"/>
+    <RequiredPlugin name="SofaGeneralSimpleFem"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaTopologyMapping"/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     
-    <Node name="BeamFEM_LARGE">
+    <Node name="BeamFEM_SMALL">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
@@ -32,7 +31,7 @@
         <FixedConstraint template="Vec3d" indices="@box_roi.indices" />
     </Node>
     
-    <Node name="BeamFEM_POLAR">
+    <Node name="BeamFEM_LARGE">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
@@ -51,7 +50,7 @@
         <FixedConstraint template="Vec3d" indices="@box_roi.indices" />
     </Node>
     
-    <Node name="BeamFEM_SVD">
+    <Node name="BeamFEM_POLAR">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
