@@ -691,7 +691,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
     if (vparams->displayFlags().getShowMechanicalMappings())
     {
         helper::vector< defaulttype::Vector3 > edge;     edge.resize(2);
-        defaulttype::Vec<4,float> col;
+        type::RGBAColor col;
 
         for(size_t i=0; i<out.size(); i++ )
         {
@@ -712,7 +712,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
         const Data<OutVecDeriv>* outf = this->toModel->read(core::ConstVecDerivId::force());
         glEnable ( GL_LIGHTING );
         float scale=showDeformationGradientScale.getValue();
-        defaulttype::Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
+        type::RGBAColor col( 0.5, 0.5, 0.0, 1.0 );
         defaulttype::Mat<3,3,float> F;
         defaulttype::Vec<3,float> p;
 
