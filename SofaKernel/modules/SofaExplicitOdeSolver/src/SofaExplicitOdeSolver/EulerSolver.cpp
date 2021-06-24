@@ -251,14 +251,15 @@ void EulerExplicitSolver::init()
 
 void EulerExplicitSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
+    Inherit1::parse(arg);
+
     const char* val = arg->getAttribute("optimizedForDiagonalMatrix",nullptr) ;
     if(val)
     {
         msg_deprecated() << "The attribute 'optimizedForDiagonalMatrix' is deprecated since SOFA 21.06." << msgendl
                          << "This data was previously used to solve the system more efficiently in case the "
                             "global mass matrix were diagonal." << msgendl
-                         << "Now, this property is detected automatically. See also the data 'forceDiagonalMassMatrixOptimization'"
-                            "and 'forceBuildingMatrixSystem'";
+                         << "Now, this property is detected automatically.";
     }
 }
 
