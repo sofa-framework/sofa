@@ -7,7 +7,8 @@ Template : {
         DefaultVisualManagerLoop : {}
         EulerImplicitSolver : {}
         DefaultPipeline : {}
-        BruteForceDetection : {}
+        BruteForceBroadPhase : {}
+        BVHNarrowPhase : {}
         MinProximityIntersection : {
             alarmDistance: "0.3"
             contactDistance: "0.2"

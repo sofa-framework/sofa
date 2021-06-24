@@ -9,8 +9,6 @@ sofa_find_package(SofaConstraint REQUIRED)
 sofa_find_package(SofaExplicitOdeSolver REQUIRED)
 sofa_find_package(SofaGeneralExplicitOdeSolver REQUIRED)
 sofa_find_package(SofaImplicitOdeSolver REQUIRED)
-sofa_find_package(SofaSphFluid QUIET)
-sofa_find_package(SofaDistanceGrid QUIET)
 
 set(SRC_ROOT src/SofaMiscCollision)
 
@@ -65,18 +63,6 @@ list(APPEND SOURCE_FILES
     ${SRC_ROOT}/TriangleModelInRegularGrid.cpp
     )
 message(STATUS "SofaMiscModule: build all maintained sofa components.")
-
-if(SofaSphFluid_FOUND)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/SpatialGridPointModel.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/SpatialGridPointModel.cpp)
-    message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid found activing: <SpatialGridPointModel>")
-else()
-    message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid not found de-activing: <SpatialGridPointModel>")
-endif()
-
-if(SofaDistanceGrid_FOUND)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/FrictionContact_DistanceGrid.cpp)
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaBaseCollision)

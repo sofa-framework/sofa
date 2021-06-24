@@ -35,7 +35,7 @@ namespace loader
 
 bool SOFA_CORE_API canLoad(const char* filename);
 
-BaseLoader::BaseLoader(): m_filename(initData(&m_filename,"filename","Filename of the object"))
+BaseLoader::BaseLoader(): d_filename(initData(&d_filename,"filename","Filename of the object"))
 {
 }
 
@@ -62,7 +62,7 @@ bool BaseLoader::canLoad()
     std::string cmd;
 
     // -- Check filename field:
-    if(m_filename.getValue() == "")
+    if(d_filename.getValue() == "")
     {
         msg_error() << "No file to load. Data filename is not set.";
         return false;
@@ -70,12 +70,12 @@ bool BaseLoader::canLoad()
 
 
     // -- Check if file exist:
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::string sfilename (filename);
 
     if (!sofa::helper::system::DataRepository.findFile(sfilename))
     {
-        msg_error() << "File: '" << m_filename << "' not found. ";
+        msg_error() << "File: '" << d_filename << "' not found. ";
         return false;
     }
 
@@ -84,7 +84,7 @@ bool BaseLoader::canLoad()
     // -- Check if file is readable:
     if (!file.good())
     {
-        msg_error() << "Cannot read file: '" << m_filename << "'.";
+        msg_error() << "Cannot read file: '" << d_filename << "'.";
         return false;
     }
 
@@ -92,7 +92,7 @@ bool BaseLoader::canLoad()
     file >> cmd;
     if (cmd.empty())
     {
-        msg_error() << "Cannot read first line of file: '" << m_filename << "'.";
+        msg_error() << "Cannot read first line of file: '" << d_filename << "'.";
         file.close();
         return false;
     }
@@ -103,12 +103,12 @@ bool BaseLoader::canLoad()
 
 void BaseLoader::setFilename(std::string f)
 {
-    m_filename.setValue(f);
+    d_filename.setValue(f);
 }
 
 const std::string& BaseLoader::getFilename()
 {
-    return m_filename.getValue();
+    return d_filename.getValue();
 }
 
 

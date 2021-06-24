@@ -19,29 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/helper/system/atomic.h>
-#include <gtest/gtest.h>
+#include <SofaGeneralMeshCollision/config.h>
 
-using sofa::helper::system::atomic;
+#include <sofa/core/collision/NarrowPhaseDetection.h>
 
-TEST(atomitTest, dec_and_test_null)
+namespace sofa::component::collision
 {
-    atomic<int> value(3);
-    EXPECT_EQ(value.dec_and_test_null(), false);
-    EXPECT_EQ(value, 2);
-    EXPECT_EQ(value.dec_and_test_null(), false);
-    EXPECT_EQ(value, 1);
-    EXPECT_EQ(value.dec_and_test_null(), true);
-    EXPECT_EQ(value, 0);
-}
 
-TEST(atomitTest, compare_and_swap)
+class CubeCollisionModel;
+
+/**
+ *  \brief It is a Ray Trace based collision detection algorithm
+ *
+ *   For each point in one object, we trace a ray following the oposite of the point's normal
+ *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
+ *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
+ */
+class SOFA_SOFAGENERALMESHCOLLISION_API RayTraceNarrowPhase : public core::collision::NarrowPhaseDetection
 {
-    atomic<int> value(-1);
-    EXPECT_EQ(value.compare_and_swap(-1, 10), -1);
-    EXPECT_EQ(value, 10);
+public:
+    SOFA_CLASS(RayTraceNarrowPhase, core::collision::NarrowPhaseDetection);
 
-    EXPECT_EQ(value.compare_and_swap(5, 25), 10);
-    EXPECT_EQ(value, 10);
+private:
+    Data < bool > bDraw;
+
+protected:
+    RayTraceNarrowPhase();
+
+public:
+    void addCollisionPair (const std::pair < core::CollisionModel *,
+            core::CollisionModel * >&cmPair) override;
+
+    void findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2);
+
+    void draw (const core::visual::VisualParams* vparams) override;
+    void setDraw (bool val)
+    {
+        bDraw.setValue (val);
+    }
+};
+
 }

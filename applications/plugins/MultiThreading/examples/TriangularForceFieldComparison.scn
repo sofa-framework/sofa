@@ -11,7 +11,8 @@
     <DefaultAnimationLoop name="TriangularBendingSpringsScene" />
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default1" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <TreeCollisionGroupManager name="default2" />
@@ -41,7 +42,8 @@
     <DefaultAnimationLoop name="TriangularBiquadraticScene" />
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default2" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <TreeCollisionGroupManager name="default2" />
@@ -69,7 +71,8 @@
     <DefaultAnimationLoop name="TriangularQuadraticScene" />
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default3" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <TreeCollisionGroupManager name="default2" />
@@ -97,7 +100,8 @@
     <DefaultAnimationLoop name="TriangularFEMScene" />
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default4" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <TreeCollisionGroupManager name="default2" />

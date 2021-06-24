@@ -1,6 +1,7 @@
 # Welcome
 
 Welcome to the SOFA Community! Here is a brief summary of how it is structured:
+
 - SOFA Users: people using SOFA by writing scenes or using the SOFA API.
 - SOFA Developpers: people programming into SOFA, modifying the API, writing plugins.
 - SOFA Contributors: (awesome) people proposing their changes in SOFA code via pull-requests.
@@ -13,6 +14,7 @@ They take place remotely every Wednesday at 10 a.m. CET and are animated by the 
 [Subscribe to SOFA-dev mailing-list](https://sympa.inria.fr/sympa/subscribe/sofa-dev) to get the agenda, reports and conference room url.
 
 About the steering committees:
+
 - SOFA Scientific and Technical Committee (STC): defines the technical roadmap twice a year, validate the contribution rules, the Reviewers team and discuss every technical point in SOFA.
 - SOFA Executive Committee (EC): decides on evolutions of the membership contract, the communication policy and the priorities of the Consortium.
 

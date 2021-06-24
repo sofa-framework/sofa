@@ -36,7 +36,7 @@ namespace sofa::component::controller
     
 using namespace sofa::defaulttype;
 
-
+#if GEOMAGIC_HAVE_OPENHAPTICS
 // Method to get the first error on the deck and if logError is not set to false will pop up full error message before returning the error code.
 // Return HD_SUCCESS == 0 if no error.
 HDerror catchHDError(bool logError = true)
@@ -148,6 +148,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     return HD_CALLBACK_CONTINUE;
 }
 
+#endif
 
 //constructeur
 GeomagicDriver::GeomagicDriver()
@@ -213,6 +214,7 @@ void GeomagicDriver::init()
 
 void GeomagicDriver::clearDevice()
 {
+#if GEOMAGIC_HAVE_OPENHAPTICS
     hdMakeCurrentDevice(m_hHD);
 
     // stop scheduler first only if some works are registered
@@ -236,11 +238,13 @@ void GeomagicDriver::clearDevice()
         hdDisableDevice(m_hHD);
         m_hHD = HD_INVALID_HANDLE;
     }
+#endif
 }
 
 
 void GeomagicDriver::initDevice()
 {
+#if GEOMAGIC_HAVE_OPENHAPTICS
     HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
 
     if (s_schedulerRunning) // need to stop scheduler if already running before any init
@@ -338,8 +342,10 @@ void GeomagicDriver::initDevice()
     // 2.6- Need to wait several ms for the scheduler to be well launched and retrieving correct device information before updating information on the SOFA side.
     std::this_thread::sleep_for(std::chrono::milliseconds(42));
     updatePosition();
-
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+#else
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+#endif
 }
 
 
@@ -420,8 +426,10 @@ void GeomagicDriver::updateButtonStates()
         oldStates[i] = buttons[i];
 
     // get new values
+#if GEOMAGIC_HAVE_OPENHAPTICS
     buttons[0] = m_simuData.buttonState & HD_DEVICE_BUTTON_1;
     buttons[1] = m_simuData.buttonState & HD_DEVICE_BUTTON_2;
+#endif
 
     d_button_1.setValue(buttons[0]);
     d_button_2.setValue(buttons[1]);

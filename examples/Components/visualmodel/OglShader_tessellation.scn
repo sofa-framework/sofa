@@ -11,7 +11,8 @@
     <RequiredPlugin pluginName='SofaMiscCollision'/>
 
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <DefaultCollisionGroupManager />
     <DiscreteIntersection />

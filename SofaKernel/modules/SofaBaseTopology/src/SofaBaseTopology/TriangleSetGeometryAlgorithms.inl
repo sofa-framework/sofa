@@ -510,7 +510,17 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
     const sofa::defaulttype::Vec<3,double> &p) const
 {
     const Triangle &t=this->m_topology->getTriangle(ind_t);
-    return compute3PointsBarycoefs(p, t[0], t[1], t[2]);
+    return compute3PointsBarycoefs(p, t[0], t[1], t[2],false);
+}
+
+// barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
+template<class DataTypes>
+sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleBarycoefs(
+    const TriangleID ind_t,
+    const sofa::defaulttype::Vec<3, double>& p) const
+{
+    const Triangle& t = this->m_topology->getTriangle(ind_t);
+    return compute3PointsBarycoefs(p, t[0], t[1], t[2], true);
 }
 
 // barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
@@ -1623,7 +1633,298 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     return is_validated;
 }
 
+// Computes the intersection of the segment from point a to point b and the triangle indexed by t
+template<class DataTypes>
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangle(bool is_entered,
+    const sofa::defaulttype::Vec<3, Real>& a,
+    const sofa::defaulttype::Vec<3, Real>& b,
+    const TriangleID ind_t,
+    sofa::helper::vector<TriangleID>& indices,
+    sofa::helper::vector<Real>& vecBaryCoef,
+    sofa::helper::vector<Real>& vecCoordKmin) const
+{
+    Real EPS = 1e-10;
+    Real baryCoef;
+    Real coord_kmin;
+    // HYP : point a is in triangle indexed by t
+    // is_entered == true => indices.size() == 2
+    TriangleID ind_first = 0;
+    TriangleID ind_second = 0;
 
+    if (indices.size() > 1)
+    {
+        ind_first = indices[0];
+        ind_second = indices[1];
+    }
+
+    indices.clear();
+    vecBaryCoef.clear();
+
+    bool is_validated = false;
+    bool is_intersected = false;
+
+    const Triangle& t = this->m_topology->getTriangle(ind_t);
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::position())->getValue());
+
+    bool is_full_01 = (is_entered && ((t[0] == ind_first && t[1] == ind_second) || (t[1] == ind_first && t[0] == ind_second)));
+    bool is_full_12 = (is_entered && ((t[1] == ind_first && t[2] == ind_second) || (t[2] == ind_first && t[1] == ind_second)));
+    bool is_full_20 = (is_entered && ((t[2] == ind_first && t[0] == ind_second) || (t[0] == ind_first && t[2] == ind_second)));
+
+    const typename DataTypes::Coord& c0 = vect_c[t[0]];
+    const typename DataTypes::Coord& c1 = vect_c[t[1]];
+    const typename DataTypes::Coord& c2 = vect_c[t[2]];
+
+    sofa::defaulttype::Vec<3, Real> p0{ c0[0],c0[1],c0[2] };
+    sofa::defaulttype::Vec<3, Real> p1{ c1[0],c1[1],c1[2] };
+    sofa::defaulttype::Vec<3, Real> p2{ c2[0],c2[1],c2[2] };
+    sofa::defaulttype::Vec<3, Real> pa{ a[0],a[1],a[2] };
+    sofa::defaulttype::Vec<3, Real> pb{ b[0],b[1],b[2] };
+
+    sofa::defaulttype::Vec<3, Real> v_normal = (p2 - p0).cross(p1 - p0);
+    Real norm_v_normal = v_normal.norm(); // WARN : square root COST
+
+    if (norm_v_normal >=EPS)
+    {
+
+        v_normal /= norm_v_normal;
+
+        sofa::defaulttype::Vec<3, Real> v_ab = pb - pa;
+        sofa::defaulttype::Vec<3, Real> v_ab_proj = v_ab - v_normal * dot(v_ab, v_normal); // projection (same values if incision in the plan)
+        sofa::defaulttype::Vec<3, Real> pb_proj = v_ab_proj + pa;
+
+        sofa::defaulttype::Vec<3, Real> v_01 = p1 - p0;
+        sofa::defaulttype::Vec<3, Real> v_12 = p2 - p1;
+        sofa::defaulttype::Vec<3, Real> v_20 = p0 - p2;
+
+        sofa::defaulttype::Vec<3, Real> n_proj = v_ab_proj.cross(v_normal);
+
+        sofa::defaulttype::Vec<3, Real> n_01 = v_01.cross(v_normal);
+        sofa::defaulttype::Vec<3, Real> n_12 = v_12.cross(v_normal);
+        sofa::defaulttype::Vec<3, Real> n_20 = v_20.cross(v_normal);
+
+        Real norm2_v_ab_proj = v_ab_proj * (v_ab_proj); //dot product WARNING
+
+        if (norm2_v_ab_proj >= EPS) // pb_proj != pa
+        {
+            Real coord_t = 0.0;
+            Real coord_k = 0.0;
+
+            bool is_initialized = false;
+            coord_kmin = 0.0;
+
+            Real coord_test1;
+            Real coord_test2;
+
+            Real s_t;
+            Real s_k;
+
+            if (!is_full_01)
+            {
+                coord_t = 0.0;
+                coord_k = 0.0;
+                bool is_intersected_01 = false;
+                bool is_initialized_01 = false;
+                /// Test of edge (p0,p1) :
+                s_t = (p0 - p1) * n_proj;
+                s_k = (pa - pb_proj) * n_01;
+                if (s_t == 0.0) // (pa,pb_proj) and (p0,p1) are parallel
+                {
+                    if ((p0 - pa) * (n_proj) == 0.0) // (pa,pb_proj) and (p0,p1) are on the same line
+                    {
+                        coord_test1 = (pa - p0) * (pa - pb_proj) / norm2_v_ab_proj; // HYP : pb_proj != pa
+                        coord_test2 = (pa - p1) * (pa - pb_proj) / norm2_v_ab_proj; // HYP : pb_proj != pa
+
+                        if (coord_test1 >= 0)
+                        {
+                            coord_k = coord_test1;
+                            coord_t = 0.0;
+                        }
+                        else
+                        {
+                            coord_k = coord_test2;
+                            coord_t = 1.0;
+                        }
+
+                        is_intersected_01 = (coord_k > 0.0 && (coord_t >= 0.0 && coord_t <= 1.0));
+
+                    }
+                    else  // (pa,pb_proj) and (p0,p1) are parallel and disjoint
+                    {
+                        is_intersected_01 = false;
+                    }
+                }
+                else // s_t != 0.0 and s_k != 0.0
+                {
+                    coord_k = double((pa - p0) * (n_01)) * 1.0 / double(s_k);
+                    coord_t = double((p0 - pa) * (n_proj)) * 1.0 / double(s_t);
+
+                    is_intersected_01 = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
+                }
+
+                if (is_intersected_01)
+                {
+                    if ((!is_initialized_01) || (coord_k > coord_kmin))
+                    {
+                        indices.push_back(t[0]);
+                        indices.push_back(t[1]);
+                        baryCoef = coord_t;
+                        coord_kmin = coord_k;
+                        vecBaryCoef.push_back(baryCoef);
+                        vecCoordKmin.push_back(coord_kmin);
+                    }
+
+                    is_initialized_01 = true;
+                }
+
+                is_validated = is_validated || is_initialized_01;
+            }
+
+
+
+            if (!is_full_12)
+            {
+                coord_t = 0.0;
+                coord_k = 0.0;
+                bool is_intersected_12 = false;
+                bool is_initialized_12 = false;
+                /// Test of edge (p1,p2) :
+
+                s_t = (p1 - p2) * (n_proj);
+                s_k = (pa - pb_proj) * (n_12);
+
+                // s_t == 0.0 iff s_k == 0.0
+
+                if (s_t == 0.0) // (pa,pb_proj) and (p1,p2) are parallel
+                {
+                    if ((p1 - pa) * (n_proj) == 0.0) // (pa,pb_proj) and (p1,p2) are on the same line
+                    {
+                        coord_test1 = (pa - p1) * (pa - pb_proj) / norm2_v_ab_proj; // HYP : pb_proj != pa
+                        coord_test2 = (pa - p2) * (pa - pb_proj) / norm2_v_ab_proj; // HYP : pb_proj != pa
+
+                        if (coord_test1 >= 0)
+                        {
+                            coord_k = coord_test1;
+                            coord_t = 0.0;
+                        }
+                        else
+                        {
+                            coord_k = coord_test2;
+                            coord_t = 1.0;
+                        }
+
+                        is_intersected_12 = (coord_k > 0.0 && (coord_t >= 0.0 && coord_t <= 1.0));
+                    }
+                    else // (pa,pb_proj) and (p1,p2) are parallel and disjoint
+                    {
+                        is_intersected_12 = false;
+                    }
+
+                }
+                else   // s_t != 0.0 and s_k != 0.0
+                {
+
+                    coord_k = double((pa - p1) * (n_12)) * 1.0 / double(s_k);
+                    coord_t = double((p1 - pa) * (n_proj)) * 1.0 / double(s_t);
+
+                    is_intersected_12 = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
+                }
+
+                if (is_intersected_12)
+                {
+                    if ((!is_initialized_12) || (coord_k > coord_kmin))
+                    {
+                        indices.push_back(t[1]);
+                        indices.push_back(t[2]);
+                        baryCoef = coord_t;
+                        coord_kmin = coord_k;
+                        vecBaryCoef.push_back(baryCoef);
+                        vecCoordKmin.push_back(coord_kmin);
+                    }
+
+                    is_initialized_12 = true;
+                }
+
+                is_validated = is_validated || is_initialized_12;
+            }
+
+
+
+            if (!is_full_20)
+            {
+                coord_t = 0.0;
+                coord_k = 0.0;
+                bool is_intersected_20 = false;
+                bool is_initialized_20 = false;
+                /// Test of edge (p2,p0) :
+
+                s_t = (p2 - p0) * (n_proj);
+                s_k = (pa - pb_proj) * (n_20);
+
+                // s_t == 0.0 iff s_k == 0.0
+
+                if (s_t == 0.0) // (pa,pb_proj) and (p2,p0) are parallel
+                {
+                    if ((p2 - pa) * (n_proj) == 0.0) // (pa,pb_proj) and (p2,p0) are on the same line
+                    {
+                        coord_test1 = (pa - p2) * (pa - pb_proj) / norm2_v_ab_proj; // HYP : pb_proj != pa
+                        coord_test2 = (pa - p0) * (pa - pb_proj) / norm2_v_ab_proj; // HYP : pb_proj != pa
+
+                        if (coord_test1 >= 0)
+                        {
+                            coord_k = coord_test1;
+                            coord_t = 0.0;
+                        }
+                        else
+                        {
+                            coord_k = coord_test2;
+                            coord_t = 1.0;
+                        }
+
+                        is_intersected_20 = (coord_k > 0.0 && (coord_t >= 0.0 && coord_t <= 1.0));
+
+                    }
+                    else // (pa,pb_proj) and (p2,p0) are parallel and disjoint
+                    {
+                        is_intersected_20 = false;
+                    }
+                }
+                else // s_t != 0.0 and s_k != 0.0
+                {
+                    coord_k = double((pa - p2) * (n_20)) * 1.0 / double(s_k);
+                    coord_t = double((p2 - pa) * (n_proj)) * 1.0 / double(s_t);
+
+                    is_intersected_20 = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
+                }
+
+                if (is_intersected_20)
+                {
+                    if ((!is_initialized_20) || (coord_k > coord_kmin))
+                    {
+                        indices.push_back(t[2]);
+                        indices.push_back(t[0]);
+                        baryCoef = coord_t;
+                        coord_kmin = coord_k;
+                        vecBaryCoef.push_back(baryCoef);
+                        vecCoordKmin.push_back(coord_kmin);
+                    }
+
+                    is_initialized_20 = true;
+                }
+                is_validated = is_validated || is_initialized_20;
+            }
+        }
+        else
+        {
+            is_validated = false; // points a and b are projected to the same point on triangle t
+        }
+    }
+    else
+    {
+        is_validated = false; // triangle t is flat
+    }
+
+    return is_validated;
+}
 
 
 

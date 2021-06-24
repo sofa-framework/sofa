@@ -10,7 +10,8 @@
 
 
     <DefaultPipeline name="pipeline" depth="6" />
-    <BruteForceDetection name="detection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DiscreteIntersection />
     <DefaultContactManager name="Response" response="default" />
 

@@ -2,7 +2,8 @@
 <Node animate="0" gravity="0 0.1 0" >
     <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
 
@@ -66,7 +67,8 @@
             <IdentityMapping />
         </Node>
         <MICSCuttingManager modelSurface="cmTriangles" modelTool="/Grab/CutEdges/CM" pointedTip="1" minDistance="1" maxDistance="10" printLog="1" triangleState="@FEM.triangleState" fractureStress="-9000" radius="50" criteriaValue="3e4"/>
-        <BruteForceDetection name="N2" />
+        <BruteForceBroadPhase/>
+        <BVHNarrowPhase/>
         <DiscreteIntersection name="CutIntersection" />
     </Node>
   <Node name="Floor">

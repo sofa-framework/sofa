@@ -28,7 +28,8 @@ def scene(node):
     node.gravity = '0 -9.81 0'
 
     node.createObject('DefaultPipeline', name = 'pipeline')
-    node.createObject('BruteForceDetection', name = 'detection')
+    node.createObject('BruteForceBroadPhase', name='N2')
+    node.createObject('BVHNarrowPhase')
     
     proximity = node.createObject('NewProximityIntersection', name = 'proximity', alarmDistance=1, contactDistance="0.5" ) # default distances
     

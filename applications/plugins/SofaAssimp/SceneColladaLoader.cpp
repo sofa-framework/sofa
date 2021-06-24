@@ -156,17 +156,17 @@ void SceneColladaLoader::init()
 
 bool SceneColladaLoader::load()
 {
-    sout << "Loading Collada (.dae) file: " << m_filename << sendl;
+    sout << "Loading Collada (.dae) file: " << d_filename << sendl;
 
     bool fileRead = false;
 
     // loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
     if(!file.good())
     {
-        serr << "Error: SceneColladaLoader: Cannot read file '" << m_filename << "'." << sendl;
+        serr << "Error: SceneColladaLoader: Cannot read file '" << d_filename << "'." << sendl;
         return false;
     }
 
@@ -185,7 +185,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
     importer.FreeScene();
 
     // importing scene
-    const aiScene* currentAiScene = importer.ReadFile(m_filename.getValue(), 0);
+    const aiScene* currentAiScene = importer.ReadFile(d_filename.getValue(), 0);
 
     if(!currentAiScene)
     {
