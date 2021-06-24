@@ -10,6 +10,7 @@ set(SOURCE_FILES
 sofa_find_package(SofaRigid REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
 target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaRigid SceneCreator SofaBase SofaComponentAll)
 
 get_target_property(SOFABASEMECHANICSTEST_INCLUDES SofaBaseMechanics_test INCLUDE_DIRECTORIES)

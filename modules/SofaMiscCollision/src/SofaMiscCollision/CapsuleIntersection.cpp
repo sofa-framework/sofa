@@ -24,9 +24,9 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/CapsuleModel.h>
+#include <SofaMiscCollision/RigidCapsuleModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaUserInteraction/RayModel.h>
 #include <SofaUserInteraction/FixParticlePerformer.h>

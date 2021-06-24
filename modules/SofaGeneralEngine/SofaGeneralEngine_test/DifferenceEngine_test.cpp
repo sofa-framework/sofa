@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <sofa/testing/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 
 #include <sofa/helper/BackTrace.h>
@@ -45,7 +45,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>,
+struct DifferenceEngine_test : public BaseSimulationTest,
         DifferenceEngine<_DataTypes>
 {
     typedef DifferenceEngine<_DataTypes> ThisClass ;

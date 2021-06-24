@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <sofa/testing/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 
 #include <sofa/helper/BackTrace.h>
@@ -43,7 +43,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes::Real>,
+struct ExtrudeEdgesAndGenerateQuads_test : public BaseSimulationTest,
         ExtrudeEdgesAndGenerateQuads<_DataTypes>
 {
     typedef ExtrudeEdgesAndGenerateQuads<_DataTypes> ThisClass;
@@ -172,7 +172,7 @@ struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes:
 };
 
 using ::testing::Types;
-typedef Types<Vec3Types> DataTypes;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
 TYPED_TEST_SUITE(ExtrudeEdgesAndGenerateQuads_test, DataTypes);
 

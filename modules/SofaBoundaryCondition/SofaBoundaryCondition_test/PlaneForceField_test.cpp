@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Sofa_test.h>
-#include <sofa/testing/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -86,7 +86,7 @@ struct TypeTuple
 
 
 template <typename TTypeTuple>
-struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Real>
+struct PlaneForceField_test : public BaseSimulationTest
 {
     typedef typename TTypeTuple::DataType DataTypes ;
     typedef typename TTypeTuple::MassType MassType ;

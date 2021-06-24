@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
-#include <SofaTest/Sofa_test.h>
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
@@ -30,8 +31,6 @@
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
-
-#include <sofa/testing/TestMessageHandler.h>
 
 
 namespace sofa{
@@ -58,7 +57,7 @@ void createUniformMass(simulation::Node::SPtr node, component::container::Mechan
 }
 
 template <typename _DataTypes>
-struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct PartialFixedConstraint_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Real  Real;

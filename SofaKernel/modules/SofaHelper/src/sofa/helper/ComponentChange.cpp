@@ -659,6 +659,11 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
 
     /***********************/
     // MOVED SINCE v21.06
+    { "OBBCollisionModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
+    { "RigidCapsuleCollisionModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
+    { "CapsuleModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
+    { "SpatialGridPointModel", Moved("v21.06", "SofaMiscCollision", "SofaSphFluid") },
+
 };
 
 } // namespace lifecycle

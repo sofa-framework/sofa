@@ -19,13 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Base class
-#include <SofaTest/ForceField_test.h>
+
 //Force field
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 
-#include <sofa/testing/TestMessageHandler.h>
+#include <SofaSimpleFem_test/ForceFieldTestCreation.h>
 
 
 namespace sofa {
