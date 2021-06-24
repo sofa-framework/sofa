@@ -154,33 +154,6 @@ typedef unsigned __int64	uint64_t;
         "Contact the SOFA Consortium for more information. " )
 
 
-#define SOFA_DEPRECATED_DATAFIELD(deprecateDate, disableDate, newHeader) \
-    SOFA_PRAGMA_WARNING( \
-        "This header has been DEPRECATED since " deprecateDate ". " \
-        "You have until " disableDate " to fix your code. " \
-        "To fix this warning you must include " newHeader " instead." )
-
-#define SOFA_DISABLED_DATAFIELD(deprecateDate, disableDate, newHeader) \
-    SOFA_PRAGMA_ERROR( \
-        "This header has been DISABLED since " disableDate " " \
-        "after being deprecated on " deprecateDate ". " \
-        "To fix this error you must include " newHeader " instead. " )
-
-
-#define SOFA_DEPRECATED_DATAFIELD_NOT_REPLACED(deprecateDate, disableDate) \
-    SOFA_PRAGMA_WARNING( \
-        "This header has been DEPRECATED since " deprecateDate ". " \
-        "You have until " disableDate " to fix your code. " \
-        "It will not replaced by another one. " )
-
-#define SOFA_DISABLED_DATAFIELD_NOT_REPLACED(deprecateDate, disableDate) \
-    SOFA_PRAGMA_ERROR( \
-        "This header has been DISABLED since " disableDate " " \
-        "after being deprecated on " deprecateDate ". "\
-        "It is not replaced by another one. " \
-        "Contact the SOFA Consortium for more information. " )
-
-
 #define SOFA_ATTRIBUTE_DEPRECATED(deprecateDate, removeDate, toFixMsg) \
     [[deprecated( \
         "It is still usable but has been DEPRECATED since " deprecateDate ". " \
@@ -264,7 +237,7 @@ typedef unsigned __int64	uint64_t;
         "Remove the ExecParams argument from your call. ")
 
 
-#define SOFA_ATTRIBUTE_CLEANING__QUAT_API(msg) \
+#define SOFA_ATTRIBUTE_DEPRECATED__QUAT_API(msg) \
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v21.06 (PR#1878)", "v21.12", \
         "Quat was refactored. " msg)
@@ -296,6 +269,17 @@ typedef unsigned __int64	uint64_t;
     SOFA_ATTRIBUTE_DISABLED( \
         "v20.12 (PR#1626)", "v21.06", \
         "Use RGBAColor to define colors. ")
+
+
+#define SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v21.06 (PR#1808)", "v21.12", \
+        "Replace std::cout << myaccessor by std::cout << myaccessor.ref() ")
+
+#define SOFA_ATTRIBUTE_DISABLED__CUSTOM_OPERATOR() \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v21.06 (PR#1808)", "v21.12", \
+        "replace std::cout << myaccessor by std::cout << myaccessor.ref() ")
 
 /**********************************************/
 
