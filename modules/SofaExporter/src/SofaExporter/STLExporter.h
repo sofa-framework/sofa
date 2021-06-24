@@ -88,15 +88,16 @@ private:
 
 } // namespace _stlexporter_
 
-//todo(18.06): remove the old namespaces...
+namespace exporter {
+    using STLExporter = _stlexporter_::STLExporter;
+} // namespace exporter
+
 // Import the object in the "old" namespaces to allow smooth update of code base.
 namespace misc {
-    using _stlexporter_::STLExporter ;
+    using STLExporter
+        SOFA_ATTRIBUTE_DEPRECATED("v17.12 (PR#372)", "v21.12", "Use sofa::component::STLExporter instead.")
+        = _stlexporter_::STLExporter;
 } // namespace misc
-
-namespace exporter {
-    using _stlexporter_::STLExporter ;
-} // namespace exporter
 
 } // namespace sofa::component
 

@@ -33,13 +33,7 @@
 
 using sofa::core::objectmodel::ComponentState ;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace _meshexporter_
+namespace sofa::component::_meshexporter_
 {
 
 int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
@@ -894,8 +888,4 @@ void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
     BaseSimulationExporter::handleEvent(event);
 }
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::_meshexporter_
