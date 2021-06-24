@@ -77,7 +77,6 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
 
     addSeparateGravity(&mop, dt, vResult);
     computeForce(&mop, f);
-    projectResponse(&mop, acc);
 
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
     if(d_optimizedForDiagonalMatrix.getValue())
@@ -89,6 +88,8 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     }
     else
     {
+        projectResponse(&mop, f);
+
         core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
 
         // Build the global matrix. In this solver, it is the global mass matrix
@@ -276,15 +277,14 @@ void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::Mechanic
     mop->accFromF(acc, f);
 }
 
-void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc)
+void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId vecId)
 {
     sofa::helper::ScopedAdvancedTimer timer("projectResponse");
 
     // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
     // current context tree. An example of such constraint set is the FixedConstraint. In this case,
-    // it will set to 0 every row (i, _) of the right-hand side (force) vector for the ith degree of
-    // freedom.
-    mop->projectResponse(acc);
+    // it will set to 0 every row (i, _) of the input vector for the ith degree of freedom.
+    mop->projectResponse(vecId);
 }
 
 void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc)
