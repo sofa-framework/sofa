@@ -58,7 +58,7 @@ def createScene(root):
 	floorColNode.createObject('MechanicalObject')
 	floorColNode.createObject('RigidMapping')
 	
-	floorColNode.createObject('Triangle', name='Floor', simulated=0, moving=0, proximity=0.01)
+	floorColNode.createObject('TriangleCollisionModel', name='Floor', simulated=0, moving=0, proximity=0.01)
 
 	
 	########################    spheres   ########################
@@ -85,7 +85,7 @@ def createScene(root):
 		for y in range(-3,3):
                         r = random.random()*2e-1
                         for z in xrange(1):
-                            sphereNode = root.createChild('Sphere'+str(i))
+                            sphereNode = root.createChild('SphereCollisionModel'+str(i))
                             sphereNode.createObject('MechanicalObject',template='Vec3d',position=str(x*2.5+r)+" "+str(y*2.5+r)+" "+str(20+2.5*(z+1)), velocity='0 0 -1')
                             sphereNode.createObject('SphereCollisionModel',template='Vec3d',name='sphere_model',radius=1,selfCollision="0")
                             sphereNode.createObject('UniformMass',name='mass',mass=.1)

@@ -22,7 +22,7 @@
 		<FixedConstraint indices="0 1"/>
 		<TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />  
 		<TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0"/>
-		<TriangleSet/>
+		<TriangleCollisionModel/>
 		<Node >
 			<OglModel name="Visual" color="red"/>
 			<IdentityMapping input="@.." output="@Visual"/>

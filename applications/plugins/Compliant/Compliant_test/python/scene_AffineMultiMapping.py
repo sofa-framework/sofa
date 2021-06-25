@@ -29,7 +29,7 @@ def insert_point(node, name, position, mass = 1.0):
     res.createObject('UniformMass',
                      mass = mass)
 
-    res.createObject('SphereModel', radius = 0.01)
+    res.createObject('SphereCollisionModel', radius = 0.01)
     
     return res
 
