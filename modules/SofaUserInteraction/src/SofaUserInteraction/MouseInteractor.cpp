@@ -99,10 +99,6 @@ void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
 
     if (lastPicked.body)
     {
-        sofa::type::Vec4f color = sofa::type::Vec4f(0.0f,1.0f,0.0f,1.0f);
-        if (isAttached)
-            color = sofa::type::Vec4f(1.0f,0.0f,0.0f,1.0f);
-
         vparams->drawTool()->setPolygonMode(0, true);
         lastPicked.body->draw(vparams,lastPicked.indexCollisionElement);
         vparams->drawTool()->setPolygonMode(0, false);

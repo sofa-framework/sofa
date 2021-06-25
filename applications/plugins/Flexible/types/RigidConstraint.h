@@ -197,8 +197,8 @@ protected:
         const type::vector<unsigned> & indices = f_index.getValue();
         std::vector< type::Vector3 > points;
         for (type::vector<unsigned>::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(DataTypes::getCPos(x[*it]));
-        if( _drawSize.getValue() == 0)  vparams->drawTool()->drawPoints(points, 10, type::Vec<4,float>(1,0.0,0.5,1)); // old classical drawing by points
-        else  vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), type::Vec<4,float>(1.0f,0.0f,0.35f,1.0f)); // new drawing by spheres
+        if( _drawSize.getValue() == 0)  vparams->drawTool()->drawPoints(points, 10, type::RGBAColor(1,0.0,0.5,1)); // old classical drawing by points
+        else  vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), type::RGBAColor(1.0f,0.0f,0.35f,1.0f)); // new drawing by spheres
     }
 
 

@@ -207,7 +207,8 @@ public:
         }
 
         SReal scale = d_showObjectScale.getValue();
-        const type::Vec4f& color = d_color.getValue();
+        const auto& color = d_color.getValue();
+
         if( scale == 0 )
             vparams->drawTool()->drawLines ( points, 1, color );
         else

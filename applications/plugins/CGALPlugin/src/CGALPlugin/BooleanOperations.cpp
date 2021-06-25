@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
 #include <CGALPlugin/BooleanOperations.h>
 
 #include <sofa/core/ObjectFactory.h>

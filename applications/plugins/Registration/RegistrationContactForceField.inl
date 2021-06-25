@@ -193,11 +193,11 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 				points[3].push_back(p2[c.m2]);
 			  }
 	}
-        vparams->drawTool()->drawLines(points[0], 1, type::Vec<4,float>(1,0,1,1));
-        vparams->drawTool()->drawLines(points[1], 1, type::Vec<4,float>(0,1,1,1));
-        vparams->drawTool()->drawLines(points[2], 1, type::Vec<4,float>(1,0,0,1));
-        vparams->drawTool()->drawLines(points[3], 1, type::Vec<4,float>(0,1,0,1));
 
+    vparams->drawTool()->drawLines(points[0], 1, type::RGBAColor::magenta());
+    vparams->drawTool()->drawLines(points[1], 1, type::RGBAColor::cyan());
+    vparams->drawTool()->drawLines(points[2], 1, type::RGBAColor::red());
+    vparams->drawTool()->drawLines(points[3], 1, type::RGBAColor::green());
 
 	std::vector< type::Vector3 > pointsN;
 	if (vparams->displayFlags().getShowNormals())
@@ -214,7 +214,7 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 			pointsN.push_back(p2[c.m2]);
 			pointsN.push_back(p);
 		}
-                vparams->drawTool()->drawLines(pointsN, 1, type::Vec<4,float>(1,1,0,1));
+        vparams->drawTool()->drawLines(pointsN, 1, type::RGBAColor::yellow());
 	}
 #endif // REGISTRATION_HAVE_SOFA_GL == 1
 }
