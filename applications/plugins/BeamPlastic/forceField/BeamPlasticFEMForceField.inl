@@ -1962,53 +1962,53 @@ Eigen::Matrix<double, 9, 9> BeamPlasticFEMForceField<DataTypes>::voigtToVect4(co
 
     VectTensor4 res = VectTensor4::Zero();
 
-    // 1st row
+    // Row 0
     res(0, 0) = voigtTensor(0, 0);
     res(0, 4) = voigtTensor(0, 1);
     res(0, 8) = voigtTensor(0, 2);
-    res(0, 1) = res(0, 3) = voigtTensor(0, 5);
-    res(0, 2) = res(0, 6) = voigtTensor(0, 4);
-    res(0, 5) = res(0, 7) = voigtTensor(0, 3);
+    res(0, 1) = res(0, 3) = voigtTensor(0, 5) / 2;
+    res(0, 2) = res(0, 6) = voigtTensor(0, 4) / 2;
+    res(0, 5) = res(0, 7) = voigtTensor(0, 3) / 2;
 
-    // 5th row
+    // Row 4
     res(4, 0) = voigtTensor(1, 0);
     res(4, 4) = voigtTensor(1, 1);
     res(4, 8) = voigtTensor(1, 2);
-    res(4, 1) = res(4, 3) = voigtTensor(1, 5);
-    res(4, 2) = res(4, 6) = voigtTensor(1, 4);
-    res(4, 5) = res(4, 7) = voigtTensor(1, 3);
+    res(4, 1) = res(4, 3) = voigtTensor(1, 5) / 2;
+    res(4, 2) = res(4, 6) = voigtTensor(1, 4) / 2;
+    res(4, 5) = res(4, 7) = voigtTensor(1, 3) / 2;
 
-    // 9th row
+    // Row 8
     res(8, 0) = voigtTensor(2, 0);
     res(8, 4) = voigtTensor(2, 1);
     res(8, 8) = voigtTensor(2, 2);
-    res(8, 1) = res(8, 3) = voigtTensor(2, 5);
-    res(8, 2) = res(8, 6) = voigtTensor(2, 4);
-    res(8, 5) = res(8, 7) = voigtTensor(2, 3);
+    res(8, 1) = res(8, 3) = voigtTensor(2, 5) / 2;
+    res(8, 2) = res(8, 6) = voigtTensor(2, 4) / 2;
+    res(8, 5) = res(8, 7) = voigtTensor(2, 3) / 2;
 
-    // 2nd and 4th rows
+    // Rows 1 and 3
     res(3, 0) = res(1, 0) = voigtTensor(5, 0);
     res(3, 4) = res(1, 4) = voigtTensor(5, 1);
     res(3, 8) = res(1, 8) = voigtTensor(5, 2);
-    res(3, 1) = res(3, 3) = res(1, 1) = res(1, 3) = voigtTensor(5, 5);
-    res(3, 2) = res(3, 6) = res(1, 2) = res(1, 6) = voigtTensor(5, 4);
-    res(3, 5) = res(3, 7) = res(1, 5) = res(1, 7) = voigtTensor(5, 3);
+    res(3, 1) = res(3, 3) = res(1, 1) = res(1, 3) = voigtTensor(5, 5) / 2;
+    res(3, 2) = res(3, 6) = res(1, 2) = res(1, 6) = voigtTensor(5, 4) / 2;
+    res(3, 5) = res(3, 7) = res(1, 5) = res(1, 7) = voigtTensor(5, 3) / 2;
 
-    // 3rd and 7th rows
+    // Rows 2 and 6
     res(6, 0) = res(2, 0) = voigtTensor(4, 0);
     res(6, 4) = res(2, 4) = voigtTensor(4, 1);
     res(6, 8) = res(2, 8) = voigtTensor(4, 2);
-    res(6, 1) = res(6, 3) = res(2, 1) = res(2, 3) = voigtTensor(4, 5);
-    res(6, 2) = res(6, 6) = res(2, 2) = res(2, 6) = voigtTensor(4, 4);
-    res(6, 5) = res(6, 7) = res(2, 5) = res(2, 7) = voigtTensor(4, 3);
+    res(6, 1) = res(6, 3) = res(2, 1) = res(2, 3) = voigtTensor(4, 5) / 2;
+    res(6, 2) = res(6, 6) = res(2, 2) = res(2, 6) = voigtTensor(4, 4) / 2;
+    res(6, 5) = res(6, 7) = res(2, 5) = res(2, 7) = voigtTensor(4, 3) / 2;
 
-    // 6th and 8th rows
+    // Rows 5 and 7
     res(5, 0) = res(7, 0) = voigtTensor(3, 0);
     res(5, 4) = res(7, 4) = voigtTensor(3, 1);
     res(5, 8) = res(7, 8) = voigtTensor(3, 2);
-    res(5, 1) = res(5, 3) = res(7, 1) = res(7, 3) = voigtTensor(3, 5);
-    res(5, 2) = res(5, 6) = res(7, 2) = res(7, 6) = voigtTensor(3, 4);
-    res(5, 5) = res(5, 7) = res(7, 5) = res(7, 7) = voigtTensor(3, 3);
+    res(5, 1) = res(5, 3) = res(7, 1) = res(7, 3) = voigtTensor(3, 5) / 2;
+    res(5, 2) = res(5, 6) = res(7, 2) = res(7, 6) = voigtTensor(3, 4) / 2;
+    res(5, 5) = res(5, 7) = res(7, 5) = res(7, 7) = voigtTensor(3, 3) / 2;
 
     return res;
 }
