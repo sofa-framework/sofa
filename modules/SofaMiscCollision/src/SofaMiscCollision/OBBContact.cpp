@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
 #include <SofaMeshCollision/TriangleModel.h>

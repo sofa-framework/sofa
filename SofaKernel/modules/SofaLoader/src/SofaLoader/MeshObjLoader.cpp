@@ -25,6 +25,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
 #include <sofa/helper/accessor.h>
+#include <sofa/helper/system/Locale.h>
 
 namespace sofa::component::loader
 {
@@ -147,6 +148,9 @@ void MeshObjLoader::addGroup (const PrimitiveGroup& g)
 
 bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    sofa::helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     const bool handleSeams = d_handleSeams.getValue();
     auto my_positions = getWriteOnlyAccessor(d_positions);
     auto my_texCoords = getWriteOnlyAccessor(d_texCoordsList);

@@ -24,7 +24,7 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node;

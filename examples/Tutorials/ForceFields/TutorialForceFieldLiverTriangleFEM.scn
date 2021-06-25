@@ -4,7 +4,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="default" />
     <Node name="LiverTriangles" gravity="0 -9.81 0" depend="topo dofs">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />

@@ -73,9 +73,9 @@ Node::SPtr createCard(Node::SPtr  parent, const Coord3& position, const Coord3& 
     odeSolver->f_rayleighMass.setValue(0.1);
 
     CGLinearSolverGraph *cgLinearSolver; card->get(cgLinearSolver);
-    cgLinearSolver->f_maxIter.setValue(15);
-    cgLinearSolver->f_tolerance.setValue(1e-5);
-    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+    cgLinearSolver->d_maxIter.setValue(15);
+    cgLinearSolver->d_tolerance.setValue(1e-5);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
 
     sofa::component::constraintset::LMConstraintSolver::SPtr constraintSolver = sofa::core::objectmodel::New<sofa::component::constraintset::LMConstraintSolver>();

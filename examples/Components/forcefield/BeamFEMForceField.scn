@@ -17,7 +17,8 @@
     
     <VisualStyle displayFlags="showBehaviorModels hideForceFields showCollisionModels hideVisual showInteractionForceFields" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="default" />
 

@@ -20,7 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <thread>
 

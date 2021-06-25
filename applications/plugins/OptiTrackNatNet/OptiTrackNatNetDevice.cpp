@@ -79,7 +79,7 @@ OptiTrackNatNetDevice::OptiTrackNatNetDevice()
     , drawAxisSize(initData(&drawAxisSize, sofa::defaulttype::Vec3f(1,1,1), "drawAxisSize", "Size of displayed axis"))
     , drawMarkersSize(initData(&drawMarkersSize, 0.1f, "drawMarkersSize", "Size of displayed markers"))
     , drawMarkersIDSize(initData(&drawMarkersIDSize, 0.0f, "drawMarkersIDSize", "Size of displayed markers ID"))
-    , drawMarkersColor(initData(&drawMarkersColor, sofa::defaulttype::Vec4f(1,1,1,1), "drawMarkersColor", "Color of displayed markers"))
+    , drawMarkersColor(initData(&drawMarkersColor, sofa::type::RGBAColor::white(), "drawMarkersColor", "Color of displayed markers"))
     , writeInMarkersMesh(100)
     , readSimMarkersMesh(1)
     , smoothDistance(-1)
@@ -783,7 +783,7 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
         vparams->drawTool()->drawSpheres(markers.getValue(), markersSize, drawMarkersColor.getValue());
     if (markersSize > 0 && !distanceMarkersPos.getValue().empty())
     {
-        vparams->drawTool()->drawLines(distanceMarkersPos.getValue(), markersSize/5, (open.getValue() ? sofa::defaulttype::Vec4f(0,1,0,1) : closed.getValue() ? sofa::defaulttype::Vec4f(1,0,0,1) : drawMarkersColor.getValue()));
+        vparams->drawTool()->drawLines(distanceMarkersPos.getValue(), markersSize/5, (open.getValue() ? sofa::type::RGBAColor::green() : closed.getValue() ? sofa::type::RGBAColor::red() : drawMarkersColor.getValue()));
     }
     if (markersIDSize && !markersID.getValue().empty())
     {
@@ -816,7 +816,7 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
         Coord xform = frame.getValue();
         points.push_back(xform.pointToParent(jointCenter.getValue() - jointAxis.getValue()));
         points.push_back(xform.pointToParent(jointCenter.getValue() + jointAxis.getValue()));
-        vparams->drawTool()->drawLines(points, markersSize, sofa::defaulttype::Vec4f(0,0,1,1));
+        vparams->drawTool()->drawLines(points, markersSize, sofa::type::RGBAColor::blue());
     }
     if (isGlobalFrame.getValue())
     {
