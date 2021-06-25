@@ -262,7 +262,7 @@ public:
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawLines(const std::vector<Vector3>& points, float size, const Vec4f& colour) = delete;
 
-
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawLines(const std::vector<Vector3>& points, const std::vector< Vec2i >& index, float size, const Vec4f& colour) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
