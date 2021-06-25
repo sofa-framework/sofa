@@ -22,6 +22,9 @@
 #include <SofaMiscForceField/MeshMatrixMass.h>
 using sofa::core::execparams::defaultInstance; 
 
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
@@ -48,6 +51,8 @@ using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
+
+#include <SofaBaseUtils/initSofaBaseUtils.h>
 
 #include <string>
 using std::string ;
@@ -76,6 +81,7 @@ namespace sofa {
 // the mass.
 template <class TDataTypes, class TMassType>
 class MeshMatrixMass_test : public BaseTest
+
 {
 public:
     typedef TDataTypes DataTypes;

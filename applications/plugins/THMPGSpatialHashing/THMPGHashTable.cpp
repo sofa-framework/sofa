@@ -1,5 +1,5 @@
 #include "THMPGHashTable.h"
-#include <SofaBaseCollision/BaseIntTool.h>
+#include <SofaMiscCollision/BaseIntTool.h>
 
 using namespace sofa;
 using namespace sofa::component::collision;

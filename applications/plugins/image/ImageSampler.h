@@ -648,12 +648,12 @@ protected:
             case 1:
                 glPushAttrib(GL_LIGHTING_BIT);
                 vparams->drawTool()->enableLighting();
-                vparams->drawTool()->drawSpheres(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
-                vparams->drawTool()->drawSpheres(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
+                vparams->drawTool()->drawSpheres(this->position.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.1,0.7,0.1,1));
+                vparams->drawTool()->drawSpheres(this->fixedPosition.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.1,0.7,0.1,1));
                 glPopAttrib();
             default:
-                vparams->drawTool()->drawPoints(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.2,1,0.2,1));
-                vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(1,0.2,0.2,1));
+                vparams->drawTool()->drawPoints(this->position.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.2,1,0.2,1));
+                vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),showSamplesScale.getValue(),type::RGBAColor(1,0.2,0.2,1));
             }
         }
 
@@ -667,8 +667,7 @@ protected:
                 points[2*i][0]=pos[e[i][0]][0];            points[2*i][1]=pos[e[i][0]][1];            points[2*i][2]=pos[e[i][0]][2];
                 points[2*i+1][0]=pos[e[i][1]][0];          points[2*i+1][1]=pos[e[i][1]][1];          points[2*i+1][2]=pos[e[i][1]][2];
             }
-            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,0,0.7,1));
-            //vparams->drawTool()->drawTriangles(points, defaulttype::Vec4f(0.7,0,0.7,1));
+            vparams->drawTool()->drawLines(points,2.0, type::RGBAColor(0.7,0,0.7,1));
         }
         if (this->showGraph.getValue())
         {
@@ -681,7 +680,7 @@ protected:
                     else {points[2*i+j][0]=pos[g[i][j]-fpos.size()][0];            points[2*i+j][1]=pos[g[i][j]-fpos.size()][1];            points[2*i+j][2]=pos[g[i][j]-fpos.size()][2];}
 
                 }
-            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(1,1,0.5,1));
+            vparams->drawTool()->drawLines(points,2.0, type::RGBAColor(1,1,0.5,1));
         }
 
         if(this->showFaces.getValue())
@@ -694,7 +693,7 @@ protected:
             std::vector<defaulttype::Vector3> normales;
 
             //Tableau des couleurs des faces
-            std::vector<defaulttype::Vector4> couleurs;
+            std::vector<type::RGBAColor> couleurs;
 
             int tmp[] = {0,1,2, 0,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 7,4,5, 7,5,6};
             int ns1, ns2, ns3;
@@ -730,13 +729,13 @@ protected:
                     normales.push_back(normal);
 
                     //Calcul de la couleur de la face
-                    couleurs.push_back(defaulttype::Vec4f(0.7,0,0.7,1));
+                    couleurs.push_back(type::RGBAColor(0.7,0,0.7,1));
 
 
                 }
 
             }
-            vparams->drawTool()->drawTriangles(points,defaulttype::Vec4f(1,1,1,1));
+            vparams->drawTool()->drawTriangles(points,type::RGBAColor(1,1,1,1));
         }
 
 #endif // IMAGE_HAVE_SOFA_GL == 1

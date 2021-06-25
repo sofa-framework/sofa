@@ -23,7 +23,7 @@
 #include <SofaUserInteraction/config.h>
 
 #include <SofaBaseCollision/BruteForceBroadPhase.h>
-#include <sofa/core/collision/NarrowPhaseDetection.h>
+#include <SofaGeneralMeshCollision/RayTraceNarrowPhase.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
@@ -39,37 +39,12 @@ namespace sofa::component::collision
  *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
  *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
-class SOFA_SOFAUSERINTERACTION_API RayTraceDetection :public BruteForceBroadPhase,
-    public core::collision::NarrowPhaseDetection
+class SOFA_SOFAUSERINTERACTION_API RayTraceDetection :
+    public BruteForceBroadPhase,
+    public RayTraceNarrowPhase
 {
 public:
-    SOFA_CLASS2(RayTraceDetection, BruteForceBroadPhase, core::collision::NarrowPhaseDetection);
-
-private:
-    Data < bool > bDraw;
-
-public:
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput>    OutputVector;
-
-protected:
-    RayTraceDetection ();
-
-public:
-    //////////////////////////////
-    /// NARROW PHASE interface ///
-    //////////////////////////////
-
-    void addCollisionPair (const std::pair < core::CollisionModel *,
-            core::CollisionModel * >&cmPair) override;
-
-public:
-    void findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2);
-
-    void draw (const core::visual::VisualParams* vparams) override;
-    void setDraw (bool val)
-    {
-        bDraw.setValue (val);
-    }
+    SOFA_CLASS2(RayTraceDetection, BruteForceBroadPhase, RayTraceNarrowPhase);
 };
 
 } // namespace sofa::component::collision

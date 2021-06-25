@@ -8,8 +8,7 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
 target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaBaseLinearSolver SofaEigen2Solver)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-
-

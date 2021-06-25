@@ -107,7 +107,7 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::init()
 {
     Inherit1::init();
-    
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -123,8 +123,6 @@ void BeamFEMForceField<DataTypes>::init()
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-
-    BaseContext* context = this->getContext();
 
     if(m_topology->getNbEdges()==0)
     {

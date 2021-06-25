@@ -55,6 +55,8 @@
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaRigid/RigidMapping.h>
 
+#include <sofa/testing/NumericTest.h>
+
 namespace sofa
 {
 
@@ -86,13 +88,13 @@ namespace sofa
 			positions[0] = xSun;
 			positions[1] = xPlanet;
 			MechanicalObject3::WriteVecCoord xdof = sunPlanet_dof->writePositions();
-			copyToData(xdof, positions);
+			sofa::testing::copyToData(xdof, positions);
 			// Velocity
 			MechanicalObject3::VecDeriv velocities(2);
 			velocities[0] = vSun;
 			velocities[1] = vPlanet;
 			MechanicalObject3::WriteVecDeriv vdof = sunPlanet_dof->writeVelocities();
-			copyToData(vdof, velocities);
+			sofa::testing::copyToData(vdof, velocities);
 
 			// Fix sun
 			FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(root, "FixedSun");
