@@ -1120,24 +1120,24 @@ template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::computeMaterialBehaviour(int i, Index a, Index b)
 {
 
-    Real youngModulus = m_beamsData.getValue()[i]._E;
-    Real poissonRatio = m_beamsData.getValue()[i]._nu;
+    Real E = m_beamsData.getValue()[i]._E; // Young's modulus
+    Real nu = m_beamsData.getValue()[i]._nu; // Poisson ratio
 
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
 
     Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
     // Material behaviour matrix, here: Hooke's law
     //TO DO: handle incompressible materials (with nu = 0.5)
-    C(0, 0) = C(1, 1) = C(2, 2) = 1;
-    C(0, 1) = C(0, 2) = C(1, 0) = C(1, 2) = C(2, 0) = C(2, 1) = poissonRatio / (1 - poissonRatio);
+    C(0, 0) = C(1, 1) = C(2, 2) = 1 - nu;
+    C(0, 1) = C(0, 2) = C(1, 0) = C(1, 2) = C(2, 0) = C(2, 1) = nu;
     C(0, 3) = C(0, 4) = C(0, 5) = 0;
     C(1, 3) = C(1, 4) = C(1, 5) = 0;
     C(2, 3) = C(2, 4) = C(2, 5) = 0;
     C(3, 0) = C(3, 1) = C(3, 2) = C(3, 4) = C(3, 5) = 0;
     C(4, 0) = C(4, 1) = C(4, 2) = C(4, 3) = C(4, 5) = 0;
     C(5, 0) = C(5, 1) = C(5, 2) = C(5, 3) = C(5, 4) = 0;
-    C(3, 3) = C(4, 4) = C(5, 5) = (1 - 2 * poissonRatio) / (1 - poissonRatio);
-    C *= (youngModulus*(1 - poissonRatio)) / ((1 + poissonRatio)*(1 - 2 * poissonRatio));
+    C(3, 3) = C(4, 4) = C(5, 5) = 1 - 2*nu;
+    C *= E / ( (1 + nu) * (1 - 2*nu) );
 
     m_beamsData.endEdit();
 };
