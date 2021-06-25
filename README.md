@@ -5,7 +5,7 @@
 [![Documentation](https://img.shields.io/badge/doc-on_website-green.svg)](https://www.sofa-framework.org/community/doc/)
 [![Forum](https://img.shields.io/badge/support-on_forum-blue.svg)](https://www.sofa-framework.org/community/forum/)
 [![Gitter](https://badges.gitter.im/sofa-framework/sofa.svg)](https://gitter.im/sofa-framework/sofa)
-[![Contact](https://img.shields.io/badge/contact-on_website-orange.svg)](https://www.sofa-framework.org/consortium/contact/)  
+[![Contact](https://img.shields.io/badge/contact-on_website-orange.svg)](https://www.sofa-framework.org/consortium/contact/) [![Join the chat at https://gitter.im/sofa-framework/sofa-dev-cafe](https://badges.gitter.im/sofa-framework/sofa-dev-cafe.svg)](https://gitter.im/sofa-framework/sofa-dev-cafe?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
 
 ## Introduction
 
