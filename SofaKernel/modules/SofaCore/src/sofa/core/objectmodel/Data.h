@@ -379,6 +379,7 @@ bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 #if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 extern template class SOFA_CORE_API Data< std::string >;
 extern template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
+extern template class SOFA_CORE_API Data< sofa::helper::vector<Index> >;
 extern template class SOFA_CORE_API Data< bool >;
 #endif
 

@@ -62,6 +62,7 @@ bool SOFA_CORE_API Data<bool>::read( const std::string& str )
 template class SOFA_CORE_API Data< std::string >;
 template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
 template class SOFA_CORE_API Data< bool >;
+template class SOFA_CORE_API Data< sofa::helper::vector<Index> >;
 
 } // objectmodel
 
