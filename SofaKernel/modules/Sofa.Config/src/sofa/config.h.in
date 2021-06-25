@@ -114,15 +114,20 @@ typedef unsigned __int64	uint64_t;
 #define sofa_do_tostring(a) #a
 #define sofa_tostring(a) sofa_do_tostring(a)
 
-#ifdef _WIN32
-#  define SOFA_PRAGMA_MESSAGE(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): " text))
-#  define SOFA_PRAGMA_WARNING(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): warning: " text))
-#  define SOFA_PRAGMA_ERROR(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): error: " text))
+#if defined(_WIN32)
+    #define SOFA_PRAGMA_MESSAGE(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): " text))
+    #define SOFA_PRAGMA_WARNING(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): warning: " text))
+    #define SOFA_PRAGMA_ERROR(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): error: " text))
+#elif defined(__clang__)
+    #define SOFA_DO_PRAGMA(x) _Pragma(#x)
+    #define SOFA_PRAGMA_MESSAGE(text) SOFA_DO_PRAGMA(message text)
+    #define SOFA_PRAGMA_WARNING(text) SOFA_DO_PRAGMA(GCC warning text)
+    #define SOFA_PRAGMA_ERROR(text) SOFA_DO_PRAGMA(GCC error text)
 #else
-#  define SOFA_DO_PRAGMA(x) _Pragma(#x)
-#  define SOFA_PRAGMA_MESSAGE(text) SOFA_DO_PRAGMA(message text)
-#  define SOFA_PRAGMA_WARNING(text) SOFA_DO_PRAGMA(GCC warning text)
-#  define SOFA_PRAGMA_ERROR(text) SOFA_DO_PRAGMA(GCC error text)
+    #define SOFA_DO_PRAGMA(x) _Pragma(#x)
+    #define SOFA_PRAGMA_MESSAGE(text) SOFA_DO_PRAGMA(message #text)
+    #define SOFA_PRAGMA_WARNING(text) SOFA_DO_PRAGMA(GCC warning #text)
+    #define SOFA_PRAGMA_ERROR(text) SOFA_DO_PRAGMA(GCC error #text)
 #endif
 
 /************* DEPRECATION MACROS *************/
