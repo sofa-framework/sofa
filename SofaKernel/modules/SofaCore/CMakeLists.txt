@@ -191,7 +191,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/MechanicalState.cpp
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/MixedInteractionForceField.cpp
-    ${SRC_ROOT}/behavior/MultiMatrix.cpp
     ${SRC_ROOT}/behavior/MultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/OdeSolver.cpp
     ${SRC_ROOT}/behavior/PairInteractionConstraint.cpp
