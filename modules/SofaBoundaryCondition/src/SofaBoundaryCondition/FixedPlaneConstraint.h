@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -65,7 +65,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<Index> SetIndexArray;
-    typedef component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef component::topology::TopologySubsetIndices SetIndex;
 public:
     Data<Coord> d_direction; ///< direction on which the constraint applied
     Data<Real> d_dmin; ///< coordinates min of the plane for the vertex selection

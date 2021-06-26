@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <set>
 
 namespace sofa::component::projectiveconstraintset
@@ -67,7 +67,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
     typedef sofa::core::topology::Point Point;
     typedef sofa::defaulttype::Vector3 Vector3;
 
@@ -123,7 +123,7 @@ public:
     public:
         typedef typename FixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(FixedConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
+        FCPointHandler(FixedConstraint<DataTypes>* _fc, SetIndex* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 

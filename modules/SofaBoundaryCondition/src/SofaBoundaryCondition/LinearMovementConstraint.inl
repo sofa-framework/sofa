@@ -27,7 +27,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/helper/vector_algorithm.h>
 
 

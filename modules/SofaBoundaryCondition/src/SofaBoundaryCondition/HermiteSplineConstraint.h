@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -55,7 +55,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
     typedef typename defaulttype::Vec<3, Real> Vec3R;
     typedef typename defaulttype::Vec<2, Real> Vec2R;
     typedef typename helper::Quater<Real> QuatR;

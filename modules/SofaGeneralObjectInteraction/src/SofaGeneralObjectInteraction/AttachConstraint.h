@@ -23,7 +23,7 @@
 #include <SofaGeneralObjectInteraction/config.h>
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -46,7 +46,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     typedef helper::vector<unsigned int> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 public:
     SetIndex f_indices1; ///< Indices of the source points on the first model

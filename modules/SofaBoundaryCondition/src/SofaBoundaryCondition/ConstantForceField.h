@@ -24,7 +24,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa::component::forcefield
@@ -47,7 +47,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef sofa::component::topology::PointSubsetData< VecIndex > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 
     /// indices of the points the force applies to

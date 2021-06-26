@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/helper/vector.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <type_traits>
@@ -67,7 +67,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 protected:
     LinearMovementConstraintInternalData<DataTypes> *data;
@@ -140,7 +140,7 @@ public:
     public:
         typedef typename LinearMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(LinearMovementConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
+        FCPointHandler(LinearMovementConstraint<DataTypes>* _lc, SetIndex* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
 
         void applyDestroyFunction(Index /*index*/, value_type& /*T*/);

@@ -23,7 +23,6 @@
 
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa::component::projectiveconstraintset

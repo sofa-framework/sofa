@@ -24,8 +24,7 @@
 
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseTopology/TopologySubsetData.inl> 
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -52,7 +51,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
     typedef helper::vector<sofa::Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 
     typedef typename Inherit::Spring Spring;

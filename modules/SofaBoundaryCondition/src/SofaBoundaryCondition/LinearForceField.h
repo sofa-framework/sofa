@@ -23,7 +23,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::forcefield
 {
@@ -51,7 +51,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 protected:
 

@@ -23,7 +23,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa::component::projectiveconstraintset
@@ -55,7 +55,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 protected:
     FixedTranslationConstraintInternalData<DataTypes> data;
     friend class FixedTranslationConstraintInternalData<DataTypes>;
@@ -94,7 +94,7 @@ public:
     public:
         typedef typename FixedTranslationConstraint<DataTypes>::SetIndexArray SetIndexArray;
         typedef sofa::core::topology::Point Point;
-        FCPointHandler(FixedTranslationConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
+        FCPointHandler(FixedTranslationConstraint<DataTypes>* _fc, SetIndex* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 

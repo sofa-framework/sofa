@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <LMConstraint/LMConstraint.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/simulation/Node.h>
 
 
@@ -58,7 +58,7 @@ public:
 
 
     typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
 
@@ -105,7 +105,7 @@ public:
     {
     public:
         typedef typename FixedLMConstraint<DataTypes>::SetIndexArray SetIndexArray;
-        FCPointHandler(FixedLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray >* _data)
+        FCPointHandler(FixedLMConstraint<DataTypes>* _fc, SetIndex* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 

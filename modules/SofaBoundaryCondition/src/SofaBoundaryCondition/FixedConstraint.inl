@@ -28,7 +28,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/helper/vector_algorithm.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>

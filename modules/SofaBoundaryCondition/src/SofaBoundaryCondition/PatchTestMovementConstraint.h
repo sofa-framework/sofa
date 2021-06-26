@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBoundaryCondition/config.h>
 
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -62,7 +62,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
     static const unsigned int CoordSize = Coord::total_size;
 
@@ -141,7 +141,7 @@ public:
     public:
         typedef typename PatchTestMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(PatchTestMovementConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
+        FCPointHandler(PatchTestMovementConstraint<DataTypes>* _fc, SetIndex* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
         void applyDestroyFunction(Index /*index*/, value_type& /*T*/);

@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/Quater.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <type_traits>
@@ -62,7 +62,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
     typedef defaulttype::Quat Quat;
     typedef defaulttype::Vector3 Vector3;
 
@@ -145,7 +145,7 @@ public:
     public:
         typedef typename AffineMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(AffineMovementConstraint<DataTypes>* _fc, component::topology::PointSubsetData<SetIndexArray>* _data)
+        FCPointHandler(AffineMovementConstraint<DataTypes>* _fc, SetIndex* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
         using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >::applyDestroyFunction;
