@@ -135,31 +135,57 @@ typedef unsigned __int64	uint64_t;
 // Empty class to be used to highlight deprecated objects at compilation time.
 class DeprecatedAndRemoved {};
 
-#define SOFA_DEPRECATED_HEADER(deprecateDate, disableDate, newHeader) \
-    SOFA_PRAGMA_WARNING( \
-        "This header has been DEPRECATED since " deprecateDate ". " \
-        "You have until " disableDate " to fix your code. " \
-        "To fix this warning you must include " newHeader " instead." )
+#if defined(_WIN32) || defined(__clang__)
+    #define SOFA_DEPRECATED_HEADER(deprecateDate, disableDate, newHeader) \
+        SOFA_PRAGMA_WARNING( \
+            "This header has been DEPRECATED since " deprecateDate ". " \
+            "You have until " disableDate " to fix your code. " \
+            "To fix this warning you must include " newHeader " instead." )
 
-#define SOFA_DISABLED_HEADER(deprecateDate, disableDate, newHeader) \
-    SOFA_PRAGMA_ERROR( \
-        "This header has been DISABLED since " disableDate " " \
-        "after being deprecated on " deprecateDate ". " \
-        "To fix this error you must include " newHeader " instead. " )
+    #define SOFA_DISABLED_HEADER(deprecateDate, disableDate, newHeader) \
+        SOFA_PRAGMA_ERROR( \
+            "This header has been DISABLED since " disableDate " " \
+            "after being deprecated on " deprecateDate ". " \
+            "To fix this error you must include " newHeader " instead. " )
 
+    #define SOFA_DEPRECATED_HEADER_NOT_REPLACED(deprecateDate, disableDate) \
+        SOFA_PRAGMA_WARNING( \
+            "This header has been DEPRECATED since " deprecateDate ". " \
+            "You have until " disableDate " to fix your code. " \
+            "It will not replaced by another one. " )
 
-#define SOFA_DEPRECATED_HEADER_NOT_REPLACED(deprecateDate, disableDate) \
-    SOFA_PRAGMA_WARNING( \
-        "This header has been DEPRECATED since " deprecateDate ". " \
-        "You have until " disableDate " to fix your code. " \
-        "It will not replaced by another one. " )
+    #define SOFA_DISABLED_HEADER_NOT_REPLACED(deprecateDate, disableDate) \
+        SOFA_PRAGMA_ERROR( \
+            "This header has been DISABLED since " disableDate " " \
+            "after being deprecated on " deprecateDate ". "\
+            "It is not replaced by another one. " \
+            "Contact the SOFA Consortium for more information. " )
+#else
+	#define SOFA_DEPRECATED_HEADER(deprecateDate, disableDate, newHeader) \
+        SOFA_PRAGMA_WARNING( \
+            This header has been DEPRECATED since deprecateDate. \
+            You have until disableDate to fix your code. \
+            To fix this warning you must include newHeader instead. )
 
-#define SOFA_DISABLED_HEADER_NOT_REPLACED(deprecateDate, disableDate) \
-    SOFA_PRAGMA_ERROR( \
-        "This header has been DISABLED since " disableDate " " \
-        "after being deprecated on " deprecateDate ". "\
-        "It is not replaced by another one. " \
-        "Contact the SOFA Consortium for more information. " )
+	#define SOFA_DISABLED_HEADER(deprecateDate, disableDate, newHeader) \
+        SOFA_PRAGMA_ERROR( \
+            This header has been DISABLED since disableDate \
+            after being deprecated on deprecateDate. \
+            To fix this error you must include newHeader instead. )
+
+    #define SOFA_DEPRECATED_HEADER_NOT_REPLACED(deprecateDate, disableDate) \
+        SOFA_PRAGMA_WARNING( \
+            This header has been DEPRECATED since deprecateDate. \
+            You have until disableDate to fix your code. \
+            It will not replaced by another one. )
+
+    #define SOFA_DISABLED_HEADER_NOT_REPLACED(deprecateDate, disableDate) \
+        SOFA_PRAGMA_ERROR( \
+            This header has been DISABLED since disableDate \
+            after being deprecated on deprecateDate. \
+            It is not replaced by another one. \
+            Contact the SOFA Consortium for more information. )
+#endif
 
 
 #define SOFA_ATTRIBUTE_DEPRECATED(deprecateDate, removeDate, toFixMsg) \
