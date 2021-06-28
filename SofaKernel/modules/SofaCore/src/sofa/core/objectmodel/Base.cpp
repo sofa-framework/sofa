@@ -53,16 +53,11 @@ Base::Base()
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
     , d_componentState(initData(&d_componentState, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
 {
-    name.setOwnerClass("Base");
     name.setAutoLink(false);
     d_componentState.setAutoLink(false);
     d_componentState.setReadOnly(true);
-    d_componentState.setOwnerClass("Base");
-    f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
-    f_tags.setOwnerClass("Base");
     f_tags.setAutoLink(false);
-    f_bbox.setOwnerClass("Base");
     f_bbox.setReadOnly(true);
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
