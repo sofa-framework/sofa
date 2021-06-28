@@ -77,7 +77,9 @@ void BaseMechanicalState::vMultiOp(const ExecParams* params, const VMultiOp& ops
                 i = 1;
             }
             for (; i<nop; ++i)
-                vOp( params, r, r, operands[i].first.getId(this), operands[i].second);
+            {
+                vOp(params, r, r, operands[i].first.getId(this), operands[i].second);
+            }
         }
     }
 }
