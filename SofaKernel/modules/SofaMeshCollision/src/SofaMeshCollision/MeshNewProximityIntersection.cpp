@@ -56,37 +56,43 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
 
 bool MeshNewProximityIntersection::testIntersection(Point& pt1, Point& pt2)
 {
-
+    SOFA_UNUSED(pt1);
+    SOFA_UNUSED(pt2);
     return false;
 }
 
 bool MeshNewProximityIntersection::testIntersection(Line& line, Point& pt)
 {
-
+    SOFA_UNUSED(line);
+    SOFA_UNUSED(pt);
     return false;
 }
 
 bool MeshNewProximityIntersection::testIntersection(Line& line1, Line& line2)
 {
-
+    SOFA_UNUSED(line1);
+    SOFA_UNUSED(line2);
     return false;
 }
 
 bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Point& pt)
 {
-
+    SOFA_UNUSED(tri);
+    SOFA_UNUSED(pt);
     return false;
 }
 
 bool MeshNewProximityIntersection::testIntersection(Triangle& tri, Line& line)
 {
-
+    SOFA_UNUSED(tri);
+    SOFA_UNUSED(line);
     return false;
 }
 
 bool MeshNewProximityIntersection::testIntersection(Triangle& tri1, Triangle& tri2)
 {
-
+    SOFA_UNUSED(tri1);
+    SOFA_UNUSED(tri2);
     return false;
 }
 
