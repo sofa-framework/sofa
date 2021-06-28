@@ -198,7 +198,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
 
     std::string final_str;
     formatHelperString(helper,final_str);
-    std::string ownerClass=data->getOwnerClass();
+    std::string ownerClass=data->getOwner()->getName();
     if (modifiable)
     {
         QPushButton *helper_button = new QPushButton(this);

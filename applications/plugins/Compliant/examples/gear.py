@@ -21,7 +21,8 @@ def createScene(root):
     
     
     root.createObject('DefaultPipeline', name='DefaultCollisionPipeline', depth="6")
-    root.createObject('BruteForceDetection')
+    root.createObject('BruteForceBroadPhase', name='N2')
+    root.createObject('BVHNarrowPhase')
     root.createObject('DiscreteIntersection')
     root.createObject('DefaultContactManager', name="Response", response="CompliantContact", responseParams="compliance=0&restitution=0" )
     
@@ -51,13 +52,13 @@ def createScene(root):
     body0.dofs.showObject = True
     body0.dofs.showObjectScale = r0*1.1
     body0.dofs.velocity="0 0 0 0 1 0"
-    body0.node.createObject('Sphere', radius=r0)
+    body0.node.createObject('SphereCollisionModel', radius=r0)
         
     body1 = StructuralAPI.RigidBody( gearNode, "body_1" )
     body1.setManually( [1,0,0,0,0,0,1], 1, [1,1,1] )
     body1.dofs.showObject = True
     body1.dofs.showObjectScale = r1*1.1
-    body1.node.createObject('Sphere', radius=r1)
+    body1.node.createObject('SphereCollisionModel', radius=r1)
     
    
     body0.node.createObject('PartialFixedConstraint', fixedDirections="1 1 1 1 0 1")
@@ -89,13 +90,13 @@ def createScene(root):
     body0.dofs.showObject = True
     body0.dofs.showObjectScale = r0*1.1
     body0.dofs.velocity="0 0 0 0 1 0"
-    body0.node.createObject('Sphere', radius=r0)
+    body0.node.createObject('SphereCollisionModel', radius=r0)
         
     body1 = StructuralAPI.RigidBody( beltNode, "body_1" )
     body1.setManually( [1.5,-2,0,0,0,0,1], 1, [1,1,1] )
     body1.dofs.showObject = True
     body1.dofs.showObjectScale = r1*1.1
-    body1.node.createObject('Sphere', radius=r1)
+    body1.node.createObject('SphereCollisionModel', radius=r1)
     
    
     body0.node.createObject('PartialFixedConstraint', fixedDirections="1 1 1 1 0 1")
@@ -129,13 +130,13 @@ def createScene(root):
     body0.dofs.showObject = True
     body0.dofs.showObjectScale = r0*1.1
     body0.dofs.velocity="0 0 0 1 0 0"
-    body0.node.createObject('Sphere', radius=r0)
+    body0.node.createObject('SphereCollisionModel', radius=r0)
         
     body1 = StructuralAPI.RigidBody( angleNode, "body_1" )
     body1.setManually( [1,-4,0,0,0,0,1], 1, [1,1,1] )
     body1.dofs.showObject = True
     body1.dofs.showObjectScale = r1*1.1
-    body1.node.createObject('Sphere', radius=r1)
+    body1.node.createObject('SphereCollisionModel', radius=r1)
     
    
     body0.node.createObject('PartialFixedConstraint', fixedDirections="1 1 1 0 1 1")
@@ -165,13 +166,13 @@ def createScene(root):
     body0.dofs.showObject = True
     body0.dofs.showObjectScale = 0.55
     body0.dofs.velocity="0 0 0 0 0 1"
-    body0.node.createObject('Sphere', radius=0.5)
+    body0.node.createObject('SphereCollisionModel', radius=0.5)
         
     body1 = StructuralAPI.RigidBody( rackNode, "body_1" )
     body1.setManually( [-2,-6.71,0, 0,0,0.7071067811865476,0.7071067811865476], 1, [1,1,1] )
     body1.dofs.showObject = True
     body1.dofs.showObjectScale = 0.3
-    body1.node.createObject('Capsule', radii="0.2", heights="5")
+    body1.node.createObject('CapsuleCollisionModel', radii="0.2", heights="5")
     
    
     body0.node.createObject('PartialFixedConstraint', fixedDirections="1 1 1 1 1 0")

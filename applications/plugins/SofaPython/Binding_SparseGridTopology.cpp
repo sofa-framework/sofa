@@ -103,7 +103,7 @@ static PyObject * SparseGridTopology_getRegularGridNodeIndex(PyObject *self, PyO
     if (sparse_grid_node_index < 0)
         return PyInt_FromLong(-1);
 
-    if (sparse_grid_node_index >= obj->getNbPoints()) {
+    if ((sofa::Size)sparse_grid_node_index >= obj->getNbPoints()) {
         std::string msg = "SparseGridTopology.getRegularGridNodeIndex Trying to access the node index '" + std::to_string(sparse_grid_node_index) +
                           "' but the topology only has '" + std::to_string(obj->getNbPoints()) + "' nodes.";
         SP_MESSAGE_ERROR(msg);
@@ -136,7 +136,7 @@ static PyObject * SparseGridTopology_getNodePosition(PyObject *self, PyObject * 
     if (sparse_grid_node_index < 0)
         return PyInt_FromLong(-1);
 
-    if (sparse_grid_node_index >= obj->getNbPoints()) {
+    if ((sofa::Size)sparse_grid_node_index >= obj->getNbPoints()) {
         std::string msg = "SparseGridTopology.getNodePosition Trying to access the node index '" + std::to_string(sparse_grid_node_index) +
                           "' but the topology only has '" + std::to_string(obj->getNbPoints()) + "' nodes.";
         SP_MESSAGE_ERROR(msg);

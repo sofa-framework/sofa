@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Mapping_test.h>
 #include <SofaMiscMapping/SquareMapping.h>
 
+#include <SofaBaseMechanics_test/MappingTestCreation.h>
 
 namespace sofa {
 namespace {
@@ -33,7 +33,7 @@ namespace {
  * @author Matthieu Nesme
   */
 template <typename SquareMapping>
-struct SquareMappingTest : public Mapping_test<SquareMapping>
+struct SquareMappingTest : public sofa::mapping_test::Mapping_test<SquareMapping>
 {
     typedef typename SquareMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;

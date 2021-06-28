@@ -79,46 +79,49 @@ void StaticSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
     const char* val=arg->getAttribute("massCoef",nullptr) ;
     if(val)
     {
-        msg_deprecated() << "The attribute 'massCoef' is deprecated since SOFA 19.06'" << msgendl
+        msg_deprecated() << "The attribute 'massCoef' is deprecated since SOFA v19.06'" << msgendl
                          << "This data was previously used for stabilization purposes but it was preventing" << msgendl
-                         << "from computing a strictly-static system (Use the forum for any question)";
+                         << "from computing a strictly-static system." << msgendl
+                         << "Use the Forum for any question.";
 
     }
     val=arg->getAttribute("dampingCoef",nullptr) ;
     if(val)
     {
-        msg_deprecated() << "The attribute 'dampingCoef' is deprecated since SOFA 19.06'" << msgendl
+        msg_deprecated() << "The attribute 'dampingCoef' is deprecated since SOFA v19.06'" << msgendl
                          << "This data was previously used for stabilization purposes but it was preventing" << msgendl
-                         << "from computing a strictly-static system (Use the forum for any question)";
+                         << "from computing a strictly-static system." << msgendl
+                         << "Use the Forum for any question.";
 
     }
     val=arg->getAttribute("stiffnessCoef",nullptr) ;
     if(val)
     {
-        msg_deprecated() << "The attribute 'stiffnessCoef' is deprecated since SOFA 19.06'" << msgendl
+        msg_deprecated() << "The attribute 'stiffnessCoef' is deprecated since SOFA v19.06'" << msgendl
                          << "This data was previously used for stabilization purposes but it was preventing" << msgendl
-                         << "from computing a strictly-static system (Use the forum for any question)";
+                         << "from computing a strictly-static system." << msgendl
+                         << "Use the Forum for any question.";
 
     }
     val=arg->getAttribute("applyIncrementFactor",nullptr) ;
     if(val)
     {
-        msg_deprecated() << "The attribute 'applyIncrementFactor' is deprecated since SOFA 19.06'" << msgendl
+        msg_deprecated() << "The attribute 'applyIncrementFactor' is deprecated since SOFA v19.06'" << msgendl
                          << "The incremental loading is now supposed to be done within the desired ForceField." << msgendl
-                         << "(Use the forum for any question)";
+                         << "Use the Forum for any question.";
 
     }
     val=arg->getAttribute("correction_tolerance_threshold",nullptr) ;
     if(val)
     {
-        msg_deprecated() << "The attribute 'correction_tolerance_threshold' is deprecated since SOFA 21.06'" << msgendl
+        msg_deprecated() << "The attribute 'correction_tolerance_threshold' is deprecated since SOFA v21.06'" << msgendl
                          << "The attribute was renamed for '" << d_absolute_correction_tolerance_threshold.getName() << "'.";
         arg->setAttribute(d_absolute_correction_tolerance_threshold.getName(), val);
     }
     val=arg->getAttribute("residual_tolerance_threshold",nullptr) ;
     if(val)
     {
-        msg_deprecated() << "The attribute 'residual_tolerance_threshold' is deprecated since SOFA 21.06'" << msgendl
+        msg_deprecated() << "The attribute 'residual_tolerance_threshold' is deprecated since SOFA v21.06'" << msgendl
                          << "The attribute was renamed for '" << d_absolute_residual_tolerance_threshold.getName() << "'.";
         arg->setAttribute(d_absolute_residual_tolerance_threshold.getName(), val);
     }

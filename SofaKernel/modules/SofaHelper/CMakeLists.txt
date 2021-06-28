@@ -26,7 +26,6 @@ set(SRC_ROOT "src/sofa/helper")
 # HEADERS + SOURCES
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/helper.h
     ${SRC_ROOT}/AdvancedTimer.h
     ${SRC_ROOT}/BackTrace.h
     ${SRC_ROOT}/cast.h
@@ -96,8 +95,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/PluginManager.h
     ${SRC_ROOT}/system/SetDirectory.h
     ${SRC_ROOT}/system/SofaOStream.h
-    ${SRC_ROOT}/system/atomic.h
-    ${SRC_ROOT}/system/config.h
     ${SRC_ROOT}/system/console.h
     ${SRC_ROOT}/system/console_internal.h
     ${SRC_ROOT}/system/thread/CTime.h
@@ -219,6 +216,9 @@ sofa_find_package(Sofa.Topology REQUIRED)
 
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaHelper ALIAS Sofa.Helper)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")

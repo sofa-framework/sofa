@@ -23,7 +23,7 @@
 
 #include <sofa/type/vector_algebra.h>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/vector_algebra.h")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/vector_algebra.h")
 
 namespace sofa::helper
 {

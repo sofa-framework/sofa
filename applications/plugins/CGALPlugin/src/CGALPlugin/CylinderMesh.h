@@ -102,7 +102,7 @@ public:
 };
 
 #if !defined(CGALPLUGIN_CYLINDERMESH_CPP)
-extern template class SOFA_CGALPLUGIN_API CylinderMesh<defaulttype::Vec3Types>;
+extern template class SOFA_CGALPLUGIN_API CylinderMesh<sofa::defaulttype::Vec3Types>;
 #endif
 
 } //cgal

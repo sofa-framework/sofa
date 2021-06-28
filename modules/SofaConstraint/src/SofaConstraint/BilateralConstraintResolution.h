@@ -87,6 +87,8 @@ public:
         temp[2][2] = w[line+2][line+2];
 
         sofa::type::invertMatrix(invW, temp);
+        // invW is unsused in this scope, remove the warning:
+        SOFA_UNUSED(invW);
 
         if(_f)
         {

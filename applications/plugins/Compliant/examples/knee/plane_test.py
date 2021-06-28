@@ -54,7 +54,7 @@ def createScene(node):
                               position = '1 2 1')
 
     point.createObject('UniformMass', template = 'Vec3', mass = 1)
-    point.createObject('SphereModel', radius = 0.01)
+    point.createObject('SphereCollisionModel', radius = 0.01)
 
     test = constraint.PointInHalfSpace(scene, plane.getObject('dofs'), dofs)
     

@@ -136,6 +136,9 @@ public:
 
     /// Get the result of the broad phase and check if there are some new collision models that was not yet processed
     void checkNewCollisionModels();
+
+    /// Bounding tree is not required by this detection algorithm
+    bool needsDeepBoundingTree() const override { return false; }
 };
 
 }

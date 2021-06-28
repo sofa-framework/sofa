@@ -42,7 +42,7 @@
 
 
 #include <iostream>
-//#include <sofa/helper/system/gl.h>
+//#include <sofa/gl/gl.h>
 //#include <sofa/helper/system/glut.h>
 
 #include "BulletSphereModel.h"

@@ -9,7 +9,8 @@
     <RequiredPlugin pluginName='SofaLoader'/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <DiscreteIntersection/>
     <Node name="LiverFFD-lowres">

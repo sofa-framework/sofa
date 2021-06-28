@@ -87,9 +87,9 @@ public:
     virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
 
     sofa::core::objectmodel::Data<float> drawTrackedMarkersSize; ///< Size of displayed markers
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawTrackedMarkersColor; ///< Color of displayed markers
+    sofa::core::objectmodel::Data<sofa::type::RGBAColor> drawTrackedMarkersColor; ///< Color of displayed markers
     sofa::core::objectmodel::Data<float> drawOtherMarkersSize; ///< Size of displayed unknown markers
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawOtherMarkersColor; ///< Color of displayed unknown markers
+    sofa::core::objectmodel::Data<sofa::type::RGBAColor> drawOtherMarkersColor; ///< Color of displayed unknown markers
 
 public:
 

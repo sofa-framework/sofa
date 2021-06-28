@@ -227,15 +227,15 @@ bool LCPForceFeedback_test::test_SimpleCollision()
 
             // test with groundtruth, do it index by index for better log
             // position
-            EXPECT_FLOAT_EQ(coords[0][0], truthC[0]);
-            EXPECT_FLOAT_EQ(coords[0][1], truthC[1]);
-            EXPECT_FLOAT_EQ(coords[0][2], truthC[2]);
+            EXPECT_FLOAT_EQ(coords[0][0], truthC[0]) << "Iteration " << step;
+            EXPECT_FLOAT_EQ(coords[0][1], truthC[1]) << "Iteration " << step;
+            EXPECT_FLOAT_EQ(coords[0][2], truthC[2]) << "Iteration " << step;
 
             // orientation
-            EXPECT_FLOAT_EQ(coords[0][3], truthC[3]);
-            EXPECT_FLOAT_EQ(coords[0][4], truthC[4]);
-            EXPECT_FLOAT_EQ(coords[0][5], truthC[5]);
-            EXPECT_FLOAT_EQ(coords[0][6], truthC[6]);
+            EXPECT_FLOAT_EQ(coords[0][3], truthC[3]) << "Iteration " << step;
+            EXPECT_FLOAT_EQ(coords[0][4], truthC[4]) << "Iteration " << step;
+            EXPECT_FLOAT_EQ(coords[0][5], truthC[5]) << "Iteration " << step;
+            EXPECT_FLOAT_EQ(coords[0][6], truthC[6]) << "Iteration " << step;
 
             pctTru++;
         }

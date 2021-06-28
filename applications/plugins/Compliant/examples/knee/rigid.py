@@ -232,7 +232,7 @@ class Collision(object):
                                       name = 'dofs',
                                       template = 'Vec3')
         
-        triangles = self.node.createObject('TriangleModel',
+        triangles = self.node.createObject('TriangleCollisionModel',
                                            name = 'model')
         
         mapping = self.node.createObject('RigidMapping')

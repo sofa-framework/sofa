@@ -25,7 +25,8 @@ using sofa::component::engine::IndexValueMapper;
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::objectmodel::New ;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 using ::testing::Types;
 using sofa::defaulttype::Vec3fTypes ;
@@ -34,7 +35,7 @@ using sofa::defaulttype::Vec3dTypes ;
 namespace sofa
 {
 template <class T>
-struct TestIndexValueMapper : public Sofa_test<>
+struct TestIndexValueMapper : public BaseTest
 {
 
     void input_to_output_empty_values()
@@ -125,9 +126,7 @@ struct TestIndexValueMapper : public Sofa_test<>
 };
 
 typedef Types<
-Vec3Types
-,Vec3dTypes
-
+sofa::defaulttype::Vec3Types
 > DataTypes;
 
 TYPED_TEST_SUITE(TestIndexValueMapper, DataTypes);

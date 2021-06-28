@@ -41,7 +41,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/gl/BasicShapes.h>
 #include <sofa/gl/glText.inl>
 
