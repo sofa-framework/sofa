@@ -12,12 +12,6 @@ list(APPEND SOURCE_FILES
     VariationalSymplecticImplicitSolverDynamic_test.cpp
     )
 
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    list(APPEND SOURCE_FILES
-        VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp
-        )
-endif()
-
 sofa_find_package(SofaGeneralImplicitOdeSolver REQUIRED)
 
 add_definitions("-DSOFAGENERALIMPLICITODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")

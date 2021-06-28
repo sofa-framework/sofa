@@ -21,14 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/config.h>
-#include <sofa/helper/gl/glText.h>
+#include <sofa/config.h>
 
-#if __has_include(<sofa/gl/glText.inl>)
-#include <sofa/gl/glText.inl>
-
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/glText.inl")
-
-#else
-#error "OpenGL headers have been moved to Sofa.GL. Therefore you will need to link against Sofa.GL if you need OpenGL (PR1649), and include <sofa/gl/glText.inl> instead of this one."
-#endif
+SOFA_DISABLED_HEADER("v20.12 (PR#1649)", "v21.06", "sofa/gl/glText.inl")

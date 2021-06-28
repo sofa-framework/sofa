@@ -126,7 +126,7 @@ def createOBB(parentNode,name,x,y,z,*args):
 	meca = node.createObject('MechanicalObject',name='rigidDOF',template='Rigid',position=str(x)+' '+str(y)+' '+str(z)+' 0 0 0 1',velocity='0 0 '+str(falling_speed)+' 0 0 0 1')
 	mass = node.createObject('UniformMass',name='mass',totalMass=1)
 
-	node.createObject('TOBBModel',template='Rigid',name='OBB_model',extents=str(a)+' '+str(b)+' '+str(c))
+	node.createObject('OBBCollisionModel',template='Rigid',name='OBB_model',extents=str(a)+' '+str(b)+' '+str(c))
 
 	return node
 

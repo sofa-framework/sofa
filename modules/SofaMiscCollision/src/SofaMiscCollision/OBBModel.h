@@ -120,6 +120,7 @@ public:
 
     bool onSurface(const Coord & p)const;
 };
+using OBB = TOBB<sofa::defaulttype::Rigid3Types>;
 
 
 template< class TDataTypes>
@@ -262,17 +263,11 @@ inline TOBB<DataTypes>::TOBB(ParentModel* model, Index index)
 template<class DataTypes>
 inline TOBB<DataTypes>::TOBB(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
-{
-}
+{}
 
-
-using OBBModel [[deprecated("The OBBModel is now deprecated, please use OBBCollisionModel<sofa::defaulttype::Rigid3Types> instead. Compatibility stops at v20.06")]] = OBBCollisionModel<sofa::defaulttype::Rigid3Types>;
-using OBB = TOBB<sofa::defaulttype::Rigid3Types>;
-
-#if  !defined(SOFA_COMPONENT_COLLISION_OBBMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_OBBMODEL_CPP)
 extern template class SOFA_MISC_COLLISION_API TOBB<defaulttype::Rigid3Types>;
 extern template class SOFA_MISC_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
-
 #endif
 
 } // namespace sofa::component::collision

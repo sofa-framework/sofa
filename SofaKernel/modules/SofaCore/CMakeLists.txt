@@ -90,14 +90,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/core.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/loader/BaseLoader.h
     ${SRC_ROOT}/loader/ImageLoader.h
-    ${SRC_ROOT}/loader/Material.h
     ${SRC_ROOT}/loader/MeshLoader.h
-    ${SRC_ROOT}/loader/PrimitiveGroup.h
     ${SRC_ROOT}/loader/SceneLoader.h
     ${SRC_ROOT}/loader/VoxelLoader.h
     ${SRC_ROOT}/objectmodel/AbstractDataLink.h

@@ -397,13 +397,14 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
     dQ = qDiff(quatB, quatA);
     dQ.normalize();
 
-    dW = dQ.quatToRotationVector();     // TODO(e.coevoet) remove before v20:
-                                        // Use of quatToRotationVector instead of toEulerVector:	    dW = dQ.quatToRotationVector();
-                                        // this is done to keep the old behavior (before the
-                                        // correction of the toEulerVector  function). If the
-                                        // purpose was to obtain the Eulerian vector and not the
-                                        // rotation vector please use the following line instead
-                                        // dW = dQ.toEulerVector();
+    // TODO(e.coevoet) remove before v20.12
+    // Use of quatToRotationVector instead of toEulerVector: dW = dQ.quatToRotationVector();
+    // this is done to keep the old behavior (before the
+    // correction of the toEulerVector  function). If the
+    // purpose was to obtain the Eulerian vector and not the
+    // rotation vector please use the following line instead
+    // dW = dQ.toEulerVector();
+    dW = dQ.quatToRotationVector();
 
     SReal Theta = dW.norm();
 
@@ -457,14 +458,14 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     defaulttype::Quat tmpQ = qDiff(dQ,dQ0);
     tmpQ.normalize();
 
-    u = tmpQ.quatToRotationVector();// TODO(e.coevoet) remove before v20:
-                                    // Use of quatToRotationVector instead of toEulerVector:	    u = tmpQ.quatToRotationVector();
-                                    // this is done to keep the old behavior (before the
-                                    // correction of the toEulerVector  function). If the
-                                    // purpose was to obtain the Eulerian vector and not the
-                                    // rotation vector please use the following line instead
-                                    // u = tmpQ.toEulerVector();
-
+    // TODO(e.coevoet) remove before v20.12
+    // Use of quatToRotationVector instead of toEulerVector: u = tmpQ.quatToRotationVector();
+    // this is done to keep the old behavior (before the
+    // correction of the toEulerVector  function). If the
+    // purpose was to obtain the Eulerian vector and not the
+    // rotation vector please use the following line instead
+    // u = tmpQ.toEulerVector();
+    u = tmpQ.quatToRotationVector();
 
     depl[3] = 0.0; 	depl[4] = 0.0; 	depl[5] = 0.0;
     depl[9] = u[0]; depl[10]= u[1]; depl[11]= u[2];

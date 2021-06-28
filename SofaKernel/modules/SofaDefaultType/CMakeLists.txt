@@ -21,7 +21,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/TypeInfoRegistryTools.h
     ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/VecTypes.h
-    ${SRC_ROOT}/defaulttype.h
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/fwd.h

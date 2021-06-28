@@ -39,11 +39,6 @@ using namespace core::behavior;
 
 int EulerExplicitSolverClass = core::RegisterObject("A simple explicit time integrator")
         .add< EulerExplicitSolver >()
-        .addAlias("Euler")
-        .addAlias("EulerExplicit")
-        .addAlias("ExplicitEuler")
-        .addAlias("EulerSolver")
-        .addAlias("ExplicitEulerSolver")
         ;
 
 EulerExplicitSolver::EulerExplicitSolver()

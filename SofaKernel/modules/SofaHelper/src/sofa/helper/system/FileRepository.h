@@ -120,7 +120,7 @@ public:
     /// On WIN32 the implementation was also returning the path in lower case. This behavior is now
     /// deprecated and should be remove the 2018-05-01. Until this date new implementation can be
     /// used by setting doLowerCaseOnWin32=false;
-    static std::string relativeToPath(std::string path, std::string refPath, bool doLowerCaseOnWin32=true);
+    static std::string relativeToPath(std::string path, std::string refPath);
 
     const std::vector< std::string > &getPaths() const {return vpath;}
 
