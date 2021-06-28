@@ -308,7 +308,7 @@ void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simul
     //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
     //       FixedConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
     //       matrix for the ith degree of freedom.
-    *matrix = MechanicalMatrix::M;
+    (*matrix).setSystemMBKMatrix(MechanicalMatrix::M);
 }
 
 void EulerExplicitSolver::solveSystem(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix,
