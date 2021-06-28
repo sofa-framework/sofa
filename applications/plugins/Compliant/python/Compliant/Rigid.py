@@ -215,7 +215,7 @@ class Body:
                                                name = 'dofs',
                                                position = '@loader.position')
                         
-			model = collision.createObject('TriangleModel', 
+			model = collision.createObject('TriangleCollisionModel', 
                                                name = 'model',
                                                template = 'Vec3',
                                                contactFriction = self.mu)

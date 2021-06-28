@@ -182,6 +182,4 @@ inline const sofa::type::Vector3& Cube::getConeAxis() const
     return model->elems[index].coneAxis;
 }
 
-using CubeModel [[deprecated("The CubeModel is now deprecated, please use CubeCollisionModel instead. Compatibility stops at v20.06")]] = CubeCollisionModel;
-
 } // namespace sofa::component::collision

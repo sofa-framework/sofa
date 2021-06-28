@@ -147,21 +147,6 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 
-    //Temporary function to warn the user when old attribute names are used until v19.12
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        if (arg->getAttribute("mass"))
-        {
-            msg_warning() << "input data 'mass' changed for 'vertexMass', please update your scene (see PR#637)";
-        }
-        if (arg->getAttribute("totalmass"))
-        {
-            msg_warning() << "input data 'totalmass' changed for 'totalMass', please update your scene (see PR#637)";
-        }
-        Inherited::parse(arg);
-    }
-
-
 private:
 
     template<class T>
@@ -199,7 +184,7 @@ private:
 
 };
 
-//Specialization for rigids
+// Specialization for rigids
 template <>
 void UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::init();
 template <>
@@ -215,15 +200,13 @@ double UniformMass<defaulttype::Rigid2Types,defaulttype::Rigid2Mass>::getPotenti
 template <>
 void UniformMass<defaulttype::Vec6Types,double>::draw(const core::visual::VisualParams* vparams);
 
-
-#if  !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
+#if !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
 extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec3Types, double>;
 extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec2Types, double>;
 extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec1Types, double>;
 extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec6Types, double>;
 extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
 extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>;
-
 #endif
 
 } // namespace sofa::component::mass

@@ -102,7 +102,7 @@ public:
     virtual void removePoints(sofa::type::vector< PointID >& indices, const bool removeDOF = true);
 
 
-    /// This Method has been removed in PR #1860 as it was never used nor supported
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1860)", "v21.06 (PR#1860)", "This method was never used nor supported.")
     void propagateTopologicalChangesWithoutReset() = delete;
 
 

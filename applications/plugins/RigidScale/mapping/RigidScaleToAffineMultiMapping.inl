@@ -155,7 +155,7 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::applyJT(const type::vector< InMatr
     std::cout<<"applyJT(const type::vector< In1MatrixDeriv*>& /*outConstraint1*/ ,\
             const type::vector< In2MatrixDeriv*>& /*outConstraint2*/ ,\
             const type::vector<const OutMatrixDeriv*>& /*inConstraint*/)\
-            NOT IMPLEMENTED BY " << core::objectmodel::BaseClass::decodeClassName(typeid(*this)) << std::endl;
+            NOT IMPLEMENTED BY " << helper::NameDecoder::decodeClassName(typeid(*this)) << std::endl;
 }
 
 template <class I1, class I2, class O>

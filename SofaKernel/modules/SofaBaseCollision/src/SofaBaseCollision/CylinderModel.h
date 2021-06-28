@@ -64,6 +64,7 @@ public:
 
     const Coord & v()const;
 };
+using Cylinder = TCylinder<sofa::defaulttype::Rigid3Types>;
 
 
 /**
@@ -153,14 +154,9 @@ inline TCylinder<DataTypes>::TCylinder(ParentModel* model, Index index)
 template<class DataTypes>
 inline TCylinder<DataTypes>::TCylinder(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
-{
-}
+{}
 
-
-using CylinderModel [[deprecated("The CylinderModel is now deprecated, please use CylinderCollisionModel instead. Compatibility stops at v20.06")]] = CylinderCollisionModel<sofa::defaulttype::Rigid3Types>;
-using Cylinder = TCylinder<sofa::defaulttype::Rigid3Types>;
-
-#if  !defined(SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP)
 extern template class SOFA_SOFABASECOLLISION_API TCylinder<defaulttype::Rigid3Types>;
 extern template class SOFA_SOFABASECOLLISION_API CylinderCollisionModel<defaulttype::Rigid3Types>;
 #endif

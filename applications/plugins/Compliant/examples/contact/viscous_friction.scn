@@ -55,7 +55,7 @@
 		<!-- adjusted with contact distance, so that we end-up at zero -->
     <MechanicalObject name="dofs" template="Rigid3d" position="0 -3.2 0 0 0 0 1" />
     <RigidMass mass="1" inertia="15 1 15" />
-<!--     <OBB extents="15 1 15" contactRestitution="1"/> -->
+<!--     <OBBCollisionModel extents="15 1 15" contactRestitution="1"/> -->
     <Node name="collision">
       <MeshObjLoader filename="mesh/cube.obj" name="loader" scale3d="20 2 20" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />

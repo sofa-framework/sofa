@@ -57,7 +57,7 @@
 #endif
 
 #include <sofa/gui/config.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/helper/system/glut.h>
 
 using sofa::helper::system::thread::CTime;

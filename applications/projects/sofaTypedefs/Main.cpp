@@ -231,12 +231,12 @@ int main(int argc, char** argv)
 
 			if(!templateName.empty())
 			{
-				target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
+				target_h << "typedef " <<  sofa::helper::NameDecoder::decodeFullName(type)
 					<< " " << creator->getClass()->className << "_" << templateName << ";";
 			}
 			else
 			{
-				target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
+				target_h << "typedef " <<  sofa::helper::NameDecoder::decodeFullName(type)
 					<< " " << creator->getClass()->className << ";";
 			}
 			target_h << std::endl;

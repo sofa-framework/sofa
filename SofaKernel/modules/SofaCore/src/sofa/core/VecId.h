@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_VECID_H
 #define SOFA_CORE_VECID_H
 
+#include <sofa/config.h>
 #include <string>
 #include <sstream>
 #include <cassert>
@@ -151,8 +152,8 @@ public:
     static MyVecId constraintJacobian()    { return MyVecId(1);} // jacobian matrix of constraints
     static MyVecId mappingJacobian() { return MyVecId(2);}         // accumulated matrix of the mappings
 
-    [[deprecated("HolonomicC has be deprecated.")]]
-    static MyVecId holonomicC()    { return MyVecId(1); }
+    SOFA_ATTRIBUTE_DISABLED("v17.06 (PR#276)", "v21.06", "See VecId.h to remove this message and replace by constraintMatrix")
+    static MyVecId holonomicC() = delete;
     enum { V_FIRST_DYNAMIC_INDEX = 3 }; ///< This is the first index used for dynamically allocated vectors
 
     static std::string getName(const MyVecId& v)

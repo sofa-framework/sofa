@@ -118,17 +118,6 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
     void drawPlane(const core::visual::VisualParams*, float size=0.0f);
     void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
-
-    //TODO(htalbot) remove after v18.12
-    //Temporary function to warn the user when old attribute names are used
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
-    {
-        if (arg->getAttribute("color"))
-        {
-            msg_warning() << "input data 'color' changed for 'planeColor'";
-        }
-        Inherit::parse(arg);
-    }
 };
 
 

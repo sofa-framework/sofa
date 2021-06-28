@@ -23,7 +23,7 @@
 
 #include <sofa/type/vector_algorithm.h>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/vector_algorithm.h")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/vector_algorithm.h")
 
 namespace sofa::helper
 {

@@ -22,28 +22,21 @@
 #ifndef SOFA_CORE_LOADER_MESHLOADER_H
 #define SOFA_CORE_LOADER_MESHLOADER_H
 
+#include <sofa/core/config.h>
 #include <sofa/type/Quat.h>
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
+#include <sofa/type/PrimitiveGroup.h>
 #include <sofa/core/topology/Topology.h>
 
 
-namespace sofa
-{
-    namespace helper
-    {
-        namespace io
-        {
-            class Mesh;
-        }
-    }
+namespace sofa::helper::io {
+    class Mesh;
+}
 
-namespace core
+namespace sofa::core::loader
 {
 
-namespace loader
-{
-
+using sofa::type::PrimitiveGroup;
 using sofa::type::Vec3;
 using topology::Topology;
 
@@ -239,129 +232,61 @@ protected:
     void copyMeshToData(helper::io::Mesh& _mesh);
 
     /// Deprecation with pointer versions
-#define DEPRECATE_POINTER \
-    [[deprecated("This function has been deprecated in #PR 1627. The function will be removed " \
-    "in the v21.06 release. This should use a reference instead of a pointer.")]]
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPosition(type::vector< sofa::type::Vec<3, SReal> >* pPositions, const sofa::type::Vec<3, SReal>& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPosition(type::vector<sofa::type::Vec<3, SReal> >* pPositions, SReal x, SReal y, SReal z) = delete;
 
-    DEPRECATE_POINTER
-    void addPosition(type::vector< sofa::type::Vec<3, SReal> >* pPositions, const sofa::type::Vec<3, SReal>& p)
-    {
-        addPosition(*pPositions, p);
-    }
-    DEPRECATE_POINTER
-    void addPosition(type::vector<sofa::type::Vec<3, SReal> >* pPositions, SReal x, SReal y, SReal z)
-    {
-        addPosition(*pPositions, x,y,z);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPolyline(type::vector<Polyline>* pPolylines, Polyline p) = delete;
 
-    DEPRECATE_POINTER
-    void addPolyline(type::vector<Polyline>* pPolylines, Polyline p)
-    {
-        addPolyline(*pPolylines, p);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addEdge(type::vector<Edge>* pEdges, const Edge& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addEdge(type::vector<Edge>* pEdges, Topology::EdgeID p0, Topology::EdgeID p1) = delete;
 
-    DEPRECATE_POINTER
-    void addEdge(type::vector<Edge>* pEdges, const Edge& p)
-    {
-        addEdge(*pEdges, p);
-    }
-    DEPRECATE_POINTER
-    void addEdge(type::vector<Edge>* pEdges, Topology::EdgeID p0, Topology::EdgeID p1)
-    {
-        addEdge(*pEdges, p0, p1);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addTriangle(type::vector<Triangle>* pTriangles, const Triangle& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addTriangle(type::vector<Triangle>* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2) = delete;
 
-    DEPRECATE_POINTER
-    void addTriangle(type::vector<Triangle>* pTriangles, const Triangle& p)
-    {
-        addTriangle(*pTriangles, p);
-    }
-    DEPRECATE_POINTER
-    void addTriangle(type::vector<Triangle>* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2)
-    {
-        addTriangle(*pTriangles, p0,p1,p2);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addQuad(type::vector<Quad>* pQuads, const Quad& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addQuad(type::vector<Quad>* pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3) = delete;
 
-    DEPRECATE_POINTER
-    void addQuad(type::vector<Quad>* pQuads, const Quad& p)
-    {
-        addQuad(*pQuads, p);
-    }
-    DEPRECATE_POINTER
-    void addQuad(type::vector<Quad>* pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3)
-    {
-        addQuad(*pQuads, p0, p1, p2, p3);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPolygon(type::vector< type::vector <Topology::ElemID> >* pPolygons, const type::vector<Topology::ElemID>& p) = delete;
 
-    DEPRECATE_POINTER
-    void addPolygon(type::vector< type::vector<Topology::ElemID> >* pPolygons, const type::vector<Topology::ElemID>& p)
-    {
-        addPolygon(*pPolygons, p);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addTetrahedron(type::vector<Tetrahedron>* pTetrahedra, const Tetrahedron& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addTetrahedron(type::vector<Tetrahedron>* pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3) = delete;
 
-    DEPRECATE_POINTER
-    void addTetrahedron(type::vector<Tetrahedron>* pTetrahedra, const Tetrahedron& p)
-    {
-        addTetrahedron(*pTetrahedra, p);
-    }
-    DEPRECATE_POINTER
-    void addTetrahedron(type::vector<Tetrahedron>* pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3)
-    {
-        addTetrahedron(*pTetrahedra, p0, p1, p2, p3);
-    }
-
-    DEPRECATE_POINTER
-    void addHexahedron(type::vector< Hexahedron>* pHexahedra, const Hexahedron& p)
-    {
-        addHexahedron(*pHexahedra, p);
-    }
-    DEPRECATE_POINTER
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addHexahedron(type::vector< Hexahedron>* pHexahedra, const Hexahedron& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
     void addHexahedron(type::vector< Hexahedron>* pHexahedra,
         Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
-        Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7)
-    {
-        addHexahedron(*pHexahedra, p0, p1, p2, p3, p4, p5, p6, p7);
-    }
+        Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7) = delete;
 
-    DEPRECATE_POINTER
-    void addPentahedron(type::vector< Pentahedron>* pPentahedra, const Pentahedron& p)
-    {
-        addPentahedron(*pPentahedra, p);
-    }
-    DEPRECATE_POINTER
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPentahedron(type::vector< Pentahedron>* pPentahedra, const Pentahedron& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
     void addPentahedron(type::vector< Pentahedron>* pPentahedra,
         Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
-        Topology::ElemID p4, Topology::ElemID p5)
-    {
-        addPentahedron(*pPentahedra, p0, p1, p2, p3, p4, p5);
-    }
+        Topology::ElemID p4, Topology::ElemID p5) = delete;
 
-    DEPRECATE_POINTER
-    void addPyramid(type::vector< Pyramid>* pPyramids, const Pyramid& p)
-    {
-        addPyramid(*pPyramids, p);
-    }
-    DEPRECATE_POINTER
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPyramid(type::vector< Pyramid>* pPyramids, const Pyramid& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
     void addPyramid(type::vector< Pyramid>* pPyramids,
-        Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4)
-    {
-        addPyramid(*pPyramids, p0, p1, p2, p3, p4);
-    }
+        Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4) = delete;
 
-    DEPRECATE_POINTER
-    void copyMeshToData(helper::io::Mesh* _mesh)
-    {
-        copyMeshToData(*_mesh);
-    }
-
-#undef DEPRECATE_POINTER
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void copyMeshToData(helper::io::Mesh* _mesh) = delete;
 };
 
-
-} // namespace loader
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::loader
 
 #endif

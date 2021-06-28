@@ -31,8 +31,6 @@ namespace sofa::component::collision
 
 int RayCollisionModelClass = core::RegisterObject("Collision model representing a ray in space, e.g. a mouse click")
         .add< RayCollisionModel >()
-        .addAlias("Ray")
-        .addAlias("RayModel")
         ;
 
 using namespace sofa::type;

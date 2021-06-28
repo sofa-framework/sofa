@@ -31,13 +31,9 @@
 
 #include <fstream>
 
-namespace sofa
+namespace sofa::component
 {
-
-namespace component
-{
-
-namespace misc
+namespace _vtkexporter_
 {
 
 class SOFA_SOFAEXPORTER_API VTKExporter : public core::objectmodel::BaseObject
@@ -96,10 +92,19 @@ public:
     void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 
-}
+} // namespace _vtkexporter_
 
-}
+namespace exporter {
+    using VTKExporter = _vtkexporter_::VTKExporter;
+} // namespace exporter
 
-}
+// Import the object in the "old" namespace to allow smooth update of code base.
+namespace misc {
+    using VTKExporter
+        SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_2106()
+        = _vtkexporter_::VTKExporter;
+} // namespace misc
+
+} // namespace sofa::component
 
 #endif /* VTKEXPORTER_H_ */

@@ -26,13 +26,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::_vtkexporter_
 {
 
 int VTKExporterClass = core::RegisterObject("Save State vectors from file at each timestep")
@@ -994,8 +988,4 @@ void VTKExporter::bwdInit()
         (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
 }
 
-}
-
-}
-
-}
+} // namespace sofa::component::_vtkexporter_

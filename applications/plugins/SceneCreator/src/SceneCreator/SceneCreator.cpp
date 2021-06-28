@@ -90,7 +90,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Explicit")
     {
-        simpleapi::createObject(node, "EulerSolver", {{"name","Euler Explicit"}});
+        simpleapi::createObject(node, "EulerExplicitSolver", {{"name","Euler Explicit"}});
         return node ;
     }
 
@@ -323,12 +323,13 @@ Node::SPtr createVisualNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
 void addCollisionModels(Node::SPtr parent, const std::vector<std::string> &elements)
 {
     std::map<std::string, std::string> alias = {
-        {"Triangle", "TriangleCollisionModel"},
-        {"Line", "LineCollisionModel"},
-        {"Point", "PointCollisionModel"},
-        {"Sphere", "SphereCollisionModel"},
-        {"Capsule", "CapsuleCollisionModel"},
-        {"OBB", "OBBCollisionModel"}};
+        {"TriangleCollisionModel", "TriangleCollisionModel"},
+        {"LineCollisionModel", "LineCollisionModel"},
+        {"PointCollisionModel", "PointCollisionModel"},
+        {"SphereCollisionModel", "SphereCollisionModel"},
+        {"CapsuleCollisionModel", "CapsuleCollisionModel"},
+        {"OBBCollisionModel", "OBBCollisionModel"},
+    };
 
     for (auto& element : elements)
     {
@@ -425,9 +426,9 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
 
     // Add collisions models
     std::vector<std::string> colElements;
-    colElements.push_back("Triangle");
-    colElements.push_back("Line");
-    colElements.push_back("Point");
+    colElements.push_back("TriangleCollisionModel");
+    colElements.push_back("LineCollisionModel");
+    colElements.push_back("PointCollisionModel");
     sofa::modeling::addCollisionModels(cube, colElements);
 
     //Node VISUAL
@@ -496,7 +497,7 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
                                 {"axis", str(axis)}});
 
 
-    addCollisionModels(cylinder, {"Triangle", "Line", "Point"});
+    addCollisionModels(cylinder, {"TriangleCollisionModel", "LineCollisionModel", "PointCollisionModel"});
 
     //Node VISUAL
     createVisualNodeVec3(cylinder, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
@@ -558,7 +559,7 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
                                 {"radius", str(radius)},
                                 {"axis", str(axis)}});
 
-    addCollisionModels(sphere, {"Triangle", "Line", "Point"});
+    addCollisionModels(sphere, {"TriangleCollisionModel", "LineCollisionModel", "PointCollisionModel"});
     createVisualNodeVec3(sphere, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
 
     return sphere;
@@ -619,7 +620,7 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
                                 {"max", " 0.5  0.5  0.5 "}
                             });
 
-    addCollisionModels(plane, {"Triangle", "Line", "Point"});
+    addCollisionModels(plane, {"TriangleCollisionModel", "LineCollisionModel", "PointCollisionModel"});
     createVisualNodeVec3(plane, dofPlane, "", "green", Deriv3(), Deriv3(), MT_Identity);
 
     return plane;

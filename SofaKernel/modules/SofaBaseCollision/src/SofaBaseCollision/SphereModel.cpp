@@ -45,12 +45,8 @@ Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const
 }
 
 int SphereModelClass = core::RegisterObject("Collision model which represents a set of Spheres")
-        .add<  SphereCollisionModel<Vec3Types> >()
+        .add<SphereCollisionModel<Vec3Types> >()
         .add<SphereCollisionModel<Rigid3Types> >()
-
-        .addAlias("TSphereModel")
-        .addAlias("Sphere")
-        .addAlias("SphereModel")
         ;
 
 template class SOFA_SOFABASECOLLISION_API TSphere<defaulttype::Vec3Types>;

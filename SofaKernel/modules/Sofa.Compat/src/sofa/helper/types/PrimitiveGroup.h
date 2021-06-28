@@ -23,7 +23,7 @@
 
 #include <sofa/type/PrimitiveGroup.h>
 
-// SOFA_DEPRECATED_HEADER(v21.12, "sofa/helper/types/PrimitiveGroup.h")
+// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/helper/types/PrimitiveGroup.h")
 
 namespace sofa::helper::types
 {

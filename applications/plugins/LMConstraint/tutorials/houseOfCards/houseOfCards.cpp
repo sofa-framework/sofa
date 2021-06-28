@@ -62,9 +62,9 @@ Node::SPtr createCard(Node::SPtr  parent, const Coord3& position, const Coord3& 
     static int colorIdx=0;
 
     std::vector<std::string> modelTypes;
-    modelTypes.push_back("Triangle");
-    modelTypes.push_back("Line");
-    modelTypes.push_back("Point");
+    modelTypes.push_back("TriangleCollisionModel");
+    modelTypes.push_back("LineCollisionModel");
+    modelTypes.push_back("PointCollisionModel");
 
     Node::SPtr  card = sofa::modeling::createEulerSolverNode(parent,"Rigid","Implicit");
 

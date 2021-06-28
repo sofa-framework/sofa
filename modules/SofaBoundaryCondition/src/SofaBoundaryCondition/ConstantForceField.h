@@ -107,9 +107,6 @@ public:
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& f );
 
-    /// Parse function (to be removed after v19.12)
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
-
     using Inherit::addAlias ;
     using Inherit::addKToMatrix;
 
@@ -135,16 +132,13 @@ SReal ConstantForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const cor
 template <>
 SReal ConstantForceField<defaulttype::Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 
-
-
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Vec6Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Rigid3Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Rigid2Types>;
-
 #endif
 
 } // namespace sofa::component::forcefield

@@ -32,10 +32,6 @@ using namespace helper;
 
 int OBBModelClass = core::RegisterObject("Collision model which represents a set of OBBs")
         .add<  OBBCollisionModel<Rigid3Types> >()
-
-        .addAlias("OBB")
-        .addAlias("OBBModel")
-        .addAlias("TOBBModel")
         ;
 
 template class SOFA_MISC_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;

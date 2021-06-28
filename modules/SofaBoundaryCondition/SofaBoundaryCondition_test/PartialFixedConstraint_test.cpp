@@ -81,7 +81,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( type::Vector3(0,0,0) );
-        simulation::Node::SPtr node = createEulerSolverNode(root,"EulerSolver", integrationScheme);
+        simulation::Node::SPtr node = createEulerSolverNode(root,"EulerExplicitSolver", integrationScheme);
 
         mstate = New<sofa::component::container::MechanicalObject<DataTypes> >();
         mstate->resize(1);

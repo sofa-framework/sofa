@@ -195,7 +195,7 @@ BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry:
     {
         core::objectmodel::BaseObjectDescription arg;
         std::ostringstream oss;
-        oss << c->shortName(&description) << numComponent++;
+        oss << description.getName() << description.getType() << numComponent++;
         arg.setName(oss.str());
 
         object = c->createInstance(parent->getContext(), &arg);
@@ -729,7 +729,7 @@ Node::SPtr GraphModeler::buildNodeFromBaseElement(Node::SPtr node,xml::BaseEleme
             itemGraph->setText(0,name.c_str());
         }
     }
-    newNode->clearWarnings();
+    newNode->clearLoggedMessages();
 
     return newNode;
 }

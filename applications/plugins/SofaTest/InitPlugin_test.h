@@ -106,7 +106,7 @@ The SofaTest plugin has a python API giving a Controller. You can write a Sofa s
 - Test a pure python function (independent from SOFA)
 You simply need to create a python script with a function "run()" return the test result as a boolean.
 
-Your python scripts must be added to the gtest framework with the SofaTest/Python_test.h API to be executed automatically
+Your python scripts must be added to the gtest framework with the SofaPython/Python_test.h API to be executed automatically
 Note that arguments can be given, so the same script can be called with several parameters (accessible as argc/argv on the python side).
 Have a look to SofaTest_test for an example.
 

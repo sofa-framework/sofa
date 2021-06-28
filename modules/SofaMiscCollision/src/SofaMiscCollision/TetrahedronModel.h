@@ -31,13 +31,7 @@
 
 #include <map>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class TetrahedronCollisionModel;
@@ -194,12 +188,6 @@ extern template SOFA_MISC_COLLISION_API core::behavior::MechanicalState<defaultt
 #  endif
 #endif
 
-using TetrahedronModel [[deprecated("The TetrahedronModel is now deprecated, please use TetrahedronCollisionModel instead. Compatibility stops at v20.06")]] = TetrahedronCollisionModel;
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision
 
 #endif
