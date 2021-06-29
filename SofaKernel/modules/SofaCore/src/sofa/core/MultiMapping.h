@@ -227,7 +227,7 @@ public:
             arg->logError("The 'output' data attribute is empty. It should contain a valid path "
                           "to one or more mechanical states. of type '" + std::string(TOut::Name()) + "'.");
             return false;
-        } else if (!PathResolver::CheckPaths(context, LinkToModels::DestType::GetClass(), input)) {
+        } else if (!PathResolver::CheckPaths(context, LinkToModels::DestType::GetClass(), output)) {
             arg->logError("The 'output' data attribute does not contain a valid path to one or more mechanical "
                           "states of type '" + std::string(TOut::Name()) + "'.");
             return false;
