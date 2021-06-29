@@ -21,12 +21,79 @@
 ******************************************************************************/
 
 #include <SofaUserInteraction/RayTraceDetection.h>
+
 #include <sofa/core/ObjectFactory.h>
+#include <numeric>
 
 namespace sofa::component::collision
 {
 
 int RayTraceDetectionClass = core::RegisterObject(
         "Collision detection using TriangleOctreeModel").add<RayTraceDetection>();
+
+
+void RayTraceDetection::init()
+{
+    std::vector<std::string> broadPhaseComponents;
+    std::vector<std::string> narrowPhaseComponents;
+    findAllDetectionComponents(broadPhaseComponents, narrowPhaseComponents);
+
+    if (broadPhaseComponents.empty())
+    {
+        broadPhaseComponents.push_back(BruteForceBroadPhase::GetClass()->className);
+    }
+    if (narrowPhaseComponents.empty())
+    {
+        narrowPhaseComponents.push_back(RayTraceNarrowPhase::GetClass()->className);
+    }
+
+    const auto comma_fold = [](std::string a, std::string b)
+    {
+        return std::move(a) + ", " + std::move(b);
+    };
+
+    const std::string broadPhaseComponentsString = std::accumulate(
+            std::next(broadPhaseComponents.begin()), broadPhaseComponents.end(),
+            broadPhaseComponents[0],
+            comma_fold);
+
+    const std::string narrowPhaseComponentsString = std::accumulate(
+            std::next(narrowPhaseComponents.begin()), narrowPhaseComponents.end(),
+            narrowPhaseComponents[0],
+            comma_fold);
+
+    msg_deprecated() << this->getClassName() << " component is deprecated. It will be removed in v21.12." << msgendl
+                     << "  As a replacement, use a BroadPhase component, such as [" << broadPhaseComponentsString
+                     << "]," << msgendl
+                     << "  AND a NarrowPhase component, such as [" << narrowPhaseComponentsString << "]." << msgendl
+                     << "  " << BruteForceBroadPhase::GetClass()->className << " and " << RayTraceNarrowPhase::GetClass()->className << " have been automatically added to your scene for backward compatibility.";
+}
+
+void RayTraceDetection::findAllDetectionComponents(std::vector<std::string> &broadPhaseComponents,
+                                                     std::vector<std::string> &narrowPhaseComponents)
+{
+    std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
+    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
+
+    for (const auto &entry : entries)
+    {
+        const auto creatorEntry = entry->creatorMap.begin();
+        if (creatorEntry != entry->creatorMap.end())
+        {
+            const sofa::core::objectmodel::BaseClass *baseClass = creatorEntry->second->getClass();
+            if (baseClass)
+            {
+                if (baseClass->hasParent(sofa::core::collision::BroadPhaseDetection::GetClass()))
+                {
+                    broadPhaseComponents.push_back(baseClass->className);
+                }
+                if (baseClass->hasParent(sofa::core::collision::NarrowPhaseDetection::GetClass()))
+                {
+                    narrowPhaseComponents.push_back(baseClass->className);
+                }
+            }
+        }
+    }
+}
 
 } // namespace sofa::component::collision
