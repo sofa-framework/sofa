@@ -1241,6 +1241,492 @@ public:
         return ;
     }
 
+
+    void checkTopologicalChanges_Hexa()
+    {
+        static const string scene =
+            "<?xml version='1.0'?>                                                                              "
+            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+            "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+            "    <Node name='Hexa' >                                                                            "
+            "            <MechanicalObject position = '@../grid.position' />                                    "
+            "            <HexahedronSetTopologyContainer name='Container' src='@../grid' />                     "
+            "            <HexahedronSetTopologyModifier name='Modifier' />                                      "
+            "            <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
+            "    </Node>                                                                                        "
+            "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
+            scene.c_str(),
+            sofa::Size(scene.size()));
+        ASSERT_NE(root.get(), nullptr);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        ASSERT_NE(mass, nullptr);
+
+        HexahedronSetTopologyModifier* modifier = root->getTreeObject<HexahedronSetTopologyModifier>();
+        ASSERT_NE(modifier, nullptr);
+
+        static const MassType volume = 8.0;
+        static const MassType volumeElem = volume / 8.0; // 8 hexa in the grid            
+        static const MassType expectedDensity = 1.0;
+        static const MassType expectedTotalMass = expectedDensity * volume;
+
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+        const VecMass& eMasses = mass->d_edgeMass.getValue();
+        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 20);
+        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 40);
+
+        // check value at init
+        EXPECT_EQ(vMasses.size(), 27);
+        EXPECT_EQ(eMasses.size(), 90);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
+        
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+        EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to hexahedron Topology
+        
+        // -- remove hexahedron id: 0 -- 
+        sofa::helper::vector<sofa::Index> hexaIds = { 0 };
+        modifier->removeHexahedra(hexaIds);
+        EXPECT_EQ(vMasses.size(), 26);
+        EXPECT_EQ(eMasses.size(), 87);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), 7.0);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+
+
+        // -- remove hexahedron id: 0 --
+        modifier->removeHexahedra(hexaIds);
+        EXPECT_EQ(vMasses.size(), 25);
+        EXPECT_EQ(eMasses.size(), 84);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), 6.0);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        
+        
+        // -- remove hexahedron id: 0, 1 --
+        hexaIds.push_back(1);
+        modifier->removeHexahedra(hexaIds);
+        EXPECT_EQ(vMasses.size(), 21);
+        EXPECT_EQ(eMasses.size(), 74);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), 4.0);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[20], refValueE);
+
+        // -- remove hexahedron id: 0, 1, 2, 3 --
+        hexaIds.push_back(2);
+        hexaIds.push_back(3);
+        modifier->removeHexahedra(hexaIds);
+        EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_EQ(eMasses.size(), 36); // TODO epernod 2021-06-29: not empty, because not all edges are linked to hexahedron. Potential bug here.
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
+    }
+
+
+    void checkTopologicalChanges_Tetra()
+    {
+        static const string scene =
+            "<?xml version='1.0'?>                                                                              "
+            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+            "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+            "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+            "    <Node name='Tetra' >                                                                           "
+            "            <MechanicalObject position='@../grid.position' />                                      "
+            "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+            "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+            "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+            "            <Hexa2TetraTopologicalMapping input='@../grid' output='@Container' />                  "
+            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
+            "    </Node>                                                                                        "
+            "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
+            scene.c_str(),
+            sofa::Size(scene.size()));
+        ASSERT_NE(root.get(), nullptr);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        ASSERT_NE(mass, nullptr);
+
+        TetrahedronSetTopologyModifier* modifier = root->getTreeObject<TetrahedronSetTopologyModifier>();
+        ASSERT_NE(modifier, nullptr);
+
+        static const MassType volume = 8.0;
+        static const MassType volumeElem = volume / 6.0; // 6 tetra in the grid            
+        static const MassType expectedDensity = 1.0;
+        static const MassType expectedTotalMass = expectedDensity * volume;
+        static const MassType massElem = expectedDensity * volumeElem;
+
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+        const VecMass& eMasses = mass->d_edgeMass.getValue();
+        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 10);
+        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 20);
+
+        // check value at init
+        EXPECT_EQ(vMasses.size(), 8);
+        EXPECT_EQ(eMasses.size(), 19);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 5);
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 3);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 3);
+        EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+
+        // -- remove tetrahedron id: 0 -- 
+        sofa::helper::vector<sofa::Index> elemIds = { 0 };
+        modifier->removeTetrahedra(elemIds);
+        EXPECT_EQ(vMasses.size(), 8);
+        EXPECT_EQ(eMasses.size(), 18);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 4); // check update of Mass when removing tetra
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+        EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+
+
+        // -- remove tetrahedron id: 0 --
+        modifier->removeTetrahedra(elemIds);
+        EXPECT_EQ(vMasses.size(), 7);
+        EXPECT_EQ(eMasses.size(), 15);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 2 * massElem);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 3); // check update of Mass when removing tetra
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+
+
+        // -- remove tetrahedron id: 0, 1 --
+        elemIds.push_back(1);
+        modifier->removeTetrahedra(elemIds);
+        EXPECT_EQ(vMasses.size(), 6);
+        EXPECT_EQ(eMasses.size(), 11);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 4 * massElem);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+
+        // -- remove tetrahedron id: 0, 1 --
+        modifier->removeTetrahedra(elemIds);
+        EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_EQ(eMasses.size(), 0);
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
+    }
+
+    void checkTopologicalChanges_Quad()
+    {
+        static const string scene =
+            "<?xml version='1.0'?>                                                                              "
+            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+            "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+            "    <Node name='Quad' >                                                                            "
+            "            <MechanicalObject position = '@../grid.position' />                                    "
+            "            <QuadSetTopologyContainer name='Container' src='@../grid' />                     "
+            "            <QuadSetTopologyModifier name='Modifier' />                                      "
+            "            <QuadSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
+            "    </Node>                                                                                        "
+            "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
+            scene.c_str(),
+            sofa::Size(scene.size()));
+        ASSERT_NE(root.get(), nullptr);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        ASSERT_NE(mass, nullptr);
+
+        QuadSetTopologyModifier* modifier = root->getTreeObject<QuadSetTopologyModifier>();
+        ASSERT_NE(modifier, nullptr);
+
+        static const MassType volume = 4.0;
+        static const MassType volumeElem = volume / 4.0; // 4 quads in the grid            
+        static const MassType expectedDensity = 1.0;
+        static const MassType expectedTotalMass = expectedDensity * volume;
+        static const MassType massElem = expectedDensity * volumeElem;
+
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+        const VecMass& eMasses = mass->d_edgeMass.getValue();
+        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 8);
+        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 16);
+
+        // check value at init
+        EXPECT_EQ(vMasses.size(), 9);
+        EXPECT_EQ(eMasses.size(), 16);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+        EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to quad Topology
+
+        // -- remove quad id: 0 -- 
+        sofa::helper::vector<sofa::Index> elemIds = { 0 };
+        modifier->removeQuads(elemIds, true, true);
+        EXPECT_EQ(vMasses.size(), 8);
+        EXPECT_EQ(eMasses.size(), 14);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+
+        // -- remove quad id: 0 --
+        modifier->removeQuads(elemIds, true, true);
+        EXPECT_EQ(vMasses.size(), 7);
+        EXPECT_EQ(eMasses.size(), 12);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 2 * massElem);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+
+        // -- remove quad id: 0, 1 --
+        elemIds.push_back(1);
+        modifier->removeQuads(elemIds, true, true);        
+        EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_EQ(eMasses.size(), 4); // TODO epernod 2021-06-29: not empty, because not all edges are linked to quads. Potential bug here.
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
+    }
+
+
+    void checkTopologicalChanges_Triangle()
+    {
+        static const string scene =
+            "<?xml version='1.0'?>                                                                              "
+            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+            "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+            "    <Node name='Triangle' >                                                                            "
+            "            <MechanicalObject position = '@../grid.position' />                                    "
+            "            <TriangleSetTopologyContainer name='Container' src='@../grid' />                     "
+            "            <TriangleSetTopologyModifier name='Modifier' />                                      "
+            "            <TriangleSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
+            "    </Node>                                                                                        "
+            "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
+            scene.c_str(),
+            sofa::Size(scene.size()));
+        ASSERT_NE(root.get(), nullptr);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        ASSERT_NE(mass, nullptr);
+
+        TriangleSetTopologyModifier* modifier = root->getTreeObject<TriangleSetTopologyModifier>();
+        ASSERT_NE(modifier, nullptr);
+
+        static const MassType volume = 4.0;
+        static const MassType volumeElem = volume / 8.0; // 8 triangles in the grid            
+        static const MassType expectedDensity = 1.0;
+        static const MassType expectedTotalMass = expectedDensity * volume;
+        static const MassType massElem = expectedDensity * volumeElem;
+
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+        const VecMass& eMasses = mass->d_edgeMass.getValue();
+        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 6);
+        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 12);
+
+        // check value at init
+        EXPECT_EQ(vMasses.size(), 9);
+        EXPECT_EQ(eMasses.size(), 16);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 2);
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 3);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+        EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+
+        // -- remove triangle id: 0 -- 
+        sofa::helper::vector<sofa::Index> elemIds = { 0 };
+        modifier->removeTriangles(elemIds, true, true);
+        EXPECT_EQ(vMasses.size(), 9);
+        EXPECT_EQ(eMasses.size(), 15);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+
+        // -- remove triangle id: 0 --
+        modifier->removeTriangles(elemIds, true, true);
+        EXPECT_EQ(vMasses.size(), 9);
+        EXPECT_EQ(eMasses.size(), 14);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 2 * massElem);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+
+        // -- remove triangle id: 0, 1 --
+        elemIds.push_back(1);
+        modifier->removeTriangles(elemIds, true, true);
+        EXPECT_EQ(vMasses.size(), 7);
+        EXPECT_EQ(eMasses.size(), 10);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 4 * massElem);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 2);
+        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+
+        // -- remove triangle id: 0, 1, 2, 3 --
+        elemIds.push_back(2);
+        elemIds.push_back(3);
+        modifier->removeTriangles(elemIds, true, true);
+        EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_EQ(eMasses.size(), 0);
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
+    }
+
+    void checkTopologicalChanges_Edge()
+    {
+        static const string scene =
+            "<?xml version='1.0'?>                                                                              "
+            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+            "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+            "    <Node name='Edge' >                                                                            "
+            "            <MechanicalObject position = '@../grid.position' />                                    "
+            "            <EdgeSetTopologyContainer name='Container' src='@../grid' />                     "
+            "            <EdgeSetTopologyModifier name='Modifier' />                                      "
+            "            <EdgeSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
+            "    </Node>                                                                                        "
+            "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
+            scene.c_str(),
+            sofa::Size(scene.size()));
+        ASSERT_NE(root.get(), nullptr);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        ASSERT_NE(mass, nullptr);
+
+        EdgeSetTopologyModifier* modifier = root->getTreeObject<EdgeSetTopologyModifier>();
+        ASSERT_NE(modifier, nullptr);
+
+        static const MassType volume = 2.0;
+        static const MassType volumeElem = volume / 3.0; // 3 edges in the grid            
+        static const MassType expectedDensity = 1.0;
+        static const MassType expectedTotalMass = expectedDensity * volume;
+        static const MassType massElem = expectedDensity * volumeElem;
+
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+        const VecMass& eMasses = mass->d_edgeMass.getValue();
+        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 6);
+        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 12);
+        static const MassType wrongValue = 0; // TODO epernod 2021-06-29: MeshMatrixMass based on edge topology doesn't support topological changes
+
+        // check value at init
+        EXPECT_EQ(vMasses.size(), 4);
+        EXPECT_EQ(eMasses.size(), 3);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), /*expectedTotalMass*/ wrongValue);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], wrongValue);
+        EXPECT_FLOAT_EQ(vMasses[1], wrongValue);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], wrongValue);
+        EXPECT_FLOAT_EQ(eMasses[1], wrongValue);
+
+        // -- remove edge id: 0 -- 
+        sofa::helper::vector<sofa::Index> elemIds = { 0 };
+        modifier->removeEdges(elemIds, true);
+        EXPECT_EQ(vMasses.size(), 3);
+        EXPECT_EQ(eMasses.size(), 2);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), /*expectedTotalMass - massElem*/ wrongValue);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], wrongValue); // check update of Mass when removing tetra
+        EXPECT_FLOAT_EQ(vMasses[1], wrongValue);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], wrongValue);
+        EXPECT_FLOAT_EQ(eMasses[1], wrongValue);
+
+
+        // -- remove edge id: 0 --
+        modifier->removeEdges(elemIds, true);
+        EXPECT_EQ(vMasses.size(), 2);
+        EXPECT_EQ(eMasses.size(), 1);
+        EXPECT_FLOAT_EQ(mass->getTotalMass(), /*expectedTotalMass - 2 * massElem*/ wrongValue);
+
+        // check vertex mass
+        EXPECT_FLOAT_EQ(vMasses[0], wrongValue);
+        EXPECT_FLOAT_EQ(vMasses[1], wrongValue);
+        // check edge mass
+        EXPECT_FLOAT_EQ(eMasses[0], wrongValue);
+
+
+        // -- remove edge id: 0 --
+        modifier->removeEdges(elemIds, true);
+        EXPECT_EQ(vMasses.size(), 0);
+        EXPECT_EQ(eMasses.size(), 0);
+        EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
+    }
 };
 
 
@@ -1478,6 +1964,32 @@ TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_Wro
 
 TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra){
     check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra();
+}
+
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Hexa) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Hexa();
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Tetra) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Tetra();
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Quad) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Quad();
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Triangle) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Triangle();
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Edge) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Edge();
 }
 
 
