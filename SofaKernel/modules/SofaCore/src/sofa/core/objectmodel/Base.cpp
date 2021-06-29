@@ -484,7 +484,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
                 }
                 else
                 {
-                    msg_warning() << "Link Data '" << attribute << "' to invalid Data '" << value << '\'';
+                    msg_error() << "Link Data '" << attribute << "' to invalid Data '" << value << '\'';
                     ok = false;
                     continue;
                 }
