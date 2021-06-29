@@ -66,6 +66,7 @@ bool NewProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
 
 int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts) 
 { 
+    SOFA_UNUSED(contacts);
     return BaseProximityIntersection::testIntersection(cube1, cube2); 
 }
 

@@ -410,6 +410,8 @@ void UncoupledConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f)
 {
+    SOFA_UNUSED(cparams);
+
     auto writeDx = sofa::helper::getWriteAccessor( *dx[this->getMState()].write() );
     const Data<VecDeriv>& f_d = *f[this->getMState()].read();
     computeDx(f_d, writeDx.wref());

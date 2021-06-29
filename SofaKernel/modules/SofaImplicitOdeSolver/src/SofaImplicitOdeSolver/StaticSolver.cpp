@@ -275,7 +275,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
             //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
             //       FixedConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
             //       matrix for the ith degree of freedom.
-            matrix = MechanicalMatrix::K * -1.0;
+            matrix.setSystemMBKMatrix(MechanicalMatrix::K * -1.0);
         }
 
         // Part II. Solve the unknown increment.
