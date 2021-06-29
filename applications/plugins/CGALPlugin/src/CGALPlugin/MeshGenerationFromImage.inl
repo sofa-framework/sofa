@@ -482,10 +482,10 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::vis
 
         for(size_t i=0; i<m_tetraDomainLabels.size(); i++)
         {
-            vparams->drawTool()->drawTriangles(pointsDomains[0][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5), fmod(0.5-fmod(i*0.5,1.5),1.5)-0.1, 1.0-fmod(i*0.5,1.5), 1));
-            vparams->drawTool()->drawTriangles(pointsDomains[1][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.1, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.2, 1.0-fmod(i*0.5,1.5), 1));
-            vparams->drawTool()->drawTriangles(pointsDomains[2][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.2, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.3, 1.0-fmod(i*0.5,1.5), 1));
-            vparams->drawTool()->drawTriangles(pointsDomains[3][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.3, fmod(0.5-fmod(i*0.5,1.5),1.5), 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[0][i], sofa::type::RGBAColor(fmod(i*0.5,1.5), fmod(0.5-fmod(i*0.5,1.5),1.5)-0.1, 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[1][i], sofa::type::RGBAColor(fmod(i*0.5,1.5)-0.1, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.2, 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[2][i], sofa::type::RGBAColor(fmod(i*0.5,1.5)-0.2, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.3, 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[3][i], sofa::type::RGBAColor(fmod(i*0.5,1.5)-0.3, fmod(0.5-fmod(i*0.5,1.5),1.5), 1.0-fmod(i*0.5,1.5), 1));
         }
     }
 }

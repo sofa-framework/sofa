@@ -12,7 +12,8 @@
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" />
     <DefaultPipeline name="CollisionPipeline" />
-    <BruteForceDetection name="BruteForceDetection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
     <DefaultContactManager name="Response" response="FrictionContact" />
     <LCPConstraintSolver maxIt="1000" tolerance="0.001" maxIterations="1000"/>

@@ -177,8 +177,8 @@ struct FixedConstraint_test : public BaseTest
         dofs->resize(nbrDofs);
         
         /// Add PointSetTopology
-        typename sofa::component::topology::PointSetTopologyContainer::SPtr tCon = sofa::core::objectmodel::New<sofa::component::topology::PointSetTopologyContainer>();
-        typename sofa::component::topology::PointSetTopologyModifier::SPtr tMod = sofa::core::objectmodel::New<sofa::component::topology::PointSetTopologyModifier>();
+        auto tCon = sofa::core::objectmodel::New<sofa::component::topology::PointSetTopologyContainer>();
+        auto tMod = sofa::core::objectmodel::New<sofa::component::topology::PointSetTopologyModifier>();
         tCon->setNbPoints(nbrDofs);
         node->addObject(tCon);
         node->addObject(tMod);
@@ -191,16 +191,18 @@ struct FixedConstraint_test : public BaseTest
         
         // create a force vector
         Deriv force;
-        for (unsigned i = 0; i < force.size(); i++)
+        auto typeSize = force.size();
+        
+        for (unsigned i = 0; i < typeSize; i++)
             force[i] = 10;
 
         /// Fill position and force
         typename MechanicalObject::WriteVecCoord writeX = dofs->writePositions();
         for (sofa::Index id = 0; id < nbrDofs; id++)
         {
-            for (unsigned int i = 0; i < writeX[0].size(); i++)
+            for (unsigned int i = 0; i < typeSize; i++)
             {
-                writeX[id][i] = 1.0 * id + 0.1 * i;
+                writeX[id][i] = id + 0.1 * i;  // create position filled as a grid:  0; 0.1; 0.2 ...  \n  1; 1.1; 1.2 ... \n 2; 2.1; 2.2 ...
             }
 
             forceField->setForce(id, force);
@@ -216,7 +218,7 @@ struct FixedConstraint_test : public BaseTest
         /// Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
-        /// Perform one time step
+        /// Perform two time steps
         sofa::simulation::getSimulation()->animate(root.get(), 0.1);
         sofa::simulation::getSimulation()->animate(root.get(), 0.1);
 
@@ -227,18 +229,18 @@ struct FixedConstraint_test : public BaseTest
         EXPECT_EQ(readX[0][0], 0);
         EXPECT_EQ(readX[1][0], 1);
         EXPECT_EQ(readX[2][0], 2);
-        EXPECT_NEAR(readX[3][0], 4.32231, 1e-4);
+        EXPECT_NEAR(readX[3][0], 4.32231, 1e-4); // compare to computed values
         EXPECT_NEAR(readX[4][0], 5.32231, 1e-4);
 
         /// remove some points from topological mechanism
         sofa::helper::vector< sofa::Index > indicesRemove = {0, 2, 3};
         tMod->removePoints(indicesRemove, true);
-        nbrDofs -= indicesRemove.size();
+        nbrDofs -= sofa::Size(indicesRemove.size());
 
         /// new positions are now: {id[4], id[1]}  because remove use swap + pop_back
         EXPECT_EQ(tCon->getPoints().size(), nbrDofs);
         EXPECT_NEAR(readX[0][0], 5.32231, 1e-4);
-        EXPECT_EQ(readX[1][0], 1);
+        EXPECT_NEAR(readX[1][0], 1.0, 1e-4);
 
         return true;
     }
@@ -287,7 +289,6 @@ TYPED_TEST(FixedConstraint_test, testTopologicalChanges)
 
 }// namespace
 }// namespace sofa
-
 
 
 

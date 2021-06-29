@@ -4,8 +4,8 @@ project(Sofa) # Cannot use VERSION with patch like "00"
 include(CMakeDependentOption)
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 20)
-set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_MAJOR 21)
+set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -237,12 +237,6 @@ if(SOFA_BUILD_SCENECREATOR)
     add_subdirectory(applications/plugins/SceneCreator)
 endif()
 
-# Tests : define subdirectories
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    # Library used to write high level tests involving many components.
-    add_subdirectory(applications/plugins/SofaTest)
-endif()
-
 ## Plugins
 add_subdirectory(applications/plugins)
 
@@ -271,6 +265,15 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     include( "custom.cmake" )
 endif()
 
+# Regroup all test-related projects into an IDE folder
+if(TARGET Sofa.Testing) # No need to search for test targets if tests are not enabled
+    sofa_get_all_targets(all_targets)
+    foreach(target ${all_targets})
+        if(target MATCHES ".*_test" OR target MATCHES ".*_simutest")
+            set_target_properties(${target} PROPERTIES FOLDER Testing) # IDE folder
+        endif()
+    endforeach()
+endif()
 
 # Install configuration
 #install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION . COMPONENT headers)

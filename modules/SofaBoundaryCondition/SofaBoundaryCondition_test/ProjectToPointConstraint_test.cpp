@@ -19,9 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest; 
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
 
-
-#include <SofaTest/Sofa_test.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
@@ -29,8 +31,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
-
-#include <SofaTest/TestMessageHandler.h>
 
 
 namespace sofa {
@@ -45,7 +45,7 @@ using sofa::core::objectmodel::New;
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _DataTypes>
-struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -148,7 +148,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
            {
               CPos diffPoints = (x[i]-targetPoint);
               Real scal = diffPoints.norm(); // should be null
-              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
+              if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
               }
@@ -159,7 +159,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
               CPos dx = x[i]-xprev[i];
               Real scal = dx*dx;
 
-              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
+              if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of unconstrained particle " << i << " is wrong: " << x[i] ;
               }
@@ -187,7 +187,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
            {
               CPos diffPoints = (v[i]-Deriv());
               Real scal = diffPoints.norm(); // should be null
-              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
+              if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
               }
@@ -197,7 +197,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
            {
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
-              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
+              if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;
               }

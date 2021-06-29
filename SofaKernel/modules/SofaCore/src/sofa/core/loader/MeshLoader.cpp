@@ -132,7 +132,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_normals.setReadOnly(true);
 
     /// name filename => component state update + change of all data field...but not visible ?
-    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t)
+    addUpdateCallback("filename", {&d_filename}, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
         if(load()){
@@ -197,12 +197,8 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
         d_scale.setValue(d_scale.getValue()*s);
     }
 
-    bool success = false;
-    if (canLoad())
-        success = load(/*m_filename.getFullPath().c_str()*/);
-
     // File not loaded, component is set to invalid
-    if (!success)
+    if (!canLoad())
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 }
 

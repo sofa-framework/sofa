@@ -174,7 +174,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges,
         for (size_t j=0; j<ancestorElems[i].srcElems.size(); ++j)
         {
             sofa::core::topology::TopologyElemID src = ancestorElems[i].srcElems[j];
-            if (src.type == sofa::core::topology::TopologyElementType::EDGE && src.index != sofa::core::topology::Topology::InvalidID)
+            if (src.type == sofa::core::topology::TopologyElementType::EDGE && src.index != sofa::InvalidID)
                 ancestors[i].push_back(src.index);
         }
         if (!ancestors[i].empty())

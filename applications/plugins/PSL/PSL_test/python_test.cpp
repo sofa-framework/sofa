@@ -26,7 +26,7 @@
 
 #include <vector>
 
-#include <SofaTest/Python_test.h>
+#include <SofaPython/Python_test.h>
 using sofa::Python_test ;
 using sofa::Python_test_list ;
 

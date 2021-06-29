@@ -19,7 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::component::container::MechanicalObject ;
@@ -44,7 +46,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct ClusteringEngine_test : public Sofa_test<typename _DataTypes::Real>,
+struct ClusteringEngine_test : public BaseSimulationTest,
         ClusteringEngine<_DataTypes>
 {
     typedef ClusteringEngine<_DataTypes> ThisClass ;
@@ -142,7 +144,7 @@ struct ClusteringEngine_test : public Sofa_test<typename _DataTypes::Real>,
 };
 
 using ::testing::Types;
-typedef Types<Vec3Types> DataTypes;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
 TYPED_TEST_SUITE(ClusteringEngine_test, DataTypes);
 

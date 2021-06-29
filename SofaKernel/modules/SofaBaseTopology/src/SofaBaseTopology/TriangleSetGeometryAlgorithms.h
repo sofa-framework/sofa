@@ -245,12 +245,12 @@ public:
     * @param baryCoef : barycoef of intersections points on the edge
     */
     bool computeIntersectionsLineTriangle(bool is_entered,
-        const sofa::defaulttype::Vec<3, double>& a,
-        const sofa::defaulttype::Vec<3, double>& b,
+        const sofa::defaulttype::Vec<3, Real>& a,
+        const sofa::defaulttype::Vec<3, Real>& b,
         const TriangleID ind_t,
         sofa::helper::vector<PointID>& indices,
-        sofa::helper::vector<double>& vecBaryCoef,
-        sofa::helper::vector<double>& vecCoordKmin) const;
+        sofa::helper::vector<Real>& vecBaryCoef,
+        sofa::helper::vector<Real>& vecCoordKmin) const;
 
     /** \brief Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
      *

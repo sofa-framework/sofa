@@ -77,8 +77,17 @@ void BaseNode::setObjectContext(BaseObject::SPtr obj)
 /// Reset the context of an object
 void BaseNode::clearObjectContext(BaseObject::SPtr obj)
 {
-    if (obj->getContext() == this->getContext())
-        obj->l_context.reset();
+    if (obj != nullptr)
+    {
+        if (obj->getContext() == this->getContext())
+        {
+            obj->l_context.reset();
+        }
+    }
+    else
+    {
+        msg_warning() << "Trying to clear a nullptr object context";
+    }
 }
 
 std::string BaseNode::internalGetPathName() const {

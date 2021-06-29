@@ -22,12 +22,7 @@
 #pragma once
 
 #include <SofaGeneralMeshCollision/MeshDiscreteIntersection.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/proximity.h>
-#include <iostream>
-#include <algorithm>
-
+#include <SofaBaseCollision/DiscreteIntersection.h>
 
 namespace sofa::component::collision
 {
@@ -143,15 +138,6 @@ int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& tr
 #undef SAMESIDE
 
     return 0; // No intersection: passed all tests for intersections !
-}
-
-
-inline int MeshDiscreteIntersection::computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,tri,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
-}
-
-inline int MeshDiscreteIntersection::computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,lin,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
 }
 
 } // namespace sofa::component::collision

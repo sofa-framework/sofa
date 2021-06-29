@@ -127,12 +127,12 @@ MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
 
 bool MeshVTKLoader::doLoad()
 {
-    msg_info() << "Loading VTK file: " << m_filename ;
+    msg_info() << "Loading VTK file: " << d_filename ;
 
     bool fileRead = false;
 
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
 
     // Detect file type (legacy or vtk)
     MeshVTKLoader::VTKFileType type = detectFileType(filename);

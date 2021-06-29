@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
+#include <sofa/type/PrimitiveGroup.h>
 
 namespace sofa::component::engine
 {
@@ -54,7 +54,7 @@ public:
     void doUpdate() override;
 
     //Input
-    Data<helper::vector<sofa::core::loader::PrimitiveGroup > > f_groups; ///< Groups
+    Data<helper::vector<sofa::type::PrimitiveGroup > > f_groups; ///< Groups
     Data<helper::vector<unsigned int> > f_primitives; ///< not mandatory
     Data<helper::vector<int > > f_elementsGroup; ///< Vector of groups (each element gives its group
     //Output

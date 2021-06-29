@@ -70,6 +70,9 @@ public:
 
     static bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
 
+    /// Bounding tree is not required by this detection algorithm
+    bool needsDeepBoundingTree() const override { return false; }
+
 protected:
 
     /// Return true if the provided CollisionModel can collide with itself

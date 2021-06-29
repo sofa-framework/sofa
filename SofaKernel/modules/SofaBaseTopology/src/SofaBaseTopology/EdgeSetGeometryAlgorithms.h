@@ -158,9 +158,9 @@ public:
     NumericalIntegrationDescriptor<Real,1> &getEdgeNumericalIntegrationDescriptor();
 
     bool computeEdgeSegmentIntersection(EdgeID edgeID,
-        const sofa::defaulttype::Vec<3,double>& a,
-        const sofa::defaulttype::Vec<3, double>& b,
-        double &baryCoef);
+        const sofa::defaulttype::Vec<3,Real>& a,
+        const sofa::defaulttype::Vec<3, Real>& b,
+        Real &baryCoef);
 
 protected:
     Data<bool> showEdgeIndices; ///< Debug : view Edge indices.

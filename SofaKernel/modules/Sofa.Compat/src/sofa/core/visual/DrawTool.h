@@ -21,13 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/visual/DrawTool.h>
+#include <sofa/config.h>
 
-
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/visual/DrawTool.h")
-
-namespace sofa::core::visual
-{
-    using DrawTool = sofa::helper::visual::DrawTool;
-
-} // namespace sofa::core::visual
+SOFA_DISABLED_HEADER("v20.12 (PR#1649)", "v21.06", "sofa/helper/visual/DrawTool.h")

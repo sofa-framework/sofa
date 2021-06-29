@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!--
+This scene belongs to a collection of 3 scenes designed to evaluate the impact of
+the DefaultCollisionGroupManager component.
+
+The 3 scenes are very similar: they all simulate two falling deformable cubes on a funnel.
+The collision prevents the cubes falling through the funnel.
+
+The difference between the 3 scenes is the way the mechanical system is solved.
+
+This scene solves two different systems, one per cube.
+There is a DefaultCollisionGroupManager component in this scene.
+When a contact occurs between both cubes, the group manager merge the two systems
+into a single bigger system.
+-->
+
+<Node name="root" gravity="0 -9.81 0">
+    <RequiredPlugin name="SofaGeneralDeformable"/>
+    <RequiredPlugin name="SofaMiscCollision"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaMeshCollision"/>
+    <RequiredPlugin name="SofaTopologyMapping"/>
+    <RequiredPlugin name="SofaLoader"/>
+
+    <VisualStyle displayFlags="showCollisionModels"/>
+
+    <DefaultPipeline/>
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
+    <DefaultContactManager name="Response" response="default"/>
+    <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
+
+    <Node name="Cube1">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+        <MechanicalObject name="mechanicalObject"/>
+        <UniformMass totalMass="30"/>
+        <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
+        <RegularGridSpringForceField name="Springs" stiffness="270" damping="0"/>
+
+        <Node name="Collision">
+            <QuadSetTopologyContainer name="Quad_topology"/>
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
+
+            <Node name="CollisionTriangles">
+                <TriangleSetTopologyContainer  name="Container"/>
+                <TriangleSetTopologyModifier   name="Modifier"/>
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"/>
+
+                <Quad2TriangleTopologicalMapping input="@../Quad_topology" output="@Container" name="mapping_topo"/>
+
+                <TriangleCollisionModel/>
+                <LineCollisionModel/>
+                <PointCollisionModel/>
+            </Node>
+        </Node>
+
+    </Node>
+
+    <Node name="Cube2">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+        <MechanicalObject name="mechanicalObject"/>
+        <UniformMass totalMass="30"/>
+        <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-4" xmax="6" ymin="6" ymax="16" zmin="-5" zmax="5"/>
+        <RegularGridSpringForceField name="Springs" stiffness="270" damping="0"/>
+
+        <Node name="Collision">
+            <QuadSetTopologyContainer name="Quad_topology"/>
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
+
+            <Node name="CollisionTriangles">
+                <TriangleSetTopologyContainer  name="Container"/>
+                <TriangleSetTopologyModifier   name="Modifier"/>
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"/>
+
+                <Quad2TriangleTopologicalMapping input="@../Quad_topology" output="@Container" name="mapping_topo"/>
+
+                <TriangleCollisionModel/>
+                <LineCollisionModel/>
+                <PointCollisionModel/>
+            </Node>
+        </Node>
+
+    </Node>
+
+
+    <Node name="Floor">
+        <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
+        <MeshTopology src="@loader"/>
+        <MechanicalObject src="@loader" dy="-10" scale="0.5"/>
+        <TriangleCollisionModel simulated="false"/>
+        <LineCollisionModel simulated="false"/>
+        <PointCollisionModel simulated="false"/>
+    </Node>
+
+</Node>

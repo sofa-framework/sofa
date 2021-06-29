@@ -49,6 +49,8 @@ TopologyHandler::TopologyHandler()
 
 void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize)
 {
+    SOFA_UNUSED(_dataSize);
+
     if (!this->isTopologyDataRegistered())
         return;
 

@@ -45,11 +45,11 @@ GIDMeshLoader::~GIDMeshLoader()
 
 bool GIDMeshLoader::doLoad()
 {
-    std::ifstream file(m_filename.getFullPath().c_str());
+    std::ifstream file(d_filename.getFullPath().c_str());
 
     if( !file.good() )
     {
-        msg_error() << "Unable to open file " << m_filename.getFullPath();
+        msg_error() << "Unable to open file " << d_filename.getFullPath();
         return false;
     }
 

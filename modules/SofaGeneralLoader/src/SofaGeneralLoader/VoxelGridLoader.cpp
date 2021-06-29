@@ -53,7 +53,7 @@ VoxelGridLoader::VoxelGridLoader()
       segmentation(nullptr),
       bpp(8) // bits per pixel
 {
-    addAlias(&m_filename,"segmentationFile");
+    addAlias(&d_filename,"segmentationFile");
 }
 
 VoxelGridLoader::~VoxelGridLoader()
@@ -88,7 +88,7 @@ void VoxelGridLoader::init()
 
     if ( image == nullptr )
     {
-        msg_error() << "Error while loading the file " << m_filename.getValue();
+        msg_error() << "Error while loading the file " << d_filename.getValue();
         return;
     }
 
@@ -232,8 +232,8 @@ void VoxelGridLoader::clear()
 
 bool VoxelGridLoader::canLoad(  )
 {
-    bool canLoad = m_filename.getValue().length() > 4 && ( m_filename.getValue().compare(
-            m_filename.getValue().length()-4, 4, ".raw" ) ==0 );
+    bool canLoad = d_filename.getValue().length() > 4 && ( d_filename.getValue().compare(
+            d_filename.getValue().length()-4, 4, ".raw" ) ==0 );
 
     return sofa::core::loader::VoxelLoader::canLoad() &&  canLoad;
 }
@@ -241,7 +241,7 @@ bool VoxelGridLoader::load ()
 {
     clear();
 
-    image = loadImage(m_filename.getValue(), dataResolution.getValue(), headerSize.getValue());
+    image = loadImage(d_filename.getValue(), dataResolution.getValue(), headerSize.getValue());
 
     if(image != nullptr)
     {

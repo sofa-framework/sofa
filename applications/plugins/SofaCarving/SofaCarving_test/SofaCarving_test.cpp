@@ -74,7 +74,8 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
 
     // create collision pipeline
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
-    createObject(m_root, "BruteForceDetection", { { "name","Detection" } });
+    createObject(m_root, "BruteForceBroadPhase", { { "name","Broad Phase Detection" } });
+    createObject(m_root, "BVHNarrowPhase", { { "name","Narrow Phase Detection" } });
     createObject(m_root, "CollisionResponse", {
         { "name", "Contact Manager" },
         { "response", "default" }
@@ -172,13 +173,13 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         { "output", "@Container" }
         });
 
-    createObject(nodeSurface, "TriangleSet", {
+    createObject(nodeSurface, "TriangleCollisionModel", {
         { "name", "Triangle Model" },
         { "tags", "CarvingSurface" },
         { "group", "0" }
         });
 
-    createObject(nodeSurface, "PointSet", {
+    createObject(nodeSurface, "PointCollisionModel", {
         { "name", "Point Model" },
         { "tags", "CarvingSurface" },
         { "group", "0" }

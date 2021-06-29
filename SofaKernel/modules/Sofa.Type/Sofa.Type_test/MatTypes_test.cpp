@@ -22,7 +22,7 @@
 #include <iostream>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/testing/NumericTest.h>
+#include <sofa/testing/NumericTest.h>
 #include <sofa/helper/logging/Messaging.h>
 
 using namespace sofa::testing ;

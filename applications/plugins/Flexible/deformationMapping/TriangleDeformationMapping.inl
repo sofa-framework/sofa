@@ -239,7 +239,7 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
         points.push_back(centre+  (axis * f_scaleView.getValue()));
     }
 //    cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, red lines = " << points << endl;
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,0,0,1 ) ); // red
+    vparams->drawTool()->drawLines ( points, 1, type::RGBAColor::red() );
 
     // y axes
     points.clear();
@@ -251,7 +251,7 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
         InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] );
         points.push_back(centre+  (axis*f_scaleView.getValue()) );
     }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) ); // green
+    vparams->drawTool()->drawLines ( points, 1, type::RGBAColor::green() );
 
 }
 

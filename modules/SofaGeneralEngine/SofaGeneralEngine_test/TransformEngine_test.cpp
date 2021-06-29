@@ -19,8 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
 #include <SofaGeneralEngine/TransformEngine.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -78,7 +82,7 @@ public:
 	VecCoord initInputVecCoord()
 	{
 		VecCoord testVec;
-		testVec.push_back(createCoord<DataTypes>(INPUT_POS, INPUT_QUAT));
+		testVec.push_back(sofa::testing::createCoord<DataTypes>(INPUT_POS, INPUT_QUAT));
 	
 		return testVec;
 	}
@@ -95,7 +99,7 @@ public:
 	void testOutput(Vector3 pos, Quat quat = Quat())
 	{
 		Coord output = this->f_outputX.getValue()[0];
-		Coord referenceCoord = createCoord<DataTypes>(pos, quat);
+		Coord referenceCoord = sofa::testing::createCoord<DataTypes>(pos, quat);
 
 		const Real diff			= (referenceCoord - output).norm();
 		const Real abs_error	= 1e-5;

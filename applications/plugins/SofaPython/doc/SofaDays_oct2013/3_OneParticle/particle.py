@@ -4,7 +4,7 @@ import Sofa
 def oneParticleSample(node):
  node.name='oneParticleSample'
  node.gravity=[0.0, -9.81, 0.0]
- solver = node.createObject('EulerSolver', name='solver')
+ solver = node.createObject('EulerExplicitSolver', name='solver')
  solver.printLog = 'false'
  node.addObject(solver);
  particule_node = node.createChild('particle_node')

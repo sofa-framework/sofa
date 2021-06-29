@@ -21,31 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/config.h>
+#include <sofa/config.h>
 
-#if __has_include(<sofa/gl/RAII.h>)
-#include <sofa/gl/RAII.h>
-
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/RAII.h")
-#define GL_RAII_ENABLE_WRAPPER
-
-#else
-#error "OpenGL headers have been moved to Sofa.GL; you will need to link against your library if you need OpenGL, and include <sofa/gl/RAII.h> instead of this one."
-#endif
-
-#ifdef GL_RAII_ENABLE_WRAPPER
-
-namespace sofa::helper::gl
-{
-    template <GLenum Flag>
-    using Enable = sofa::gl::Enable<Flag>;
-
-    template <GLenum Flag>
-    using Disable = sofa::gl::Disable<Flag>;
-
-
-} // namespace sofa::helper::gl
-
-#endif // GL_RAII_ENABLE_WRAPPER
-
-#undef GL_RAII_ENABLE_WRAPPER
+SOFA_DISABLED_HEADER("v20.12 (PR#1649)", "v21.06", "sofa/gl/RAII.h")

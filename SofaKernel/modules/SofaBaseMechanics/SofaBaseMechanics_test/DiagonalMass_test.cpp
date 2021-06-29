@@ -147,7 +147,7 @@ public:
     /// It is important to freeze what are the available Data field
     /// of a component and rise warning/errors when some are removed.
     void checkAttributes(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "    <MechanicalObject />                                                                       "
@@ -178,13 +178,11 @@ public:
 
         // This one is an alias...
         EXPECT_TRUE( mass->findData("filename") != nullptr ) ;
-
-        return ;
     }
 
 
     void checkTotalMassFromMassDensity_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                          "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                    "
                 "    <MechanicalObject />                                                                       "
@@ -214,12 +212,10 @@ public:
             EXPECT_EQ(float(vMasses[2]), 1.0);
             EXPECT_EQ(float(vMasses[3]), 1.0);
         }
-
-        return ;
     }
 
     void checkMassDensityFromTotalMass_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                          "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                    "
                 "    <MechanicalObject />                                                                       "
@@ -248,12 +244,10 @@ public:
             EXPECT_EQ(float(vMasses[2]), 1.25);
             EXPECT_EQ(float(vMasses[3]), 1.25);
         }
-
-        return ;
     }
 
     void checkTotalMassOverwritesMassDensity_Hexa(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                          "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                    "
                 "    <MechanicalObject />                                                                       "
@@ -276,12 +270,10 @@ public:
             EXPECT_EQ(float(mass->getTotalMass()), 10);
             EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
-
-        return ;
     }
 
     void checkTotalMassFromMassDensity_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -316,12 +308,10 @@ public:
             EXPECT_EQ(float(vMasses[2]), 1.0);
             EXPECT_NEAR(float(vMasses[3]), 0.333333, 1e-4);
         }
-
-        return ;
     }
 
     void checkTotalMassFromNegativeMassDensity_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -350,12 +340,10 @@ public:
             EXPECT_EQ(float(mass->getTotalMass()), 1);
             EXPECT_EQ(float(mass->getMassDensity()), 0.125);
         }
-
-        return ;
     }
 
     void checkMassDensityFromTotalMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -391,12 +379,10 @@ public:
             EXPECT_EQ(float(vMasses[2]), 1.25);
             EXPECT_NEAR(float(vMasses[3]), 0.416667, 1e-4);
         }
-
-        return ;
     }
 
     void checkMassDensityFromNegativeTotalMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -426,12 +412,10 @@ public:
             EXPECT_EQ(float(mass->getTotalMass()), 1);
             EXPECT_EQ(float(mass->getMassDensity()), 0.125);
         }
-
-        return ;
     }
 
     void checkDoubleDeclaration_MassDensityTotalMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -461,12 +445,10 @@ public:
             EXPECT_EQ(float(mass->getTotalMass()), 10);
             EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
-
-        return ;
     }
 
     void checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -496,12 +478,10 @@ public:
             EXPECT_EQ(float(mass->getTotalMass()), 10);
             EXPECT_EQ(float(mass->getMassDensity()), 1.25);
         }
-
-        return ;
     }
 
     void checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -531,12 +511,10 @@ public:
             EXPECT_EQ(float(mass->getTotalMass()), 1);
             EXPECT_EQ(float(mass->getMassDensity()), 0.125);
         }
-
-        return ;
     }
 
     void checkMassDensityTotalMassFromVertexMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -572,12 +550,10 @@ public:
             EXPECT_EQ(float(vMasses[2]), 2);
             EXPECT_EQ(float(vMasses[3]), 2);
         }
-
-        return ;
     }
 
     void checkTotalMassFromNegativeMassDensityVertexMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -607,12 +583,10 @@ public:
             EXPECT_EQ(float(mass->getTotalMass()), 1.0);
             EXPECT_EQ(float(mass->getMassDensity()), 0.125);
         }
-
-        return ;
     }
 
     void checkWrongSizeVertexMass_Tetra(){
-        string scene =
+        static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
                 "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -642,8 +616,6 @@ public:
             EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
             EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
         }
-
-        return ;
     }
 
     void checkAttributeLoadFromFile(const std::string& filename, int masscount, double totalMass, bool shouldFail)
@@ -685,14 +657,12 @@ public:
             // the source code should be fixed.
             EXPECT_NE( mass->getTotalMass(), totalMass ) ;
         }
-
-        return ;
     }
 
 
     void checkTopologicalChanges_Hexa()
     {
-        string scene =
+        static const string scene =
             "<?xml version='1.0'?>                                                                              "
             "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
             "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -720,7 +690,7 @@ public:
         ASSERT_NE(modifier, nullptr);
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
-        Real refValue = Real(1.0 / 8.0);  // 0.125        
+        static const Real refValue = Real(1.0 / 8.0);  // 0.125        
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 27);
@@ -758,14 +728,12 @@ public:
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 0);
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
-        
-        return;
     }
 
 
     void checkTopologicalChanges_Tetra()
     {
-        string scene =
+        static const string scene =
             "<?xml version='1.0'?>                                                                              "
             "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
             "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
@@ -795,8 +763,8 @@ public:
         ASSERT_NE(modifier, nullptr);
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
-        Real refValue = Real(1.0/3.0);  //0.3333
-        Real refValue2 = 2 - refValue; // 1.6667
+        static const Real refValue = Real(1.0/3.0);  //0.3333
+        static const Real refValue2 = 2 - refValue; // 1.6667
        
         // check value at init
         EXPECT_EQ(vMasses.size(), 8);
@@ -829,13 +797,11 @@ public:
         modifier->removeTetrahedra(tetraIds); // remove tetra 0, 1
         EXPECT_EQ(vMasses.size(), 0);
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
-
-        return;
     }
 
     void checkTopologicalChanges_Quad()
     {
-        string scene =
+        static const string scene =
             "<?xml version='1.0'?>                                                                              "
             "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
             "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -863,8 +829,8 @@ public:
         ASSERT_NE(modifier, nullptr);
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
-        Real refValue = Real(1.0 / 4.0);  // 0.125
-        Real initMass = mass->getTotalMass();
+        static const Real refValue = Real(1.0 / 4.0);  // 0.125
+        static const Real initMass = mass->getTotalMass();
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 9);
@@ -879,7 +845,7 @@ public:
         EXPECT_NEAR(vMasses[0], refValue, 1e-4); // check update of Mass when removing tetra
         EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
         EXPECT_NEAR(mass->getTotalMass(), initMass - refValue, 1e-4);
-        Real lastV = vMasses[7];
+        const Real lastV = vMasses[7];
 
         // remove quad id: 0
         modifier->removeQuads(ids, true, true);
@@ -893,14 +859,12 @@ public:
         modifier->removeQuads(ids, true, true);
         EXPECT_EQ(vMasses.size(), 0);
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
-
-        return;
     }
 
-
+     
     void checkTopologicalChanges_Triangle()
     {
-        string scene =
+        static const string scene =
             "<?xml version='1.0'?>                                                                              "
             "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
             "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -928,9 +892,9 @@ public:
         ASSERT_NE(modifier, nullptr);
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
-        Real refValue = Real(1.0 / 3.0);  // 0.3333
-        Real refValue2 = Real(1.0 / 2.0);  // 0.5
-        Real initMass = mass->getTotalMass();
+        static const Real refValue = Real(1.0 / 3.0);  // 0.3333
+        static const Real refValue2 = Real(1.0 / 2.0);  // 0.5
+        const Real initMass = mass->getTotalMass();
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 9);
@@ -967,13 +931,11 @@ public:
         modifier->removeTriangles(ids, true, true);
         EXPECT_EQ(vMasses.size(), 0);
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
-
-        return;
     }
 
     void checkTopologicalChanges_Edge()
     {
-        string scene =
+        static const string scene =
             "<?xml version='1.0'?>                                                                              "
             "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
             "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
@@ -1001,9 +963,9 @@ public:
         ASSERT_NE(modifier, nullptr);
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
-        Real refValue = Real(2.0 / 3.0);  // Medge (length/(n-1)): 2/3
-        Real refValue2 = Real(1.0 / 3.0);  // Mpoint = Medge/2
-        Real initMass = mass->getTotalMass();
+        static const Real refValue = Real(2.0 / 3.0);  // Medge (length/(n-1)): 2/3
+        static const Real refValue2 = Real(1.0 / 3.0);  // Mpoint = Medge/2
+        const Real initMass = mass->getTotalMass();
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 4);
@@ -1030,9 +992,8 @@ public:
         modifier->removeEdges(ids, true);
         EXPECT_EQ(vMasses.size(), 0);
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
-
-        return;
     }
+
 };
 
 

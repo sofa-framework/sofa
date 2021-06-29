@@ -24,7 +24,7 @@
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/core/collision/Contact.h>
 

@@ -11,7 +11,8 @@
     <RequiredPlugin pluginName='SofaTopologyMapping'/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showCollisionModels" />
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.5" contactDistance="0.05" />
     <DefaultContactManager response="default" />
     <!-- A deformable square mesh -->

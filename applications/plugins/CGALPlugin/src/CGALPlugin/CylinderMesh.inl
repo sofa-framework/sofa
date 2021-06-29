@@ -22,7 +22,6 @@
 #pragma once
 
 #include <CGALPlugin/CylinderMesh.h>
-#include <sofa/gl/template.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #define MAX(a,b) ( (a)>(b) ? (a):(b))
@@ -509,21 +508,21 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vpara
         points.resize(m_nbVertices);
         for (int i = 0; i < m_nbVertices; ++i)
             points[i] = coords[i];
-        vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(0.0, 0.0, 1.0,1));
+        vparams->drawTool()->drawPoints(points,8,helper::types::RGBAColor(0.0, 0.0, 1.0,1));
         points.clear();
 
         // Centers
         points.resize(m_nbCenters);
         for (int i = 0; i < m_nbCenters; ++i)
             points[i] = coords[m_nbVertices+i];
-        vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(1.0, 0.0, 0.0,1));
+        vparams->drawTool()->drawPoints(points,8,helper::types::RGBAColor(1.0, 0.0, 0.0,1));
         points.clear();
         // Boundary centers
         int size = (int)points.size()-(m_nbCenters+m_nbVertices);
         points.resize(size);
         for (int i = 0; i < size; ++i)
             points[i] = coords[m_nbCenters+m_nbVertices+i];
-        vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(0.0, 1.0, 0.0,1));
+        vparams->drawTool()->drawPoints(points,8,helper::types::RGBAColor(0.0, 1.0, 0.0,1));
 
         vparams->drawTool()->enableLighting();
     }
@@ -547,7 +546,7 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vpara
                 }
             }
         }
-        vparams->drawTool()->drawLines(points,1,defaulttype::Vec4f(1.0, 1.0, 1.0,1));
+        vparams->drawTool()->drawLines(points,1,helper::types::RGBAColor(1.0, 1.0, 1.0,1));
         vparams->drawTool()->enableLighting();
     }
     vparams->drawTool()->restoreLastState();

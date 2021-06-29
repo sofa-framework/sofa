@@ -24,7 +24,7 @@
 
 #include "ClosestPointRegistrationForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
@@ -110,9 +110,13 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
         if (meshobjLoader)
         {
             if(sourceTriangles.setParent(&meshobjLoader->d_triangles))
+            {
                 msg_info()<<"imported triangles from "<<meshobjLoader->getName();
+            }
             else
+            {
                 msg_warning()<<"unable to import triangles from "<<meshobjLoader->getName();
+            }
         }
     }
     // Get source normals
@@ -395,7 +399,7 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
                 points.push_back(point2);
             }
 
-        const defaulttype::Vec<4,float> c(0,1,0.5,1);
+        const type::RGBAColor c(0,1,0.5,1);
         if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)	vparams->drawTool()->drawLines(points, 1, c);
         else if (drawMode.getValue() == 1)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawCylinder(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
         else if (drawMode.getValue() == 2)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawArrow(points[2*i+1], points[2*i], showArrowSize.getValue(), c);

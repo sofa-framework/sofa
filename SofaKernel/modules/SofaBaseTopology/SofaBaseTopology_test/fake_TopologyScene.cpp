@@ -22,6 +22,7 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaLoader/MeshObjLoader.h>
+#include <SofaBase/initSofaBase.h>
 #include <sofa/helper/Utils.h>
 #include "fake_TopologyScene.h"
 
@@ -33,6 +34,8 @@ fake_TopologyScene::fake_TopologyScene(const std::string& filename, TopologyElem
     , m_filename(filename)
     , m_staticTopology(staticTopo)
 {
+    //force load sofabase
+    sofa::component::initSofaBase();
     sofa::helper::system::DataRepository.addFirstPath(SOFABASETOPOLOGY_TEST_RESOURCES_DIR);
     
     loadMeshFile();

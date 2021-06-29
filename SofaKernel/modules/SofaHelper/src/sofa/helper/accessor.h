@@ -74,7 +74,7 @@ public:
 };
 
 template<class U>
-[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR()
 std::ostream& operator<<( std::ostream& os, const ReadAccessor<U>& vec ) = delete;
 
 
@@ -131,11 +131,11 @@ public:
 };
 
 template<class U>
-[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR()
 std::ostream& operator<< ( std::ostream& os, const WriteAccessor<U>& vec ) = delete;
 
 template<class U>
-[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR()
 std::istream& operator>> ( std::istream& in, WriteAccessor<U>& vec ) = delete;
 
 /** Identical to WriteAccessor for default implementation, but different for some template specializations such as  core::objectmodel::Data<T>
@@ -190,7 +190,7 @@ public:
 };
 
 template<class U>
-[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR()
 std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<U>& vec ) = delete;
 
 

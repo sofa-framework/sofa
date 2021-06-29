@@ -9,7 +9,8 @@
     <RequiredPlugin pluginName='SofaSimpleFem'/>
     <RequiredPlugin pluginName='SofaTopologyMapping'/> 
     <DefaultPipeline name="default21" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="default22" response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultCollisionGroupManager name="default23" />
