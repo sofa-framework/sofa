@@ -47,6 +47,7 @@ set(HEADER_FILES
     ${SOFABASETOPOLOGY_SRC}/TopologySparseData.inl
     ${SOFABASETOPOLOGY_SRC}/TopologySubsetData.h
     ${SOFABASETOPOLOGY_SRC}/TopologySubsetData.inl
+    ${SOFABASETOPOLOGY_SRC}/TopologySubsetData.cpp
     ${SOFABASETOPOLOGY_SRC}/TopologySubsetIndices.h
     ${SOFABASETOPOLOGY_SRC}/TriangleSetGeometryAlgorithms.h
     ${SOFABASETOPOLOGY_SRC}/TriangleSetGeometryAlgorithms.inl
