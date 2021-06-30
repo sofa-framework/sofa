@@ -285,7 +285,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         }
         const std::string w = "Template '" + usertemplatename + "' cannot be found in the list of available templates ["
                               + ss.str() + "].\n\t"
-                              + '\'' + object->getTemplateName() + "' is used instead";
+                              + "Falling back to default template '" + object->getTemplateName() + "'.";
         msg_warning(object.get()) << w;
     }
     else if (creators.size() > 1)
