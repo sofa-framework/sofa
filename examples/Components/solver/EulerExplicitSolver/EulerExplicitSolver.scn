@@ -21,7 +21,7 @@ trivially, it requires a linear solver, here SparseLDLSolver.
 
     <Node name="DeformableObject">
 
-        <EulerExplicitSolver name="odeExplicitSolver" optimizedForDiagonalMatrix="false" symplectic="false"/>
+        <EulerExplicitSolver name="odeExplicitSolver" symplectic="false"/>
         <SparseLDLSolver />
 
         <MechanicalObject name="dofs"/>
