@@ -45,6 +45,7 @@ MechanicalParams::MechanicalParams(const sofa::core::ExecParams& p)
     , m_bFactor(0)
     , m_kFactor(0)
     , m_symmetricMatrix(true)
+    , m_linearizeForces(true)
     , m_implicitVelocity(1)
     , m_implicitPosition(1)
 {
@@ -64,6 +65,7 @@ MechanicalParams::MechanicalParams(const MechanicalParams& p)
     , m_bFactor(p.m_bFactor)
     , m_kFactor(p.m_kFactor)
     , m_symmetricMatrix(p.m_symmetricMatrix)
+    , m_linearizeForces(p.m_linearizeForces)
     , m_implicitVelocity(p.m_implicitVelocity)
     , m_implicitPosition(p.m_implicitPosition)
 {
@@ -92,7 +94,18 @@ MechanicalParams* MechanicalParams::operator= ( const MechanicalParams& mparams 
     m_symmetricMatrix = mparams.m_symmetricMatrix;
     m_implicitVelocity = mparams.m_implicitVelocity;
     m_implicitPosition = mparams.m_implicitPosition;
+    m_linearizeForces = mparams.m_linearizeForces;
     return this;
+}
+
+bool MechanicalParams::linearizeForces() const
+{
+    return m_linearizeForces;
+}
+
+void MechanicalParams::setLinearizeForces(bool newLinearizeForces)
+{
+    m_linearizeForces = newLinearizeForces;
 }
 
 const MechanicalParams* MechanicalParams::defaultInstance()

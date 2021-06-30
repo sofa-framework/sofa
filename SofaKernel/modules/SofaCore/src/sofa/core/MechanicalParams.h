@@ -238,7 +238,8 @@ public:
 
     MechanicalParams* operator= ( const MechanicalParams& mparams );
 
-
+    bool linearizeForces() const;
+    void setLinearizeForces(bool newLinearizeForces);
 protected:
 
     /// Time step
@@ -277,6 +278,9 @@ protected:
     /// True if a symmetric matrix is assumed in the left-hand term of the dynamics equations, for solvers specialized on symmetric matrices
     bool m_symmetricMatrix;
 
+    /// True if the call to addForce must store information for a latter call to addDForce
+    bool m_linearizeForces;
+
     /// @name Experimental compliance API
     /// @{
 protected:
@@ -289,9 +293,6 @@ public:
     void setImplicitPosition( SReal i ) { m_implicitPosition = i; }
     const SReal& implicitPosition() const { return m_implicitPosition; }
     /// @}
-
-
-
 
 };
 
