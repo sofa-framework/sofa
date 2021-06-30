@@ -38,7 +38,7 @@ public:
     LCPSolver() = default;
 
     // assuming that q, M and res had a correct allocation...
-    bool solve(const double *q, const Matrix M, double *res)
+    bool solve(const double *q, const Matrix &M, double *res)
     {
         constexpr auto sqdim = dim * dim;
 
