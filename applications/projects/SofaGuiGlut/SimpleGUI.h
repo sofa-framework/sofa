@@ -33,8 +33,8 @@
 #include <sofa/gl/Texture.h>
 #include <sofa/gl/Capture.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/gl/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>

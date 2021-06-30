@@ -50,7 +50,7 @@ public:
     /// Returns true if algorithm uses proximity
     bool useProximity() const override { return true; }
 
-    bool testIntersection(Cube& ,Cube&);
+    bool testIntersection(Cube& ,Cube&) override;
     bool testIntersection(Point&, Point&);
     template<class T> bool testIntersection(TSphere<T>&, Point&);
     template<class T1, class T2> bool testIntersection(TSphere<T1>&, TSphere<T2>&);
@@ -63,7 +63,7 @@ public:
     bool testIntersection(Triangle&, Triangle&);
     bool testIntersection(Ray&, Triangle&);
 
-    int computeIntersection(Cube&, Cube&, OutputVector*);
+    int computeIntersection(Cube&, Cube&, OutputVector*) override;
     int computeIntersection(Point&, Point&, OutputVector*);
     template<class T> int computeIntersection(TSphere<T>&, Point&, OutputVector*);
     template<class T1, class T2> int computeIntersection(TSphere<T1>&, TSphere<T2>&, OutputVector*);

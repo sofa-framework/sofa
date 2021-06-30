@@ -422,14 +422,10 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams
     helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
 
     ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
-    if (constraintSolverList.empty())
-    {
-        return;
-    }
 
-    for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
+    for (auto* constraintSolver : constraintSolverList)
     {
-        (*it)->solveConstraint(&cparams, id);
+        constraintSolver->solveConstraint(&cparams, id);
     }
 }
 

@@ -103,7 +103,7 @@ class MyClass(Sofa.PythonScriptController):
         objContactNode = self.affineNode.createChild('registration')
         objContactNode.createObject('MeshTopology', name='topo', src='@../source')
         objContactNode.createObject('MechanicalObject', name='DOFs')
-        objContactNode.createObject('TriangleModel')
+        objContactNode.createObject('TriangleCollisionModel')
         objContactNode.createObject('LinearMapping', template='Affine,Vec3d')
         # Visual model
         objVisuNode = objContactNode.createChild('visual')

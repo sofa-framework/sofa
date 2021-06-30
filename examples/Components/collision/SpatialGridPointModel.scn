@@ -1,10 +1,9 @@
 <?xml version="1.0" ?>
 <Node dt="0.005" gravity="0 -10 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName="SofaSphFluid"/>
-    <RequiredPlugin pluginName="SofaMiscCollision"/>
-    <RequiredPlugin pluginName='SofaGeneralExplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin name="SofaSphFluid"/>
+    <RequiredPlugin name='SofaGeneralExplicitOdeSolver'/>
+    <RequiredPlugin name='SofaMeshCollision'/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" />

@@ -28,10 +28,10 @@
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
-#include <SofaTest/Python_test.h>
+#include <SofaPython/Python_test.h>
 using sofa::Python_test ;
 
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;

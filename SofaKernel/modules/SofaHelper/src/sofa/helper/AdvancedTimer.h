@@ -386,8 +386,7 @@ public:
      * @param node simulation::Node* 
      * @return std::string, the output if JSON format is set
      */
-    [[deprecated("This function has been deleted in #PR 1770 because of simulation::Node dependency." \
-        "Use end(id, node->getTime(), node->getDt()) instead.")]]
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1770)", "v21.12", "Use end(id, node->getTime(), node->getDt()) instead.")
     static std::string end(IdTimer id, simulation::Node* node) = delete;
 
     static bool isActive();

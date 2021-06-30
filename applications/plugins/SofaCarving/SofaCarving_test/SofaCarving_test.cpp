@@ -173,13 +173,13 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         { "output", "@Container" }
         });
 
-    createObject(nodeSurface, "TriangleSet", {
+    createObject(nodeSurface, "TriangleCollisionModel", {
         { "name", "Triangle Model" },
         { "tags", "CarvingSurface" },
         { "group", "0" }
         });
 
-    createObject(nodeSurface, "PointSet", {
+    createObject(nodeSurface, "PointCollisionModel", {
         { "name", "Point Model" },
         { "tags", "CarvingSurface" },
         { "group", "0" }

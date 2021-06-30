@@ -24,9 +24,11 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/helper/AdvancedTimer.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
 //#define SOFA_NO_VMULTIOP
 
@@ -39,141 +41,202 @@ using namespace core::behavior;
 
 int EulerExplicitSolverClass = core::RegisterObject("A simple explicit time integrator")
         .add< EulerExplicitSolver >()
-        .addAlias("Euler")
-        .addAlias("EulerExplicit")
-        .addAlias("ExplicitEuler")
-        .addAlias("EulerSolver")
-        .addAlias("ExplicitEulerSolver")
         ;
 
 EulerExplicitSolver::EulerExplicitSolver()
     : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
-    , d_optimizedForDiagonalMatrix(initData(&d_optimizedForDiagonalMatrix, true, "optimizedForDiagonalMatrix", "If true, solution to the system Ax=b can be directly found by computing x = f/m. Must be set to false if M is sparse."))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 
-void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void EulerExplicitSolver::solve(const core::ExecParams* params,
+                                SReal dt,
+                                sofa::core::MultiVecCoordId xResult,
+                                sofa::core::MultiVecDerivId vResult)
 {
+    sofa::helper::ScopedAdvancedTimer timer("EulerExplicitSolve");
+
+    // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
+    // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    mop->setImplicit(false); // this solver is explicit only
-    MultiVecCoord pos(&vop, core::VecCoordId::position() );
-    MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv f  (&vop, core::VecDerivId::force() );
 
-    MultiVecCoord newPos(&vop, xResult /*core::VecCoordId::position()*/ );
-    MultiVecDeriv newVel(&vop, vResult /*core::VecDerivId::velocity()*/ );
-    MultiVecDeriv acc(&vop, core::VecDerivId::dx());
+    // Let the mechanical operations know that the current solver is explicit. This will be propagated back to the
+    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
+    // recomputing constant data in case of explicit solvers.
+    mop->setImplicit(false);
 
-    acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
+    // Initialize the set of multi-vectors computed by this solver
+    MultiVecDeriv acc   (&vop, core::VecDerivId::dx());     // acceleration to be computed
+    MultiVecDeriv f     (&vop, core::VecDerivId::force() ); // force to be computed
+
+    acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+
+    addSeparateGravity(&mop, dt, vResult);
+    computeForce(&mop, f);
+
+    SReal nbNonDiagonalMasses = 0;
+    MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
 
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
-    if(d_optimizedForDiagonalMatrix.getValue())
+    if(nbNonDiagonalMasses == 0.)
     {
-        mop.addSeparateGravity(dt); // v += dt*g . Used if mass wants to add G separately from the other forces to v.
-        sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-        mop.computeForce(f);
-        sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
-
-        sofa::helper::AdvancedTimer::stepBegin("AccFromF");
-        mop.accFromF(acc, f);
-        sofa::helper::AdvancedTimer::stepEnd("AccFromF");
-        mop.projectResponse(acc);
-
-        mop.solveConstraint(acc, core::ConstraintParams::ACC);
-
-
+        // acc = M^-1 * f
+        computeAcceleration(&mop, acc, f);
+        projectResponse(&mop, acc);
+        solveConstraints(&mop, acc);
     }
     else
     {
-        x.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+        projectResponse(&mop, f);
 
-        mop.addSeparateGravity(dt); // v += dt*g . Used if mass wants to added G separately from the other forces to v.
-
-        sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-        mop.computeForce(f);
-        sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
-
-        sofa::helper::AdvancedTimer::stepBegin ("projectResponse");
-        mop.projectResponse(f);
-        sofa::helper::AdvancedTimer::stepEnd ("projectResponse");
-
-        sofa::helper::AdvancedTimer::stepBegin ("MBKBuild");
         core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
-        matrix = MechanicalMatrix(1.0,0,0); // MechanicalMatrix::M;
-        sofa::helper::AdvancedTimer::stepEnd ("MBKBuild");
 
-        sofa::helper::AdvancedTimer::stepBegin ("MBKSolve");
-        matrix.solve(x, f); //Call to ODE resolution: x is the solution of the system
-        sofa::helper::AdvancedTimer::stepEnd  ("MBKSolve");
+        // Build the global matrix. In this solver, it is the global mass matrix
+        // Projective constraints are also projected in this step
+        assembleSystemMatrix(&matrix);
 
-        acc.eq(x);
+        // Solve the system to find the acceleration
+        // Solve M * a = f
+        solveSystem(&matrix, acc, f);
     }
 
+    // Compute the new position and new velocity from the acceleration
+    updateState(&vop, &mop, xResult, vResult, acc, dt);
+}
 
-    // update state
+void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations* vop,
+                                      sofa::simulation::common::MechanicalOperations* mop,
+                                      sofa::core::MultiVecCoordId xResult,
+                                      sofa::core::MultiVecDerivId vResult,
+                                      const sofa::core::behavior::MultiVecDeriv& acc,
+                                      SReal dt) const
+{
+    sofa::helper::ScopedAdvancedTimer timer("updateState");
+
+    // Initialize the set of multi-vectors computed by this solver
+    // "xResult" could be "position()" or "freePosition()" depending on the
+    // animation loop calling this ODE solver.
+    // Similarly, "vResult" could be "velocity()" or "freeVelocity()".
+    // In case "xResult" refers to "position()", "newPos" refers the
+    // same multi-vector than "pos". Similarly, for "newVel" and "vel".
+    MultiVecCoord newPos(vop, xResult);                    // velocity to be computed
+    MultiVecDeriv newVel(vop, vResult);                    // position to be computed
+
+    // Initialize the set of multi-vectors used to compute the new velocity and position
+    MultiVecCoord pos(vop, core::VecCoordId::position() ); //current position
+    MultiVecDeriv vel(vop, core::VecDerivId::velocity() ); //current velocity
+
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     if (d_symplectic.getValue())
     {
-        newVel.eq(vel, acc, dt);
-        mop.solveConstraint(newVel, core::ConstraintParams::VEL);
+        //newVel = vec + acc * dt
+        //newPos = pos + newVel * dt
+
+        newVel.eq(vel, acc.id(), dt);
+        mop->solveConstraint(newVel, core::ConstraintParams::VEL);
+
         newPos.eq(pos, newVel, dt);
-        mop.solveConstraint(newPos, core::ConstraintParams::POS);
+        mop->solveConstraint(newPos, core::ConstraintParams::POS);
     }
     else
     {
+        //newPos = pos + vel * dt
+        //newVel = vel + acc * dt
+
         newPos.eq(pos, vel, dt);
-        mop.solveConstraint(newPos, core::ConstraintParams::POS);
-        newVel.eq(vel, acc, dt);
-        mop.solveConstraint(newVel, core::ConstraintParams::VEL);
+        mop->solveConstraint(newPos, core::ConstraintParams::POS);
+
+        newVel.eq(vel, acc.id(), dt);
+        mop->solveConstraint(newVel, core::ConstraintParams::VEL);
     }
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp ops;
-        ops.resize(2);
-        // change order of operations depending on the symplectic flag
-        size_t op_vel = (d_symplectic.getValue()?0:1);
-        size_t op_pos = (d_symplectic.getValue()?1:0);
-        ops[op_vel].first = newVel;
-        ops[op_vel].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[op_vel].second.push_back(std::make_pair(acc.id(),dt));
-        ops[op_pos].first = newPos;
-        ops[op_pos].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[op_pos].second.push_back(std::make_pair(newVel.id(),dt));
 
-        vop.v_multiop(ops);
+        // Create a set of linear operations that will be executed on two vectors
+        // In our case, the operations will be executed to compute the new velocity vector,
+        // and the new position vector. The order of execution is defined by
+        // the symplectic property of the solver.
+        VMultiOp ops(2);
 
-        mop.solveConstraint(newVel,core::ConstraintParams::VEL);
-        mop.solveConstraint(newPos,core::ConstraintParams::POS);
+        // Change order of operations depending on the symplectic flag
+        const VMultiOp::size_type posId = d_symplectic.getValue(); // 1 if symplectic, 0 otherwise
+        const VMultiOp::size_type velId = 1 - posId; // 0 if symplectic, 1 otherwise
+
+        // Access the set of operations corresponding to the velocity vector
+        // In case of symplectic solver, these operations are executed first.
+        auto& ops_vel = ops[velId];
+
+        // Associate the new velocity vector as the result to this set of operations
+        ops_vel.first = newVel;
+
+        // The two following operations are actually a unique operation: newVel = vel + dt * acc
+        // The value 1.0 indicates that the first operation is based on the values
+        // in the second pair and, therefore, the second operation is discarded.
+        ops_vel.second.emplace_back(vel.id(), 1.0);
+        ops_vel.second.emplace_back(acc.id(), dt);
+
+        // Access the set of operations corresponding to the position vector
+        // In case of symplectic solver, these operations are executed second.
+        auto& ops_pos = ops[posId];
+
+        // Associate the new position vector as the result to this set of operations
+        ops_pos.first = newPos;
+
+        // The two following operations are actually a unique operation: newPos = pos + dt * v
+        // where v is "newVel" in case of a symplectic solver, and "vel" otherwise.
+        // If symplectic: newPos = pos + dt * newVel, executed after newVel has been computed
+        // If not symplectic: newPos = pos + dt * vel
+        // The value 1.0 indicates that the first operation is based on the values
+        // in the second pair and, therefore, the second operation is discarded.
+        ops_pos.second.emplace_back(pos.id(), 1.0);
+        ops_pos.second.emplace_back(d_symplectic.getValue() ? newVel.id() : vel.id(), dt);
+
+        // Execute the defined operations to compute the new velocity vector and
+        // the new position vector.
+        // 1. Calls the "vMultiOp" method of every mapped BaseMechanicalState objects found in the
+        // current context tree. This method may be called with different parameters than for the non-mapped
+        // BaseMechanicalState objects.
+        // 2. Calls the "vMultiOp" method of every BaseMechanicalState objects found in the
+        // current context tree.
+        vop->v_multiop(ops);
+
+        // Calls "solveConstraint" on every ConstraintSolver objects found in the current context tree.
+        mop->solveConstraint(newVel,core::ConstraintParams::VEL);
+        mop->solveConstraint(newPos,core::ConstraintParams::POS);
     }
 #endif
 }
 
 double EulerExplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
 {
-    const SReal dt = getContext()->getDt();
-    double matrix[3][3] =
-    {
-        { 1, dt, ((d_symplectic.getValue())?dt*dt:0.0)},
-        { 0, 1, dt},
-        { 0, 0, 0}
-    };
     if (inputDerivative >= 3 || outputDerivative >= 3)
+    {
         return 0;
-    else
-        return matrix[outputDerivative][inputDerivative];
+    }
+
+    const SReal dt = getContext()->getDt();
+    const SReal k_a = d_symplectic.getValue() * dt * dt;
+    const double matrix[3][3] =
+        {
+                { 1, dt, k_a}, //x = 1 * x + dt * v + k_a * a
+                { 0,  1,  dt}, //v = 0 * x +  1 * v +  dt * a
+                { 0,  0,   0}
+        };
+
+    return matrix[outputDerivative][inputDerivative];
 }
 
 double EulerExplicitSolver::getSolutionIntegrationFactor(int outputDerivative) const
 {
-    const SReal dt = getContext()->getDt();
-    double vect[3] = {((d_symplectic.getValue()) ? dt * dt : 0.0), dt, 1};
     if (outputDerivative >= 3)
         return 0;
-    else
-        return vect[outputDerivative];
+
+    const SReal dt = getContext()->getDt();
+    const SReal k_a = d_symplectic.getValue() * dt * dt;
+    const double vect[3] = {k_a, dt, 1};
+    return vect[outputDerivative];
 }
 
 void EulerExplicitSolver::init()
@@ -182,5 +245,96 @@ void EulerExplicitSolver::init()
     reinit();
 }
 
+void EulerExplicitSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
 
-} // namespace namespace sofa::component::odesolver
+    const char* val = arg->getAttribute("optimizedForDiagonalMatrix",nullptr) ;
+    if(val)
+    {
+        msg_deprecated() << "The attribute 'optimizedForDiagonalMatrix' is deprecated since SOFA 21.06." << msgendl
+                         << "This data was previously used to solve the system more efficiently in case the "
+                            "global mass matrix were diagonal." << msgendl
+                         << "Now, this property is detected automatically.";
+    }
+}
+
+void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
+{
+    sofa::helper::ScopedAdvancedTimer timer("addSeparateGravity");
+
+    /// Calls the "addGravityToV" method of every BaseMass objects found in the current
+    /// context tree, if the BaseMass object has the m_separateGravity flag set to true.
+    /// The method "addGravityToV" usually performs v += dt * g
+    mop->addSeparateGravity(dt, v);
+}
+
+void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f)
+{
+    sofa::helper::ScopedAdvancedTimer timer("ComputeForce");
+
+    // 1. Clear the force vector (F := 0)
+    // 2. Go down in the current context tree calling addForce on every forcefields
+    // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
+    mop->computeForce(f);
+}
+
+void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
+{
+    sofa::helper::ScopedAdvancedTimer timer("AccFromF");
+
+    // acc = M^-1 f
+    // Since it requires the inverse of the mass matrix, this method is
+    // probably implemented only for trivial matrix inversion, such as
+    // a diagonal matrix.
+    // For example, for a diagonal mass: a_i := f_i / M_ii
+    mop->accFromF(acc, f);
+}
+
+void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId vecId)
+{
+    sofa::helper::ScopedAdvancedTimer timer("projectResponse");
+
+    // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
+    // current context tree. An example of such constraint set is the FixedConstraint. In this case,
+    // it will set to 0 every row (i, _) of the input vector for the ith degree of freedom.
+    mop->projectResponse(vecId);
+}
+
+void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc)
+{
+    sofa::helper::ScopedAdvancedTimer timer("solveConstraint");
+
+    // Calls "solveConstraint" method of every ConstraintSolver objects found in the current context tree.
+    mop->solveConstraint(acc, core::ConstraintParams::ACC);
+}
+
+void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix)
+{
+    sofa::helper::ScopedAdvancedTimer timer("MBKBuild");
+
+    // The MechanicalMatrix::M is a simple structure that stores three floats called factors: m, b and k.
+    // In the case of MechanicalMatrix::M:
+    // - factor 1 is associated to the matrix M
+    // - factor 0 is associated to the matrix B
+    // - factor 0 is associated to the matrix K
+    // The = operator first search for a linear solver in the current context. It then calls the
+    //    "setSystemMBKMatrix" method of the linear solver.
+
+    //    A. For LinearSolver using a GraphScatteredMatrix (ie, non-assembled matrices), nothing appends.
+    //    B. For LinearSolver using other type of matrices (FullMatrix, SparseMatrix, CompressedRowSparseMatrix),
+    //       the "addMBKToMatrix" method is called on each BaseForceField objects and the "applyConstraint" method
+    //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
+    //       FixedConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
+    //       matrix for the ith degree of freedom.
+    (*matrix).setSystemMBKMatrix(MechanicalMatrix::M);
+}
+
+void EulerExplicitSolver::solveSystem(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix,
+                                      core::MultiVecDerivId solution, core::MultiVecDerivId rhs)
+{
+    sofa::helper::ScopedAdvancedTimer timer("MBKSolve");
+    matrix->solve(solution, rhs);
+}
+
+} // namespace sofa::component::odesolver

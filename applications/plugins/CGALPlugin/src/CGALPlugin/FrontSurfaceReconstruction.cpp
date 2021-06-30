@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
 #include <CGALPlugin/FrontSurfaceReconstruction.h>
 
 #include <CGAL/Advancing_front_surface_reconstruction.h>

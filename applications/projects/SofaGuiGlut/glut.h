@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_SYSTEM_GLUT_H
 #define SOFA_HELPER_SYSTEM_GLUT_H
 
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #if defined (__APPLE__)
 #include <GLUT/glut.h>
 #else

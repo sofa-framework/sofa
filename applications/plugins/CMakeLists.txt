@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.12)
 
 find_package(SofaFramework)
 
+# SofaTest needs to be after SofaMiscCollision, as it depends on it
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
+    # Library used to write high level tests involving many components.
+    add_subdirectory(SofaTest)
+endif()
+
 sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
 
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.

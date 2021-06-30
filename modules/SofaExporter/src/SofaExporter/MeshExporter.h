@@ -47,12 +47,8 @@ namespace sofa {
 
 
 ////////////////////////////////// DECLARATION /////////////////////////////////////////////////////
-namespace sofa
+namespace sofa::component
 {
-
-namespace component
-{
-
 namespace _meshexporter_
 {
 
@@ -109,21 +105,20 @@ protected:
     std::string getMeshFilename(const char* ext);
 };
 
-} /// namespace _meshexporter_
+} // namespace _meshexporter_
 
-//todo(18.06): remove the old namespaces...
-/// Import the object in the "old" namespace to allow smooth update of code base.
-namespace misc {
-    using _meshexporter_::MeshExporter ;
-}
-
-/// Import the object in the exporter namespace to avoid having all the object straight in component.
+// Import the object in the exporter namespace to avoid having all the object straight in component.
 namespace exporter {
-    using _meshexporter_::MeshExporter ;
-}
+    using MeshExporter = _meshexporter_::MeshExporter;
+} // namespace exporter
 
-} /// namespace component
+// Import the object in the "old" namespace to allow smooth update of code base.
+namespace misc {
+    using MeshExporter
+        SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_1712()
+        = _meshexporter_::MeshExporter;
+} // namespace misc
 
-} /// namespace sofa
+} // namespace sofa::component
 
 #endif // SOFA_COMPONENT_MISC_MESHEXPORTER_H

@@ -62,20 +62,20 @@ namespace sofa::component::odesolver
  *
  *** 1st Order ***
  *
- * This integration scheme is based on the following eqation:
+ * This integration scheme is based on the following equation:
  *
  *   \f$x_{t+h} = x_t + h v_{t+h}\f$
  *
  * Applied to this mechanical system:
  *
- *   \f$ M v_t = f_ext \f$
+ *   \f$ M v_t = f_{ext} \f$
  *
- *   \f$ M v_{t+h} = f_ext{t+h} \f$
- *   \f$           = f_ext{t} + h (df_ext/dt){t+h} \f$
- *   \f$           = f_ext{t} + h (df_ext/dx){t+h} v_{t+h} \f$
- *   \f$           = f_ext{t} - h K v_{t+h} \f$
+ *   \f$ M v_{t+h} = f_{ext_{t+h}} \f$
+ *   \f$           = f_{ext_{t}} + h (df_{ext}/dt)_{t+h} \f$
+ *   \f$           = f_{ext_{t}} + h (df_{ext}/dx)_{t+h} v_{t+h} \f$
+ *   \f$           = f_{ext_{t}} - h K v_{t+h} \f$
  *
- *   \f$ ( M + h K ) v_{t+h} = f_ext \f$
+ *   \f$ ( M + h K ) v_{t+h} = f_{ext} \f$
  *
  *
  *** Trapezoidal Rule ***
@@ -90,7 +90,7 @@ namespace sofa::component::odesolver
  *
  * and for *** 1st Order ***
  *
- *   \f$ ( M + h/2 K ) v_{t+h} = f_ext \f$
+ *   \f$ ( M + h/2 K ) v_{t+h} = f_{ext} \f$
  *
  */
 class SOFA_SOFAIMPLICITODESOLVER_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver

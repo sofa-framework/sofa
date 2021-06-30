@@ -90,21 +90,6 @@ OglColorMap::~OglColorMap() {
         glDeleteTextures(1, &texture);
 }
 
-// For backward compatibility only
-// TODO: remove this later
-//void OglColorMap::initOld(const std::string &data)
-//{
-//    if (data == "") {
-//        entries.insert(entries.end(), DefaultOglColorMapEntries, DefaultOglColorMapEntries+NDefaultOglColorMapEntries);
-//        return;
-//    }
-//
-//    std::istringstream is(data);
-//    is >> *this;
-//
-//    return;
-//}
-
 void OglColorMap::init()
 {
     reinit();
@@ -124,7 +109,6 @@ OglColorMap* OglColorMap::getDefault()
     if (defaultOglColorMap == nullptr) {
         defaultOglColorMap = sofa::core::objectmodel::New< OglColorMap >();
         std::string tmp("");
-        //defaultOglColorMap->initOld(tmp); // TODO: replace initOld() with init()
         defaultOglColorMap->init();
     }
     return defaultOglColorMap.get();

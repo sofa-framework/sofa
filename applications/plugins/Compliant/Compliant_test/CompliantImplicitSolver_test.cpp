@@ -6,7 +6,7 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 
 using namespace sofa::modeling;
