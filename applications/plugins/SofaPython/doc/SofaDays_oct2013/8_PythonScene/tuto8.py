@@ -21,9 +21,9 @@ def createArmadillo(parentNode,name,x,y,z,color):
 	SurfNode.createObject('MeshObjLoader', name='loader', filename='mesh/Armadillo_verysimplified.obj')
 	SurfNode.createObject('Mesh',src='@loader')
 	SurfNode.createObject('MechanicalObject', name='meca', src='@loader')
-	SurfNode.createObject('Triangle')
-	SurfNode.createObject('Line')
-	SurfNode.createObject('Point')
+	SurfNode.createObject('TriangleCollisionModel')
+	SurfNode.createObject('LineCollisionModel')
+	SurfNode.createObject('PointCollisionModel')
 	SurfNode.createObject('BarycentricMapping')
 
 	return node
@@ -65,9 +65,9 @@ def createScene(rootNode):
 	floorNode.createObject('MeshObjLoader', name='loader', filename='mesh/floor2b.obj')
 	floorNode.createObject('Mesh', src='@loader')
 	floorNode.createObject('MechanicalObject', src='@loader')
-	floorNode.createObject('Triangle', name='Floor', simulated=0, moving=0)
-	floorNode.createObject('Line', name='Floor', simulated=0, moving=0)
-	floorNode.createObject('Point', name='Floor', simulated=0, moving=0)
+	floorNode.createObject('TriangleCollisionModel', name='Floor', simulated=0, moving=0)
+	floorNode.createObject('LineCollisionModel', name='Floor', simulated=0, moving=0)
+	floorNode.createObject('PointCollisionModel', name='Floor', simulated=0, moving=0)
 	floorNode.createObject('OglModel', name='FloorV', filename='mesh/floor2b.obj', texturename='textures/floor.bmp')
 
 	# make some dynamic meshes spawn...

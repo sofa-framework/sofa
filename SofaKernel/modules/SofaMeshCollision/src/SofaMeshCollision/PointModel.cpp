@@ -28,14 +28,8 @@ namespace sofa::component::collision
 
 int PointCollisionModelClass = core::RegisterObject("Collision model which represents a set of points")
         .add< PointCollisionModel<defaulttype::Vec3Types> >()
-
-        .addAlias("TPointModel")
-        .addAlias("Point")
-        .addAlias("PointModel")
-        .addAlias("PointMesh")
-        .addAlias("PointSet")
         ;
 
 template class SOFA_SOFAMESHCOLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision

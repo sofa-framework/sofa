@@ -905,7 +905,6 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
     const sofa::defaulttype::Vec<3, Real>& b,
     Real &baryCoef)
 {
-    const double EPS = 1e-05;
     bool is_intersect = false;
     
     const Edge& e = this->m_topology->getEdge(edgeID);
@@ -932,14 +931,13 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
 
     Real deno, num;
     deno = d1010 * dbaba - dba10 * dba10;
-    if (!abs(deno) <= EPS)
+    
+    if (abs(deno) > std::numeric_limits<typename DataTypes::Real>::epsilon())
     {
         num = d0aba * dba10 - d0a10 * dbaba;
 
-        //baryCoef= (d0aba + dba10 * (num / deno)) / dbaba;
         baryCoef = num / deno;
-        //if (baryCoef >= 0.0 && baryCoef <= 1.0)
-            is_intersect = true;
+        is_intersect = true;
     }
     return is_intersect;
 }

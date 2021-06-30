@@ -23,7 +23,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/gl/RAII.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/ObjectFactory.h>
@@ -134,7 +134,7 @@ void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     if (arg->getAttribute("isToPrint")!=nullptr)
     {
-        msg_deprecated() << "The 'isToPrint' data field has been deprecated in Sofa 19.06 due to lack of consistency in how it should work." << msgendl
+        msg_deprecated() << "The 'isToPrint' data field has been deprecated in SOFA v19.06 due to lack of consistency in how it should work." << msgendl
                             "Please contact sofa-dev team in case you need similar.";
     }
     Inherit1::parse(arg);

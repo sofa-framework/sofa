@@ -608,7 +608,7 @@ void QDisplayPropertyWidget::clearComponentOutput()
     QVariant variant = signalEmitter->property("base");
     sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
     if(base)
-        base->clearOutputs();
+        base->clearLoggedMessages();
 }
 
 void QDisplayPropertyWidget::clearComponentWarning()
@@ -620,7 +620,7 @@ void QDisplayPropertyWidget::clearComponentWarning()
     QVariant variant = signalEmitter->property("base");
     sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
     if(base)
-        base->clearWarnings();
+        base->clearLoggedMessages();
 }
 
 QTreeWidgetItem* QDisplayPropertyWidget::findComponent(const QString& component) const

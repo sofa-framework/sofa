@@ -151,7 +151,6 @@ sofa_find_package(SofaTest QUIET)
 if(SofaTest_FOUND)
     list(APPEND HEADER_FILES 
     	Python_test.h
-    	compat/SofaTest/Python_test.h
 	)
     list(APPEND SOURCE_FILES Python_test.cpp)
     list(APPEND PYTHON_FILES
@@ -203,7 +202,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILE
 target_include_directories(${PROJECT_NAME}
     PUBLIC ${PYTHON_INCLUDE_DIRS}
     PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/>"
-    PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>"
     PUBLIC "$<INSTALL_INTERFACE:include>"
     )
 

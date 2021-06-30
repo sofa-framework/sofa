@@ -147,15 +147,15 @@ protected:
             switch( drawMode.getValue() ) {
             case 1:
                 vparams->drawTool()->setLightingEnabled(true);
-                vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+                vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.1f, 0.7f, 0.1f, 1.0f));
                 break;
             default:
-                vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
+                vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.2f, 1.0f, 0.2f, 1.0f));
                 break;
             }
         }
         if (showIndicesScale.getValue()>0) {
-            vparams->drawTool()->draw3DText_Indices(this->f_position.getValue(), showIndicesScale.getValue(), defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+            vparams->drawTool()->draw3DText_Indices(this->f_position.getValue(), showIndicesScale.getValue(), type::RGBAColor(0.1f, 0.7f, 0.1f, 1.0f));
         }
 
         vparams->drawTool()->restoreLastState();

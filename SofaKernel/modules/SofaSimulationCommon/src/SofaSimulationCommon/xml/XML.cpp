@@ -239,26 +239,6 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
     return node;
 }
 
-
-/*
- //TODO properly remove this.
-static void dumpNode(BaseElement* node, std::string prefix0="==", std::string prefix="  ")
-{
-    std::cout << prefix0;
-    std::cout << node->getClass()<<" name "<<node->getName()<<" type "<<node->getType()<<std::endl;
-    BaseElement::child_iterator<> it = node->begin();
-    BaseElement::child_iterator<> end = node->end();
-    while (it != end)
-    {
-        BaseElement::child_iterator<> next = it;
-        ++next;
-        if (next==end) dumpNode(it, prefix+"\\-", prefix+"  ");
-        else           dumpNode(it, prefix+"+-", prefix+"| ");
-        it = next;
-    }
-}
-*/
-
 BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, bool fromMem)
 {
     ElementNameHelper resolveElementName;

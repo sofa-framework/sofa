@@ -7,7 +7,6 @@ sofa_find_package(TinyXML REQUIRED)
 
 set(HEADER_FILES
     ${SOFASIMULATIONCOMMON_SRC}/config.h.in
-    ${SOFASIMULATIONCOMMON_SRC}/common.h
     ${SOFASIMULATIONCOMMON_SRC}/init.h
     ${SOFASIMULATIONCOMMON_SRC}/initSofaSimulationCommon.h
     ${SOFASIMULATIONCOMMON_SRC}/FindByTypeVisitor.h

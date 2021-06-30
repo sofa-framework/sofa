@@ -289,7 +289,7 @@ void printIncludes( const CategoryLibrary &category)
 
         const std::type_info& defaultTypeInfo=component.getEntry()->creatorMap.begin()->second->type();
 
-        std::string namespaceComponent = sofa::core::objectmodel::BaseClass::decodeNamespaceName(component.getEntry()->creatorMap.begin()->second->type());
+        std::string namespaceComponent = sofa::helper::NameDecoder::decodeNamespaceName(component.getEntry()->creatorMap.begin()->second->type());
 
         std::size_t positionDoublePoints = namespaceComponent.find("::");
         while (positionDoublePoints != std::string::npos)
@@ -298,13 +298,13 @@ void printIncludes( const CategoryLibrary &category)
             positionDoublePoints =  namespaceComponent.find("::");
         }
 
-        std::string filename = namespaceComponent+"/"+sofa::core::objectmodel::BaseClass::decodeClassName(defaultTypeInfo)+".h";
+        std::string filename = namespaceComponent+"/"+sofa::helper::NameDecoder::decodeClassName(defaultTypeInfo)+".h";
 
         std::string f(pathIncludeFiles+filename);
         if (sofa::helper::system::DataRepository.findFile( f ) )
         {
             output << "#include <" << namespaceComponent  << "/"
-                    << sofa::core::objectmodel::BaseClass::decodeClassName(defaultTypeInfo) << ".h>\n";
+                    << sofa::helper::NameDecoder::decodeClassName(defaultTypeInfo) << ".h>\n";
             includeComponents.insert(std::make_pair(component.getName(),output.str()));
         }
 
@@ -342,7 +342,7 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                     const std::string finalName = component.getName() +  templateExtension[templateName];
 
                     simplificationTypedefComponents.insert(std::make_pair(component.getName(),finalName + " " + finalName.substr(0,finalName.size()-1)));
-                    typedefComponents.insert(std::make_pair(component.getName(), sofa::core::objectmodel::BaseClass::decodeFullName(typeInfo) + " " + finalName));
+                    typedefComponents.insert(std::make_pair(component.getName(), sofa::helper::NameDecoder::decodeFullName(typeInfo) + " " + finalName));
                 }
             }
             else
@@ -425,7 +425,7 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                         smartFinalName = componentName + cat(inputTemplateExtensions,outputTemplateExtensions,separatorCombination);;
                     }
                     simplificationTypedefComponents.insert(std::make_pair(component.getName(),finalName + " " + smartFinalName));
-                    typedefComponents.insert(std::make_pair(component.getName(), sofa::core::objectmodel::BaseClass::decodeFullName(typeInfo) + " " + finalName));
+                    typedefComponents.insert(std::make_pair(component.getName(), sofa::helper::NameDecoder::decodeFullName(typeInfo) + " " + finalName));
                 }
             }
         }

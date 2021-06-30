@@ -149,19 +149,19 @@ BaseLinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2
     double smallDenominatorThreshold = 1.0e10;
     if (lsolver1)
     {
-        if (lsolver1->f_maxIter.getValue() > maxIter) maxIter = lsolver1->f_maxIter.getValue();
-        if (lsolver1->f_tolerance.getValue() < tolerance) tolerance = lsolver1->f_tolerance.getValue();
-        if (lsolver1->f_smallDenominatorThreshold.getValue() < smallDenominatorThreshold) smallDenominatorThreshold = lsolver1->f_smallDenominatorThreshold.getValue();
+        if (lsolver1->d_maxIter.getValue() > maxIter) maxIter = lsolver1->d_maxIter.getValue();
+        if (lsolver1->d_tolerance.getValue() < tolerance) tolerance = lsolver1->d_tolerance.getValue();
+        if (lsolver1->d_smallDenominatorThreshold.getValue() < smallDenominatorThreshold) smallDenominatorThreshold = lsolver1->d_smallDenominatorThreshold.getValue();
     }
     if (lsolver2)
     {
-        if (lsolver2->f_maxIter.getValue() > maxIter) maxIter = lsolver2->f_maxIter.getValue();
-        if (lsolver2->f_tolerance.getValue() < tolerance) tolerance = lsolver2->f_tolerance.getValue();
-        if (lsolver2->f_smallDenominatorThreshold.getValue() < smallDenominatorThreshold) smallDenominatorThreshold = lsolver2->f_smallDenominatorThreshold.getValue();
+        if (lsolver2->d_maxIter.getValue() > maxIter) maxIter = lsolver2->d_maxIter.getValue();
+        if (lsolver2->d_tolerance.getValue() < tolerance) tolerance = lsolver2->d_tolerance.getValue();
+        if (lsolver2->d_smallDenominatorThreshold.getValue() < smallDenominatorThreshold) smallDenominatorThreshold = lsolver2->d_smallDenominatorThreshold.getValue();
     }
-    lsolver->f_maxIter.setValue( maxIter );
-    lsolver->f_tolerance.setValue( tolerance );
-    lsolver->f_smallDenominatorThreshold.setValue( smallDenominatorThreshold );
+    lsolver->d_maxIter.setValue( maxIter );
+    lsolver->d_tolerance.setValue( tolerance );
+    lsolver->d_smallDenominatorThreshold.setValue( smallDenominatorThreshold );
     return lsolver;
 }
 

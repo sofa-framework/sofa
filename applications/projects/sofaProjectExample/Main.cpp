@@ -182,9 +182,9 @@ int main(int argc, char** argv)
     //implicitSolver->f_rayleighMass.setValue(0.1);
     implicitSolver->f_printLog = false;
     cgLinearSolver->setName("cgLinearSolver");
-    cgLinearSolver->f_maxIter.setValue(25);
-    cgLinearSolver->f_tolerance.setValue(1.0e-9);
-    cgLinearSolver->f_smallDenominatorThreshold.setValue(1.0e-9);
+    cgLinearSolver->d_maxIter.setValue(25);
+    cgLinearSolver->d_tolerance.setValue(1.0e-9);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1.0e-9);
 
 
 

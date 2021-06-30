@@ -6,7 +6,7 @@
 
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
-#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaMiscCollision/CapsuleModel.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <BulletCollisionDetection/config.h>
 #include <stack>

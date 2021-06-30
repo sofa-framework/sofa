@@ -71,9 +71,9 @@ def createBox(parent):
     collisionNode.createObject('MeshObjLoader', name='loader', filename=mesh_path + 'cube.obj')
     collisionNode.createObject('MeshTopology', position='@loader.position', edges='@loader.edges', triangles='@loader.triangles', quads='@loader.quads', tetrahedra='@loader.tetras', hexahedra='@loader.hexas')
     collisionNode.createObject('MechanicalObject', template='Vec3d', name='vertices', position='@loader.position')
-    collisionNode.createObject('Triangle', template='Vec3d')
-    collisionNode.createObject('Line', template='Vec3d')
-    collisionNode.createObject('Point', template='Vec3d')
+    collisionNode.createObject('TriangleCollisionModel', template='Vec3d')
+    collisionNode.createObject('LineCollisionModel', template='Vec3d')
+    collisionNode.createObject('PointCollisionModel', template='Vec3d')
     
     
     collisionNode.createObject('RigidMapping', template='Rigid,Vec3d', input='@../model', output='@./vertices')
@@ -91,9 +91,9 @@ def createChlothes(parent):
     parent.createObject('UniformMass')
     parent.createObject('MeshTopology', name='mesh', position='@loader.position', edges='@loader.edges', triangles='@loader.triangles', quads='@loader.quads', tetrahedra='@loader.tetras', hexahedra='@loader.hexas')
     
-    parent.createObject('Triangle', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
-    parent.createObject('Line', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
-    parent.createObject('Point', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
+    parent.createObject('TriangleCollisionModel', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
+    parent.createObject('LineCollisionModel', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
+    parent.createObject('PointCollisionModel', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
     
     #parent.createObject('ConstantForceField', force='9.81 -9.81 9.81', points='0') #0 24 599 623
     #parent.createObject('ConstantForceField', force='-9.81 -9.81 9.81', points='24')

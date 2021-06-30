@@ -97,6 +97,20 @@ public:
     }
 };
 
+class SOFA_HELPER_API Moved : public ComponentChange
+{
+public:
+    Moved(std::string sinceVersion, std::string fromPlugin, std::string toPlugin)
+    {
+        std::stringstream output;
+        output << "This component has been MOVED from " << fromPlugin << " to " << toPlugin << " since SOFA " << sinceVersion << ". "
+               <<  "To continue using this component you may need to update your scene "
+               <<  "by adding <RequiredPlugin name='" << toPlugin << "'/>";
+        m_message = output.str();
+        m_changeVersion = sinceVersion;
+    }
+};
+
 extern SOFA_HELPER_API std::map< std::string, Deprecated > deprecatedComponents;
 extern SOFA_HELPER_API std::map< std::string, ComponentChange > uncreatableComponents;
 

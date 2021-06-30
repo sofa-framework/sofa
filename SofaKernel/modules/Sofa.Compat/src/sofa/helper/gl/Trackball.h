@@ -21,13 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/visual/Trackball.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/visual/Trackball.h")
-
-namespace sofa::helper::gl
-{
-    using Trackball = sofa::helper::visual::Trackball;
-
-} // namespace sofa::helper::gl
-
+SOFA_DISABLED_HEADER("v20.12 (PR#1649)", "v21.06", "sofa/helper/visual/Trackball.h")

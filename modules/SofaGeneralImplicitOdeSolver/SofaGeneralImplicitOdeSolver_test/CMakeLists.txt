@@ -12,16 +12,15 @@ list(APPEND SOURCE_FILES
     VariationalSymplecticImplicitSolverDynamic_test.cpp
     )
 
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    list(APPEND SOURCE_FILES
-        VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp
-        )
-endif()
-
 sofa_find_package(SofaGeneralImplicitOdeSolver REQUIRED)
 
 add_definitions("-DSOFAGENERALIMPLICITODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaGeneralImplicitOdeSolver)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaGeneralImplicitOdeSolver SofaBoundaryCondition SofaDeformable SofaMiscForceField SceneCreator)
+
+get_target_property(SOFAEXPLICITODESOLVERTEST_INCLUDES SofaExplicitOdeSolver_test INCLUDE_DIRECTORIES)
+
+# to use MassSpringSystemCreation
+target_include_directories(${PROJECT_NAME} PUBLIC ${SOFAEXPLICITODESOLVERTEST_INCLUDES})
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
