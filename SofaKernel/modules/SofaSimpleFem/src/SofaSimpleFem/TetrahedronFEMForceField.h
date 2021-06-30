@@ -214,7 +214,8 @@ public:
     
     Data<std::string> _showStressColorMap; ///< Color map used to show stress values
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
-    Data<bool> _showVonMisesStressPerNode; ///< draw points  showing vonMises stress interpolated in nodes
+    Data<bool> _showVonMisesStressPerNode; ///< draw points showing vonMises stress interpolated in nodes
+    Data<bool> _showVonMisesStressPerElement; ///< draw triangles showing vonMises stress interpolated in elements
 
     Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
@@ -262,6 +263,7 @@ public:
 
 
     void draw(const core::visual::VisualParams* vparams) override;
+    void drawVonMisesStress(const core::visual::VisualParams* vparams);
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
@@ -311,7 +313,7 @@ protected:
     void handleTopologyChange() override { needUpdateTopology = true; }
 
     void computeVonMisesStress();
-    const bool isVonMisesStressRenderingOptionValid();
+    const bool isComputeVonMisesStressMethodSet();
     void handleEvent(core::objectmodel::Event *event) override;
 };
 
