@@ -2,7 +2,7 @@
 #include "InitPlugin_test.h"
 
 #include <SofaBaseTopology/MeshTopology.h>
-#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaMiscCollision/MeshIntTool.h>
 
 namespace sofa{
 

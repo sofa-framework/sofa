@@ -25,6 +25,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
 #include <sofa/helper/accessor.h>
+#include <sofa/helper/system/Locale.h>
 
 namespace sofa::component::loader
 {
@@ -33,7 +34,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using namespace sofa::helper::types;
 using sofa::helper::getWriteOnlyAccessor;
-using sofa::helper::getWriteAccessor;
 
 int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
         .add< MeshObjLoader >();
@@ -84,17 +84,17 @@ MeshObjLoader::~MeshObjLoader()
 
 bool MeshObjLoader::doLoad()
 {
-    dmsg_info() << "Loading OBJ file: " << m_filename;
+    dmsg_info() << "Loading OBJ file: " << d_filename;
 
     bool fileRead = false;
 
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
     if (!file.good())
     {
-        msg_error() << "Cannot read file '" << m_filename << "'.";
+        msg_error() << "Cannot read file '" << d_filename << "'.";
         return false;
     }
 
@@ -114,7 +114,7 @@ void MeshObjLoader::doClearBuffers()
     getWriteOnlyAccessor(d_texCoordsList).clear();
     getWriteOnlyAccessor(d_normalsList).clear();
 
-    getWriteAccessor(d_material)->activated = false;
+    getWriteOnlyAccessor(d_material)->activated = false;
     getWriteOnlyAccessor(d_materials).clear();
     getWriteOnlyAccessor(d_faceList)->clear();
     getWriteOnlyAccessor(d_normalsIndexList)->clear();
@@ -147,6 +147,9 @@ void MeshObjLoader::addGroup (const PrimitiveGroup& g)
 
 bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    sofa::helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     const bool handleSeams = d_handleSeams.getValue();
     auto my_positions = getWriteOnlyAccessor(d_positions);
     auto my_texCoords = getWriteOnlyAccessor(d_texCoordsList);
@@ -182,7 +185,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
     int vtn[3];
     Vector3 result;
-    helper::WriteAccessor<Data<helper::vector< PrimitiveGroup> > > my_faceGroups[NBFACETYPE] =
+    helper::WriteOnlyAccessor<Data<helper::vector< PrimitiveGroup> > > my_faceGroups[NBFACETYPE] =
     {
         d_edgesGroups,
         d_trianglesGroups,
@@ -458,8 +461,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
         // Then we can create the final arrays
         helper::vector<sofa::defaulttype::Vector3> vertices2;
-        auto vnormals = getWriteAccessor(d_normals);
-        auto vtexcoords = getWriteAccessor(d_texCoords);
+        auto vnormals = getWriteOnlyAccessor(d_normals);
+        auto vtexcoords = getWriteOnlyAccessor(d_texCoords);
         auto vertPosIdx = getWriteOnlyAccessor(d_vertPosIdx);
         auto vertNormIdx = getWriteOnlyAccessor(d_vertNormIdx);
 

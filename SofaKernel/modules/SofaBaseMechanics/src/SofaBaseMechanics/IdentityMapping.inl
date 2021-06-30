@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/IdentityMapping.h>
+#include <sofa/core/MappingHelper.h>
 
 
 namespace sofa::component::mapping
@@ -67,7 +68,7 @@ void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 
     for(Size i=0; i<out.size(); i++)
     {
-        helper::eq(out[i], in[i]);
+        core::eq(out[i], in[i]);
     }
 }
 
@@ -79,8 +80,10 @@ void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
-            helper::eq(out[i], in[i]);
+        if (!this->maskTo->isActivated() || this->maskTo->getEntry(i))
+        {
+            core::eq(out[i], in[i]);
+        }
     }
 }
 
@@ -92,8 +95,10 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparam
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( this->maskTo->getEntry(i) )
-            helper::peq(out[i], in[i]);
+        if (this->maskTo->getEntry(i))
+        {
+            core::peq(out[i], in[i]);
+        }
     }
 }
 
@@ -113,12 +118,12 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparam
         // Creates a constraints if the input constraint is not empty.
         if (colIt != colItEnd)
         {
-            typename In::MatrixDeriv::RowIterator o = out.writeLine(rowIt.index());
+            auto o = out.writeLine(rowIt.index());
 
             while (colIt != colItEnd)
             {
                 InDeriv data;
-                helper::eq(data, colIt.val());
+                core::eq(data, colIt.val());
 
                 o.addCol(colIt.index(), data);
 

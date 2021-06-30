@@ -80,7 +80,7 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
                 }
             }
 
-            if (rowBegin.back() == vid)   // row was empty
+            if ((BaseMatrix::Index)rowBegin.back() == vid)   // row was empty
             {
                 rowIndex.pop_back();
                 rowBegin.pop_back();
@@ -145,7 +145,7 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
                 }
             }
 
-            if (rowBegin.back() == vid)   // row was empty
+            if ((BaseMatrix::Index)rowBegin.back() == vid)   // row was empty
             {
                 rowIndex.pop_back();
                 rowBegin.pop_back();
@@ -210,7 +210,7 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
                 }
             }
 
-            if (rowBegin.back() == vid)   // row was empty
+            if ((BaseMatrix::Index)rowBegin.back() == vid)   // row was empty
             {
                 rowIndex.pop_back();
                 rowBegin.pop_back();

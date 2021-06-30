@@ -24,7 +24,7 @@
 
 #include "CudaCommon.h"
 #include "mycuda.h"
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/helper/vector.h>

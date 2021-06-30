@@ -81,7 +81,6 @@ public:
     void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     Data<bool> d_symplectic; ///< If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).
-    Data<bool> d_optimizedForDiagonalMatrix; ///< If M matrix is sparse (MeshMatrixMass), must be set to false (function addMDx() will compute the mass). Else, if true, solution to the system Ax=b can be directly found by computing x = f/m. The function accFromF() in the mass API will be used.
     Data<bool> d_threadSafeVisitor;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
@@ -94,6 +93,8 @@ public:
     double getSolutionIntegrationFactor(int outputDerivative) const override ;
 
     void init() override ;
+
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
 protected:
 

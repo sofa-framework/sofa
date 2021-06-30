@@ -122,7 +122,7 @@ public:
     sofa::core::objectmodel::Data<sofa::defaulttype::Vec3f> drawAxisSize; ///< Size of displayed axis
     sofa::core::objectmodel::Data<float> drawMarkersSize; ///< Size of displayed markers
     sofa::core::objectmodel::Data<float> drawMarkersIDSize; ///< Size of displayed markers ID
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawMarkersColor; ///< Color of displayed markers
+    sofa::core::objectmodel::Data<sofa::type::RGBAColor> drawMarkersColor; ///< Color of displayed markers
 
 protected:
     int writeInMarkersMesh;

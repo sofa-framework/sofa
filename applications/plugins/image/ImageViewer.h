@@ -462,7 +462,7 @@ protected:
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
         defaulttype::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
-        defaulttype::Vec4f colour(1.0,0.5,0.5,1.0);
+        type::RGBAColor colour(1.0,0.5,0.5,1.0);
 
         unsigned int x,y,z;
         for (z=0;z<3;z++)

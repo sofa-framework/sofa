@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #if defined (__linux__)
 # include <X11/Xlib.h>
 # include <X11/Xutil.h>

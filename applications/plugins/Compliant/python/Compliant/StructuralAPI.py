@@ -140,7 +140,7 @@ class RigidBody:
             self.loader = SofaPython.Tools.meshLoader(self.node, filename=filepath, name='loader', scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r), triangulate=True)
             self.topology = self.node.createObject('MeshTopology', name='topology', src="@loader" )
             self.dofs = self.node.createObject('MechanicalObject', name='dofs', template="Vec3"+template_suffix )
-            self.triangles = self.node.createObject('TriangleModel', name='model')
+            self.triangles = self.node.createObject('TriangleCollisionModel', name='model')
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
             self.normals = None
             self.visual = None

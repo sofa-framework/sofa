@@ -19,11 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/PrimitiveCreation.h>
+
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
+
+#include <SofaBaseTopology/MeshTopology.h>
+
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
+
+#include "MeshPrimitiveCreator.h"
 
 namespace sofa {
 
@@ -67,7 +73,9 @@ static bool equal(const Vector3 & v0,const Vector3 & v1){
 }
 
 MeshTopology* BaryMapperTest::initMesh(NodePtr &father){
-    PrimitiveCreationTest::makeTri(triPts[0],triPts[1],triPts[2],Vector3(0,0,0),father);
+
+    sofa::collision_test::makeTri(triPts[0],triPts[1],triPts[2],Vector3(0,0,0),father);
+
     norm = cross(-triPts[0] + triPts[1],triPts[2] - triPts[0]);
     norm.normalize();
 

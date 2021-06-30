@@ -1,7 +1,8 @@
 <Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1" showBoundingTree="0" gravity="0 0 0">
     <RequiredPlugin name="ManifoldTopologies"/>
 	<DefaultPipeline verbose="0" name="CollisionPipeline"/>
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager response="default" name="collision response"/>
 	<Node name="TetraTopology1">
 		<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1" />

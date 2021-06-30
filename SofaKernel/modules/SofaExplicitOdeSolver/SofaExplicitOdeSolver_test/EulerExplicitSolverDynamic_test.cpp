@@ -19,10 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <SceneCreator/SceneCreator.h>
 
-
+#include "MassSpringSystemCreation.h"
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -37,6 +39,7 @@ typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Type
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
+
 
 namespace sofa {
 
@@ -56,7 +59,7 @@ Then it compares the effective mass position to the computed mass position every
 */
 
 template <typename _DataTypes>
-struct EulerExplicitDynamic_test : public Elasticity_test<_DataTypes>
+struct EulerExplicitDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -97,7 +100,7 @@ struct EulerExplicitDynamic_test : public Elasticity_test<_DataTypes>
         MechanicalObject3::DataTypes::set( vFixed[0], 0.,0.,0.);
 
         // Mass spring system
-        root = this-> createMassSpringSystem(
+        root = sofa::createMassSpringSystem<DataTypes>(
                 root,   // add mass spring system to the node containing solver
                 K,      // stiffness
                 m,      // mass

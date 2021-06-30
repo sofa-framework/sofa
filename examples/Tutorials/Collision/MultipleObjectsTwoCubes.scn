@@ -4,7 +4,8 @@
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
     <DefaultPipeline />
-    <BruteForceDetection />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager />
     <MinProximityIntersection alarmDistance="1" contactDistance="0.5"/>
     <!-- Using a deformable cube using collision spheres  -->

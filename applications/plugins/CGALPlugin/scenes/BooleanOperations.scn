@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="1"  >
+	<RequiredPlugin pluginName="CGALPlugin"/>
+  <RequiredPlugin pluginName='SofaOpenglVisual'/>
+
+	<VisualStyle displayFlags="showWireframe showVisual" />
+
+	<Node name="Mesh1">
+		<MeshObjLoader name="loader" filename="mesh/cube.obj" translation="50 50 50" scale="50"/>
+		<OglModel src="@loader" color="1 0 0"/>
+	</Node>
+
+	<Node name="Mesh2">
+		<MeshObjLoader name="loader" filename="mesh/sphere_05.obj"/>
+		<OglModel src="@loader" color="0 1 0"/>
+	</Node>
+
+	<Node name="Union">
+		<BooleanOperations name="engine" position1="@../Mesh1/loader.position" triangles1="@../Mesh1/loader.triangles"
+																		 position2="@../Mesh2/loader.position" triangles2="@../Mesh2/loader.triangles"
+																		 operation="union"/>
+		<MeshTopology position="@engine.outputPosition" triangles="@engine.outputTriangles"/>
+		<OglModel color="0 0 1" translation="200 0 0"/>
+	</Node>
+
+	<Node name="Intersection">
+		<BooleanOperations name="engine" position1="@../Mesh1/loader.position" triangles1="@../Mesh1/loader.triangles"
+																		 position2="@../Mesh2/loader.position" triangles2="@../Mesh2/loader.triangles"
+																		 operation="intersection"/>
+		<MeshTopology position="@engine.outputPosition" triangles="@engine.outputTriangles"/>
+		<OglModel color="0 0 1" translation="375 0 0"/>
+	</Node>
+
+	<Node name="Difference1">
+		<BooleanOperations name="engine" position1="@../Mesh1/loader.position" triangles1="@../Mesh1/loader.triangles"
+																		 position2="@../Mesh2/loader.position" triangles2="@../Mesh2/loader.triangles"
+																		 operation="difference"/>
+		<MeshTopology position="@engine.outputPosition" triangles="@engine.outputTriangles"/>
+		<OglModel color="0 0 1" translation="500 0 0"/>
+	</Node>
+
+	<Node name="Difference2">
+		<BooleanOperations name="engine" position1="@../Mesh2/loader.position" triangles1="@../Mesh2/loader.triangles"
+																		 position2="@../Mesh1/loader.position" triangles2="@../Mesh1/loader.triangles"
+																		 operation="difference"/>
+		<MeshTopology position="@engine.outputPosition" triangles="@engine.outputTriangles"/>
+		<OglModel color="0 0 1" translation="700 0 0"/>
+	</Node>
+
+</Node>

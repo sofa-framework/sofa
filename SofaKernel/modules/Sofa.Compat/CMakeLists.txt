@@ -40,6 +40,7 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/sofa/helper/types/PrimitiveGroup.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/gl.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/glu.h
+    ${SOFACOMPATSRC_ROOT}/sofa/helper/system/atomic.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Vec.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Mat.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/MatSym.h

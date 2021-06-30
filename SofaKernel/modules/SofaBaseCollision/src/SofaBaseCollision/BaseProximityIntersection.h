@@ -27,6 +27,11 @@
 namespace sofa::component::collision
 {
 
+/**
+ * Base class for intersections methods using proximities.
+ * It introduces Datas for the alarm distance and contact distance.
+ * Cubes intersection is modified to use proximities.
+ */
 class SOFA_SOFABASECOLLISION_API BaseProximityIntersection : public DiscreteIntersection
 {
 public:
@@ -52,9 +57,9 @@ public:
     /// Sets the contact distance (if useProximity() is false, the contact distance is equal to 0)
     void setContactDistance(SReal v) override { contactDistance.setValue(v); }
 
-    // Intersectors
-    bool testIntersection(Cube& cube1, Cube& cube2);
-    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
+    /// Intersectors for cubes using proximities
+    bool testIntersection(Cube& cube1, Cube& cube2) override;
+    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts) override;
 
 };
 

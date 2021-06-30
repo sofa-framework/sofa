@@ -66,7 +66,7 @@ Node *createChainHybrid(Node *root)
 {
     const std::string visualModel="mesh/torus.obj";
     const std::string collisionModel="mesh/torus_for_collision.obj";
-    std::vector<std::string> collisionModelTypes = { "Triangle", "Line", "Point" };
+    std::vector<std::string> collisionModelTypes = { "TriangleCollisionModel", "LineCollisionModel", "PointCollisionModel" };
 
     // Elements of the scene
     //------------------------------------

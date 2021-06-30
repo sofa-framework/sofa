@@ -54,10 +54,3 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     )
-
-# Create aliases to support compatibility, starting from v21.06
-# These aliases will be deleted in v21.12
-add_library(SofaHelper ALIAS Sofa.Helper)
-add_library(SofaDefaultType ALIAS Sofa.DefaultType)
-add_library(SofaCore ALIAS Sofa.Core)
-add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)

@@ -98,18 +98,18 @@ public:
     bool testVertexAndFindIndex(const Vec3 &vertex, int &index);
 
     //Inputs
-    sofa::core::objectmodel::Data<VecCoord> m_inVertices; ///< List of vertices
-    sofa::core::objectmodel::Data<SeqTriangles> m_inTriangles; ///< List of triangles
-    sofa::core::objectmodel::Data<int> m_edgesTarget; ///< Desired number of edges after simplification
-    sofa::core::objectmodel::Data<float> m_edgesRatio; ///< Ratio between the number of edges and number of initial edges
+    sofa::core::objectmodel::Data<VecCoord> d_inVertices; ///< List of vertices
+    sofa::core::objectmodel::Data<SeqTriangles> d_inTriangles; ///< List of triangles
+    sofa::core::objectmodel::Data<int> d_edgesTarget; ///< Desired number of edges after simplification
+    sofa::core::objectmodel::Data<float> d_edgesRatio; ///< Ratio between the number of edges and number of initial edges
 
     // Outputs
-    sofa::core::objectmodel::Data<VecCoord> m_outVertices; ///< New vertices after decimation
-    sofa::core::objectmodel::Data<SeqTriangles> m_outTriangles; ///< New triangles after decimation
-    sofa::core::objectmodel::Data< helper::vector<Vec3> > m_outNormals; ///< New normals after decimation
+    sofa::core::objectmodel::Data<VecCoord> d_outVertices; ///< New vertices after decimation
+    sofa::core::objectmodel::Data<SeqTriangles> d_outTriangles; ///< New triangles after decimation
+    sofa::core::objectmodel::Data< helper::vector<Vec3> > d_outNormals; ///< New normals after decimation
 
     // Parameters
-    sofa::core::objectmodel::Data<bool> m_writeToFile; ///< Writes the decimated mesh into a file
+    sofa::core::objectmodel::Data<bool> d_writeToFile; ///< Writes the decimated mesh into a file
 
 
 };

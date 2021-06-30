@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 -9.81 0">
+    <RequiredPlugin name="SofaGeneralDeformable"/>
+    <RequiredPlugin name="SofaMiscCollision"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaMeshCollision"/>
+    <RequiredPlugin name="SofaTopologyMapping"/>
+    <RequiredPlugin name="SofaLoader"/>
+    <RequiredPlugin name="MultiThreading"/>
+
+    <VisualStyle displayFlags="showCollisionModels"/>
+
+    <DefaultPipeline/>
+
+    <!--
+    Parallel collision detection.
+    To compare to the single thread collision detection, replace the two following components with:
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    -->
+    <ParallelBruteForceBroadPhase/>
+    <ParallelBVHNarrowPhase/>
+
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
+    <DefaultContactManager name="Response" response="default"/>
+    <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
+
+    <Node name="Cube1">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+        <MechanicalObject name="mechanicalObject"/>
+        <UniformMass totalMass="30"/>
+        <RegularGridTopology name="grid" nx="10" ny="10" nz="10" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
+        <RegularGridSpringForceField name="Springs" stiffness="100" damping="0"/>
+
+        <Node name="Collision">
+            <QuadSetTopologyContainer name="Quad_topology"/>
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
+
+            <Node name="CollisionTriangles">
+                <TriangleSetTopologyContainer  name="Container"/>
+                <TriangleSetTopologyModifier   name="Modifier"/>
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"/>
+
+                <Quad2TriangleTopologicalMapping input="@../Quad_topology" output="@Container" name="mapping_topo"/>
+
+                <TriangleCollisionModel/>
+                <LineCollisionModel/>
+                <PointCollisionModel/>
+            </Node>
+        </Node>
+
+    </Node>
+
+    <Node name="Cube2">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+        <MechanicalObject name="mechanicalObject"/>
+        <UniformMass totalMass="30"/>
+        <RegularGridTopology name="grid" nx="10" ny="10" nz="10" computeHexaList="true" computeQuadList="false" xmin="-4" xmax="6" ymin="10" ymax="20" zmin="-5" zmax="5"/>
+        <RegularGridSpringForceField name="Springs" stiffness="100" damping="0"/>
+
+        <Node name="Collision">
+            <QuadSetTopologyContainer name="Quad_topology"/>
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
+
+            <Node name="CollisionTriangles">
+                <TriangleSetTopologyContainer  name="Container"/>
+                <TriangleSetTopologyModifier   name="Modifier"/>
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"/>
+
+                <Quad2TriangleTopologicalMapping input="@../Quad_topology" output="@Container" name="mapping_topo"/>
+
+                <TriangleCollisionModel/>
+                <LineCollisionModel/>
+                <PointCollisionModel/>
+            </Node>
+        </Node>
+
+    </Node>
+
+
+    <Node name="Floor">
+        <MeshObjLoader name="loader" filename="mesh/SaladBowl.obj"/>
+        <MeshTopology src="@loader"/>
+        <MechanicalObject src="@loader" dy="-20" scale="50" rx="-90"/>
+        <TriangleCollisionModel simulated="false" moving="false"/>
+        <LineCollisionModel simulated="false" moving="false"/>
+        <PointCollisionModel simulated="false" moving="false"/>
+    </Node>
+
+</Node>

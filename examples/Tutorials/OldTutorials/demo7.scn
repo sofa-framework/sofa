@@ -3,7 +3,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DiscreteIntersection />
     <DefaultContactManager name="Response" response="default" />
     <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />

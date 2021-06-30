@@ -47,6 +47,11 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<RigidSphereModel,RigidSphereModel,DiscreteIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, DiscreteIntersection> (this);
 
+    //By default, all the previous pairs of collision models are supported,
+    //but other C++ components are able to add a list of pairs to be supported.
+    //In the following function, all the C++ components that registered to
+    //DiscreteIntersection are created. In their constructors, they add
+    //new supported pairs of collision models.
 	IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
@@ -62,10 +67,7 @@ bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
 
     if (cube1 == cube2)
     {
-        if (cube1.getConeAngle() < M_PI / 2)
-            return false;
-        else
-            return true;
+        return cube1.getConeAngle() >= M_PI / 2;
     }
 
     const defaulttype::Vector3& minVect1 = cube1.minVect();

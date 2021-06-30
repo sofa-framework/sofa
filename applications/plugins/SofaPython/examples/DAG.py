@@ -27,9 +27,9 @@ def createDragon(parentnode,name,color):
 	SurfNode.createObject('MeshObjLoader', name='loader', filename='mesh/dragon.obj')
 	SurfNode.createObject('Mesh',src='@loader')
 	SurfNode.createObject('MechanicalObject',src='@loader')
-	SurfNode.createObject('Triangle')
-	SurfNode.createObject('Line')
-	SurfNode.createObject('Point')
+	SurfNode.createObject('TriangleCollisionModel')
+	SurfNode.createObject('LineCollisionModel')
+	SurfNode.createObject('PointCollisionModel')
 	SurfNode.createObject('BarycentricMapping')
 
 	return node

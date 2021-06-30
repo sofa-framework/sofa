@@ -21,10 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/visual/VisualParams.h>
 #include <SofaMiscMapping/IdentityMultiMapping.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
-#include <iostream>
+#include <sofa/core/MappingHelper.h>
 
 namespace sofa::component::mapping
 {
@@ -107,7 +105,7 @@ void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparam
 
         for(unsigned int j=0; j<inpos.size(); j++)
         {
-            helper::eq( out[offset+j], inpos[j]);
+            core::eq( out[offset+j], inpos[j]);
         }
         offset += inpos.size();
     }
@@ -130,7 +128,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
         for(unsigned int j=0; j<in.size(); j++)
         {
             if( !this->maskTo[0]->isActivated() || this->maskTo[0]->getEntry(offset+j) )
-                helper::eq( out[offset+j], in[j]);
+                core::eq( out[offset+j], in[j]);
         }
         offset += in.size();
     }
@@ -153,7 +151,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
         for(unsigned int j=0; j<out.size(); j++)
         {
             if( this->maskTo[0]->getEntry(offset+j) )
-                helper::peq( out[j], in[offset+j]);
+                core::peq( out[j], in[offset+j]);
         }
 
         dataVecOutForce[i]->endEdit();

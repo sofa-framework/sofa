@@ -16,17 +16,11 @@ set(HEADER_FILES
     ${SOFAMESHCOLLISION_SRC}/EndPoint.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.inl
-    ${SOFAMESHCOLLISION_SRC}/IntrMeshUtility.h
-    ${SOFAMESHCOLLISION_SRC}/IntrMeshUtility.inl
-    ${SOFAMESHCOLLISION_SRC}/IntrTriangleOBB.h
-    ${SOFAMESHCOLLISION_SRC}/IntrTriangleOBB.inl
     ${SOFAMESHCOLLISION_SRC}/Line.h
     ${SOFAMESHCOLLISION_SRC}/LineLocalMinDistanceFilter.h
     ${SOFAMESHCOLLISION_SRC}/LineModel.h
     ${SOFAMESHCOLLISION_SRC}/LineModel.inl
     ${SOFAMESHCOLLISION_SRC}/LocalMinDistanceFilter.h
-    ${SOFAMESHCOLLISION_SRC}/MeshIntTool.h
-    ${SOFAMESHCOLLISION_SRC}/MeshIntTool.inl
     ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.h
     ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.inl
     ${SOFAMESHCOLLISION_SRC}/Point.h
@@ -49,12 +43,9 @@ set(SOURCE_FILES
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.cpp
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.cpp
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.cpp
-    ${SOFAMESHCOLLISION_SRC}/IntrMeshUtility.cpp
-    ${SOFAMESHCOLLISION_SRC}/IntrTriangleOBB.cpp
     ${SOFAMESHCOLLISION_SRC}/LineLocalMinDistanceFilter.cpp
     ${SOFAMESHCOLLISION_SRC}/LineModel.cpp
     ${SOFAMESHCOLLISION_SRC}/LocalMinDistanceFilter.cpp
-    ${SOFAMESHCOLLISION_SRC}/MeshIntTool.cpp
     ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.cpp
     ${SOFAMESHCOLLISION_SRC}/PointLocalMinDistanceFilter.cpp
     ${SOFAMESHCOLLISION_SRC}/PointModel.cpp

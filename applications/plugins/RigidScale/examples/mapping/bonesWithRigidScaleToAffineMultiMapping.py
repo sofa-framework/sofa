@@ -107,7 +107,7 @@ class MyClass(Sofa.PythonScriptController):
         objContactNode.createObject('MeshTopology', name='topo', src='@../source')
         objContactNode.createObject('MechanicalObject', name='DOFs')
         objContactNode.createObject('UniformMass', totalMass=1)
-        objContactNode.createObject('TriangleModel')
+        objContactNode.createObject('TriangleCollisionModel')
         objContactNode.createObject('LinearMapping', template='Affine,Vec3d')
         # Visual model
         objVisuNode = objContactNode.createChild('visual')
@@ -132,7 +132,7 @@ class MyClass(Sofa.PythonScriptController):
         surfaceRegistrationNode = objMainNode.createChild('reg_force')
         surfaceRegistrationNode.createObject('MeshTopology', name='topo', src='@../source')
         surfaceRegistrationNode.createObject('MechanicalObject', name='DOFs')
-        surfaceRegistrationNode.createObject('Triangle')
+        surfaceRegistrationNode.createObject('TriangleCollisionModel')
         surfaceRegistrationNode.createObject('LinearMapping', template='Affine,Vec3d', assemble=0)
         surfaceRegistrationNode.createObject('NormalsFromPoints', name='normalsFromPoints', template='Vec3d', position='@DOFs.position', triangles='@topo.triangles', invertNormals=0)
         surfaceRegistrationNode.createObject('ClosestPointRegistrationForceField', name='ICP', template='Vec3d'
