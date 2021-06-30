@@ -482,12 +482,6 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
                                                          << ") to Data " << attribute
                                                          << " (" << dataVec[d]->getValueTypeInfo()->name() << ") OK";
                 }
-                else
-                {
-                    msg_error() << "Link Data '" << attribute << "' to invalid Data '" << value << '\'';
-                    ok = false;
-                    continue;
-                }
             }
             /* children Data cannot be modified changing the parent Data value */
             dataVec[d]->setReadOnly(true);
