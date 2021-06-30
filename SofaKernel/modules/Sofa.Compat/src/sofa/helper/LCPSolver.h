@@ -25,7 +25,7 @@
 #include <algorithm>
 #include <iterator>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Mat_solve_LCP.h")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/Mat_solve_LCP.h")
 
 namespace sofa::helper
 {
