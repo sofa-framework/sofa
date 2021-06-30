@@ -62,8 +62,7 @@ void RayTraceDetection::init()
             narrowPhaseComponents[0],
             comma_fold);
 
-    msg_deprecated() << this->getClassName() << " component is deprecated. It will be removed in v21.12." << msgendl
-                     << "  As a replacement, use a BroadPhase component, such as [" << broadPhaseComponentsString
+    msg_deprecated() << "As a replacement, use a BroadPhase component, such as [" << broadPhaseComponentsString
                      << "]," << msgendl
                      << "  AND a NarrowPhase component, such as [" << narrowPhaseComponentsString << "]." << msgendl
                      << "  " << BruteForceBroadPhase::GetClass()->className << " and " << RayTraceNarrowPhase::GetClass()->className << " have been automatically added to your scene for backward compatibility.";
