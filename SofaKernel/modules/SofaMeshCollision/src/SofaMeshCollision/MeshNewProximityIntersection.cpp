@@ -99,7 +99,7 @@ bool MeshNewProximityIntersection::testIntersection(Triangle& tri1, Triangle& tr
 int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
+    int n = NewProximityIntersection::doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
     if (n>0)
     {
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
