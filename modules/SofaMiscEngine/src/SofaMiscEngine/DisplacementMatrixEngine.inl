@@ -174,7 +174,7 @@ void DisplacementMatrixEngine< DataTypes >::doUpdate()
     displacements.resize(size);
     for( unsigned int i = 0; i < size; ++i )
     {
-        x[i].toMatrix(displacements[i]);
+        x[i].toHomogeneousMatrix(displacements[i]);
         displacements[i] = displacements[i] * this->SxInverses[i];
     }
     this->d_displacements.endEdit();

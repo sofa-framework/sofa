@@ -19,56 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_CPP
+#pragma once
 
-#include "DisplacementMatrixEngine.inl"
+#include <sofa/simulation/MechanicalVisitor.h>
 
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa::component::engine
+namespace sofa::simulation::mechanicalvisitor
 {
 
-using namespace type;
-using namespace defaulttype;
-
-int DisplacementTransformEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement transforms.")
-    .add< DisplacementTransformEngine<Rigid3Types,Mat4x4> >()
-    .add< DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord> >()
-;
-
-template class SOFA_SOFAMISCENGINE_API DisplacementTransformEngine<Rigid3Types,Mat4x4>;
-template class SOFA_SOFAMISCENGINE_API DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>;
-
-template <>
-void DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>::setInverse( Rigid3Types::Coord& inv, const Coord& x0 )
+/** Count the number of masses which are not diagonal */
+class SOFA_SIMULATION_CORE_API MechanicalGetNonDiagonalMassesCountVisitor : public MechanicalVisitor
 {
-    inv = Rigid3Types::inverse(x0);
+public:
+    MechanicalGetNonDiagonalMassesCountVisitor(const sofa::core::MechanicalParams* mparams, SReal* result)
+            : MechanicalVisitor(mparams)
+    {
+        rootData = result;
+    }
+
+    Result fwdMass(VisitorContext* ctx, sofa::core::behavior::BaseMass* mass) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalGetNonDiagonalMassesCountVisitor";}
+
+    bool writeNodeData() const override
+    {
+        return true;
+    }
+
+};
+
 }
-
-template <>
-void DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>::mult( Rigid3Types::Coord& out, const Rigid3Types::Coord& inv, const Coord& x )
-{
-    out = x;
-    out.multRight(inv);
-}
-
-template <>
-void DisplacementTransformEngine<Rigid3Types,Mat4x4>::setInverse( Mat4x4& inv, const Coord& x0 )
-{
-    Rigid3Types::inverse(x0).toHomogeneousMatrix(inv);
-}
-
-template <>
-void DisplacementTransformEngine<Rigid3Types,Mat4x4>::mult( Mat4x4& out, const Mat4x4& inv, const Coord& x )
-{
-    x.toHomogeneousMatrix(out);
-    out = out * inv;
-}
-
-/////////////////////////////////////////
-
-int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
-    .add< DisplacementMatrixEngine<Rigid3Types> >()
-;
-
-} // namespace sofa::component::engine

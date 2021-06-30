@@ -32,7 +32,9 @@ namespace lifecycle
 std::map<std::string, Deprecated> deprecatedComponents = {
     // SofaMiscForceField
     {"MatrixMass", Deprecated("v19.06", "v19.12")},
-
+    {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
+    {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
+    {"DirectSAP", Deprecated("v21.06", "v21.12")},
 };
 
 std::map<std::string, ComponentChange> uncreatableComponents = {

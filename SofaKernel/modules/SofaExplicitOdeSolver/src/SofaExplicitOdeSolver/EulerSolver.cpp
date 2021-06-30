@@ -27,6 +27,9 @@
 #include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
+
 //#define SOFA_NO_VMULTIOP
 
 namespace sofa::component::odesolver
@@ -42,7 +45,6 @@ int EulerExplicitSolverClass = core::RegisterObject("A simple explicit time inte
 
 EulerExplicitSolver::EulerExplicitSolver()
     : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
-    , d_optimizedForDiagonalMatrix(initData(&d_optimizedForDiagonalMatrix, true, "optimizedForDiagonalMatrix", "If true, solution to the system Ax=b can be directly found by computing x = f/m. Must be set to false if M is sparse."))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
@@ -73,8 +75,11 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     addSeparateGravity(&mop, dt, vResult);
     computeForce(&mop, f);
 
+    SReal nbNonDiagonalMasses = 0;
+    MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
+
     // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
-    if(d_optimizedForDiagonalMatrix.getValue())
+    if(nbNonDiagonalMasses == 0.)
     {
         // acc = M^-1 * f
         computeAcceleration(&mop, acc, f);
@@ -240,6 +245,20 @@ void EulerExplicitSolver::init()
     reinit();
 }
 
+void EulerExplicitSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
+
+    const char* val = arg->getAttribute("optimizedForDiagonalMatrix",nullptr) ;
+    if(val)
+    {
+        msg_deprecated() << "The attribute 'optimizedForDiagonalMatrix' is deprecated since SOFA 21.06." << msgendl
+                         << "This data was previously used to solve the system more efficiently in case the "
+                            "global mass matrix were diagonal." << msgendl
+                         << "Now, this property is detected automatically.";
+    }
+}
+
 void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
 {
     sofa::helper::ScopedAdvancedTimer timer("addSeparateGravity");
@@ -308,7 +327,7 @@ void EulerExplicitSolver::assembleSystemMatrix(core::behavior::MultiMatrix<simul
     //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
     //       FixedConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
     //       matrix for the ith degree of freedom.
-    *matrix = MechanicalMatrix::M;
+    (*matrix).setSystemMBKMatrix(MechanicalMatrix::M);
 }
 
 void EulerExplicitSolver::solveSystem(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix,

@@ -477,7 +477,11 @@ void HeadlessRecorder::calcProjection()
     else
     {
         float ratio = static_cast<float>( vparams->zFar() / (vparams->zNear() * 20) );
-        Vector3 tcenter = vparams->sceneTransform() * center;
+        Mat4x4d projMat;
+        vparams->getProjectionMatrix(projMat.ptr());
+        Mat4x4d modelMat;
+        vparams->getModelViewMatrix(modelMat.ptr());
+        Vector3 tcenter = (projMat * modelMat).transform(center);
         if (tcenter[2] < 0.0)
         {
             ratio = static_cast<float>( -300 * (tcenter.norm2()) / tcenter[2] );

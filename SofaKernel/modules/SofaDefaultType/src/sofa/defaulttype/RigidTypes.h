@@ -565,6 +565,15 @@ public:
         m[2][3] = (typename Mat::Real)center[2];
     }
 
+    void toHomogeneousMatrix( HomogeneousMat& m) const
+    {
+        m.identity();
+        orientation.toHomogeneousMatrix(m);
+        m[0][3] = center[0];
+        m[1][3] = center[1];
+        m[2][3] = center[2];
+    }
+
     /// create a homogeneous vector from a 3d vector
     template <typename V>
     static HomogeneousVec toHomogeneous( V v, real r=1. ){

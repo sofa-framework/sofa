@@ -1661,7 +1661,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
     vecBaryCoef.clear();
 
     bool is_validated = false;
-    bool is_intersected = false;
 
     const Triangle& t = this->m_topology->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::position())->getValue());
@@ -1709,7 +1708,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
             Real coord_t = 0.0;
             Real coord_k = 0.0;
 
-            bool is_initialized = false;
             coord_kmin = 0.0;
 
             Real coord_test1;

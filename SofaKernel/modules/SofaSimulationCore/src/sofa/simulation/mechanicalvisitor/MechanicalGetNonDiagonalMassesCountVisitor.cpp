@@ -19,21 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaConstraint/LocalMinDistance.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/proximity.h>
-#include <sofa/type/Mat.h>
-#include <sofa/type/Vec.h>
-#include <sofa/core/collision/Intersection.inl>
-#include <iostream>
-#include <algorithm>
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
+#include <sofa/core/behavior/BaseMass.h>
 
-#define DYNAMIC_CONE_ANGLE_COMPUTATION
-
-namespace sofa::component::collision
+namespace sofa::simulation::mechanicalvisitor
 {
 
-} //namespace sofa::component::collision
+Visitor::Result MechanicalGetNonDiagonalMassesCountVisitor::fwdMass(VisitorContext* ctx, core::behavior::BaseMass* mass)
+{
+    *ctx->nodeData += !mass->isDiagonal();
+    return RESULT_CONTINUE;
+}
+
+} // namespace sofa::simulation::mechanicalvisitor

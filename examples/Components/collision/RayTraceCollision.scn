@@ -8,7 +8,8 @@
     <RequiredPlugin name="SofaUserInteraction"/>
 
     <DefaultPipeline verbose="0" depth="10" draw="0" />
-    <RayTraceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <RayTraceNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7" />
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
