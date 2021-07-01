@@ -52,7 +52,7 @@ void LMatrixManipulator::init(const SparseMatrixEigen& L)
 
 
 
-void LMatrixManipulator::buildLMatrix(const helper::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const
+void LMatrixManipulator::buildLMatrix(const type::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const
 {
     for (unsigned int l=0; l<lines.size(); ++l)
     {
@@ -67,6 +67,6 @@ void LMatrixManipulator::buildLMatrix(const helper::vector<LLineManipulator> &li
     }
 }
 
-helper::vector< SparseVectorEigen > LMatrix;
+type::vector< SparseVectorEigen > LMatrix;
 
 } // namespace sofa::component::linearsolver

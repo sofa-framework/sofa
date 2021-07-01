@@ -120,6 +120,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
 
     if (!this->isActive()) return;
@@ -147,9 +148,9 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
 
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
         if(d_showImpostors.getValue())
-            vparams->drawTool()->drawFakeSpheres(points, radius, sofa::helper::types::RGBAColor(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]));
+            vparams->drawTool()->drawFakeSpheres(points, radius, sofa::type::RGBAColor(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]));
         else
-            vparams->drawTool()->drawSpheres(points, radius, sofa::helper::types::RGBAColor(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]));
+            vparams->drawTool()->drawSpheres(points, radius, sofa::type::RGBAColor(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]));
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
 
     }
@@ -202,7 +203,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 template <class DataTypes>
 void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
 {
-    using sofa::defaulttype::Vector3 ;
+    using sofa::type::Vector3 ;
 
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
@@ -286,7 +287,7 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
         }
     }
 
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } // namespace sofa::component::collision

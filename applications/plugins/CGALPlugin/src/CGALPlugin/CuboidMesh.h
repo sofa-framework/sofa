@@ -22,7 +22,7 @@
 #ifndef CGALPLUGIN_CUBOIDMESH_H
 #define CGALPLUGIN_CUBOIDMESH_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -45,8 +45,8 @@ public:
     typedef typename DataTypes::Coord Point;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef sofa::helper::fixed_array<int, 3> Index;
-    //    typedef sofa::helper::vector<Real> VecReal;
+    typedef sofa::type::fixed_array<int, 3> Index;
+    //    typedef sofa::type::vector<Real> VecReal;
 
     //        typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     //    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;

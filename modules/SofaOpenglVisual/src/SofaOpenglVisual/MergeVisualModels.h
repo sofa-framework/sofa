@@ -24,13 +24,13 @@
 
 #include <SofaOpenglVisual/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vectorLinks.h>
+#include <sofa/core/objectmodel/vectorLinks.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <SofaOpenglVisual/OglModel.h>
 
@@ -56,7 +56,7 @@ public:
     Data<unsigned int> d_nbInput; ///< number of input visual models to merge
 
     typedef core::objectmodel::SingleLink< MergeVisualModels, VisualModelImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkVisualModel;
-    helper::VectorLinks< LinkVisualModel, MergeVisualModels > vl_input;
+    core::objectmodel::VectorLinks< LinkVisualModel, MergeVisualModels > vl_input;
 
 
 protected:

@@ -28,7 +28,7 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaLoader/MeshObjLoader.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

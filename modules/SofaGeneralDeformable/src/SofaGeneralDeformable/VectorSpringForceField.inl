@@ -38,8 +38,8 @@ namespace sofa::component::interactionforcefield
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(Index, Spring &t,
         const core::topology::BaseMeshTopology::Edge & e,
-        const sofa::helper::vector<Index> & ancestors,
-        const sofa::helper::vector<double> & coefs)
+        const sofa::type::vector<Index> & ancestors,
+        const sofa::type::vector<double> & coefs)
 {
     if (ff)
     {
@@ -52,7 +52,7 @@ void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(Ind
         {
             t.kd=t.ks=0;
             //            const topology::EdgeData<Spring> &sa=ff->getSpringArray();
-            const helper::vector<Spring> &sa=ff->getSpringArray().getValue();
+            const type::vector<Spring> &sa=ff->getSpringArray().getValue();
             unsigned int i;
             for (i=0; i<ancestors.size(); ++i)
             {
@@ -99,7 +99,7 @@ bool VectorSpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::resizeArray(std::size_t n)
 {
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
     springArrayData.resize(n);
     springArray.endEdit();
 }
@@ -107,7 +107,7 @@ void VectorSpringForceField<DataTypes>::resizeArray(std::size_t n)
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector)
 {
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if (useTopology && m_topology)
     {
@@ -196,7 +196,7 @@ template <class DataTypes>
 void VectorSpringForceField<DataTypes>::bwdInit()
 {
     this->Inherit::bwdInit();
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if (springArrayData.empty())
     {
@@ -238,7 +238,7 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
 {
     msg_info() << "Creating "<< m_topology->getNbEdges() <<" Vector Springs from EdgeSetTopology";
 
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     springArrayData.resize(m_topology->getNbEdges());
     const VecCoord& x0 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -272,7 +272,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
     f1.resize(x1.size());
     f2.resize(x2.size());
 
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if(useTopology)
     {
@@ -331,7 +331,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    const helper::vector<Spring>& springArrayData = springArray.getValue();
+    const type::vector<Spring>& springArrayData = springArray.getValue();
 
     if(useTopology)
     {
@@ -369,6 +369,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
 
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields()))
@@ -403,7 +404,7 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
             points.push_back(Vector3(x2[e[1]]));
         }
     }
-    vparams->drawTool()->drawLines(points, 3, sofa::helper::types::RGBAColor::red());
+    vparams->drawTool()->drawLines(points, 3, sofa::type::RGBAColor::red());
 }
 
 

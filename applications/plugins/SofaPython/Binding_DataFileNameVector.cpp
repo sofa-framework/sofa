@@ -41,7 +41,7 @@ static PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
 {
     DataFileNameVector* data = get_DataFileNameVector( self );
 
-    sofa::helper::vector<std::string>& val = *data->beginEdit();
+    sofa::type::vector<std::string>& val = *data->beginEdit();
     val.clear();
     data->endEdit();
 

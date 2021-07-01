@@ -23,7 +23,7 @@
 #include <LMConstraint/FixedLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::constraintset
@@ -33,7 +33,7 @@ namespace sofa::component::constraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index /*nbPoints*/, const sofa::helper::vector< Index > &, const sofa::helper::vector< double >& )
+bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index /*nbPoints*/, const sofa::type::vector< Index > &, const sofa::type::vector< double >& )
 {
     if (fc)
     {
@@ -84,7 +84,7 @@ void FixedLMConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void FixedLMConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 
@@ -232,8 +232,8 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = f_indices.getValue();
 
-    std::vector< defaulttype::Vector3 > points;
-    defaulttype::Vector3 point;
+    std::vector< type::Vector3 > points;
+    type::Vector3 point;
     for (unsigned int index : indices)
     {
         point = DataTypes::getCPos(x[index]);
@@ -241,11 +241,11 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     }
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
     else
     {
-        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 }
 

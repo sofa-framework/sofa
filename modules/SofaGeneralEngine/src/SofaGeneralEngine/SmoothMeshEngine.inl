@@ -23,7 +23,7 @@
 #include "SmoothMeshEngine.h"
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::engine
 {
@@ -81,7 +81,7 @@ void SmoothMeshEngine<DataTypes>::doUpdate()
     if (!m_topology) return;
 
     helper::ReadAccessor< Data<VecCoord> > in(input_position);
-    helper::ReadAccessor< Data<helper::vector <unsigned int > > > indices(input_indices);
+    helper::ReadAccessor< Data<type::vector<unsigned int > > > indices(input_indices);
     helper::WriteAccessor< Data<VecCoord> > out(output_position);
 
     out.resize(in.size());
@@ -155,7 +155,7 @@ void SmoothMeshEngine<DataTypes>::computeBBox(const core::ExecParams*, bool only
 		}
 	}
 
-	this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+	this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 template <class DataTypes>
@@ -163,7 +163,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 {    
     if (!vparams->displayFlags().getShowVisualModels() || m_topology == nullptr) return;
 
-    using sofa::defaulttype::Vec;
+    using sofa::type::Vec;
     vparams->drawTool()->saveLastState();
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
@@ -177,10 +177,10 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     if (this->showInput.getValue())
     {
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::type::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > in(input_position);
 
-        sofa::helper::types::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
+        sofa::type::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
         vparams->drawTool()->setMaterial(color);
 
         for (unsigned int i=0; i<tri.size(); ++i)
@@ -197,9 +197,9 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     if (this->showOutput.getValue())
     {
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::type::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > out(output_position);
-        sofa::helper::types::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
+        sofa::type::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
 
         for (unsigned int i=0; i<tri.size(); ++i)
         {

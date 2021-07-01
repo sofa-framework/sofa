@@ -25,8 +25,8 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa::component::forcefield
@@ -49,7 +49,7 @@ public:
 
     using Index = sofa::Index;
 
-    class Mat3 : public sofa::helper::fixed_array<Deriv,3>
+    class Mat3 : public sofa::type::fixed_array<Deriv,3>
     {
     public:
         Deriv operator*(const Deriv& v)
@@ -89,34 +89,34 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
+    sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
-    class TriangularTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
+    class TriangularTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,type::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
 
         TriangularTMEdgeHandler(
             TriangularTensorMassForceField<DataTypes>* ff,
-            sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* data
+            sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> >* data
         )
-            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<EdgeRestInformation> >(data),ff(ff)
+            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::type::vector<EdgeRestInformation> >(data),ff(ff)
         {
         }
 
         void applyCreateFunction(Index edgeIndex, EdgeRestInformation&,
                 const core::topology::BaseMeshTopology::Edge& e,
-                const sofa::helper::vector<Index> &,
-                const sofa::helper::vector<double> &);
+                const sofa::type::vector<Index> &,
+                const sofa::type::vector<double> &);
 
-        void applyTriangleCreation(const sofa::helper::vector<Index> &triangleAdded,
-                const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const sofa::helper::vector<sofa::helper::vector<Index> > & ,
-                const sofa::helper::vector<sofa::helper::vector<double> > &);
+        void applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded,
+                const sofa::type::vector<core::topology::BaseMeshTopology::Triangle> & ,
+                const sofa::type::vector<sofa::type::vector<Index> > & ,
+                const sofa::type::vector<sofa::type::vector<double> > &);
 
-        void applyTriangleDestruction(const sofa::helper::vector<Index> &triangleRemoved);
+        void applyTriangleDestruction(const sofa::type::vector<Index> &triangleRemoved);
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,type::vector<EdgeRestInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.
@@ -177,7 +177,7 @@ public:
 
 protected :
 
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;

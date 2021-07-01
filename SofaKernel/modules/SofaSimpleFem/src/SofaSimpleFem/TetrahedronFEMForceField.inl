@@ -86,7 +86,7 @@ template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d )
 {
     // shape functions matrix
-    defaulttype::Mat<2, 3, Real> M;
+    type::Mat<2, 3, Real> M;
 
     M[0][0] = b[1];
     M[0][1] = c[1];
@@ -154,7 +154,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeStrainDisplacement( Stra
 }
 
 template<class DataTypes>
-typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<DataTypes>::peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M )
+typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<DataTypes>::peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M )
 {
     return  M[0][1]*M[1][2] - M[1][1]*M[0][2] -  M[0][0]*M[1][2] + M[1][0]*M[0][2] + M[0][0]*M[1][1] - M[1][0]*M[0][1];
 }
@@ -162,13 +162,13 @@ typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<Data
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot )
 {
-    defaulttype::MatNoInit<6, 12, Real> Jt;
+    type::MatNoInit<6, 12, Real> Jt;
     Jt.transpose( J );
 
-    defaulttype::MatNoInit<12, 12, Real> JKJt;
+    type::MatNoInit<12, 12, Real> JKJt;
     JKJt = J*K*Jt;
 
-    defaulttype::MatNoInit<12, 12, Real> RR,RRt;
+    type::MatNoInit<12, 12, Real> RR,RRt;
     RR.clear();
     RRt.clear();
     for(int i=0; i<3; ++i)
@@ -223,7 +223,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
 
     MaterialStiffness	materialMatrix;
     StrainDisplacement	strainMatrix;
-    helper::fixed_array<Coord,4> rotatedInitialElements;
+    type::fixed_array<Coord,4> rotatedInitialElements;
 
     rotatedInitialElements[0] = R_0_1*(X0)[a];
     rotatedInitialElements[1] = R_0_1*(X0)[b];
@@ -502,7 +502,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
     J[11][0]  J[11][1]            J[11][3]
     */
 
-    defaulttype::VecNoInit<6,Real> JtD;
+    type::VecNoInit<6,Real> JtD;
     JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
             J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
             J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
@@ -528,7 +528,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
             J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
             J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
 
-    defaulttype::VecNoInit<6,Real> KJtD;
+    type::VecNoInit<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
             /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
     KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
@@ -890,7 +890,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
     R[1][0] = R[1][0]/numTetra ; R[1][1] = R[1][1]/numTetra ; R[1][2] = R[1][2]/numTetra ;
     R[2][0] = R[2][0]/numTetra ; R[2][1] = R[2][1]/numTetra ; R[2][2] = R[2][2]/numTetra ;
 
-    defaulttype::Mat<3,3,Real> Rmoy;
+    type::Mat<3,3,Real> Rmoy;
     helper::Decompose<Real>::polarDecomposition( R, Rmoy );
 
     R = Rmoy;
@@ -944,7 +944,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     rotations[elementIndex].transpose(R_0_2);
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    helper::fixed_array<Coord,4> deforme;
+    type::fixed_array<Coord,4> deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2*p[index[i]];
 
@@ -1102,7 +1102,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
     rotations[elementIndex].transpose( R_0_2 );
 
     // positions of the deformed and displaced Tetrahedre in its frame
-    helper::fixed_array<Coord, 4>  deforme;
+    type::fixed_array<Coord, 4>  deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2 * p[index[i]];
 
@@ -1197,11 +1197,11 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
     A[1] = p[index[2]]-p[index[0]];
     A[2] = p[index[3]]-p[index[0]];
 
-    defaulttype::Mat<3,3,Real> R_0_2;
+    type::Mat<3,3,Real> R_0_2;
 
-    defaulttype::Mat<3,3,Real> F = A * _initialTransformation[elementIndex];
+    type::Mat<3,3,Real> F = A * _initialTransformation[elementIndex];
 
-    if(defaulttype::determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
+    if(type::determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
     {
         helper::Decompose<Real>::polarDecomposition_stable( F, R_0_2 );
         R_0_2 = R_0_2.multTransposed( _initialRotations[elementIndex] );
@@ -1214,7 +1214,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
     rotations[elementIndex].transpose( R_0_2 );
 
     // positions of the deformed and displaced tetrahedron in its frame
-    helper::fixed_array<Coord, 4>  deforme;
+    type::fixed_array<Coord, 4>  deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2 * p[index[i]];
 
@@ -1492,10 +1492,10 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         elemLambda.resize( _indexedElements->size() );
         elemMu.resize( _indexedElements->size() );
 
-        helper::WriteAccessor<Data<helper::vector<Real> > > vME =  _vonMisesPerElement;
+        helper::WriteAccessor<Data<type::vector<Real> > > vME =  _vonMisesPerElement;
         vME.resize(_indexedElements->size());
 
-        helper::WriteAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
+        helper::WriteAccessor<Data<type::vector<Real> > > vMN =  _vonMisesPerNode;
         vMN.resize(this->mstate->getSize());
 
         prevMaxStress = -1.0;
@@ -1601,7 +1601,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
                     matVert[k][l] = X0[ix][l-1];
             }
 
-            defaulttype::invertMatrix(elemShapeFun[i], matVert);
+            type::invertMatrix(elemShapeFun[i], matVert);
         }
         computeVonMisesStress();
     }
@@ -1730,7 +1730,7 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, b
         }
     }
 
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 template<class DataTypes>
@@ -1777,8 +1777,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     /// vonMises stress
     Real minVM = (Real)1e20, maxVM = (Real)-1e20;
     Real minVMN = (Real)1e20, maxVMN = (Real)-1e20;
-    helper::ReadAccessor<Data<helper::vector<Real> > > vM =  _vonMisesPerElement;
-    helper::ReadAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
+    helper::ReadAccessor<Data<type::vector<Real> > > vM =  _vonMisesPerElement;
+    helper::ReadAccessor<Data<type::vector<Real> > > vMN =  _vonMisesPerNode;
     if (_computeVonMisesStress.getValue() > 0) 
     {
         for (size_t i = 0; i < vM.size(); i++) {
@@ -1806,8 +1806,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             msg_warning() << "Von Mises Stress Per Node can only be displayed if option computeVonMisesStress is set to true";
         }
     
-        std::vector<sofa::helper::types::RGBAColor> nodeColors(x.size());
-        std::vector<defaulttype::Vector3> pts(x.size());
+        std::vector<sofa::type::RGBAColor> nodeColors(x.size());
+        std::vector<type::Vector3> pts(x.size());
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
         for (size_t nd = 0; nd < x.size(); nd++) {
             pts[nd] = x[nd];
@@ -1817,8 +1817,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     }
     
     {
-        std::vector< defaulttype::Vector3 > points;
-        std::vector< sofa::helper::types::RGBAColor > colorVector;
+        std::vector< type::Vector3 > points;
+        std::vector< sofa::type::RGBAColor > colorVector;
         typename VecElement::const_iterator it;
         int i;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
@@ -1843,22 +1843,22 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
            
             // create corresponding colors
-            sofa::helper::types::RGBAColor color[4];
+            sofa::type::RGBAColor color[4];
             if(heterogeneous)
             {
                 float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
                 float fac = col * 0.5f;
-                color[0] = sofa::helper::types::RGBAColor(col      , 0.0f - fac , 1.0f-col,1.0f);
-                color[1] = sofa::helper::types::RGBAColor(col      , 0.5f - fac , 1.0f-col,1.0f);
-                color[2] = sofa::helper::types::RGBAColor(col      , 1.0f - fac , 1.0f-col,1.0f);
-                color[3] = sofa::helper::types::RGBAColor(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
+                color[0] = sofa::type::RGBAColor(col      , 0.0f - fac , 1.0f-col,1.0f);
+                color[1] = sofa::type::RGBAColor(col      , 0.5f - fac , 1.0f-col,1.0f);
+                color[2] = sofa::type::RGBAColor(col      , 1.0f - fac , 1.0f-col,1.0f);
+                color[3] = sofa::type::RGBAColor(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
             } 
             else
             {
                 if (_computeVonMisesStress.getValue() > 0) 
                 {
                     helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-                    auto col = sofa::helper::types::RGBAColor::fromVec4(evalColor(vM[i]));
+                    auto col = sofa::type::RGBAColor::fromVec4(evalColor(vM[i]));
                     col[3] = 1.0f;
                     color[0] = col;
                     color[1] = col;
@@ -1867,10 +1867,10 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 }
                 else
                 {
-                    color[0] = sofa::helper::types::RGBAColor(0.0, 0.0, 1.0, 1.0);
-                    color[1] = sofa::helper::types::RGBAColor(0.0, 0.5, 1.0, 1.0);
-                    color[2] = sofa::helper::types::RGBAColor(0.0, 1.0, 1.0, 1.0);
-                    color[3] = sofa::helper::types::RGBAColor(0.5, 1.0, 1.0, 1.0);
+                    color[0] = sofa::type::RGBAColor(0.0, 0.0, 1.0, 1.0);
+                    color[1] = sofa::type::RGBAColor(0.0, 0.5, 1.0, 1.0);
+                    color[2] = sofa::type::RGBAColor(0.0, 1.0, 1.0, 1.0);
+                    color[3] = sofa::type::RGBAColor(0.5, 1.0, 1.0, 1.0);
                 }
             }
 
@@ -1894,7 +1894,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     ////////////// AFFICHAGE DES ROTATIONS ////////////////////////
     if (vparams->displayFlags().getShowNormals())
     {
-        std::vector< defaulttype::Vector3 > points[3];
+        std::vector< type::Vector3 > points[3];
         for(unsigned ii = 0; ii<  x.size() ; ii++)
         {
             Coord a = x[ii];
@@ -1918,9 +1918,9 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             points[2].push_back(b);
         }
 
-        vparams->drawTool()->drawLines(points[0], 5, sofa::helper::types::RGBAColor::red());
-        vparams->drawTool()->drawLines(points[1], 5, sofa::helper::types::RGBAColor::green());
-        vparams->drawTool()->drawLines(points[2], 5, sofa::helper::types::RGBAColor::blue());
+        vparams->drawTool()->drawLines(points[0], 5, sofa::type::RGBAColor::red());
+        vparams->drawTool()->drawLines(points[1], 5, sofa::type::RGBAColor::green());
+        vparams->drawTool()->drawLines(points[2], 5, sofa::type::RGBAColor::blue());
     }
 
     vparams->drawTool()->restoreLastState();
@@ -1955,14 +1955,14 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
 
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
+    if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(mat))
     {
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
             if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
             else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            type::Mat<3,3,double> tmpBlock[4][4];
             // find index of node 1
             for (n1=0; n1<4; n1++)
             {
@@ -1998,14 +1998,14 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
             *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
         }
     }
-    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * >(mat))
+    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(mat))
     {
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
         {
             if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
             else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            type::Mat<3,3,double> tmpBlock[4][4];
             // find index of node 1
             for (n1=0; n1<4; n1++)
             {
@@ -2080,7 +2080,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) {
+void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const type::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, row, column, ROW, COLUMN , IT;
 
@@ -2097,7 +2097,7 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
 
-    helper::vector<int> itTetraBuild;
+    type::vector<int> itTetraBuild;
     for(unsigned e = 0;e< subMatrixIndex.size();e++) {
         // search all the tetra connected to the point in subMatrixIndex
         for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT) {
@@ -2113,7 +2113,7 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
         }
     }
 
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat)) {
+    if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(mat)) {
         for(unsigned e = 0;e< itTetraBuild.size();e++) {
             IT = itTetraBuild[e];
             it = _indexedElements->begin() + IT;
@@ -2123,7 +2123,7 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
             if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
             else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            type::Mat<3,3,double> tmpBlock[4][4];
             // find index of node 1
             for (n1=0; n1<4; n1++) {
                 for(i=0; i<3; i++) {
@@ -2154,7 +2154,7 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
             *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
             *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
         }
-    } else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * >(mat)) {
+    } else if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(mat)) {
         for(unsigned e = 0;e< itTetraBuild.size();e++) {
             IT = itTetraBuild[e];
             it = _indexedElements->begin() + IT;
@@ -2164,7 +2164,7 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
             if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
             else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            type::Mat<3,3,double> tmpBlock[4][4];
             // find index of node 1
             for (n1=0; n1<4; n1++) {
                 for(i=0; i<3; i++) {
@@ -2386,10 +2386,10 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     typename VecElement::const_iterator it;
     Index el;
-    helper::WriteAccessor<Data<helper::vector<Real> > > vME =  _vonMisesPerElement;
+    helper::WriteAccessor<Data<type::vector<Real> > > vME =  _vonMisesPerElement;
     for(it = _indexedElements->begin(), el = 0 ; it != _indexedElements->end() ; ++it, ++el)
     {
-        defaulttype::Vec<6,Real> vStrain;
+        type::Vec<6,Real> vStrain;
         Mat33 gradU;
 
         if (_computeVonMisesStress.getValue() == 2) {
@@ -2425,7 +2425,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
                 rotations[elementIndex].transpose(R_0_2);
 
                 // positions of the deformed and displaced Tetrahedron in its frame
-                helper::fixed_array<Coord,4> deforme;
+                type::fixed_array<Coord,4> deforme;
                 for(int i=0; i<4; ++i)
                     deforme[i] = R_0_2*X[index[i]];
 
@@ -2460,7 +2460,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
                 rotations[elementIndex].transpose(R_0_2);
 
                 // positions of the deformed and displaced Tetrahedron in its frame
-                helper::fixed_array<Coord,4> deforme;
+                type::fixed_array<Coord,4> deforme;
                 for(int i=0; i<4; ++i)
                     deforme[i] = R_0_2*X[index[i]];
 
@@ -2523,7 +2523,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     }
 
     const VecCoord& dofs = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    helper::WriteAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
+    helper::WriteAccessor<Data<type::vector<Real> > > vMN =  _vonMisesPerNode;
 
     /// compute the values of vonMises stress in nodes
     for(Index dof = 0; dof < dofs.size(); dof++) {
@@ -2538,9 +2538,9 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     updateVonMisesStress=false;
 
-    helper::WriteAccessor<Data<helper::vector<defaulttype::Vec4f> > > vonMisesStressColors(_vonMisesStressColors);
+    helper::WriteAccessor<Data<type::vector<type::Vec4f> > > vonMisesStressColors(_vonMisesStressColors);
     vonMisesStressColors.clear();
-    helper::vector<unsigned int> vonMisesStressColorsCoeff;
+    type::vector<unsigned int> vonMisesStressColorsCoeff;
 
     Real minVM = (Real)1e20, maxVM = (Real)-1e20;
 
@@ -2561,7 +2561,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-        defaulttype::Vec4f col = evalColor(vME[i]);
+        type::Vec4f col = evalColor(vME[i]);
         Tetrahedron tetra = (*_indexedElements)[i];
 
         for(unsigned int j=0 ; j<4 ; j++)

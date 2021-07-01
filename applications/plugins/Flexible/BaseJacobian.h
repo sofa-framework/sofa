@@ -22,8 +22,8 @@
 #ifndef FLEXIBLE_BaseJacobian_H
 #define FLEXIBLE_BaseJacobian_H
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/MatSym.h>
 #include <Eigen/Core>
 //#include <Eigen/Dense>
 
@@ -53,8 +53,8 @@ public:
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
 
-    typedef Mat<Out::deriv_total_size,In::deriv_total_size,Real> MatBlock;
-    typedef Mat<In::deriv_total_size,In::deriv_total_size,Real> KBlock;
+    typedef type::Mat<Out::deriv_total_size,In::deriv_total_size,Real> MatBlock;
+    typedef type::Mat<In::deriv_total_size,In::deriv_total_size,Real> KBlock;
 
     // Called in Apply
     virtual void addapply( OutCoord& result, const InCoord& data )=0;
@@ -76,8 +76,8 @@ protected:
     //////////////////////////////////////////////////////////////////////////////////
     ////  macros
     //////////////////////////////////////////////////////////////////////////////////
-    #define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
-    #define V2(type) StdVectorTypes<Vec<2,type>,Vec<2,type>,type>
+    #define V3(Type) StdVectorTypes<type::Vec<3,Type>,type::Vec<3,Type>,Type>
+    #define V2(Type) StdVectorTypes<type::Vec<2,Type>,type::Vec<2,Type>,Type>
 
     #define Rigid3(type)  StdRigidTypes<3,type>
     #define Affine3(type)  StdAffineTypes<3,type>
@@ -105,7 +105,7 @@ protected:
 
 
     template<typename Real>
-    static Eigen::Matrix<Real,6,9,Eigen::RowMajor> assembleJ(const defaulttype::Mat<3,3,Real>& f) // 3D->3D
+    static Eigen::Matrix<Real,6,9,Eigen::RowMajor> assembleJ(const type::Mat<3,3,Real>& f) // 3D->3D
     {
         static const unsigned int spatial_dimensions = 3;
         static const unsigned int material_dimensions = 3;
@@ -125,7 +125,7 @@ protected:
     }
 
     template<typename Real>
-    static Eigen::Matrix<Real,3,4,Eigen::RowMajor> assembleJ(const defaulttype::Mat<2,2,Real>& f) // 2D->2D
+    static Eigen::Matrix<Real,3,4,Eigen::RowMajor> assembleJ(const type::Mat<2,2,Real>& f) // 2D->2D
     {
         static const unsigned int spatial_dimensions = 2;
         static const unsigned int material_dimensions = 2;
@@ -144,7 +144,7 @@ protected:
     }
 
     template<typename Real>
-    static Eigen::Matrix<Real,3,6,Eigen::RowMajor> assembleJ(const defaulttype::Mat<3,2,Real>& f) // 3D->2D
+    static Eigen::Matrix<Real,3,6,Eigen::RowMajor> assembleJ(const type::Mat<3,2,Real>& f) // 3D->2D
     {
         static const unsigned int spatial_dimensions = 3;
         static const unsigned int material_dimensions = 2;
@@ -163,7 +163,7 @@ protected:
     }
 
     template<typename Real>
-    static Eigen::Matrix<Real,1,3,Eigen::RowMajor> assembleJ(const defaulttype::Mat<3,1,Real>& f) // 3D->1D
+    static Eigen::Matrix<Real,1,3,Eigen::RowMajor> assembleJ(const type::Mat<3,1,Real>& f) // 3D->1D
     {
         static const unsigned int spatial_dimensions = 3;
         static const unsigned int material_dimensions = 1;
@@ -180,9 +180,9 @@ protected:
 
 
 template<class Real1, class Real2,  Size Dim1, Size Dim2>
-inline Mat<Dim1, Dim2, Real2> covMN(const Vec<Dim1,Real1>& v1, const Vec<Dim2,Real2>& v2)
+inline type::Mat<Dim1, Dim2, Real2> covMN(const type::Vec<Dim1,Real1>& v1, const type::Vec<Dim2,Real2>& v2)
 {
-    Mat<Dim1, Dim2, Real2> res;
+    type::Mat<Dim1, Dim2, Real2> res;
     for (Size i = 0; i < Dim1; ++i)
         for ( Size j = 0; j < Dim2; ++j)
         {
@@ -192,9 +192,9 @@ inline Mat<Dim1, Dim2, Real2> covMN(const Vec<Dim1,Real1>& v1, const Vec<Dim2,Re
 }
 
 template<class Real,  Size Dim>
-inline MatSym<Dim, Real> covN(const Vec<Dim,Real>& v)
+inline type::MatSym<Dim, Real> covN(const type::Vec<Dim,Real>& v)
 {
-    MatSym<Dim, Real> res;
+    type::MatSym<Dim, Real> res;
     for (Size i = 0; i < Dim; ++i)
         for (Size j = i; j < Dim; ++j)
         {

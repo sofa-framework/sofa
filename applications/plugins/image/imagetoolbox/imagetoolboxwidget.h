@@ -44,7 +44,7 @@ namespace qt
 
 using namespace helper;
 using namespace cimg_library;
-using defaulttype::Vec;
+using type::Vec;
 
 
 class SOFA_IMAGE_GUI_API imagetoolbox_data_widget_container: public QObject
@@ -138,7 +138,7 @@ public:
     { 
         if(central) central->readFromData(d0.getPlane());
         
-        //const helper::vector< sofa::component::engine::LabelImageToolBox*> &dd = d0.;
+        //const type::vector< sofa::component::engine::LabelImageToolBox*> &dd = d0.;
         
         if(labelTB)
         {

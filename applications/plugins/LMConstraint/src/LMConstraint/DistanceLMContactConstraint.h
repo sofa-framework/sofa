@@ -88,7 +88,7 @@ public:
 protected :
 
     /// Each scalar constraint (up to three per contact) has an associated index
-    helper::vector<  unsigned int > scalarConstraintsIndices;
+    type::vector<  unsigned int > scalarConstraintsIndices;
 
 public:
     /// Contacts are represented by pairs of point indices
@@ -126,16 +126,16 @@ protected:
     {
         colorsContactState.clear();
         //Vanishing
-        colorsContactState.push_back(sofa::helper::types::RGBAColor(0.0f,1.0f,0.0f,1.0));
+        colorsContactState.push_back(sofa::type::RGBAColor(0.0f,1.0f,0.0f,1.0));
         //Sticking
-        colorsContactState.push_back(sofa::helper::types::RGBAColor(1.0f,0.0f,0.0f,1.0));
+        colorsContactState.push_back(sofa::type::RGBAColor(1.0f,0.0f,0.0f,1.0));
         //Sliding
-        colorsContactState.push_back(sofa::helper::types::RGBAColor(1.0f,1.0f,0.0f,1.0));
+        colorsContactState.push_back(sofa::type::RGBAColor(1.0f,1.0f,0.0f,1.0));
         //Sliding Direction
-        colorsContactState.push_back(sofa::helper::types::RGBAColor(1.0f,0.0f,1.0f,1.0));
+        colorsContactState.push_back(sofa::type::RGBAColor(1.0f,0.0f,1.0f,1.0));
     }
 
-    helper::vector< sofa::helper::types::RGBAColor > colorsContactState;
+    type::vector< sofa::type::RGBAColor > colorsContactState;
 };
 
 

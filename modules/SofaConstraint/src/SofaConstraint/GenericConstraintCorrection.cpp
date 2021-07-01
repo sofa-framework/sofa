@@ -34,7 +34,7 @@ using sofa::core::execparams::defaultInstance;
 namespace sofa::component::constraintset 
 {
 using sofa::simulation::mechanicalvisitor::MechanicalIntegrateConstraintsVisitor;
-using sofa::helper::vector;
+using sofa::type::vector;
 using sofa::core::objectmodel::BaseContext;
 using sofa::core::behavior::LinearSolver;
 using sofa::core::behavior::BaseConstraintCorrection;

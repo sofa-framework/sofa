@@ -81,8 +81,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
 
     typedef std::pair<unsigned, typename TIn::Coord> source_type;
-    typedef helper::vector< source_type > source_vectype;
-    Data< helper::vector< source_type > > source; ///< input dof and rigid offset for each output dof
+    typedef type::vector< source_type > source_vectype;
+    Data< type::vector< source_type > > source; ///< input dof and rigid offset for each output dof
 
     Data<int> geometricStiffness;
 
@@ -121,7 +121,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         const source_vectype& src = source.getValue();
 
         // sorted in-out
-        typedef std::map<unsigned, helper::vector<unsigned> > in_out_type;
+        typedef std::map<unsigned, type::vector<unsigned> > in_out_type;
         in_out_type in_out;
 
         // wahoo it is heavy, can't we find lighter?
@@ -144,7 +144,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
             const unsigned parentIdx = it->first;
 
-            defaulttype::Mat<3,3,Real> block;
+            type::Mat<3,3,Real> block;
 
             for( unsigned int w=0 ; w<it->second.size() ; ++w )
             {
@@ -160,7 +160,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
                 const typename TOut::Deriv::Vec3& t = s.second.getCenter();
                 const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
 
-                block += defaulttype::crossProductMatrix<Real>( f ) * defaulttype::crossProductMatrix<Real>( Rt );
+                block += type::crossProductMatrix<Real>( f ) * type::crossProductMatrix<Real>( Rt );
             }
 
             if( geomStiff == 2 )

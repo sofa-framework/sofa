@@ -38,9 +38,9 @@ BaseViewer::BaseViewer()
     , _video(false)
     , m_isVideoButtonPressed(false)
     , m_bShowAxis(false)
-    , backgroundColour(defaulttype::Vector3())
+    , backgroundColour(type::Vector3())
     , backgroundImageFile("textures/SOFA_logo.bmp")
-    , ambientColour(defaulttype::Vector3())
+    , ambientColour(type::Vector3())
     , pick(nullptr)
     , _screenshotDirectory(".")
 {
@@ -118,13 +118,13 @@ void BaseViewer::screenshot(const std::string& filename, int compression_level)
     SOFA_UNUSED(compression_level);
 }
 
-void BaseViewer::getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) const
+void BaseViewer::getView(type::Vector3& pos, type::Quat<SReal>& ori) const
 {
     if (!currentCamera)
         return;
 
-    const defaulttype::Vec3d& camPosition = currentCamera->getPosition();
-    const defaulttype::Quat& camOrientation = currentCamera->getOrientation();
+    const type::Vec3d& camPosition = currentCamera->getPosition();
+    const type::Quat<SReal>& camOrientation = currentCamera->getOrientation();
 
     pos[0] = camPosition[0];
     pos[1] = camPosition[1];
@@ -136,10 +136,10 @@ void BaseViewer::getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) cons
     ori[3] = camOrientation[3];
 }
 
-void BaseViewer::setView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori)
+void BaseViewer::setView(const type::Vector3& pos, const type::Quat<SReal> &ori)
 {
-    defaulttype::Vec3d position;
-    defaulttype::Quat orientation;
+    type::Vec3d position;
+    type::Quat<SReal> orientation;
     for (unsigned int i=0 ; i<3 ; i++)
     {
         position[i] = pos[i];
@@ -153,7 +153,7 @@ void BaseViewer::setView(const defaulttype::Vector3& pos, const defaulttype::Qua
     redraw();
 }
 
-void BaseViewer::moveView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori)
+void BaseViewer::moveView(const type::Vector3& pos, const type::Quat<SReal> &ori)
 {
     if (!currentCamera)
         return;

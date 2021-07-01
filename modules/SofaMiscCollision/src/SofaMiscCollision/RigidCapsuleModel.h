@@ -109,7 +109,7 @@ protected:
     Data<Real> d_default_radius; ///< The default radius
     Data<Real> d_default_height; ///< The default height
 
-    sofa::helper::vector<std::pair<int,int> > _capsule_points;
+    sofa::type::vector<std::pair<int,int> > _capsule_points;
 
     CapsuleCollisionModel();
     CapsuleCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate );
@@ -142,7 +142,7 @@ public:
     //Returns the point1-point2 normalized vector
     Coord axis(Index index)const;
 
-    const sofa::defaulttype::Quaternion orientation(Index index)const;
+    const sofa::type::Quat<SReal> orientation(Index index)const;
 
     Real height(Index index)const;
 

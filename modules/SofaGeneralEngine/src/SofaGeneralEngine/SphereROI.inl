@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/SphereROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::engine
 {
@@ -264,8 +264,8 @@ bool SphereROI<DataTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, c
 template <class DataTypes>
 void SphereROI<DataTypes>::doUpdate()
 {
-    const helper::vector<Vec3>& cen = (centers.getValue());
-    const helper::vector<Real>& rad = (radii.getValue());
+    const type::vector<Vec3>& cen = (centers.getValue());
+    const type::vector<Real>& rad = (radii.getValue());
 
     if (cen.empty())
         return;
@@ -275,7 +275,7 @@ void SphereROI<DataTypes>::doUpdate()
 		if (rad.size() == 1)
 		{
 			Real r = rad[0];
-			helper::WriteOnlyAccessor< Data<helper::vector<Real> > > radWriter = radii;
+			helper::WriteOnlyAccessor< Data<type::vector<Real> > > radWriter = radii;
 			for (unsigned int i = 0; i < cen.size() - 1; i++) radWriter.push_back(r);
 		}
 		else
@@ -297,10 +297,10 @@ void SphereROI<DataTypes>::doUpdate()
         norm.normalize();
 
     // Read accessor for input topology
-    helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<helper::vector<Quad> > > quads = f_quads;
-    helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    helper::ReadAccessor< Data<type::vector<Quad> > > quads = f_quads;
+    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     const VecCoord* x0 = &f_X0.getValue();
 
@@ -315,10 +315,10 @@ void SphereROI<DataTypes>::doUpdate()
 
     // Write accessor for toplogical element in SPHERE
     helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Quad> > > quadsInROI = f_quadsInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
 
     // Clear lists
     indices.clear();
@@ -453,14 +453,14 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
 
     const VecCoord* x0 = &f_X0.getValue();
-    const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::cyan();
+    const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
     if(p_drawSphere.getValue()) // old classical drawing by points
     {
         ///draw the boxes
-        const helper::vector<Vec3>& c=centers.getValue();
-        const helper::vector<Real>& r=radii.getValue();        
-        std::vector<sofa::defaulttype::Vector3> drawcenters;
+        const type::vector<Vec3>& c=centers.getValue();
+        const type::vector<Real>& r=radii.getValue();        
+        std::vector<sofa::type::Vector3> drawcenters;
         std::vector<float> drawradii;
 
         for (unsigned int i=0; i<c.size() && i<r.size(); ++i)
@@ -486,7 +486,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
 
     vparams->drawTool()->disableLighting();
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     ///draw points in ROI
     if( p_drawPoints.getValue())
@@ -504,7 +504,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawEdges.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
+        helper::ReadAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
             const Edge& e = edgesInROI[i];
@@ -520,7 +520,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawTriangles.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+        helper::ReadAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
             const Triangle& t = trianglesInROI[i];
@@ -536,7 +536,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawTriangles.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
+        helper::ReadAccessor< Data<type::vector<Quad> > > quadsInROI = f_quadsInROI;
         for (unsigned int i=0; i<quadsInROI.size() ; ++i)
         {
             const Quad& t = quadsInROI[i];
@@ -553,7 +553,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawTetrahedra.getValue())
     {
         vertices.clear();
-        helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+        helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
             Tetra t = tetrahedraInROI[i];
@@ -660,8 +660,8 @@ bool SphereROI<defaulttype::Rigid3Types>::isTetrahedronInSphere(const Vec3& c, c
 template <>
 void SphereROI<defaulttype::Rigid3Types>::doUpdate()
 {
-	const helper::vector<Vec3>& cen = (centers.getValue());
-	const helper::vector<Real>& rad = (radii.getValue());
+	const type::vector<Vec3>& cen = (centers.getValue());
+	const type::vector<Real>& rad = (radii.getValue());
 
 	if (cen.empty())
 		return;
@@ -684,10 +684,10 @@ void SphereROI<defaulttype::Rigid3Types>::doUpdate()
 		norm.normalize();
 
 	// Read accessor for input topology
-	helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
-	helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
-	helper::ReadAccessor< Data<helper::vector<Quad> > > quads = f_quads;
-	helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
+	helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+	helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+	helper::ReadAccessor< Data<type::vector<Quad> > > quads = f_quads;
+	helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
 	// Write accessor for topological element indices in SPHERE
 	SetIndex& indices = *(f_indices.beginEdit());
@@ -699,10 +699,10 @@ void SphereROI<defaulttype::Rigid3Types>::doUpdate()
 
 	// Write accessor for toplogical element in SPHERE
 	helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-	helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-	helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-	helper::WriteAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
-	helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+	helper::WriteAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
+	helper::WriteAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+	helper::WriteAccessor< Data<type::vector<Quad> > > quadsInROI = f_quadsInROI;
+	helper::WriteAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
 
 	// Clear lists
 	indices.clear();

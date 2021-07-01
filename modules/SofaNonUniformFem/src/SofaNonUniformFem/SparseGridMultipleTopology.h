@@ -83,9 +83,9 @@ public:
 protected :
 
 
-    Data< helper::vector< std::string > > _fileTopologies; ///< All topology filenames
-    Data< helper::vector< float > > _dataStiffnessCoefs; ///< A stiffness coefficient for each topology filename
-    Data< helper::vector< float > > _dataMassCoefs; ///< A mass coefficient for each topology filename
+    Data< type::vector< std::string > > _fileTopologies; ///< All topology filenames
+    Data< type::vector< float > > _dataStiffnessCoefs; ///< A stiffness coefficient for each topology filename
+    Data< type::vector< float > > _dataMassCoefs; ///< A mass coefficient for each topology filename
     Data<bool> _computeRamifications; ///< Are ramifications wanted?
     Data<bool> _erasePreviousCoef; ///< Does a new stiffness/mass coefficient replace the previous or blend half/half with it?
 
@@ -93,9 +93,9 @@ protected :
 
 
     void buildFromTriangleMesh(helper::io::Mesh*, unsigned fileIdx);
-    helper::vector< RegularGridTopology::SPtr > _regularGrids;
-    helper::vector< helper::vector<Type> > _regularGridTypes;
-    void assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs,helper::vector< float >& regularMassCoefs);
+    type::vector< RegularGridTopology::SPtr > _regularGrids;
+    type::vector< type::vector<Type> > _regularGridTypes;
+    void assembleRegularGrids(type::vector<Type>& regularGridTypes,type::vector< float >& regularStiffnessCoefs,type::vector< float >& regularMassCoefs);
 };
 
 } // namespace sofa::component::topology

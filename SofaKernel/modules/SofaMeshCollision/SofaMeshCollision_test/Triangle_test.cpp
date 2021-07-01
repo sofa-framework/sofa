@@ -18,7 +18,7 @@ using sofa::component::collision::TriangleCollisionModel;
 
 
 using sofa::core::collision::DetectionOutput;
-using sofa::defaulttype::Vec3d;
+using sofa::type::Vec3d;
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher;
@@ -76,7 +76,7 @@ bool TestTriangle::rigidTriangle(Intersector& bi) {
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if (!bi.computeIntersection(tri, sph, &detectionOUTPUT))
@@ -115,7 +115,7 @@ bool TestTriangle::softTriangle(Intersector& bi) {
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if (!bi.computeIntersection(tri, sph, &detectionOUTPUT))

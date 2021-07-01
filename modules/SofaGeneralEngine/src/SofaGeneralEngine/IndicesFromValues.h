@@ -41,9 +41,9 @@ class IndicesFromValues : public core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(IndicesFromValues,T),core::DataEngine);
     typedef T Value;
-    typedef sofa::helper::vector<T> VecValue;
+    typedef sofa::type::vector<T> VecValue;
     typedef unsigned int Index;
-    typedef sofa::helper::vector<Index> VecIndex;
+    typedef sofa::type::vector<Index> VecIndex;
 
 protected:
 
@@ -75,13 +75,13 @@ public:
 extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<std::string>;
 extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<int>;
 extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<unsigned int>;
-extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 2> >;
-extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 3> >;
-extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 4> >;
-extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 8> >;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< type::fixed_array<unsigned int, 2> >;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< type::fixed_array<unsigned int, 3> >;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< type::fixed_array<unsigned int, 4> >;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< type::fixed_array<unsigned int, 8> >;
 extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<double>;
-extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Vec2d>;
-extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Vec3d>;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<type::Vec2d>;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<type::Vec3d>;
 // extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
 // extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
 // extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;

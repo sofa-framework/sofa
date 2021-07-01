@@ -53,8 +53,8 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     typedef Data<InVecDeriv> InDataVecDeriv;
 	typedef linearsolver::EigenSparseMatrix<TIn,TOut>  SparseMatrixEigen;
 
-	typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
-	typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
+    typedef typename type::vector <const InVecCoord*> vecConstInVecCoord;
+	typedef typename type::vector<OutVecCoord*> vecOutVecCoord;
 
 
     virtual void init() override {
@@ -85,7 +85,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
 		const unsigned n = this->getFrom().size();
 
-        helper::vector<const_in_coord_type> in_vec; in_vec.reserve(n);
+        type::vector<const_in_coord_type> in_vec; in_vec.reserve(n);
 
         core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
         
@@ -103,13 +103,13 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
 	
 	virtual void apply(const core::MechanicalParams* , 
-	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-                       const helper::vector<const InDataVecCoord*>& dataVecInPos) override {
+	                   const type::vector<OutDataVecCoord*>& dataVecOutPos,
+                       const type::vector<const InDataVecCoord*>& dataVecInPos) override {
 		alloc();
 	
 		const unsigned n = this->getFrom().size();
 
-        helper::vector<in_pos_type> in_vec; in_vec.reserve(n);
+        type::vector<in_pos_type> in_vec; in_vec.reserve(n);
 
 		for( unsigned i = 0; i < n; ++i ) {
 			in_vec.push_back( in_pos_type(dataVecInPos[i]) );
@@ -123,7 +123,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
 
 
-    virtual void applyJ(const core::MechanicalParams*, const helper::vector<OutDataVecDeriv*>& outDeriv, const helper::vector<const InDataVecDeriv*>& inDeriv) override
+    virtual void applyJ(const core::MechanicalParams*, const type::vector<OutDataVecDeriv*>& outDeriv, const type::vector<const InDataVecDeriv*>& inDeriv) override
     {
         unsigned n = js.size();
         unsigned i = 0;
@@ -160,8 +160,8 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	}
 
 	virtual void applyJT(const core::MechanicalParams*,
-						 const helper::vector< InDataVecDeriv*>& outDeriv, 
-                         const helper::vector<const OutDataVecDeriv*>& inDeriv) override {
+						 const type::vector< InDataVecDeriv*>& outDeriv, 
+                         const type::vector<const OutDataVecDeriv*>& inDeriv) override {
 		for( unsigned i = 0, n = js.size(); i < n; ++i) {
 			if( jacobian(i).rowSize() > 0 ) {
 				jacobian(i).addMultTranspose(*outDeriv[i], *inDeriv[0]);
@@ -209,12 +209,12 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     }
 
     virtual void applyJT( const core::ConstraintParams*,
-						  const helper::vector< typename self::InDataMatrixDeriv* >& , 
-                          const helper::vector< const typename self::OutDataMatrixDeriv* >&  ) override {
+						  const type::vector< typename self::InDataMatrixDeriv* >& , 
+                          const type::vector< const typename self::OutDataMatrixDeriv* >&  ) override {
 	}
 
 	
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override {
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override {
 
         if( js.empty() )
         {
@@ -269,15 +269,15 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	
 	// perform a jacobian blocs assembly
 	// TODO pass out value as well ?
-    virtual void assemble( const helper::vector<in_pos_type>& in ) = 0;
+    virtual void assemble( const type::vector<in_pos_type>& in ) = 0;
 
-    virtual void assemble_geometric( const helper::vector<const_in_coord_type>& /*in*/,
+    virtual void assemble_geometric( const type::vector<const_in_coord_type>& /*in*/,
                                      const const_out_deriv_type& /*out*/) { }
     
     using Inherit::apply;
 	// perform mapping operation on positions
     virtual void apply(out_pos_type& out, 
-                       const helper::vector<in_pos_type>& in ) = 0;
+                       const type::vector<in_pos_type>& in ) = 0;
 
   protected:
 
@@ -306,7 +306,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	}
 
 	
-    typedef helper::vector< sofa::defaulttype::BaseMatrix* > js_type;
+    typedef type::vector< sofa::defaulttype::BaseMatrix* > js_type;
 	js_type js;
 
 

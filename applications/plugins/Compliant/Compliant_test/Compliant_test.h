@@ -31,7 +31,7 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
@@ -84,7 +84,7 @@ public:
     typedef sofa::component::linearsolver::AssembledSystem::rmat SMatrix;
 
     typedef sofa::component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     typedef sofa::component::forcefield::UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
 
     // Vec3-Vec1
@@ -147,7 +147,7 @@ protected:
         // create the particles
         DOF->resize(numParticles);
         MechanicalObject3::WriteVecCoord x = DOF->writePositions();
-        helper::vector<SReal> restLengths;
+        type::vector<SReal> restLengths;
         for( unsigned i=0; i<numParticles; i++ )
         {
             SReal alpha = (SReal)i/(numParticles-1);
@@ -224,7 +224,7 @@ protected:
         // create the particles
         DOF->resize(numParticles);
         MechanicalObject3::WriteVecCoord x = DOF->writePositions();
-        helper::vector<SReal> restLengths;
+        type::vector<SReal> restLengths;
         for( unsigned i=0; i<numParticles; i++ )
         {
             SReal alpha = (SReal)i/(numParticles-1);

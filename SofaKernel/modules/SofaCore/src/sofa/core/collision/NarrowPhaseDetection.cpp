@@ -35,9 +35,9 @@ void NarrowPhaseDetection::beginNarrowPhase()
     }
 }
 
-void NarrowPhaseDetection::addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
+void NarrowPhaseDetection::addCollisionPairs(const sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
 {
-    for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
+    for (sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
         addCollisionPair(*it);
 
     // m_outputsMap should just be filled in addCollisionPair function

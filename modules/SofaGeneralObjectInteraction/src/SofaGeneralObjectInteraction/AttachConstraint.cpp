@@ -26,6 +26,7 @@
 namespace sofa::component::projectiveconstraintset
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
@@ -45,7 +46,7 @@ void AttachConstraint<Rigid3Types>::calcRestRotations()
     restRotations.resize(indices2.size());
     for (unsigned int i=0; i<indices2.size(); ++i)
     {
-        Quat q(0,0,0,1);
+        Quat<SReal> q(0,0,0,1);
         if (indices2[i] < x0.size()-1)
         {
             Vector3 dp0 = x0[indices2[i]].unprojectVector(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
@@ -53,7 +54,7 @@ void AttachConstraint<Rigid3Types>::calcRestRotations()
             Vector3 y = cross(dp0, Vector3(1,0,0));
             y.normalize();
             double alpha = acos(dp0[0]);
-            q = Quat(y,alpha);
+            q = Quat<SReal>(y,alpha);
             msg_info() << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vector3(1,0,0));
         }
         restRotations[i] = q;

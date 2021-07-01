@@ -22,14 +22,14 @@
 #pragma once
 
 #include <type_traits>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 
 namespace sofa::defaulttype
 {
 
 template<sofa::Size L, sofa::Size C, typename real>
-struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Mat<L,C,real> >
+struct DataTypeInfo< sofa::type::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::type::Mat<L,C,real> >
 {
     static std::string GetTypeName()
     {

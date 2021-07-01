@@ -32,7 +32,7 @@ namespace sofa::component::constraintset
 class LMCONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 {
     typedef Eigen::SparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
-    typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;
+    typedef type::vector<linearsolver::LLineManipulator> JacobianRows;
     using MultiVecId = sofa::core::MultiVecId;
 
 public:
@@ -45,8 +45,8 @@ public:
 
 protected:
 
-    void analyseConstraints(const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
-            JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const;
+    void analyseConstraints(const type::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
+            JacobianRows &rowsL,JacobianRows &rowsLT, type::vector< unsigned int > &rightHandElements) const;
 
     void buildLeftRectangularMatrix(const DofToMatrix& invMassMatrix,
             DofToMatrix& LMatrix, DofToMatrix& LTMatrix,

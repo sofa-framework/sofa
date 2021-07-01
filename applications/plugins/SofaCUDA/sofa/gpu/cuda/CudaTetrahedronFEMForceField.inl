@@ -372,7 +372,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 {
     Data& data = m->data;
 
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
+    if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(mat))
     {
         const VecElement& elems = *m->_indexedElements;
 
@@ -402,7 +402,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
                     Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
 
             m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            type::Mat<3,3,double> tmpBlock[4][4];
 
             // find index of node 1
             for (n1=0; n1<4; n1++)
@@ -440,7 +440,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
             *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
         }
     }
-    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * >(mat))
+    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(mat))
     {
         const VecElement& elems = *m->_indexedElements;
 
@@ -470,7 +470,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
                     Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
 
             m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            type::Mat<3,3,double> tmpBlock[4][4];
 
             // find index of node 1
             for (n1=0; n1<4; n1++)
@@ -568,11 +568,11 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addSubKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addSubKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, const type::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset)
 {
     Data& data = m->data;
 
-    helper::vector<unsigned> itTetraBuild;
+    type::vector<unsigned> itTetraBuild;
     const VecElement& elems = *m->_indexedElements;
 
     for(unsigned e = 0;e< subMatrixIndex.size();e++) {
@@ -592,7 +592,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         }
     }
 
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
+    if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(mat))
     {
         const VecElement& elems = *m->_indexedElements;
 
@@ -623,7 +623,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
                     Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
 
             m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            type::Mat<3,3,double> tmpBlock[4][4];
 
             // find index of node 1
             for (n1=0; n1<4; n1++)
@@ -661,7 +661,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
             *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
         }
     }
-    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * >(mat))
+    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(mat))
     {
         const VecElement& elems = *m->_indexedElements;
 
@@ -692,7 +692,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
                     Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
 
             m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
-            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+            type::Mat<3,3,double> tmpBlock[4][4];
 
             // find index of node 1
             for (n1=0; n1<4; n1++)
@@ -804,7 +804,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         }
         for (int i=0; i<data.nbElement; ++i)
         {
-            defaulttype::Mat<3,3,TReal> initR, curR;
+            type::Mat<3,3,TReal> initR, curR;
             for (int l=0; l<3; ++l)
                 for (int c=0; c<3; ++c)
                 {
@@ -880,7 +880,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 } \
     template<> inline void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \
 { data.addKToMatrix(this, mat, kFactor, offset); } \
-    template<> inline void TetrahedronFEMForceField< T >::addSubKToMatrix(sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset) \
+    template<> inline void TetrahedronFEMForceField< T >::addSubKToMatrix(sofa::defaulttype::BaseMatrix* mat, const type::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset) \
 { data.addSubKToMatrix(this, mat, subMatrixIndex, kFactor, offset); }
 
 

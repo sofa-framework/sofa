@@ -23,7 +23,7 @@
 #pragma once
 #include <SofaGeneralEngine/config.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::engine
 {
@@ -38,8 +38,8 @@ public:
 
     typedef TDataType DataType;
     typedef typename DataType::value_type Real;
-    typedef helper::vector<DataType> VecData;
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<DataType> VecData;
+    typedef type::vector<Real> VecReal;
 
     DifferenceEngine();
 
@@ -60,8 +60,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<defaulttype::Vec1d>;
-extern template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<defaulttype::Vec3d>;
+extern template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<type::Vec1d>;
+extern template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<type::Vec3d>;
 
 #endif
 

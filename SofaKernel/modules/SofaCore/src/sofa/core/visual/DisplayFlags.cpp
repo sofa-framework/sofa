@@ -51,7 +51,7 @@ void FlagTreeItem::addAliasHide(const std::string& newAlias)
 }
 
 
-void FlagTreeItem::addAlias(sofa::helper::vector<std::string>& name, const std::string& newAlias)
+void FlagTreeItem::addAlias(sofa::type::vector<std::string>& name, const std::string& newAlias)
 {
     name.push_back(newAlias);
     return;

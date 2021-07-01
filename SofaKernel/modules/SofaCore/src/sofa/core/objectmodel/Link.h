@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_LINK_H
 
 #include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/helper/stable_vector.h>
+#include <sofa/type/stable_vector.h>
 #include <sofa/core/PathResolver.h>
 #include <sofa/core/sptr.h>
 #include <sofa/core/fwd.h>
@@ -258,7 +258,7 @@ public:
     /// We use stable_vector to allow insertion/removal of elements
     /// while iterators are used (required to add/remove objects
     /// while visitors are in progress).
-    typedef sofa::helper::stable_vector<TValueType> T;
+    typedef sofa::type::stable_vector<TValueType> T;
     static void clear(T& c)
     {
         c.clear();

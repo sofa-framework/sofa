@@ -95,7 +95,7 @@ void CompliantAttachPerformer<DataTypes>::clear()
 // And while the mouse did not move, we do not update anything
 // (otherwise it would be update with the wrong position)
 // As soon as the mouse is moving, the position is OK.
-static defaulttype::Vec3d initialMousePos(0,0,0);
+static type::Vec3d initialMousePos(0,0,0);
 
 
 template <class DataTypes>
@@ -202,7 +202,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     // set target point to closest point on the ray
     SReal distanceFromMouse=picked.rayLength;
     Ray ray = this->interactor->getMouseRayModel()->getRay(0);
-    defaulttype::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
+    type::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
     this->interactor->setMouseAttached(true);
     this->interactor->setDistanceFromMouse(distanceFromMouse);
 
@@ -257,12 +257,12 @@ void CompliantAttachPerformer<DataTypes>::start()
     if( _visualmodel )
     {
         _vm = core::objectmodel::New<visualmodel::OglModel>();
-        helper::vector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
+        type::vector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
         vmpos.resize(2);
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = pointOnRay;
         _vm->m_positions.endEdit();
-        helper::vector< visualmodel::OglModel::VisualTriangle >& vmtri= *_vm->m_triangles.beginWriteOnly();
+        type::vector< visualmodel::OglModel::VisualTriangle >& vmtri= *_vm->m_triangles.beginWriteOnly();
         vmtri.resize(1);
         vmtri[0] = { 0, 0, 1 };
         _vm->m_triangles.endEdit();
@@ -304,7 +304,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
 
     if( _visualmodel )
     {
-        helper::vector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
+        type::vector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = DataTypes::getCPos(xmouse[0]);
         _vm->m_positions.endEdit();

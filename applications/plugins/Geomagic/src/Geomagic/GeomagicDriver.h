@@ -23,8 +23,8 @@
 
 //Geomagic include
 #include <Geomagic/config.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 #include <SofaUserInteraction/Controller.h>
 
 //force feedback
@@ -36,8 +36,6 @@
 
 namespace sofa::component::controller
 {
-
-using namespace sofa::defaulttype;
 
 
 class GeomagicVisualModel;
@@ -54,8 +52,8 @@ class SOFA_GEOMAGIC_API GeomagicDriver : public Controller
 
 public:
     SOFA_CLASS(GeomagicDriver, Controller);
-    typedef RigidTypes::Coord Coord;
-    typedef RigidTypes::VecCoord VecCoord;
+    typedef sofa::defaulttype::RigidTypes::Coord Coord;
+    typedef sofa::defaulttype::RigidTypes::VecCoord VecCoord;
 
 #if GEOMAGIC_HAVE_OPENHAPTICS
     typedef HDdouble SHDdouble;
@@ -67,6 +65,9 @@ public:
     typedef unsigned int SHHD;
     unsigned int HD_INVALID_HANDLE = 0;
 #endif
+
+    using Vec3 = sofa::type::Vec3d;
+    using Quat = sofa::type::Quat<SReal>;
     
     GeomagicDriver();
     virtual ~GeomagicDriver();
@@ -98,13 +99,13 @@ protected:
 public:
     //Input Data
     Data< std::string > d_deviceName; ///< Name of device Configuration
-    Data<Vec3d> d_positionBase; ///< Input Position of the device base in the scene world coordinates
+    Data<Vec3> d_positionBase; ///< Input Position of the device base in the scene world coordinates
     Data<Quat> d_orientationBase; ///< Input Orientation of the device base in the scene world coordinates
     Data<Quat> d_orientationTool; ///< Input Orientation of the tool
     Data<SReal> d_scale; ///< Default scale applied to the device Coordinates
     Data<SReal> d_forceScale; ///< Default forceScale applied to the force feedback. 
     Data<SReal> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
-    Data<Vector3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
+    Data<Vec3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
 
     // Input parameters
     Data<bool> d_manualStart; /// < Bool to unactive the automatic start of the device at init. initDevice need to be called manually. False by default.
@@ -114,7 +115,7 @@ public:
 
     //Output Data
     Data<Coord> d_posDevice; ///< position of the base of the part of the device
-    Data<Vector6> d_angle; ///< Angluar values of joint (rad)
+    Data<type::Vector6> d_angle; ///< Angluar values of joint (rad)
     Data<bool> d_button_1; ///< Button state 1
     Data<bool> d_button_2; ///< Button state 2
     

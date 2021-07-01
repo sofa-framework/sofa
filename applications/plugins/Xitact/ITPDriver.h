@@ -32,7 +32,7 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include "XiTrocarInterface.h"
 
 #include <SofaUserInteraction/RayModel.h>

@@ -200,7 +200,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw(const sofa::core::v
     //if (m_grid != NULL)
     //	m_grid->draw(vparams);
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    const gpu::opencl::OpenCLVector<defaulttype::Vec4f> pos4 = this->data.pos4;
+    const gpu::opencl::OpenCLVector<type::Vec4f> pos4 = this->data.pos4;
     if (pos4.empty()) return;
 
     vparams->drawTool()->saveLastState();
@@ -208,8 +208,8 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw(const sofa::core::v
     vparams->drawTool()->disableBlending();
     vparams->drawTool()->enableDepthTest();
 
-    std::vector<sofa::defaulttype::Vec4f> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vec4f> colorVector;
+    std::vector<sofa::type::Vector3> vertices;
 
     for (unsigned int i = 0; i < m_particles.size(); i++)
     {
@@ -218,13 +218,13 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw(const sofa::core::v
         f = 1 + 10 * (f - 1);
         if (f < 1)
         {
-            colorVector.push_back(sofa::defaulttype::Vec4f(0, 1 - f, f, 1));
+            colorVector.push_back(sofa::type::Vec4f(0, 1 - f, f, 1));
         }
         else
         {
-            colorVector.push_back(sofa::defaulttype::Vec4f(f - 1, 0, 2 - f, 1));
+            colorVector.push_back(sofa::type::Vec4f(f - 1, 0, 2 - f, 1));
         }
-        vertices.push_back(sofa::defaulttype::Vector3(x[i]));
+        vertices.push_back(sofa::type::Vector3(x[i]));
     }
 
     vparams->drawTool()->drawPoints(vertices, 5, colorVector);

@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sofa/config.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <map>
@@ -132,7 +132,7 @@ public:
     }
 };
 
-helper::vector<OpenCLDeviceInfo> devices;
+type::vector<OpenCLDeviceInfo> devices;
 std::map<cl_device_id, int> devIdMap;
 
 const char* myopenclDeviceTypeName(cl_device_type type)
@@ -215,7 +215,7 @@ public:
     }
 };
 
-helper::vector<OpenCLPlatformInfo> platforms;
+type::vector<OpenCLPlatformInfo> platforms;
 std::map<cl_platform_id,int> platIdMap;
 
 void listPlatform()
@@ -286,7 +286,7 @@ void releaseDevices()
 }
 
 int selectedDeviceIndex = -1;
-helper::vector<int> activeDevices;
+type::vector<int> activeDevices;
 
 cl_context createContext(cl_device_type default_type)
 {

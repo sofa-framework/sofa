@@ -513,7 +513,7 @@ protected:
 
     /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
     template<class EigenSparseMatrixType>
-    static EigenSparseMatrixType* getMatrix(const helper::vector<sofa::defaulttype::BaseMatrix*>* matrices)
+    static EigenSparseMatrixType* getMatrix(const type::vector<sofa::defaulttype::BaseMatrix*>* matrices)
     {
         if( !matrices ){
             ADD_FAILURE()<< "Matrix list is nullptr (API for assembly is not implemented)";

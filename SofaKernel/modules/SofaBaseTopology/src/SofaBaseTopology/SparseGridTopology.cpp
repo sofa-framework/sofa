@@ -25,7 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 #include <SofaBaseTopology/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/core/loader/VoxelLoader.h>
 
@@ -35,6 +35,7 @@
 
 using std::pair;
 using sofa::core::loader::VoxelLoader;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
@@ -571,11 +572,11 @@ void SparseGridTopology::updateMesh()
     _max.setValue( voxelSize.getValue().linearProduct(dataResolution.getValue())*(1));
 
     //Creating if needed collision models and visual models
-    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_mesh;
-    sofa::helper::vector< Data< sofa::defaulttype::Vec3Types::VecCoord >* > list_X;
+    sofa::type::vector< sofa::core::topology::BaseMeshTopology * > list_mesh;
+    sofa::type::vector< Data< sofa::defaulttype::Vec3Types::VecCoord >* > list_X;
 
     //Get Collision Model
-    sofa::helper::vector< sofa::core::topology::BaseMeshTopology* > m_temp;
+    sofa::type::vector< sofa::core::topology::BaseMeshTopology* > m_temp;
     this->getContext()->get< sofa::core::topology::BaseMeshTopology >(&m_temp, sofa::core::objectmodel::BaseContext::SearchDown);
 
     sofa::core::topology::BaseMeshTopology* collisionTopology=nullptr;
@@ -615,7 +616,7 @@ void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 {
     if (!dataVoxels.getValue().empty())
     {
-        helper::vector<unsigned char> * datas = dataVoxels.beginEdit();
+        type::vector<unsigned char> * datas = dataVoxels.beginEdit();
         marchingCubes.run(&(*datas)[0], 0.5f, m);
         dataVoxels.endEdit();
     }
@@ -623,26 +624,26 @@ void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
 
 
 template< class T >
-void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > &list_mesh,
-        const helper::vector< Data< helper::vector< Vec<3,T> > >* > &list_X)
+void SparseGridTopology::constructCollisionModels(const sofa::type::vector< sofa::core::topology::BaseMeshTopology * > &list_mesh,
+        const type::vector< Data< type::vector< Vec<3,T> > >* > &list_X)
 {
-    sofa::helper::vector< PointID>	triangles;
+    sofa::type::vector< PointID>	triangles;
     vector< Vector3 >		vertices;
 
-    helper::vector<unsigned char> * datas = dataVoxels.beginEdit();
+    type::vector<unsigned char> * datas = dataVoxels.beginEdit();
     marchingCubes.run(&(*datas)[0], 0.5f, triangles, vertices);
     dataVoxels.endEdit();
 
     for (unsigned int i=0; i<list_mesh.size(); ++i)
     {
         list_mesh[i]->clear();
-        helper::WriteAccessor<Data< helper::vector< Vec<3,T> > > > x(list_X[i]);
+        helper::WriteAccessor<Data< type::vector< Vec<3,T> > > > x(list_X[i]);
         x.resize(vertices.size());
     }
 
     for (unsigned int j=0; j<list_mesh.size(); ++j)
     {
-        helper::WriteAccessor<Data< helper::vector< Vec<3,T> > > > x(list_X[j]);
+        helper::WriteAccessor<Data< type::vector< Vec<3,T> > > > x(list_X[j]);
         for (unsigned int id_point=0; id_point<vertices.size(); ++id_point)
         {
             x[id_point] = vertices[id_point];
@@ -703,9 +704,9 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
 {
     regularGridTypes.resize(regularGrid->getNbHexahedra(), INSIDE);
 
-    const helper::vector< Vector3 >& vertices = mesh->getVertices();
+    const type::vector< Vector3 >& vertices = mesh->getVertices();
     const size_t vertexSize = vertices.size();
-    helper::vector< Index > verticesHexa(vertexSize);
+    type::vector< Index > verticesHexa(vertexSize);
     const Vector3 delta = (regularGrid->getDx() + regularGrid->getDy() + regularGrid->getDz()) / 2;
 
     // Compute the grid element for each mesh vertex
@@ -927,7 +928,7 @@ void SparseGridTopology::buildFromRegularGridTypes(sofa::core::sptr<RegularGridT
         }
     }
 
-    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     // compute corner indices
     int cornerCounter=0;
 
@@ -956,7 +957,7 @@ void SparseGridTopology::buildFromRegularGridTypes(sofa::core::sptr<RegularGridT
 }
 
 
-void SparseGridTopology::computeBoundingBox(const helper::vector<Vector3>& vertices,
+void SparseGridTopology::computeBoundingBox(const type::vector<Vector3>& vertices,
         SReal& xmin, SReal& xmax,
         SReal& ymin, SReal& ymax,
         SReal& zmin, SReal& zmax) const
@@ -1087,7 +1088,7 @@ void SparseGridTopology::buildFromFiner()
 
     // compute corner indices
     int cornerCounter=0;
-    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     for(MapBetweenCornerPositionAndIndice::iterator it=cubeCornerPositionIndiceMap.begin(); it!=cubeCornerPositionIndiceMap.end(); ++it,++cornerCounter)
     {
         (*it).second = cornerCounter;
@@ -1118,7 +1119,7 @@ void SparseGridTopology::buildFromFiner()
     {
         const fixed_array<Index, 8>& child = _hierarchicalCubeMap[w];
 
-        helper::vector<Index> fineCorners(27);
+        type::vector<Index> fineCorners(27);
         fineCorners.fill(InvalidID);
         for(int fineCube=0; fineCube<8; ++fineCube)
         {
@@ -1185,7 +1186,7 @@ void SparseGridTopology::buildFromFiner()
     _massCoefs.resize( this->getNbHexahedra() );
     for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
-        helper::fixed_array<Index,8> finerChildren = this->_hierarchicalCubeMap[i];
+        type::fixed_array<Index,8> finerChildren = this->_hierarchicalCubeMap[i];
         unsigned nbchildren = 0;
         for(int w=0; w<8; ++w)
         {
@@ -1315,11 +1316,11 @@ SparseGridTopology::Index SparseGridTopology::findNearestCube(const Vector3& pos
 }
 
 
-helper::fixed_array<Index,6> SparseGridTopology::findneighboorCubes(Index indice )
+type::fixed_array<Index,6> SparseGridTopology::findneighboorCubes(Index indice )
 {
     dmsg_info()<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice];
     dmsg_info()<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ] ;
-    helper::fixed_array<Index,6> result;
+    type::fixed_array<Index,6> result;
     Vector3 c = _regularGrid->getCubeCoordinate( _indicesOfCubeinRegularGrid[indice] );
     dmsg_info()<<c;
     result[0] = c[0]<=0 ? InvalidID : _indicesOfRegularCubeInSparseGrid[ _regularGrid->getCubeIndex( (int)c[0]-1,(int)c[1],(int)c[2] )];

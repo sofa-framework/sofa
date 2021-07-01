@@ -64,8 +64,8 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 
         // expected child positions
         OutVecCoord expectedoutcoord;
-        expectedoutcoord.push_back( defaulttype::Vector1( 3 ) );
-        expectedoutcoord.push_back( defaulttype::Vector1( 33 ) );
+        expectedoutcoord.push_back( type::Vector1( 3 ) );
+        expectedoutcoord.push_back( type::Vector1( 33 ) );
 
         return this->runTest( incoord, expectedoutcoord );
     }
@@ -78,7 +78,7 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 ////        map->f_computeDistance.setValue(true);
 //        map->d_geometricStiffness.setValue(1);
 
-//        helper::vector< SReal > restLength(2);
+//        type::vector< SReal > restLength(2);
 //        restLength[0] = .5;
 //        restLength[1] = 2;
 //        map->f_restLengths.setValue( restLength );
@@ -95,8 +95,8 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 
 //        // expected child positions
 //        OutVecCoord expectedoutcoord;
-//        expectedoutcoord.push_back( defaulttype::Vector1( (sqrt(3.)-.5) * (sqrt(3.)-.5) ) );
-//        expectedoutcoord.push_back( defaulttype::Vector1( (sqrt(33.)-2.) * (sqrt(33.)-2.) ) );
+//        expectedoutcoord.push_back( type::Vector1( (sqrt(3.)-.5) * (sqrt(3.)-.5) ) );
+//        expectedoutcoord.push_back( type::Vector1( (sqrt(33.)-2.) * (sqrt(33.)-2.) ) );
 
 //        return this->runTest( incoord, expectedoutcoord );
 //    }

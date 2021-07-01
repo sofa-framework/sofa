@@ -26,7 +26,7 @@
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/defaulttype/Ray.h>
+
 namespace sofa::component::collision
 {
 
@@ -170,8 +170,8 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
     mstate1 = dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer());
     mstate2 = mstateCollision;
 
-    defaulttype::Vec3d point1;
-    defaulttype::Vec3d point2;
+    type::Vec3d point1;
+    type::Vec3d point2;
 
     using constraintset::BilateralInteractionConstraint;
 
@@ -179,7 +179,7 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
     BilateralInteractionConstraint< DataTypes >* bconstraint = static_cast< BilateralInteractionConstraint< sofa::defaulttype::Vec3Types >* >(m_constraint.get());
     bconstraint->setName("Constraint-Mouse-Contact");
 
-    defaulttype::Vec3d normal = point1-point2;
+    type::Vec3d normal = point1-point2;
 
     bconstraint->addContact(normal, point1, point2, (point2-point1).norm(), 0, index, point2, point1);
 

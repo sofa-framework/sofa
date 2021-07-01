@@ -48,7 +48,7 @@ public:
     typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
     typedef BaseMeshTopology::QuadsAroundVertex		QuadsAroundVertex;
     typedef BaseMeshTopology::QuadsAroundEdge		QuadsAroundEdge;
-    typedef sofa::helper::vector<QuadID>                  VecQuadID;
+    typedef sofa::type::vector<QuadID>                  VecQuadID;
 
 protected:
     QuadSetTopologyContainer();
@@ -192,19 +192,19 @@ public:
 
 
     /** \brief Returns the Quad array. */
-    const sofa::helper::vector<Quad> &getQuadArray();
+    const sofa::type::vector<Quad> &getQuadArray();
 
 
     /** \brief Returns the EdgesInQuadArray array (i.e. provide the 4 edge indices for each quad) */
-    const sofa::helper::vector< EdgesInQuad > &getEdgesInQuadArray() ;
+    const sofa::type::vector< EdgesInQuad > &getEdgesInQuadArray() ;
 
 
     /** \brief Returns the QuadsAroundVertex array (i.e. provide the quad indices adjacent to each vertex). */
-    const sofa::helper::vector< QuadsAroundVertex > &getQuadsAroundVertexArray();
+    const sofa::type::vector< QuadsAroundVertex > &getQuadsAroundVertexArray();
 
 
     /** \brief Returns the QuadsAroundEdge array (i.e. provide the quad indices adjacent to each edge). */
-    const sofa::helper::vector< QuadsAroundEdge > &getQuadsAroundEdgeArray() ;
+    const sofa::type::vector< QuadsAroundEdge > &getQuadsAroundEdgeArray() ;
 
 
     bool hasQuads() const;
@@ -300,17 +300,17 @@ protected:
 
 public:
     /// provides the set of quads.
-    Data< sofa::helper::vector<Quad> > d_quad;
+    Data< sofa::type::vector<Quad> > d_quad;
 
 protected:
     /// provides the 4 edges in each quad.
-    sofa::helper::vector<EdgesInQuad> m_edgesInQuad;
+    sofa::type::vector<EdgesInQuad> m_edgesInQuad;
 
     /// for each vertex provides the set of quads adjacent to that vertex.
-    sofa::helper::vector< QuadsAroundVertex > m_quadsAroundVertex;
+    sofa::type::vector< QuadsAroundVertex > m_quadsAroundVertex;
 
     /// for each edge provides the set of quads adjacent to that edge.
-    sofa::helper::vector< QuadsAroundEdge > m_quadsAroundEdge;
+    sofa::type::vector< QuadsAroundEdge > m_quadsAroundEdge;
 
 
     /// Boolean used to know if the topology Data of this container is dirty
@@ -320,8 +320,8 @@ protected:
     std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
 };
 
 } //namespace sofa::component::topology

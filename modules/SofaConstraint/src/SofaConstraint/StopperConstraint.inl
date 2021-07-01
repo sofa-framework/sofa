@@ -23,7 +23,7 @@
 #include <SofaConstraint/StopperConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::constraintset
 {

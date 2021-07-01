@@ -5,7 +5,7 @@
 
 #include "AssembledMapping.h"
 #include "AssembledMultiMapping.h"
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 namespace sofa
@@ -41,25 +41,25 @@ class SOFA_Compliant_API SafeDistanceMapping : public AssembledMapping<TIn, TOut
 
     typedef SafeDistanceMapping self;
 
-    typedef defaulttype::Vec<2, unsigned> index_pair;
-    typedef helper::vector< index_pair > pairs_type;
+    typedef type::Vec<2, unsigned> index_pair;
+    typedef type::vector< index_pair > pairs_type;
 
     Data< pairs_type > d_pairs; ///< index pairs for computing distance
-    Data< helper::vector< SReal > > d_restLengths; ///< rest lengths
+    Data< type::vector< SReal > > d_restLengths; ///< rest lengths
 
     Data< SReal > d_epsilonLength; ///< Threshold to consider a length too close to 0
 
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< sofa::helper::types::RGBAColor > d_color; ///< drawing color
+    Data< sofa::type::RGBAColor > d_color; ///< drawing color
 
 protected:
 
-    typedef defaulttype::Vec<TIn::spatial_dimensions,SReal> Direction;
+    typedef type::Vec<TIn::spatial_dimensions,SReal> Direction;
 
-    helper::vector<Direction> m_directions;   ///< Unit vectors in the directions of the lines
-    helper::vector<SReal> m_lengths, m_invlengths;       ///< inverse of current distances. Null represents the infinity (null distance)
+    type::vector<Direction> m_directions;   ///< Unit vectors in the directions of the lines
+    type::vector<SReal> m_lengths, m_invlengths;       ///< inverse of current distances. Null represents the infinity (null distance)
 
 
 
@@ -69,7 +69,7 @@ protected:
         , d_epsilonLength( initData(&d_epsilonLength, 1e-4, "epsilonLength", "Threshold to consider a length too close to 0") )
         , d_geometricStiffness( initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+        , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {}
 
     enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
@@ -85,7 +85,7 @@ public:
     virtual void reinit() override
     {
         const pairs_type& pairs = d_pairs.getValue();
-        helper::vector<SReal>& restLengths = *d_restLengths.beginEdit();
+        type::vector<SReal>& restLengths = *d_restLengths.beginEdit();
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
@@ -116,7 +116,7 @@ public:
                        const typename self::in_pos_type& in ) override {
 
         const pairs_type& pairs = d_pairs.getValue();
-        const helper::vector<SReal>& restLengths = d_restLengths.getValue();
+        const type::vector<SReal>& restLengths = d_restLengths.getValue();
         const SReal& epsilon = d_epsilonLength.getValue();
 
         size_t size = 0;
@@ -187,7 +187,7 @@ public:
         size_t size = this->getToModel()->getSize();
 
         const pairs_type& pairs = d_pairs.getValue();
-        const helper::vector<SReal>& restLengths = d_restLengths.getValue();
+        const type::vector<SReal>& restLengths = d_restLengths.getValue();
 
         typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
@@ -269,7 +269,7 @@ public:
             // if stabilized GS (geometricStiffness==2) -> keep only force in extension
             if( out[i][0] < 0 || geometricStiffness==1 )
             {
-                sofa::defaulttype::Mat<Nin,Nin,SReal> b;  // = (I - uu^T)
+                sofa::type::Mat<Nin,Nin,SReal> b;  // = (I - uu^T)
 
                 for(unsigned j=0; j<TIn::spatial_dimensions; j++)
                 {
@@ -310,11 +310,11 @@ public:
 
         if( !scale )
         {
-            helper::vector< defaulttype::Vector3 > points(p.size()*2);
+            type::vector< type::Vector3 > points(p.size()*2);
             for(unsigned i=0; i<p.size(); i++ )
             {
-                points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
-                points[i*2+1] = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                points[i*2  ] = type::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                points[i*2+1] = type::Vector3( TIn::getCPos(pos[p[i][1]]) );
             }
             vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
         }
@@ -322,8 +322,8 @@ public:
         {
             for(unsigned i=0; i<p.size(); i++ )
             {
-                defaulttype::Vector3 p0 = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
-                defaulttype::Vector3 p1 = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                type::Vector3 p0 = type::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                type::Vector3 p1 = type::Vector3( TIn::getCPos(pos[p[i][1]]) );
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
@@ -381,24 +381,26 @@ class SOFA_Compliant_API SafeDistanceFromTargetMapping : public AssembledMapping
 
     typedef SafeDistanceFromTargetMapping self;
 
-    Data< helper::vector< unsigned > > d_indices; ///< index of dof to compute the distance
+    Data< type::vector< unsigned > > d_indices; ///< index of dof to compute the distance
     Data< typename self::InVecCoord > d_targetPositions; ///< positions the distances are measured from
-    Data< helper::vector< SReal > > d_restLengths; ///< rest lengths
+    Data< type::vector< SReal > > d_restLengths; ///< rest lengths
 
-    typedef defaulttype::Vec<TIn::spatial_dimensions,SReal> Direction;
-    Data< helper::vector<Direction> > d_directions; ///< Unit vectors in the directions of the lines
+    typedef type::Vec<TIn::spatial_dimensions,SReal> Direction;
+    Data< type::vector<Direction> > d_directions; ///< Unit vectors in the directions of the lines
 
     Data< SReal > d_epsilonLength; ///< Threshold to consider a length too close to 0
 
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     Data< SReal > d_showObjectScale; ///< drawing size
+
     Data< type::RGBAColor > d_color; ///< drawing color
+
 
 protected:
 
-    helper::vector<Direction> m_directions;   ///< Unit vectors in the directions of the lines
-    helper::vector<SReal> m_lengths, m_invlengths;       ///< inverse of current distances. Null represents the infinity (null distance)
+    type::vector<Direction> m_directions;   ///< Unit vectors in the directions of the lines
+    type::vector<SReal> m_lengths, m_invlengths;       ///< inverse of current distances. Null represents the infinity (null distance)
 
 
 
@@ -425,9 +427,9 @@ public:
 
     virtual void reinit() override
     {
-        const helper::vector< unsigned >& indices = d_indices.getValue();
+        const type::vector< unsigned >& indices = d_indices.getValue();
         const typename self::InVecCoord& targets = d_targetPositions.getValue();
-        helper::vector<SReal>& restLengths = *d_restLengths.beginEdit();
+        type::vector<SReal>& restLengths = *d_restLengths.beginEdit();
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
@@ -455,7 +457,7 @@ public:
 
         d_restLengths.endEdit();
 
-        helper::vector<Direction>& directions = *d_directions.beginEdit();
+        type::vector<Direction>& directions = *d_directions.beginEdit();
         for( size_t i=0, iend=directions.size() ; i<iend ; ++i )
             directions[i].normalize(); // just to be sure
         d_directions.endEdit();
@@ -467,10 +469,10 @@ public:
     virtual void apply(typename self::out_pos_type& out,
                        const typename self::in_pos_type& in ) override {
 
-        const helper::vector< unsigned >& indices = d_indices.getValue();
+        const type::vector< unsigned >& indices = d_indices.getValue();
         const typename self::InVecCoord& targets = d_targetPositions.getValue();
-        const helper::vector<SReal>& restLengths = d_restLengths.getValue();
-        const helper::vector<Direction>& directions = d_directions.getValue();
+        const type::vector<SReal>& restLengths = d_restLengths.getValue();
+        const type::vector<Direction>& directions = d_directions.getValue();
         const SReal& epsilon = d_epsilonLength.getValue();
 
         size_t size = 0;
@@ -546,9 +548,9 @@ public:
     {
         size_t size = this->getToModel()->getSize();
 
-        const helper::vector< unsigned >& indices = d_indices.getValue();
-        const helper::vector<SReal>& restLengths = d_restLengths.getValue();
-        const helper::vector<Direction>& directions = d_directions.getValue();
+        const type::vector< unsigned >& indices = d_indices.getValue();
+        const type::vector<SReal>& restLengths = d_restLengths.getValue();
+        const type::vector<Direction>& directions = d_directions.getValue();
 
         typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
@@ -591,8 +593,8 @@ public:
         if( !geometricStiffness ) { K.resize(0,0); return; }
 
 
-        const helper::vector< unsigned >& indices = d_indices.getValue();
-        const helper::vector<Direction>& directions = d_directions.getValue();
+        const type::vector< unsigned >& indices = d_indices.getValue();
+        const type::vector<Direction>& directions = d_directions.getValue();
 
         K.resizeBlocks(in.size(),in.size());
         for(size_t i=0; i<indices.size(); i++)
@@ -604,7 +606,7 @@ public:
             // if stabilized GS (geometricStiffness==2) -> keep only force in extension
             if( out[i][0] < 0 || geometricStiffness==1 )
             {
-                sofa::defaulttype::Mat<Nin,Nin,SReal> b;  // = (I - uu^T)
+                sofa::type::Mat<Nin,Nin,SReal> b;  // = (I - uu^T)
 
                 for(unsigned j=0; j<TIn::spatial_dimensions; j++)
                 {
@@ -638,16 +640,16 @@ public:
         vparams->drawTool()->enableLighting();
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
-        const helper::vector< unsigned >& indices = d_indices.getValue();
+        const type::vector< unsigned >& indices = d_indices.getValue();
         const typename self::InVecCoord& targets = d_targetPositions.getValue();
 
         if( !scale )
         {
-            helper::vector< defaulttype::Vector3 > points(indices.size()*2);
+            type::vector< type::Vector3 > points(indices.size()*2);
             for(unsigned i=0; i<indices.size(); i++ )
             {
-                points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[indices[i]]) );
-                points[i*2+1] = defaulttype::Vector3( TIn::getCPos(targets[i] ) );
+                points[i*2  ] = type::Vector3( TIn::getCPos(pos[indices[i]]) );
+                points[i*2+1] = type::Vector3( TIn::getCPos(targets[i] ) );
             }
             vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
         }
@@ -655,8 +657,8 @@ public:
         {
             for(unsigned i=0; i<indices.size(); i++ )
             {
-                defaulttype::Vector3 p0 = defaulttype::Vector3( TIn::getCPos(pos[indices[i]]) );
-                defaulttype::Vector3 p1 = defaulttype::Vector3( TIn::getCPos(targets[i]));
+                type::Vector3 p0 = type::Vector3( TIn::getCPos(pos[indices[i]]) );
+                type::Vector3 p1 = type::Vector3( TIn::getCPos(targets[i]));
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
@@ -665,7 +667,7 @@ public:
 
     virtual void updateForceMask() override
     {
-        const helper::vector< unsigned >& indices = d_indices.getValue();
+        const type::vector< unsigned >& indices = d_indices.getValue();
 
         for( size_t i = 0, iend = indices.size(); i < iend; ++i )
             if( this->maskTo->getEntry(i) )

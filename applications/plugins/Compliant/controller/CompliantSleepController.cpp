@@ -79,7 +79,7 @@ void GetConstrainedContextPairs::processNodeBottomUp(simulation::Node* node)
 
 		if (m_mapping)
 		{
-			helper::vector<core::BaseState*> states = m_mapping->getFrom();
+			type::vector<core::BaseState*> states = m_mapping->getFrom();
 			switch (states.size())
 			{
 				case 0:

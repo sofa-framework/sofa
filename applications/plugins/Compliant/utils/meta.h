@@ -264,7 +264,7 @@ namespace meta {
   // some helpers
   template<class C, int I>
   struct make_vectypes {
-	typedef sofa::defaulttype::Vec<I, C> vec_type;
+	typedef sofa::type::Vec<I, C> vec_type;
 	typedef sofa::defaulttype::StdVectorTypes<vec_type, vec_type, C> type;
   };
 

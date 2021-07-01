@@ -45,9 +45,9 @@ using std::cerr;
 using std::endl;
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using sofa::helper::vector;
+using type::Vec;
+using type::Mat;
+using sofa::type::vector;
 typedef std::size_t Index;
 
 /**  Test suite for RigidScaleToRigidMultiMapping.

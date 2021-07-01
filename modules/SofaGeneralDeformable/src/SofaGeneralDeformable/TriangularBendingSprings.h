@@ -27,10 +27,10 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa::component::forcefield
@@ -62,7 +62,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef type::Mat<N,N,Real> Mat;
 
     using Index = sofa::Index;
 
@@ -110,32 +110,32 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
+    sofa::component::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
-    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >
+    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<EdgeInformation> >
     {
     public:
         typedef typename TriangularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
-        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, topology::EdgeData<helper::vector<EdgeInformation> >* _data)
-            : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
+        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, topology::EdgeData<type::vector<EdgeInformation> >* _data)
+            : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::type::vector<EdgeInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(Index edgeIndex,
                 EdgeInformation &ei,
-                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double >&);
+                const core::topology::BaseMeshTopology::Edge& ,  const sofa::type::vector< Index > &,
+                const sofa::type::vector< double >&);
 
-        void applyTriangleCreation(const helper::vector<Index> &triangleAdded,
-                const helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const helper::vector<helper::vector<Index> > & ,
-                const helper::vector<helper::vector<double> > &);
+        void applyTriangleCreation(const type::vector<Index> &triangleAdded,
+                const type::vector<core::topology::BaseMeshTopology::Triangle> & ,
+                const type::vector<type::vector<Index> > & ,
+                const type::vector<type::vector<double> > &);
 
-        void applyTriangleDestruction(const helper::vector<Index> &triangleRemoved);
+        void applyTriangleDestruction(const type::vector<Index> &triangleRemoved);
 
-        void applyPointDestruction(const helper::vector<Index> &pointIndices);
+        void applyPointDestruction(const type::vector<Index> &pointIndices);
 
-        void applyPointRenumbering(const helper::vector<Index> &pointToRenumber);
+        void applyPointRenumbering(const type::vector<Index> &pointToRenumber);
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<EdgeInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.
@@ -181,7 +181,7 @@ public:
 
 protected:
 
-    sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::component::topology::EdgeData<type::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
     TriangularBSEdgeHandler* edgeHandler;
 

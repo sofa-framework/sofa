@@ -57,30 +57,30 @@ template<typename T, Size INDEX>
 struct CheckPositionImpl;
 
 template<Size N, typename REAL>
-struct CheckPositionImpl<Vec<N, REAL>, 1>
+struct CheckPositionImpl<type::Vec<N, REAL>, 1>
 {
-    void operator () (const Vec<N, REAL>& vec)
+    void operator () (const type::Vec<N, REAL>& vec)
     {
         EXPECT_NEAR(REAL(), vec.x(), std::numeric_limits<REAL>::epsilon());
     }
 };
 
 template<Size N, typename REAL>
-struct CheckPositionImpl<Vec<N, REAL>, 2>
+struct CheckPositionImpl<type::Vec<N, REAL>, 2>
 {
-    void operator () (const Vec<N, REAL>& vec)
+    void operator () (const type::Vec<N, REAL>& vec)
     {
-        CheckPositionImpl<Vec<N, REAL>, 1>()(vec);
+        CheckPositionImpl<type::Vec<N, REAL>, 1>()(vec);
         EXPECT_NEAR(REAL(), vec.y(), std::numeric_limits<REAL>::epsilon());
     }
 };
 
 template<Size N, typename REAL>
-struct CheckPositionImpl<Vec<N, REAL>, 3>
+struct CheckPositionImpl<type::Vec<N, REAL>, 3>
 {
-    void operator () (const Vec<N, REAL>& vec)
+    void operator () (const type::Vec<N, REAL>& vec)
     {
-        CheckPositionImpl<Vec<N, REAL>, 2>()(vec);
+        CheckPositionImpl<type::Vec<N, REAL>, 2>()(vec);
         EXPECT_NEAR(REAL(), vec.z(), std::numeric_limits<REAL>::epsilon());
     }
 };

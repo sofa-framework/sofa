@@ -200,7 +200,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
-        const sofa::helper::vector<Vector3> & vertices = mesh->getVertices();
+        const sofa::type::vector<Vector3> & vertices = mesh->getVertices();
 
         std::cout << "Computing bbox."<<std::endl;
         Coord bbmin, bbmax;

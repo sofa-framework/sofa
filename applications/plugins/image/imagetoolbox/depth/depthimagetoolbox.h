@@ -40,15 +40,15 @@ public:
 
     typedef sofa::core::objectmodel::DataFileName DataFileName;
 
-    typedef sofa::defaulttype::Vec3d Coord3;
-    typedef sofa::defaulttype::Vec3d Deriv3;
-    typedef sofa::defaulttype::Vec6d Vec6d;
-    typedef helper::vector< Coord3 > VecCoord3;
-    typedef helper::vector< double > VecReal;
+    typedef sofa::type::Vec3d Coord3;
+    typedef sofa::type::Vec3d Deriv3;
+    typedef sofa::type::Vec6d Vec6d;
+    typedef type::vector< Coord3 > VecCoord3;
+    typedef type::vector< double > VecReal;
     typedef LabelGridImageToolBoxNoTemplated::Vec2ui Vec2i;
 
     //typedef Vec<5,unsigned int> imCoord;
-    typedef helper::vector<double> VecDouble;
+    typedef type::vector<double> VecDouble;
     typedef sofa::defaulttype::ImageLPTransform<SReal> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
@@ -81,7 +81,7 @@ public:
         Layer():layer1(-1),layer2(-1),base(-1),typeOffset1(Distance),typeOffset2(Distance),offset1(0),offset2(0){}
     };
 
-    typedef helper::vector< Layer > VecLayer;
+    typedef type::vector< Layer > VecLayer;
     
     DepthImageToolBox():LabelImageToolBox()
         , d_filename(initData(&d_filename,"filename",""))
@@ -391,8 +391,8 @@ public:
         int &slices = l.nbSlice;
         layer.setSlice(slices);
 
-        helper::vector<sofa::defaulttype::Vec3d>& baseIP = *(base->d_outImagePosition.beginEdit());
-        helper::vector<sofa::defaulttype::Vec3d>& baseN = *(base->d_outNormalImagePositionBySection.beginEdit());
+        type::vector<sofa::type::Vec3d>& baseIP = *(base->d_outImagePosition.beginEdit());
+        type::vector<sofa::type::Vec3d>& baseN = *(base->d_outNormalImagePositionBySection.beginEdit());
 
         Quads& baseQuad = *(base->d_outQuads.beginEdit());
 
@@ -425,14 +425,14 @@ public:
 
                 for(unsigned int q=0;q<4;q++)
                 {
-                    sofa::defaulttype::Vec3d baseIPk = fromImage(baseIP[quad[q]]);
-                    sofa::defaulttype::Vec3d baseNk = fromImage(baseN[quad[q]]) - fromImage(sofa::defaulttype::Vec3d(0,0,0));
+                    sofa::type::Vec3d baseIPk = fromImage(baseIP[quad[q]]);
+                    sofa::type::Vec3d baseNk = fromImage(baseN[quad[q]]) - fromImage(sofa::type::Vec3d(0,0,0));
                     baseNk.normalize();
 
-                    sofa::defaulttype::Vec3d min = baseIPk + baseNk*v1[k];
-                    sofa::defaulttype::Vec3d max = baseIPk + baseNk*v2[k];
+                    sofa::type::Vec3d min = baseIPk + baseNk*v1[k];
+                    sofa::type::Vec3d max = baseIPk + baseNk*v2[k];
 
-                    sofa::defaulttype::Vec3d point = min*dt_h+max*(1-dt_h);
+                    sofa::type::Vec3d point = min*dt_h+max*(1-dt_h);
 
                     unsigned int index =  (quad[q]*(slices+1)) + h;
                     position[k0 +index] += (/*fromImage(*/point/*)*/);
@@ -929,8 +929,8 @@ public:
             else
             {
                 /*
-                sofa::defaulttype::Vec3d ip;
-                sofa::defaulttype::Vec3d p;
+                sofa::type::Vec3d ip;
+                sofa::type::Vec3d p;
 
                 values >> ip[0] >> ip[1] >> ip[2] >> p[0] >> p[1] >> p[2];
 
@@ -1579,7 +1579,7 @@ public:
     Data< VecDouble > d_outImagePosition;
 
     Data< std::string > d_tagFilter;
-    helper::vector< LabelGridImageToolBoxNoTemplated* > labelsOfGrid;
+    type::vector< LabelGridImageToolBoxNoTemplated* > labelsOfGrid;
 
     Data< sofa::defaulttype::ImageD > d_image;
     waImage wImage;

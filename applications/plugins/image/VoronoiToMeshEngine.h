@@ -32,7 +32,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -72,7 +72,7 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef helper::vector<Coord > SeqPositions;
+    typedef type::vector<Coord > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position; ///< output positions
@@ -413,7 +413,7 @@ protected:
         vparams->drawTool()->drawPoints(this->position.getValue(),5,sofa::type::RGBAColor(0.2,1.,0.2,1.));
 
         raPositions pos(this->position);
-        std::vector<defaulttype::Vector3> points;
+        std::vector<type::Vector3> points;
         raEdges Edges(this->edges);
         points.resize(2*Edges.size());
         for (std::size_t i=0; i<Edges.size(); ++i)

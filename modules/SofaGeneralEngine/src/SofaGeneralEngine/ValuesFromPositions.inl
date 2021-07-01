@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/ValuesFromPositions.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
@@ -277,7 +277,7 @@ void ValuesFromPositions<DataTypes>::doUpdate()
     data.x0 = x0;
 
     // Compute min and max of BB
-    sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    sofa::type::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
     data.bmin = (Real)*sceneMinBBox.ptr(); /// @todo: shouldn't this be dot(sceneMinBBox,data.dir) ?
@@ -295,9 +295,9 @@ void ValuesFromPositions<DataTypes>::updateValues(TempData &_data)
 {
     // Read accessor for input topology
     const VecCoord* x0 = &f_X0.getValue();
-    helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     // Write accessor for topological element values
     helper::WriteOnlyAccessor< Data<VecReal> > values = f_values;
@@ -349,15 +349,15 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
 {
     // Read accessor for input topology
     const VecCoord* x0 = &f_X0.getValue();
-    helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     // Write accessor for topological element values
-    helper::WriteAccessor< Data<sofa::helper::vector<Vec3> > > pointVectors = f_pointVectors;
-    helper::WriteAccessor< Data<sofa::helper::vector<Vec3> > > edgeVectors = f_edgeVectors;
-    helper::WriteAccessor< Data<sofa::helper::vector<Vec3> > > triangleVectors = f_triangleVectors;
-    helper::WriteAccessor< Data<sofa::helper::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
+    helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > pointVectors = f_pointVectors;
+    helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > edgeVectors = f_edgeVectors;
+    helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > triangleVectors = f_triangleVectors;
+    helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
     // Clear lists
     pointVectors.clear();
@@ -408,15 +408,15 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
         vparams->drawTool()->disableLighting();
 
         const VecCoord* x0 = &f_X0.getValue();
-        helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
-        helper::WriteAccessor< Data<sofa::helper::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
+        helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+        helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
         CPos point2, point1;
-        std::vector<sofa::helper::types::RGBAColor> colors;
+        std::vector<sofa::type::RGBAColor> colors;
 
         float vectorLength = p_vectorLength.getValue();
-        auto color = sofa::helper::types::RGBAColor::black();
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        auto color = sofa::type::RGBAColor::black();
+        std::vector<sofa::type::Vector3> vertices;
         for (unsigned int i =0; i<tetrahedronVectors.size(); i++)
         {
             Tetra t = tetrahedra[i];

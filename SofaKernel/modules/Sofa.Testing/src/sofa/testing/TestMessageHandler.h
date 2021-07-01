@@ -23,7 +23,7 @@
 
 #include <sofa/testing/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/logging/CountingMessageHandler.h>
 #include <sofa/helper/logging/LoggingMessageHandler.h>
 #include <sofa/helper/logging/MessageHandler.h>

@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <algorithm>
 #include <functional>
 #include <queue>
@@ -102,7 +102,7 @@ void Distances< DataTypes >::init()
         helper::WriteAccessor< Data< VecCoord > > xto = *target->write(core::VecCoordId::position());
         helper::WriteAccessor< Data< VecCoord > > xto0 = *target->write(core::VecCoordId::restPosition());
         const Coord& offSet = offset.getValue();
-        const defaulttype::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
+        const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
         for ( unsigned int i = 0; i < size; i++)
         {
             Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
@@ -151,7 +151,7 @@ void Distances< DataTypes >::doUpdate()
 template<class DataTypes>
 void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const double& distMax )
 {
-    helper::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
+    type::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
     findCorrespondingHexas ( hfrom, beginElts );
 
     std::string filename=fileDistance.getValue();
@@ -240,7 +240,7 @@ void Distances< DataTypes >::addElt ( const Coord& elt, VecCoord beginElts, cons
     }
     else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC )
     {
-        helper::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
+        type::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
         findCorrespondingHexas ( hfrom, tmpvcoord );
         computeHarmonicCoords ( mapIndex, hfrom, false );
     }
@@ -254,7 +254,7 @@ void Distances< DataTypes >::addElt ( const Coord& elt, VecCoord beginElts, cons
     }
     else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS )
     {
-        helper::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
+        type::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
         findCorrespondingHexas ( hfrom, tmpvcoord );
         computeHarmonicCoords ( mapIndex, hfrom, true );
     }
@@ -277,7 +277,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
     queue<Distance> hexasBeingParsed;
     std::set<core::topology::BaseMeshTopology::HexaID> hexasParsed;
     Distance hexaCoord;
-    defaulttype::Vector3 baryC;
+    type::Vector3 baryC;
     const Coord& offSet = offset.getValue();
 
     // Get the hexas corresponding to the position 'point'
@@ -333,14 +333,14 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
 
 
 template<class DataTypes>
-void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapIndex, const helper::vector<core::topology::BaseMeshTopology::HexaID>& hfrom, const bool& useStiffnessMap )
+void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapIndex, const type::vector<core::topology::BaseMeshTopology::HexaID>& hfrom, const bool& useStiffnessMap )
 {
     // Init the distance Map. TODO: init the distance map between each elt before diffusing
-    helper::vector<double>& dMIndex = distanceMap[mapIndex];
+    type::vector<double>& dMIndex = distanceMap[mapIndex];
     dMIndex.clear();
     dMIndex.resize ( hexaContainer->getNumberOfHexahedra() );
 
-    const sofa::helper::vector<sofa::core::topology::BaseMeshTopology::HexaID>& iirg = hexaContainer->idxInRegularGrid.getValue();
+    const sofa::type::vector<sofa::core::topology::BaseMeshTopology::HexaID>& iirg = hexaContainer->idxInRegularGrid.getValue();
     const std::map<unsigned int, unsigned int>& zones = zonesFramePair.getValue();
 
     for ( unsigned int j = 0; j < hexaContainer->getNumberOfHexahedra(); j++ )
@@ -357,14 +357,14 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
             dMIndex[j] = harmonicMaxValue.getValue()/2.0;
     }
 
-    for ( helper::vector<core::topology::BaseMeshTopology::HexaID>::const_iterator it = hfrom.begin(); it != hfrom.end(); it++ )
+    for ( type::vector<core::topology::BaseMeshTopology::HexaID>::const_iterator it = hfrom.begin(); it != hfrom.end(); it++ )
         dMIndex[*it] = harmonicMaxValue.getValue();
 
     dMIndex[hfrom[mapIndex]] = 0.0;
 
     msg_info() << "Compute distance map.";
 
-    sofa::defaulttype::Vec3i res = hexaContainer->resolution.getValue();
+    sofa::type::Vec3i res = hexaContainer->resolution.getValue();
     bool convergence = false;
 
     double*** distMap = new double** [res[0]];
@@ -382,7 +382,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
         }
     }
 
-    const defaulttype::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
+    const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
     for ( unsigned int i = 0; i < dMIndex.size(); i++ )
     {
         Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
@@ -518,7 +518,7 @@ void Distances< DataTypes >::computeVoronoiDistances( const unsigned int& /*mapI
 template<class DataTypes>
 void Distances< DataTypes >::getDistances ( VVD& distances, VecVecCoord& gradients, const VecCoord& goals )
 {
-    helper::vector<core::topology::BaseMeshTopology::HexaID> hgoal;
+    type::vector<core::topology::BaseMeshTopology::HexaID> hgoal;
     findCorrespondingHexas ( hgoal, goals );
 
     distances.clear();
@@ -529,7 +529,7 @@ void Distances< DataTypes >::getDistances ( VVD& distances, VecVecCoord& gradien
     for ( unsigned int i = 0; i < distanceMap.size(); i++ )
     {
         // Compute Harmonic Coords
-        helper::vector<double>& dists = distances[i];
+        type::vector<double>& dists = distances[i];
         VecCoord& grads = gradients[i];
         computeGradients ( i, dists, grads, hgoal, goals );
     }
@@ -537,7 +537,7 @@ void Distances< DataTypes >::getDistances ( VVD& distances, VecVecCoord& gradien
 
 
 template<class DataTypes>
-void Distances< DataTypes >::addContribution ( double& valueWrite, int& nbTest, const helper::vector<double>& valueRead, const unsigned int& gridID, const int coeff )
+void Distances< DataTypes >::addContribution ( double& valueWrite, int& nbTest, const type::vector<double>& valueRead, const unsigned int& gridID, const int coeff )
 {
     bool existing;
     core::topology::BaseMeshTopology::HexaID hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID, existing );
@@ -570,11 +570,11 @@ void Distances< DataTypes >::addContribution ( double& valueWrite, int& nbTest, 
 
 
 template<class DataTypes>
-void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, helper::vector<double>& distances, VecCoord& gradients, const helper::vector<core::topology::BaseMeshTopology::HexaID>& hexaGoal, const VecCoord& goals )
+void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, type::vector<double>& distances, VecCoord& gradients, const type::vector<core::topology::BaseMeshTopology::HexaID>& hexaGoal, const VecCoord& goals )
 {
     // Store the distance and compute gradient for each goal.
-    sofa::defaulttype::Vec3i res = hexaContainer->resolution.getValue();
-    const defaulttype::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
+    sofa::type::Vec3i res = hexaContainer->resolution.getValue();
+    const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
     for ( unsigned int i = 0; i < hexaGoal.size(); i++ )
     {
         const core::topology::BaseMeshTopology::HexaID& hID = hexaGoal[i];
@@ -657,7 +657,7 @@ void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, hel
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::findCorrespondingHexas ( helper::vector<core::topology::BaseMeshTopology::HexaID>& hexas, const VecCoord& pointSet )
+void Distances< DataTypes >::findCorrespondingHexas ( type::vector<core::topology::BaseMeshTopology::HexaID>& hexas, const VecCoord& pointSet )
 {
     for ( unsigned int i = 0; i < pointSet.size(); i++ )
     {
@@ -672,8 +672,8 @@ void Distances< DataTypes >::findCorrespondingHexas ( helper::vector<core::topol
 template<class DataTypes>
 void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& point )
 {
-    const sofa::defaulttype::Vec3i& res = hexaContainer->resolution.getValue();
-    const defaulttype::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
+    const sofa::type::Vec3i& res = hexaContainer->resolution.getValue();
+    const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
 
     int x = int ( ( point[0] - offset.getValue()[0]) / voxelSize[0]);
     int y = int ( ( point[1] - offset.getValue()[1]) / voxelSize[1]);
@@ -701,13 +701,13 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
     // Display the distance on each hexa of the grid
     if ( showDistanceMap.getValue() )
     {
-        sofa::helper::types::RGBAColor color(1.0f, 0.0f, 0.3f, 1.0f);
+        sofa::type::RGBAColor color(1.0f, 0.0f, 0.3f, 1.0f);
 
-        const helper::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
+        const type::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
         for ( unsigned int j = 0; j < distMap.size(); j++ )
         {
             Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );
-            sofa::defaulttype::Vector3 tmpPt = sofa::defaulttype::Vector3 ( point[0], point[1], point[2] );
+            sofa::type::Vector3 tmpPt = sofa::type::Vector3 ( point[0], point[1], point[2] );
             std::ostringstream oss;
             oss << (distMap[j]);
             vparams->drawTool()->draw3DText(tmpPt, showTextScaleFactor.getValue(), color, oss.str().c_str());

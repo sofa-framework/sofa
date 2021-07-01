@@ -4,7 +4,7 @@
 #include "../shapeFunction/BaseShapeFunction.h"
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 
 
@@ -45,8 +45,8 @@ public:
     LinkVisual l_visualModel;
 
     // Typedefs
-    typedef defaulttype::Vec4u Indices;
-    typedef defaulttype::Vector4 Weights;
+    typedef type::Vec4u Indices;
+    typedef type::Vector4 Weights;
 
 
 
@@ -58,9 +58,9 @@ public:
 protected:
 
     // Indices
-    Data< helper::vector< Indices > > d_indices; ///< Indices
+    Data< type::vector< Indices > > d_indices; ///< Indices
     // Weights
-    Data< helper::vector< Weights > > d_weights; ///< Weights
+    Data< type::vector< Weights > > d_weights; ///< Weights
 
 };
 

@@ -55,7 +55,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this LineInfo.
      */
-    bool validate(const Index edge_index, const defaulttype::Vector3& PQ) override;
+    bool validate(const Index edge_index, const type::Vector3& PQ) override;
 
     /**
      * @brief Output stream.
@@ -82,10 +82,10 @@ public:
 protected:
 
 
-    sofa::defaulttype::Vector3 m_nMean; ///<
-    sofa::defaulttype::Vector3 m_triangleRight; ///<
-    sofa::defaulttype::Vector3 m_triangleLeft; ///<
-    sofa::defaulttype::Vector3 m_lineVector; ///<
+    sofa::type::Vector3 m_nMean; ///<
+    sofa::type::Vector3 m_triangleRight; ///<
+    sofa::type::Vector3 m_triangleLeft; ///<
+    sofa::type::Vector3 m_lineVector; ///<
     double	m_computedRightAngleCone; ///<
     double	m_computedLeftAngleCone; ///<
     bool	m_twoTrianglesAroundEdge; ///<
@@ -123,27 +123,27 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ);
+    bool validPoint(const int pointIndex, const type::Vector3 &PQ);
 
 
 
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/);
+    bool validLine(const int /*lineIndex*/, const type::Vector3 &/*PQ*/);
 
     //@}
 
     /**
      * @brief New Points creations callback.
      */
-    class PointInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >
+    class PointInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<PointInfo> >
     {
     public:
-        PointInfoHandler(LineLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
+        PointInfoHandler(LineLocalMinDistanceFilter* _f, topology::PointData<type::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<PointInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(Index pointIndex, PointInfo& m, const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
+        void applyCreateFunction(Index pointIndex, PointInfo& m, const sofa::type::vector< Index > &,
+                const sofa::type::vector< double > &);
     protected:
         LineLocalMinDistanceFilter* f;
     };
@@ -151,20 +151,20 @@ public:
     /**
      * @brief New Edges creations callback.
      */
-    class LineInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >
+    class LineInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<LineInfo> >
     {
     public:
-        LineInfoHandler(LineLocalMinDistanceFilter* _f, topology::EdgeData<helper::vector<LineInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >(_data), f(_f) {}
+        LineInfoHandler(LineLocalMinDistanceFilter* _f, topology::EdgeData<type::vector<LineInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<LineInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(Index edgeIndex, LineInfo& m, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
+        void applyCreateFunction(Index edgeIndex, LineInfo& m, const core::topology::BaseMeshTopology::Edge&, const sofa::type::vector< Index > &,
+                const sofa::type::vector< double > &);
     protected:
         LineLocalMinDistanceFilter* f;
     };
 
 private:
-    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
-    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo; ///< line filter data
+    topology::PointData< sofa::type::vector<PointInfo> > m_pointInfo; ///< point filter data
+    topology::EdgeData< sofa::type::vector<LineInfo> > m_lineInfo; ///< line filter data
 
     PointInfoHandler* pointInfoHandler;
     LineInfoHandler* lineInfoHandler;

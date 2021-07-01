@@ -51,9 +51,9 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > f_L1;
-    Data<helper::vector<Real> > f_L2;
-    Data<helper::vector<Real> > f_lambdaL; ///< stretch above which behavior becomes linear
+    Data<type::vector<Real> > f_L1;
+    Data<type::vector<Real> > f_L2;
+    Data<type::vector<Real> > f_lambdaL; ///< stretch above which behavior becomes linear
     //@}
 
     virtual void reinit() override
@@ -74,9 +74,9 @@ public:
 protected:
     TendonMaterialForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_L1(initData(&f_L1,helper::vector<Real>((int)1,(Real)2.7E6),"L1",""))
-        , f_L2(initData(&f_L2,helper::vector<Real>((int)1,(Real)46.4),"L2",""))
-        , f_lambdaL(initData(&f_lambdaL,helper::vector<Real>((int)1,(Real)1.03),"lambdaL","stretch above which behavior becomes linear"))
+        , f_L1(initData(&f_L1,type::vector<Real>((int)1,(Real)2.7E6),"L1",""))
+        , f_L2(initData(&f_L2,type::vector<Real>((int)1,(Real)46.4),"L2",""))
+        , f_lambdaL(initData(&f_lambdaL,type::vector<Real>((int)1,(Real)1.03),"lambdaL","stretch above which behavior becomes linear"))
     {
     }
 
