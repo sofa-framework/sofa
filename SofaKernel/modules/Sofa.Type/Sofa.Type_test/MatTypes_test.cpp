@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <iostream>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/testing/NumericTest.h>
 #include <sofa/helper/logging/Messaging.h>
 
@@ -29,6 +29,7 @@ using namespace sofa::testing ;
 
 
 using namespace sofa;
+using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
@@ -46,7 +47,7 @@ TEST(MatTypesTest, transformInverse)
     test_transformInverse(Matrix4::s_identity);
     test_transformInverse(Matrix4::transformTranslation(Vector3(1.,2.,3.)));
     test_transformInverse(Matrix4::transformScale(Vector3(1.,2.,3.)));
-    test_transformInverse(Matrix4::transformRotation(Quat::fromEuler(M_PI_4,M_PI_2,M_PI/3.)));
+    test_transformInverse(Matrix4::transformRotation(Quat<SReal>::fromEuler(M_PI_4,M_PI_2,M_PI/3.)));
 }
 
 TEST(MatTypesTest, setsub_vec)
@@ -117,7 +118,7 @@ TEST(MatTypesTest, invert)
     Matrix2 Mtest(Matrix2::Line(0.6,-0.7),
                   Matrix2::Line(-0.2,0.4));
 
-    defaulttype::invertMatrix(Minv, M);
+    type::invertMatrix(Minv, M);
     EXPECT_EQ(Minv, Mtest);
 
     EXPECT_EQ(M.inverted(), Mtest);

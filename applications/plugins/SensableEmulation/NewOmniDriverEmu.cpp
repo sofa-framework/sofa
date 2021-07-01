@@ -24,7 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 //
 ////force feedback
 #include <SofaHaptics/ForceFeedback.h>
@@ -124,7 +124,7 @@ void *hapticSimuExecute( void *ptr )
     // construct the "trajectory"
     NewOmniDriverEmu::VecCoord pts = omniDrv->trajPts.getValue();
     unsigned int numPts = pts.size();
-    helper::vector<double> tmg = omniDrv->trajTim.getValue();
+    type::vector<double> tmg = omniDrv->trajTim.getValue();
     unsigned int numSegs = tmg.size();
     double stepTime = 1.0/omniDrv->simuFreq.getValue();
 
@@ -134,7 +134,7 @@ void *hapticSimuExecute( void *ptr )
         return(0);
     }
     NewOmniDriverEmu::VecCoord stepDiff;
-    helper::vector<int> stepNum;
+    type::vector<int> stepNum;
 
     unsigned int seg = 0;
     for (unsigned int np = 0; np < numPts; np++)
@@ -155,7 +155,7 @@ void *hapticSimuExecute( void *ptr )
             cout << "N lin = " << n << endl;
             stepNum.push_back(n);
             Vec3d dx = (pts[np+1].getCenter() - pts[np].getCenter())/double(n);
-            helper::Quater<double> dor;  ///TODO difference for rotations!!!
+            type::Quat<double> dor;  ///TODO difference for rotations!!!
             NewOmniDriverEmu::Coord crd(dx, dor);
             cout << "adding " << crd << endl;
             stepDiff.push_back(crd);
@@ -178,8 +178,8 @@ void *hapticSimuExecute( void *ptr )
     unsigned int actSeg = 0;
     unsigned int actStep = 0;
 
-    sofa::helper::Quater<double> actualRot;
-    sofa::defaulttype::Vec3d actualPos = pts[0].getCenter();
+    sofa::type::Quat<double> actualRot;
+    sofa::type::Vec3d actualPos = pts[0].getCenter();
 
     cout << "numSegs = " << numSegs << endl;
     cout << "numSegs = " << numSegs << endl;
@@ -314,7 +314,7 @@ void NewOmniDriverEmu::reinitVisual()
         delete(visu_base);
         visu_base = new sofa::component::visualmodel::OglModel();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-        visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_base->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
         visu_base->initVisual();
@@ -331,7 +331,7 @@ void NewOmniDriverEmu::reinitVisual()
         delete(visu_end);
         visu_end = new sofa::component::visualmodel::OglModel();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
-        visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_end->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
         visu_end->initVisual();
@@ -374,7 +374,7 @@ void NewOmniDriverEmu::draw()
             //serr<<"create visual model for NewOmniDriver base"<<sendl;
             visu_base = new sofa::component::visualmodel::OglModel();
             visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-            visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+            visu_base->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
             visu_base->init();
             visu_base->initVisual();
             visu_base->updateVisual();
@@ -389,7 +389,7 @@ void NewOmniDriverEmu::draw()
             //serr<<"create visual model for NewOmniDriver end"<<sendl;
             visu_end = new sofa::component::visualmodel::OglModel();
             visu_end->fileMesh.setValue("mesh/stylus.obj");
-            visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+            visu_end->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
             visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
             visu_end->init();
             visu_end->initVisual();

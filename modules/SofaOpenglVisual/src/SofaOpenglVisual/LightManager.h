@@ -26,8 +26,8 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <SofaOpenglVisual/Light.h>
 #include <sofa/core/visual/VisualManager.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/RGBAColor.h>
 
 #include <SofaOpenglVisual/OglShadowShader.h>
 
@@ -54,12 +54,12 @@ public:
 
 private:
     std::vector<Light::SPtr>          m_lights;
-    std::vector<defaulttype::Mat4x4f> m_lightModelViewMatrix;
-    std::vector<defaulttype::Mat4x4f> m_lightProjectionMatrix;
+    std::vector<type::Mat4x4f> m_lightModelViewMatrix;
+    std::vector<type::Mat4x4f> m_lightProjectionMatrix;
     std::vector<unsigned short>       m_mapShadowTextureUnit;
 
     //OglShadowShader* shadowShader;
-    helper::vector<OglShadowShader::SPtr> m_shadowShaders;
+    type::vector<OglShadowShader::SPtr> m_shadowShaders;
     void makeShadowMatrix(unsigned int i);
 
 public:
@@ -68,7 +68,7 @@ public:
     //TODO(dmarchal): sofa guidelines.
     Data<bool>                  d_shadowsEnabled; ///< Enable Shadow in the scene. (default=0)
     Data<bool>                  d_softShadowsEnabled; ///< If Shadows enabled, Enable Variance Soft Shadow in the scene. (default=0)
-    Data<sofa::helper::types::RGBAColor>  d_ambient; ///< Ambient lights contribution (Vec4f)(default=[0.0f,0.0f,0.0f,0.0f])
+    Data<sofa::type::RGBAColor>  d_ambient; ///< Ambient lights contribution (Vec4f)(default=[0.0f,0.0f,0.0f,0.0f])
     Data<bool>                  d_drawIsEnabled; ///< enable/disable drawing of lights shadow textures. (default=false)
 
 protected:

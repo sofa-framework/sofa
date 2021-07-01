@@ -24,9 +24,9 @@
 
 #include <sofa/helper/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <string>
 //#include <sofa/helper/OptionsGroup.h>
 
@@ -41,9 +41,9 @@ class SOFA_HELPER_API ColorMap
 {
 public:
 
-    typedef defaulttype::Vec3f Color3;  // Color tripplet
-    typedef defaulttype::Vec4f Color;   // ... with alpha value
-    typedef sofa::helper::vector<Color> VecColor;
+    typedef type::Vec3f Color3;  // Color tripplet
+    typedef type::Vec4f Color;   // ... with alpha value
+    typedef sofa::type::vector<Color> VecColor;
     
     ColorMap(unsigned int paletteSize = 256, const std::string& colorScheme = "HSV");
     virtual ~ColorMap();

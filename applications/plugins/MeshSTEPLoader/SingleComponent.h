@@ -26,7 +26,7 @@
 #include <vector>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -71,17 +71,17 @@ protected:
     void loadMesh();
 
 public:
-    Data<helper::vector<sofa::defaulttype::Vector3> > _positionsI; ///< input: vertices position of whole mesh
-    Data<helper::vector<sofa::defaulttype::Vector3> > _positionsO; ///< output: vertices position of the component
-    Data<helper::vector<helper::fixed_array <unsigned int,2> > > _edgesI; ///< input: edges of whole mesh
-    Data<helper::vector<helper::fixed_array <unsigned int,2> > > _edgesO; ///< output: edges of the component
-    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _trianglesI; ///< input: triangles of whole mesh
-    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _trianglesO; ///< output: triangles of the component
-    Data<helper::vector<sofa::defaulttype::Vector3> > _normalsI; ///< input: normals of the whole mesh
-    Data<helper::vector<sofa::defaulttype::Vector3> > _normalsO; ///< output: normals of the component
-    Data<helper::vector<sofa::defaulttype::Vector2> > _uvI; ///< input: UV coordinates of the whole mesh
-    Data<helper::vector<sofa::defaulttype::Vector2> > _uvO; ///< output: UV coordinates of the component
-    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _indicesComponents; ///< Shape # | number of nodes | number of triangles
+    Data<type::vector<sofa::type::Vector3> > _positionsI; ///< input: vertices position of whole mesh
+    Data<type::vector<sofa::type::Vector3> > _positionsO; ///< output: vertices position of the component
+    Data<type::vector<type::fixed_array <unsigned int,2> > > _edgesI; ///< input: edges of whole mesh
+    Data<type::vector<type::fixed_array <unsigned int,2> > > _edgesO; ///< output: edges of the component
+    Data<type::vector<type::fixed_array <unsigned int,3> > > _trianglesI; ///< input: triangles of whole mesh
+    Data<type::vector<type::fixed_array <unsigned int,3> > > _trianglesO; ///< output: triangles of the component
+    Data<type::vector<sofa::type::Vector3> > _normalsI; ///< input: normals of the whole mesh
+    Data<type::vector<sofa::type::Vector3> > _normalsO; ///< output: normals of the component
+    Data<type::vector<sofa::type::Vector2> > _uvI; ///< input: UV coordinates of the whole mesh
+    Data<type::vector<sofa::type::Vector2> > _uvO; ///< output: UV coordinates of the component
+    Data<type::vector<type::fixed_array <unsigned int,3> > > _indicesComponents; ///< Shape # | number of nodes | number of triangles
     Data<int> _numberShape; ///< Shape number to be loaded (see Outputs tab of STEPLoader for a description of the shapes)
 };
 

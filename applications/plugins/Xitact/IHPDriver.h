@@ -29,7 +29,7 @@
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include "XiTrocarInterface.h"
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <SofaHaptics/MechanicalStateForceFeedback.h>

@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include "DataWidget.h"
-#include <sofa/helper/types/Material.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Material.h>
+#include <sofa/type/Vec.h>
 
 #include <QColorDialog>
 #include <QPainter>
@@ -46,7 +46,7 @@ namespace sofa::gui::qt::materialdatawidget_h
 {
 
 using sofa::gui::qt::QRGBAColorPicker ;
-using sofa::helper::types::Material ;
+using sofa::type::Material ;
 using sofa::core::objectmodel::Data ;
 
 class MaterialDataWidget : public TDataWidget<Material>
@@ -80,15 +80,15 @@ protected:
 };
 
 
-typedef helper::vector<Material> VectorMaterial;
+typedef type::vector<Material> VectorMaterial;
 class VectorMaterialDataWidget : public TDataWidget< VectorMaterial >
 {
     Q_OBJECT
 public:
     VectorMaterialDataWidget(QWidget* parent,
                              const char* name,
-                             Data< helper::vector<Material> >* data):
-        TDataWidget< helper::vector<Material> >(parent,name,data),
+                             Data< type::vector<Material> >* data):
+        TDataWidget< type::vector<Material> >(parent,name,data),
         _materialDataWidget(nullptr),
         _currentMaterial(0,data->isDisplayed(),data->isReadOnly()),
         _comboBox(nullptr)

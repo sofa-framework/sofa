@@ -106,7 +106,7 @@ void LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addForc
 
         bool finished = false;
 
-        typename helper::vector< Real >::const_iterator it_t = m->d_keyTimes.getValue().begin();
+        typename type::vector< Real >::const_iterator it_t = m->d_keyTimes.getValue().begin();
         typename VecDeriv::const_iterator it_f = m->d_keyForces.getValue().begin();
 
         // WARNING : we consider that the key-events are in chronological order

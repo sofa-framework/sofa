@@ -27,7 +27,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 #include <iomanip>
 
@@ -60,8 +60,8 @@ EvalPointsDistance<DataTypes>::EvalPointsDistance()
 
     mstate1.setPath("@./"); // default path: state in the same node
     mstate2.setPath("@./"); // default path: state in the same node
-    box1 = sofa::defaulttype::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
-    box2 = sofa::defaulttype::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+    box1 = sofa::type::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+    box2 = sofa::type::BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 }
 
 template<class DataTypes>
@@ -172,7 +172,7 @@ SReal EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& 
     const Vec3 minBox = box1.minBBox();
     const Vec3 maxBox = box1.maxBBox();
     Real meanRefSize = (Real)((maxBox[0]-minBox[0])+(maxBox[1]-minBox[1])+(maxBox[2]-minBox[2]))/3.0f;
-    helper::vector<Real> &distances = *dist.beginEdit();
+    type::vector<Real> &distances = *dist.beginEdit();
     distances.resize(n);
     for (int i=0; i<n; ++i)
     {
@@ -238,13 +238,13 @@ void EvalPointsDistance<DataTypes>::doDraw(const core::visual::VisualParams* vpa
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
-    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
+    std::vector<sofa::type::Vector3> vertices;
+    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     for (int i=0; i<n; ++i)
     {
-        sofa::defaulttype::Vector3 v0(x1[s1+i][0],x1[s1+i][1],x1[s1+i][2]);
-        sofa::defaulttype::Vector3 v1(x2[s2+i][0],x2[s2+i][1],x2[s2+i][2]);
+        sofa::type::Vector3 v0(x1[s1+i][0],x1[s1+i][1],x1[s1+i][2]);
+        sofa::type::Vector3 v1(x2[s2+i][0],x2[s2+i][1],x2[s2+i][2]);
         vertices.push_back(v0);
         vertices.push_back(v1);
     }

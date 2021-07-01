@@ -42,7 +42,7 @@ template <class In, class Out>
 typename BarycentricMapperQuadSetTopology<In, Out>::Index  
 BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad ( const Index quadIndex, const SReal* baryCoords )
 {
-    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
     MappingData& data = *vectorData.rbegin();
     d_map.endEdit();
@@ -62,7 +62,7 @@ BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad ( const typename Out
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     const typename In::Coord pB = ( *points ) [elem[3]] - p0;
     typename In::Coord pos = Out::getCPos(p) - p0;
-    sofa::defaulttype::Mat<3,3,typename In::Real> m,mt,base;
+    sofa::type::Mat<3,3,typename In::Real> m,mt,base;
     m[0] = pA;
     m[1] = pB;
     m[2] = cross ( pA, pB );
@@ -76,21 +76,21 @@ BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad ( const typename Out
 }
 
 template <class In, class Out>
-helper::vector<Quad> BarycentricMapperQuadSetTopology<In,Out>::getElements()
+type::vector<Quad> BarycentricMapperQuadSetTopology<In,Out>::getElements()
 {
     return this->m_fromTopology->getQuads();
 }
 
 template <class In, class Out>
-helper::vector<SReal> BarycentricMapperQuadSetTopology<In,Out>::getBaryCoef(const Real* f)
+type::vector<SReal> BarycentricMapperQuadSetTopology<In,Out>::getBaryCoef(const Real* f)
 {
     return getBaryCoef(f[0],f[1]);
 }
 
 template <class In, class Out>
-helper::vector<SReal> BarycentricMapperQuadSetTopology<In,Out>::getBaryCoef(const Real fx, const Real fy)
+type::vector<SReal> BarycentricMapperQuadSetTopology<In,Out>::getBaryCoef(const Real fx, const Real fy)
 {
-    helper::vector<SReal> quadCoef{(1-fx)*(1-fy),
+    type::vector<SReal> quadCoef{(1-fx)*(1-fy),
                 (fx)*(1-fy),
                 (fx)*(fy),
                 (1 - fx)*(fy)};

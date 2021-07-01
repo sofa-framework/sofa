@@ -24,9 +24,9 @@
 
 #include <Flexible/config.h>
 #include <sofa/core/Multi2Mapping.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include <sofa/simulation/Simulation.h>
 
@@ -137,10 +137,10 @@ public:
 
     /** @name  Coord types    */
     //@{
-    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
-    typedef helper::vector<Coord> VecCoord;
-    typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local liner transformation from material space to world space
-    typedef helper::vector<MaterialToSpatial> VMaterialToSpatial;
+    typedef type::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef type::vector<Coord> VecCoord;
+    typedef type::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local liner transformation from material space to world space
+    typedef type::vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
     //@}
@@ -148,9 +148,9 @@ public:
     /** @name  Jacobian types    */
     //@{
     typedef JacobianBlockType1 BlockType1;
-    typedef helper::vector<helper::vector<BlockType1> >  SparseMatrix1;
+    typedef type::vector<type::vector<BlockType1> >  SparseMatrix1;
     typedef JacobianBlockType2 BlockType2;
-    typedef helper::vector<helper::vector<BlockType2> >  SparseMatrix2;
+    typedef type::vector<type::vector<BlockType2> >  SparseMatrix2;
 
     typedef typename BlockType1::MatBlock  MatBlock1;  ///< Jacobian block matrix
     typedef linearsolver::EigenSparseMatrix<In1,Out>    SparseMatrixEigen1;
@@ -167,7 +167,7 @@ public:
 
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0) override; /// resizing given custom positions and weights
+    virtual void resizeOut(const type::vector<Coord>& position0, type::vector<type::vector<unsigned int> > index,type::vector<type::vector<Real> > w, type::vector<type::vector<type::Vec<spatial_dimensions,Real> > > dw, type::vector<type::vector<type::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, type::vector<type::Mat<spatial_dimensions,spatial_dimensions,Real> > F0) override; /// resizing given custom positions and weights
 
     /** @name Mapping functions */
     //@{
@@ -179,31 +179,31 @@ public:
     using Inherit::applyJT;
 
     void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord1>& dIn1, const Data<InVecCoord2>& dIn2);
-    virtual void apply(const core::MechanicalParams* mparams,const helper::vector<Data<OutVecCoord>*>& dOut, const helper::vector<const Data<InVecCoord1>*>& dIn1, const helper::vector<const Data<InVecCoord2>*>& dIn2) override
+    virtual void apply(const core::MechanicalParams* mparams,const type::vector<Data<OutVecCoord>*>& dOut, const type::vector<const Data<InVecCoord1>*>& dIn1, const type::vector<const Data<InVecCoord2>*>& dIn2) override
     {
         apply(mparams,*dOut[0],*dIn1[0],*dIn2[0]);
     }
     void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv1>& dIn1, const Data<InVecDeriv2>& dIn2);
-    virtual void applyJ(const core::MechanicalParams* mparams , const helper::vector<Data<OutVecDeriv>*>& dOut, const helper::vector<const Data<InVecDeriv1>*>& dIn1, const helper::vector<const Data<InVecDeriv2>*>& dIn2) override
+    virtual void applyJ(const core::MechanicalParams* mparams , const type::vector<Data<OutVecDeriv>*>& dOut, const type::vector<const Data<InVecDeriv1>*>& dIn1, const type::vector<const Data<InVecDeriv2>*>& dIn2) override
     {
         if(this->isMechanical())
             applyJ(mparams,*dOut[0],*dIn1[0],*dIn2[0]);
     }
     void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv1>& dIn1, Data<InVecDeriv2>& dIn2, const Data<OutVecDeriv>& dOut);
-    virtual void applyJT(const core::MechanicalParams* mparams , const helper::vector<Data<InVecDeriv1>*>& dIn1,  const helper::vector<Data<InVecDeriv2>*>& dIn2, const helper::vector<const Data<OutVecDeriv>*>& dOut) override
+    virtual void applyJT(const core::MechanicalParams* mparams , const type::vector<Data<InVecDeriv1>*>& dIn1,  const type::vector<Data<InVecDeriv2>*>& dIn2, const type::vector<const Data<OutVecDeriv>*>& dOut) override
     {
         if(this->isMechanical())
             applyJT(mparams,*dIn1[0],*dIn2[0],*dOut[0]);
     }
     void applyJT(const core::ConstraintParams * /*cparams*/ , Data<InMatrixDeriv1>& /*out1*/, Data<InMatrixDeriv2>& /*out2*/,  const Data<OutMatrixDeriv>& /*in*/);
-    virtual void applyJT(const core::ConstraintParams* cparams ,const helper::vector<Data<InMatrixDeriv1>*>& dIn1,const  helper::vector<Data<InMatrixDeriv2>*>& dIn2, const helper::vector<const Data<OutMatrixDeriv>*>& dOut) override
+    virtual void applyJT(const core::ConstraintParams* cparams ,const type::vector<Data<InMatrixDeriv1>*>& dIn1,const  type::vector<Data<InMatrixDeriv2>*>& dIn2, const type::vector<const Data<OutMatrixDeriv>*>& dOut) override
     {
         if(this->isMechanical())
             applyJT(cparams,*dIn1[0],*dIn2[0],*dOut[0]);
     }
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId ) override;
 
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
 
@@ -240,7 +240,7 @@ public:
     Data<VecVGradient >   f_dw; ///< weight gradients
     Data<VecVHessian >    f_ddw; ///< weight Hessians
     Data<VMaterialToSpatial>    f_F0;   ///< initial value of deformation gradients
-    Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
+    Data< type::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
     Data<bool> assemble; ///< Assemble the matrices (Jacobian/Geometric Stiffness) or use optimized Jacobian/vector multiplications
@@ -282,13 +282,13 @@ protected:
     void updateJ1();
     SparseMatrixEigen2 eigenJacobian2/*, maskedEigenJacobian2*/;  ///< Assembled Jacobian matrix
     void updateJ2();
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
-    const helper::vector<component::visualmodel::VisualModelImpl::VisualTriangle> *extTriangles;
-    const helper::vector<component::visualmodel::VisualModelImpl::visual_index_type> *extvertPosIdx;
+    const type::vector<component::visualmodel::VisualModelImpl::VisualTriangle> *extTriangles;
+    const type::vector<component::visualmodel::VisualModelImpl::visual_index_type> *extvertPosIdx;
     Data< float > showDeformationGradientScale; ///< Scale for deformation gradient display
     Data< helper::OptionsGroup > showDeformationGradientStyle; ///< Visualization style for deformation gradients
     Data< helper::OptionsGroup > showColorOnTopology; ///< Color mapping method

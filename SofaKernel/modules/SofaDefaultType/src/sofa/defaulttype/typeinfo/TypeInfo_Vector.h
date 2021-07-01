@@ -21,41 +21,41 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/typeinfo/models/VectorTypeInfo.h>
 
 namespace sofa::defaulttype
 {
 
 template<class T, class Alloc>
-struct DataTypeInfo< sofa::helper::vector<T,Alloc> > : public VectorTypeInfo<sofa::helper::vector<T,Alloc> >
+struct DataTypeInfo< sofa::type::vector<T,Alloc> > : public VectorTypeInfo<sofa::type::vector<T,Alloc> >
 {
 };
 
 // vector<bool> is a bitset, cannot get a pointer to the values
 template<class Alloc>
-struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<sofa::helper::vector<bool,Alloc> >
+struct DataTypeInfo< sofa::type::vector<bool,Alloc> > : public VectorTypeInfo<sofa::type::vector<bool,Alloc> >
 {
     enum { SimpleLayout = 0 };
-    static const void* getValuePtr(const sofa::helper::vector<bool,Alloc>& /*data*/) { return nullptr; }
-    static void* getValuePtr(sofa::helper::vector<bool,Alloc>& /*data*/) { return nullptr; }
+    static const void* getValuePtr(const sofa::type::vector<bool,Alloc>& /*data*/) { return nullptr; }
+    static void* getValuePtr(sofa::type::vector<bool,Alloc>& /*data*/) { return nullptr; }
 };
 
 // Cannot use default impl of VectorTypeInfo for non-fixed size BaseTypes
 template<class Alloc>
-struct DataTypeInfo< sofa::helper::vector<std::string,Alloc> > : public VectorTypeInfo<sofa::helper::vector<std::string,Alloc> >
+struct DataTypeInfo< sofa::type::vector<std::string,Alloc> > : public VectorTypeInfo<sofa::type::vector<std::string,Alloc> >
 {
     // BaseType size is not fixed. Returning 1
     static sofa::Size size() { return 1; }
 
     // Total number of elements in the vector
-    static sofa::Size size(const sofa::helper::vector<std::string,Alloc>& data) { return sofa::Size(data.size()); }
+    static sofa::Size size(const sofa::type::vector<std::string,Alloc>& data) { return sofa::Size(data.size()); }
 
     // Resizes the vector
-    static bool setSize(sofa::helper::vector<std::string,Alloc>& data, sofa::Size size) { data.resize(size); return true; }
+    static bool setSize(sofa::type::vector<std::string,Alloc>& data, sofa::Size size) { data.resize(size); return true; }
 
     // Sets the value for element at index `index`
-    static void setValueString(sofa::helper::vector<std::string,Alloc>& data, sofa::Index index, const std::string& value)
+    static void setValueString(sofa::type::vector<std::string,Alloc>& data, sofa::Index index, const std::string& value)
     {
         if (data.size() <= index)
             data.resize(index + 1);
@@ -63,10 +63,10 @@ struct DataTypeInfo< sofa::helper::vector<std::string,Alloc> > : public VectorTy
     }
 
     // Gets the value for element at index `index`
-    static void getValueString(const sofa::helper::vector<std::string,Alloc>& data, sofa::Index index, std::string& value)
+    static void getValueString(const sofa::type::vector<std::string,Alloc>& data, sofa::Index index, std::string& value)
     {
         if (data.size() <= index)
-            msg_error("DataTypeInfo<helper::vector<std::string>") << "Index out of bounds for getValueString";
+            msg_error("DataTypeInfo<type::vector<std::string>") << "Index out of bounds for getValueString";
         else
             value = data[index];
     }

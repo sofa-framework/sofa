@@ -24,6 +24,7 @@
 
 namespace sofa::component::collision
 {
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
@@ -52,7 +53,7 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_ra
     A[0][1] = A[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -199,7 +200,7 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vecto
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -334,7 +335,7 @@ int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vect
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -414,7 +415,7 @@ void MeshIntTool::triangleBaryCoords(const Vector3& to_be_projected,const Vector
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     alpha = 0.5;
     beta = 0.5;

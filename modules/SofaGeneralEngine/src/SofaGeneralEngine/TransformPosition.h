@@ -24,13 +24,13 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/OptionsGroup.h>
 
@@ -51,11 +51,11 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef sofa::helper::vector<unsigned int> SetIndex;
-    typedef sofa::defaulttype::Vec<16,Real> Vec16;
-    typedef sofa::defaulttype::Vec<4,Real> Vec4;
-    typedef sofa::defaulttype::Mat<4,4,Real> Mat4x4;
-    typedef sofa::defaulttype::Mat<3,3,Real> Mat3x3;
+    typedef sofa::type::vector<unsigned int> SetIndex;
+    typedef sofa::type::Vec<16,Real> Vec16;
+    typedef sofa::type::Vec<4,Real> Vec4;
+    typedef sofa::type::Mat<4,4,Real> Mat4x4;
+    typedef sofa::type::Mat<3,3,Real> Mat3x3;
 
     typedef enum
     {

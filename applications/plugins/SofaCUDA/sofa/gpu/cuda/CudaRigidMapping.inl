@@ -35,8 +35,8 @@ namespace gpu
 namespace cuda
 {
 
-using sofa::defaulttype::Mat3x3f;
-using sofa::defaulttype::Vec3f;
+using sofa::type::Mat3x3f;
+using sofa::type::Vec3f;
 
 extern "C"
 {

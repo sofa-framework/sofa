@@ -48,9 +48,9 @@ DevMonitorManager::~DevMonitorManager()
 
 void DevMonitorManager::init()
 {
-    sofa::helper::vector<core::DevBaseMonitor*>::iterator it;
+    sofa::type::vector<core::DevBaseMonitor*>::iterator it;
 
-    getContext()->get<core::DevBaseMonitor, sofa::helper::vector<core::DevBaseMonitor*> >(&monitors, core::objectmodel::BaseContext::SearchDown);
+    getContext()->get<core::DevBaseMonitor, sofa::type::vector<core::DevBaseMonitor*> >(&monitors, core::objectmodel::BaseContext::SearchDown);
 
     //remove itself
     it = std::find(monitors.begin(), monitors.end(), this->toDevBaseMonitor());
@@ -66,7 +66,7 @@ void DevMonitorManager::init()
 
 void DevMonitorManager::eval()
 {
-    sofa::helper::vector<core::DevBaseMonitor*>::iterator it;
+    sofa::type::vector<core::DevBaseMonitor*>::iterator it;
     msg_info() << " Monitor Manager results :";
 
     for (it = monitors.begin() ; it != monitors.end() ; ++it)
@@ -78,7 +78,7 @@ void DevMonitorManager::eval()
         {
             DevTensionMonitor<RigidTypes>* tm = dynamic_cast<DevTensionMonitor<RigidTypes>*>(*it);
 
-            sofa::helper::vector<std::pair<Vector1, SReal> > d = tm->getData();
+            sofa::type::vector<std::pair<type::Vector1, SReal> > d = tm->getData();
             for (unsigned int i=0 ; i<d.size() ; i++)
                 msg_info() << "Tension is " << d[i].first << " at " << d[i].second;
         }

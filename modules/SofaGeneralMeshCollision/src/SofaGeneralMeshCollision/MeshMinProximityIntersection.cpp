@@ -29,6 +29,7 @@
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
@@ -95,7 +96,7 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
     b[0] = AB*AC;
     b[1] = -CD*AC;
 
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -129,7 +130,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     A[0][1] = A[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -219,7 +220,7 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -252,7 +253,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     b[0] = AP*AB;
     b[1] = AP*AC;
 
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;

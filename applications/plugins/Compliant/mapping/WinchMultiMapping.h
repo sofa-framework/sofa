@@ -68,8 +68,8 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
 
-    typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
-    typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
+    typedef typename type::vector <const InVecCoord*> vecConstInVecCoord;
+    typedef typename type::vector<OutVecCoord*> vecOutVecCoord;
 
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
@@ -86,7 +86,7 @@ public:
     }
 
     virtual void apply(typename self::out_pos_type& out,
-                        const helper::vector<typename self::in_pos_type>& in)  {
+                        const type::vector<typename self::in_pos_type>& in)  {
         Real f = factor.getValue();
 
         for( size_t j = 0, m = in[0].size(); j < m; ++j) {
@@ -104,7 +104,7 @@ protected:
 
     }
 
-    void assemble(const helper::vector<typename self::in_pos_type>& in ) {
+    void assemble(const type::vector<typename self::in_pos_type>& in ) {
 
         Real f = factor.getValue();
 

@@ -44,9 +44,10 @@ namespace modeling {
 
 
 /////////////////// IMPORTING THE DEPENDENCIES INTO THE NAMESPACE ///////////////////////////
+using namespace sofa::type;
 using namespace sofa::defaulttype ;
 
-using helper::vector;
+using type::vector;
 
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;

@@ -79,9 +79,9 @@ public:
     Data<bool> constraintPos; ///< Constraint the position
     Data<unsigned int> numIterations; ///< Number of iterations for Gauss-Seidel when solving the Constraints
     Data<double> maxError; ///< threshold for the residue of the Gauss-Seidel algorithm
-    mutable Data<std::map < std::string, sofa::helper::vector<double> > > graphGSError; ///< Graph of residuals at each iteration
+    mutable Data<std::map < std::string, sofa::type::vector<double> > > graphGSError; ///< Graph of residuals at each iteration
     Data< bool > traceKineticEnergy; ///< Trace the evolution of the Kinetic Energy throughout the solution of the system
-    mutable Data<std::map < std::string, sofa::helper::vector<double> > > graphKineticEnergy; ///< Graph of the kinetic energy of the system
+    mutable Data<std::map < std::string, sofa::type::vector<double> > > graphKineticEnergy; ///< Graph of the kinetic energy of the system
 
 
 
@@ -99,20 +99,20 @@ protected:
     virtual bool needPriorStatePropagation(core::ConstraintParams::ConstOrder order) const;
 
     /// Construct the Right hand term of the system
-    virtual void buildRightHandTerm      ( const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
+    virtual void buildRightHandTerm      ( const type::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             VectorEigen &c, MultiVecId, ConstOrder Order ) const;
     /// Construct the Inverse of the mass matrix for a set of Dofs
     virtual void buildInverseMassMatrices( const SetDof &setDofs,
             DofToMatrix& invMassMatrices);
     /// Construct the L matrices: write the constraint equations, and use dofUsed to remember the particles used in order to speed up the constraint correction
-    virtual void buildLMatrices          ( ConstOrder Order, const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
+    virtual void buildLMatrices          ( ConstOrder Order, const type::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             DofToMatrix &LMatrices, DofToMask &dofUsed) const;
     /// Construct the Left Matrix A=sum_i(L_i.M^{-1}_i.L_i^T), store the matrices M^{-1}_i.L_i^T in order to compute later the constraint correction to apply
     virtual void buildLeftMatrix         ( const DofToMatrix& invMassMatrices,
             DofToMatrix& LMatrices, SparseMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
     /// Solve the System using a projective Gauss-Seidel algorithm: compute the Lagrange Multipliers Lambda
     virtual bool solveConstraintSystemUsingGaussSeidel(MultiVecId id, ConstOrder Order,
-            const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
+            const type::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
             const MatrixEigen &W,
             const VectorEigen &c,
             VectorEigen &Lambda);

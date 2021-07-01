@@ -50,13 +50,13 @@ namespace sofa::component::collision
             {
                 // Set the current camera's position in recorded camera for navigation
                 sofa::component::visualmodel::RecordedCamera::Vec3 _pos = currentCamera->p_position.getValue();
-                sofa::helper::vector<sofa::component::visualmodel::RecordedCamera::Vec3> posis = currentCamera->m_translationPositions.getValue();
+                sofa::type::vector<sofa::component::visualmodel::RecordedCamera::Vec3> posis = currentCamera->m_translationPositions.getValue();
                 posis.push_back(_pos);
                 currentCamera->m_translationPositions.setValue(posis);
 
                 // Set the current camera's orientation in recorded camera for navigation
                 sofa::component::visualmodel::RecordedCamera::Quat _ori = currentCamera->p_orientation.getValue();
-                sofa::helper::vector<sofa::component::visualmodel::RecordedCamera::Quat>oris = currentCamera->m_translationOrientations.getValue();//push_back(m_vectorOrientations);
+                sofa::type::vector<sofa::component::visualmodel::RecordedCamera::Quat>oris = currentCamera->m_translationOrientations.getValue();//push_back(m_vectorOrientations);
                 oris.push_back(_ori);
                 currentCamera->m_translationOrientations.setValue(oris);
 

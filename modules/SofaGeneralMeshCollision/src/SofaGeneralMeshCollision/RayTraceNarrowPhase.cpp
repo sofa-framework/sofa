@@ -88,8 +88,8 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
     Cube cube2 (cm2, 0);
 
 
-    const sofa::defaulttype::Vector3 & minVect2 = cube2.minVect ();
-    const sofa::defaulttype::Vector3 & maxVect2 = cube2.maxVect ();
+    const auto& minVect2 = cube2.minVect ();
+    const auto& maxVect2 = cube2.maxVect ();
     int size = tm1->getSize ();
 
     for (int j = 0; j < size; j++)
@@ -106,10 +106,10 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
         /*resTriangle and resTriangle2 will store the triangle result from the trace method */
         int resTriangle = -1;
         int resTriangle2 = -1;
-        sofa::defaulttype::Vector3 trianglePoints[4];
+        sofa::type::Vector3 trianglePoints[4];
         //bool found = false;
         int nPoints = 0;
-        sofa::defaulttype::Vector3 normau[3];
+        sofa::type::Vector3 normau[3];
         /*if it fails to find a correspondence between the triangles it tries the raytracing procedure */
         /*test if this triangle was tested before */
 
@@ -137,7 +137,7 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
         for (int t = 0; t < nPoints; t++)
         {
 
-            sofa::defaulttype::Vector3 point = trianglePoints[t];
+            const auto& point = trianglePoints[t];
 
             if ((point[0] < (minVect2[0]))
                 || (point[0] > maxVect2[0] )
@@ -180,7 +180,7 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
             if (cosAngle2 > 0)
                 continue;
 
-            sofa::defaulttype::Vector3 Q =
+            sofa::type::Vector3 Q =
                     (triang2.p1 () * (1.0 - res.u - res.v)) +
                     (triang2.p2 () * res.u) + (triang2.p3 () * res.v);
 
@@ -232,9 +232,9 @@ void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    sofa::helper::types::RGBAColor color(1.0, 0.0, 1.0, 1.0);
+    sofa::type::RGBAColor color(1.0, 0.0, 1.0, 1.0);
     vparams->drawTool()->setPolygonMode(0, true);
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     const DetectionOutputMap& outputsMap = this->getDetectionOutputs();
 
@@ -250,8 +250,8 @@ void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
              it2 != outputs->end (); ++it2)
         {
-            vertices.push_back(sofa::defaulttype::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
-            vertices.push_back(sofa::defaulttype::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
+            vertices.push_back(sofa::type::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
+            vertices.push_back(sofa::type::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
 
             msg_error() << it2->point[0] << " " << it2->point[0];
 
@@ -263,4 +263,4 @@ void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-}
+} // namespace sofa::component::collision

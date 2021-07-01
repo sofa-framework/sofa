@@ -48,7 +48,7 @@ using sofa::defaulttype::Vec3Types;
 using namespace sofa::defaulttype ;
 typedef component::linearsolver::FullVector<SReal> FullVector ;
 
-using helper::vector;
+using type::vector;
 
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;

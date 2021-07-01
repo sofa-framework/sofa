@@ -25,8 +25,8 @@
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/decompose.h>
 
 
@@ -36,7 +36,7 @@
 
 namespace sofa
 {
-using helper::vector;
+using type::vector;
 
 namespace component
 {
@@ -91,13 +91,13 @@ public:
     typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
 
     typedef core::topology::BaseMeshTopology::PointID ID;
-    typedef helper::vector<ID> VecID;
-    typedef helper::vector<VecID> VecVecID;
+    typedef type::vector<ID> VecID;
+    typedef type::vector<VecID> VecVecID;
 
     typedef core::topology::BaseMeshTopology::Index Index;
-    typedef helper::vector< Index > VecIndex;
+    typedef type::vector< Index > VecIndex;
 
-    typedef defaulttype::Mat<3,3,Real> Mat3x3;
+    typedef type::Mat<3,3,Real> Mat3x3;
 
     virtual void init() override
     {
@@ -163,10 +163,10 @@ public:
             {
                 ID pindex=this->clusters[i][j];
                 Xcm+=pos[pindex];
-                M += defaulttype::dyad(pos0[pindex],pos[pindex]);
+                M += type::dyad(pos0[pindex],pos[pindex]);
             }
 
-            M -= defaulttype::dyad(this->Xcm0[i],Xcm); // sum wi.(X0-Xcm0)(X-Xcm)^T = sum wi.X0.X^T - Xcm0.sum(wi.X)^T
+            M -= type::dyad(this->Xcm0[i],Xcm); // sum wi.(X0-Xcm0)(X-Xcm)^T = sum wi.X0.X^T - Xcm0.sum(wi.X)^T
             helper::Decompose<Real>::polarDecomposition(M, this->rot[i]);
 
             Coord tr = this->Xcm0[i] - this->rot[i] * Xcm/(Real)this->clusters[i].size();
@@ -213,7 +213,7 @@ public:
 
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() override { return &jacobian; }
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override { return &baseMatrices; }
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override { return &baseMatrices; }
 
 
 protected:
@@ -236,7 +236,7 @@ protected:
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     SparseKMatrixEigen geometricStiffness;               ///< Stiffness due to the non-linearity of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 public:
     Data< SeqTetrahedra > in_tetrahedra; ///< input tetrahedra
@@ -256,7 +256,7 @@ protected:
     VecVecID clusters_child;
     VecID index_childToParent;
     VecVecID index_parentToChild;
-    helper::vector<Mat3x3> rot;
+    type::vector<Mat3x3> rot;
     VecCoord Xcm0;
 };
 

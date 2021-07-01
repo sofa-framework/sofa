@@ -39,7 +39,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::Real Real;
-	typedef typename helper::vector<typename DataTypes::Vec3> VecAxisCoord;
+	typedef typename type::vector<typename DataTypes::Vec3> VecAxisCoord;
 
     //typedef TBtTriangle<DataTypes> Element;
 

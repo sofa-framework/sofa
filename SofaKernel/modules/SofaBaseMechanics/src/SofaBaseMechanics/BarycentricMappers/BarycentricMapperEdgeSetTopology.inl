@@ -36,7 +36,7 @@ BarycentricMapperEdgeSetTopology<In,Out>::BarycentricMapperEdgeSetTopology(topol
 template <class In, class Out>
 typename BarycentricMapperEdgeSetTopology<In, Out>::Index BarycentricMapperEdgeSetTopology<In,Out>::addPointInLine ( const Index edgeIndex, const SReal* baryCoords )
 {
-    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
     d_map.endEdit();
     MappingData& data = *vectorData.rbegin();
@@ -58,21 +58,21 @@ typename BarycentricMapperEdgeSetTopology<In, Out>::Index BarycentricMapperEdgeS
 }
 
 template <class In, class Out>
-helper::vector<Edge> BarycentricMapperEdgeSetTopology<In,Out>::getElements()
+type::vector<Edge> BarycentricMapperEdgeSetTopology<In,Out>::getElements()
 {
     return this->m_fromTopology->getEdges();
 }
 
 template <class In, class Out>
-helper::vector<SReal> BarycentricMapperEdgeSetTopology<In,Out>::getBaryCoef(const Real* f)
+type::vector<SReal> BarycentricMapperEdgeSetTopology<In,Out>::getBaryCoef(const Real* f)
 {
     return getBaryCoef(f[0]);
 }
 
 template <class In, class Out>
-helper::vector<SReal> BarycentricMapperEdgeSetTopology<In,Out>::getBaryCoef(const Real fx)
+type::vector<SReal> BarycentricMapperEdgeSetTopology<In,Out>::getBaryCoef(const Real fx)
 {
-    helper::vector<SReal> edgeCoef{1-fx,fx};
+    type::vector<SReal> edgeCoef{1-fx,fx};
     return edgeCoef;
 }
 

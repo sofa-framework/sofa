@@ -28,6 +28,7 @@
 namespace sofa::component::engine
 {
 
+using namespace type;
 using namespace defaulttype;
 
 int DisplacementTransformEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement transforms.")

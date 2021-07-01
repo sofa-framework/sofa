@@ -44,7 +44,7 @@ OglGrid::OglGrid()
     : plane(initData(&plane, std::string("z"),  "plane", "Plane of the grid"))
     , size(initData(&size, 10.0f,  "size", "Size of the squared grid"))
     , nbSubdiv(initData(&nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
-    , color(initData(&color, sofa::helper::types::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
+    , color(initData(&color, sofa::type::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
     , thickness(initData(&thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
     , draw(initData(&draw, true,  "draw", "Display the grid or not"))
 {}
@@ -120,7 +120,7 @@ void OglGrid::updateVisual()
 //            max = Coord(s*0.5, s*0.5, s*0.1);
 //            break;
 //    }
-//    f_bbox.setValue(sofa::defaulttype::BoundingBox(min,max));
+//    f_bbox.setValue(sofa::type::BoundingBox(min,max));
 
 }
 

@@ -23,7 +23,8 @@
 #define SOFA_CORE_OBJECTMODEL_HAPTICDEVICEEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -61,7 +62,7 @@ public:
     /**
      * @brief Constructor.
      */
-    HapticDeviceEvent(const unsigned int id, const sofa::defaulttype::Vector3& position, const sofa::defaulttype::Quat& orientation, const unsigned char button);
+    HapticDeviceEvent(const unsigned int id, const sofa::type::Vector3& position, const sofa::type::Quat<SReal>& orientation, const unsigned char button);
 
     /**
      * @brief Destructor.
@@ -86,12 +87,12 @@ public:
     /**
      * @brief Get the device coordinates.
      */
-    sofa::defaulttype::Vector3 getPosition(void) const {return m_position;}
+    sofa::type::Vector3 getPosition(void) const {return m_position;}
 
     /**
      * @brief Get the device orientation.
      */
-    sofa::defaulttype::Quat getOrientation(void) const {return m_orientation;}
+    sofa::type::Quat<SReal> getOrientation(void) const {return m_orientation;}
 
     /**
      * @brief Get the device button state.
@@ -109,8 +110,8 @@ public:
 private:
 
     unsigned int	m_deviceId;
-    sofa::defaulttype::Vector3 m_position; ///< Haptic device coordinates in a Vector3 type.
-    sofa::defaulttype::Quat m_orientation; ///< Haptic device orientation.
+    sofa::type::Vector3 m_position; ///< Haptic device coordinates in a Vector3 type.
+    sofa::type::Quat<SReal> m_orientation; ///< Haptic device orientation.
     unsigned char m_buttonState;
 };
 

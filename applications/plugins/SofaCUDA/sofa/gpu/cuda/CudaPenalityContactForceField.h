@@ -77,7 +77,7 @@ public:
         int age;      ///< how old is this contact
     };
     */
-    sofa::gpu::cuda::CudaVector<sofa::defaulttype::Vec4f> contacts;
+    sofa::gpu::cuda::CudaVector<sofa::type::Vec4f> contacts;
     sofa::gpu::cuda::CudaVector<float> pen;
 
     // contacts from previous frame
@@ -98,7 +98,7 @@ public:
 
     void addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, int oldIndex = 0);
 
-    void setContacts(Real distance, Real ks, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, defaulttype::Mat3x3f* normXForm = NULL);
+    void setContacts(Real distance, Real ks, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, type::Mat3x3f* normXForm = NULL);
 
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) override;
 

@@ -27,9 +27,9 @@
 #include "../types/QuadraticTypes.h"
 #include "../types/AffineTypes.h"
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/MatSym.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/MatSym.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -55,7 +55,7 @@ public:
     static constexpr Size dim = Coord::spatial_dimensions;
     typedef typename Coord::value_type Real;
     static const unsigned int order = 0;
-    static Vec<dim,Real> getCenter(const Coord& x)    { return x; }
+    static type::Vec<dim,Real> getCenter(const Coord& x)    { return x; }
 };
 
 template<class TCoord, class TDeriv, class TReal>
@@ -65,7 +65,7 @@ public:
     enum {dim = TCoord::spatial_dimensions};
     typedef typename TCoord::value_type Real;
     static const unsigned int order = 0;
-    static Vec<dim,Real> getCenter(const TCoord& x)    { return x; }
+    static type::Vec<dim,Real> getCenter(const TCoord& x)    { return x; }
 };
 
 template<Size _dim, typename _Real>
@@ -76,7 +76,7 @@ public:
     enum {dim =_dim};
     typedef _Real Real;
     static const unsigned int order = 1;
-    static Vec<dim,Real> getCenter(const typename T::Coord& x)    { return x.getCenter(); }
+    static type::Vec<dim,Real> getCenter(const typename T::Coord& x)    { return x.getCenter(); }
 };
 
 template<Size _dim, typename _Real>
@@ -87,7 +87,7 @@ public:
     enum {dim =_dim};
     typedef _Real Real;
     static const unsigned int order = 1;
-    static Vec<dim,Real> getCenter(const typename T::Coord& x)    { return x.getCenter(); }
+    static type::Vec<dim,Real> getCenter(const typename T::Coord& x)    { return x.getCenter(); }
 };
 
 
@@ -99,7 +99,7 @@ public:
     enum {dim =_dim};
     typedef _Real Real;
     static const unsigned int order = 2;
-    static Vec<dim,Real> getCenter(const typename T::Coord& x)    { return x.getCenter(); }
+    static type::Vec<dim,Real> getCenter(const typename T::Coord& x)    { return x.getCenter(); }
 };
 
 /** Class to compute basis and covariance matrix from a variety of input types (needed by MLS moment matrix)
@@ -117,9 +117,9 @@ class MLSInfo<dim,0,_Real>
 public:
     static const Size bdim = 1+dim; ///< size of complete basis
     typedef _Real Real;
-    typedef Vec<dim,Real> coord;
-    typedef Vec<bdim,Real> basis;
-    typedef MatSym<bdim,Real> moment;
+    typedef type::Vec<dim,Real> coord;
+    typedef type::Vec<bdim,Real> basis;
+    typedef type::MatSym<bdim,Real> moment;
 
     static basis getBasis(const coord& x)
     {
@@ -153,9 +153,9 @@ class MLSInfo<dim,1,_Real>
 public:
     static const Size bdim = 1+dim; ///< size of complete basis
     typedef _Real Real;
-    typedef Vec<dim,Real> coord;
-    typedef Vec<bdim,Real> basis;
-    typedef MatSym<bdim,Real> moment;
+    typedef type::Vec<dim,Real> coord;
+    typedef type::Vec<bdim,Real> basis;
+    typedef type::MatSym<bdim,Real> moment;
 
     static basis getBasis(const coord& x)
     { return MLSInfo<dim,0,Real>::getBasis(x); }
@@ -182,13 +182,13 @@ public:
     typedef defaulttype::StdQuadraticTypes<dim, _Real> Qtypes;
     static const Size bdim = 1 + Qtypes::num_quadratic_terms; ///< size of complete basis
     typedef _Real Real;
-    typedef Vec<dim,Real> coord;
-    typedef Vec<bdim,Real> basis;
-    typedef MatSym<bdim,Real> moment;
+    typedef type::Vec<dim,Real> coord;
+    typedef type::Vec<bdim,Real> basis;
+    typedef type::MatSym<bdim,Real> moment;
 
     static basis getBasis(const coord& x)
     {
-        Vec<bdim-1,Real> x2 = defaulttype::convertSpatialToQuadraticCoord(x);
+        type::Vec<bdim-1,Real> x2 = defaulttype::convertSpatialToQuadraticCoord(x);
         basis b;
         b[0]=1;
         for(Size i=1;i<bdim;i++) b[i]=x2[i-1];
@@ -197,7 +197,7 @@ public:
 
     static basis getBasisGradient(const coord& x,const Size axis)
     {
-        Vec<bdim-1,Real> grad = defaulttype::SpatialToQuadraticCoordGradient(x).col(axis);
+        type::Vec<bdim-1,Real> grad = defaulttype::SpatialToQuadraticCoordGradient(x).col(axis);
         basis b;
         for(Size i=1;i<bdim;i++) b[i]=grad[i-1];
         return b;
@@ -218,7 +218,7 @@ public:
         // GMLS term corresponding to first derivatives = sum Gradient.Gradient^T
         for(Size j=0;j<dim;j++)
         {
-            Vec<bdim,Real> b = getBasisGradient(x,j);
+            type::Vec<bdim,Real> b = getBasisGradient(x,j);
             M+=covN(b);
         }
         // GMLS term corresponding to second derivatives = sum(i,j) Hessian(i,j).Hessian(i,j)^T
@@ -231,7 +231,7 @@ public:
 
 
 template<class basis>
-const Vec<basis::spatial_dimensions-1,typename basis::value_type>& BasisToCoord(const basis& v) { return *reinterpret_cast<const Vec<basis::spatial_dimensions-1,typename basis::value_type>*>(&v[1]); }
+const type::Vec<basis::spatial_dimensions-1,typename basis::value_type>& BasisToCoord(const basis& v) { return *reinterpret_cast<const type::Vec<basis::spatial_dimensions-1,typename basis::value_type>*>(&v[1]); }
 
 
 

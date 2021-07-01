@@ -89,7 +89,7 @@ public:
     {
         Connexion():_parent(nullptr), _coarsestParent(0), _hexaIdx(0), _nonRamifiedHexaIdx(0), _tmp(0) {};
 
-        helper::fixed_array< std::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
+        type::fixed_array< std::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
 
         typedef std::pair<unsigned,Connexion*> Children; // the unsigned indicates the fine place 0->7 in the coarse element
         std::list<Children> _children;	// the hierarchical graph to finer level
@@ -103,7 +103,7 @@ public:
         int _tmp; // warning: useful to several algos (as a temporary variable) but it is not an identification number
 
         /// each similar connexion will have a number (saved in _tmp), this number must be given to all connected connexions)
-        void propagateConnexionNumberToNeighbors( int connexionNumber, const helper::vector<Connexion*>& allFineConnexions )
+        void propagateConnexionNumberToNeighbors( int connexionNumber, const type::vector<Connexion*>& allFineConnexions )
         {
             if (_tmp!=-1) return; // already in an existing connexion number
 
@@ -117,19 +117,19 @@ public:
 
 protected:
 
-    helper::vector<helper::vector<Connexion*> > _connexions; // for each initial, regular SparseGrid::hexa -> a list of independant connexion
+    type::vector<type::vector<Connexion*> > _connexions; // for each initial, regular SparseGrid::hexa -> a list of independant connexion
 
 
-    std::map<int, std::pair<helper::vector<Connexion*>,int> > _mapHexa_Connexion; // a hexa idx -> the corresponding connexion
+    std::map<int, std::pair<type::vector<Connexion*>,int> > _mapHexa_Connexion; // a hexa idx -> the corresponding connexion
 
     bool intersectionSegmentTriangle(Vector3 s0, Vector3 s1, Vector3 t0, Vector3 t1, Vector3 t2);
 
 public :
 
-    helper::vector<helper::vector<Connexion*> >* getConnexions() {return &_connexions;}
+    type::vector<type::vector<Connexion*> >* getConnexions() {return &_connexions;}
 
 
-    typedef std::vector<helper::fixed_array<helper::vector<Index>,8> > HierarchicalCubeMapRamification; ///< a cube indice -> corresponding child indices (possible more than 8 for Ramification)
+    typedef std::vector<type::fixed_array<type::vector<Index>,8> > HierarchicalCubeMapRamification; ///< a cube indice -> corresponding child indices (possible more than 8 for Ramification)
     HierarchicalCubeMapRamification _hierarchicalCubeMapRamification;
 
 

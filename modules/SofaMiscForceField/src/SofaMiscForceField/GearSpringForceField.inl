@@ -24,7 +24,7 @@
 #include <SofaMiscForceField/GearSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 #include <cassert>
 #include <iostream>
@@ -63,7 +63,7 @@ GearSpring<DataTypes>::GearSpring(unsigned int m1, unsigned  int m2, unsigned in
     , hardStiffnessRot(hardKsr)
     , Ratio(ratio)
 {
-    freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
+    freeAxis = sofa::type::Vec<2,unsigned int>(0,0);
 }
 
 template<class DataTypes>
@@ -116,7 +116,7 @@ void GearSpringForceField<DataTypes>::reinit()
 {
     const VecCoord& x1=this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x2=this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    sofa::helper::vector<Spring> &springsVector=*(springs.beginEdit());
+    sofa::type::vector<Spring> &springsVector=*(springs.beginEdit());
     for (unsigned int i=0; i<springs.getValue().size(); ++i)
     {
         Spring &s=springsVector[i];
@@ -265,7 +265,7 @@ void GearSpringForceField<DataTypes>::addForce(const sofa::core::MechanicalParam
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    helper::vector<Spring>& springs = *this->springs.beginEdit();
+    type::vector<Spring>& springs = *this->springs.beginEdit();
 
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -294,8 +294,8 @@ void GearSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mp
 
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    //const helper::vector<Spring>& springs = this->springs.getValue();
-    helper::vector<Spring>& springs = *this->springs.beginEdit();
+    //const type::vector<Spring>& springs = this->springs.getValue();
+    type::vector<Spring>& springs = *this->springs.beginEdit();
     for (unsigned int i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1, dx1, df2, dx2, i, springs[i], kFactor);
@@ -317,8 +317,8 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
     vparams->drawTool()->disableLighting();
-    sofa::helper::types::RGBAColor color(1, 1, 0, 1);
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    sofa::type::RGBAColor color(1, 1, 0, 1);
+    const type::vector<Spring>& springs = this->springs.getValue();
 
     float radius = showFactorSize.getValue() / 15; //see helper/gl/Cylinder.cpp
 
@@ -388,7 +388,7 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
 template<class DataTypes>
 void GearSpringForceField<DataTypes>::updateForceMask()
 {
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->springs.getValue();
     for (unsigned int i=0; i<springs.size(); i++)
     {
         const Spring& spring = springs[i];

@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>
@@ -177,15 +177,15 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
     if(object2_invert.getValue())
         vars.pos6D = DataTypes2::inverse(vars.pos6D);
 
-    sofa::defaulttype::Quat Cq = vars.pos6D.getOrientation();
-    sofa::defaulttype::Vec3d Cx = (Coord1) vars.pos6D.getCenter();
+    sofa::type::Quat<SReal> Cq = vars.pos6D.getOrientation();
+    sofa::type::Vec3d Cx = (Coord1) vars.pos6D.getCenter();
     Deriv2 V6D = v2[object2_dof_index.getValue()];
-    sofa::defaulttype::Vec3d Cv = (sofa::defaulttype::Vec3d) getVCenter(V6D);
+    sofa::type::Vec3d Cv = (sofa::type::Vec3d) getVCenter(V6D);
     Cv.clear();
 
     initCalcF();
 
-    sofa::helper::vector<Contact>* contacts = this->contacts.beginEdit();
+    sofa::type::vector<Contact>* contacts = this->contacts.beginEdit();
     contacts->clear();
     f1.resize(p1.size());
     for (unsigned int i=0; i<p1.size(); i++)
@@ -205,7 +205,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
             c.index = i;
             c.m = dfdx;
 
-            sofa::defaulttype::Vec3d contactForce =  Cq.rotate(f1Xform);
+            sofa::type::Vec3d contactForce =  Cq.rotate(f1Xform);
             c.force = contactForce;
             f1[i]+=contactForce;
             f2.getVCenter() -= contactForce;
@@ -261,8 +261,8 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDe
         C = DataTypes2::inverse(C);
     }
 
-    sofa::defaulttype::Quat Cq = C.getOrientation();
-    sofa::defaulttype::Vec3d Cx = (sofa::defaulttype::Vec3d) C.getCenter();
+    sofa::type::Quat<SReal> Cq = C.getOrientation();
+    sofa::type::Vec3d Cx = (sofa::type::Vec3d) C.getCenter();
 
     f1.clear();
     f2.clear();
@@ -280,8 +280,8 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDe
         {
 
 
-            sofa::defaulttype::Vec3d contactForce =  Cq.rotate(f1Xform);
-            sofa::defaulttype::Vec3d bras_levier;
+            sofa::type::Vec3d contactForce =  Cq.rotate(f1Xform);
+            sofa::type::Vec3d bras_levier;
             bras_levier = p1[i] - Cx;
             f1[i]+=contactForce;
             getVCenter(f2[object2_dof_index.getValue()]) -= contactForce;
@@ -313,17 +313,17 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
         dx2i = dx2[object2_dof_index.getValue()];
     }
 
-    const sofa::defaulttype::Quat Cq = vars.pos6D.getOrientation();
+    const sofa::type::Quat<SReal> Cq = vars.pos6D.getOrientation();
 
     df1.resize(dx1.size());
-    const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
+    const sofa::type::vector<Contact>& contacts = this->contacts.getValue();
     //printf("\n");
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         const Contact& c = contacts[i];
         assert((unsigned)c.index<dx1.size());
-        sofa::defaulttype::Vec3d du;
-        du = (sofa::defaulttype::Vec3d) dx1[c.index] - (sofa::defaulttype::Vec3d) getVCenter(dx2i); //- c.bras_levier.cross(dx2i.getVOrientation());
+        sofa::type::Vec3d du;
+        du = (sofa::type::Vec3d) dx1[c.index] - (sofa::type::Vec3d) getVCenter(dx2i); //- c.bras_levier.cross(dx2i.getVOrientation());
         Deriv1 dforce = c.m * Cq.inverseRotate(du);
         dforce *= kFactor;
         Deriv1 DF = Cq.rotate(dforce);
@@ -358,8 +358,8 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
     if (!bDraw.getValue()) return;
 
     vparams->drawTool()->saveLastState();
-    sofa::helper::types::RGBAColor colorValue;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::type::RGBAColor colorValue;
+    std::vector<sofa::type::Vector3> vertices;
 
     Real1 cx2=0, cy2=0, cz2=0;
     cx2=(Real1)vars.pos6D.getCenter()[0];
@@ -377,31 +377,31 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
         vparams->drawTool()->enableLighting();
         colorValue = color.getValue();
 
-        sofa::defaulttype::Quat q=vars.pos6D.getOrientation();
+        sofa::type::Quat<SReal> q=vars.pos6D.getOrientation();
         double R[4][4];
 
         vparams->drawTool()->pushMatrix();
 
-        sofa::defaulttype::Quat q1=q.inverse();
+        sofa::type::Quat<SReal> q1=q.inverse();
         q1.buildRotationMatrix(R);
         vparams->drawTool()->translate(cx2, cy2, cz2);
         vparams->drawTool()->multMatrix((float*)(&R[0][0]));
 
-        sofa::defaulttype::Vector3 center(cx1, cy1, cz1);
-        sofa::defaulttype::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
+        sofa::type::Vector3 center(cx1, cy1, cz1);
+        sofa::type::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
 
         vparams->drawTool()->drawEllipsoid(center, radii);
         vparams->drawTool()->translate(-cx2, -cy2, -cz2);
         vparams->drawTool()->popMatrix();
         vparams->drawTool()->disableLighting();
 
-        const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
+        const sofa::type::vector<Contact>& contacts = this->contacts.getValue();
         const double fscale = 1000.0f/this->stiffness.getValue();
 
         for (unsigned int i=0; i<contacts.size(); i++)
         {
-            vertices.push_back(sofa::defaulttype::Vector3(contacts[i].pos[0],contacts[i].pos[1],contacts[i].pos[2] ));
-            vertices.push_back(sofa::defaulttype::Vector3(contacts[i].pos[0]+contacts[i].force[0]*fscale,
+            vertices.push_back(sofa::type::Vector3(contacts[i].pos[0],contacts[i].pos[1],contacts[i].pos[2] ));
+            vertices.push_back(sofa::type::Vector3(contacts[i].pos[0]+contacts[i].force[0]*fscale,
                     contacts[i].pos[1]+contacts[i].force[1]*fscale,
                     contacts[i].pos[2]+contacts[i].force[2]*fscale ));
         }

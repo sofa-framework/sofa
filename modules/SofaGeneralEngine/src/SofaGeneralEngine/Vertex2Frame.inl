@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/Vertex2Frame.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 
 namespace sofa::component::engine
 {
@@ -66,8 +66,8 @@ void Vertex2Frame<DataTypes>::reinit()
 template <class DataTypes>
 void Vertex2Frame<DataTypes>::doUpdate()
 {
-    const helper::vector<CPos>& fVertices = d_vertices.getValue();
-    const helper::vector<CPos>& fNormals = d_normals.getValue();
+    const type::vector<CPos>& fVertices = d_vertices.getValue();
+    const type::vector<CPos>& fNormals = d_normals.getValue();
     unsigned int nbVertices = fVertices.size();
 
     if (nbVertices <= 0)
@@ -143,9 +143,9 @@ void Vertex2Frame<DataTypes>::doUpdate()
 }
 
 template <class DataTypes>
-defaulttype::Quat  Vertex2Frame<DataTypes>::computeOrientation(const CPos &xAxis, const CPos &yAxis, const CPos &zAxis)
+type::Quat<SReal>  Vertex2Frame<DataTypes>::computeOrientation(const CPos &xAxis, const CPos &yAxis, const CPos &zAxis)
 {
-    sofa::defaulttype::Quat q, q2;
+    sofa::type::Quat<SReal> q, q2;
 
     // compute frame rotation
     CPos rotationAxis;

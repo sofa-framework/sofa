@@ -56,7 +56,7 @@ public:
     typedef typename Matrix::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    //Data< helper::vector<std::string> > f_options;
+    //Data< type::vector<std::string> > f_options;
     Data<int> f_symmetric; ///< 0 = nonsymmetric arbitrary matrix, 1 = symmetric matrix, 2 = symmetric positive definite, -1 = structurally symmetric matrix
     Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<std::string> f_exportDataToDir; ///< export data (matrix, RHS, solution) to files in given directory

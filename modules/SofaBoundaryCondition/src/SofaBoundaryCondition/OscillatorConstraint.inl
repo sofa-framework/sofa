@@ -51,7 +51,7 @@ OscillatorConstraint<TDataTypes>*  OscillatorConstraint<TDataTypes>::addConstrai
 template <class TDataTypes> template <class DataDeriv>
 void OscillatorConstraint<TDataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
-    const helper::vector<Oscillator> &oscillators = constraints.getValue();
+    const type::vector<Oscillator> &oscillators = constraints.getValue();
     for (unsigned i = 0; i < oscillators.size(); ++i)
     {
         const unsigned& index = oscillators[i].index;
@@ -70,7 +70,7 @@ template <class TDataTypes>
 void OscillatorConstraint<TDataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> v = vData;
-    const helper::vector<Oscillator>& oscillators = constraints.getValue();
+    const type::vector<Oscillator>& oscillators = constraints.getValue();
     Real t = (Real) this->getContext()->getTime();
     for (unsigned i = 0; i < oscillators.size(); ++i)
     {
@@ -87,7 +87,7 @@ template <class TDataTypes>
 void OscillatorConstraint<TDataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
-    const helper::vector<Oscillator> &oscillators = constraints.getValue();
+    const type::vector<Oscillator> &oscillators = constraints.getValue();
     Real t = (Real) this->getContext()->getTime();
     for (unsigned i = 0; i < oscillators.size(); ++i)
     {

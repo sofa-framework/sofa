@@ -24,9 +24,9 @@
 
 #include <SofaBaseVisual/BackgroundSetting.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Ray.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Ray.h>
+#include <sofa/type/Quat.h>
 
 #include <sofa/core/fwd.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -40,11 +40,11 @@ class SOFA_SOFABASEVISUAL_API BaseCamera : public core::objectmodel::BaseObject
 public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
-    typedef defaulttype::Ray Ray;
-    typedef defaulttype::Vector4 Vec4;
-    typedef defaulttype::Vector3 Vec3;
-    typedef defaulttype::Vector2 Vec2;
-    typedef defaulttype::Quat Quat;
+    typedef type::Ray Ray;
+    typedef type::Vector4 Vec4;
+    typedef type::Vector3 Vec3;
+    typedef type::Vector2 Vec2;
+    typedef type::Quat<SReal> Quat;
 
     enum Side {LEFT, RIGHT, MONO};
 
@@ -85,8 +85,8 @@ public:
     Data<bool> p_activated; ///< Camera activated ?
 	Data<bool> p_fixedLookAtPoint; ///< keep the lookAt point always fixed
     
-    Data<helper::vector<SReal> > p_modelViewMatrix; ///< ModelView Matrix
-    Data<helper::vector<SReal> > p_projectionMatrix; ///< Projection Matrix
+    Data<type::vector<SReal> > p_modelViewMatrix; ///< ModelView Matrix
+    Data<type::vector<SReal> > p_projectionMatrix; ///< Projection Matrix
 
     SingleLink<BaseCamera, sofa::component::configurationsetting::BackgroundSetting,
                BaseLink::FLAG_STOREPATH> l_background ;

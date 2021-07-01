@@ -51,11 +51,11 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
-    typedef defaulttype::Mat<3,3,Real> Mat33;
-    typedef helper::vector< Mat33 > Vec3DerivValues;
-    typedef helper::vector< unsigned int > Vec3DerivIndices;
-    typedef helper::vector< Vec3DerivValues> VecVec3DerivValues;
-    typedef helper::vector< Vec3DerivIndices > VecVec3DerivIndices;
+    typedef type::Mat<3,3,Real> Mat33;
+    typedef type::vector< Mat33 > Vec3DerivValues;
+    typedef type::vector< unsigned int > Vec3DerivIndices;
+    typedef type::vector< Vec3DerivValues> VecVec3DerivValues;
+    typedef type::vector< Vec3DerivIndices > VecVec3DerivIndices;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
@@ -63,7 +63,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
     typedef sofa::core::topology::BaseMeshTopology::Index Index;
-    typedef sofa::helper::vector< Index > VecIndex;
+    typedef sofa::type::vector< Index > VecIndex;
 
     enum State { INCREASE, DECREASE };
 
@@ -82,7 +82,7 @@ protected:
     Data< Deriv >	m_mainDirection;			///< Main axis for pressure application.
 
     Data< Real > m_drawForceScale;  ///< scale used to render force vectors
-    helper::vector< Deriv> m_f;             ///< store forces for visualization
+    type::vector< Deriv> m_f;             ///< store forces for visualization
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<SurfacePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

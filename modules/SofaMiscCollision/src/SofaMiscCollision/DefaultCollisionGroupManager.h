@@ -39,7 +39,7 @@ public:
 
 
 public:
-    void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::collision::Contact::SPtr>& contacts) override;
+    void createGroups(core::objectmodel::BaseContext* scene, const sofa::type::vector<core::collision::Contact::SPtr>& contacts) override;
     void clearGroups(core::objectmodel::BaseContext* scene) override;
 
 protected:
@@ -68,9 +68,9 @@ protected:
     void createGroup(core::collision::Contact* contact,
                      int& groupIndex,
                      MergeGroupsMap& mergedGroups,
-                     sofa::helper::vector< std::pair<core::collision::Contact*, simulation::Node::SPtr> >& contactGroup,
-                     sofa::helper::vector< simulation::Node::SPtr >& removedGroup,
-                     sofa::helper::vector< core::collision::Contact* >& stationaryContacts);
+                     sofa::type::vector< std::pair<core::collision::Contact*, simulation::Node::SPtr> >& contactGroup,
+                     sofa::type::vector< simulation::Node::SPtr >& removedGroup,
+                     sofa::type::vector< core::collision::Contact* >& stationaryContacts);
 
     /// Move all objects from one node to another
     static void moveAllObjects(simulation::Node::SPtr sourceNode, simulation::Node::SPtr destinationNode);

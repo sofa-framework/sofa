@@ -25,9 +25,9 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -100,7 +100,7 @@ public:
     typedef core::topology::BaseMeshTopology::Hexa Element;
     typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
 
-    typedef defaulttype::Mat<3, 3, Real> Mat33;
+    typedef type::Mat<3, 3, Real> Mat33;
 
     enum
     {
@@ -163,19 +163,19 @@ public:
     using InheritForceField::getPotentialEnergy;
 
 protected:
-    typedef defaulttype::Vec<24, Real> Displacement;                ///< the displacement vector
+    typedef type::Vec<24, Real> Displacement;                ///< the displacement vector
 
-    typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;         ///< the matrix of material stiffness
-    typedef helper::vector<MaterialStiffness> VecMaterialStiffness; ///< a vector of material stiffness matrices
+    typedef type::Mat<6, 6, Real> MaterialStiffness;         ///< the matrix of material stiffness
+    typedef type::vector<MaterialStiffness> VecMaterialStiffness; ///< a vector of material stiffness matrices
     VecMaterialStiffness _materialsStiffnesses;                     ///< the material stiffness matrices vector
 
-    typedef defaulttype::Mat<24, 24, Real> ElementStiffness;
-    typedef helper::vector<ElementStiffness> VecElementStiffness;
+    typedef type::Mat<24, 24, Real> ElementStiffness;
+    typedef type::vector<ElementStiffness> VecElementStiffness;
     Data<VecElementStiffness> _elementStiffnesses; ///< Stiffness matrices per element (K_i)
 
     typedef std::pair<int,Real> Col_Value;
-    typedef helper::vector< Col_Value > CompressedValue;
-    typedef helper::vector< CompressedValue > CompressedMatrix;
+    typedef type::vector< Col_Value > CompressedValue;
+    typedef type::vector< CompressedValue > CompressedMatrix;
     CompressedMatrix _stiffnesses;
     SReal m_potentialEnergy;
 
@@ -183,7 +183,7 @@ protected:
     topology::SparseGridTopology* _sparseGrid;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
-    defaulttype::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
+    type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 
     HexahedronFEMForceFieldInternalData<DataTypes> *data;
     friend class HexahedronFEMForceFieldInternalData<DataTypes>;
@@ -194,7 +194,7 @@ protected:
     inline const VecElement *getIndexedElements(){ return & (m_topology->getHexahedra()); }
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M,
-                                          const helper::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice,
+                                          const type::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice,
                                           double stiffnessFactor=1.0);
     Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1,
                               const Real u, const Real v, const Real w, const Mat33& J_1  );
@@ -205,16 +205,16 @@ protected:
 
 
     ////////////// large displacements method
-    helper::vector<helper::fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
-    helper::vector<Transformation> _rotations;
-    helper::vector<Transformation> _initialrotations;
+    type::vector<type::fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
+    type::vector<Transformation> _rotations;
+    type::vector<Transformation> _initialrotations;
     void initLarge(int i, const Element&elem);
     void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
     virtual void accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     ////////////// polar decomposition method
     void initPolar(int i, const Element&elem);
-    void computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes);
+    void computeRotationPolar( Transformation &r, type::Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     ////////////// small decomposition method

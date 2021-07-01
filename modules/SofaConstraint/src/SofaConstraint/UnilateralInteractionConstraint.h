@@ -161,7 +161,7 @@ protected:
         mutable Real dfree;
     };
 
-    sofa::helper::vector<Contact> contacts;
+    sofa::type::vector<Contact> contacts;
     Real epsilon;
     bool yetIntegrated;
     double customTolerance;

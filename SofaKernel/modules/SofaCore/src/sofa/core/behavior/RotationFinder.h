@@ -23,7 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_ROTATIONFINDER_H
 
 #include <sofa/core/behavior/BaseRotationFinder.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 
 namespace sofa
@@ -44,10 +44,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef defaulttype::Mat< 3, 3, Real > Mat3x3;
+    typedef type::Mat< 3, 3, Real > Mat3x3;
 
     using BaseRotationFinder::getRotations;
-    virtual const helper::vector< Mat3x3 >& getRotations() = 0;
+    virtual const type::vector< type::Mat3x3 >& getRotations() = 0;
 };
 
 } // namespace behavior

@@ -27,7 +27,7 @@ namespace sofa {
         using Inherited::runTest;
         bool runTest()
         {
-            defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
+            type::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
 
             // create a deformation gradient
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
@@ -36,7 +36,7 @@ namespace sofa {
                     strain[i][j] = (i+1)*2+j*0.3; 
                 }
 
-                defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( strain );
+                type::Mat<In::material_dimensions,In::material_dimensions,Real> defo( strain );
 
                 //Green Lagrange Tensor E = (strain.transpose()+strain)/2 - Identity
                 defo = (strain + strain.transposed())*0.5 - strain.s_identity;

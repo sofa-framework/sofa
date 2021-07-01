@@ -6,7 +6,7 @@
 #include "ConstantAssembledMapping.h"
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa
 {
@@ -37,14 +37,14 @@ public:
 
     typedef typename TIn::VecCoord InVecCoord;
 
-    Data< helper::vector<unsigned> > indices;         ///< indices of the parent points
+    Data< type::vector<unsigned> > indices;         ///< indices of the parent points
 
     Data< InVecCoord > targets; ///< target positions which who computes deltas
-    Data< helper::vector<unsigned> > d_targetIndices; ///< target indices in target positions which who computes deltas
+    Data< type::vector<unsigned> > d_targetIndices; ///< target indices in target positions which who computes deltas
 
     Data< bool > d_inverted; ///< target-p (rather than p-target)
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< sofa::helper::types::RGBAColor > d_color; ///< drawing color
+    Data< sofa::type::RGBAColor > d_color; ///< drawing color
 
 
     DifferenceFromTargetMapping()
@@ -53,7 +53,7 @@ public:
         , d_targetIndices( initData(&d_targetIndices, "targetIndices", "target indices in target positions which who computes deltas") )
         , d_inverted( initData(&d_inverted, false, "inverted", "target-p (rather than p-target)") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+        , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {
 
         // backward compatibility with OffsetMapping, a previous identical mapping
@@ -64,7 +64,7 @@ public:
 
     virtual void init() override
     {
-        const helper::vector<unsigned>& ind = indices.getValue();
+        const type::vector<unsigned>& ind = indices.getValue();
         if( ind.empty() ) this->toModel->resize( this->fromModel->getSize() );
         else this->toModel->resize( ind.size() );
 
@@ -98,9 +98,9 @@ public:
                        const typename Self::in_pos_type& in ) override
     {
         const InVecCoord& t = targets.getValue();
-        const helper::vector<unsigned>& ind = indices.getValue();
+        const type::vector<unsigned>& ind = indices.getValue();
         bool inverted = d_inverted.getValue();
-        const helper::vector<unsigned>& targetIndices = d_targetIndices.getValue();
+        const type::vector<unsigned>& targetIndices = d_targetIndices.getValue();
 
         if( ind.empty() )
         {
@@ -142,7 +142,7 @@ public:
     {
         assert( Nout==Nin ); // supposing TIn==TOut
 
-        const helper::vector<unsigned>& ind = indices.getValue();
+        const type::vector<unsigned>& ind = indices.getValue();
         typename Self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
         bool inverted = d_inverted.getValue();
 
@@ -180,10 +180,10 @@ public:
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
         const InVecCoord& t = targets.getValue();
-        const helper::vector<unsigned>& ind = indices.getValue();
-        const helper::vector<unsigned>& targetIndices = d_targetIndices.getValue();
+        const type::vector<unsigned>& ind = indices.getValue();
+        const type::vector<unsigned>& targetIndices = d_targetIndices.getValue();
 
-        helper::vector< sofa::defaulttype::Vector3 > points;
+        type::vector< sofa::type::Vector3 > points;
         if( ind.empty() )
         {
             points.resize(2*pos.size());
@@ -208,6 +208,7 @@ public:
 
         SReal scale = d_showObjectScale.getValue();
         const auto& color = d_color.getValue();
+
         if( scale == 0 )
             vparams->drawTool()->drawLines ( points, 1, color );
         else

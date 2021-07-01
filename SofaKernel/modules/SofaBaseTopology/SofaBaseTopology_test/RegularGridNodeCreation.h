@@ -54,9 +54,9 @@ PatchTestStruct<DataTypes> createRegularGridScene(
         int numX,
         int numY,
         int numZ,
-        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
-        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
-        sofa::defaulttype::Vec<6,SReal> includedBox)
+        sofa::type::Vec<6,SReal> entireBoxRoi,
+        sofa::type::Vec<6,SReal> inclusiveBox,
+        sofa::type::Vec<6,SReal> includedBox)
 {
     // Definitions
     PatchTestStruct<DataTypes> patchStruct;
@@ -100,7 +100,7 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     patchStruct.dofs->setSrc("@"+gridMesh->getName(), gridMesh.get());
 
     //BoxRoi to find all mesh points
-    helper::vector < defaulttype::Vec<6,Real> > vecBox;
+    type::vector < type::Vec<6,Real> > vecBox;
     vecBox.push_back(entireBoxRoi);
     typename BoxRoi::SPtr boxRoi = modeling::addNew<BoxRoi>(SquareNode,"boxRoi");
     boxRoi->d_alignedBoxes.setValue(vecBox);

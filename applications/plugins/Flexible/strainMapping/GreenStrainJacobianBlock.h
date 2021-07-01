@@ -23,8 +23,8 @@
 #define FLEXIBLE_GreenStrainJacobianBlock_H
 
 #include "../BaseJacobian.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
 
@@ -186,7 +186,7 @@ public:
         if( order > 0 )
         {
             // order 1
-            Vec<spatial_dimensions,JBlock> Jgrad;
+            type::Vec<spatial_dimensions,JBlock> Jgrad;
             for(unsigned int k=0; k<spatial_dimensions; k++) Jgrad[k]= this->assembleJ(F.getGradientF(k));
             unsigned int offsetE=strain_size;
             for(unsigned int k=0; k<spatial_dimensions; k++)

@@ -2,8 +2,8 @@
 #define __SOFA_FLEXIBLE_FRAMEMASS_H__
 
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 
 namespace sofa
 {
@@ -15,7 +15,7 @@ namespace defaulttype
 
     /** Mass associated with a frame */
     template<std::size_t _spatial_dimensions,std::size_t _dim, typename _Real>
-    class DeformableFrameMass : public Mat<_dim,_dim, _Real>
+    class DeformableFrameMass : public type::Mat<_dim,_dim, _Real>
     {
     public:
         typedef _Real Real;
@@ -23,7 +23,7 @@ namespace defaulttype
         static const std::size_t spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
         static const std::size_t VSize = _dim;
 
-        typedef Mat<VSize, VSize, Real> MassMatrix;
+        typedef type::Mat<VSize, VSize, Real> MassMatrix;
 
 
         DeformableFrameMass() : MassMatrix(), m_invMassMatrix(NULL)

@@ -50,7 +50,7 @@ typedef Types<
 TYPED_TEST_SUITE(VisualModelImpl_test, DataTypes);
 
 template <class T>
-bool Vector_Comparison(helper::vector< T > expected, helper::vector< T > actual)
+bool Vector_Comparison(type::vector< T > expected, type::vector< T > actual)
 {
     if (expected.size() != actual.size())
         return false;
@@ -84,8 +84,8 @@ TEST( VisualModelImpl_test , checkThatMembersAreCorrectlyConstructed )
     ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecVisualEdge(), visualModel.m_edges.getValue()));
     ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecVisualTriangle(), visualModel.m_triangles.getValue()));
     ASSERT_EQ(true_var, Vector_Comparison(component::visualmodel::VisualModelImpl::VecVisualQuad(), visualModel.m_quads.getValue()));
-    ASSERT_EQ(true_var, Vector_Comparison(helper::vector<component::visualmodel::VisualModelImpl::visual_index_type>(), visualModel.m_vertPosIdx.getValue()));
-    ASSERT_EQ(true_var, Vector_Comparison(helper::vector<component::visualmodel::VisualModelImpl::visual_index_type>(), visualModel.m_vertNormIdx.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(type::vector<component::visualmodel::VisualModelImpl::visual_index_type>(), visualModel.m_vertPosIdx.getValue()));
+    ASSERT_EQ(true_var, Vector_Comparison(type::vector<component::visualmodel::VisualModelImpl::visual_index_type>(), visualModel.m_vertNormIdx.getValue()));
 
     ASSERT_EQ(core::objectmodel::DataFileName().getValue(), visualModel.fileMesh.getValue());
     ASSERT_EQ(core::objectmodel::DataFileName().getValue(), visualModel.texturename.getValue());
@@ -95,7 +95,7 @@ TEST( VisualModelImpl_test , checkThatMembersAreCorrectlyConstructed )
     ASSERT_EQ(component::visualmodel::VisualModelImpl::TexCoord(1.0,1.0), visualModel.m_scaleTex.getValue());
     ASSERT_EQ(component::visualmodel::VisualModelImpl::TexCoord(0.0,0.0), visualModel.m_translationTex.getValue());
 
-    ASSERT_EQ(sofa::helper::types::Material().name, visualModel.material.getValue().name);
+    ASSERT_EQ(sofa::type::Material().name, visualModel.material.getValue().name);
     ASSERT_EQ(false_var, visualModel.putOnlyTexCoords.getValue());
     ASSERT_EQ(false_var, visualModel.srgbTexturing.getValue());
     ASSERT_EQ(false_var, visualModel.xformsModified);

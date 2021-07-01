@@ -29,7 +29,7 @@ namespace sofa::simulation::mechanicalvisitor
 
 MechanicalAddSubMBK_ToMatrixVisitor::MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams *mparams,
                                                                          const sofa::core::behavior::MultiMatrixAccessor *_matrix,
-                                                                         const helper::vector<unsigned int> &Id)
+                                                                         const type::vector<unsigned int> &Id)
         : MechanicalVisitor(mparams) ,  matrix(_matrix), subMatrixIndex(Id) //,m(_m),b(_b),k(_k)
 {
 }

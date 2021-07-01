@@ -80,7 +80,7 @@ void DevAngleCollisionMonitor<DataTypes>::eval()
     intersection->setContactDistance(0.0);
     narrowPhaseDetection->setInstance(this);
     narrowPhaseDetection->setIntersectionMethod(intersection.get());
-    sofa::helper::vector<std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> > vectCMPair;
+    sofa::type::vector<std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> > vectCMPair;
     vectCMPair.push_back(std::make_pair(surfaceCM->getFirst(), pointsCM->getFirst()));
 
     narrowPhaseDetection->beginNarrowPhase();

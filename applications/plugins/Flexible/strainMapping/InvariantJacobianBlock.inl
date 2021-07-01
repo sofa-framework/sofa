@@ -23,8 +23,8 @@
 #define FLEXIBLE_InvariantJacobianBlock_INL
 
 #include "../strainMapping/InvariantJacobianBlock.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
 #include "../types/PolynomialBasis.h"
@@ -35,7 +35,7 @@ namespace sofa
 namespace defaulttype
 {
 
-
+using namespace sofa::type;
 //////////////////////////////////////////////////////////////////////////////////
 ////  helpers
 //////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ namespace defaulttype
 template<class real>
 inline real getDeterminantGradient(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
-    real det=defaulttype::determinant(from);
+    real det=type::determinant(from);
 
     dest(0,0)= (from(1,1)*from(2,2) - from(2,1)*from(1,2));
     dest(0,1)= (from(1,2)*from(2,0) - from(2,2)*from(1,0));
