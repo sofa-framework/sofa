@@ -301,6 +301,7 @@
 - [All] Convert tests to Sofa.Testing [#2188](https://github.com/sofa-framework/sofa/pull/2188)
 - [All] Remove useless inclusions of MechanicalObject.h [#2015](https://github.com/sofa-framework/sofa/pull/2015)
 - [All] Remove deprecated calls and warnings [#2210](https://github.com/sofa-framework/sofa/pull/2210)
+- [All] Remove use of compatibility layer [#2179](https://github.com/sofa-framework/sofa/pull/2179)
 - **[Sofa.Core]** Move eq,peq utilities functions to a standalone file [#2137](https://github.com/sofa-framework/sofa/pull/2137)
 - **[Sofa.GL]** Relocate the module (again) + clarify module vs plugin definitions [#1941](https://github.com/sofa-framework/sofa/pull/1941)
 - **[Sofa.GL]** Remove warnings from deprecated headers [#2045](https://github.com/sofa-framework/sofa/pull/2045)
