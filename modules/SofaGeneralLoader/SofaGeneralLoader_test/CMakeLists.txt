@@ -4,6 +4,7 @@ project(SofaGeneralLoader_test)
 
 set(SOURCE_FILES 
     MeshXspLoader_test.cpp
+    MeshGmshLoader_test.cpp
     ReadState_test.cpp
     )
 
