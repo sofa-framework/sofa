@@ -1755,32 +1755,13 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     }
 
     vparams->drawTool()->saveLastState();
-    
-    bool wireframe = false;
+
     if (vparams->displayFlags().getShowWireFrame())
     {
         vparams->drawTool()->setPolygonMode(0, true);
-        wireframe = true;
     }
 
     vparams->drawTool()->disableLighting();
-
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-
-    const VecReal& youngModulus = _youngModulus.getValue();
-
-    bool heterogeneous = false;
-    if (drawHeterogeneousTetra.getValue())
-    {
-        minYoung=youngModulus[0];
-        maxYoung=youngModulus[0];
-        for (unsigned i=0; i<youngModulus.size(); i++)
-        {
-            if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
-            if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
-        }
-        heterogeneous = (fabs(minYoung-maxYoung) > 1e-8);
-    }
 
     if ( _showVonMisesStressPerNode.getValue() || _showVonMisesStressPerElement.getValue() )
     {
@@ -1790,6 +1771,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     ////////////// DRAW ROTATIONS //////////////
     if (vparams->displayFlags().getShowNormals())
     {
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         std::vector< defaulttype::Vector3 > points[3];
         for(unsigned ii = 0; ii<  x.size() ; ii++)
         {
@@ -1832,6 +1814,23 @@ void TetrahedronFEMForceField<DataTypes>::drawVonMisesStress(const core::visual:
                       << "TetrahedronFEMForceField state is now Invalid.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
+    }
+
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
+    const VecReal& youngModulus = _youngModulus.getValue();
+
+    bool heterogeneous = false;
+    if (drawHeterogeneousTetra.getValue())
+    {
+        minYoung=youngModulus[0];
+        maxYoung=youngModulus[0];
+        for (unsigned i=0; i<youngModulus.size(); i++)
+        {
+            if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
+            if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
+        }
+        heterogeneous = (fabs(minYoung-maxYoung) > 1e-8);
     }
 
     /// vonMises stress
@@ -1886,7 +1885,8 @@ void TetrahedronFEMForceField<DataTypes>::drawVonMisesStress(const core::visual:
             Coord pb = x[b];
             Coord pc = x[c];
             Coord pd = x[d];
-            if (!wireframe)
+
+            if ( ! vparams->displayFlags().getShowWireFrame() )
             {
                 pa = (pa + center) * Real(0.6667);
                 pb = (pb + center) * Real(0.6667);
