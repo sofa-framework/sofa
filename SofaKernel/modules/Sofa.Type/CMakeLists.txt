@@ -62,7 +62,7 @@ set(SOURCE_FILES
 
 sofa_find_package(Boost REQUIRED)
 sofa_find_package(Sofa.Config REQUIRED)
-sofa_find_package(Sofa.Compat REQUIRED BOTH_SCOPES) #TODO remove REQUIRED once the sofa code has been ported
+sofa_find_package(Sofa.Compat QUIET BOTH_SCOPES)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
