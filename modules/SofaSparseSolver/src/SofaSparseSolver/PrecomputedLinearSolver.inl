@@ -73,7 +73,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
     {
         first = false;
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->currentGroup->systemMatrix);
+        loadMatrix(*this->linearSystem.systemMatrix);
     }
 }
 
@@ -87,7 +87,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVe
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 {
-    systemSize = this->currentGroup->systemMatrix->rowSize();
+    systemSize = this->linearSystem.systemMatrix->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 

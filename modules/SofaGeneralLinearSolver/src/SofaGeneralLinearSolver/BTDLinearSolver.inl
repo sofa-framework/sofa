@@ -885,7 +885,7 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
 {
 
     const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
-    const Index nb = this->currentGroup->systemRHVector->size() / bsize;
+    const Index nb = this->linearSystem.systemRHVector->size() / bsize;
 
     //TODO => optimisation ??
     bwdContributionOnLH.clear();
@@ -910,7 +910,7 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
     {
         Vec_dRH[i]=0;
         Vec_dRH[i].resize(bsize);
-        _rh_buf.asub(i,bsize) = this->currentGroup->systemRHVector->asub(i,bsize) ;
+        _rh_buf.asub(i,bsize) = this->linearSystem.systemRHVector->asub(i,bsize) ;
 
     }
 
@@ -946,7 +946,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
     {
 
         // evaluate the Right Hand Term for the bloc b
-        RHbloc = this->currentGroup->systemRHVector->asub(b,bsize) ;
+        RHbloc = this->linearSystem.systemRHVector->asub(b,bsize) ;
 
         // compute the contribution on LH created by RH
         _acc_lh_bloc  += Minv.asub(b,b,bsize,bsize) * RHbloc;
@@ -967,7 +967,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
 
     b = current_bloc;
     // compute the bloc which indice is current_bloc
-    this->currentGroup->systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) +
+    this->linearSystem.systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) +
             bwdContributionOnLH.asub(b, bsize);
 
     if (problem.getValue())
@@ -994,7 +994,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateLHGlobal( )
             std::cout<<"bwdLH["<<current_bloc-1<<"] = H["<<current_bloc-1<<"]["<<current_bloc<<"] *( bwdLH["<<current_bloc<<"] + Minv["<<current_bloc<<"]["<<current_bloc<<"] * RH["<<current_bloc<< "])"<<std::endl;
 
         // BwdLH += Minv*RH
-        _acc_lh_bloc +=  Minv.asub(current_bloc,current_bloc,bsize,bsize) * this->currentGroup->systemRHVector->asub(current_bloc,bsize) ;
+        _acc_lh_bloc +=  Minv.asub(current_bloc,current_bloc,bsize,bsize) * this->linearSystem.systemRHVector->asub(current_bloc,bsize) ;
 
         current_bloc--;
         // BwdLH(n-1) = H(n-1)(n)*BwdLH(n)
@@ -1032,7 +1032,7 @@ void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(Index indMinBloc)
     {
 
         // fwdRH(n) += RH(n)
-        _acc_rh_bloc += this->currentGroup->systemRHVector->asub(current_bloc,bsize);
+        _acc_rh_bloc += this->linearSystem.systemRHVector->asub(current_bloc,bsize);
 
         // fwdRH(n+1) = H(n+1)(n) * fwdRH(n)
         _acc_rh_bloc = -(lambda[current_bloc].t() * _acc_rh_bloc);
@@ -1050,7 +1050,7 @@ void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(Index indMinBloc)
 
     Index b = current_bloc;
     // compute the bloc which indice is _indMaxFwdLHComputed
-    this->currentGroup->systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) +
+    this->linearSystem.systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) +
             bwdContributionOnLH.asub(b, bsize);
 
     if (problem.getValue())
@@ -1080,13 +1080,13 @@ void BTDLinearSolver<Matrix,Vector>::fwdComputeLHinBloc(Index indMaxBloc)
             if (problem.getValue())
                 std::cout<<" fwdRH["<<b+1<<"] = H["<<b+1<<"]["<<b<<"] * (fwdRH("<<b<< ") + RH("<<b<<"))"<<std::endl;
             // fwdRH(n+1) = H(n+1)(n) * (fwdRH(n) + RH(n))
-            fwdContributionOnRH.asub(b+1, bsize) = (-lambda[b].t())* ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) ;
+            fwdContributionOnRH.asub(b+1, bsize) = (-lambda[b].t())* ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) ;
         }
 
         _indMaxFwdLHComputed++; b++;
 
         // compute the bloc which indice is _indMaxFwdLHComputed
-        this->currentGroup->systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) +
+        this->linearSystem.systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) +
                 bwdContributionOnLH.asub(b, bsize);
         if (problem.getValue())
             std::cout<<"LH["<<b<<"] = Minv["<<b<<"]["<<b<<"] * (fwdRH("<<b<< ") + RH("<<b<<")) + bwdLH("<<b<<")"<<std::endl;
@@ -1168,12 +1168,12 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
     {
         const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
         Vector *Result_partial_Solve = new Vector();
-        (*Result_partial_Solve) = (*this->currentGroup->systemLHVector);
+        (*Result_partial_Solve) = (*this->linearSystem.systemLHVector);
 
-        solve(*this->currentGroup->systemMatrix,*this->currentGroup->systemLHVector, *this->currentGroup->systemRHVector);
+        solve(*this->linearSystem.systemMatrix,*this->linearSystem.systemLHVector, *this->linearSystem.systemRHVector);
 
         Vector *Result = new Vector();
-        (*Result) = (*this->currentGroup->systemLHVector);
+        (*Result) = (*this->linearSystem.systemLHVector);
 
         Vector *DR = new Vector();
         (*DR) = (*Result);
