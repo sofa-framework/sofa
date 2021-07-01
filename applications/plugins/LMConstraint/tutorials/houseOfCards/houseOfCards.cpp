@@ -22,7 +22,7 @@
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/CollisionModel.h>

@@ -52,7 +52,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/glut.h>
 
