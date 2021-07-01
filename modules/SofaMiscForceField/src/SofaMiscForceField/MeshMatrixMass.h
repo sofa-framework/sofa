@@ -86,8 +86,6 @@ public:
 
     /// @name Data of mass information
     /// @{
-    /// Mass stored on vertices
-    Data< sofa::helper::vector< Real > > d_vertexMass;
     /// Mass density of the object
     Data< sofa::helper::vector< Real > > d_massDensity;
     /// Total mass of the object
@@ -96,12 +94,9 @@ public:
 
 
     /// Values of the particles masses stored on vertices
-    topology::PointData<helper::vector<MassType> >  d_vertexMassInfo;
+    topology::PointData<helper::vector<MassType> >  d_vertexMass;
     /// Values of the particles masses stored on edges
-    topology::EdgeData<helper::vector<MassType> >   d_edgeMassInfo;
-
-    /// to display the center of gravity of the system
-    Data< sofa::helper::vector< Real > > d_edgeMass;
+    topology::EdgeData<helper::vector<MassType> >   d_edgeMass;
 
     /// if true, the mass of every element is computed based on the rest position rather than the position
     Data< bool > d_computeMassOnRest;
@@ -162,7 +157,7 @@ public:
     }
 
     int getMassCount() {
-        return d_vertexMassInfo.getValue().size();
+        return d_vertexMass.getValue().size();
     }
 
     /// Print key mass informations (totalMass, vertexMass and massDensity)
