@@ -34,7 +34,6 @@ list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.h
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.inl
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.h
-    ${SOFACONSTRAINT_SRC}/LocalMinDistance.inl
     ${SOFACONSTRAINT_SRC}/MappingGeometricStiffnessForceField.h
     ${SOFACONSTRAINT_SRC}/MappingGeometricStiffnessForceField.inl
     ${SOFACONSTRAINT_SRC}/PrecomputedConstraintCorrection.h

@@ -138,7 +138,7 @@
     
     <Node name="Floor"  >
         <MechanicalObject template="Rigid3d" name="mObjectGround"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  reserve="1" />
-        <OBBModel template="Rigid3d" name="sol" extents="100 1 100" simulated="0" moving="0" contactFriction="0.5" contactRestitution="0.5"/>
+        <OBBCollisionModel template="Rigid3d" name="sol" extents="100 1 100" simulated="0" moving="0" contactFriction="0.5" contactRestitution="0.5"/>
         <RigidMass mass="1000" inertia="166.7 166.7 166.7" />
         <FixedConstraint template="Rigid3d" name="fixedConstraint0" indices="0"/>
     </Node>

@@ -133,7 +133,11 @@ public:
     /// \li v = a
     /// \li v = a + b
     /// \li v = b * f
-    virtual void vOp(const ExecParams* params, VecId v, ConstVecId a = ConstVecId::null(), ConstVecId b = ConstVecId::null(), SReal f = 1.0 ) = 0;
+    virtual void vOp(const ExecParams* params, VecId v,
+                     ConstVecId a = ConstVecId::null(),
+                     ConstVecId b = ConstVecId::null(),
+                     SReal f = 1.0 ) = 0;
+
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
     class VMultiOpEntry : public std::pair< MultiVecId, helper::vector< std::pair< ConstMultiVecId, SReal > > >

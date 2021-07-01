@@ -445,10 +445,10 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
             points[3].push_back(pb);
         }
 
-        vparams->drawTool()->drawTriangles(points[0], defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
-        vparams->drawTool()->drawTriangles(points[1], defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
-        vparams->drawTool()->drawTriangles(points[2], defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
-        vparams->drawTool()->drawTriangles(points[3], defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[0], sofa::type::RGBAColor(0.0,0.0,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[1], sofa::type::RGBAColor(0.0,0.5,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[2], sofa::type::RGBAColor(0.0,1.0,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[3], sofa::type::RGBAColor(0.5,1.0,1.0,1.0));
 
     }
     if (drawSurface.getValue())
@@ -492,7 +492,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
             points.push_back(pd);
         }
 
-        vparams->drawTool()->drawTriangles(points, defaulttype::Vec<4,float>(1.0,0.5,0.0,1.0));
+        vparams->drawTool()->drawTriangles(points, sofa::type::RGBAColor(1.0,0.5,0.0,1.0));
 
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,false);

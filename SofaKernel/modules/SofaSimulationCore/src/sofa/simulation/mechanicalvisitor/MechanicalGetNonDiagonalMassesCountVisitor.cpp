@@ -19,17 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/helper/types/PrimitiveGroup.h>
 
-namespace sofa::core::loader
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
+#include <sofa/core/behavior/BaseMass.h>
+
+namespace sofa::simulation::mechanicalvisitor
 {
 
-///The PrimitiveGroup object that was previously in this sofa::core::loader is now in sofa::helper:types::Material.
-///The following lines is there to provide backward compatibility with existing code base.
-///This is just there for a transitional period of time and will be removed after 2018-01-07
-//TODO(dmarchal 2020-12-29): Delete that around 2021-05-01
-using sofa::helper::types::PrimitiveGroup;
+Visitor::Result MechanicalGetNonDiagonalMassesCountVisitor::fwdMass(VisitorContext* ctx, core::behavior::BaseMass* mass)
+{
+    *ctx->nodeData += !mass->isDiagonal();
+    return RESULT_CONTINUE;
+}
 
-} // namespace sofa
-
+}

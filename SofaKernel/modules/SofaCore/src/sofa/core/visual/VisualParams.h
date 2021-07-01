@@ -140,17 +140,16 @@ public:
     /// Get the projection matrix used to draw the scene. This OpenGL matrix defines the camera coordinate system with respect to the viewport, including perspective if any.
     void getProjectionMatrix( double m[16] ) const { for(unsigned i=0; i<16; i++) m[i] = m_projectionMatrix[i]; }
 
-    /// set those deprecations as error ASAP
-    [[deprecated("sceneTransform in DrawTool is removed from VisualParam, use with the ModelView and Perspective Matrices instead.")]]
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1649)", "v21.12", "Use with the ModelView and Perspective Matrices instead.")
     helper::visual::Transformation& sceneTransform() { return m_sceneTransform; }
     
-    [[deprecated("sceneTransform in DrawTool is removed from VisualParam, use with the ModelView and Perspective Matrices instead.")]]
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1649)", "v21.12", "Use with the ModelView and Perspective Matrices instead.")
     const helper::visual::Transformation& sceneTransform() const { return m_sceneTransform; }
 
-    //[[deprecated("frameBufferObject in DrawTool is removed from VisualParam, use your rendering API instead.")]]
+    //SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1649)", "v21.12", "Use your rendering API instead.")
     //sofa::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
 
-    //[[deprecated("frameBufferObject in DrawTool is removed from VisualParam, use your rendering API instead.")]]
+    //SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1649)", "v21.12", "Use your rendering API instead.")
     //sofa::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
 
     bool isSupported(unsigned int api) const

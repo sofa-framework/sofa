@@ -129,6 +129,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -174,6 +175,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -215,6 +217,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -256,6 +259,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruct
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -346,6 +350,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -391,6 +396,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -432,6 +438,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -473,6 +480,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -565,6 +573,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -610,6 +619,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -651,6 +661,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -692,6 +703,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestr
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -783,6 +795,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -828,6 +841,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -869,6 +883,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -910,6 +925,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestru
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMass );
         helper::WriteAccessor<Data<Real> > totalMass(MMM->d_totalMass);
+
         // Initialisation
         const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
@@ -1895,8 +1911,8 @@ void MeshMatrixMass<DataTypes, MassType>::copyVertexMass(){}
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::clear()
 {
-    helper::WriteAccessor < Data < MassVector > > vertexMass = d_vertexMass;
-    helper::WriteAccessor < Data < MassVector > > edgeMass = d_edgeMass;
+    helper::WriteOnlyAccessor < Data < MassVector > > vertexMass = d_vertexMass;
+    helper::WriteOnlyAccessor < Data < MassVector > > edgeMass = d_edgeMass;
     vertexMass.clear();
     edgeMass.clear();
 }

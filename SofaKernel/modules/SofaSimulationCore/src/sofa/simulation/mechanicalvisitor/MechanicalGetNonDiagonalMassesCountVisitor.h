@@ -19,4 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#error This file will be removed after sofa 21.06 release. Update your code by replacing #include<sofa/defaulttype/Vec3Types.h> with #include<sofa/defaulttype/VecTypes.h>
+#pragma once
+
+#include <sofa/simulation/MechanicalVisitor.h>
+
+namespace sofa::simulation::mechanicalvisitor
+{
+
+/** Count the number of masses which are not diagonal */
+class SOFA_SIMULATION_CORE_API MechanicalGetNonDiagonalMassesCountVisitor : public MechanicalVisitor
+{
+public:
+    MechanicalGetNonDiagonalMassesCountVisitor(const sofa::core::MechanicalParams* mparams, SReal* result)
+            : MechanicalVisitor(mparams)
+    {
+        rootData = result;
+    }
+
+    Result fwdMass(VisitorContext* ctx, sofa::core::behavior::BaseMass* mass) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalGetNonDiagonalMassesCountVisitor";}
+
+    bool writeNodeData() const override
+    {
+        return true;
+    }
+
+};
+
+}
