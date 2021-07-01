@@ -64,13 +64,13 @@ using namespace sofa::gpu::cuda;
 template<>
 void MeshMatrixMass<CudaVec3fTypes, float>::copyVertexMass()
 {
-    helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
+    helper::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
 
     for (int i=0; i<this->m_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
-    d_vertexMassInfo.endEdit();
+    d_vertexMass.endEdit();
 }
 
 template<>
@@ -113,13 +113,13 @@ void MeshMatrixMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParam
 template<>
 void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
 {
-    helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
+    helper::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
 
     for (int i=0; i<this->m_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
-    d_vertexMassInfo.endEdit();
+    d_vertexMass.endEdit();
 }
 
 template<>
@@ -162,13 +162,13 @@ void MeshMatrixMass<CudaVec2fTypes, float>::accFromF(const core::MechanicalParam
 template<>
 void MeshMatrixMass<CudaVec1fTypes, float>::copyVertexMass()
 {
-    helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
+    helper::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
 
     for (int i=0; i<this->m_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
-    d_vertexMassInfo.endEdit();
+    d_vertexMass.endEdit();
 }
 
 template<>
