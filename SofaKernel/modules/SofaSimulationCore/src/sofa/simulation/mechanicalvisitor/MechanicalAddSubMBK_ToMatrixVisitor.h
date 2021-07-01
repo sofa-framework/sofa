@@ -31,9 +31,9 @@ class SOFA_SIMULATION_CORE_API MechanicalAddSubMBK_ToMatrixVisitor : public Mech
 {
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    const helper::vector<unsigned> & subMatrixIndex; // index of the point where the matrix must be computed
+    const type::vector<unsigned> & subMatrixIndex; // index of the point where the matrix must be computed
 
-    MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix, const helper::vector<unsigned> & Id);
+    MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix, const type::vector<unsigned> & Id);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

@@ -321,7 +321,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
             simulation::TaskScheduler* taskScheduler = simulation::TaskScheduler::getInstance();
             simulation::CpuTask::Status status;
 
-            helper::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
+            type::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
             sofa::Index nbTasks = constraintCorrections.size();
             tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
             sofa::Index dim = current_cp->W.rowSize();
@@ -471,7 +471,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
     if(d_computeConstraintForces.getValue())
     {
-        WriteOnlyAccessor<Data<helper::vector<double>>> constraints = d_constraintForces;
+        WriteOnlyAccessor<Data<type::vector<double>>> constraints = d_constraintForces;
         constraints.resize(current_cp->getDimension());
         for(int i=0; i<current_cp->getDimension(); i++)
         {
@@ -696,7 +696,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     double error=0.0;
 
     bool convergence = false;
-    sofa::helper::vector<double> tempForces;
+    sofa::type::vector<double> tempForces;
     if(sor != 1.0) tempForces.resize(dimension);
 
     if(scaleTolerance && !allVerified)
@@ -719,9 +719,9 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     }
 
     bool showGraphs = false;
-    sofa::helper::vector<double>* graph_residuals = nullptr;
-    std::map < std::string, sofa::helper::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
-    sofa::helper::vector<double> tabErrors;
+    sofa::type::vector<double>* graph_residuals = nullptr;
+    std::map < std::string, sofa::type::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
+    sofa::type::vector<double> tabErrors;
 
     if(solver)
     {
@@ -817,10 +817,10 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                 std::ostringstream oss;
                 oss << "f" << j;
 
-                sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
+                sofa::type::vector<double>& graph_force = (*graph_forces)[oss.str()];
                 graph_force.push_back(force[j]);
 
-                sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+                sofa::type::vector<double>& graph_violation = (*graph_violations)[oss.str()];
                 graph_violation.push_back(d[j]);
             }
 
@@ -881,7 +881,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     {
         solver->graphErrors.endEdit();
 
-        sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        sofa::type::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
         for(j=0; j<dimension; )
@@ -928,7 +928,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     double error=0.0;
 
     bool convergence = false;
-    sofa::helper::vector<double> tempForces;
+    sofa::type::vector<double> tempForces;
     if(sor != 1.0) tempForces.resize(dimension);
 
     if(scaleTolerance && !allVerified)
@@ -951,9 +951,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     }
 
     bool showGraphs = false;
-    sofa::helper::vector<double>* graph_residuals = nullptr;
-    std::map < std::string, sofa::helper::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
-    sofa::helper::vector<double> tabErrors;
+    sofa::type::vector<double>* graph_residuals = nullptr;
+    std::map < std::string, sofa::type::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
+    sofa::type::vector<double> tabErrors;
 
     if(solver)
     {
@@ -1071,10 +1071,10 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                 std::ostringstream oss;
                 oss << "f" << j;
 
-                sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
+                sofa::type::vector<double>& graph_force = (*graph_forces)[oss.str()];
                 graph_force.push_back(force[j]);
 
-                sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+                sofa::type::vector<double>& graph_violation = (*graph_violations)[oss.str()];
                 graph_violation.push_back(d[j]);
             }
 
@@ -1134,7 +1134,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     {
         solver->graphErrors.endEdit();
 
-        sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        sofa::type::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
         for(int j=0; j<dimension; )

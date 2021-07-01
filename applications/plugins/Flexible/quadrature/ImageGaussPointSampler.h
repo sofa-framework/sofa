@@ -113,7 +113,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
         typedef typename ImageGaussPointSamplerT::raTransform raTransform;
         typedef typename ImageGaussPointSamplerT::factType factType;
 
-        typedef defaulttype::Vec<3,int> iCoord;
+        typedef type::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data
@@ -144,7 +144,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
         // fixed points = points set by the user in soft regions.
         // Disabled for now since pos is cleared
         SeqPositions fpos_voxelIndex;
-        helper::vector<unsigned int> fpos_voronoiIndex;
+        type::vector<unsigned int> fpos_voronoiIndex;
         for(unsigned int i=0; i<pos.size(); i++)
         {
             Coord p = transform->toImageInt(pos[i]);
@@ -166,7 +166,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
 
         // farthest point sampling using geodesic distances
         SeqPositions newpos_voxelIndex;
-        helper::vector<unsigned int> newpos_voronoiIndex;
+        type::vector<unsigned int> newpos_voronoiIndex;
 
         for(unsigned int i=0; i<fpos_voxelIndex.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
         while(newpos_voxelIndex.size()+fpos_voxelIndex.size()<nbsoft)
@@ -315,7 +315,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
         typedef typename ImageGaussPointSamplerT::Coord Coord;
         typedef typename ImageGaussPointSamplerT::factType factType;
 
-        typedef defaulttype::Vec<3,int> iCoord;
+        typedef type::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data
@@ -326,8 +326,8 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
         waDist werr(This->f_error);        typename DistTypes::CImgT& dist = werr->getCImg();
 
         // compute
-        helper::vector<Coord> pos(2);
-        helper::vector<unsigned int> vorindex;
+        type::vector<Coord> pos(2);
+        type::vector<unsigned int> vorindex;
         vorindex.push_back(*(This->Reg[index].voronoiIndices.begin()));
         vorindex.push_back(This->Reg.size()+1);
         for(unsigned int i=0; i<This->Reg.size(); i++) if(vorindex[1]==*(This->Reg[i].voronoiIndices.begin())) vorindex[1]++; // check that the voronoi index is unique. not necessary in principle
@@ -400,7 +400,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
 
         // list of absolute coords
         factType &fact = This->Reg[factIndex];
-        helper::vector<Coord> pi(fact.nb);
+        type::vector<Coord> pi(fact.nb);
 
         // weights (one line for each parent)
         typename ImageGaussPointSamplerT::Matrix wi(fact.parentsToNodeIndex.size(),fact.nb); wi.setZero();
@@ -479,7 +479,7 @@ public:
     typedef typename MaskTypes::T  MaskT;
     typedef helper::ReadAccessor<Data< MaskTypes > > raMask;
     Data< MaskTypes > f_mask; ///< optional mask to restrict the sampling region
-    typedef helper::vector<MaskT> MaskLabelsType;
+    typedef type::vector<MaskT> MaskLabelsType;
     typedef helper::ReadAccessor<Data< MaskLabelsType > > raMaskLabels;
     Data< MaskLabelsType > f_maskLabels; ///< Mask labels where sampling is restricted
 
@@ -565,7 +565,7 @@ protected:
     typedef typename std::set<unsigned int> indList;  ///< list of parent indices
     typedef typename indList::iterator indListIt;
     typedef typename defaulttype::PolynomialFitFactors<Real> factType;
-    helper::vector<factType> Reg;  ///< data related to each voronoi region
+    type::vector<factType> Reg;  ///< data related to each voronoi region
     //@}
 
     // polynomial orders
@@ -658,10 +658,10 @@ protected:
         vol.resize ( nb );
         transforms.resize ( nb );
 
-        helper::vector<helper::vector<unsigned int> > index(nb);
-        helper::vector<helper::vector<Real> > w(nb);
-        helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw(nb);
-        helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
+        type::vector<type::vector<unsigned int> > index(nb);
+        type::vector<type::vector<Real> > w(nb);
+        type::vector<type::vector<type::Vec<spatial_dimensions,Real> > > dw(nb);
+        type::vector<type::vector<type::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
 
         for(unsigned int i=0; i<nb; i++)
         {

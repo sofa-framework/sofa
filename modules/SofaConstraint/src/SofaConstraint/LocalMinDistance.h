@@ -101,10 +101,10 @@ public:
     /// According to the local configuration around the found intersected primitive,
     /// we build a "Region Of Interest" geometric cone.
     /// Pertinent intersections have to belong to this cone, others are not taking into account anymore.
-    bool testValidity(Sphere&, const defaulttype::Vector3&) const { return true; }
-    bool testValidity(Point&, const defaulttype::Vector3&) const;
-    bool testValidity(Line&, const defaulttype::Vector3&) const;
-    bool testValidity(Triangle&, const defaulttype::Vector3&) const;
+    bool testValidity(Sphere&, const type::Vector3&) const { return true; }
+    bool testValidity(Point&, const type::Vector3&) const;
+    bool testValidity(Line&, const type::Vector3&) const;
+    bool testValidity(Triangle&, const type::Vector3&) const;
 
 };
 

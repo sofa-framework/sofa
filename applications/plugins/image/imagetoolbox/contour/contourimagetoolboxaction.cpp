@@ -56,11 +56,11 @@ sofa::component::engine::ContourImageToolBoxNoTemplated* ContourImageToolBoxActi
 }
 
 
-void ContourImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value)
+void ContourImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& value)
 {
     
     select->setChecked(false);
-    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     
     sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
 
@@ -101,12 +101,12 @@ void ContourImageToolBoxAction::selectionPointButtonClick(bool b)
     if(b)
     {
         //select->setChecked(true);
-        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     else
     {
         //select->setChecked(false);
-        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     
 }
@@ -180,7 +180,7 @@ void ContourImageToolBoxAction::drawSegment()
 
     VecPixCoord& vip = *(l->d_vecPixCoord.beginEdit());
 
-    sofa::defaulttype::Vec3i &pos = sectionPosition;
+    sofa::type::Vec3i &pos = sectionPosition;
 
 
     VecPixCoord v1,v2,v3;
@@ -206,7 +206,7 @@ void ContourImageToolBoxAction::drawSegment()
 
 void ContourImageToolBoxAction::updateGraphs()
 {
-    sofa::defaulttype::Vec3d pos = CITB()->d_ip.getValue();
+    sofa::type::Vec3d pos = CITB()->d_ip.getValue();
     
     //QRectF boundaryXY = GraphXY->itemsBoundingRect();
     
@@ -239,9 +239,9 @@ void ContourImageToolBoxAction::updateColor()
 void ContourImageToolBoxAction::sectionButtonClick()
 {
     //std::cout << "ContourImageToolBoxAction::sectionButtonClick()"<<std::endl;
-    sofa::defaulttype::Vec3d pos = CITB()->d_ip.getValue();
+    sofa::type::Vec3d pos = CITB()->d_ip.getValue();
     
-    sofa::defaulttype::Vec3i pos2(sofa::helper::round(pos.x()),sofa::helper::round(pos.y()),sofa::helper::round(pos.z()));
+    sofa::type::Vec3i pos2(sofa::helper::round(pos.x()),sofa::helper::round(pos.y()),sofa::helper::round(pos.z()));
 
     emit sectionChanged(pos2);
 }
@@ -263,7 +263,7 @@ void ContourImageToolBoxAction::createPosition()
     setImageSize(x, y, z);
 
 
-    sofa::defaulttype::Vec3d pos = lp->d_ip.getValue();
+    sofa::type::Vec3d pos = lp->d_ip.getValue();
     vecX->setValue(sofa::helper::round(pos.x()));
     vecY->setValue(sofa::helper::round(pos.y()));
     vecZ->setValue(sofa::helper::round(pos.z()));
@@ -329,7 +329,7 @@ void ContourImageToolBoxAction::createThreshold()
 void ContourImageToolBoxAction::positionModified()
 {
     //std::cout << "positionModified" << std::endl;
-    sofa::defaulttype::Vec3d v(vecX->value(),vecY->value(),vecZ->value());
+    sofa::type::Vec3d v(vecX->value(),vecY->value(),vecZ->value());
     
     sofa::component::engine::ContourImageToolBoxNoTemplated* lp = CITB();
     
@@ -369,7 +369,7 @@ void ContourImageToolBoxAction::thresholdModified()
     //emit updateImage();
 }
 
-void ContourImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i v)
+void ContourImageToolBoxAction::optionChangeSection(sofa::type::Vec3i v)
 {
     sectionPosition = v;
 

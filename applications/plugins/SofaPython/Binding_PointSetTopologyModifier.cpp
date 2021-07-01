@@ -26,7 +26,7 @@ static PyObject * PointSetTopologyModifier_addPoints(PyObject *self, PyObject * 
         }
 
         std::size_t nbAncestorElems  = PyList_Size(ancestorElemsArg);
-        sofa::helper::vector< PointAncestorElem > ancestorElems;
+        sofa::type::vector< PointAncestorElem > ancestorElems;
 
         for(std::size_t i=0;i<nbAncestorElems;++i)
         {

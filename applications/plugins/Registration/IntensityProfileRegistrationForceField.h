@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/OptionsGroup.h>
 
 
@@ -90,7 +90,7 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> MatNN;
+    typedef type::Mat<N,N,Real> MatNN;
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -157,7 +157,7 @@ public:
 
 protected :
 
-    sofa::helper::vector<MatNN>  dfdx;
+    sofa::type::vector<MatNN>  dfdx;
     VecCoord targetPos;
     SReal m_potentialEnergy;
 
@@ -170,7 +170,7 @@ protected :
     /// the width of the resulting image is 2*searchRange
     void udpateSimilarity();
 
-    Data< defaulttype::Vec<2,unsigned int> > Sizes; ///< Inwards/outwards profile size.
+    Data< type::Vec<2,unsigned int> > Sizes; ///< Inwards/outwards profile size.
     Data< Real > Step; ///< Spacing of the profile discretization.
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubi
     Data< helper::OptionsGroup > SimilarityMeasure;  ///< ssd,ncc

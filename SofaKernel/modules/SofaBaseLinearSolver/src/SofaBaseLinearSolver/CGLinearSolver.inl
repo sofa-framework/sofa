@@ -125,13 +125,12 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     /// Compute the norm of the right-hand-side vector b
     double normb = b.norm();
 
-
-    std::map < std::string, sofa::helper::vector<SReal> >& graph = *d_graph.beginEdit();
-    sofa::helper::vector<SReal>& graph_error = graph[std::string("Error")];
+    std::map < std::string, sofa::type::vector<SReal> >& graph = *d_graph.beginEdit();
+    sofa::type::vector<SReal>& graph_error = graph[std::string("Error")];
     graph_error.clear();
     graph_error.push_back(1);
 
-    sofa::helper::vector<SReal>& graph_den = graph[std::string("Denominator")];
+    sofa::type::vector<SReal>& graph_den = graph[std::string("Denominator")];
     graph_den.clear();
 
 

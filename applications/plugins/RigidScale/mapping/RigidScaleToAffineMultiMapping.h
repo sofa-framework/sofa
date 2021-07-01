@@ -22,7 +22,7 @@
 #ifndef RIGIDTOAFFINEMULTIMAPPING_H
 #define RIGIDTOAFFINEMULTIMAPPING_H
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/BaseMatrix.h> 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
@@ -89,16 +89,16 @@ public:
     typedef typename Inherit::OutDataVecDeriv OutDataVecDeriv;
     typedef typename Inherit::OutDataMatrixDeriv OutDataMatrixDeriv;
 
-    typedef Mat<OutDeriv::total_size,InDeriv1::total_size, SReal> MatBlock1;
-	typedef Mat<OutDeriv::total_size, InDeriv2::total_size, SReal> MatBlock2;
+    typedef type::Mat<OutDeriv::total_size,InDeriv1::total_size, SReal> MatBlock1;
+    typedef type::Mat<OutDeriv::total_size, InDeriv2::total_size, SReal> MatBlock2;
 
     typedef component::linearsolver::EigenSparseMatrix<In1, Out> SparseJMatrixEigen1;
     typedef component::linearsolver::EigenSparseMatrix<In2, Out> SparseJMatrixEigen2;
     typedef linearsolver::EigenSparseMatrix<In1,In1> SparseKMatrixEigen1;
     typedef linearsolver::EigenSparseMatrix<In2,In2> SparseKMatrixEigen2;
 
-    typedef helper::vector<defaulttype::BaseMatrix*> jacobianMatrices;
-    typedef helper::vector<defaulttype::BaseMatrix*> stiffnessMatrices;
+    typedef type::vector<defaulttype::BaseMatrix*> jacobianMatrices;
+    typedef type::vector<defaulttype::BaseMatrix*> stiffnessMatrices;
 
 	/****************** CONSTRUCTOR / DESTRUCTOR ***********************/
     RigidScaleToAffineMultiMapping();
@@ -115,47 +115,47 @@ public:
     using Inherit::computeAccFromMapping;
 
     void apply(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
-			   , const helper::vector<OutDataVecCoord*>& /*dataVecOutPos*/
-			   , const helper::vector<const In1DataVecCoord*>& /*dataVecIn1Pos*/
-               , const helper::vector<const In2DataVecCoord*>& /*dataVecIn2Pos*/) override;
+			   , const type::vector<OutDataVecCoord*>& /*dataVecOutPos*/
+			   , const type::vector<const In1DataVecCoord*>& /*dataVecIn1Pos*/
+               , const type::vector<const In2DataVecCoord*>& /*dataVecIn2Pos*/) override;
 
     void applyJ(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
-			    , const helper::vector< OutDataVecDeriv*>& /*dataVecOutVel*/		
-				, const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/ 
-                , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/) override;
+			    , const type::vector< OutDataVecDeriv*>& /*dataVecOutVel*/		
+				, const type::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/ 
+                , const type::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/) override;
 
     void applyJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
-				 , const helper::vector< In1DataVecDeriv*>& /*dataVecOut1Force*/
-				 , const helper::vector< In2DataVecDeriv*>& /*dataVecOut2Force*/
-                 , const helper::vector<const OutDataVecDeriv*>& /*dataVecInForce*/) override;
+				 , const type::vector< In1DataVecDeriv*>& /*dataVecOut1Force*/
+				 , const type::vector< In2DataVecDeriv*>& /*dataVecOut2Force*/
+                 , const type::vector<const OutDataVecDeriv*>& /*dataVecInForce*/) override;
 
-    void applyJT(const helper::vector< InMatrixDeriv1*>& /*outConstraint1*/ 
-				 , const helper::vector< InMatrixDeriv2*>& /*outConstraint2*/
-                 , const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/);
+    void applyJT(const type::vector< InMatrixDeriv1*>& /*outConstraint1*/ 
+				 , const type::vector< InMatrixDeriv2*>& /*outConstraint2*/
+                 , const type::vector<const OutMatrixDeriv*>& /*inConstraint*/);
 	
 	void applyJT(const core::ConstraintParams* /* cparams */
-				 , const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */
-				 , const helper::vector< In2DataMatrixDeriv*>&  /* dataMatOut2Const */
-                 , const helper::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */) override;
+				 , const type::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */
+				 , const type::vector< In2DataMatrixDeriv*>&  /* dataMatOut2Const */
+                 , const type::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */) override;
 	
     void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override;
 
     void computeAccFromMapping(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
-							   , const helper::vector< OutDataVecDeriv*>& /*dataVecOutAcc*/
-							   , const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/
-							   , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/
-							   , const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Acc*/
-                               , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Acc*/) override;
+							   , const type::vector< OutDataVecDeriv*>& /*dataVecOutAcc*/
+							   , const type::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/
+							   , const type::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/
+							   , const type::vector<const In1DataVecDeriv*>& /*dataVecIn1Acc*/
+                               , const type::vector<const In2DataVecDeriv*>& /*dataVecIn2Acc*/) override;
 
     void computeAccFromMapping(const core::MechanicalParams* /*mparams*/, OutVecDeriv& /*f*/,const OutVecCoord& /*x*/, const OutVecDeriv& /*v*/);
 
-    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
 
     const sofa::defaulttype::BaseMatrix* getK() override;
 
-    Data< helper::vector<unsigned> > index;  ///< Two indices per child: the index of the rigid, and the index of scale
+    Data< type::vector<unsigned> > index;  ///< Two indices per child: the index of the rigid, and the index of scale
 	Data< bool > automaticInit; ///< Automatic setup based only on the rigid position. The index data is init, the scale mechanical state is reinit and the affine mechanical state is reinit.
     Data< bool > useGeometricStiffness; ///< To indication if we use the geometric stiffness
 
@@ -184,7 +184,7 @@ protected:
     SparseJMatrixEigen2 _J2;
     jacobianMatrices _Js;
 
-    helper::vector<SparseJMatrixEigen1*> _DJ1;
+    type::vector<SparseJMatrixEigen1*> _DJ1;
 
     // In/Out mechanical object
     InType1* stateIn1;

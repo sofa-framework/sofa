@@ -29,7 +29,8 @@ namespace sofa::gui::qt
 {
 
 using sofa::helper::Creator;
-using sofa::helper::fixed_array;
+using sofa::type::fixed_array;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 Creator<DataWidgetFactory, SimpleDataWidget<bool> > DWClass_bool("default",true);
@@ -98,8 +99,8 @@ Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,6> > > DWClass_f
 Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<float,8> > > DWClass_fixed_array8f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<double,8> > > DWClass_fixed_array8d("default",true);
 
-Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<float> > > DWClass_Quatf("default",true);
-Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<double> > > DWClass_Quatd("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::type::Quat<float> > > DWClass_Quatf("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::type::Quat<double> > > DWClass_Quatd("default",true);
 
 
 using sofa::helper::Polynomial_LD;

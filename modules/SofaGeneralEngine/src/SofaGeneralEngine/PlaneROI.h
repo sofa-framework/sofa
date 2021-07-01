@@ -45,14 +45,14 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(PlaneROI,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
-    typedef defaulttype::Vec<6,Real> Vec6;
-    typedef defaulttype::Vec<10,Real> Vec10;
+    typedef type::Vec<3,Real> Vec3;
+    typedef type::Vec<6,Real> Vec6;
+    typedef type::Vec<10,Real> Vec10;
     typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
 
     typedef typename DataTypes::CPos CPos;
 
-    typedef defaulttype::Vec<3,Real> Point;
+    typedef type::Vec<3,Real> Point;
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
@@ -102,11 +102,11 @@ protected:
 
 public:
     //Input
-    Data< helper::vector<Vec10> > planes; ///< Plane defined by 3 points and a depth distance
+    Data< type::vector<Vec10> > planes; ///< Plane defined by 3 points and a depth distance
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
-    Data<helper::vector<Edge> > f_edges; ///< Edge Topology
-    Data<helper::vector<Triangle> > f_triangles; ///< Triangle Topology
-    Data<helper::vector<Tetra> > f_tetrahedra; ///< NOT YET
+    Data<type::vector<Edge> > f_edges; ///< Edge Topology
+    Data<type::vector<Triangle> > f_triangles; ///< Triangle Topology
+    Data<type::vector<Tetra> > f_tetrahedra; ///< NOT YET
     Data<bool> f_computeEdges; ///< If true, will compute edge list and index list inside the ROI.
     Data<bool> f_computeTriangles; ///< If true, will compute triangle list and index list inside the ROI.
     Data<bool> f_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI.
@@ -117,9 +117,9 @@ public:
     Data<SetIndex> f_triangleIndices; ///< Indices of the triangles contained in the ROI
     Data<SetIndex> f_tetrahedronIndices; ///< Indices of the tetrahedra contained in the ROI
     Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
-    Data<helper::vector<Edge> > f_edgesInROI; ///< Edges contained in the ROI
-    Data<helper::vector<Triangle> > f_trianglesInROI; ///< Triangles contained in the ROI
-    Data<helper::vector<Tetra> > f_tetrahedraInROI; ///< Tetrahedra contained in the ROI
+    Data<type::vector<Edge> > f_edgesInROI; ///< Edges contained in the ROI
+    Data<type::vector<Triangle> > f_trianglesInROI; ///< Triangles contained in the ROI
+    Data<type::vector<Tetra> > f_tetrahedraInROI; ///< Tetrahedra contained in the ROI
 
     //Parameter
     Data<bool> p_drawBoxes; ///< Draw Box(es)

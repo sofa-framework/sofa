@@ -89,8 +89,8 @@ void Spiral<DataTypes>::doUpdate()
         if (t0 > 0) { r = A*t; }
         else        { r = -A*t; }
 
-        sofa::defaulttype::Vec<3, Real> v(r*cos(a), r*sin(a), x0[i].z());
-        sofa::defaulttype::Vec<3, Real> n(- A*sin(t) - A*t*cos(t), A*cos(t) - A*t*sin(t), 0);
+        sofa::type::Vec<3, Real> v(r*cos(a), r*sin(a), x0[i].z());
+        sofa::type::Vec<3, Real> n(- A*sin(t) - A*t*cos(t), A*cos(t) - A*t*sin(t), 0);
         n.normalize();
         if (a > - M_PI/2 && a < M_PI_2 && n.y() > 0.8f)
         {

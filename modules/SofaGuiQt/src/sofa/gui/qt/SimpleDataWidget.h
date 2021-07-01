@@ -22,10 +22,10 @@
 #pragma once
 #include "DataWidget.h"
 #include "ModifyObject.h"
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/core/topology/Topology.h>
 #include "WDoubleLineEdit.h"
 #include <climits>
@@ -47,7 +47,7 @@
 namespace sofa::gui::qt
 {
 
-using sofa::helper::Quater;
+using sofa::type::Quat;
 
 /// This class is used to specify how to graphically represent a data type,
 /// by default using a simple QLineEdit
@@ -568,14 +568,14 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////
-/// sofa::helper::fixed_array support
+/// sofa::type::fixed_array support
 ////////////////////////////////////////////////////////////////
 
 template<class T, sofa::Size N>
-class vector_data_trait < sofa::helper::fixed_array<T, N> >
+class vector_data_trait < sofa::type::fixed_array<T, N> >
 {
 public:
-    typedef sofa::helper::fixed_array<T, N> data_type;
+    typedef sofa::type::fixed_array<T, N> data_type;
     typedef T value_type;
     enum { NDIM = 1 };
     enum { SIZE = N };
@@ -600,7 +600,7 @@ public:
 };
 
 template<class T, sofa::Size N>
-class data_widget_container < sofa::helper::fixed_array<T, N> > : public fixed_vector_data_widget_container < sofa::helper::fixed_array<T, N> >
+class data_widget_container < sofa::type::fixed_array<T, N> > : public fixed_vector_data_widget_container < sofa::type::fixed_array<T, N> >
 {};
 
 
@@ -610,7 +610,7 @@ class data_widget_container < sofa::helper::fixed_array<T, N> > : public fixed_v
 
 template<>
 class vector_data_trait < sofa::core::topology::Topology::Edge >
-    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 2 > >
+    : public vector_data_trait < sofa::type::fixed_array < sofa::core::topology::Topology::PointID, 2 > >
 {
 };
 
@@ -620,7 +620,7 @@ class data_widget_container < sofa::core::topology::Topology::Edge > : public fi
 
 template<>
 class vector_data_trait < sofa::core::topology::Topology::Triangle >
-    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 3 > >
+    : public vector_data_trait < sofa::type::fixed_array < sofa::core::topology::Topology::PointID, 3 > >
 {
 };
 
@@ -630,7 +630,7 @@ class data_widget_container < sofa::core::topology::Topology::Triangle > : publi
 
 template<>
 class vector_data_trait < sofa::core::topology::Topology::Quad >
-    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 4 > >
+    : public vector_data_trait < sofa::type::fixed_array < sofa::core::topology::Topology::PointID, 4 > >
 {
 };
 
@@ -640,7 +640,7 @@ class data_widget_container < sofa::core::topology::Topology::Quad > : public fi
 
 template<>
 class vector_data_trait < sofa::core::topology::Topology::Tetrahedron >
-    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 4 > >
+    : public vector_data_trait < sofa::type::fixed_array < sofa::core::topology::Topology::PointID, 4 > >
 {
 };
 
@@ -650,7 +650,7 @@ class data_widget_container < sofa::core::topology::Topology::Tetrahedron > : pu
 
 template<>
 class vector_data_trait < sofa::core::topology::Topology::Hexahedron >
-    : public vector_data_trait < sofa::helper::fixed_array < sofa::core::topology::Topology::PointID, 8 > >
+    : public vector_data_trait < sofa::type::fixed_array < sofa::core::topology::Topology::PointID, 8 > >
 {
 };
 
@@ -663,10 +663,10 @@ class data_widget_container < sofa::core::topology::Topology::Hexahedron > : pub
 ////////////////////////////////////////////////////////////////
 
 template<sofa::Size N, class T>
-class vector_data_trait < sofa::defaulttype::Vec<N, T> >
+class vector_data_trait < sofa::type::Vec<N, T> >
 {
 public:
-    typedef sofa::defaulttype::Vec<N, T> data_type;
+    typedef sofa::type::Vec<N, T> data_type;
     typedef T value_type;
     typedef typename data_type::Size Size;
     enum { NDIM = 1 };
@@ -691,7 +691,7 @@ public:
 };
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::header(const data_type& /*d*/, Size i)
+inline const char* vector_data_trait < sofa::type::Vec<2, float> >::header(const data_type& /*d*/, Size i)
 {
     switch(i)
     {
@@ -702,7 +702,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::heade
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::header(const data_type& /*d*/, Size i)
+inline const char* vector_data_trait < sofa::type::Vec<2, double> >::header(const data_type& /*d*/, Size i)
 {
     switch(i)
     {
@@ -713,7 +713,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::head
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::header(const data_type& /*d*/, Size i)
+inline const char* vector_data_trait < sofa::type::Vec<3, float> >::header(const data_type& /*d*/, Size i)
 {
     switch(i)
     {
@@ -725,7 +725,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::heade
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::header(const data_type& /*d*/, Size i)
+inline const char* vector_data_trait < sofa::type::Vec<3, double> >::header(const data_type& /*d*/, Size i)
 {
     switch(i)
     {
@@ -737,7 +737,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::head
 }
 
 template<sofa::Size N, class T>
-class data_widget_container < sofa::defaulttype::Vec<N, T> > : public fixed_vector_data_widget_container < sofa::defaulttype::Vec<N, T> >
+class data_widget_container < sofa::type::Vec<N, T> > : public fixed_vector_data_widget_container < sofa::type::Vec<N, T> >
 {};
 
 ////////////////////////////////////////////////////////////////
@@ -745,10 +745,10 @@ class data_widget_container < sofa::defaulttype::Vec<N, T> > : public fixed_vect
 ////////////////////////////////////////////////////////////////
 
 template<class T>
-class vector_data_trait < Quater<T> >
+class vector_data_trait < Quat<T> >
 {
 public:
-    typedef Quater<T> data_type;
+    typedef Quat<T> data_type;
     typedef T value_type;
     enum { NDIM = 1 };
     enum { SIZE = 4 };
@@ -779,7 +779,7 @@ public:
 };
 
 template<class T>
-class data_widget_container < Quater<T> > : public fixed_vector_data_widget_container < Quater<T> >
+class data_widget_container < Quat<T> > : public fixed_vector_data_widget_container < Quat<T> >
 {};
 
 
@@ -898,14 +898,14 @@ public:
 #endif
 
 ////////////////////////////////////////////////////////////////
-/// sofa::defaulttype::Mat support
+/// sofa::type::Mat support
 ////////////////////////////////////////////////////////////////
 
 template<sofa::Size L, sofa::Size C, class T>
-class vector_data_trait < sofa::defaulttype::Mat<L, C, T> >
+class vector_data_trait < sofa::type::Mat<L, C, T> >
 {
 public:
-    typedef sofa::defaulttype::Mat<L, C, T> data_type;
+    typedef sofa::type::Mat<L, C, T> data_type;
     typedef typename data_type::Line value_type;
     enum { NDIM = 1 };
     enum { SIZE = L };
@@ -929,7 +929,7 @@ public:
 };
 
 template<sofa::Size L, sofa::Size C, class T>
-class data_widget_container < sofa::defaulttype::Mat<L, C, T> > : public fixed_grid_data_widget_container < sofa::defaulttype::Mat<L, C, T> >
+class data_widget_container < sofa::type::Mat<L, C, T> > : public fixed_grid_data_widget_container < sofa::type::Mat<L, C, T> >
 {};
 
 ////////////////////////////////////////////////////////////////

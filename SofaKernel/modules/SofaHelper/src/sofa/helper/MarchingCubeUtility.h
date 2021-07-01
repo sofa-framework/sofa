@@ -24,8 +24,8 @@
 
 #include <sofa/helper/config.h>
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/set.h>
 #include <sofa/helper/io/Mesh.h>
 #include <map>
@@ -34,9 +34,9 @@ namespace sofa
 {
 namespace helper
 {
-using sofa::defaulttype::Vec;
-using sofa::defaulttype::Vector3;
-using sofa::helper::vector;
+using sofa::type::Vec;
+using sofa::type::Vector3;
+using sofa::type::vector;
 
 class SOFA_HELPER_API MarchingCubeUtility
 {
@@ -122,27 +122,27 @@ public:
     /// mesh is a vector containing the triangles defined as a sequence of three indices
     /// map_indices gives the correspondance between an indice and a 3d position in space
     void run ( unsigned char *data, const float isolevel,
-            sofa::helper::vector< PointID > &triangles,
-            sofa::helper::vector< Vector3>  &vertices,
-            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr ) const;
+            sofa::type::vector< PointID > &triangles,
+            sofa::type::vector< Vector3>  &vertices,
+            type::vector< type::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr ) const;
 
     /// Same as the previous function but the surfaces are constructed by propagating from seeds.
     /// Faster than previous but it need the precomputation of the seeds.
-    void run ( unsigned char *_data, const sofa::helper::vector< Vec3i > & seeds,
+    void run ( unsigned char *_data, const sofa::type::vector< Vec3i > & seeds,
             const float isolevel,
-            sofa::helper::vector< PointID >& mesh,
-            sofa::helper::vector< Vector3>& vertices,
+            sofa::type::vector< PointID >& mesh,
+            sofa::type::vector< Vector3>& vertices,
             std::map< Vector3, PointID>& map_vertices,
-            helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
+            type::vector< type::vector<unsigned int> >*triangleIndexInRegularGrid,
             bool propagate ) const;
 
     /// Same as the previous function but the surfaces are constructed by propagating from seeds.
     /// Faster than previous but it need the precomputation of the seeds.
     void run ( unsigned char *data, const vector<Vec3i>& seeds,
             const float isolevel,
-            sofa::helper::vector< PointID > &triangles,
-            sofa::helper::vector< Vector3>  &vertices,
-            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr,
+            sofa::type::vector< PointID > &triangles,
+            sofa::type::vector< Vector3>  &vertices,
+            type::vector< type::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr,
             bool propagate = true ) const;
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
@@ -181,12 +181,12 @@ private:
 
     inline bool testGrid ( const float v, const float isolevel ) const;
 
-    inline void updateTriangleInRegularGridVector ( helper::vector< helper::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, unsigned int nbTriangles ) const;
+    inline void updateTriangleInRegularGridVector ( type::vector< type::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, unsigned int nbTriangles ) const;
 
     int polygonise ( const GridCell &grid, int& cubeConf, const float isolevel,
-            sofa::helper::vector< PointID > &triangles,
+            sofa::type::vector< PointID > &triangles,
             std::map< Vector3, PointID> &map_vertices,
-            sofa::helper::vector< Vector3 > &map_indices ) const ;
+            sofa::type::vector< Vector3 > &map_indices ) const ;
 
     bool getVoxel ( unsigned int index, const unsigned char *dataVoxels ) const
     {
@@ -206,13 +206,13 @@ private:
     void smoothData ( unsigned char *data ) const;
 
     /// Propagate the triangulation surface creation from a cell.
-    void propagateFrom ( const sofa::helper::vector<Vec3i>& coord,
+    void propagateFrom ( const sofa::type::vector<Vec3i>& coord,
             unsigned char* data, const float isolevel,
-            sofa::helper::vector< PointID >& triangles,
-            sofa::helper::vector< Vector3 >& vertices,
+            sofa::type::vector< PointID >& triangles,
+            sofa::type::vector< Vector3 >& vertices,
             std::set<Vec3i>& generatedCubes,
             std::map< Vector3, PointID>& map_vertices,
-            helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = nullptr,
+            type::vector< type::vector<unsigned int> >* triangleIndexInRegularGrid = nullptr,
             bool propagate = true ) const;
 
 private:

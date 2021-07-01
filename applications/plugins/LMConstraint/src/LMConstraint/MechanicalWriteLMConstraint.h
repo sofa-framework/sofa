@@ -71,7 +71,7 @@ protected:
     unsigned int offset;
     sofa::core::ConstraintParams::ConstOrder order;
     core::MultiVecId id;
-    helper::vector< core::behavior::BaseLMConstraint *> datasC;
+    type::vector< core::behavior::BaseLMConstraint *> datasC;
 
 };
 

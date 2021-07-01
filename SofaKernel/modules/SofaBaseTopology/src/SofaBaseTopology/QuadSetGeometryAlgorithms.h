@@ -57,7 +57,7 @@ protected:
         : EdgeSetGeometryAlgorithms<DataTypes>()
         , showQuadIndices(core::objectmodel::Base::initData(&showQuadIndices, (bool) false, "showQuadIndices", "Debug : view Quad indices"))
         , _drawQuads(core::objectmodel::Base::initData(&_drawQuads, false, "drawQuads","if true, draw the quads in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::helper::types::RGBAColor(0.0f,0.4f,0.4f,1.0f), "drawColorQuads", "RGB code color used to draw quads."))
+        , _drawColor(initData(&_drawColor, sofa::type::RGBAColor(0.0f,0.4f,0.4f,1.0f), "drawColorQuads", "RGB code color used to draw quads."))
     { }
 
     virtual ~QuadSetGeometryAlgorithms() {}
@@ -88,16 +88,16 @@ public:
     /** \brief Computes the normal vector of a quad indexed by ind_q (not normed)
     *
     */
-    defaulttype::Vec<3,double> computeQuadNormal(const QuadID ind_q) const;
+    type::Vec<3,double> computeQuadNormal(const QuadID ind_q) const;
 
     /** \brief Tests if a quad indexed by ind_q (and incident to the vertex indexed by ind_p)
     * is included or not in the plane defined by (ind_p, plane_vect)
     *
     */
     bool isQuadInPlane(const QuadID ind_q, const PointID ind_p,
-            const defaulttype::Vec<3,Real>& plane_vect) const;
+            const type::Vec<3,Real>& plane_vect) const;
 
-    bool isPointInQuad(const QuadID ind_q, const sofa::defaulttype::Vec<3,Real>& p) const;
+    bool isPointInQuad(const QuadID ind_q, const sofa::type::Vec<3,Real>& p) const;
 
     /** \brief Write the current mesh into a msh file
     */
@@ -108,7 +108,7 @@ public:
 protected:
     Data<bool> showQuadIndices; ///< Debug : view Quad indices
     Data<bool> _drawQuads; ///< if true, draw the quads in the topology
-    Data<sofa::helper::types::RGBAColor> _drawColor; ///< RGB code color used to draw quads.
+    Data<sofa::type::RGBAColor> _drawColor; ///< RGB code color used to draw quads.
 
 };
 
@@ -121,13 +121,13 @@ void snapping_test_quad(double epsilon, double alpha0, double alpha1, double alp
         bool& is_snap_0, bool& is_snap_1, bool& is_snap_2, bool& is_snap_3);
 
 template< class Real>
-inline Real areaProduct(const defaulttype::Vec<3,Real>& a, const defaulttype::Vec<3,Real>& b);
+inline Real areaProduct(const type::Vec<3,Real>& a, const type::Vec<3,Real>& b);
 
 template< class Real>
-inline Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b );
+inline Real areaProduct(const type::Vec<2,Real>& a, const type::Vec<2,Real>& b );
 
 template< class Real>
-inline Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>&  );
+inline Real areaProduct(const type::Vec<1,Real>& , const type::Vec<1,Real>&  );
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3Types>;

@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/PlaneROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::engine
 {
@@ -52,7 +52,7 @@ PlaneROI<DataTypes>::PlaneROI()
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
     , _drawSize( initData(&_drawSize, 0.0f,"drawSize","rendering size for box and topological elements") )
 {
-    planes.beginEdit()->push_back(Vec10(sofa::defaulttype::Vec<9,Real>(0,0,0,0,0,0,0,0,0),0));
+    planes.beginEdit()->push_back(Vec10(sofa::type::Vec<9,Real>(0,0,0,0,0,0,0,0,0),0));
     planes.endEdit();
 
     addAlias(&f_X0,"rest_position");
@@ -157,7 +157,7 @@ void PlaneROI<DataTypes>::reinit()
 template <class DataTypes>
 void PlaneROI<DataTypes>::computePlane(unsigned int planeIndex)
 {
-    const helper::vector<Vec10>& vp=planes.getValue();
+    const type::vector<Vec10>& vp=planes.getValue();
     const Vec10& p=vp[planeIndex];
 
     p0 = Vec3(p[0], p[1], p[2]);
@@ -275,14 +275,14 @@ bool PlaneROI<DataTypes>::isTetrahedronInPlane(const Tetra& t)
 template <class DataTypes>
 void PlaneROI<DataTypes>::doUpdate()
 {
-    const helper::vector<Vec10>& vp=planes.getValue();
+    const type::vector<Vec10>& vp=planes.getValue();
     if (vp.empty())
         return;
 
     // Read accessor for input topology
-    helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     const VecCoord* x0 = &f_X0.getValue();
 
@@ -294,9 +294,9 @@ void PlaneROI<DataTypes>::doUpdate()
 
     // Write accessor for toplogical element in SPHERE
     helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
 
 
     // Clear lists
@@ -400,13 +400,13 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->disableLighting();
 
     const VecCoord* x0 = &f_X0.getValue();
-    const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::cyan();
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
+    std::vector<sofa::type::Vector3> vertices;
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
         ///draw the boxes
-        const helper::vector<Vec10>& vp=planes.getValue();
+        const type::vector<Vec10>& vp=planes.getValue();
         for (unsigned int pi=0; pi<vp.size(); ++pi)
         {
             const Vec10& p=vp[pi];
@@ -480,7 +480,7 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vertices.clear();
 
-        helper::ReadAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
+        helper::ReadAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
             Edge e = edgesInROI[i];
@@ -497,7 +497,7 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vertices.clear();
 
-        helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+        helper::ReadAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
             Triangle t = trianglesInROI[i];
@@ -514,7 +514,7 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vertices.clear();
 
-        helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+        helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
             Tetra t = tetrahedraInROI[i];

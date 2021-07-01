@@ -64,8 +64,8 @@ public:
 
     Data<bool> d_binaryFormat;      //0 for Ascii Formats, 1 for Binary File Format
     Data<defaulttype::Vec3Types::VecCoord>               d_position; ///< points coordinates
-    Data< helper::vector< BaseMeshTopology::Triangle > > d_triangle; ///< triangles indices
-    Data< helper::vector< BaseMeshTopology::Quad > >     d_quad; ///< quads indices
+    Data< type::vector< BaseMeshTopology::Triangle > > d_triangle; ///< triangles indices
+    Data< type::vector< BaseMeshTopology::Quad > >     d_quad; ///< quads indices
 
     void doInit() override ;
     void doReInit() override ;

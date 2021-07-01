@@ -31,7 +31,7 @@ MechanicalGetMomentumVisitor::MechanicalGetMomentumVisitor(const core::Mechanica
         : sofa::simulation::MechanicalVisitor(mparams)
 {}
 
-const defaulttype::Vector6 &MechanicalGetMomentumVisitor::getMomentum() const
+const type::Vector6 &MechanicalGetMomentumVisitor::getMomentum() const
 { return m_momenta; }
 
 Visitor::Result MechanicalGetMomentumVisitor::fwdMass(simulation::Node *, core::behavior::BaseMass *mass)

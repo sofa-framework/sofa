@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/ExtrudeSurface.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::engine
 {
@@ -63,7 +63,7 @@ void ExtrudeSurface<DataTypes>::doUpdate()
 {
     using sofa::core::topology::BaseMeshTopology;
 
-    const helper::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
+    const type::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
     const VecCoord& surfaceVertices = f_surfaceVertices.getValue();
 
     if (surfaceVertices.size() <= 1 && surfaceTriangles.size() <= 1)
@@ -73,10 +73,10 @@ void ExtrudeSurface<DataTypes>::doUpdate()
 
     VecCoord* extrusionVertices = f_extrusionVertices.beginWriteOnly();
     extrusionVertices->clear();
-    helper::vector<BaseMeshTopology::Triangle>* extrusionTriangles = f_extrusionTriangles.beginWriteOnly();
+    type::vector<BaseMeshTopology::Triangle>* extrusionTriangles = f_extrusionTriangles.beginWriteOnly();
     extrusionTriangles->clear();
 
-    helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles;
+    type::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles;
 
     std::map<int, int> pointMatching;
     std::map<BaseMeshTopology::Edge, bool > edgesOnBorder;
@@ -204,7 +204,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     using sofa::core::topology::BaseMeshTopology;
 
-    const helper::vector<BaseMeshTopology::TriangleID> &surfaceTriangles = f_surfaceTriangles.getValue();
+    const type::vector<BaseMeshTopology::TriangleID> &surfaceTriangles = f_surfaceTriangles.getValue();
 
     if (!vparams->displayFlags().getShowBehaviorModels() || !isVisible.getValue())
         return;
@@ -215,10 +215,10 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    const helper::vector<BaseMeshTopology::Triangle> &extrusionTriangles = f_extrusionTriangles.getValue();
+    const type::vector<BaseMeshTopology::Triangle> &extrusionTriangles = f_extrusionTriangles.getValue();
     const VecCoord& extrusionVertices = f_extrusionVertices.getValue();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     //Triangles From Surface
     for (unsigned int i=0 ; i<surfaceTriangles.size()*2 ; i+=2)
@@ -228,11 +228,11 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int j=0 ; j<3 ; j++)
         {
             const Coord& p = (extrusionVertices[triangle[j]]);
-            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
         }
     }
 
-    vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor::red());
+    vparams->drawTool()->drawTriangles(vertices, sofa::type::RGBAColor::red());
     vertices.clear();
 
     //Triangles From Extrusion
@@ -243,10 +243,10 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int j=0 ; j<3 ; j++)
         {
             const Coord& p = (extrusionVertices[triangle[j]]);
-            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
         }
     }
-    vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor::green());
+    vparams->drawTool()->drawTriangles(vertices, sofa::type::RGBAColor::green());
 
     //Border Triangles
     for (unsigned int i=surfaceTriangles.size()*2 ; i<extrusionTriangles.size() ; i++)
@@ -256,10 +256,10 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int j=0 ; j<3 ; j++)
         {
             const Coord& p = (extrusionVertices[triangle[j]]);
-            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
         }
     }
-    vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor::blue());
+    vparams->drawTool()->drawTriangles(vertices, sofa::type::RGBAColor::blue());
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);

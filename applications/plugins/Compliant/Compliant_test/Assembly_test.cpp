@@ -132,12 +132,12 @@ struct Assembly_test : public CompliantSolver_test
         // Opposite forces applied to the ends
         ConstantForceField3::SPtr ff = New<ConstantForceField3>();
         string1->addObject(ff);
-        helper::vector<unsigned>* indices = ff->d_indices.beginEdit(); // not managed to create a WriteAccessor with a resize function for a ConstantForceField::SetIndex
+        type::vector<unsigned>* indices = ff->d_indices.beginEdit(); // not managed to create a WriteAccessor with a resize function for a ConstantForceField::SetIndex
 
         /// It is mandatory to keep this scope otherwise the WriteAccessor will hold a
         /// pointer to the ff that will be destroyed.
         {
-            helper::WriteAccessor< Data<helper::vector<Vec3> > > forces( ff->d_forces );
+            helper::WriteAccessor< Data<type::vector<Vec3> > > forces( ff->d_forces );
             (*indices).resize(2);
             forces.resize(2);
             // pull the left-hand particle to the left
@@ -833,7 +833,7 @@ struct Assembly_test : public CompliantSolver_test
 
         DistanceMapping31::SPtr extensionMapping = addNew<DistanceMapping31>(extension_node);
         extensionMapping->setModels( allDofs.get(), extensions.get() );
-        helper::vector<SReal> restLengths(1); restLengths[0]=1; // make it deformed at start, such as it creates a force and geometric stiffness
+        type::vector<SReal> restLengths(1); restLengths[0]=1; // make it deformed at start, such as it creates a force and geometric stiffness
         extensionMapping->f_restLengths.setValue( restLengths );
         UniformCompliance1::SPtr compliance = addNew<UniformCompliance1>(extension_node);
         compliance->compliance.setValue(1.0/stiffness);

@@ -24,8 +24,8 @@
 #include <SofaMiscFem/config.h>
 
 #include <SofaMiscFem/HyperelasticMaterial.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <string>
 
 
@@ -45,9 +45,9 @@ template<class DataTypes>
 class VerondaWestman : public HyperelasticMaterial<DataTypes>{
 
   typedef typename DataTypes::Coord::value_type Real;
-  typedef defaulttype::Mat<3,3,Real> Matrix3;
-  typedef defaulttype::Mat<6,6,Real> Matrix6;
-  typedef defaulttype::MatSym<3,Real> MatrixSym;
+  typedef type::Mat<3,3,Real> Matrix3;
+  typedef type::Mat<6,6,Real> Matrix6;
+  typedef type::MatSym<3,Real> MatrixSym;
 
 	virtual Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) {
 		MatrixSym C=sinfo->deformationTensor;

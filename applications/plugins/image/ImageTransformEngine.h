@@ -26,7 +26,7 @@
 #include "ImageTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 
 namespace sofa
@@ -60,16 +60,16 @@ public:
     Data< TransformType > inputTransform;
     Data< TransformType > outputTransform;
 
-    Data<defaulttype::Vector3> translation; ///< translation
-    Data<defaulttype::Vector3> rotation; ///< rotation
+    Data<type::Vector3> translation; ///< translation
+    Data<type::Vector3> rotation; ///< rotation
     Data<Real> scale; ///< scale
     Data<bool> inverse; ///< true to apply inverse transformation
 
     ImageTransformEngine()    :   Inherited()
       , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
       , outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
-      , translation(initData(&translation, defaulttype::Vector3(0,0,0),"translation", "translation vector ") )
-      , rotation(initData(&rotation, defaulttype::Vector3(0,0,0), "rotation", "rotation vector ") )
+      , translation(initData(&translation, type::Vector3(0,0,0),"translation", "translation vector ") )
+      , rotation(initData(&rotation, type::Vector3(0,0,0), "rotation", "rotation vector ") )
       , scale(initData(&scale, (Real)1.0,"scale", "scale factor") )
       , inverse(initData(&inverse, false, "inverse", "true to apply inverse transformation"))
     {
@@ -98,26 +98,26 @@ protected:
         waTransform outT(this->outputTransform);
 
         Real s;
-        helper::Quater<Real> r;
+        type::Quat<Real> r;
         Coord t;
 
         if(this->inverse.getValue())
         {
             s=(Real)1./this->scale.getValue();
-            r=helper::Quater< Real >::createQuaterFromEuler(this->rotation.getValue()* (Real)M_PI / (Real)180.0 ).inverse();
+            r=type::Quat< Real >::createQuaterFromEuler(this->rotation.getValue()* (Real)M_PI / (Real)180.0 ).inverse();
             t=-r.rotate(this->translation.getValue())*s;
         }
         else
         {
             s=this->scale.getValue();
             t=this->translation.getValue();
-            r= helper::Quater< Real >::createQuaterFromEuler(this->rotation.getValue()* (Real)M_PI / (Real)180.0 );
+            r= type::Quat< Real >::createQuaterFromEuler(this->rotation.getValue()* (Real)M_PI / (Real)180.0 );
         }
 
         outT->getScale() = inT->getScale() * s;
         outT->getTranslation() = r.rotate(inT->getTranslation())*s + t;
 
-        helper::Quater<Real> q = r*inT->qrotation;
+        type::Quat<Real> q = r*inT->qrotation;
         outT->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
 
         outT->update(); // update internal data

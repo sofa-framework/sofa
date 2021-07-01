@@ -62,8 +62,8 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     core::topology::BaseMeshTopology* m_topology;
 
-    topology::PointData< sofa::helper::vector<Coord> > m_positions; ///< Vertices coordinates
-    Data< sofa::helper::vector<Tetrahedron> > m_tetrahedrons;
+    topology::PointData< sofa::type::vector<Coord> > m_positions; ///< Vertices coordinates
+    Data< sofa::type::vector<Tetrahedron> > m_tetrahedrons;
     Data<bool> depthTest; ///< Set Depth Test
     Data<bool> blending; ///< Set Blending
 

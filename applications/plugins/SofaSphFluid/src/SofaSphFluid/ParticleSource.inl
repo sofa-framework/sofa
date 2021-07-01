@@ -221,8 +221,8 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         msg_info() << "nbParticlesToCreate: " << nbParticlesToCreate << " m_maxdist: " << m_maxdist;
         helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
 
-        helper::vector< Coord > newX;
-        helper::vector< Deriv > newV;
+        type::vector< Coord > newX;
+        type::vector< Deriv > newV;
 
         newX.reserve(nbParticlesToCreate * m_numberParticles);
         newV.reserve(nbParticlesToCreate * m_numberParticles);
@@ -329,10 +329,10 @@ void ParticleSource<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
 
-    std::vector< sofa::defaulttype::Vector3 > pointsInit;
+    std::vector< sofa::type::Vector3 > pointsInit;
     for (unsigned int s = 0; s < m_lastpos.size(); s++)
     {
-        sofa::defaulttype::Vector3 point;
+        sofa::type::Vector3 point;
         point = DataTypes::getCPos(m_lastpos[s] + dpos);
         pointsInit.push_back(point);
     }

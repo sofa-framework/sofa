@@ -81,7 +81,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
         {
             if(!m_invalidIndex.empty())
             {
-                helper::vector<MappingData>& mapData = *(d_map.beginEdit());
+                type::vector<MappingData>& mapData = *(d_map.beginEdit());
 
                 for ( auto iter = m_invalidIndex.cbegin();
                         iter != m_invalidIndex.cend(); ++iter )
@@ -152,7 +152,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
 
                         defaulttype::Vec3Types::Coord restPos = m_fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
 
-                        helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+                        type::vector<MappingData>& vectorData = *(d_map.beginEdit());
                         vectorData[j].in_index = sofa::InvalidID;
                         vectorData[j].baryCoords[0] = restPos[0];
                         vectorData[j].baryCoords[1] = restPos[1];
@@ -173,7 +173,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
                 {
                     if ( d_map.getValue()[j].in_index == lastCubeId )
                     {
-                        helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+                        type::vector<MappingData>& vectorData = *(d_map.beginEdit());
                         vectorData[j].in_index = cubeId;
                         d_map.endEdit();
                     }

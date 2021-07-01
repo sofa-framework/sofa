@@ -69,16 +69,16 @@ public:
     virtual void add(Index i, Index j, double v) = 0;
 
     ///Adding values from a 3x3d matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const defaulttype::Mat3x3d & _M);
+    virtual void add(Index _i, Index _j, const type::Mat3x3d & _M);
 
     ///Adding values from a 3x3f matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const defaulttype::Mat3x3f & _M);
+    virtual void add(Index _i, Index _j, const type::Mat3x3f & _M);
 
     ///Adding values from a 2x2d matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const defaulttype::Mat2x2d & _M);
+    virtual void add(Index _i, Index _j, const type::Mat2x2d & _M);
 
     ///Adding values from a 2x2f matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const defaulttype::Mat2x2f & _M);
+    virtual void add(Index _i, Index _j, const type::Mat2x2f & _M);
 
     /*    /// Write the value of the element at row i, column j (using 0-based indices)
         virtual void set(Index i, Index j, float v) { set(i,j,(double)v); }

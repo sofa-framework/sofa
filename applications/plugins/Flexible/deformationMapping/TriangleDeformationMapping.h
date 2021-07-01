@@ -25,8 +25,8 @@
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <Flexible/config.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../shapeFunction/BaseShapeFunction.h"
@@ -69,7 +69,7 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real Real;
 //    typedef typename Out::Frame Frame;
-    typedef defaulttype::Mat<3,2,Real> Frame;
+    typedef type::Mat<3,2,Real> Frame;
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename In::Coord InCoord;
@@ -77,16 +77,16 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef defaulttype::Mat<In::deriv_total_size, In::deriv_total_size,Real>  InBlock;
-    typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
+    typedef type::Mat<In::deriv_total_size, In::deriv_total_size,Real>  InBlock;
+    typedef type::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
     typedef topology::TriangleSetTopologyContainer::SeqTriangles SeqTriangles;
 
     typedef core::behavior::ShapeFunctionTypes<3,Real> ShapeFunctionType;             // 2d shape function
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> ShapeFunction;
-    typedef defaulttype::Vec<2,Real> MCoord;                                     ///< material coordinates
-    typedef helper::vector<MCoord> VMCoord;                                   ///< vector of material coordinates
-    typedef defaulttype::Mat<2,2,Real> MMat;                                      ///< matrix in material coordinates
-    typedef helper::vector<MMat> VMMat;                                              ///< vector of material matrices, used to compute the deformation gradients
+    typedef type::Vec<2,Real> MCoord;                                     ///< material coordinates
+    typedef type::vector<MCoord> VMCoord;                                   ///< vector of material coordinates
+    typedef type::Mat<2,2,Real> MMat;                                      ///< matrix in material coordinates
+    typedef type::vector<MMat> VMMat;                                              ///< vector of material matrices, used to compute the deformation gradients
 
 
     Data< VMMat > f_inverseRestEdges;  ///< For each triangle, inverse matrix of edge12, edge13, normal. This is used to compute the deformation gradient based on the current edges.
@@ -105,7 +105,7 @@ public:
 //    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
@@ -115,7 +115,7 @@ protected:
 
     topology::TriangleSetTopologyContainer* triangleContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
     Block makeBlock( Real middle, Real bottom );  ///< helper for the creation of the jacobian
 };

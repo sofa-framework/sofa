@@ -50,7 +50,7 @@ public:
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 
     typedef typename Coord::value_type Real;
-    typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
+    typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
 
     Data<bool> m_rotations;
     Data<bool> m_restRotations;

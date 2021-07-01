@@ -23,7 +23,7 @@
 #include "HexahedralFEMForceField.h"
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/helper/decompose.h>
 #include <cassert>
 #include <iostream>
@@ -54,8 +54,8 @@ template< class DataTypes>
 void HexahedralFEMForceField<DataTypes>::HFFHexahedronHandler::applyCreateFunction(Index hexahedronIndex,
         HexahedronInformation &,
         const core::topology::BaseMeshTopology::Hexahedron &,
-        const sofa::helper::vector<Index> &,
-        const sofa::helper::vector<double> &)
+        const sofa::type::vector<Index> &,
+        const sofa::type::vector<double> &)
 {
     if (ff)
     {
@@ -130,7 +130,7 @@ void HexahedralFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue()  == "polar")
         this->setMethod(POLAR);
 
-    helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
+    type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
 
 
     hexahedronInf.resize(_topology->getNbHexahedra());
@@ -186,7 +186,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 
     if( _v.size()!=_x.size() ) _v.resize(_x.size());
 
-    const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
+    const type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
     for(Size i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
@@ -213,7 +213,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 }
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const defaulttype::Vec<8,Coord> &nodes)
+void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const type::Vec<8,Coord> &nodes)
 {
     Mat33 J_1; // only accurate for orthogonal regular hexa
     J_1.fill( 0.0 );
@@ -387,7 +387,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
 
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    defaulttype::Vec<8,Coord> nodes;
+    type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
         nodes[w] = (X0)[_topology->getHexahedron(i)[w]];
 
@@ -400,7 +400,7 @@ void HexahedralFEMForceField<DataTypes>::initLarge(const int i)
     computeRotationLarge( R_0_1, horizontal,vertical);
 
 
-    helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
+    type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
 
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
@@ -440,7 +440,7 @@ void HexahedralFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i)
 {
-    defaulttype::Vec<8,Coord> nodes;
+    type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
         nodes[w] = p[_topology->getHexahedron(i)[w]];
 
@@ -452,12 +452,12 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv&
     Transformation R_0_2; // Rotation matrix (deformed and displaced Hexahedron/world)
     computeRotationLarge( R_0_2, horizontal,vertical);
 
-    helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
+    type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
 
     hexahedronInf[i].rotation.transpose(R_0_2);
 
     // positions of the deformed and displaced Hexahedre in its frame
-    defaulttype::Vec<8,Coord> deformed;
+    type::Vec<8,Coord> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = R_0_2 * nodes[w];
 
@@ -493,7 +493,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
 {
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    defaulttype::Vec<8,Coord> nodes;
+    type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
         nodes[j] = (X0)[_topology->getHexahedron(i)[j]];
 
@@ -501,7 +501,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
     computeRotationPolar( R_0_1, nodes );
 
 
-    helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
+    type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
 
     for(int j=0; j<8; ++j)
     {
@@ -516,7 +516,7 @@ void HexahedralFEMForceField<DataTypes>::initPolar(const int i)
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes)
+void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r, type::Vec<8,Coord> &nodes)
 {
     Transformation A;
     Coord Edge =(nodes[1]-nodes[0] + nodes[2]-nodes[3] + nodes[5]-nodes[4] + nodes[6]-nodes[7])*.25;
@@ -544,7 +544,7 @@ void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i)
 {
-    defaulttype::Vec<8,Coord> nodes;
+    type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
         nodes[j] = p[_topology->getHexahedron(i)[j]];
 
@@ -552,12 +552,12 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& 
     Transformation R_0_2; // Rotation matrix (deformed and displaced Hexahedron/world)
     computeRotationPolar( R_0_2, nodes );
 
-    helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
+    type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
 
     hexahedronInf[i].rotation.transpose( R_0_2 );
 
     // positions of the deformed and displaced Hexahedre in its frame
-    defaulttype::Vec<8,Coord> deformed;
+    type::Vec<8,Coord> deformed;
     for(int j=0; j<8; ++j)
         deformed[j] = R_0_2 * nodes[j];
 
@@ -598,7 +598,7 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
+    const type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
     for(Size e=0 ; e<_topology->getNbHexahedra() ; ++e)
     {
@@ -635,8 +635,8 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
-    std::vector<sofa::helper::types::RGBAColor> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colorVector;
+    std::vector<sofa::type::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -667,61 +667,61 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         Coord p6 = x[g]-(x[g]-center)*percentage;
         Coord p7 = x[h]-(x[h]-center)*percentage;
 
-        sofa::helper::fixed_array<float, 4> color = sofa::helper::fixed_array<float, 4>(0.7f, 0.7f, 0.1f, 1.0f);
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
+        sofa::type::fixed_array<float, 4> color = sofa::type::fixed_array<float, 4>(0.7f, 0.7f, 0.1f, 1.0f);
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
         vertices.push_back(DataTypes::getCPos(p5));
         vertices.push_back(DataTypes::getCPos(p1));
         vertices.push_back(DataTypes::getCPos(p3));
         vertices.push_back(DataTypes::getCPos(p7));
 
-        color = sofa::helper::fixed_array<float, 4>(0.7f, 0.0f, 0.0f, 1.0f);
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
+        color = sofa::type::fixed_array<float, 4>(0.7f, 0.0f, 0.0f, 1.0f);
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
         vertices.push_back(DataTypes::getCPos(p1));
         vertices.push_back(DataTypes::getCPos(p0));
         vertices.push_back(DataTypes::getCPos(p2));
         vertices.push_back(DataTypes::getCPos(p3));
 
-        color = sofa::helper::fixed_array<float, 4>(0.0f, 0.7f, 0.0f, 1.0f);
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
+        color = sofa::type::fixed_array<float, 4>(0.0f, 0.7f, 0.0f, 1.0f);
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
         vertices.push_back(DataTypes::getCPos(p0));
         vertices.push_back(DataTypes::getCPos(p4));
         vertices.push_back(DataTypes::getCPos(p6));
         vertices.push_back(DataTypes::getCPos(p2));
 
-        color = sofa::helper::fixed_array<float, 4>(0.0f, 0.0f, 0.7f, 1.0f);
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
+        color = sofa::type::fixed_array<float, 4>(0.0f, 0.0f, 0.7f, 1.0f);
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
         vertices.push_back(DataTypes::getCPos(p4));
         vertices.push_back(DataTypes::getCPos(p5));
         vertices.push_back(DataTypes::getCPos(p7));
         vertices.push_back(DataTypes::getCPos(p6));
 
-        color = sofa::helper::fixed_array<float, 4>(0.1f, 0.7f, 0.7f, 1.0f);
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
+        color = sofa::type::fixed_array<float, 4>(0.1f, 0.7f, 0.7f, 1.0f);
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
         vertices.push_back(DataTypes::getCPos(p7));
         vertices.push_back(DataTypes::getCPos(p3));
         vertices.push_back(DataTypes::getCPos(p2));
         vertices.push_back(DataTypes::getCPos(p6));
 
-        color = sofa::helper::fixed_array<float, 4>(0.7f, 0.1f, 0.7f, 1.0f);
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
-        colorVector.push_back(sofa::helper::types::RGBAColor(color));
+        color = sofa::type::fixed_array<float, 4>(0.7f, 0.1f, 0.7f, 1.0f);
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
+        colorVector.push_back(sofa::type::RGBAColor(color));
         vertices.push_back(DataTypes::getCPos(p1));
         vertices.push_back(DataTypes::getCPos(p5));
         vertices.push_back(DataTypes::getCPos(p4));

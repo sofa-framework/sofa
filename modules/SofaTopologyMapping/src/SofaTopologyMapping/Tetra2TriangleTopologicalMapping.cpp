@@ -33,7 +33,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -174,7 +174,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
 
-    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     while( itBegin != itEnd )
     {
@@ -196,7 +196,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             const auto &triIDtoRemove = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
 
             // search for the list of triangles to remove in mapped topology
-            sofa::helper::vector< Index > triangles_to_remove;
+            sofa::type::vector< Index > triangles_to_remove;
 
             for (auto globTriId : triIDtoRemove)
             {
@@ -270,9 +270,9 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             const auto * tetraAdded = static_cast< const TetrahedraAdded *>( *itBegin );
 
-            sofa::helper::vector< BaseMeshTopology::Triangle > triangles_to_create;
-            sofa::helper::vector< BaseMeshTopology::TriangleID > triangleId_to_create;
-            sofa::helper::vector< BaseMeshTopology::TriangleID > triangleId_to_remove;
+            sofa::type::vector< BaseMeshTopology::Triangle > triangles_to_create;
+            sofa::type::vector< BaseMeshTopology::TriangleID > triangleId_to_create;
+            sofa::type::vector< BaseMeshTopology::TriangleID > triangleId_to_remove;
 
             // Need to first add all the new triangles before removing the old one.
             for (auto tetraId : tetraAdded->tetrahedronIndexArray)
@@ -307,7 +307,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             m_outTopoModifier->addTriangles(triangles_to_create);
 
             // remove elements not anymore on part of the border
-            sofa::helper::vector< BaseMeshTopology::TriangleID > local_triangleId_to_remove;
+            sofa::type::vector< BaseMeshTopology::TriangleID > local_triangleId_to_remove;
             for (auto triGlobId : triangleId_to_remove)
             {
                 auto iter_1 = Glob2LocMap.find(triGlobId);
@@ -348,8 +348,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             const auto & tetrahedronArray=fromModel->getTetrahedra();
             const auto & tetraIds2Remove = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
 
-            sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
-            sofa::helper::vector< unsigned int > trianglesIndexList;
+            sofa::type::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
+            sofa::type::vector< unsigned int > trianglesIndexList;
             size_t nb_elems = toModel->getNbTriangles();
             const bool flipN = flipNormals.getValue();
 
@@ -451,7 +451,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const auto pointRemoved = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-            sofa::helper::vector<Index> indices;
+            sofa::type::vector<Index> indices;
 
             for(unsigned int i = 0; i < pointRemoved.size(); ++i)
             {

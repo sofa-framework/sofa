@@ -98,9 +98,9 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(helper::vector<Index>* /*old2new*/, helper::vector<Index>* /*new2old*/)
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(type::vector<Index>* /*old2new*/, type::vector<Index>* /*new2old*/)
 {
-    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(helper::vector<Index>* old2new, helper::vector<Index>* new2old)"<<std::endl;
+    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(type::vector<Index>* old2new, type::vector<Index>* new2old)"<<std::endl;
 }
 
 
@@ -253,7 +253,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     }
 #endif
 #if 0
-    helper::vector< std::pair<unsigned int,int> > cpusort;
+    type::vector< std::pair<unsigned int,int> > cpusort;
     cpusort.resize(8*nbPoints);
     for (int i=0; i<8*nbPoints; ++i)
         cpusort[i] = std::make_pair(pparticleHash[i],pcells[index0+i]);

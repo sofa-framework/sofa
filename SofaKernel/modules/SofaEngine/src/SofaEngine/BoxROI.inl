@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaEngine/BoxROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
@@ -39,12 +39,12 @@ using core::objectmodel::BaseData ;
 using core::objectmodel::Event ;
 using core::loader::MeshLoader ;
 using core::ExecParams ;
-using defaulttype::TBoundingBox ;
-using defaulttype::Vector3 ;
-using defaulttype::Vec4f ;
+using type::TBoundingBox ;
+using type::Vector3 ;
+using type::Vec4f ;
 using helper::WriteOnlyAccessor ;
 using helper::ReadAccessor ;
-using helper::vector ;
+using type::vector ;
 
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
@@ -729,7 +729,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         return;
 
     const VecCoord& x0 = d_X0.getValue();
-    auto color = sofa::helper::types::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
+    auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
 
 
     ///draw the boxes

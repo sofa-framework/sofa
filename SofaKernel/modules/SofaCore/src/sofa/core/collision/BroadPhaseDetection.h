@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/collision/Detection.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::core::collision
 {
@@ -47,20 +47,20 @@ public:
     virtual void addCollisionModel(core::CollisionModel *cm) = 0;
 
     /// Add a list of collision models to the set of root collision models managed by this class
-    virtual void addCollisionModels(const sofa::helper::vector<core::CollisionModel *>& v);
+    virtual void addCollisionModels(const sofa::type::vector<core::CollisionModel *>& v);
 
     /// Actions to accomplish when the broadPhase is finished. By default do nothing.
     virtual void endBroadPhase();
 
     /// Get the potentially colliding pairs detected
-    sofa::helper::vector<CollisionModelPair>& getCollisionModelPairs();
-    const sofa::helper::vector<CollisionModelPair>& getCollisionModelPairs() const;
+    sofa::type::vector<CollisionModelPair>& getCollisionModelPairs();
+    const sofa::type::vector<CollisionModelPair>& getCollisionModelPairs() const;
 
 protected:
 
     /// Potentially colliding pairs
-    sofa::helper::vector< CollisionModelPair > cmPairs;
-    std::map<Instance,sofa::helper::vector< CollisionModelPair > > storedCmPairs;
+    sofa::type::vector< CollisionModelPair > cmPairs;
+    std::map<Instance,sofa::type::vector< CollisionModelPair > > storedCmPairs;
 
     void changeInstanceBP(Instance inst) override;
 };

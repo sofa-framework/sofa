@@ -23,7 +23,7 @@
 #define SOFA_CORE_VISUAL_DISPLAYFLAGS_H
 
 #include <sofa/core/config.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <map>
 
 
@@ -113,15 +113,15 @@ protected:
         }
     };
 
-    sofa::helper::vector<std::string> m_showName;
-    sofa::helper::vector<std::string> m_hideName;
+    sofa::type::vector<std::string> m_showName;
+    sofa::type::vector<std::string> m_hideName;
     tristate m_state;
 
     FlagTreeItem* m_parent;
-    sofa::helper::vector<FlagTreeItem*> m_child;
+    sofa::type::vector<FlagTreeItem*> m_child;
 
-    typedef helper::vector<FlagTreeItem*>::iterator ChildIterator;
-    typedef helper::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
+    typedef type::vector<FlagTreeItem*>::iterator ChildIterator;
+    typedef type::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
 
 public:
     FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent = nullptr);
@@ -138,7 +138,7 @@ public:
 
     void addAliasShow(const std::string& newAlias);
     void addAliasHide(const std::string& newAlias);
-    void addAlias(sofa::helper::vector<std::string> &name, const std::string &newAlias);
+    void addAlias(sofa::type::vector<std::string> &name, const std::string &newAlias);
 
 protected:
     void propagateStateDown(FlagTreeItem* origin);

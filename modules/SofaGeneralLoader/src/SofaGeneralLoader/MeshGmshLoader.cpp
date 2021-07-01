@@ -30,6 +30,7 @@
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using std::string;
@@ -118,7 +119,7 @@ void MeshGmshLoader::doClearBuffers()
     /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
 }
 
-void MeshGmshLoader::addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group,int tag,int /*eid*/) {
+void MeshGmshLoader::addInGroup(type::vector< sofa::core::loader::PrimitiveGroup>& group,int tag,int /*eid*/) {
     for (unsigned i=0;i<group.size();i++) {
         if (tag == group[i].p0) {
             group[i].nbp++;
@@ -133,7 +134,7 @@ void MeshGmshLoader::addInGroup(helper::vector< sofa::core::loader::PrimitiveGro
     group.push_back(sofa::core::loader::PrimitiveGroup(tag,1,s,s,-1));
 }
 
-void MeshGmshLoader::normalizeGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group) {
+void MeshGmshLoader::normalizeGroup(type::vector< sofa::core::loader::PrimitiveGroup>& group) {
     int start = 0;
     for (unsigned i=0;i<group.size();i++) {
         group[i].p0 = start;
@@ -268,7 +269,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
 
         //store real index of node and not line index
-        helper::vector <unsigned int> nodes;
+        type::vector<unsigned int> nodes;
         nodes.resize (nnodes);
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
         const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0,1}, {1,2}, {0,2},{0,3},{2,3},{1,3}};

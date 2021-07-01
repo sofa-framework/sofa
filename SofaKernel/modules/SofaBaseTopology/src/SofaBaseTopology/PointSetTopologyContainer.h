@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseTopology.h>
 
@@ -136,7 +136,7 @@ public:
         return in;
     }
 
-    const sofa::helper::vector<PointID>& getPoints() const;
+    const sofa::type::vector<PointID>& getPoints() const;
 
 protected:
     /// \brief Function creating the data graph linked to d_point
@@ -173,14 +173,14 @@ protected:
     std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
 
 private:
     
     Data<Size> nbPoints; ///< Number of points
 
-    Data<sofa::helper::vector<PointID> > points; ///< List of point indices
+    Data<sofa::type::vector<PointID> > points; ///< List of point indices
 };
 
 } //namespace sofa::component::topology

@@ -100,61 +100,61 @@ public:
 
 
     /// Add some values. Values are added at the end of the vector.
-    virtual void add(const sofa::helper::vector< Topology::PointID >& ,
-        const sofa::helper::vector< Topology::Point >& ,
-        const sofa::helper::vector< sofa::helper::vector< Topology::PointID > >&,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
-        const sofa::helper::vector< PointAncestorElem >&) {}
+    virtual void add(const sofa::type::vector< Topology::PointID >& ,
+        const sofa::type::vector< Topology::Point >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::PointID > >&,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< PointAncestorElem >&) {}
 
     /// Temporary Hack: find a way to have a generic description of topological element:
     /// add Edge
-    virtual void add(const sofa::helper::vector< Topology::EdgeID >&,
-        const sofa::helper::vector< Topology::Edge >& ,
-        const sofa::helper::vector< sofa::helper::vector< Topology::EdgeID > >&,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
-        const sofa::helper::vector< EdgeAncestorElem >&) {}
+    virtual void add(const sofa::type::vector< Topology::EdgeID >&,
+        const sofa::type::vector< Topology::Edge >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::EdgeID > >&,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< EdgeAncestorElem >&) {}
 
     /// add Triangle
-    virtual void add(const sofa::helper::vector< Topology::TriangleID >&,
-        const sofa::helper::vector< Topology::Triangle >& ,
-        const sofa::helper::vector< sofa::helper::vector< Topology::TriangleID > > &,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
-        const sofa::helper::vector< TriangleAncestorElem >&) {}
+    virtual void add(const sofa::type::vector< Topology::TriangleID >&,
+        const sofa::type::vector< Topology::Triangle >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::TriangleID > > &,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< TriangleAncestorElem >&) {}
 
     /// add Quad & Tetrahedron
-    virtual void add(const sofa::helper::vector< Topology::TetrahedronID >&,
-        const sofa::helper::vector< Topology::Tetrahedron >& ,
-        const sofa::helper::vector< sofa::helper::vector< Topology::TetrahedronID > > &,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
-        const sofa::helper::vector< TetrahedronAncestorElem >&) {}
+    virtual void add(const sofa::type::vector< Topology::TetrahedronID >&,
+        const sofa::type::vector< Topology::Tetrahedron >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::TetrahedronID > > &,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< TetrahedronAncestorElem >&) {}
 
-    virtual void add(const sofa::helper::vector< Topology::QuadID >&,
-        const sofa::helper::vector< Topology::Quad >&,
-        const sofa::helper::vector< sofa::helper::vector< Topology::QuadID > >&,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >&,
-        const sofa::helper::vector< QuadAncestorElem >&) {}
+    virtual void add(const sofa::type::vector< Topology::QuadID >&,
+        const sofa::type::vector< Topology::Quad >&,
+        const sofa::type::vector< sofa::type::vector< Topology::QuadID > >&,
+        const sofa::type::vector< sofa::type::vector< SReal > >&,
+        const sofa::type::vector< QuadAncestorElem >&) {}
 
     /// add Hexahedron
-    virtual void add(const sofa::helper::vector< Topology::HexahedronID >&,
-        const sofa::helper::vector< Topology::Hexahedron >& ,
-        const sofa::helper::vector< sofa::helper::vector< Topology::HexahedronID > > &,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >& ,
-        const sofa::helper::vector< HexahedronAncestorElem >&) {}
+    virtual void add(const sofa::type::vector< Topology::HexahedronID >&,
+        const sofa::type::vector< Topology::Hexahedron >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::HexahedronID > > &,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< HexahedronAncestorElem >&) {}
 
 
     /// Remove the values corresponding to the points removed.
-    virtual void remove( const sofa::helper::vector<unsigned int>& ) {}
+    virtual void remove( const sofa::type::vector<unsigned int>& ) {}
 
     /// Swaps values at indices i1 and i2.
     virtual void swap( unsigned int , unsigned int ) {}
 
     /// Reorder the values.
-    virtual void renumber( const sofa::helper::vector<unsigned int>& ) {}
+    virtual void renumber( const sofa::type::vector<unsigned int>& ) {}
 
     /// Move a list of points
-    virtual void move( const sofa::helper::vector<unsigned int>& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void move( const sofa::type::vector<unsigned int>& ,
+            const sofa::type::vector< sofa::type::vector< unsigned int > >& ,
+            const sofa::type::vector< sofa::type::vector< SReal > >& ) {}
 
     sofa::core::topology::BaseMeshTopology* getTopology()
     {

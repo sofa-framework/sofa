@@ -130,8 +130,8 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::compute
             const Coord p2 = point2(i);
             r = radius(i);
 
-            defaulttype::Vector3 maxVec;
-            defaulttype::Vector3 minVec;
+            type::Vector3 maxVec;
+            type::Vector3 minVec;
 
             for(int dim = 0 ; dim < 3 ; ++dim){
                 if(p1(dim) > p2(dim)){
@@ -155,7 +155,7 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::compute
 template<class MyReal>
 void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core::visual::VisualParams* vparams, Index index)
 {
-    sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+    sofa::type::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
     vparams->drawTool()->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
 }
 
@@ -164,7 +164,7 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(co
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {
-        sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+        sofa::type::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());//maybe ??
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 
@@ -245,7 +245,7 @@ template<class MyReal>
 const typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::v() const {return this->model->velocity(this->index);}
 
 template<class MyReal>
-const sofa::defaulttype::Quaternion CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::orientation(Index index)const{
+const sofa::type::Quat<SReal> CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::orientation(Index index)const{
     return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
@@ -253,7 +253,7 @@ template<class MyReal>
 typename CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::axis(Index index) const {
     Coord ax(0,1,0);
 
-    const sofa::defaulttype::Quaternion & ori = orientation(index);
+    const sofa::type::Quat<SReal> & ori = orientation(index);
     return ori.rotate(ax);
 }
 

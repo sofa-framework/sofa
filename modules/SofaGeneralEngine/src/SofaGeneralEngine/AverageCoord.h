@@ -44,7 +44,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef unsigned int Index;
-    typedef sofa::helper::vector<Index> VecIndex;
+    typedef sofa::type::vector<Index> VecIndex;
 
 protected:
 

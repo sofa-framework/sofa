@@ -182,7 +182,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     }
 
     /// Initialize all the diffusion coefficients (for tetras) to the value given by the user.
-    sofa::helper::vector <Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
+    sofa::type::vector<Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
     loadedDiffusivity = false;
 
     /// case no potential vector input
@@ -249,7 +249,7 @@ typename TetrahedronDiffusionFEMForceField<DataTypes>::VectorReal TetrahedronDif
     // Constant diffusion in input: return this single value
     if(!loadedDiffusivity)
     {
-        sofa::helper::vector<Real> output;
+        sofa::type::vector<Real> output;
         output.resize(1);
         output[0] = d_constantDiffusionCoefficient.getValue();
         return output;
@@ -263,7 +263,7 @@ typename TetrahedronDiffusionFEMForceField<DataTypes>::VectorReal TetrahedronDif
 template <class DataTypes>
 typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusionFEMForceField<DataTypes>::getTetraDiffusionCoefficient(Index i)
 {
-    sofa::helper::vector<Real> tetraDiff = this->d_tetraDiffusionCoefficient.getValue();
+    sofa::type::vector<Real> tetraDiff = this->d_tetraDiffusionCoefficient.getValue();
     if(i <= m_topology->getNbTetrahedra())
     {
         return tetraDiff[i];
@@ -285,7 +285,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::setDiffusionCoefficient(const
     d_constantDiffusionCoefficient.endEdit();
 
     // Save the new diffusion coefficient for each tetrahedron
-    sofa::helper::vector <Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
+    sofa::type::vector<Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
     tetraDiff.clear();
     tetraDiff.resize(m_topology->getNbTetrahedra());
     for(size_t i=0; i<m_topology->getNbTetrahedra(); i++)
@@ -298,14 +298,14 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::setDiffusionCoefficient(const
 
 
 template <class DataTypes>
-void TetrahedronDiffusionFEMForceField<DataTypes>::setDiffusionCoefficient(const sofa::helper::vector<Real> val)
+void TetrahedronDiffusionFEMForceField<DataTypes>::setDiffusionCoefficient(const sofa::type::vector<Real> val)
 {
     // Check that the flag of input tetra diffusion coefficient is true
     if(!loadedDiffusivity)
         loadedDiffusivity = true;
 
     // Save the new diffusion coefficient for each tetrahedron
-    sofa::helper::vector <Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
+    sofa::type::vector<Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
     for(size_t i=0; i<m_topology->getNbTetrahedra(); i++)
         tetraDiff[i] = val[i];
     d_tetraDiffusionCoefficient.endEdit();
@@ -447,7 +447,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
         vparams->drawTool()->setLightingEnabled(false);
 
         auto nbr = m_topology->getNbTriangles();
-        sofa::helper::vector<sofa::Index> surfaceTri;
+        sofa::type::vector<sofa::Index> surfaceTri;
 
         for (sofa::Index i=0; i<nbr; ++i)
         {
@@ -455,12 +455,12 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 surfaceTri.push_back(i);
         }
 
-        auto colorLine = sofa::helper::types::RGBAColor::red();
-        helper::vector<sofa::defaulttype::Vector3> vertices;
+        auto colorLine = sofa::type::RGBAColor::red();
+        type::vector<sofa::type::Vector3> vertices;
 
         for (sofa::Index i=0; i<surfaceTri.size(); ++i)
         {
-            sofa::defaulttype::Vector3 point[3];
+            sofa::type::Vector3 point[3];
             const Triangle& tri = m_topology->getTriangle(surfaceTri[i]);
             for (unsigned int j=0; j<3; ++j)
                 point[j] = restPosition[tri[j]];
@@ -482,15 +482,15 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 maxDiffusion = d_tetraDiffusionCoefficient.getValue()[i];
         }
 
-        colorLine = sofa::defaulttype::Vec4f(0.2f, 0.2f, 0.2f, 1.0f);
+        colorLine = sofa::type::Vec4f(0.2f, 0.2f, 0.2f, 1.0f);
         vertices.clear();
         for (sofa::Index i = 0; i<nbrTetra; ++i)
         {
             Real Ratio = d_tetraDiffusionCoefficient.getValue()[i] / maxDiffusion;
-            auto tetraColor = sofa::helper::types::RGBAColor(0.0f, float(Ratio), 0.5f-float(Ratio), 1.0f);
+            auto tetraColor = sofa::type::RGBAColor(0.0f, float(Ratio), 0.5f-float(Ratio), 1.0f);
 
             Tetrahedron tetra = m_topology->getTetrahedron(i);
-            sofa::defaulttype::Vec<3,SReal> point[4];
+            sofa::type::Vec<3,SReal> point[4];
 
             for (sofa::Index j = 0; j<4; j++)
                 point[j] = restPosition[tetra[j]];

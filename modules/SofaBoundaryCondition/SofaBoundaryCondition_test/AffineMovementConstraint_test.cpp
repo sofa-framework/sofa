@@ -35,6 +35,7 @@ using sofa::testing::NumericTest;
 #include <SofaBaseTopology_test/RegularGridNodeCreation.h>
 
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 namespace sofa {
@@ -60,7 +61,7 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
     /// Structure which contains current node and pointers to the mechanical object and the affine constraint
     PatchTestStruct<DataTypes> patchStruct;
     /// Tested Rotation: random rotation matrix
-    defaulttype::Mat<3,3,Real> testedRotation;
+    type::Mat<3,3,Real> testedRotation;
     /// Tested Translation: random translation
     Coord testedTranslation;
     /// Seed for random value

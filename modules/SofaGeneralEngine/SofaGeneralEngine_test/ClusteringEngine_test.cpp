@@ -40,7 +40,7 @@ using sofa::core::visual::VisualParams;
 #include <SofaGeneralEngine/ClusteringEngine.h>
 using sofa::component::engine::ClusteringEngine ;
 
-using sofa::helper::vector;
+using sofa::type::vector;
 
 namespace sofa
 {

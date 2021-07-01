@@ -69,7 +69,7 @@ public:
     /** \brief add a set of hexahedra
     @param hexahedra an array of vertex indices describing the hexahedra to be created
     */
-    virtual void addHexahedra(const sofa::helper::vector< Hexahedron > &hexahedra);
+    virtual void addHexahedra(const sofa::type::vector< Hexahedron > &hexahedra);
 
     /** \brief add a set of hexahedra
     @param quads an array of vertex indices describing the hexahedra to be created
@@ -77,9 +77,9 @@ public:
     @param baryCoefs for each hexahedron provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
     *
     */
-    virtual void addHexahedra(const sofa::helper::vector< Hexahedron > &hexahedra,
-            const sofa::helper::vector< sofa::helper::vector< HexahedronID > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+    virtual void addHexahedra(const sofa::type::vector< Hexahedron > &hexahedra,
+            const sofa::type::vector< sofa::type::vector< HexahedronID > > & ancestors,
+            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs) ;
 
     /** \brief Add a hexahedron.
     */
@@ -89,11 +89,11 @@ public:
     @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
     *
     */
-    virtual void removeHexahedra(const sofa::helper::vector<HexahedronID> &hexahedraIds);
+    virtual void removeHexahedra(const sofa::type::vector<HexahedronID> &hexahedraIds);
 
     /** \brief Generic method to remove a list of items.
     */
-    void removeItems(const sofa::helper::vector<HexahedronID> &items) override;
+    void removeItems(const sofa::type::vector<HexahedronID> &items) override;
 
 protected:
     /** \brief Sends a message to warn that some hexahedra were added in this topology.
@@ -101,24 +101,24 @@ protected:
     * \sa addHexahedraProcess
     */
     void addHexahedraWarning(const size_t nHexahedra,
-        const sofa::helper::vector< Hexahedron >& hexahedraList,
-        const sofa::helper::vector< HexahedronID >& hexahedraIndexList);
+        const sofa::type::vector< Hexahedron >& hexahedraList,
+        const sofa::type::vector< HexahedronID >& hexahedraIndexList);
 
     /** \brief Sends a message to warn that some hexahedra were added in this topology.
     *
     * \sa addHexahedraProcess
     */
     void addHexahedraWarning(const size_t nHexahedra,
-        const sofa::helper::vector< Hexahedron >& hexahedraList,
-        const sofa::helper::vector< HexahedronID >& hexahedraIndexList,
-        const sofa::helper::vector< sofa::helper::vector< HexahedronID > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
+        const sofa::type::vector< Hexahedron >& hexahedraList,
+        const sofa::type::vector< HexahedronID >& hexahedraIndexList,
+        const sofa::type::vector< sofa::type::vector< HexahedronID > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs);
 
     /** \brief Actually Add some hexahedra to this topology.
     *
     * \sa addHexahedraWarning
     */
-    virtual void addHexahedraProcess(const sofa::helper::vector< Hexahedron >& hexahedra);
+    virtual void addHexahedraProcess(const sofa::type::vector< Hexahedron >& hexahedra);
 
     /** \brief Sends a message to warn that some hexahedra are about to be deleted.
     *
@@ -126,7 +126,7 @@ protected:
     *
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     */
-    virtual void removeHexahedraWarning(sofa::helper::vector<HexahedronID>& hexahedra);
+    virtual void removeHexahedraWarning(sofa::type::vector<HexahedronID>& hexahedra);
 
     /** \brief Remove a subset of hexahedra
     *
@@ -136,14 +136,14 @@ protected:
     * \sa removeHexahedraWarning
     * @param removeIsolatedItems if true remove isolated quads, edges and vertices
     */
-    virtual void removeHexahedraProcess(const sofa::helper::vector<HexahedronID>& indices,
+    virtual void removeHexahedraProcess(const sofa::type::vector<HexahedronID>& indices,
         const bool removeIsolatedItems = false);
 
     /** \brief Actually Add some quads to this topology.
     *
     * \sa addQuadsWarning
     */
-    void addQuadsProcess(const sofa::helper::vector< Quad >& quads) override;
+    void addQuadsProcess(const sofa::type::vector< Quad >& quads) override;
 
     /** \brief Remove a subset of quads
     *
@@ -151,7 +151,7 @@ protected:
     * @param removeIsolatedEdges if true isolated edges are also removed
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    void removeQuadsProcess(const sofa::helper::vector<QuadID>& indices,
+    void removeQuadsProcess(const sofa::type::vector<QuadID>& indices,
         const bool removeIsolatedEdges = false,
         const bool removeIsolatedPoints = false) override;
 
@@ -160,7 +160,7 @@ protected:
     *
     * \sa addEdgesWarning
     */
-    void addEdgesProcess(const sofa::helper::vector< Edge >& edges) override;
+    void addEdgesProcess(const sofa::type::vector< Edge >& edges) override;
 
     /** \brief Remove a subset of edges
     *
@@ -170,7 +170,7 @@ protected:
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     * @param removeIsolatedItems if true remove isolated vertices
     */
-    void removeEdgesProcess(const sofa::helper::vector<EdgeID>& indices,
+    void removeEdgesProcess(const sofa::type::vector<EdgeID>& indices,
         const bool removeIsolatedItems = false) override;
 
 
@@ -188,15 +188,15 @@ protected:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    void removePointsProcess(const sofa::helper::vector<PointID>& indices, const bool removeDOF = true) override;
+    void removePointsProcess(const sofa::type::vector<PointID>& indices, const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
     *
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
-        const sofa::helper::vector<PointID>& inv_index,
+    void renumberPointsProcess(const sofa::type::vector<PointID>& index,
+        const sofa::type::vector<PointID>& inv_index,
         const bool renumberDOF = true) override;
 
 

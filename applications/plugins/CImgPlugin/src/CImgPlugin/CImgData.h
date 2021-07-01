@@ -3,9 +3,9 @@
 #include <CImgPlugin/SOFACImg.h>
 
 // datatypes
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
 
 // visual dependencies
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -14,7 +14,7 @@
 // helpers
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/helper/rmath.h>
 
 
@@ -29,7 +29,7 @@ namespace defaulttype
 /// a virtual, non templated Image class that can be allocated without knowing its exact type
 struct BaseImage
 {
-    typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
+    typedef type::Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
     virtual void setDimensions(const imCoord& dim) = 0;
     virtual void fill(const SReal val)=0;
     virtual ~BaseImage() {}
@@ -232,7 +232,7 @@ public:
     }
 
     // returns an image corresponing to a plane indexed by "coord" along "axis" and inside a bounding box
-    cimg_library::CImg<T> get_plane(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const unsigned int t=0, const bool mergeChannels=false) const
+    cimg_library::CImg<T> get_plane(const unsigned int coord,const unsigned int axis,const type::Mat<2,3,unsigned int>& ROI,const unsigned int t=0, const bool mergeChannels=false) const
     {
         if(mergeChannels)    return get_plane(coord,axis,ROI,t,false).norm();
         else
@@ -246,7 +246,7 @@ public:
     // returns a binary image cutting through 3D input meshes, corresponding to a plane indexed by "coord" along "axis" and inside a bounding box
     // positions are in image coordinates
     template<typename Real>
-    cimg_library::CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const helper::vector<Vec<3,Real> >& position, const helper::vector< component::visualmodel::VisualModelImpl::VisualTriangle >& triangle, const helper::vector< component::visualmodel::VisualModelImpl::VisualQuad >& quad) const
+    cimg_library::CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const type::Mat<2,3,unsigned int>& ROI,const type::vector<type::Vec<3,Real> >& position, const type::vector< component::visualmodel::VisualModelImpl::VisualTriangle >& triangle, const type::vector< component::visualmodel::VisualModelImpl::VisualQuad >& quad) const
     {
         const unsigned int dim[3]= {ROI[1][0]-ROI[0][0]+1,ROI[1][1]-ROI[0][1]+1,ROI[1][2]-ROI[0][2]+1};
         cimg_library::CImg<bool> ret;
@@ -259,7 +259,7 @@ public:
         {
             for (unsigned int i = 0; i < position.size() ; i++)
             {
-                Vec<3,unsigned int> pt((unsigned int)helper::round(position[i][0]),(unsigned int)helper::round(position[i][1]),(unsigned int)helper::round(position[i][2]));
+                type::Vec<3,unsigned int> pt((unsigned int)helper::round(position[i][0]),(unsigned int)helper::round(position[i][1]),(unsigned int)helper::round(position[i][2]));
                 if(pt[axis]==coord) if(pt[0]>=ROI[0][0] && pt[0]<=ROI[1][0]) if(pt[1]>=ROI[0][1] && pt[1]<=ROI[1][1])	if(pt[2]>=ROI[0][2] && pt[2]<=ROI[1][2])
                 {
                     if(axis==0)			ret(pt[2]-ROI[0][2],pt[1]-ROI[0][1])=true;
@@ -273,28 +273,28 @@ public:
         {
             //unsigned int count;
             Real alpha;
-            Vec<3,Real> v[4];
-            Vec<3,int> pt[4];
+            type::Vec<3,Real> v[4];
+            type::Vec<3,int> pt[4];
             bool tru=true;
 
             for (unsigned int i = 0; i < triangle.size() ; i++)  // box/ triangle intersection -> polygon with a maximum of 5 edges, to draw
             {
-                for (unsigned int j = 0; j < 3 ; j++) { v[j] = position[triangle[i][j]]; pt[j]=Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
+                for (unsigned int j = 0; j < 3 ; j++) { v[j] = position[triangle[i][j]]; pt[j]= type::Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
 
-                helper::vector<Vec<3,int> > pts;
+                type::vector<type::Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 3 ; j++)
                 {
                     if(pt[j][axis]==(int)coord) pts.push_back(pt[j]);
                     unsigned int k=(j==2)?0:j+1;
                     if(pt[j][axis]<pt[k][axis])
                     {
-                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(type::Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(type::Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                     else
                     {
-                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(type::Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(type::Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                 }
                 for (unsigned int j = 0; j < pts.size() ; j++)
@@ -310,22 +310,22 @@ public:
             }
             for (unsigned int i = 0; i < quad.size() ; i++)
             {
-                for (unsigned int j = 0; j < 4 ; j++) { v[j] = position[quad[i][j]]; pt[j]=Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
+                for (unsigned int j = 0; j < 4 ; j++) { v[j] = position[quad[i][j]]; pt[j]= type::Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
 
-                helper::vector<Vec<3,int> > pts;
+                type::vector<type::Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 4 ; j++)
                 {
                     if(pt[j][axis]==(int)coord) pts.push_back(pt[j]);
                     unsigned int k=(j==3)?0:j+1;
                     if(pt[j][axis]<pt[k][axis])
                     {
-                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(type::Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(type::Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                     else
                     {
-                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
-                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord+0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(type::Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
+                        alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(type::Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
                     }
                 }
                 for (unsigned int j = 0; j < pts.size() ; j++)
@@ -404,7 +404,7 @@ template<typename _Real>
 struct ImageTransform
 {
     typedef _Real Real;
-    typedef Vec<3,Real> Coord;		// 3d coords
+    typedef type::Vec<3,Real> Coord;		// 3d coords
 
 public:
     virtual Coord fromImage(const Coord& ip) const {return ip;} // image coord to space transform
@@ -431,7 +431,7 @@ struct TImageTransform : public ImageTransform<_Real>
     typedef typename Inherited::Real Real;
     typedef typename Inherited::Coord Coord;
     enum {size = N};
-    typedef Vec<size,Real> Params;	// transform parameters
+    typedef type::Vec<size,Real> Params;	// transform parameters
 
 protected:
     Params P;
@@ -493,7 +493,7 @@ public:
     virtual ~ImageLPTransform() {}
 
     //internal data
-    helper::Quater<Real> qrotation; Coord axisrotation; Real phirotation; // "rotation" in other formats
+    type::Quat<Real> qrotation; Coord axisrotation; Real phirotation; // "rotation" in other formats
 
     void setCamPos(const Real& cx,const Real& cy) {this->camx=cx;  this->camy=cy; }
 
@@ -501,7 +501,7 @@ public:
     virtual void update()
     {
         Coord rot=getRotation() * (Real)M_PI / (Real)180.0;
-        qrotation = helper::Quater< Real >::createQuaterFromEuler(rot);
+        qrotation = type::Quat< Real >::createQuaterFromEuler(rot);
         qrotation.quatToAxis(axisrotation,phirotation);
         phirotation*=(Real)180.0/ (Real)M_PI;
     }

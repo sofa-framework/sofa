@@ -23,8 +23,8 @@
 #define FLEXIBLE_OgdenMaterialBlock_INL
 
 #include "OgdenMaterialBlock.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/StrainTypes.h"
 #include "../material/BaseMaterial.h"
 #include "../BaseJacobian.h"

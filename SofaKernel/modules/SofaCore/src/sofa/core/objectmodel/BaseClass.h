@@ -63,7 +63,7 @@ public:
     std::string className;
     std::string templateName;
     std::string shortName;
-    helper::vector<const BaseClass*> parents;
+    type::vector<const BaseClass*> parents;
 
     /// returns true iff c is a parent class of this
     bool hasParent(const BaseClass* c) const

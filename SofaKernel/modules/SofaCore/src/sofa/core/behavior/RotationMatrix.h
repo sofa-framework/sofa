@@ -100,7 +100,7 @@ public:
         data[i*3+j-bd] += (Real)v;
     }
 
-    virtual helper::vector<Real> & getVector()
+    virtual type::vector<Real> & getVector()
     {
         return data;
     }
@@ -264,7 +264,7 @@ public:
     static const char* Name();
 
 protected :
-    helper::vector<Real> data;
+    type::vector<Real> data;
 
 };
 

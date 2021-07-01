@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <cassert>
 #include <iostream>
 
@@ -60,7 +60,7 @@ EllipsoidForceField<DataTypes>::EllipsoidForceField()
     , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
     , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
     , damping(initData(&damping, (Real)5, "damping", "force damping"))
-    , color(initData(&color, sofa::helper::types::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=0,0.5,1.0,1.0)"))
+    , color(initData(&color, sofa::type::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=0,0.5,1.0,1.0)"))
 {
 }
 
@@ -92,7 +92,7 @@ void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
     //const Real s2 = (stiff < 0 ? - stiff*stiff : stiff*stiff );
     Coord inv_r2;
     for (int j=0; j<N; j++) inv_r2[j] = 1/(r[j]*r[j]);
-    sofa::helper::vector<Contact>* contacts = this->contacts.beginEdit();
+    sofa::type::vector<Contact>* contacts = this->contacts.beginEdit();
     contacts->clear();
     f1.resize(p1.size());
     for (unsigned int i=0; i<p1.size(); i++)
@@ -142,7 +142,7 @@ void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 
 
     df1.resize(dx1.size());
-    const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
+    const sofa::type::vector<Contact>& contacts = this->contacts.getValue();
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         const Contact& c = contacts[i];
@@ -175,8 +175,8 @@ void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
     DataTypes::get(cx, cy, cz, center.getValue());
     Real rx=1, ry=1, rz=1;
     DataTypes::get(rx, ry, rz, vradius.getValue());
-	sofa::defaulttype::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
-	sofa::defaulttype::Vector3 vCenter(cx, cy, cz);
+	sofa::type::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
+	sofa::type::Vector3 vCenter(cx, cy, cz);
 
     vparams->drawTool()->enableLighting();
     

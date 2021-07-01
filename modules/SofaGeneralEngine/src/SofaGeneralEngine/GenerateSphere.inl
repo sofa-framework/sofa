@@ -277,8 +277,8 @@ void GenerateSphere<DataTypes>::doUpdate()
 		Real w,phi;
 		Coord normal;
 		for (i=0;i<edgeArray.size();++i) {
-            normal=defaulttype::cross(posTrian[edgeArray[i][0]],posTrian[edgeArray[i][1]]);
-			normal=defaulttype::cross(normal,posTrian[edgeArray[i][0]]);
+            normal=type::cross(posTrian[edgeArray[i][0]],posTrian[edgeArray[i][1]]);
+			normal=type::cross(normal,posTrian[edgeArray[i][0]]);
 			normal/= normal.norm();
 			phi=acos(dot(posTrian[edgeArray[i][0]],posTrian[edgeArray[i][1]]));
 			for (j=1;j<frequency;++j) {
@@ -433,12 +433,12 @@ void GenerateSphere<DataTypes>::doUpdate()
 
 		size_t degreeTriangle=f_bezierTriangleDegree.getValue();
 		// fill the bezier triangle weight to 1 for regular triangle vertices
-		helper::WriteOnlyAccessor<Data <sofa::helper::vector<Real> > > bezierTriangleWeight=f_bezierTriangleWeight;
+		helper::WriteOnlyAccessor<Data <sofa::type::vector<Real> > > bezierTriangleWeight=f_bezierTriangleWeight;
 		// initialize the weight to 1
 		bezierTriangleWeight.resize(posTrian.size());
 		std::fill(bezierTriangleWeight.begin(),bezierTriangleWeight.end(),(Real)1.0);
 		// initialize the rational flag for each triangle to true
-		helper::WriteOnlyAccessor<Data <sofa::helper::vector<bool> > >  isRationalSpline=f_isBezierTriangleRational;
+		helper::WriteOnlyAccessor<Data <sofa::type::vector<bool> > >  isRationalSpline=f_isBezierTriangleRational;
 		isRationalSpline.resize(nbTriangles);
 		// sets the first set of triangles to be rational
 		std::fill(isRationalSpline.begin(),isRationalSpline.end(),true);
@@ -467,7 +467,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 					edgeArray.push_back(e);
 					// add Bezier points along the edge
 					phi=acos(dot(posTrian[se[0]],posTrian[se[1]]));
-					normal=defaulttype::cross(posTrian[(*itt)[2]]-posTrian[(*itt)[1]],
+					normal=type::cross(posTrian[(*itt)[2]]-posTrian[(*itt)[1]],
 						posTrian[(*itt)[2]]-posTrian[(*itt)[0]]);
 					normal/=normal.norm();
 					ctheta=dot(normal,posTrian[(*itt)[1]]);
@@ -525,7 +525,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 			for (itt=trians.begin();itt!=trians.end();++itt) {
 				// add inside points
 				if (degreeTriangle==4) {
-					normal=defaulttype::cross(posTrian[(*itt)[2]]-posTrian[(*itt)[1]],
+					normal=type::cross(posTrian[(*itt)[2]]-posTrian[(*itt)[1]],
 						posTrian[(*itt)[2]]-posTrian[(*itt)[0]]);
 					normal/=normal.norm();
 					ctheta=dot(normal,posTrian[(*itt)[1]]);
@@ -571,12 +571,12 @@ void GenerateSphere<DataTypes>::doUpdate()
 	if (f_bezierTetrahedronDegree.getValue()>1) {
 		size_t degreeTetrahedron=f_bezierTetrahedronDegree.getValue();
 		// fill the bezier triangle weight to 1 for regular tetrahedron vertices
-		helper::WriteOnlyAccessor<Data <sofa::helper::vector<Real> > > bezierTetrahedronWeight=f_bezierTetrahedronWeight;
+		helper::WriteOnlyAccessor<Data <sofa::type::vector<Real> > > bezierTetrahedronWeight=f_bezierTetrahedronWeight;
 		// initialize the weight to 1
 		bezierTetrahedronWeight.resize(posTetra.size());
 		std::fill(bezierTetrahedronWeight.begin(),bezierTetrahedronWeight.end(),(Real)1.0);
 		// initialize the rational flag for each tetrahedron to true
-		helper::WriteOnlyAccessor<Data <sofa::helper::vector<bool> > >  isRationalSpline=f_isBezierTetrahedronRational;
+		helper::WriteOnlyAccessor<Data <sofa::type::vector<bool> > >  isRationalSpline=f_isBezierTetrahedronRational;
 		isRationalSpline.resize(tetras.size());
 		// sets the first set of tetrahedra to be rational
 		std::fill(isRationalSpline.begin(),isRationalSpline.end(),true);
@@ -621,7 +621,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 							assert(fabs(posTetra[nextVertexOnSphere].norm2()-1)<1e-4);
 						}
 						// we have 3 points on the sphere therefore can compute a normal
-						normal=defaulttype::cross(posTetra[nextVertexOnSphere]-posTetra[e[1]],
+						normal=type::cross(posTetra[nextVertexOnSphere]-posTetra[e[1]],
 							posTetra[nextVertexOnSphere]-posTetra[e[0]]);
 						normal/=normal.norm();
 						ctheta=dot(normal,posTetra[e[1]]);
@@ -722,7 +722,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 									onSphere=false;
 							}
 							if (onSphere) {
-								normal=defaulttype::cross(posTetra[tr[2]]-posTetra[tr[1]],
+								normal=type::cross(posTetra[tr[2]]-posTetra[tr[1]],
 									posTetra[tr[2]]-posTetra[tr[0]]);
 								normal/=normal.norm();
 								ctheta=dot(normal,posTetra[tr[1]]);

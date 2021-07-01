@@ -50,9 +50,9 @@ using MeshTopology::getQuad;
 using MeshTopology::getHexahedron;
 
     SOFA_CLASS(GridTopology,MeshTopology);
-    typedef sofa::defaulttype::Vec3i Vec3i;
-    typedef sofa::defaulttype::Vector2 Vector2;
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vec3i Vec3i;
+    typedef sofa::type::Vector2 Vector2;
+    typedef sofa::type::Vector3 Vector3;
     typedef Vector2 TextCoords2D;
     friend class GridUpdate;
 

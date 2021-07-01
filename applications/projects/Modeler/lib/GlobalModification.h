@@ -50,7 +50,7 @@ class GlobalModification : public QWidget
 {
     Q_OBJECT
 public:
-    typedef helper::vector< sofa::core::objectmodel::Base* > InternalStorage;
+    typedef type::vector< sofa::core::objectmodel::Base* > InternalStorage;
     GlobalModification(const InternalStorage &c, GraphHistoryManager* historyManager);
     ~GlobalModification() override;
 public slots:
@@ -69,7 +69,7 @@ protected:
 
     InternalStorage components;
     GraphHistoryManager* historyManager;
-    helper::vector< ModifierCondition* > conditions;
+    type::vector< ModifierCondition* > conditions;
 };
 
 }

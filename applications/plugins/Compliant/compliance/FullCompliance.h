@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_COMPLIANCE_FULLCOMPLIANCE_H
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
@@ -39,7 +39,7 @@ public:
     Data< block_matrix_type > matC; ///< input compliance matrix (PSD)
     Data< block_matrix_type > matK; ///< input stiffness matrix (PSD)
 
-    Data< helper::vector<SReal> > damping; ///< Full damping
+    Data< type::vector<SReal> > damping; ///< Full damping
 
     virtual void init() override;
 

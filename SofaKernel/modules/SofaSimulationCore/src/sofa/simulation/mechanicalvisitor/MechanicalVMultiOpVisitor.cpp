@@ -63,7 +63,7 @@ std::string MechanicalVMultiOpVisitor::getInfos() const
             out << " ;   ";
         core::MultiVecId r = it->first;
         out << r.getName();
-        const helper::vector< std::pair< core::ConstMultiVecId, SReal > >& operands = it->second;
+        const type::vector< std::pair< core::ConstMultiVecId, SReal > >& operands = it->second;
         int nop = (int)operands.size();
         if (nop==0)
         {

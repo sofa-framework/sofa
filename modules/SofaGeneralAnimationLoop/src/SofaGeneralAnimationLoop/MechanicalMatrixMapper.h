@@ -144,7 +144,7 @@ public:
 
 protected:
 
-    Data<helper::vector<std::string>> d_forceFieldList;
+    Data<type::vector<std::string>> d_forceFieldList;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_STOREPATH > l_nodeToParse;
     Data <bool> d_stopAtNodeToParse;
     Data <bool> d_skipJ1tKJ1;

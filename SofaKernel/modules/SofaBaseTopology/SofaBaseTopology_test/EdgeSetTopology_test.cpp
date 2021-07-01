@@ -81,12 +81,12 @@ bool EdgeSetTopology_test::testEdgeBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     //// The first 2 edges in this file should be :
-    sofa::helper::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth0(12, 17);
-    sofa::helper::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth1(4, 12);
+    sofa::type::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth0(12, 17);
+    sofa::type::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth1(4, 12);
 
 
     //// check edge buffer
-    const sofa::helper::vector<EdgeSetTopologyContainer::Edge>& edges = topoCon->getEdgeArray();
+    const sofa::type::vector<EdgeSetTopologyContainer::Edge>& edges = topoCon->getEdgeArray();
     if (edges.empty())
         return false;
     
@@ -137,7 +137,7 @@ bool EdgeSetTopology_test::testVertexBuffers()
     }
 
     // create and check vertex buffer
-    const sofa::helper::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = topoCon->getEdgesAroundVertexArray();
+    const sofa::type::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = topoCon->getEdgesAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);

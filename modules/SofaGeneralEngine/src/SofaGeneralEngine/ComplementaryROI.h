@@ -25,7 +25,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 namespace sofa::component::engine
 {
@@ -70,7 +70,7 @@ protected:
     /// @{
     Data<VecCoord> d_position; ///< input positions
     Data<unsigned int> d_nbSet; ///< number of sets
-    helper::vectorData< SetIndex > vd_setIndices; ///< for each set, indices of the included points
+    core::objectmodel::vectorData< SetIndex > vd_setIndices; ///< for each set, indices of the included points
     /// @}
 
     /// outputs

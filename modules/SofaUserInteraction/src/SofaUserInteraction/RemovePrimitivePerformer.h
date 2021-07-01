@@ -67,7 +67,7 @@ class SOFA_SOFAUSERINTERACTION_API RemovePrimitivePerformer: public       TInter
     typedef typename DataTypes::Real               Real;
     typedef typename DataTypes::Coord              Coord;
     typedef typename DataTypes::VecCoord           VecCoord;
-    typedef sofa::helper::vector <Index>    VecIds;
+    typedef sofa::type::vector<Index>    VecIds;
 
 public:
     RemovePrimitivePerformer(BaseMouseInteractor *i);

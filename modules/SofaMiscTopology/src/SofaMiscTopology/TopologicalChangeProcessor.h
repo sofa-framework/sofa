@@ -54,7 +54,7 @@ public:
     using Index = sofa::Index;
 
     sofa::core::objectmodel::DataFileName m_filename;
-    Data < helper::vector< helper::vector <Index> > > m_listChanges; ///< 0 for adding, 1 for removing, 2 for cutting and associated indices.
+    Data < type::vector< type::vector<Index> > > m_listChanges; ///< 0 for adding, 1 for removing, 2 for cutting and associated indices.
 
     // Parameters for time
     Data < double > m_interval; ///< time duration between 2 actions
@@ -64,11 +64,11 @@ public:
     // Inputs for operations on Data
     Data <bool> m_useDataInputs; ///< If true, will perform operation using Data input lists rather than text file.
     Data <double> m_timeToRemove; ///< If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also.
-    Data <sofa::helper::vector <Index> > m_edgesToRemove; ///< List of edge IDs to be removed.
-    Data <sofa::helper::vector <Index> > m_trianglesToRemove; ///< List of triangle IDs to be removed.
-    Data <sofa::helper::vector <Index> > m_quadsToRemove; ///< List of quad IDs to be removed.
-    Data <sofa::helper::vector <Index> > m_tetrahedraToRemove; ///< List of tetrahedron IDs to be removed.
-    Data <sofa::helper::vector <Index> > m_hexahedraToRemove; ///< List of hexahedron IDs to be removed.
+    Data <sofa::type::vector<Index> > m_edgesToRemove; ///< List of edge IDs to be removed.
+    Data <sofa::type::vector<Index> > m_trianglesToRemove; ///< List of triangle IDs to be removed.
+    Data <sofa::type::vector<Index> > m_quadsToRemove; ///< List of quad IDs to be removed.
+    Data <sofa::type::vector<Index> > m_tetrahedraToRemove; ///< List of tetrahedron IDs to be removed.
+    Data <sofa::type::vector<Index> > m_hexahedraToRemove; ///< List of hexahedron IDs to be removed.
 
     Data <bool> m_saveIndicesAtInit; ///< set to 'true' to save the incision to do in the init to incise even after a movement
 
@@ -138,7 +138,7 @@ protected:
 
     std::vector<SReal> getValuesInLine(std::string line, size_t nbElements);
 
-    void findElementIndex(defaulttype::Vector3 coord, Index& triangleIndex, Index oldTriangleIndex);
+    void findElementIndex(type::Vector3 coord, Index& triangleIndex, Index oldTriangleIndex);
     void saveIndices();//only for incision
     void inciseWithSavedIndices();
 
@@ -152,10 +152,10 @@ public:
     using Index = sofa::Index;
 
     std::vector<Index>      triangleIndices;
-    std::vector<defaulttype::Vector3>                barycentricCoordinates;
+    std::vector<type::Vector3>                barycentricCoordinates;
     SReal                                           timeToIncise;
 
-    std::vector<defaulttype::Vector3>                coordinates;
+    std::vector<type::Vector3>                coordinates;
 
     void display()
     {
@@ -176,7 +176,7 @@ public:
     }
 
 
-    std::vector<defaulttype::Vector3> computeCoordinates(core::topology::BaseMeshTopology *topology)
+    std::vector<type::Vector3> computeCoordinates(core::topology::BaseMeshTopology *topology)
     {
         sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeo;
         topology->getContext()->get(triangleGeo);
