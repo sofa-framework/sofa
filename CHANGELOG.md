@@ -99,6 +99,7 @@
 **Architecture**
 - [CMake] Speedup configure step [#1837](https://github.com/sofa-framework/sofa/pull/1837)
 - [CMake] ADD option to fetch pull-request commits in ExternalProject [#1961](https://github.com/sofa-framework/sofa/pull/1961)
+- [CMake] ADD option to enable/disable compatibility layer [#2216](https://github.com/sofa-framework/sofa/pull/2216)
 
 **Modules**
 - **[SofaBaseCollision]** BVH narrow phase [#2043](https://github.com/sofa-framework/sofa/pull/2043)
@@ -234,6 +235,7 @@
 - **[SofaSimulationCore]** Revert changes in #1927 [#2017](https://github.com/sofa-framework/sofa/pull/2017)
 - [SofaSimulationGraph] Restore tests [#1988](https://github.com/sofa-framework/sofa/pull/1988)
 - [SofaSimulationGraph] Reading links fail when owner is invalid [#2166](https://github.com/sofa-framework/sofa/pull/2166)
+- [SofaSparseSolver] SparseLDLSolver optimizations [#1996](https://github.com/sofa-framework/sofa/pull/1996)
 - [SofaTopologyMapping] Fix Edge2Quad condition [#2126](https://github.com/sofa-framework/sofa/pull/2126)
 - [SofaUserInteraction] Fix Bug of removing topological element when a Hexa2TetraTopologicalMapping is in the scene [#1973](https://github.com/sofa-framework/sofa/pull/1973)
 
@@ -275,8 +277,7 @@
 **Architecture**
 - [CMake] CLEAN old metapackage usage [#1883](https://github.com/sofa-framework/sofa/pull/1883)
 - [CMake] CLEAN option SOFA_BUILD_WITH_PCH_ENABLED [#1755](https://github.com/sofa-framework/sofa/pull/1755)
-
-**Extlibs**
+- [CMake] CLEAN/FIX deprecated things (MSVC mainly) [#2217](https://github.com/sofa-framework/sofa/pull/2217)
 
 **Modules**
 - [All] Remove commented code & fix trivial issues [#1693](https://github.com/sofa-framework/sofa/pull/1693)
