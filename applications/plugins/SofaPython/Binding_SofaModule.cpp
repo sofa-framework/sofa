@@ -490,7 +490,7 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 
     if (loader)
     {
-        const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
+        const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();
         Node::SPtr node = loader->load(filename, false, sceneArgs);
         return PythonFactory::toPython(node.get());
     }
