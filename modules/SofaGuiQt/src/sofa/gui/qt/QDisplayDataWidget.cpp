@@ -216,14 +216,35 @@ void QDataSimpleEdit::setDataReadOnly(bool readOnly)
 
 void QDataSimpleEdit::readFromData()
 {
+    if(!getBaseData())
+        return ;
+
     QString str = QString( getBaseData()->getValueString().c_str() );
     if(innerWidget_.type == TEXTEDIT)
     {
-        innerWidget_.widget.textEdit->setText(str);
+        if(getBaseData()->isRequired())
+            if(getBaseData()->hasDefaultValue())
+                innerWidget_.widget.textEdit->setText(str);
+            else
+                innerWidget_.widget.textEdit->setText("<missing value>");
+        else
+            if(getBaseData()->isSet() || getBaseData()->hasDefaultValue())
+                innerWidget_.widget.textEdit->setText(str);
+            else
+                innerWidget_.widget.textEdit->setText("<no default value>");
     }
     else if(innerWidget_.type == LINEEDIT)
     {
-        innerWidget_.widget.lineEdit->setText(str);
+        if(getBaseData()->isRequired())
+            if(getBaseData()->hasDefaultValue())
+                innerWidget_.widget.lineEdit->setText(str);
+            else
+                innerWidget_.widget.lineEdit->setText("<missing value>");
+        else
+            if(getBaseData()->isSet() || getBaseData()->hasDefaultValue())
+                innerWidget_.widget.lineEdit->setText(str);
+            else
+                innerWidget_.widget.lineEdit->setText("<no default value>");
     }
 }
 

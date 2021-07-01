@@ -172,6 +172,16 @@ public:
         return true;
     }
 
+    void setMissingValue()
+    {
+        std::cout << " FIX ME " << std::endl;
+    }
+
+    void setNoValue()
+    {
+        std::cout << " FIX ME " << std::endl;
+    }
+
     void setReadOnly(bool readOnly)
     {
         p.setReadOnly(readOnly);

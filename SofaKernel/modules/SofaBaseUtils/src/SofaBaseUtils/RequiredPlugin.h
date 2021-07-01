@@ -41,6 +41,13 @@ public:
     sofa::core::objectmodel::Data<bool> d_requireOne; ///< Display an error message if no plugin names were successfully loaded
     sofa::core::objectmodel::Data<bool> d_requireAll; ///< Display an error message if any plugin names failed to be loaded
 
+    sofa::core::objectmodel::Data<int> d_test1; ///< Display an error message if any plugin names failed to be loaded
+    sofa::core::objectmodel::Data<float> d_test2; ///< Display an error message if any plugin names failed to be loaded
+    sofa::core::objectmodel::Data<float> d_test3; ///< Display an error message if any plugin names failed to be loaded
+    sofa::core::objectmodel::Data<float> d_test4; ///< Display an error message if any plugin names failed to be loaded
+    sofa::core::objectmodel::Data<float> d_test5; ///< Display an error message if any plugin names failed to be loaded
+
+
     sofa::core::objectmodel::Data<helper::vector<std::string> > d_loadedPlugins; ///< name of the loaded plugins
 
 protected:

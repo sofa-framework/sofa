@@ -254,9 +254,19 @@ void BaseObject::init()
 {
     for(auto data: this->m_vecData)
     {
-        if (data->isRequired() && !data->isSet())
+        if (data->isRequired())
         {
-            msg_error() << "Required data \"" << data->getName() << "\" has not been set. (Current value is " << data->getValueString() << ")" ;
+            if(!data->isSet())
+            {
+                if(data->hasDefaultValue())
+                {
+                    msg_info() << "Required data \"" << data->getName() << "\" has not been set but has a default value. (Current value is " << data->getValueString() << ")" ;
+                }
+                else
+                {
+                    msg_error() << "Required data \"" << data->getName() << "\" has not been set and has not default value. ";
+                }
+            }
         }
     }
 }

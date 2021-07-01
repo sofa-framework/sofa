@@ -63,6 +63,17 @@ public:
         w->setFocusPolicy(Qt::StrongFocus);
         return w;
     }
+
+    static void setMissingValue(Widget* w)
+    {
+        w->setText("<missing value>");
+    }
+
+    static void setNoValue(Widget* w)
+    {
+        w->setText("<no-default value>");
+    }
+
     static void readFromData(Widget* w, const data_type& d)
     {
         std::ostringstream o;
@@ -140,6 +151,17 @@ public:
             helper::setReadOnly(w, readOnly);
         }
     }
+
+    void setMissingValue()
+    {
+        helper::setMissingValue(w);
+    }
+
+    void setNoValue()
+    {
+        helper::setNoValue(w);
+    }
+
     void readFromData(const data_type& d)
     {
         helper::readFromData(w, d);
@@ -190,7 +212,16 @@ public:
 
     virtual void readFromData()
     {
-        container.readFromData(this->getData()->getValue());
+        if(this->getData()->isRequired())
+            if(this->getData()->hasDefaultValue())
+                container.readFromData(this->getData()->getValue());
+            else
+                container.setMissingValue();
+        else
+            if (this->getData()->isSet() || this->getData()->hasDefaultValue() )
+                container.readFromData(this->getData()->getValue());
+            else
+                container.setNoValue();
     }
 
     virtual void setReadOnly(bool readOnly)
@@ -223,6 +254,17 @@ public:
         w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
+
+    static void setMissingValue(Widget* w)
+    {
+        w->setText("<missing value>");
+    }
+
+    static void setNoValue(Widget* w)
+    {
+        w->setText("<no default value>");
+    }
+
     static void readFromData(Widget* w, const data_type& d)
     {
         if (w->text().toStdString() != d)
@@ -256,8 +298,22 @@ public:
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
         Widget* w = new Widget(parent);
+        w->setTristate(true);
+        w->setCheckState(Qt::PartiallyChecked);
         return w;
     }
+
+    static void setMissingValue(Widget* w)
+    {
+        std::cout << "FIX ME" << std::endl;
+        w->setText("<missing value>");
+    }
+
+    static void setNoValue(Widget* w)
+    {
+        w->setCheckState(Qt::PartiallyChecked);
+    }
+
     static void readFromData(Widget* w, const data_type& d)
     {
         if (w->isChecked() != d)
@@ -297,6 +353,18 @@ public:
         w->setMinimumWidth(20);
         return w;
     }
+
+    static void setMissingValue(Widget* w)
+    {
+        w->setText("<missing value>");
+    }
+
+
+    static void setNoValue(Widget* w)
+    {
+        w->setText("<no default value>");
+    }
+
     static void readFromData(Widget* w, const data_type& d)
     {
         if (d != w->getDisplayedValue())
@@ -339,11 +407,22 @@ public:
         Widget* w = new Widget(parent);
         w->setMinimum(vmin);
         w->setMaximum(vmax);
-        w->setSingleStep(1);
-
+        w->setSingleStep(1);        
+        w->setSpecialValueText("<not-set>");
         w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
+
+    static void setMissingValue(Widget* w)
+    {
+        //w->set
+    }
+
+    static void setNoValue(Widget* w)
+    {
+        w->setValue(vmin);
+    }
+
     static void readFromData(Widget* w, const data_type& d)
     {
         if ((int)d != w->value())
@@ -457,6 +536,20 @@ public:
 
         return true;
     }
+
+    void setMissingValue()
+    {
+        for (sofa::Size i=0; i<N; ++i)
+            w[i].setMissingValue();
+    }
+
+
+    void setNoValue()
+    {
+        for (sofa::Size i=0; i<N; ++i)
+            w[i].setNoValue();
+    }
+
     void setReadOnly(bool readOnly)
     {
 
@@ -527,6 +620,18 @@ public:
                     return false;
         return true;
     }
+
+    void setMissingValue()
+    {
+        std::cout << " FIX ME " << std::endl;
+    }
+
+
+    void setNoValue()
+    {
+        std::cout << " FIX ME " << std::endl;
+    }
+
     void setReadOnly(bool readOnly)
     {
         for (sofa::Size y=0; y<L; ++y)
@@ -799,6 +904,19 @@ public:
         Widget* w = new Widget(parent);
         return w;
     }
+
+    static void setMissingValue(Widget* w)
+    {
+        w->setText("<not-set>");
+    }
+
+
+
+    static void setNoValue(Widget* w)
+    {
+        w->setText("<not-set>");
+    }
+
     static void readFromData(Widget* w, const data_type& d)
     {
         auto length = d.getString().length();
