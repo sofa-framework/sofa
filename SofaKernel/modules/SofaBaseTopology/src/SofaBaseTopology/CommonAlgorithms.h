@@ -38,14 +38,14 @@ inline Real areaProduct(const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<
             a.x()*b.y() - a.y()*b.x()).norm();
 }
 
-/// area for 2-elements sofa::helper::vectors.
+/// area for 2-elements sofa::type::vectors.
 template< class Real>
 inline Real areaProduct(const type::Vec<2,Real>& a, const type::Vec<2,Real>& b )
 {
     return a[0]*b[1] - a[1]*b[0];
 }
 
-/// area invalid for 1-elements sofa::helper::vectors.
+/// area invalid for 1-elements sofa::type::vectors.
 template< class Real>
 inline Real areaProduct(const type::Vec<1,Real>&, const type::Vec<1,Real>&)
 {
@@ -60,7 +60,7 @@ type::Vec<2,Real> ortho(const type::Vec<2,Real> &in)
     return(out);
 }
 
-/// cross product  for 2-elements sofa::helper::vectors.
+/// cross product  for 2-elements sofa::type::vectors.
 template< class Real>
 type::Vec<2,Real> cross(const type::Vec<2,Real>&, const type::Vec<2,Real>&)
 {
@@ -68,7 +68,7 @@ type::Vec<2,Real> cross(const type::Vec<2,Real>&, const type::Vec<2,Real>&)
     return(sofa::type::Vec<2,Real>());
 }
 
-/// cross product  for 1-elements sofa::helper::vectors.
+/// cross product  for 1-elements sofa::type::vectors.
 template< class Real>
 type::Vec<1,Real> cross(const type::Vec<1,Real>&, const type::Vec<1,Real>&)
 {
@@ -76,14 +76,14 @@ type::Vec<1,Real> cross(const type::Vec<1,Real>&, const type::Vec<1,Real>&)
     return(sofa::type::Vec<1,Real>());
 }
 
-/// Volume (triple product) for 3-elements sofa::helper::vectors.
+/// Volume (triple product) for 3-elements sofa::type::vectors.
 template<typename real>
 inline real tripleProduct(const sofa::type::Vec<3,real>& a, const sofa::type::Vec<3,real>& b,const sofa::type::Vec<3,real> &c)
 {
     return dot(a,cross(b,c));
 }
 
-/// Volume invalid for 2-elements sofa::helper::vectors.
+/// Volume invalid for 2-elements sofa::type::vectors.
 template <typename real>
 inline real tripleProduct(const sofa::type::Vec<2,real>&, const sofa::type::Vec<2,real>&, const sofa::type::Vec<2,real> &)
 {
@@ -91,7 +91,7 @@ inline real tripleProduct(const sofa::type::Vec<2,real>&, const sofa::type::Vec<
     return (real)0;
 }
 
-/// Volume invalid for 1-elements sofa::helper::vectors.
+/// Volume invalid for 1-elements sofa::type::vectors.
 template <typename real>
 inline real tripleProduct(const sofa::type::Vec<1,real>&, const sofa::type::Vec<1,real>&, const sofa::type::Vec<1,real> &)
 {
