@@ -1770,7 +1770,10 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         else
         {
             msg_warning() << "Cannot draw von Mises Stress. "
-                          << "Value of " << _computeVonMisesStress.getName() << " is invalid.";
+                          << "Value of " << _computeVonMisesStress.getName() << " is invalid. "
+                          << "Disabling " << _showVonMisesStressPerNode.getName() << " and " << _showVonMisesStressPerElement.getName() << ".";
+            _showVonMisesStressPerNode.setValue(false);
+            _showVonMisesStressPerElement.setValue(false);
         }
     }
 
