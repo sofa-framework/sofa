@@ -1772,7 +1772,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     if (vparams->displayFlags().getShowNormals())
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        std::vector< defaulttype::Vector3 > points[3];
+        std::vector< type::Vector3 > points[3];
         for(unsigned ii = 0; ii<  x.size() ; ii++)
         {
             Coord a = x[ii];
@@ -1796,9 +1796,9 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             points[2].push_back(b);
         }
 
-        vparams->drawTool()->drawLines(points[0], 5, sofa::helper::types::RGBAColor::red());
-        vparams->drawTool()->drawLines(points[1], 5, sofa::helper::types::RGBAColor::green());
-        vparams->drawTool()->drawLines(points[2], 5, sofa::helper::types::RGBAColor::blue());
+        vparams->drawTool()->drawLines(points[0], 5, sofa::type::RGBAColor::red());
+        vparams->drawTool()->drawLines(points[1], 5, sofa::type::RGBAColor::green());
+        vparams->drawTool()->drawLines(points[2], 5, sofa::type::RGBAColor::blue());
     }
 
     vparams->drawTool()->restoreLastState();
