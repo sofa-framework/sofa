@@ -56,13 +56,13 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
 
-    Data< sofa::helper::vector<Tetrahedron> > d_tetrahedra; ///< Tetrahedra to draw
-    Data< sofa::helper::vector<Hexahedron> > d_hexahedra; ///< Hexahedra to draw
+    Data< sofa::type::vector<Tetrahedron> > d_tetrahedra; ///< Tetrahedra to draw
+    Data< sofa::type::vector<Hexahedron> > d_hexahedra; ///< Hexahedra to draw
 
     Data<float> d_volumeScale; ///< Scale for each volumetric primitive
     Data<bool> d_depthTest; ///< Set Depth Test
     Data<bool> d_blending; ///< Set Blending
-    Data<defaulttype::Vec4f> d_defaultColor; ///< Color for each volume (if the attribute a_vertexColor is not detected)
+    Data<type::Vec4f> d_defaultColor; ///< Color for each volume (if the attribute a_vertexColor is not detected)
 
     ~OglVolumetricModel() override;
 
@@ -92,10 +92,10 @@ private:
     //Attributes
     sofa::component::visualmodel::OglFloat4Attribute::SPtr m_vertexColors;
 
-    sofa::helper::vector<Tetrahedron> m_hexaToTetrahedra;
+    sofa::type::vector<Tetrahedron> m_hexaToTetrahedra;
 
-    sofa::helper::vector<Coord> m_tetraBarycenters;
-    sofa::helper::vector<Coord> m_hexaBarycenters;
+    sofa::type::vector<Coord> m_tetraBarycenters;
+    sofa::type::vector<Coord> m_hexaBarycenters;
 
 public:
     void init() override;

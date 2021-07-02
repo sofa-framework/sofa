@@ -24,17 +24,17 @@
 
 #include "CudaCommon.h"
 #include "mycuda.h"
-#include <sofa/helper/system/gl.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/gl/gl.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
-#include <sofa/helper/vector_device.h>
+#include <sofa/type/vector_device.h>
 
 namespace sofa
 {
@@ -58,10 +58,10 @@ struct DataTypeInfoManager
 };
 
 template<class T>
-class CudaVector : public helper::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
+class CudaVector : public type::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
 {
 public :
-    using Inherit = helper::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
+    using Inherit = type::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
     typedef size_t Size;
 
     CudaVector() : Inherit() {}
@@ -192,7 +192,7 @@ public:
     }
 
     template<class C>
-    static C interpolate(const helper::vector< C > & ancestors, const helper::vector< Real > & coefs)
+    static C interpolate(const type::vector< C > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -209,20 +209,20 @@ public:
     static const char* Name();
 };
 
-typedef sofa::defaulttype::Vec3f Vec3f;
-typedef sofa::defaulttype::Vec1f Vec1f;
-typedef sofa::defaulttype::Vec2f Vec2f;
-typedef sofa::defaulttype::Vec6f Vec6f;
+typedef sofa::type::Vec3f Vec3f;
+typedef sofa::type::Vec1f Vec1f;
+typedef sofa::type::Vec2f Vec2f;
+typedef sofa::type::Vec6f Vec6f;
 
-using defaulttype::Vec;
-using defaulttype::NoInit;
-using defaulttype::NOINIT;
+using type::Vec;
+using type::NoInit;
+using type::NOINIT;
 
 template<class Real>
-class Vec3r1 : public sofa::defaulttype::Vec<3,Real>
+class Vec3r1 : public sofa::type::Vec<3,Real>
 {
 public:
-    typedef sofa::defaulttype::Vec<3,Real> Inherit;
+    typedef sofa::type::Vec<3,Real> Inherit;
     typedef Real real;
     enum { N=3 };
     Vec3r1() : dummy((Real) 0.0) {}
@@ -550,7 +550,7 @@ public:
         c[2] += (Real) z;
     }
 
-    static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
+    static Coord interpolate(const type::vector< Coord > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -562,11 +562,11 @@ public:
             c.getCenter() += ancestors[i].getCenter() * coefs[i];
 
             // Angle extraction from the orientation quaternion.
-            helper::Quater<Real> q = ancestors[i].getOrientation();
+            type::Quat<Real> q = ancestors[i].getOrientation();
             Real angle = acos(q[3]) * 2;
 
             // Axis extraction from the orientation quaternion.
-            defaulttype::Vec<3,Real> v(q[0], q[1], q[2]);
+            type::Vec<3,Real> v(q[0], q[1], q[2]);
             Real norm = v.norm();
             if (norm > 0.0005)
             {
@@ -588,7 +588,7 @@ public:
         return c;
     }
 
-    static Deriv interpolate(const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs)
+    static Deriv interpolate(const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -625,10 +625,10 @@ inline const char* CudaRigid3fTypes::Name()
 //#define SOFA_GPU_CUDA_DOUBLE
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec1d;
-using sofa::defaulttype::Vec2d;
-using sofa::defaulttype::Vec6d;
+using sofa::type::Vec3d;
+using sofa::type::Vec1d;
+using sofa::type::Vec2d;
+using sofa::type::Vec6d;
 typedef Vec3r1<double> Vec3d1;
 
 typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;
@@ -689,7 +689,7 @@ inline const char* CudaRigid3dTypes::Name()
 
 
 template<class real, class real2>
-inline real operator*(const sofa::defaulttype::Vec<3,real>& v1, const sofa::gpu::cuda::Vec3r1<real2>& v2)
+inline real operator*(const sofa::type::Vec<3,real>& v1, const sofa::gpu::cuda::Vec3r1<real2>& v2)
 {
     real r = (real)(v1[0]*v2[0]);
     for (int i=1; i<3; i++)
@@ -698,7 +698,7 @@ inline real operator*(const sofa::defaulttype::Vec<3,real>& v1, const sofa::gpu:
 }
 
 template<class real, class real2>
-inline real operator*(const sofa::gpu::cuda::Vec3r1<real>& v1, const sofa::defaulttype::Vec<3,real2>& v2)
+inline real operator*(const sofa::gpu::cuda::Vec3r1<real>& v1, const sofa::type::Vec<3,real2>& v2)
 {
     real r = (real)(v1[0]*v2[0]);
     for (int i=1; i<3; i++)

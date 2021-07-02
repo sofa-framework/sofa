@@ -31,7 +31,7 @@ namespace sofa::component::engine
 
 using helper::ReadAccessor;
 using helper::WriteOnlyAccessor;
-using helper::vector;
+using type::vector;
 using collision::TriangleOctreeRoot;
 
 template <class DataTypes>

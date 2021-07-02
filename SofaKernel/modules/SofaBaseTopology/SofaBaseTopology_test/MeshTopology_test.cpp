@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include "fake_TopologyScene.h"
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
@@ -35,7 +35,7 @@
 
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 /**
  * This class will test the MeshTopology containers.
@@ -112,7 +112,7 @@ bool MeshTopology_test::testHexahedronTopology()
     EXPECT_EQ(topo->getHexahedra().size(), nbrHexahedron);
 
     //// check tetrahedron buffer    
-    const sofa::helper::vector<HexahedronSetTopologyContainer::Hexahedron>& hexahedra1 = topoCon->getHexahedronArray();
+    const sofa::type::vector<HexahedronSetTopologyContainer::Hexahedron>& hexahedra1 = topoCon->getHexahedronArray();
     const BaseMeshTopology::SeqHexahedra& hexahedra2 = topo->getHexahedra();
 
     // Check hexahedron buffer access    
@@ -128,18 +128,18 @@ bool MeshTopology_test::testHexahedronTopology()
 
 
     //// create and get cross elements buffers
-    const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundQuad >& hexahedraAroundQuad1 = topoCon->getHexahedraAroundQuadArray();
-    const sofa::helper::vector< HexahedronSetTopologyContainer::QuadsInHexahedron > & trianglesInHexahedron1 = topoCon->getQuadsInHexahedronArray();
-    const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundEdge >& hexahedraAroundEdge1 = topoCon->getHexahedraAroundEdgeArray();
-    const sofa::helper::vector< HexahedronSetTopologyContainer::EdgesInHexahedron > & edgesInHexahedron1 = topoCon->getEdgesInHexahedronArray();
-    const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundVertex >& hexahedraAroundVertex1 = topoCon->getHexahedraAroundVertexArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::HexahedraAroundQuad >& hexahedraAroundQuad1 = topoCon->getHexahedraAroundQuadArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::QuadsInHexahedron > & trianglesInHexahedron1 = topoCon->getQuadsInHexahedronArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::HexahedraAroundEdge >& hexahedraAroundEdge1 = topoCon->getHexahedraAroundEdgeArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::EdgesInHexahedron > & edgesInHexahedron1 = topoCon->getEdgesInHexahedronArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::HexahedraAroundVertex >& hexahedraAroundVertex1 = topoCon->getHexahedraAroundVertexArray();
     const HexahedronSetTopologyContainer::SeqEdges& edges1 = topoCon->getEdges();
 
-    const sofa::helper::vector< BaseMeshTopology::HexahedraAroundQuad > &hexahedraAroundQuad2 = topo->getHexahedraAroundQuadArray();
-    const sofa::helper::vector< BaseMeshTopology::QuadsInHexahedron > &trianglesInHexahedron2 = topo->getQuadsInHexahedronArray();
-    const sofa::helper::vector< BaseMeshTopology::HexahedraAroundEdge >& hexahedraAroundEdge2 = topo->getHexahedraAroundEdgeArray();
-    const sofa::helper::vector< BaseMeshTopology::EdgesInHexahedron >& edgesInHexahedron2 = topo->getEdgesInHexahedronArray();
-    const sofa::helper::vector< BaseMeshTopology::HexahedraAroundVertex >& hexahedraAroundVertex2 = topo->getHexahedraAroundVertexArray();
+    const sofa::type::vector< BaseMeshTopology::HexahedraAroundQuad > &hexahedraAroundQuad2 = topo->getHexahedraAroundQuadArray();
+    const sofa::type::vector< BaseMeshTopology::QuadsInHexahedron > &trianglesInHexahedron2 = topo->getQuadsInHexahedronArray();
+    const sofa::type::vector< BaseMeshTopology::HexahedraAroundEdge >& hexahedraAroundEdge2 = topo->getHexahedraAroundEdgeArray();
+    const sofa::type::vector< BaseMeshTopology::EdgesInHexahedron >& edgesInHexahedron2 = topo->getEdgesInHexahedronArray();
+    const sofa::type::vector< BaseMeshTopology::HexahedraAroundVertex >& hexahedraAroundVertex2 = topo->getHexahedraAroundVertexArray();
     const BaseMeshTopology::SeqEdges& edges2 = topo->getEdges();
 
     // check all buffers size
@@ -226,7 +226,7 @@ bool MeshTopology_test::testTetrahedronTopology()
     EXPECT_EQ(topo->getTetrahedra().size(), nbrTetrahedron);
 
     //// check tetrahedron buffer    
-    const sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron>& tetrahedra1 = topoCon->getTetrahedronArray();
+    const sofa::type::vector<TetrahedronSetTopologyContainer::Tetrahedron>& tetrahedra1 = topoCon->getTetrahedronArray();
     const BaseMeshTopology::SeqTetrahedra& tetrahedra2 = topo->getTetrahedra();
 
     // Check tetrahedron buffer access    
@@ -242,18 +242,18 @@ bool MeshTopology_test::testTetrahedronTopology()
 
 
     //// create and get cross elements buffers
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundTriangle >& tetrahedraAroundTriangle1 = topoCon->getTetrahedraAroundTriangleArray();
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron > & trianglesInTetrahedron1 = topoCon->getTrianglesInTetrahedronArray();
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundEdge >& tetrahedraAroundEdge1 = topoCon->getTetrahedraAroundEdgeArray();
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron > & edgesInTetrahedron1 = topoCon->getEdgesInTetrahedronArray();
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundVertex >& tetrahedraAroundVertex1 = topoCon->getTetrahedraAroundVertexArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedraAroundTriangle >& tetrahedraAroundTriangle1 = topoCon->getTetrahedraAroundTriangleArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron > & trianglesInTetrahedron1 = topoCon->getTrianglesInTetrahedronArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedraAroundEdge >& tetrahedraAroundEdge1 = topoCon->getTetrahedraAroundEdgeArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron > & edgesInTetrahedron1 = topoCon->getEdgesInTetrahedronArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedraAroundVertex >& tetrahedraAroundVertex1 = topoCon->getTetrahedraAroundVertexArray();
     const TetrahedronSetTopologyContainer::SeqEdges& edges1 = topoCon->getEdges();
 
-    const sofa::helper::vector< BaseMeshTopology::TetrahedraAroundTriangle > &tetrahedraAroundTriangle2 = topo->getTetrahedraAroundTriangleArray();
-    const sofa::helper::vector< BaseMeshTopology::TrianglesInTetrahedron > &trianglesInTetrahedron2 = topo->getTrianglesInTetrahedronArray();
-    const sofa::helper::vector< BaseMeshTopology::TetrahedraAroundEdge >& tetrahedraAroundEdge2 = topo->getTetrahedraAroundEdgeArray();
-    const sofa::helper::vector< BaseMeshTopology::EdgesInTetrahedron >& edgesInTetrahedron2 = topo->getEdgesInTetrahedronArray();
-    const sofa::helper::vector< BaseMeshTopology::TetrahedraAroundVertex >& tetrahedraAroundVertex2 = topo->getTetrahedraAroundVertexArray();    
+    const sofa::type::vector< BaseMeshTopology::TetrahedraAroundTriangle > &tetrahedraAroundTriangle2 = topo->getTetrahedraAroundTriangleArray();
+    const sofa::type::vector< BaseMeshTopology::TrianglesInTetrahedron > &trianglesInTetrahedron2 = topo->getTrianglesInTetrahedronArray();
+    const sofa::type::vector< BaseMeshTopology::TetrahedraAroundEdge >& tetrahedraAroundEdge2 = topo->getTetrahedraAroundEdgeArray();
+    const sofa::type::vector< BaseMeshTopology::EdgesInTetrahedron >& edgesInTetrahedron2 = topo->getEdgesInTetrahedronArray();
+    const sofa::type::vector< BaseMeshTopology::TetrahedraAroundVertex >& tetrahedraAroundVertex2 = topo->getTetrahedraAroundVertexArray();    
     const BaseMeshTopology::SeqEdges& edges2 = topo->getEdges();
 
     // check all buffers size
@@ -340,7 +340,7 @@ bool MeshTopology_test::testQuadTopology()
     EXPECT_EQ(topo->getQuads().size(), nbrQuad);
 
     //// check quad buffer    
-    const sofa::helper::vector<QuadSetTopologyContainer::Quad>& quads1 = topoCon->getQuadArray();
+    const sofa::type::vector<QuadSetTopologyContainer::Quad>& quads1 = topoCon->getQuadArray();
     const BaseMeshTopology::SeqQuads& quads2 = topo->getQuads();
 
     // Check quad buffer access    
@@ -356,14 +356,14 @@ bool MeshTopology_test::testQuadTopology()
 
 
     //// create and get cross elements buffers
-    const sofa::helper::vector< QuadSetTopologyContainer::EdgesInQuad > & edgesInQuad1 = topoCon->getEdgesInQuadArray();
-    const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundVertex >& quadsAroundVertex1 = topoCon->getQuadsAroundVertexArray();
-    const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundEdge >& quadsAroundEdge1 = topoCon->getQuadsAroundEdgeArray();
+    const sofa::type::vector< QuadSetTopologyContainer::EdgesInQuad > & edgesInQuad1 = topoCon->getEdgesInQuadArray();
+    const sofa::type::vector< QuadSetTopologyContainer::QuadsAroundVertex >& quadsAroundVertex1 = topoCon->getQuadsAroundVertexArray();
+    const sofa::type::vector< QuadSetTopologyContainer::QuadsAroundEdge >& quadsAroundEdge1 = topoCon->getQuadsAroundEdgeArray();
     const QuadSetTopologyContainer::SeqEdges& edges1 = topoCon->getEdges();
 
-    const sofa::helper::vector< BaseMeshTopology::EdgesInQuad >& edgesInQuad2 = topo->getEdgesInQuadArray();
-    const sofa::helper::vector< BaseMeshTopology::QuadsAroundVertex >& quadsAroundVertex2 = topo->getQuadsAroundVertexArray();
-    const sofa::helper::vector< BaseMeshTopology::QuadsAroundEdge >& quadsAroundEdge2 = topo->getQuadsAroundEdgeArray();
+    const sofa::type::vector< BaseMeshTopology::EdgesInQuad >& edgesInQuad2 = topo->getEdgesInQuadArray();
+    const sofa::type::vector< BaseMeshTopology::QuadsAroundVertex >& quadsAroundVertex2 = topo->getQuadsAroundVertexArray();
+    const sofa::type::vector< BaseMeshTopology::QuadsAroundEdge >& quadsAroundEdge2 = topo->getQuadsAroundEdgeArray();
     const BaseMeshTopology::SeqEdges& edges2 = topo->getEdges();
 
     // check all buffers size
@@ -436,7 +436,7 @@ bool MeshTopology_test::testTriangleTopology()
     EXPECT_EQ(topo->getTriangles().size(), nbrTriangle);
 
     //// check triangle buffer    
-    const sofa::helper::vector<TriangleSetTopologyContainer::Triangle>& triangles1 = topoCon->getTriangleArray();
+    const sofa::type::vector<TriangleSetTopologyContainer::Triangle>& triangles1 = topoCon->getTriangleArray();
     const BaseMeshTopology::SeqTriangles& triangles2 = topo->getTriangles();
 
     // Check triangle buffer access    
@@ -452,14 +452,14 @@ bool MeshTopology_test::testTriangleTopology()
 
 
     //// create and get cross elements buffers
-    const sofa::helper::vector< TriangleSetTopologyContainer::EdgesInTriangle > & edgesInTriangle1 = topoCon->getEdgesInTriangleArray();
-    const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundVertex >& trianglesAroundVertex1 = topoCon->getTrianglesAroundVertexArray();
-    const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundEdge >& trianglesAroundEdge1 = topoCon->getTrianglesAroundEdgeArray();
+    const sofa::type::vector< TriangleSetTopologyContainer::EdgesInTriangle > & edgesInTriangle1 = topoCon->getEdgesInTriangleArray();
+    const sofa::type::vector< TriangleSetTopologyContainer::TrianglesAroundVertex >& trianglesAroundVertex1 = topoCon->getTrianglesAroundVertexArray();
+    const sofa::type::vector< TriangleSetTopologyContainer::TrianglesAroundEdge >& trianglesAroundEdge1 = topoCon->getTrianglesAroundEdgeArray();
     const TriangleSetTopologyContainer::SeqEdges& edges1 = topoCon->getEdges();
 
-    const sofa::helper::vector< BaseMeshTopology::EdgesInTriangle >& edgesInTriangle2 = topo->getEdgesInTriangleArray();
-    const sofa::helper::vector< BaseMeshTopology::TrianglesAroundVertex >& trianglesAroundVertex2 = topo->getTrianglesAroundVertexArray();
-    const sofa::helper::vector< BaseMeshTopology::TrianglesAroundEdge >& trianglesAroundEdge2= topo->getTrianglesAroundEdgeArray();
+    const sofa::type::vector< BaseMeshTopology::EdgesInTriangle >& edgesInTriangle2 = topo->getEdgesInTriangleArray();
+    const sofa::type::vector< BaseMeshTopology::TrianglesAroundVertex >& trianglesAroundVertex2 = topo->getTrianglesAroundVertexArray();
+    const sofa::type::vector< BaseMeshTopology::TrianglesAroundEdge >& trianglesAroundEdge2= topo->getTrianglesAroundEdgeArray();
     const BaseMeshTopology::SeqEdges& edges2 = topo->getEdges();
 
     // check all buffers size
@@ -532,7 +532,7 @@ bool MeshTopology_test::testEdgeTopology()
     EXPECT_EQ(topo->getEdges().size(), nbrEdge);
 
     //// check edge buffer    
-    const sofa::helper::vector<EdgeSetTopologyContainer::Edge>& edges1 = topoCon->getEdgeArray();
+    const sofa::type::vector<EdgeSetTopologyContainer::Edge>& edges1 = topoCon->getEdgeArray();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& edges2 = topo->getEdges();
 
     // Check edge buffer access    
@@ -548,7 +548,7 @@ bool MeshTopology_test::testEdgeTopology()
 
 
     // create and check vertex buffer
-    const sofa::helper::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = topoCon->getEdgesAroundVertexArray();
+    const sofa::type::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = topoCon->getEdgesAroundVertexArray();
     //TODO epernod 2018-07-05: access to full buffer does not exist in MeshTopology.
     for (int i = 0; i < 6; ++i) // only test first 6 arrays
     {

@@ -46,7 +46,7 @@ public:
     Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
     Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
     Data<bool> f_verbose; ///< Dump system state at each iteration
-    Data<std::map < std::string, sofa::helper::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
+    Data<std::map < std::string, sofa::type::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
 
 protected:
     MinResLinearSolver();
@@ -64,11 +64,11 @@ extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< Graph
 extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< FullMatrix<SRreal>, FullVector<SRreal> >;
 extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< SparseMatrix<SRreal>, FullVector<SRreal> >;
 extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<SRreal>, FullVector<SRreal> >;
-extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<2,2,SRreal> >, FullVector<SRreal> >;
-extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,SRreal> >, FullVector<SRreal> >;
-extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<4,4,SRreal> >, FullVector<SRreal> >;
-extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<6,6,SRreal> >, FullVector<SRreal> >;
-extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<8,8,SRreal> >, FullVector<SRreal> >;
+extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,SRreal> >, FullVector<SRreal> >;
+extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,SRreal> >, FullVector<SRreal> >;
+extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,SRreal> >, FullVector<SRreal> >;
+extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,SRreal> >, FullVector<SRreal> >;
+extern template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,SRreal> >, FullVector<SRreal> >;
 #endif
 
 } //namespace sofa::component::linearsolver

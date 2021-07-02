@@ -14,8 +14,8 @@
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
+#include <SofaMiscCollision/OBBModel.h>
+#include <SofaMiscCollision/RigidCapsuleModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/core/VecId.h>

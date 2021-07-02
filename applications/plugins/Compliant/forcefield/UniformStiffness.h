@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_Stiffness_UniformStiffness_H
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
@@ -38,7 +38,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     enum { N=DataTypes::deriv_total_size };
-//    typedef defaulttype::Mat<N,N,Real> Block;
+//    typedef type::Mat<N,N,Real> Block;
 
     Data< Real > stiffness;    ///< Same Stiffness applied to all the DOFs
 

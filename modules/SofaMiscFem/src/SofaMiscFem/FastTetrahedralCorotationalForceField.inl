@@ -39,8 +39,8 @@ template< class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
         TetrahedronRestInformation &my_tinfo,
         const core::topology::BaseMeshTopology::Tetrahedron &,
-        const sofa::helper::vector<Index> &,
-        const sofa::helper::vector<double> &)
+        const sofa::type::vector<Index> &,
+        const sofa::type::vector<double> &)
 {
     if (ff)
     {
@@ -150,10 +150,10 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::Fas
     , lambda(0)
     , mu(0)
     , f_drawing(initData(&f_drawing, true, "drawing", " draw the forcefield if true"))
-    , drawColor1(initData(&drawColor1, sofa::helper::types::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "drawColor1", " draw color for faces 1"))
-    , drawColor2(initData(&drawColor2, sofa::helper::types::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
-    , drawColor3(initData(&drawColor3, sofa::helper::types::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
-    , drawColor4(initData(&drawColor4, sofa::helper::types::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
+    , drawColor1(initData(&drawColor1, sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "drawColor1", " draw color for faces 1"))
+    , drawColor2(initData(&drawColor2, sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
+    , drawColor3(initData(&drawColor3, sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
+    , drawColor4(initData(&drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
     , l_topology(initLink("topology", "link to the topology container"))
     , tetrahedronHandler(nullptr)        
 {
@@ -207,18 +207,18 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     }
 
 
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
     tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
 
-    helper::vector<Mat3x3>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<Mat3x3>& edgeInf = *(edgeInfo.beginEdit());
     /// prepare to store info in the edge array
     edgeInf.resize(m_topology->getNbEdges());
     edgeInfo.createTopologyHandler(m_topology);
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
-    helper::vector<Mat3x3>& pointInf = *(pointInfo.beginEdit());
+    type::vector<Mat3x3>& pointInf = *(pointInfo.beginEdit());
     /// prepare to store info in the point array
     pointInf.resize(m_topology->getNbPoints());
     pointInfo.createTopologyHandler(m_topology);
@@ -237,8 +237,8 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     for (Index i=0; i<m_topology->getNbTetrahedra(); ++i)
     {
         tetrahedronHandler->applyCreateFunction(i,tetrahedronInf[i],m_topology->getTetrahedron(i),
-                (const helper::vector< Index > )0,
-                (const helper::vector< double >)0);
+                (const type::vector< Index > )0,
+                (const type::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
     tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
@@ -259,7 +259,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
 
     TetrahedronRestInformation *tetinfo;
 
-    helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     for(i=0; i<nbTetrahedra; i++ )
     {
@@ -329,7 +329,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
     {
         updateTopologyInformation();
     }
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
     TetrahedronRestInformation *tetinfo;
 
     Coord dp[6],sv;
@@ -435,8 +435,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     if (updateMatrix==true)
     {
         // the matrix must be stored in edges
-        helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-        helper::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
+        type::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+        type::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
 
         TetrahedronRestInformation *tetinfo;
         int nbTetrahedra=m_topology->getNbTetrahedra();
@@ -478,7 +478,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         edgeInfo.endEdit();
     }
 
-    const helper::vector<Mat3x3> &edgeDfDx = edgeInfo.getValue();
+    const type::vector<Mat3x3> &edgeDfDx = edgeInfo.getValue();
     Coord deltax;
 
     // use the already stored matrix
@@ -516,9 +516,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
     int nbPoints=m_topology->getNbPoints();
     int nbTetrahedra=m_topology->getNbTetrahedra();
 
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-    helper::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
-    helper::vector<Mat3x3>& pointDfDx = *(pointInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
+    type::vector<Mat3x3>& pointDfDx = *(pointInfo.beginEdit());
 
     TetrahedronRestInformation *tetinfo;
     Mat3x3 tmp;
@@ -632,7 +632,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
         vparams->drawTool()->setPolygonMode(0, true);
 
 
-    std::vector< defaulttype::Vector3 > points[4];
+    std::vector< type::Vector3 > points[4];
     for (size_t i = 0; i<m_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t = m_topology->getTetrahedron(i);

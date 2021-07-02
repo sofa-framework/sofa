@@ -237,9 +237,13 @@ public:
     void printWriteVectors(core::behavior::BaseMechanicalState* mm);
     void printWriteVectors(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj);
 protected:
-    sofa::helper::vector< sofa::core::ConstMultiVecId > readVector;
-    sofa::helper::vector< sofa::core::MultiVecId > writeVector;
+    sofa::type::vector< sofa::core::ConstMultiVecId > readVector;
+    sofa::type::vector< sofa::core::MultiVecId > writeVector;
 #endif
+
+private:
+    static const std::string fwdVisitorType;
+    static const std::string bwdVisitorType;
 };
 
 } // namespace sofa::simulation

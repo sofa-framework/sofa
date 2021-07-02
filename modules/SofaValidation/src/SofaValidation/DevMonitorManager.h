@@ -24,7 +24,7 @@
 
 #include <SofaValidation/DevMonitor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::misc
 {
@@ -41,7 +41,7 @@ public:
     void eval() override;
 
 private:
-    sofa::helper::vector<core::DevBaseMonitor*> monitors;
+    sofa::type::vector<core::DevBaseMonitor*> monitors;
 };
 
 } // namespace sofa::component::misc

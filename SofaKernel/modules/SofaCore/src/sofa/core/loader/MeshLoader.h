@@ -22,29 +22,22 @@
 #ifndef SOFA_CORE_LOADER_MESHLOADER_H
 #define SOFA_CORE_LOADER_MESHLOADER_H
 
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/core/config.h>
+#include <sofa/type/Quat.h>
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
+#include <sofa/type/PrimitiveGroup.h>
 #include <sofa/core/topology/Topology.h>
 
 
-namespace sofa
-{
-    namespace helper
-    {
-        namespace io
-        {
-            class Mesh;
-        }
-    }
+namespace sofa::helper::io {
+    class Mesh;
+}
 
-namespace core
+namespace sofa::core::loader
 {
 
-namespace loader
-{
-
-using sofa::defaulttype::Vec3;
+using sofa::type::PrimitiveGroup;
+using sofa::type::Vec3;
 using topology::Topology;
 
 class SOFA_CORE_API MeshLoader : public BaseLoader
@@ -62,21 +55,21 @@ public:
     typedef topology::Topology::PointID PointID;
     /* specify for each control point lying on an edge : the control point index, the index of the  edge,
      the 2 integers specifying the position within this edge (i.e. 11 for a quadratic edge, 13 within a quartic edge).. */
-    typedef sofa::helper::fixed_array<PointID, 4> HighOrderEdgePosition;
+    typedef sofa::type::fixed_array<PointID, 4> HighOrderEdgePosition;
     /* specify for each control point lying on a triangle  : the control point index, the index of the  triangle,
      the 3 integers specifying the position within this triangle (i.e. 111 for a cubic triangle , 121 within a quartic triangle).. */
-    typedef sofa::helper::fixed_array<PointID, 5> HighOrderTrianglePosition;
+    typedef sofa::type::fixed_array<PointID, 5> HighOrderTrianglePosition;
     /* specify for each control point lying on a Quad  : the control point index, the index of the  quad,
      the 2 integers specifying the degree of the element in the x and y directions, the 2 integers specifying the position within this quad (i.e. 12 for a cubic triangle ).. */
-    typedef sofa::helper::fixed_array<PointID, 6> HighOrderQuadPosition;
+    typedef sofa::type::fixed_array<PointID, 6> HighOrderQuadPosition;
     /* specify for each control point lying on a tetrahedron  : the control point index, the index of the  tetrahedron,
      the 3 integers specifying the position within this tetrahedron (i.e. 1111 for a quartic tetrahedron , 1211 within a quintic tetrahedron).. */
-    typedef sofa::helper::fixed_array<PointID, 6> HighOrderTetrahedronPosition;
+    typedef sofa::type::fixed_array<PointID, 6> HighOrderTetrahedronPosition;
     /* specify for each control point lying on a Hexahedron  : the control point index, the index of the  Hexahedron,
      the 3 integers specifying the degree of the element in the x, y and z directions, the 3 integers specifying the position within this hexahedron (i.e. 121  ).. */
-    typedef sofa::helper::fixed_array<PointID, 8> HighOrderHexahedronPosition;
+    typedef sofa::type::fixed_array<PointID, 8> HighOrderHexahedronPosition;
 
-    typedef sofa::helper::vector<PointID> Polyline;
+    typedef sofa::type::vector<PointID> Polyline;
 
 
 protected:
@@ -103,7 +96,7 @@ public:
     virtual bool load() final;
 
     /// Apply Homogeneous transformation to the positions
-    virtual void applyTransformation (sofa::defaulttype::Matrix4 const& T);
+    virtual void applyTransformation (sofa::type::Matrix4 const& T);
 
     /// @name Initial transformations accessors.
     /// @{
@@ -119,7 +112,7 @@ public:
     {
         d_scale.setValue(Vec3(sx, sy, sz));
     }
-    void setTransformation(const sofa::defaulttype::Matrix4& t)
+    void setTransformation(const sofa::type::Matrix4& t)
     {
         d_transformation.setValue(t);
     }
@@ -136,49 +129,49 @@ public:
     {
         return d_scale.getValue();
     }
-    virtual sofa::defaulttype::Matrix4 getTransformation() const
+    virtual sofa::type::Matrix4 getTransformation() const
     {
         return d_transformation.getValue();
     }
     /// @}
 
     // Point coordinates in 3D in double.
-    Data< helper::vector< Vec3 > > d_positions; ///< Vertices of the mesh loaded
+    Data< type::vector< Vec3 > > d_positions; ///< Vertices of the mesh loaded
 
     //Tab of 1D elements
-    Data< helper::vector< Polyline > > d_polylines; ///< Polylines of the mesh loaded
+    Data< type::vector< Polyline > > d_polylines; ///< Polylines of the mesh loaded
 
     // Tab of 2D elements composition
-    Data< helper::vector< Edge > > d_edges; ///< Edges of the mesh loaded
-    Data< helper::vector< Triangle > > d_triangles; ///< Triangles of the mesh loaded
-    Data< helper::vector< Quad > > d_quads; ///< Quads of the mesh loaded
-    Data< helper::vector< helper::vector <Topology::ElemID> > > d_polygons; ///< Polygons of the mesh loaded
-    Data< helper::vector< HighOrderEdgePosition > > d_highOrderEdgePositions; ///< High order edge points of the mesh loaded
-    Data< helper::vector< HighOrderTrianglePosition > > d_highOrderTrianglePositions; ///< High order triangle points of the mesh loaded
-    Data< helper::vector< HighOrderQuadPosition > > d_highOrderQuadPositions; ///< High order quad points of the mesh loaded
+    Data< type::vector< Edge > > d_edges; ///< Edges of the mesh loaded
+    Data< type::vector< Triangle > > d_triangles; ///< Triangles of the mesh loaded
+    Data< type::vector< Quad > > d_quads; ///< Quads of the mesh loaded
+    Data< type::vector< type::vector<Topology::ElemID> > > d_polygons; ///< Polygons of the mesh loaded
+    Data< type::vector< HighOrderEdgePosition > > d_highOrderEdgePositions; ///< High order edge points of the mesh loaded
+    Data< type::vector< HighOrderTrianglePosition > > d_highOrderTrianglePositions; ///< High order triangle points of the mesh loaded
+    Data< type::vector< HighOrderQuadPosition > > d_highOrderQuadPositions; ///< High order quad points of the mesh loaded
 
     // Tab of 3D elements composition
-    Data< helper::vector< Tetrahedron > > d_tetrahedra; ///< Tetrahedra of the mesh loaded
-    Data< helper::vector< Hexahedron > > d_hexahedra; ///< Hexahedra of the mesh loaded
-    Data< helper::vector< Pentahedron > > d_pentahedra; ///< Pentahedra of the mesh loaded
-    Data< helper::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions; ///< High order tetrahedron points of the mesh loaded
-    Data< helper::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions; ///< High order hexahedron points of the mesh loaded
-    Data< helper::vector< Pyramid > > d_pyramids; ///< Pyramids of the mesh loaded
+    Data< type::vector< Tetrahedron > > d_tetrahedra; ///< Tetrahedra of the mesh loaded
+    Data< type::vector< Hexahedron > > d_hexahedra; ///< Hexahedra of the mesh loaded
+    Data< type::vector< Pentahedron > > d_pentahedra; ///< Pentahedra of the mesh loaded
+    Data< type::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions; ///< High order tetrahedron points of the mesh loaded
+    Data< type::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions; ///< High order hexahedron points of the mesh loaded
+    Data< type::vector< Pyramid > > d_pyramids; ///< Pyramids of the mesh loaded
 
     // polygons in 3D ?
 
     //Misc
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_normals; ///< Normals per vertex
+    Data< type::vector<sofa::type::Vec<3,SReal> > > d_normals; ///< Normals per vertex
 
     // Groups
-    Data< helper::vector< PrimitiveGroup > > d_edgesGroups; ///< Groups of Edges
-    Data< helper::vector< PrimitiveGroup > > d_trianglesGroups; ///< Groups of Triangles
-    Data< helper::vector< PrimitiveGroup > > d_quadsGroups; ///< Groups of Quads
-    Data< helper::vector< PrimitiveGroup > > d_polygonsGroups; ///< Groups of Polygons
-    Data< helper::vector< PrimitiveGroup > > d_tetrahedraGroups; ///< Groups of Tetrahedra
-    Data< helper::vector< PrimitiveGroup > > d_hexahedraGroups; ///< Groups of Hexahedra
-    Data< helper::vector< PrimitiveGroup > > d_pentahedraGroups; ///< Groups of Pentahedra
-    Data< helper::vector< PrimitiveGroup > > d_pyramidsGroups; ///< Groups of Pyramids
+    Data< type::vector< PrimitiveGroup > > d_edgesGroups; ///< Groups of Edges
+    Data< type::vector< PrimitiveGroup > > d_trianglesGroups; ///< Groups of Triangles
+    Data< type::vector< PrimitiveGroup > > d_quadsGroups; ///< Groups of Quads
+    Data< type::vector< PrimitiveGroup > > d_polygonsGroups; ///< Groups of Polygons
+    Data< type::vector< PrimitiveGroup > > d_tetrahedraGroups; ///< Groups of Tetrahedra
+    Data< type::vector< PrimitiveGroup > > d_hexahedraGroups; ///< Groups of Hexahedra
+    Data< type::vector< PrimitiveGroup > > d_pentahedraGroups; ///< Groups of Pentahedra
+    Data< type::vector< PrimitiveGroup > > d_pyramidsGroups; ///< Groups of Pyramids
 
     Data< bool > d_flipNormals; ///< Flip Normals
     Data< bool > d_triangulate; ///< Divide all polygons into triangles
@@ -188,7 +181,7 @@ public:
     Data< Vec3 > d_translation; ///< Translation of the DOFs
     Data< Vec3 > d_rotation; ///< Rotation of the DOFs
     Data< Vec3 > d_scale; ///< Scale of the DOFs in 3 dimensions
-    Data< defaulttype::Matrix4 > d_transformation; ///< 4x4 Homogeneous matrix to transform the DOFs (when present replace any)
+    Data< type::Matrix4 > d_transformation; ///< 4x4 Homogeneous matrix to transform the DOFs (when present replace any)
 
 
     virtual void updateMesh();
@@ -199,169 +192,101 @@ public:
 protected:
 
     /// to be able to call reinit w/o applying several time the same transform
-    defaulttype::Matrix4 d_previousTransformation;
+    type::Matrix4 d_previousTransformation;
 
 
-    void addPosition(helper::vector< sofa::defaulttype::Vec<3, SReal> >& pPositions, const sofa::defaulttype::Vec<3, SReal>& p);
-    void addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z);
+    void addPosition(type::vector< sofa::type::Vec<3, SReal> >& pPositions, const sofa::type::Vec<3, SReal>& p);
+    void addPosition(type::vector<sofa::type::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z);
 
-    void addPolyline(helper::vector<Polyline>& pPolylines, Polyline p);
+    void addPolyline(type::vector<Polyline>& pPolylines, Polyline p);
 
-    void addEdge(helper::vector<Edge>& pEdges, const Edge& p);
-    void addEdge(helper::vector<Edge>& pEdges, Topology::EdgeID p0, Topology::EdgeID p1);
+    void addEdge(type::vector<Edge>& pEdges, const Edge& p);
+    void addEdge(type::vector<Edge>& pEdges, Topology::EdgeID p0, Topology::EdgeID p1);
 
-    void addTriangle(helper::vector<Triangle>& pTriangles, const Triangle& p);
-    void addTriangle(helper::vector<Triangle>& pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2);
+    void addTriangle(type::vector<Triangle>& pTriangles, const Triangle& p);
+    void addTriangle(type::vector<Triangle>& pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2);
 
-    void addQuad(helper::vector<Quad>& pQuads, const Quad& p);
-    void addQuad(helper::vector<Quad>& pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3);
+    void addQuad(type::vector<Quad>& pQuads, const Quad& p);
+    void addQuad(type::vector<Quad>& pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3);
 
-    void addPolygon(helper::vector< helper::vector <Topology::ElemID> >& pPolygons, const helper::vector<Topology::ElemID>& p);
+    void addPolygon(type::vector< type::vector<Topology::ElemID> >& pPolygons, const type::vector<Topology::ElemID>& p);
 
-    void addTetrahedron(helper::vector<Tetrahedron>& pTetrahedra, const Tetrahedron& p);
-    void addTetrahedron(helper::vector<Tetrahedron>& pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3);
+    void addTetrahedron(type::vector<Tetrahedron>& pTetrahedra, const Tetrahedron& p);
+    void addTetrahedron(type::vector<Tetrahedron>& pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3);
 
-    void addHexahedron(helper::vector< Hexahedron>& pHexahedra, const Hexahedron& p);
-    void addHexahedron(helper::vector< Hexahedron>& pHexahedra,
+    void addHexahedron(type::vector< Hexahedron>& pHexahedra, const Hexahedron& p);
+    void addHexahedron(type::vector< Hexahedron>& pHexahedra,
                        Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
                        Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7);
 
-    void addPentahedron(helper::vector< Pentahedron>& pPentahedra, const Pentahedron& p);
-    void addPentahedron(helper::vector< Pentahedron>& pPentahedra,
+    void addPentahedron(type::vector< Pentahedron>& pPentahedra, const Pentahedron& p);
+    void addPentahedron(type::vector< Pentahedron>& pPentahedra,
                         Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
                         Topology::ElemID p4, Topology::ElemID p5);
 
-    void addPyramid(helper::vector< Pyramid>& pPyramids, const Pyramid& p);
-    void addPyramid(helper::vector< Pyramid>& pPyramids,
+    void addPyramid(type::vector< Pyramid>& pPyramids, const Pyramid& p);
+    void addPyramid(type::vector< Pyramid>& pPyramids,
                     Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4);
 
     /// Temporary method that will copy all buffers from a io::Mesh into the corresponding Data. Will be removed as soon as work on unifying meshloader is finished
     void copyMeshToData(helper::io::Mesh& _mesh);
 
     /// Deprecation with pointer versions
-#define DEPRECATE_POINTER \
-    [[deprecated("This function has been deprecated in #PR 1627. The function will be removed " \
-    "in the v21.06 release. This should use a reference instead of a pointer.")]]
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPosition(type::vector< sofa::type::Vec<3, SReal> >* pPositions, const sofa::type::Vec<3, SReal>& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPosition(type::vector<sofa::type::Vec<3, SReal> >* pPositions, SReal x, SReal y, SReal z) = delete;
 
-    DEPRECATE_POINTER
-    void addPosition(helper::vector< sofa::defaulttype::Vec<3, SReal> >* pPositions, const sofa::defaulttype::Vec<3, SReal>& p)
-    {
-        addPosition(*pPositions, p);
-    }
-    DEPRECATE_POINTER
-    void addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >* pPositions, SReal x, SReal y, SReal z)
-    {
-        addPosition(*pPositions, x,y,z);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPolyline(type::vector<Polyline>* pPolylines, Polyline p) = delete;
 
-    DEPRECATE_POINTER
-    void addPolyline(helper::vector<Polyline>* pPolylines, Polyline p)
-    {
-        addPolyline(*pPolylines, p);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addEdge(type::vector<Edge>* pEdges, const Edge& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addEdge(type::vector<Edge>* pEdges, Topology::EdgeID p0, Topology::EdgeID p1) = delete;
 
-    DEPRECATE_POINTER
-    void addEdge(helper::vector<Edge>* pEdges, const Edge& p)
-    {
-        addEdge(*pEdges, p);
-    }
-    DEPRECATE_POINTER
-    void addEdge(helper::vector<Edge>* pEdges, Topology::EdgeID p0, Topology::EdgeID p1)
-    {
-        addEdge(*pEdges, p0, p1);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addTriangle(type::vector<Triangle>* pTriangles, const Triangle& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addTriangle(type::vector<Triangle>* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2) = delete;
 
-    DEPRECATE_POINTER
-    void addTriangle(helper::vector<Triangle>* pTriangles, const Triangle& p)
-    {
-        addTriangle(*pTriangles, p);
-    }
-    DEPRECATE_POINTER
-    void addTriangle(helper::vector<Triangle>* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2)
-    {
-        addTriangle(*pTriangles, p0,p1,p2);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addQuad(type::vector<Quad>* pQuads, const Quad& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addQuad(type::vector<Quad>* pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3) = delete;
 
-    DEPRECATE_POINTER
-    void addQuad(helper::vector<Quad>* pQuads, const Quad& p)
-    {
-        addQuad(*pQuads, p);
-    }
-    DEPRECATE_POINTER
-    void addQuad(helper::vector<Quad>* pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3)
-    {
-        addQuad(*pQuads, p0, p1, p2, p3);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPolygon(type::vector< type::vector <Topology::ElemID> >* pPolygons, const type::vector<Topology::ElemID>& p) = delete;
 
-    DEPRECATE_POINTER
-    void addPolygon(helper::vector< helper::vector <Topology::ElemID> >* pPolygons, const helper::vector<Topology::ElemID>& p)
-    {
-        addPolygon(*pPolygons, p);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addTetrahedron(type::vector<Tetrahedron>* pTetrahedra, const Tetrahedron& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addTetrahedron(type::vector<Tetrahedron>* pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3) = delete;
 
-    DEPRECATE_POINTER
-    void addTetrahedron(helper::vector<Tetrahedron>* pTetrahedra, const Tetrahedron& p)
-    {
-        addTetrahedron(*pTetrahedra, p);
-    }
-    DEPRECATE_POINTER
-    void addTetrahedron(helper::vector<Tetrahedron>* pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3)
-    {
-        addTetrahedron(*pTetrahedra, p0, p1, p2, p3);
-    }
-
-    DEPRECATE_POINTER
-    void addHexahedron(helper::vector< Hexahedron>* pHexahedra, const Hexahedron& p)
-    {
-        addHexahedron(*pHexahedra, p);
-    }
-    DEPRECATE_POINTER
-    void addHexahedron(helper::vector< Hexahedron>* pHexahedra,
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addHexahedron(type::vector< Hexahedron>* pHexahedra, const Hexahedron& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addHexahedron(type::vector< Hexahedron>* pHexahedra,
         Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
-        Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7)
-    {
-        addHexahedron(*pHexahedra, p0, p1, p2, p3, p4, p5, p6, p7);
-    }
+        Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7) = delete;
 
-    DEPRECATE_POINTER
-    void addPentahedron(helper::vector< Pentahedron>* pPentahedra, const Pentahedron& p)
-    {
-        addPentahedron(*pPentahedra, p);
-    }
-    DEPRECATE_POINTER
-    void addPentahedron(helper::vector< Pentahedron>* pPentahedra,
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPentahedron(type::vector< Pentahedron>* pPentahedra, const Pentahedron& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPentahedron(type::vector< Pentahedron>* pPentahedra,
         Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
-        Topology::ElemID p4, Topology::ElemID p5)
-    {
-        addPentahedron(*pPentahedra, p0, p1, p2, p3, p4, p5);
-    }
+        Topology::ElemID p4, Topology::ElemID p5) = delete;
 
-    DEPRECATE_POINTER
-    void addPyramid(helper::vector< Pyramid>* pPyramids, const Pyramid& p)
-    {
-        addPyramid(*pPyramids, p);
-    }
-    DEPRECATE_POINTER
-    void addPyramid(helper::vector< Pyramid>* pPyramids,
-        Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4)
-    {
-        addPyramid(*pPyramids, p0, p1, p2, p3, p4);
-    }
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPyramid(type::vector< Pyramid>* pPyramids, const Pyramid& p) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void addPyramid(type::vector< Pyramid>* pPyramids,
+        Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4) = delete;
 
-    DEPRECATE_POINTER
-    void copyMeshToData(helper::io::Mesh* _mesh)
-    {
-        copyMeshToData(*_mesh);
-    }
-
-#undef DEPRECATE_POINTER
+    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
+    void copyMeshToData(helper::io::Mesh* _mesh) = delete;
 };
 
-
-} // namespace loader
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::loader
 
 #endif

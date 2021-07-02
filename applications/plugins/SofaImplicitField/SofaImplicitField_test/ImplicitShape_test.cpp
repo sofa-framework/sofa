@@ -1,5 +1,5 @@
 #include <SofaTest/Sofa_test.h>
-using sofa::defaulttype::Vec3d ;
+using sofa::type::Vec3d ;
 
 #include <SofaImplicitField/components/geometry/SphericalField.h>
 using sofa::component::geometry::SphericalField ;

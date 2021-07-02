@@ -50,7 +50,7 @@ public:
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
     typedef typename Coord::value_type Real;
 
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<Real> VecReal;
 
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:

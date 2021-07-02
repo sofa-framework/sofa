@@ -71,6 +71,7 @@ public:
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
 };
+using Line = TLine<sofa::defaulttype::Vec3Types>;
 
 template<class TDataTypes>
 class SOFA_SOFAMESHCOLLISION_API LineCollisionModel : public core::CollisionModel
@@ -96,7 +97,7 @@ protected:
 //		int tRight, tLeft;
     };
 
-    sofa::helper::vector<LineData> elems;
+    sofa::type::vector<LineData> elems;
     bool needsUpdate;
     virtual void updateFromTopology();
 
@@ -194,13 +195,9 @@ inline TLine<DataTypes>::TLine(const core::CollisionElementIterator& i)
 {
 }
 
-template <class TDataTypes> using TLineModel [[deprecated("The TLineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<TDataTypes>;
-using  LineModel [[deprecated("The LineModel is now deprecated, please use LineCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = LineCollisionModel<sofa::defaulttype::Vec3Types>;
-using Line = TLine<sofa::defaulttype::Vec3Types>;
-
-#if  !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)
 extern template class SOFA_SOFAMESHCOLLISION_API TLine<sofa::defaulttype::Vec3dTypes>;
 extern template class SOFA_SOFAMESHCOLLISION_API LineCollisionModel<sofa::defaulttype::Vec3Types>;
 #endif
 
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision

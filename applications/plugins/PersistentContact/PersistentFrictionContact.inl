@@ -407,7 +407,7 @@ bool PersistentFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingO
 
     if (baseMap)
     {
-        helper::vector< core::BaseState* > fromObjects = baseMap->getFrom();
+        type::vector< core::BaseState* > fromObjects = baseMap->getFrom();
 
         if (fromObjects.empty())
         {
@@ -430,7 +430,7 @@ bool PersistentFrictionContact<TCollisionModel1, TCollisionModel2>::findMappingO
         return false;
     }
 
-    typedef helper::vector< component::mapping::PersistentContactMapping* > PersistentContactMappings;
+    typedef type::vector< component::mapping::PersistentContactMapping* > PersistentContactMappings;
 
     PersistentContactMappings persistentMappings;
 

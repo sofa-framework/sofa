@@ -99,9 +99,9 @@ public:
 
     /// Accessor to index maps :
     const std::map<Index, Index>& getGlob2LocMap() { return Glob2LocMap;}
-    //const sofa::helper::vector<Index>& getLoc2GlobVec(){ return Loc2GlobVec.getValue();}
+    //const sofa::type::vector<Index>& getLoc2GlobVec(){ return Loc2GlobVec.getValue();}
 
-    Data <sofa::helper::vector<Index> >& getLoc2GlobVec() {return Loc2GlobDataVec;}
+    Data <sofa::type::vector<Index> >& getLoc2GlobVec() {return Loc2GlobDataVec;}
 
     virtual Index getGlobIndex(Index ind)
     {
@@ -132,7 +132,7 @@ public:
 
     void dumpLoc2GlobVec()
     {
-        const sofa::helper::vector <Index>& buffer = Loc2GlobDataVec.getValue();
+        const sofa::type::vector<Index>& buffer = Loc2GlobDataVec.getValue();
         msg_info() << "## Log Loc2GlobDataVec - size: " << buffer.size() << " ##";
         for (Index i=0; i<buffer.size(); ++i)
             msg_info() << i << " - " << buffer[i];
@@ -146,9 +146,9 @@ public:
     /** return all the from indices in the 'In' topology corresponding to the index in the 'Out' topology.
     *   This function is used instead of  the previous one when the function isTheOutputTopologySubdividingTheInputOne() returns false.
     */
-    virtual void getFromIndex( helper::vector<Index>& /*fromIndices*/, const Index /*toIndex*/) const {}
+    virtual void getFromIndex( type::vector<Index>& /*fromIndices*/, const Index /*toIndex*/) const {}
 
-    const std::map<Index, sofa::helper::vector<Index> >& getIn2OutMap() { return In2OutMap;}
+    const std::map<Index, sofa::type::vector<Index> >& getIn2OutMap() { return In2OutMap;}
 
     /// Pre-construction check method called by ObjectFactory.
     ///
@@ -244,13 +244,13 @@ protected:
 
     // Array which gives for each index (local index) of an element in the OUTPUT topology
     // the corresponding index (global index) of the same element in the INPUT topology :
-    Data <sofa::helper::vector <Index> > Loc2GlobDataVec;
+    Data <sofa::type::vector<Index> > Loc2GlobDataVec;
 
     // Map which gives for each index (global index) of an element in the INPUT topology
     // the corresponding index (local index) of the same element in the OUTPUT topology :
     std::map<Index, Index> Glob2LocMap;   //TODO put it in Data => Data allow map
 
-    std::map<Index, sofa::helper::vector<Index> > In2OutMap;
+    std::map<Index, sofa::type::vector<Index> > In2OutMap;
 };
 
 } // namespace topology

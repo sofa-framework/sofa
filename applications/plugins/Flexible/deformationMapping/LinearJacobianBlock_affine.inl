@@ -23,8 +23,8 @@
 #define FLEXIBLE_LinearJacobianBlock_affine_INL
 
 #include "LinearJacobianBlock.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include "../types/AffineTypes.h"
@@ -60,10 +60,10 @@ public:
 
     enum { dim = Out::spatial_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:   \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0) = w.t + w.A.q0  \f$
@@ -145,12 +145,12 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -242,12 +242,12 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -340,12 +340,12 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -436,13 +436,13 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
-    typedef Mat<dim,mdim,Real> mHessian;
+    typedef type::Vec<mdim,Real> mGradient;
+    typedef type::Mat<dim,mdim,Real> mHessian;
 
     /**
     Mapping:
@@ -481,9 +481,9 @@ public:
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
         PFdFa.getF()=covMN(vectorInLocalCoordinates,Ft) + inverseInitialTransform.getAffine() * F0 * w;
 
-        Mat<dim,dim> AOinv = inverseInitialTransform.getAffine();
-        Mat<dim,dim> AOinvT = AOinv.transposed();
-        Mat<dim,mdim> AOinvM; for (unsigned int k = 0; k < dim; ++k) AOinvM[k]=F0.transposed()*AOinv[k];
+        type::Mat<dim,dim> AOinv = inverseInitialTransform.getAffine();
+        type::Mat<dim,dim> AOinvT = AOinv.transposed();
+        type::Mat<dim,mdim> AOinvM; for (unsigned int k = 0; k < dim; ++k) AOinvM[k]=F0.transposed()*AOinv[k];
         for (unsigned int k = 0; k < dim; ++k) PFdFa.getGradientF(k) = covMN( vectorInLocalCoordinates, dFt[k]) + AOinvM * dw[k] + covMN(AOinvT[k],Ft);
     }
 
@@ -555,10 +555,10 @@ public:
 
     enum { dim = Out::spatial_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:

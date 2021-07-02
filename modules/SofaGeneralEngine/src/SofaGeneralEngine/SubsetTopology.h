@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -45,11 +45,11 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef type::Vec<6,Real> Vec6;
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
@@ -104,7 +104,7 @@ protected:
     void findVertexOnBorder(const Triangle& t, unsigned int idROI);
     void findVertexOnBorder(const Tetra& t, unsigned int idROI);
 
-	bool isPointChecked(unsigned int id, sofa::helper::vector<bool>& pointChecked);
+	bool isPointChecked(unsigned int id, sofa::type::vector<bool>& pointChecked);
 
 public:
     enum ROIType
@@ -117,22 +117,22 @@ public:
 
     //Input
     //For cube
-    Data< helper::vector<Vec6> > boxes; ///< Box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< type::vector<Vec6> > boxes; ///< Box defined by xmin,ymin,zmin, xmax,ymax,zmax
 
     //For sphere
-    Data< helper::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
-    Data< helper::vector<Real> > radii; ///< Radius(i) of the sphere(s)
+    Data< type::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
+    Data< type::vector<Real> > radii; ///< Radius(i) of the sphere(s)
     Data< Vec3 > direction; ///< Edge direction(if edgeAngle > 0)
     Data< Vec3 > normal; ///< Normal direction of the triangles (if triAngle > 0)
     Data< Real > edgeAngle; ///< Max angle between the direction of the selected edges and the specified direction
     Data< Real > triAngle; ///< Max angle between the normal of the selected triangle and the specified normal direction
 
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
-    Data<helper::vector<Edge> > f_edges; ///< Edge Topology
-    Data<helper::vector<Triangle> > f_triangles; ///< Triangle Topology
-    Data<helper::vector<Quad> > f_quads; ///< Quad Topology
-    Data<helper::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
-    Data<helper::vector<Hexa> > f_hexahedra; ///< Hexahedron Topology
+    Data<type::vector<Edge> > f_edges; ///< Edge Topology
+    Data<type::vector<Triangle> > f_triangles; ///< Triangle Topology
+    Data<type::vector<Quad> > f_quads; ///< Quad Topology
+    Data<type::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
+    Data<type::vector<Hexa> > f_hexahedra; ///< Hexahedron Topology
     Data<SetIndex> d_tetrahedraInput; ///< Indices of the tetrahedra to keep
 
     //Output
@@ -144,16 +144,16 @@ public:
     Data<SetIndex> f_hexahedronIndices; ///< Indices of the hexahedra contained in the ROI
     Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
     Data<VecCoord > f_pointsOutROI; ///< Points out of the ROI
-    Data<helper::vector<Edge> > f_edgesInROI; ///< Edges contained in the ROI
-    Data<helper::vector<Edge> > f_edgesOutROI; ///< Edges out of the ROI
-    Data<helper::vector<Triangle> > f_trianglesInROI; ///< Triangles contained in the ROI
-    Data<helper::vector<Triangle> > f_trianglesOutROI; ///< Triangles out of the ROI
-    Data<helper::vector<Quad> > f_quadsInROI; ///< Quads contained in the ROI
-    Data<helper::vector<Quad> > f_quadsOutROI; ///< Quads out of the ROI
-    Data<helper::vector<Tetra> > f_tetrahedraInROI; ///< Tetrahedra contained in the ROI
-    Data<helper::vector<Tetra> > f_tetrahedraOutROI; ///< Tetrahedra out of the ROI
-    Data<helper::vector<Hexa> > f_hexahedraInROI; ///< Hexahedra contained in the ROI
-    Data<helper::vector<Hexa> > f_hexahedraOutROI; ///< Hexahedra out of the ROI
+    Data<type::vector<Edge> > f_edgesInROI; ///< Edges contained in the ROI
+    Data<type::vector<Edge> > f_edgesOutROI; ///< Edges out of the ROI
+    Data<type::vector<Triangle> > f_trianglesInROI; ///< Triangles contained in the ROI
+    Data<type::vector<Triangle> > f_trianglesOutROI; ///< Triangles out of the ROI
+    Data<type::vector<Quad> > f_quadsInROI; ///< Quads contained in the ROI
+    Data<type::vector<Quad> > f_quadsOutROI; ///< Quads out of the ROI
+    Data<type::vector<Tetra> > f_tetrahedraInROI; ///< Tetrahedra contained in the ROI
+    Data<type::vector<Tetra> > f_tetrahedraOutROI; ///< Tetrahedra out of the ROI
+    Data<type::vector<Hexa> > f_hexahedraInROI; ///< Hexahedra contained in the ROI
+    Data<type::vector<Hexa> > f_hexahedraOutROI; ///< Hexahedra out of the ROI
     Data<unsigned int> f_nbrborder; ///< If localIndices option is activated, will give the number of vertices on the border of the ROI (being the n first points of each output Topology). 
 
     //Parameter
@@ -166,8 +166,8 @@ public:
     Data<double> _drawSize; ///< rendering size for box and topological elements
 
     ROIType typeROI;
-    sofa::helper::vector<unsigned int> localIndices;
-    sofa::helper::vector<unsigned int> listOnBorder;
+    sofa::type::vector<unsigned int> localIndices;
+    sofa::type::vector<unsigned int> listOnBorder;
 
 };
 

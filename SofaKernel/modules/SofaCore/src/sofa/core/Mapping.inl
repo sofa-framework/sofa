@@ -62,25 +62,25 @@ State<Out>* Mapping<In,Out>::getToModel()
 }
 
 template <class In, class Out>
-helper::vector<BaseState*> Mapping<In,Out>::getFrom()
+type::vector<BaseState*> Mapping<In,Out>::getFrom()
 {
-    helper::vector<BaseState*> vec(1,this->fromModel.get());
+    type::vector<BaseState*> vec(1,this->fromModel.get());
     return  vec;
 }
 
 template <class In, class Out>
-helper::vector<BaseState*> Mapping<In,Out>::getTo()
+type::vector<BaseState*> Mapping<In,Out>::getTo()
 {
-    helper::vector<BaseState*> vec(1,this->toModel.get());
+    type::vector<BaseState*> vec(1,this->toModel.get());
     return vec;
 }
 
 ///<TO REMOVE>
 ///Necessary ?
 template <class In, class Out>
-helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechFrom()
+type::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechFrom()
 {
-    helper::vector<behavior::BaseMechanicalState*> vec;
+    type::vector<behavior::BaseMechanicalState*> vec;
     behavior::BaseMechanicalState* meshFrom = this->fromModel.get()->toBaseMechanicalState();
     if(meshFrom)
         vec.push_back(meshFrom);
@@ -89,9 +89,9 @@ helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechFrom()
 }
 
 template <class In, class Out>
-helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
+type::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 {
-    helper::vector<behavior::BaseMechanicalState*> vec;
+    type::vector<behavior::BaseMechanicalState*> vec;
     behavior::BaseMechanicalState* meshTo = this->toModel.get()->toBaseMechanicalState();
     if(meshTo)
         vec.push_back(meshTo);

@@ -52,14 +52,14 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > f_C10; ///< weight of (~I1-3) term in energy
-    Data<helper::vector<Real> > f_C01; ///< weight of (~I2-3) term in energy
-    Data<helper::vector<Real> > f_C20; ///< weight of (~I1-3)^2 term in energy
-    Data<helper::vector<Real> > f_C02; ///< weight of (~I2-3)^2 term in energy
-    Data<helper::vector<Real> > f_C30; ///< weight of (~I1-3)^3 term in energy
-    Data<helper::vector<Real> > f_C03; ///< weight of (~I2-3)^3 term in energy
-    Data<helper::vector<Real> > f_C11; ///< weight of (~I1-3)(~I2-3) term in energy
-    Data<helper::vector<Real> > f_bulk; ///< bulk modulus (working on I3=J=detF=volume variation)
+    Data<type::vector<Real> > f_C10; ///< weight of (~I1-3) term in energy
+    Data<type::vector<Real> > f_C01; ///< weight of (~I2-3) term in energy
+    Data<type::vector<Real> > f_C20; ///< weight of (~I1-3)^2 term in energy
+    Data<type::vector<Real> > f_C02; ///< weight of (~I2-3)^2 term in energy
+    Data<type::vector<Real> > f_C30; ///< weight of (~I1-3)^3 term in energy
+    Data<type::vector<Real> > f_C03; ///< weight of (~I2-3)^3 term in energy
+    Data<type::vector<Real> > f_C11; ///< weight of (~I1-3)(~I2-3) term in energy
+    Data<type::vector<Real> > f_bulk; ///< bulk modulus (working on I3=J=detF=volume variation)
 //    Data<bool > f_PSDStabilization;
     //@}
 
@@ -87,14 +87,14 @@ public:
 protected:
     PolynomialMaterialForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_C10(initData(&f_C10,helper::vector<Real>((int)1,(Real)0),"C10","weight of (~I1-3) term in energy"))
-        , f_C01(initData(&f_C01,helper::vector<Real>((int)1,(Real)0),"C01","weight of (~I2-3) term in energy"))
-        , f_C20(initData(&f_C20,helper::vector<Real>((int)1,(Real)0),"C20","weight of (~I1-3)^2 term in energy"))
-        , f_C02(initData(&f_C02,helper::vector<Real>((int)1,(Real)0),"C02","weight of (~I2-3)^2 term in energy"))
-        , f_C30(initData(&f_C30,helper::vector<Real>((int)1,(Real)0),"C30","weight of (~I1-3)^3 term in energy"))
-        , f_C03(initData(&f_C03,helper::vector<Real>((int)1,(Real)0),"C03","weight of (~I2-3)^3 term in energy"))
-        , f_C11(initData(&f_C11,helper::vector<Real>((int)1,(Real)0),"C11","weight of (~I1-3)(~I2-3) term in energy"))
-        , f_bulk(initData(&f_bulk,helper::vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
+        , f_C10(initData(&f_C10,type::vector<Real>((int)1,(Real)0),"C10","weight of (~I1-3) term in energy"))
+        , f_C01(initData(&f_C01,type::vector<Real>((int)1,(Real)0),"C01","weight of (~I2-3) term in energy"))
+        , f_C20(initData(&f_C20,type::vector<Real>((int)1,(Real)0),"C20","weight of (~I1-3)^2 term in energy"))
+        , f_C02(initData(&f_C02,type::vector<Real>((int)1,(Real)0),"C02","weight of (~I2-3)^2 term in energy"))
+        , f_C30(initData(&f_C30,type::vector<Real>((int)1,(Real)0),"C30","weight of (~I1-3)^3 term in energy"))
+        , f_C03(initData(&f_C03,type::vector<Real>((int)1,(Real)0),"C03","weight of (~I2-3)^3 term in energy"))
+        , f_C11(initData(&f_C11,type::vector<Real>((int)1,(Real)0),"C11","weight of (~I1-3)(~I2-3) term in energy"))
+        , f_bulk(initData(&f_bulk,type::vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
     {
     }
 

@@ -2,9 +2,8 @@
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 
-#include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -149,7 +148,7 @@ void THMPGSpatialHashing::addCollisionModel(core::CollisionModel *cm)
                 cmPairs.push_back(std::make_pair(cm, cm));
 
     }
-    for (sofa::helper::vector<core::CollisionModel*>::iterator it = _collisionModels.begin(); it != _collisionModels.end(); ++it)
+    for (sofa::type::vector<core::CollisionModel*>::iterator it = _collisionModels.begin(); it != _collisionModels.end(); ++it)
     {
         core::CollisionModel* cm2 = *it;
 

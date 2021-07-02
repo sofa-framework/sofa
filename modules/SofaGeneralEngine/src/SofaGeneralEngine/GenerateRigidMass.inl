@@ -93,10 +93,10 @@ void GenerateRigidMass<DataTypes, MassType>::integrateMesh()
     for (size_t i=0 ; i<10 ; ++i)
         afIntegral[i] = 0.0;
 
-    const helper::vector<Vector3>& positions = m_positions.getValue();
-    const helper::vector<MTriangle>& triangles = m_triangles.getValue();
-    const helper::vector<MQuad>& quads = m_quads.getValue();
-    const helper::vector<MPolygon>& polygons = m_polygons.getValue();
+    const type::vector<Vector3>& positions = m_positions.getValue();
+    const type::vector<MTriangle>& triangles = m_triangles.getValue();
+    const type::vector<MQuad>& quads = m_quads.getValue();
+    const type::vector<MPolygon>& polygons = m_polygons.getValue();
 
     // Triangles integration
     for (size_t i=0; i<triangles.size() ; ++i)

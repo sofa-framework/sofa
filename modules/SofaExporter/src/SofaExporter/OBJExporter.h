@@ -27,42 +27,46 @@
 
 #include <fstream>
 
-namespace sofa
+namespace sofa::component
 {
-
-namespace component
-{
-
 namespace _objexporter_
 {
 
-using sofa::simulation::BaseSimulationExporter ;
-using sofa::core::objectmodel::Event ;
-using sofa::core::objectmodel::Base ;
+using sofa::simulation::BaseSimulationExporter;
+using sofa::core::objectmodel::Event;
+using sofa::core::objectmodel::Base;
 
 class SOFA_SOFAEXPORTER_API OBJExporter : public BaseSimulationExporter
 {
 public:
     SOFA_CLASS(OBJExporter, BaseSimulationExporter);
 
-    bool write() override ;
+    bool write() override;
     bool writeOBJ();
 
-    void handleEvent(Event *event) override ;
+    void handleEvent(Event *event) override;
 
 protected:
     ~OBJExporter() override;
 };
 
-}
+} // namespace _objexporter_
 
-using _objexporter_::OBJExporter ;
+// Import the object in the exporter namespace to avoid having all the object straight in component.
+namespace exporter {
+    using OBJExporter = _objexporter_::OBJExporter;
+} // namespace exporter
 
-/// This is for compatibility with old code base in which OBJExporter where in sofa::component::misc.
-namespace misc  { using _objexporter_::OBJExporter ; }
+// Import the object in the "old" namespaces to allow smooth update of code base.
+using OBJExporter
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_2106()
+    = _objexporter_::OBJExporter;
+namespace misc {
+    using OBJExporter
+        SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_1712()
+        = _objexporter_::OBJExporter;
+} // namespace misc
 
-}
-
-}
+} // namespace sofa::component
 
 #endif /* OBJEXPORTER_H_ */

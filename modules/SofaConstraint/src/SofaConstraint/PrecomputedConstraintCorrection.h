@@ -27,8 +27,8 @@
 
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::constraintset
 {
@@ -56,7 +56,7 @@ public:
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 
     typedef typename Coord::value_type Real;
-    typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
+    typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
 
     Data<bool> m_rotations;
     Data<bool> m_restRotations;
@@ -140,14 +140,14 @@ public:
     static void releaseInverse(std::string name, InverseStorage* inv);
 
     unsigned int nbRows, nbCols, dof_on_node, nbNodes;
-    helper::vector<int> _indexNodeSparseCompliance;
-    helper::vector<Deriv> _sparseCompliance;
+    type::vector<int> _indexNodeSparseCompliance;
+    type::vector<Deriv> _sparseCompliance;
     Real Fbuf[6], DXbuf;
 
     // new :  for non building the constraint system during solving process //
     //VecDeriv constraint_disp, constraint_force;
-    helper::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
-    helper::vector<unsigned int> localIndex_to_id; //inverse table that gives the id of a constraint given its local index
+    type::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
+    type::vector<unsigned int> localIndex_to_id; //inverse table that gives the id of a constraint given its local index
     std::list<unsigned int> active_local_force; // table of local index of the non-null forces;
     linearsolver::FullMatrix< Real > localW;
     double* constraint_force;

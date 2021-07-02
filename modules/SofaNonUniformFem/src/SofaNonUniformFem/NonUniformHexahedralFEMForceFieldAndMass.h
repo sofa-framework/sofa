@@ -87,8 +87,8 @@ public:
     typedef typename HexahedralFEMForceFieldAndMassT::ElementMass ElementMass;
     typedef typename HexahedralFEMForceFieldAndMassT::Element Element;
 
-    typedef typename defaulttype::Mat<8, 8, Real> Mat88;
-    typedef typename defaulttype::Vec<3, int> Vec3i;
+    typedef typename type::Mat<8, 8, Real> Mat88;
+    typedef typename type::Vec<3, int> Vec3i;
 
 
 protected:
@@ -161,7 +161,7 @@ private:
     Vec3i octree2voxel(const int octreeIdx) const;
 
     // [level][childId][childNodeId][parentNodeId] -> weight
-    helper::vector< helper::vector < Mat88 > > _H; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
+    type::vector< type::vector< Mat88 > > _H; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
 
     typedef struct
     {
@@ -195,7 +195,7 @@ protected:
     void addMBKdx(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override;
 
     bool matrixIsDirty;                      ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$ needs to be recomputed
-    helper::vector< ElementMass > mbkMatrix; ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$
+    type::vector< ElementMass > mbkMatrix; ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$
 
 protected:
     virtual void computeCorrection( ElementMass& ) {} ///< Limit the conditioning number of each mbkMatrix as defined by maxConditioning (in derived classes).

@@ -30,6 +30,7 @@
 #include <QLabel>
 #include <QValidator>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/objectmodel/Base.h>
 
 #define TEXTSIZE_THRESHOLD 45
 
@@ -60,7 +61,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
     const std::string& help = data_->getHelp().c_str();
     const std::string valuetype = data_->getValueTypeString();
-    const std::string& ownerClass = data_->getOwnerClass();
+    const std::string& ownerClass = data_->getOwner()->getClassName();
     std::stringstream s;
 
     s << (!help.empty() ? help : "< No help found >")

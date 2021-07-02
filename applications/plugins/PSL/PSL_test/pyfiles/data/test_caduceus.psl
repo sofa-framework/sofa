@@ -19,9 +19,8 @@ Node : {
         draw : "0"
         depth : "15"
     } 
-    BruteForceDetection : {
-        name : "N2"
-    } 
+    BruteForceBroadPhase : {}
+    BVHNarrowPhase : {}
     MinProximityIntersection : {
         name : "Proximity"
         alarmDistance : "1.5"

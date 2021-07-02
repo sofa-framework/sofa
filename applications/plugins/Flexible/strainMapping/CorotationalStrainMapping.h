@@ -67,7 +67,7 @@ public:
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
 
     //Pierre-Luc : I added this function to use some functionalities of the mapping component whitout using it as a sofa graph component (protected)
-    virtual void initJacobianBlock( helper::vector<BlockType>& jacobianBlock ) override
+    virtual void initJacobianBlock( type::vector<BlockType>& jacobianBlock ) override
     {
         if(this->f_printLog.getValue()==true)
             std::cout << SOFA_CLASS_METHOD << std::endl;
@@ -186,7 +186,7 @@ protected:
 
     virtual ~CorotationalStrainMapping() { }
 
-    virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, helper::vector<BlockType>& jacobianBlock) override
+    virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, type::vector<BlockType>& jacobianBlock) override
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 

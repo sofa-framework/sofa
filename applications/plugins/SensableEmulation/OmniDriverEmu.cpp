@@ -24,7 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 #include <sofa/core/visual/VisualParams.h>
 
@@ -62,10 +62,10 @@ namespace component
 namespace controller
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
-using namespace sofa::defaulttype;
-using helper::vector;
+using type::vector;
 
 OmniDriverEmu::OmniDriverEmu()
     : forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
@@ -148,7 +148,7 @@ void hapticSimuExecute(std::atomic<bool>& terminate, void *ptr )
 
     // Init the "trajectory" data
     OmniDriverEmu::VecCoord pts = omniDrv->trajPts.getValue(); //sets of points use for interpolation
-    helper::vector<double> tmg = omniDrv->trajTim.getValue(); //sets of "key time" for interpolation
+    type::vector<double> tmg = omniDrv->trajTim.getValue(); //sets of "key time" for interpolation
 
     if (pts.empty())
     {
@@ -173,7 +173,7 @@ void hapticSimuExecute(std::atomic<bool>& terminate, void *ptr )
         return;
     }
 
-    helper::vector< unsigned int > stepNum;
+    type::vector< unsigned int > stepNum;
     // Init the Step list
     for (unsigned int i = 0; i < numPts; i++)
     {
@@ -186,8 +186,8 @@ void hapticSimuExecute(std::atomic<bool>& terminate, void *ptr )
     double averageFreq = 0.0, minimalFreq=1e10;
     unsigned int actSeg = 0;
     unsigned int actStep = 0;
-    sofa::helper::Quater<double> actualRot;
-    sofa::defaulttype::Vec3d actualPos = pts[0].getCenter();
+    sofa::type::Quat<double> actualRot;
+    sofa::type::Vec3d actualPos = pts[0].getCenter();
 
     double timeScale = 1.0 / (double)helper::system::thread::CTime::getTicksPerSec();
     double startTime, endTime, totalTime, realTimePrev = -1.0, realTimeAct;
@@ -371,7 +371,7 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
 
         visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-        visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_base->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
         visu_base->initVisual();
@@ -381,7 +381,7 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
 
         visu_end = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
-        visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_end->m_scale.setValue(type::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
         visu_end->initVisual();
@@ -445,9 +445,9 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 //TODO : SHOULD INCLUDE VELOCITY !!
                 //sofa::core::objectmodel::HapticDeviceEvent omniEvent(data.deviceData.id, world_H_virtualTool.getOrigin(), world_H_virtualTool.getOrientation() , data.deviceData.m_buttonState);
                 //this->getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &omniEvent);
-                helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::VecCoordId::position());
+                helper::WriteAccessor<Data<type::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::VecCoordId::position());
                 this->getContext()->getMechanicalState()->vRealloc( sofa::core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
-                helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
+                helper::WriteAccessor<Data<type::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
 
                 /// FIX : check if the mechanical state is empty, if true, resize it
                 /// otherwise: crash when accessing xfree[] and x[]

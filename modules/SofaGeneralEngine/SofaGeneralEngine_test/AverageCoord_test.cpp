@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 
 #include <sofa/helper/BackTrace.h>
@@ -38,14 +38,14 @@ using sofa::simulation::graph::DAGSimulation;
 #include <SofaGeneralEngine/AverageCoord.h>
 using sofa::component::engine::AverageCoord ;
 
-using sofa::helper::vector;
+using sofa::type::vector;
 
 
 namespace sofa
 {
 
 template <typename _DataTypes>
-struct AverageCoord_test : public Sofa_test<typename _DataTypes::Real>,
+struct AverageCoord_test : public BaseSimulationTest,
         AverageCoord<_DataTypes>
 {
     typedef AverageCoord<_DataTypes> ThisClass ;
@@ -109,7 +109,7 @@ struct AverageCoord_test : public Sofa_test<typename _DataTypes::Real>,
 };
 
 using ::testing::Types;
-typedef Types<Vec3Types> DataTypes;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
 TYPED_TEST_SUITE(AverageCoord_test, DataTypes);
 

@@ -25,6 +25,8 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationGraph/SimpleApi.h>
 
+#include <SofaBaseUtils/initSofaBaseUtils.h>
+
 #include <vector>
 #include <algorithm>
 
@@ -52,6 +54,8 @@ class StaticSolverTest : public sofa::testing::BaseTest
 {
 public:
     void onSetUp() override {
+
+        sofa::component::initSofaBaseUtils();
 
         if (! getSimulation()) {
             setSimulation(new DAGSimulation()) ;

@@ -434,7 +434,7 @@ void CuboidMesh<DataTypes>::orientate()
 template <class DataTypes>
 void CuboidMesh<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    using Color = sofa::helper::types::RGBAColor;
+    using Color = sofa::type::RGBAColor;
     if (m_viewPoints.getValue())
     {
         helper::ReadAccessor< Data< VecCoord > > points = m_points;

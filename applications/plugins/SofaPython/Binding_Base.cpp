@@ -24,7 +24,9 @@
 #include "Binding_Data.h"
 #include "Binding_Link.h"
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -42,7 +44,7 @@ typedef BaseMeshTopology::Quad Quad;
 typedef BaseMeshTopology::Tetra Tetra;
 typedef BaseMeshTopology::Hexa Hexa;
 typedef BaseMeshTopology::Penta Penta;
-using sofa::helper::vector;
+using sofa::type::vector;
 using sofa::helper::Factory;
 using namespace sofa::core::objectmodel;
 
@@ -66,35 +68,35 @@ PSDEDataFactory* getFactoryInstance(){
 
         // vectors
         s_localfactory->registerCreator(
-                    "Vec2d", new DataCreator<sofa::defaulttype::Vec2d>());
+                    "Vec2d", new DataCreator<sofa::type::Vec2d>());
         s_localfactory->registerCreator(
-                    "Vec3d", new DataCreator<sofa::defaulttype::Vec3d>());
+                    "Vec3d", new DataCreator<sofa::type::Vec3d>());
         s_localfactory->registerCreator(
-                    "Vec4d", new DataCreator<sofa::defaulttype::Vec4d>());
+                    "Vec4d", new DataCreator<sofa::type::Vec4d>());
         s_localfactory->registerCreator(
-                    "Vec6d", new DataCreator<sofa::defaulttype::Vec6d>());
+                    "Vec6d", new DataCreator<sofa::type::Vec6d>());
         s_localfactory->registerCreator(
-                    "Vec2f", new DataCreator<sofa::defaulttype::Vec2f>());
+                    "Vec2f", new DataCreator<sofa::type::Vec2f>());
         s_localfactory->registerCreator(
-                    "Vec3f", new DataCreator<sofa::defaulttype::Vec3f>());
+                    "Vec3f", new DataCreator<sofa::type::Vec3f>());
         s_localfactory->registerCreator(
-                    "Vec4f", new DataCreator<sofa::defaulttype::Vec4f>());
+                    "Vec4f", new DataCreator<sofa::type::Vec4f>());
         s_localfactory->registerCreator(
-                    "Vec6f", new DataCreator<sofa::defaulttype::Vec6f>());
+                    "Vec6f", new DataCreator<sofa::type::Vec6f>());
 
         // Matrices
         s_localfactory->registerCreator(
-                    "Mat2x2d", new DataCreator<sofa::defaulttype::Mat2x2d>());
+                    "Mat2x2d", new DataCreator<sofa::type::Mat2x2d>());
         s_localfactory->registerCreator(
-                    "Mat3x3d", new DataCreator<sofa::defaulttype::Mat3x3d>());
+                    "Mat3x3d", new DataCreator<sofa::type::Mat3x3d>());
         s_localfactory->registerCreator(
-                    "Mat4x4d", new DataCreator<sofa::defaulttype::Mat4x4d>());
+                    "Mat4x4d", new DataCreator<sofa::type::Mat4x4d>());
         s_localfactory->registerCreator(
-                    "Mat2x2f", new DataCreator<sofa::defaulttype::Mat2x2f>());
+                    "Mat2x2f", new DataCreator<sofa::type::Mat2x2f>());
         s_localfactory->registerCreator(
-                    "Mat3x3f", new DataCreator<sofa::defaulttype::Mat3x3f>());
+                    "Mat3x3f", new DataCreator<sofa::type::Mat3x3f>());
         s_localfactory->registerCreator(
-                    "Mat4x4f", new DataCreator<sofa::defaulttype::Mat4x4f>());
+                    "Mat4x4f", new DataCreator<sofa::type::Mat4x4f>());
 
         // Topology
         s_localfactory->registerCreator("Edge", new DataCreator<Edge>());
@@ -129,41 +131,41 @@ PSDEDataFactory* getFactoryInstance(){
 
             // vectors
             s_localfactory->registerCreator(
-                        container + "<Vec2d>", new DataCreator<vector<sofa::defaulttype::Vec2d>>());
+                        container + "<Vec2d>", new DataCreator<vector<sofa::type::Vec2d>>());
             s_localfactory->registerCreator(
-                        container + "<Vec3d>", new DataCreator<vector<sofa::defaulttype::Vec3d>>());
+                        container + "<Vec3d>", new DataCreator<vector<sofa::type::Vec3d>>());
             s_localfactory->registerCreator(
-                        container + "<Vec4d>", new DataCreator<vector<sofa::defaulttype::Vec4d>>());
+                        container + "<Vec4d>", new DataCreator<vector<sofa::type::Vec4d>>());
             s_localfactory->registerCreator(
-                        container + "<Vec6d>", new DataCreator<vector<sofa::defaulttype::Vec6d>>());
+                        container + "<Vec6d>", new DataCreator<vector<sofa::type::Vec6d>>());
             s_localfactory->registerCreator(
-                        container + "<Vec2f>", new DataCreator<vector<sofa::defaulttype::Vec2f>>());
+                        container + "<Vec2f>", new DataCreator<vector<sofa::type::Vec2f>>());
             s_localfactory->registerCreator(
-                        container + "<Vec3f>", new DataCreator<vector<sofa::defaulttype::Vec3f>>());
+                        container + "<Vec3f>", new DataCreator<vector<sofa::type::Vec3f>>());
             s_localfactory->registerCreator(
-                        container + "<Vec4f>", new DataCreator<vector<sofa::defaulttype::Vec4f>>());
+                        container + "<Vec4f>", new DataCreator<vector<sofa::type::Vec4f>>());
             s_localfactory->registerCreator(
-                        container + "<Vec6f>", new DataCreator<vector<sofa::defaulttype::Vec6f>>());
+                        container + "<Vec6f>", new DataCreator<vector<sofa::type::Vec6f>>());
 
             // Matrices
             s_localfactory->registerCreator(
                         container + "<Mat2x2d>",
-                        new DataCreator<vector<sofa::defaulttype::Mat2x2d>>());
+                        new DataCreator<vector<sofa::type::Mat2x2d>>());
             s_localfactory->registerCreator(
                         container + "<Mat3x3d>",
-                        new DataCreator<vector<sofa::defaulttype::Mat3x3d>>());
+                        new DataCreator<vector<sofa::type::Mat3x3d>>());
             s_localfactory->registerCreator(
                         container + "<Mat4x4d>",
-                        new DataCreator<vector<sofa::defaulttype::Mat4x4d>>());
+                        new DataCreator<vector<sofa::type::Mat4x4d>>());
             s_localfactory->registerCreator(
                         container + "<Mat2x2f>",
-                        new DataCreator<vector<sofa::defaulttype::Mat2x2f>>());
+                        new DataCreator<vector<sofa::type::Mat2x2f>>());
             s_localfactory->registerCreator(
                         container + "<Mat3x3f>",
-                        new DataCreator<vector<sofa::defaulttype::Mat3x3f>>());
+                        new DataCreator<vector<sofa::type::Mat3x3f>>());
             s_localfactory->registerCreator(
                         container + "<Mat4x4f>",
-                        new DataCreator<vector<sofa::defaulttype::Mat4x4f>>());
+                        new DataCreator<vector<sofa::type::Mat4x4f>>());
 
             // Topology
             s_localfactory->registerCreator(container + "<Edge>",
@@ -337,7 +339,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         }
         else if (std::string(dataName) != "type")
         {
-            sofa::helper::vector<std::string> validTypes;
+            sofa::type::vector<std::string> validTypes;
             getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
             std::string typesString = "[";
             for (const auto& i : validTypes)
@@ -591,7 +593,7 @@ static PyObject * Base_getName(PyObject * self, PyObject * /*args*/) {
 static PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/) {
     Base * component = get_base(self);
 
-    const sofa::helper::vector<BaseData*> dataFields = component->getDataFields();
+    const sofa::type::vector<BaseData*> dataFields = component->getDataFields();
 
     PyObject * pyDict = PyDict_New();
     for (size_t i=0; i<dataFields.size(); i++) {
@@ -610,7 +612,7 @@ static PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/) {
 static PyObject * Base_getListOfDataFields(PyObject *self, PyObject * /*args*/) {
     Base * component = get_base(self);
 
-    const sofa::helper::vector<BaseData*> dataFields = component->getDataFields();
+    const sofa::type::vector<BaseData*> dataFields = component->getDataFields();
 
     PyObject * pyList = PyList_New(dataFields.size());
     for (unsigned int i = 0; i < dataFields.size(); ++i) {
@@ -623,7 +625,7 @@ static PyObject * Base_getListOfDataFields(PyObject *self, PyObject * /*args*/) 
 static PyObject * Base_getListOfLinks(PyObject *self, PyObject * /*args*/) {
     Base * component = get_base(self);
 
-    const sofa::helper::vector<BaseLink*> links = component->getLinks() ;
+    const sofa::type::vector<BaseLink*> links = component->getLinks() ;
 
     PyObject * pyList = PyList_New(links.size());
     for (unsigned int i = 0; i < links.size(); ++i) {
@@ -657,8 +659,8 @@ static PyObject * Base___dir__(PyObject *self, PyObject * /*args*/) {
     }
 
     /// The the other names out of data & links
-    const sofa::helper::vector<BaseData*>& dataFields = component->getDataFields();
-    const sofa::helper::vector<BaseLink*>& links = component->getLinks() ;
+    const sofa::type::vector<BaseData*>& dataFields = component->getDataFields();
+    const sofa::type::vector<BaseLink*>& links = component->getLinks() ;
 
     /// Create a list big enough to store everyone.
     unsigned int size = links.size() + dataFields.size() + listMethodsSize;

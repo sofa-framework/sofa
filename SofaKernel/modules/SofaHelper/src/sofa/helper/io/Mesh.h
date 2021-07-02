@@ -22,12 +22,12 @@
 #ifndef SOFA_HELPER_IO_MESH_H
 #define SOFA_HELPER_IO_MESH_H
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/fixed_array.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/helper/types/Material.h>
-#include <sofa/helper/types/PrimitiveGroup.h>
+#include <sofa/type/Material.h>
+#include <sofa/type/PrimitiveGroup.h>
 #include <sofa/topology/Topology.h>
 
 namespace sofa
@@ -47,65 +47,65 @@ public:
     std::string loaderType;
     
 public:
-    typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::helper::types::PrimitiveGroup PrimitiveGroup;
-    typedef sofa::helper::types::Material Material;
+    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::PrimitiveGroup PrimitiveGroup;
+    typedef sofa::type::Material Material;
     typedef sofa::Index PointID;
 
     /* specify for each control point lying on an edge : the control point index, the index of the  edge,
     the 2 integers specifying the position within this edge (i.e. 11 for a quadratic edge, 13 within a quartic edge).. */
-    typedef sofa::helper::fixed_array<PointID, 4> HighOrderEdgePosition;
+    typedef sofa::type::fixed_array<PointID, 4> HighOrderEdgePosition;
     /* specify for each control point lying on a triangle  : the control point index, the index of the  triangle,
     the 3 integers specifying the position within this triangle (i.e. 111 for a cubic triangle , 121 within a quartic triangle).. */
-    typedef sofa::helper::fixed_array<PointID, 5> HighOrderTrianglePosition;
+    typedef sofa::type::fixed_array<PointID, 5> HighOrderTrianglePosition;
     /* specify for each control point lying on a Quad  : the control point index, the index of the  quad,
     the 2 integers specifying the degree of the element in the x and y directions, the 2 integers specifying the position within this quad (i.e. 12 for a cubic triangle ).. */
-    typedef sofa::helper::fixed_array<PointID, 6> HighOrderQuadPosition;
+    typedef sofa::type::fixed_array<PointID, 6> HighOrderQuadPosition;
     /* specify for each control point lying on a tetrahedron  : the control point index, the index of the  tetrahedron,
     the 3 integers specifying the position within this tetrahedron (i.e. 1111 for a quartic tetrahedron , 1211 within a quintic tetrahedron).. */
-    typedef sofa::helper::fixed_array<PointID, 6> HighOrderTetrahedronPosition;
+    typedef sofa::type::fixed_array<PointID, 6> HighOrderTetrahedronPosition;
     /* specify for each control point lying on a Hexahedron  : the control point index, the index of the  Hexahedron,
     the 3 integers specifying the degree of the element in the x, y and z directions, the 3 integers specifying the position within this hexahedron (i.e. 121  ).. */
-    typedef sofa::helper::fixed_array<PointID, 8> HighOrderHexahedronPosition;
+    typedef sofa::type::fixed_array<PointID, 8> HighOrderHexahedronPosition;
 
-    sofa::helper::vector<Vector3> & getVertices() { return m_vertices; }
-    const sofa::helper::vector<Vector3> & getVertices() const { return m_vertices; }
+    sofa::type::vector<Vector3> & getVertices() { return m_vertices; }
+    const sofa::type::vector<Vector3> & getVertices() const { return m_vertices; }
 
-    sofa::helper::vector< Edge > & getEdges() { return m_edges; }
-    const sofa::helper::vector< Edge > & getEdges() const { return m_edges; }
+    sofa::type::vector< Edge > & getEdges() { return m_edges; }
+    const sofa::type::vector< Edge > & getEdges() const { return m_edges; }
 
-    sofa::helper::vector< Triangle > & getTriangles() { return m_triangles; }
-    const sofa::helper::vector< Triangle > & getTriangles() const { return m_triangles; }
+    sofa::type::vector< Triangle > & getTriangles() { return m_triangles; }
+    const sofa::type::vector< Triangle > & getTriangles() const { return m_triangles; }
 
-    sofa::helper::vector< Quad > & getQuads() { return m_quads; }
-    const sofa::helper::vector< Quad > & getQuads() const { return m_quads; }
+    sofa::type::vector< Quad > & getQuads() { return m_quads; }
+    const sofa::type::vector< Quad > & getQuads() const { return m_quads; }
 
-    sofa::helper::vector< Tetrahedron > & getTetrahedra() { return m_tetrahedra; }
-    const sofa::helper::vector< Tetrahedron > & getTetrahedra() const { return m_tetrahedra; }
+    sofa::type::vector< Tetrahedron > & getTetrahedra() { return m_tetrahedra; }
+    const sofa::type::vector< Tetrahedron > & getTetrahedra() const { return m_tetrahedra; }
 
-    sofa::helper::vector< Hexahedron > & getHexahedra() { return m_hexahedra; }
-    const sofa::helper::vector< Hexahedron > & getHexahedra() const { return m_hexahedra; }
+    sofa::type::vector< Hexahedron > & getHexahedra() { return m_hexahedra; }
+    const sofa::type::vector< Hexahedron > & getHexahedra() const { return m_hexahedra; }
 
-    sofa::helper::vector<Vector3> & getTexCoords() { return texCoords; }
-    const sofa::helper::vector<Vector3> & getTexCoords() const { return texCoords; }
-    sofa::helper::vector<Vector3> & getNormals() { return normals; }
-    const sofa::helper::vector<Vector3> & getNormals() const { return normals; }
-    sofa::helper::vector< vector < vector <PointID> > > & getFacets() { return facets; }
-    const sofa::helper::vector< vector < vector <PointID> > > & getFacets() const { return facets; }
+    sofa::type::vector<Vector3> & getTexCoords() { return texCoords; }
+    const sofa::type::vector<Vector3> & getTexCoords() const { return texCoords; }
+    sofa::type::vector<Vector3> & getNormals() { return normals; }
+    const sofa::type::vector<Vector3> & getNormals() const { return normals; }
+    sofa::type::vector< type::vector < type::vector <PointID> > > & getFacets() { return facets; }
+    const sofa::type::vector< type::vector < type::vector <PointID> > > & getFacets() const { return facets; }
 
 
-    const sofa::helper::vector< PrimitiveGroup > & getEdgesGroups() const { return m_edgesGroups; }
-    const sofa::helper::vector< PrimitiveGroup > & getTrianglesGroups() const { return m_trianglesGroups; }
-    const sofa::helper::vector< PrimitiveGroup > & getQuadsGroups() const { return m_quadsGroups; }
-    const sofa::helper::vector< PrimitiveGroup > & getPolygonsGroups() const { return m_polygonsGroups; }
-    const sofa::helper::vector< PrimitiveGroup > & getTetrahedraGroups() const { return m_tetrahedraGroups; }
-    const sofa::helper::vector< PrimitiveGroup > & getHexahedraGroups() const { return m_hexahedraGroups; }
-    const sofa::helper::vector< PrimitiveGroup > & getPentahedraGroups() const { return m_pentahedraGroups; }
-    const sofa::helper::vector< PrimitiveGroup > & getPyramidsGroups() const { return m_pyramidsGroups; }
+    const sofa::type::vector< PrimitiveGroup > & getEdgesGroups() const { return m_edgesGroups; }
+    const sofa::type::vector< PrimitiveGroup > & getTrianglesGroups() const { return m_trianglesGroups; }
+    const sofa::type::vector< PrimitiveGroup > & getQuadsGroups() const { return m_quadsGroups; }
+    const sofa::type::vector< PrimitiveGroup > & getPolygonsGroups() const { return m_polygonsGroups; }
+    const sofa::type::vector< PrimitiveGroup > & getTetrahedraGroups() const { return m_tetrahedraGroups; }
+    const sofa::type::vector< PrimitiveGroup > & getHexahedraGroups() const { return m_hexahedraGroups; }
+    const sofa::type::vector< PrimitiveGroup > & getPentahedraGroups() const { return m_pentahedraGroups; }
+    const sofa::type::vector< PrimitiveGroup > & getPyramidsGroups() const { return m_pyramidsGroups; }
     
-    const sofa::helper::vector< HighOrderEdgePosition >& getHighOrderEdgePositions() const { return m_highOrderEdgePositions; }
-    const sofa::helper::vector< HighOrderTrianglePosition >& getHighOrderTrianglePositions() const { return m_highOrderTrianglePositions; }
-    const sofa::helper::vector< HighOrderQuadPosition >& getHighOrderQuadPositions() const { return m_highOrderQuadPositions; }
+    const sofa::type::vector< HighOrderEdgePosition >& getHighOrderEdgePositions() const { return m_highOrderEdgePositions; }
+    const sofa::type::vector< HighOrderTrianglePosition >& getHighOrderTrianglePositions() const { return m_highOrderTrianglePositions; }
+    const sofa::type::vector< HighOrderQuadPosition >& getHighOrderQuadPositions() const { return m_highOrderQuadPositions; }
     
 
     const Material& getMaterial() const { return material; }
@@ -128,35 +128,35 @@ public:
     
 protected:
     // Point coordinates in 3D.
-    sofa::helper::vector<Vector3> m_vertices;
+    sofa::type::vector<Vector3> m_vertices;
 
     // Tab of 2D elements composition
-    sofa::helper::vector< Edge > m_edges; ///< Edges of the mesh loaded
-    sofa::helper::vector< Triangle > m_triangles; ///< Triangles of the mesh loaded
-    sofa::helper::vector< Quad > m_quads; ///< Quads of the mesh loaded
-    helper::vector< helper::vector <unsigned int> > m_polygons; ///< Polygons of the mesh loaded
-    helper::vector< HighOrderEdgePosition > m_highOrderEdgePositions; ///< High order edge points of the mesh loaded
-    helper::vector< HighOrderTrianglePosition > m_highOrderTrianglePositions; ///< High order triangle points of the mesh loaded
-    helper::vector< HighOrderQuadPosition > m_highOrderQuadPositions; ///< High order quad points of the mesh loaded
+    sofa::type::vector< Edge > m_edges; ///< Edges of the mesh loaded
+    sofa::type::vector< Triangle > m_triangles; ///< Triangles of the mesh loaded
+    sofa::type::vector< Quad > m_quads; ///< Quads of the mesh loaded
+    type::vector< type::vector <sofa::Index> > m_polygons; ///< Polygons of the mesh loaded
+    type::vector< HighOrderEdgePosition > m_highOrderEdgePositions; ///< High order edge points of the mesh loaded
+    type::vector< HighOrderTrianglePosition > m_highOrderTrianglePositions; ///< High order triangle points of the mesh loaded
+    type::vector< HighOrderQuadPosition > m_highOrderQuadPositions; ///< High order quad points of the mesh loaded
 
     // Tab of 3D elements composition
-    sofa::helper::vector< Tetrahedron > m_tetrahedra; ///< Tetrahedra of the mesh loaded
-    sofa::helper::vector< Hexahedron > m_hexahedra; ///< Hexahedra of the mesh loaded
+    sofa::type::vector< Tetrahedron > m_tetrahedra; ///< Tetrahedra of the mesh loaded
+    sofa::type::vector< Hexahedron > m_hexahedra; ///< Hexahedra of the mesh loaded
     
     // Groups
-    helper::vector< PrimitiveGroup > m_edgesGroups; ///< Groups of Edges
-    helper::vector< PrimitiveGroup > m_trianglesGroups; ///< Groups of Triangles
-    helper::vector< PrimitiveGroup > m_quadsGroups; ///< Groups of Quads
-    helper::vector< PrimitiveGroup > m_polygonsGroups; ///< Groups of Polygons
-    helper::vector< PrimitiveGroup > m_tetrahedraGroups; ///< Groups of Tetrahedra
-    helper::vector< PrimitiveGroup > m_hexahedraGroups; ///< Groups of Hexahedra
-    helper::vector< PrimitiveGroup > m_pentahedraGroups; ///< Groups of Pentahedra
-    helper::vector< PrimitiveGroup > m_pyramidsGroups; ///< Groups of Pyramids
+    type::vector< PrimitiveGroup > m_edgesGroups; ///< Groups of Edges
+    type::vector< PrimitiveGroup > m_trianglesGroups; ///< Groups of Triangles
+    type::vector< PrimitiveGroup > m_quadsGroups; ///< Groups of Quads
+    type::vector< PrimitiveGroup > m_polygonsGroups; ///< Groups of Polygons
+    type::vector< PrimitiveGroup > m_tetrahedraGroups; ///< Groups of Tetrahedra
+    type::vector< PrimitiveGroup > m_hexahedraGroups; ///< Groups of Hexahedra
+    type::vector< PrimitiveGroup > m_pentahedraGroups; ///< Groups of Pentahedra
+    type::vector< PrimitiveGroup > m_pyramidsGroups; ///< Groups of Pyramids
 
 
-    sofa::helper::vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
-    sofa::helper::vector<Vector3> normals;
-    sofa::helper::vector< sofa::helper::vector < sofa::helper::vector <PointID> > > facets;
+    sofa::type::vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
+    sofa::type::vector<Vector3> normals;
+    sofa::type::vector< sofa::type::vector< sofa::type::vector<PointID> > > facets;
     Material material;
 
     std::vector<Material> materials;

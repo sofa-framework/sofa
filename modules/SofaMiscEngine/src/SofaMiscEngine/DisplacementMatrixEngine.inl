@@ -78,7 +78,7 @@ void DisplacementTransformEngine< DataTypes, OutputType >::doUpdate()
     }
 
     // Clean the output
-    helper::vector< OutputType >& displacements = *d_displacements.beginWriteOnly();
+    type::vector< OutputType >& displacements = *d_displacements.beginWriteOnly();
     displacements.resize(size);
 
     for( unsigned int i = 0; i < size; ++i )
@@ -109,11 +109,11 @@ void DisplacementMatrixEngine< DataTypes >::init()
 
     // Init of the scale matrices in case if the user did not initialize them
     const VecCoord& x0 = this->d_x0.getValue();
-    helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = *d_scales.beginWriteOnly();
+    type::vector< sofa::type::Vec<3,Real> >& scales = *d_scales.beginWriteOnly();
     if (scales.size() == 0)
         for( size_t i=0; i<x0.size(); ++i )
         {
-            scales.push_back(sofa::defaulttype::Vec<3,Real>(1,1,1));
+            scales.push_back(sofa::type::Vec<3,Real>(1,1,1));
         }
     d_scales.endEdit();
 
@@ -128,7 +128,7 @@ void DisplacementMatrixEngine< DataTypes >::reinit()
     Inherit::reinit();
 
     const VecCoord& x0 = this->d_x0.getValue();
-    const helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = this->d_scales.getValue();
+    const type::vector< sofa::type::Vec<3,Real> >& scales = this->d_scales.getValue();
     const size_t size0 = x0.size();
     const size_t sizeS = scales.size();
 
@@ -158,7 +158,7 @@ void DisplacementMatrixEngine< DataTypes >::doUpdate()
 {
     const VecCoord& x = this->d_x.getValue();
     const VecCoord& x0 = this->d_x0.getValue();
-    const helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = this->d_scales.getValue();
+    const type::vector< sofa::type::Vec<3,Real> >& scales = this->d_scales.getValue();
     const size_t size = x.size();
     const size_t size0 = x0.size();
     const size_t sizeS = scales.size();
@@ -170,11 +170,11 @@ void DisplacementMatrixEngine< DataTypes >::doUpdate()
         return;
     }
 
-    helper::vector< Matrix4x4 >& displacements = *this->d_displacements.beginWriteOnly();
+    type::vector< Matrix4x4 >& displacements = *this->d_displacements.beginWriteOnly();
     displacements.resize(size);
     for( unsigned int i = 0; i < size; ++i )
     {
-        x[i].toMatrix(displacements[i]);
+        x[i].toHomogeneousMatrix(displacements[i]);
         displacements[i] = displacements[i] * this->SxInverses[i];
     }
     this->d_displacements.endEdit();

@@ -26,8 +26,8 @@
 
 #include "../material/BaseMaterial.h"
 #include "StabilizedNeoHookeanMaterialBlock.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/StrainTypes.h"
 #include <sofa/helper/decompose.h>
 #include "../BaseJacobian.h"

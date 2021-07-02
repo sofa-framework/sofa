@@ -60,12 +60,12 @@ public:
 
     Real r() const;
 
-    sofa::defaulttype::Vector3 getContactPointByNormal( const sofa::defaulttype::Vector3& contactNormal )
+    sofa::type::Vector3 getContactPointByNormal( const sofa::type::Vector3& contactNormal )
     {
         return center() - contactNormal * r();
     }
 
-    sofa::defaulttype::Vector3 getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& surfacePoint )
+    sofa::type::Vector3 getContactPointWithSurfacePoint( const sofa::type::Vector3& surfacePoint )
     {
         return surfacePoint;
     }
@@ -73,9 +73,9 @@ public:
 
 // Specializations
 template <> SOFA_SOFABASECOLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
+sofa::type::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const sofa::type::Vector3& /*contactNormal*/ );
 template <> SOFA_SOFABASECOLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
+sofa::type::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const sofa::type::Vector3& );
 
 
 template< class TDataTypes>
@@ -206,19 +206,14 @@ inline typename DataTypes::Real TSphere<DataTypes>::r() const { return (Real) th
 template<class DataTypes>
 inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
-
-template <class TDataTypes> using TSphereModel [[deprecated("The TSphereModel is now deprecated, please use SphereCollisionModel instead. Compatibility stops at v20.06")]] = SphereCollisionModel<TDataTypes>;
-using SphereModel [[deprecated("The SphereModel is now deprecated, please use SphereCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = SphereCollisionModel<sofa::defaulttype::Vec3Types>;
 using Sphere = TSphere<sofa::defaulttype::Vec3Types>;
+using RigidSphere = TSphere<sofa::defaulttype::Rigid3Types>;
+using RigidSphereModel = SphereCollisionModel<sofa::defaulttype::Rigid3Types>;
 
-typedef SphereCollisionModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
-typedef TSphere<sofa::defaulttype::Rigid3Types> RigidSphere;
-
-#if  !defined(SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_CPP)
 extern template class SOFA_SOFABASECOLLISION_API TSphere<defaulttype::Vec3Types>;
 extern template class SOFA_SOFABASECOLLISION_API SphereCollisionModel<defaulttype::Vec3Types>;
 extern template class SOFA_SOFABASECOLLISION_API SphereCollisionModel<defaulttype::Rigid3Types>;
-
 #endif
 
 } // namespace sofa::component::collision

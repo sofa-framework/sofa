@@ -74,11 +74,11 @@ public:
     typedef core::topology::BaseMeshTopology::EdgesInHexahedron		   EdgesInHexahedron;
     typedef core::topology::BaseMeshTopology::QuadsInHexahedron		   QuadsInHexahedron;
 
-    typedef sofa::helper::vector<HexaID>               VecHexaID;
+    typedef sofa::type::vector<HexaID>               VecHexaID;
 
 
     typedef Hexa		Hexahedron;
-	typedef sofa::defaulttype::Vec<3,unsigned char> HexahedronBinaryIndex;
+	typedef sofa::type::Vec<3,unsigned char> HexahedronBinaryIndex;
 protected:
     HexahedronSetTopologyContainer();
 
@@ -272,27 +272,27 @@ public:
 
 
     /** \brief Returns the Hexahedron array. */
-    const sofa::helper::vector<Hexahedron> &getHexahedronArray();
+    const sofa::type::vector<Hexahedron> &getHexahedronArray();
 
 
     /** \brief Returns the EdgesInHexahedron array (i.e. provide the 12 edge indices for each hexahedron).	*/
-    const sofa::helper::vector< EdgesInHexahedron > &getEdgesInHexahedronArray() ;
+    const sofa::type::vector< EdgesInHexahedron > &getEdgesInHexahedronArray() ;
 
 
     /** \brief Returns the QuadsInHexahedron array (i.e. provide the 8 quad indices for each hexahedron).	*/
-    const sofa::helper::vector< QuadsInHexahedron > &getQuadsInHexahedronArray() ;
+    const sofa::type::vector< QuadsInHexahedron > &getQuadsInHexahedronArray() ;
 
 
     /** \brief Returns the HexahedraAroundVertex array (i.e. provide the hexahedron indices adjacent to each vertex).*/
-    const sofa::helper::vector< HexahedraAroundVertex > &getHexahedraAroundVertexArray() ;
+    const sofa::type::vector< HexahedraAroundVertex > &getHexahedraAroundVertexArray() ;
 
 
     /** \brief Returns the HexahedraAroundEdge array (i.e. provide the hexahedron indices adjacent to each edge). */
-    const sofa::helper::vector< HexahedraAroundEdge > &getHexahedraAroundEdgeArray() ;
+    const sofa::type::vector< HexahedraAroundEdge > &getHexahedraAroundEdgeArray() ;
 
 
     /** \brief Returns the HexahedraAroundQuad array (i.e. provide the hexahedron indices adjacent to each quad). */
-    const sofa::helper::vector< HexahedraAroundQuad > &getHexahedraAroundQuadArray() ;
+    const sofa::type::vector< HexahedraAroundQuad > &getHexahedraAroundQuadArray() ;
 
 
     bool hasHexahedra() const;
@@ -430,23 +430,23 @@ public:
 	Data<bool>  d_createQuadArray;
 
     /// provides the set of hexahedra.
-    Data< sofa::helper::vector<Hexahedron> > d_hexahedron;
+    Data< sofa::type::vector<Hexahedron> > d_hexahedron;
 
 protected:
     /// provides the set of edges for each hexahedron.
-    sofa::helper::vector<EdgesInHexahedron> m_edgesInHexahedron;
+    sofa::type::vector<EdgesInHexahedron> m_edgesInHexahedron;
 
     /// provides the set of quads for each hexahedron.
-    sofa::helper::vector<QuadsInHexahedron> m_quadsInHexahedron;
+    sofa::type::vector<QuadsInHexahedron> m_quadsInHexahedron;
 
     /// for each vertex provides the set of hexahedra adjacent to that vertex.
-    sofa::helper::vector< HexahedraAroundVertex > m_hexahedraAroundVertex;
+    sofa::type::vector< HexahedraAroundVertex > m_hexahedraAroundVertex;
 
     /// for each edge provides the set of hexahedra adjacent to that edge.
-    sofa::helper::vector< HexahedraAroundEdge > m_hexahedraAroundEdge;
+    sofa::type::vector< HexahedraAroundEdge > m_hexahedraAroundEdge;
 
     /// for each quad provides the set of hexahedra adjacent to that quad.
-    sofa::helper::vector< HexahedraAroundQuad > m_hexahedraAroundQuad;
+    sofa::type::vector< HexahedraAroundQuad > m_hexahedraAroundQuad;
 
 
     /// Boolean used to know if the topology Data of this container is dirty
@@ -456,8 +456,8 @@ protected:
     std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
 };
 
 } //namespace sofa::component::topology

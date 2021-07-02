@@ -1,6 +1,26 @@
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
-
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <SofaGeneralTopology/CylinderGridTopology.h>
 
@@ -9,7 +29,7 @@ namespace sofa
 
 using namespace sofa::component::topology;
 
-struct CylinderGridTopology_test : public Sofa_test<>
+struct CylinderGridTopology_test : public BaseTest
 {
     bool cylinderGridCreation();
     bool cylinderGridSize();
@@ -76,8 +96,8 @@ bool CylinderGridTopology_test::cylinderGridPosition()
     SReal length = cylGrid->d_length.getValue();
 
     // Check first circle with
-    sofa::defaulttype::Vector3 p0 = cylGrid->getPoint(0);
-    sofa::defaulttype::Vector3 p1 = cylGrid->getPoint(nx-1);
+    sofa::type::Vector3 p0 = cylGrid->getPoint(0);
+    sofa::type::Vector3 p1 = cylGrid->getPoint(nx-1);
     // Check first point
     EXPECT_NE(p0[0], 0);
     EXPECT_EQ(p0[0], p0[1]);
@@ -90,13 +110,13 @@ bool CylinderGridTopology_test::cylinderGridPosition()
     EXPECT_EQ(p0[2], 0);
 
     // check last point of first level
-    sofa::defaulttype::Vector3 p1Last = cylGrid->getPoint(nx*ny -1);
+    sofa::type::Vector3 p1Last = cylGrid->getPoint(nx*ny -1);
     EXPECT_NE(p1Last[0], 0);
     EXPECT_EQ(p1[0], p1Last[0]);
     EXPECT_EQ(p1[1], -p1Last[1]);
 
     // Check first point of last level of the cylinder
-    sofa::defaulttype::Vector3 p0Last = cylGrid->getPoint(nx*ny*(nz-1));
+    sofa::type::Vector3 p0Last = cylGrid->getPoint(nx*ny*(nz-1));
     EXPECT_EQ(p0Last[2], length);
     EXPECT_EQ(p0Last[0], p0[0]);
     EXPECT_EQ(p0Last[1], p0[1]);

@@ -27,7 +27,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 
 namespace sofa
@@ -58,7 +58,7 @@ public:
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     Data< ImageTypes > image;
-    Data< helper::vector<T> > values; ///< intensity values for each line
+    Data< type::vector<T> > values; ///< intensity values for each line
 
     virtual std::string getTemplateName() const override { return templateName(this);    }
     static std::string templateName(const IntensityProfileCreator<ImageTypes>* = NULL) { return ImageTypes::Name(); }
@@ -84,7 +84,7 @@ protected:
 
     void doUpdate() override
     {
-        helper::ReadAccessor<Data< helper::vector<T> > > val(this->values);
+        helper::ReadAccessor<Data< type::vector<T> > > val(this->values);
 
         helper::WriteOnlyAccessor<Data< ImageTypes > > out(this->image);
         imCoord dim(val.size(),1,1,1,1);

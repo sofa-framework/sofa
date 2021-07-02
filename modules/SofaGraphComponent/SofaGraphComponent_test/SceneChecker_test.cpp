@@ -1,5 +1,28 @@
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
+#include <sofa/simulation/Node.h>
 
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
 using sofa::simulation::scenechecking::SceneCheckerVisitor;
@@ -23,6 +46,10 @@ using sofa::helper::system::PluginManager;
 using sofa::simulation::SceneLoaderXML;
 using sofa::simulation::Node;
 using sofa::core::execparams::defaultInstance; 
+
+#include <SofaBaseUtils/initSofaBaseUtils.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
+#include <SofaMeshCollision/initSofaMeshCollision.h>
 
 /////////////////////// COMPONENT DEFINITION & DECLARATION /////////////////////////////////////////
 /// This component is only for testing the APIVersion system.
@@ -48,21 +75,27 @@ int ComponentDeprecatedClassId = sofa::core::RegisterObject("")
 
 ////////////////////////////////////// TEST ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct SceneChecker_test : public Sofa_test<>
+struct SceneChecker_test : public BaseSimulationTest
 {
+    void SetUp() override
+    {
+        sofa::component::initSofaBaseUtils();
+        sofa::component::initSofaBaseMechanics();
+        sofa::component::initSofaMeshCollision();
+    }
+
     void checkRequiredPlugin(bool missing)
     {
-        PluginManager::getInstance().loadPluginByName("SofaPython");
+        PluginManager::getInstance().loadPluginByName("SofaExplicitOdeSolver");
 
-        std::string missStr = missing ? "" : "<RequiredPlugin name='SofaPython'/> \n";
+        std::string missStr = missing ? "" : "<RequiredPlugin name='SofaExplicitOdeSolver'/> \n";
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                             \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >      \n"
               << missStr
-              << "      <PythonScriptController classname='AClass' />               \n"
+              << "      <EulerExplicitSolver />               \n"
               << "</Node>                                                           \n";
 
-        EXPECT_MSG_EMIT(Error); // [PythonScriptController(pythonScriptController1)]
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size());
@@ -182,10 +215,8 @@ struct SceneChecker_test : public Sofa_test<>
 
     void checkUsingAlias(bool sceneWithAlias)
     {
-        PluginManager::getInstance().loadPluginByName("SofaPython");
-
-        std::string withAlias = "Triangle";
-        std::string withoutAlias = "TriangleCollisionModel";
+        std::string withAlias = "Mesh";
+        std::string withoutAlias = "MeshTopology";
         std::string componentName = sceneWithAlias ? withAlias : withoutAlias;
 
         std::stringstream scene;
@@ -193,7 +224,6 @@ struct SceneChecker_test : public Sofa_test<>
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
               << "    <RequiredPlugin name='SofaGraphComponent'/>                 \n"
               << "    <MechanicalObject template='Vec3d' />                       \n"
-              << "    <MeshTopology />                                            \n"
               << "    <" << componentName << "/>                                  \n"
               << "</Node>                                                         \n";
 

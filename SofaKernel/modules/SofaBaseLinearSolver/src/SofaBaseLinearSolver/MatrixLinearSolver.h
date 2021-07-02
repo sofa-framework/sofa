@@ -192,10 +192,6 @@ public:
     /// Set the linear system matrix (only use for bench)
     void setSystemMatrix(Matrix* matrix);
 
-    Size getSystemSize() {
-        return currentGroup->systemSize;
-    }
-
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     void setSystemRHVector(core::MultiVecDerivId v) override;
 
@@ -204,25 +200,25 @@ public:
     void setSystemLHVector(core::MultiVecDerivId v) override;
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    Matrix* getSystemMatrix() override { return currentGroup->systemMatrix; }
+    Matrix* getSystemMatrix() override { return linearSystem.systemMatrix; }
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemRHVector() { return currentGroup->systemRHVector; }
+    Vector* getSystemRHVector() { return linearSystem.systemRHVector; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemLHVector() { return currentGroup->systemLHVector; }
+    Vector* getSystemLHVector() { return linearSystem.systemLHVector; }
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    defaulttype::BaseMatrix* getSystemBaseMatrix() override { return currentGroup->systemMatrix; }
+    defaulttype::BaseMatrix* getSystemBaseMatrix() override { return linearSystem.systemMatrix; }
 
     /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
-    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override { return &currentGroup->matrixAccessor; }
+    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override { return &linearSystem.matrixAccessor; }
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    defaulttype::BaseVector* getSystemRHBaseVector() override { return currentGroup->systemRHVector; }
+    defaulttype::BaseVector* getSystemRHBaseVector() override { return linearSystem.systemRHVector; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    defaulttype::BaseVector* getSystemLHBaseVector() override { return currentGroup->systemLHVector; }
+    defaulttype::BaseVector* getSystemLHBaseVector() override { return linearSystem.systemLHVector; }
 
     /// Solve the system as constructed using the previous methods
     void solveSystem() override;
@@ -315,14 +311,12 @@ protected:
     static void deleteMatrix(Matrix* v);
 
     MatrixLinearSolverInternalData<Vector> internalData;
-    MatrixInvertData * invertData;
+    std::unique_ptr<MatrixInvertData> invertData;
 
     virtual MatrixInvertData * createInvertData();
 
-    class GroupData
+    struct LinearSystemData
     {
-    public:
-        Size systemSize;
         bool needInvert;
         Matrix* systemMatrix;
         Vector* systemRHVector;
@@ -334,10 +328,12 @@ protected:
 #else
         DefaultMultiMatrixAccessor matrixAccessor;
 #endif
-        GroupData()
-            : systemSize(0), needInvert(true), systemMatrix(nullptr), systemRHVector(nullptr), systemLHVector(nullptr), solutionVecId(core::MultiVecDerivId::null())
+
+        LinearSystemData()
+                : needInvert(true), systemMatrix(nullptr), systemRHVector(nullptr), systemLHVector(nullptr),
+                  solutionVecId(core::MultiVecDerivId::null())
         {}
-        ~GroupData()
+        ~LinearSystemData()
         {
             if (systemMatrix) deleteMatrix(systemMatrix);
             if (systemRHVector) deletePersistentVector(systemRHVector);
@@ -345,13 +341,7 @@ protected:
         }
     };
 
-    typedef std::map<simulation::Node*,GroupData> GroupDataMap;
-    typedef typename GroupDataMap::iterator GroupDataMapIter;
-    simulation::Node* currentNode;
-    GroupData* currentGroup;
-    std::vector<simulation::Node*> groups;
-    GroupDataMap gData;
-    GroupData defaultGroup;
+    LinearSystemData linearSystem;
 
     double currentMFactor, currentBFactor, currentKFactor;
 
@@ -404,15 +394,6 @@ template<> SOFA_SOFABASELINEARSOLVER_API
 GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createPersistentVector();
 
 template<> SOFA_SOFABASELINEARSOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::deletePersistentVector(GraphScatteredVector* v);
-
-template<> SOFA_SOFABASELINEARSOLVER_API
-GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createMatrix();
-
-template<> SOFA_SOFABASELINEARSOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::deleteMatrix(GraphScatteredMatrix* v);
-
-template<> SOFA_SOFABASELINEARSOLVER_API
 defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemBaseMatrix();
 
 template<> SOFA_SOFABASELINEARSOLVER_API
@@ -456,16 +437,16 @@ extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< SparseMa
 extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< SparseMatrix<float>, FullVector<float>, NoThreadManager >;
 extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double>, NoThreadManager >;
 extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<float>, FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<2,2,double> >, FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<2,2,float> >, FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >, FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> >, FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<4,4,double> >, FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<4,4,float> >, FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<6,6,double> >, FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<6,6,float> >, FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<8,8,double> >, FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<8,8,float> >, FullVector<float>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,double> >, FullVector<double>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,float> >, FullVector<float>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,double> >, FullVector<double>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,float> >, FullVector<float>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,double> >, FullVector<double>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,float> >, FullVector<float>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,double> >, FullVector<double>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,float> >, FullVector<float>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,double> >, FullVector<double>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,float> >, FullVector<float>, NoThreadManager >;
 extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< DiagonalMatrix<double>, FullVector<double>, NoThreadManager >;
 extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< DiagonalMatrix<float>, FullVector<float>, NoThreadManager >;
 extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< BlockDiagonalMatrix<3,double>, FullVector<double>, NoThreadManager >;

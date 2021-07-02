@@ -23,7 +23,7 @@
 
 #include <sofa/type/RGBAColor.h>
 
-// SOFA_DEPRECATED_HEADER(v21.12, "sofa/helper/types/RGBAColor.h")
+// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/helper/types/RGBAColor.h")
 
 namespace sofa::helper::types
 {

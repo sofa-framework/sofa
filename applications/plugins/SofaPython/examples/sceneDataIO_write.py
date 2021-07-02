@@ -77,7 +77,7 @@ class MyClass(Sofa.PythonScriptController):
         contactNode.createObject('MeshTopology', name='topo', src='@../grid')
         contactNode.createObject('MechanicalObject', name='DOFs')
         contactNode.createObject('UniformMass', totalMass=1)
-        contactNode.createObject('TriangleModel')
+        contactNode.createObject('TriangleCollisionModel')
         contactNode.createObject('LinearMapping', template='Affine,Vec3d')
 
         visuNode = contactNode.createChild('visual')

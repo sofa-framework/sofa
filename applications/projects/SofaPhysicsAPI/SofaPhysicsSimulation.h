@@ -30,7 +30,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/gl/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/gl/Texture.h>
 #include <sofa/simulation/Node.h>

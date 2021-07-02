@@ -35,6 +35,7 @@ namespace component
 namespace loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 
@@ -57,17 +58,17 @@ MeshSTEPLoader::MeshSTEPLoader():MeshLoader()
 
 bool MeshSTEPLoader::doLoad()
 {
-    dmsg_info() << "Loading STEP file: " << m_filename;
+    dmsg_info() << "Loading STEP file: " << d_filename;
 
     bool fileRead = false;
 
     // Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
     if (!file.good())
     {
-        msg_error() << "Error: MeshSTEPLoader: Cannot read file '" << m_filename << "'.";
+        msg_error() << "Error: MeshSTEPLoader: Cannot read file '" << d_filename << "'.";
         return false;
     }
 
@@ -310,14 +311,14 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
 
 void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
 {
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    type::vector<sofa::type::Vector3>& my_positions = *(d_positions.beginEdit());
 
-    helper::vector< Edge >& my_edges = *(d_edges.beginEdit());
-    helper::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());
+    type::vector< Edge >& my_edges = *(d_edges.beginEdit());
+    type::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());
 
-    helper::vector<sofa::defaulttype::Vector2>& my_uv = *(_uv.beginEdit());
+    type::vector<sofa::type::Vector2>& my_uv = *(_uv.beginEdit());
 
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_indicesComponents = *(_indicesComponents.beginEdit());
+    type::vector<type::fixed_array <unsigned int,3> >& my_indicesComponents = *(_indicesComponents.beginEdit());
 
     BRepTools::Clean(aShape);
     BRepMesh_IncrementalMesh(aShape, _aDeflection.getValue());
@@ -456,7 +457,7 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
         }
     }
 
-    my_indicesComponents.push_back(helper::fixed_array <unsigned int,3>(0, aNumOfNodes, aNumOfTriangles));
+    my_indicesComponents.push_back(type::fixed_array <unsigned int,3>(0, aNumOfNodes, aNumOfTriangles));
 
     dmsg_info() << "Finished loading mesh";
 
@@ -474,14 +475,14 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
 
 void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::vector<TopoDS_Solid>& vshape)
 {
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    type::vector<sofa::type::Vector3>& my_positions = *(d_positions.beginEdit());
 
-    helper::vector< Edge >& my_edges = *(d_edges.beginEdit());
-    helper::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());
+    type::vector< Edge >& my_edges = *(d_edges.beginEdit());
+    type::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());
 
-    helper::vector<sofa::defaulttype::Vector2>& my_uv = *(_uv.beginEdit());
+    type::vector<sofa::type::Vector2>& my_uv = *(_uv.beginEdit());
 
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_indicesComponents = *(_indicesComponents.beginEdit());
+    type::vector<type::fixed_array <unsigned int,3> >& my_indicesComponents = *(_indicesComponents.beginEdit());
 
     BRepTools::Clean(aShape);
     BRepMesh_IncrementalMesh(aShape, _aDeflection.getValue());
@@ -601,7 +602,7 @@ void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::
             }
         }
 
-        my_indicesComponents.push_back(helper::fixed_array <unsigned int,3>(numShape, aNumOfNodesShape, aNumOfTrianglesShape));
+        my_indicesComponents.push_back(type::fixed_array <unsigned int,3>(numShape, aNumOfNodesShape, aNumOfTrianglesShape));
     }
 
     dmsg_info() << "Finished loading mesh";

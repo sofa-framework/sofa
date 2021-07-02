@@ -2,7 +2,7 @@
 #define FLEXIBLE_COMPUTEDUALQUATENGINE_H
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -47,7 +47,7 @@ public:
     Data< VecCoord > d_x; ///< Current position
 
     // The dual quaternions, as vector of Vec4f
-    Data< helper::vector< defaulttype::Vec4f > > d_dualQuats; ///< Dual quaternions, computed from x (or x*x0^-1 if x0 is provided). DualQuats are stored as two vec4f elements, first the orientation, then the dual.
+    Data< type::vector< type::Vec4f > > d_dualQuats; ///< Dual quaternions, computed from x (or x*x0^-1 if x0 is provided). DualQuats are stored as two vec4f elements, first the orientation, then the dual.
 
 
 };

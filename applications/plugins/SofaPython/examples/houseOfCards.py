@@ -120,7 +120,8 @@ def createScene(rootNode):
 	rootNode.findData('gravity').value=[0.0, -10, 0.0]
 
 	rootNode.createObject('DefaultPipeline', verbose=0, depth=10, draw=0)
-	rootNode.createObject('BruteForceDetection', name='N2')
+	rootNode.createObject('BruteForceBroadPhase', name='N2')
+	rootNode.createObject('BVHNarrowPhase')
 	rootNode.createObject('MinProximityIntersection', name='Proximity', alarmDistance=contactDistance, contactDistance=contactDistance*0.5)
 	rootNode.createObject('DefaultContactManager', name='Response', response='distanceLMConstraint')
 	rootNode.createObject('DefaultCollisionGroupManager')

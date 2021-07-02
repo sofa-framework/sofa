@@ -49,7 +49,7 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
 
 void TetrahedronSetTopologyContainer::addTetra(Index a, Index b, Index c, Index d )
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     m_tetrahedron.push_back(Tetra(a,b,c,d));
     if (a >= getNbPoints()) setNbPoints(a+1);
     if (b >= getNbPoints()) setNbPoints(b+1);
@@ -60,7 +60,7 @@ void TetrahedronSetTopologyContainer::addTetra(Index a, Index b, Index c, Index 
 void TetrahedronSetTopologyContainer::init()
 {
     d_tetrahedron.updateIfDirty(); // make sure m_tetrahedron is up to date
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
     // Todo (epernod 2019-03-12): optimise by removing this loop or at least create tetrahedronAV at the same time.
     if (!m_tetrahedron.empty())
@@ -115,8 +115,8 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
 
     // create a temporary map to find redundant edges
     std::map<Edge,EdgeID> edgeMap;
-    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
     /// create the m_edge array at the same time than it fills the m_edgesInTetrahedron array
     for (size_t i = 0; i < m_tetrahedron.size(); ++i)
@@ -154,13 +154,13 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
 
     bool foundEdge = true;
 
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     if (hasEdges())
     {
         /// there are already existing edges : must use an inefficient method. Parse all triangles and find the edge that match each triangle edge
         const size_t numTetra = getNumberOfTetrahedra();
         const EdgeID numEdges = (EdgeID)getNumberOfEdges();
-        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+        helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
 
         m_edgesInTetrahedron.resize(numTetra);
         /// create a multi map where the key is a vertex index and the content is the indices of edges adjacent to that vertex.
@@ -205,7 +205,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
 
         // create a temporary map to find redundant edges
         std::map<Edge,EdgeID> edgeMap;
-        helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+        helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
 
         /// create the m_edge array at the same time than it fills the m_edgesInTetrahedron array
         for (size_t i = 0; i < m_tetrahedron.size(); ++i)
@@ -248,8 +248,8 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
 
     // create a temporary map to find redundant triangles
     std::map<Triangle,TriangleID> triangleMap;
-    helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
     /// create the m_edge array at the same time than it fills the m_edgesInTetrahedron array
     for (size_t i=0; i<m_tetrahedron.size(); ++i)
@@ -304,7 +304,7 @@ void TetrahedronSetTopologyContainer::createTrianglesInTetrahedronArray()
         return;
 
     m_trianglesInTetrahedron.resize( getNumberOfTetrahedra());
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     for(size_t i = 0; i < m_tetrahedron.size(); ++i)
     {
         const Tetrahedron &t=m_tetrahedron[i];
@@ -339,7 +339,7 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray()
         this->setNbPoints(sofa::Size(d_initPoints.getValue().size()));
 
     m_tetrahedraAroundVertex.resize( getNbPoints() );
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
     for (size_t i = 0; i < getNumberOfTetrahedra(); ++i)
     {
@@ -420,7 +420,7 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
     }
 }
 
-const sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> &TetrahedronSetTopologyContainer::getTetrahedronArray()
+const sofa::type::vector<TetrahedronSetTopologyContainer::Tetrahedron> &TetrahedronSetTopologyContainer::getTetrahedronArray()
 {
     return d_tetrahedron.getValue();
 }
@@ -443,10 +443,10 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
         return InvalidID;
     }
 
-    sofa::helper::vector<TetrahedronID> set1 = getTetrahedraAroundVertex(v1);
-    sofa::helper::vector<TetrahedronID> set2 = getTetrahedraAroundVertex(v2);
-    sofa::helper::vector<TetrahedronID> set3 = getTetrahedraAroundVertex(v3);
-    sofa::helper::vector<TetrahedronID> set4 = getTetrahedraAroundVertex(v4);
+    sofa::type::vector<TetrahedronID> set1 = getTetrahedraAroundVertex(v1);
+    sofa::type::vector<TetrahedronID> set2 = getTetrahedraAroundVertex(v2);
+    sofa::type::vector<TetrahedronID> set3 = getTetrahedraAroundVertex(v3);
+    sofa::type::vector<TetrahedronID> set4 = getTetrahedraAroundVertex(v4);
 
     sort(set1.begin(), set1.end());
     sort(set2.begin(), set2.end());
@@ -454,18 +454,18 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
     sort(set4.begin(), set4.end());
 
     // The destination vector must be large enough to contain the result.
-    sofa::helper::vector<TetrahedronID> out1(set1.size()+set2.size());
-    sofa::helper::vector<TetrahedronID>::iterator result1;
+    sofa::type::vector<TetrahedronID> out1(set1.size()+set2.size());
+    sofa::type::vector<TetrahedronID>::iterator result1;
     result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
     out1.erase(result1,out1.end());
 
-    sofa::helper::vector<TetrahedronID> out2(set3.size()+out1.size());
-    sofa::helper::vector<TetrahedronID>::iterator result2;
+    sofa::type::vector<TetrahedronID> out2(set3.size()+out1.size());
+    sofa::type::vector<TetrahedronID>::iterator result2;
     result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
     out2.erase(result2,out2.end());
 
-    sofa::helper::vector<TetrahedronID> out3(set4.size()+out2.size());
-    sofa::helper::vector<TetrahedronID>::iterator result3;
+    sofa::type::vector<TetrahedronID> out3(set4.size()+out2.size());
+    sofa::type::vector<TetrahedronID>::iterator result3;
     result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
     out3.erase(result3,out3.end());
 
@@ -481,7 +481,7 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
 
 Size TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
 {
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     return sofa::Size(m_tetrahedron.size());
 }
 
@@ -490,22 +490,22 @@ Size TetrahedronSetTopologyContainer::getNumberOfElements() const
     return this->getNumberOfTetrahedra();
 }
 
-const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundVertex > &TetrahedronSetTopologyContainer::getTetrahedraAroundVertexArray()
+const sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedraAroundVertex > &TetrahedronSetTopologyContainer::getTetrahedraAroundVertexArray()
 {
     return m_tetrahedraAroundVertex;
 }
 
-const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundEdge > &TetrahedronSetTopologyContainer::getTetrahedraAroundEdgeArray()
+const sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedraAroundEdge > &TetrahedronSetTopologyContainer::getTetrahedraAroundEdgeArray()
 {
     return m_tetrahedraAroundEdge;
 }
 
-const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundTriangle > &TetrahedronSetTopologyContainer::getTetrahedraAroundTriangleArray()
+const sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedraAroundTriangle > &TetrahedronSetTopologyContainer::getTetrahedraAroundTriangleArray()
 {
     return m_tetrahedraAroundTriangle;
 }
 
-const sofa::helper::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron> &TetrahedronSetTopologyContainer::getEdgesInTetrahedronArray()
+const sofa::type::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron> &TetrahedronSetTopologyContainer::getEdgesInTetrahedronArray()
 {
     return m_edgesInTetrahedron;
 }
@@ -524,7 +524,7 @@ TetrahedronSetTopologyContainer::Triangle TetrahedronSetTopologyContainer::getLo
             sofa::core::topology::trianglesOrientationInTetrahedronArray[i][2]);
 }
 
-const sofa::helper::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()
+const sofa::type::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()
 {
     return m_trianglesInTetrahedron;
 }
@@ -667,14 +667,14 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
         return true;
     
     bool ret = true;
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
     if (hasTetrahedraAroundVertex())
     {
         std::set <int> tetrahedronSet;
         for (size_t i = 0; i < m_tetrahedraAroundVertex.size(); ++i)
         {
-            const sofa::helper::vector<TetrahedronID> &tvs = m_tetrahedraAroundVertex[i];
+            const sofa::type::vector<TetrahedronID> &tvs = m_tetrahedraAroundVertex[i];
             for (size_t j = 0; j < tvs.size(); ++j)
             {
                 const Tetrahedron& tetrahedron = m_tetrahedron[tvs[j]];
@@ -703,7 +703,7 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
     if (hasTetrahedraAroundTriangle() && hasTrianglesInTetrahedron())
     {
         // check first m_trianglesInTetrahedron
-        helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+        helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
 
         if (m_trianglesInTetrahedron.size() != m_tetrahedron.size())
         {
@@ -736,7 +736,7 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
         std::set <int> tetrahedronSet;
         for (size_t i = 0; i < m_tetrahedraAroundTriangle.size(); ++i)
         {
-            const sofa::helper::vector<TetrahedronID> &tes = m_tetrahedraAroundTriangle[i];
+            const sofa::type::vector<TetrahedronID> &tes = m_tetrahedraAroundTriangle[i];
             for (size_t j = 0; j < tes.size(); ++j)
             {
                 const TrianglesInTetrahedron& triInTetra = m_trianglesInTetrahedron[tes[j]];
@@ -765,7 +765,7 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
     if (hasTetrahedraAroundEdge() && hasEdgesInTetrahedron())
     {
         // check first m_edgesInTetrahedron
-        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+        helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
 
         if (m_edgesInTetrahedron.size() != m_tetrahedron.size())
         {
@@ -798,7 +798,7 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
         std::set <int> tetrahedronSet;
         for (size_t i = 0; i < m_tetrahedraAroundEdge.size(); ++i)
         {
-            const sofa::helper::vector<TetrahedronID> &tes = m_tetrahedraAroundEdge[i];
+            const sofa::type::vector<TetrahedronID> &tes = m_tetrahedraAroundEdge[i];
             for (size_t j = 0; j < tes.size(); ++j)
             {
                 const EdgesInTetrahedron& eInTetra = m_edgesInTetrahedron[tes[j]];
@@ -1114,7 +1114,7 @@ bool TetrahedronSetTopologyContainer::hasTetrahedraAroundTriangle() const
 
 void TetrahedronSetTopologyContainer::clearTetrahedra()
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     m_tetrahedron.clear();
 }
 
@@ -1156,14 +1156,14 @@ void TetrahedronSetTopologyContainer::clear()
 }
 
 //add removed tetrahedron index
-void TetrahedronSetTopologyContainer::addRemovedTetraIndex(sofa::helper::vector< TetrahedronID >& tetrahedra)
+void TetrahedronSetTopologyContainer::addRemovedTetraIndex(sofa::type::vector< TetrahedronID >& tetrahedra)
 {
     for(size_t i=0; i<tetrahedra.size(); i++)
         m_removedTetraIndex.push_back(tetrahedra[i]);
 }
 
 //get removed tetrahedron index
-sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedronID >& TetrahedronSetTopologyContainer::getRemovedTetraIndex()
+sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedronID >& TetrahedronSetTopologyContainer::getRemovedTetraIndex()
 {
     return m_removedTetraIndex;
 }
@@ -1210,7 +1210,7 @@ void TetrahedronSetTopologyContainer::updateTopologyHandlerGraph()
 
 std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
 {
-    helper::ReadAccessor< Data< sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<TetrahedronSetTopologyContainer::Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
     out  << m_tetrahedron.ref() << " "
             << t.m_edgesInTetrahedron<< " "
             << t.m_trianglesInTetrahedron;
@@ -1236,8 +1236,8 @@ std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContain
 std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t)
 {
     unsigned int s=0;
-    sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedronID > value;
-    helper::WriteAccessor< Data< sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
+    sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedronID > value;
+    helper::WriteAccessor< Data< sofa::type::vector<TetrahedronSetTopologyContainer::Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
 
     in >> m_tetrahedron.wref() >> t.m_edgesInTetrahedron >> t.m_trianglesInTetrahedron;
 

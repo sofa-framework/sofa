@@ -378,7 +378,7 @@ bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 
 #if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 extern template class SOFA_CORE_API Data< std::string >;
-extern template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
+extern template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
 extern template class SOFA_CORE_API Data< bool >;
 #endif
 
@@ -487,14 +487,14 @@ WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::D
 }
 
 template<class T>
-[[deprecated("2021-02-01: this function has been replaced with getWriteAccessor in PR #1807. You can probably update your code by removing aspect related calls. To update your code, use the new function.")]]
+SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
 WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data)
 {
     return getWriteAccessor(data);
 }
 
 template<class T>
-[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
 WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
 template<class T>
@@ -504,14 +504,14 @@ ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmode
 }
 
 template<class T>
-[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1807. You can probably update your code by removing aspect related calls. To update your code, use the new function.")]]
+SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
 ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data)
 {
     return getReadAccessor(data);
 }
 
 template<class T>
-[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
 ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
 /// Easy syntax for getting write only access to a Data using operator ->. Example: writeOnly(someFlagData)->setFlagValue(true);

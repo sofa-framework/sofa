@@ -21,24 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/config.h>
+#include <sofa/config.h>
 
-#if __has_include(<sofa/gl/GLSLShader.h>)
-#include <sofa/gl/GLSLShader.h>
-#define GL_GLSLSHADER_ENABLE_WRAPPER
-
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/GLSLShader.h")
-
-#else
-#error "OpenGL headers have been moved to Sofa.GL. Therefore you will need to link against Sofa.GL if you need OpenGL (PR1649), and include <sofa/gl/GLSLShader.h> instead of this one."
-#endif
-
-#ifdef GL_GLSLSHADER_ENABLE_WRAPPER
-
-namespace sofa::helper::gl
-{
-    using GLSLShader = sofa::gl::GLSLShader;
-
-} // namespace sofa::helper::gl
-
-#endif // GL_AXIS_ENABLE_WRAPPER
+SOFA_DISABLED_HEADER("v20.12 (PR#1649)", "v21.06", "sofa/gl/GLSLShader.h")

@@ -2,7 +2,7 @@
 
 #include "../types/AffineTypes.h"
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/DualQuat.h>
+#include <sofa/type/DualQuat.h>
 
 namespace
 {
@@ -21,7 +21,7 @@ namespace
     const sofa::defaulttype::RigidCoord< 3, Real > getRigid(  typename sofa::defaulttype::StdAffineTypes< 3, Real >::Coord x)
     {
         typedef sofa::defaulttype::RigidCoord< 3, Real > Rigid;
-        typedef sofa::helper::Quater<Real> Quater;
+        typedef sofa::type::Quat<Real> Quater;
 
         // Project the Affine to a rigid (is that necessary ?)
         x.setRigid();
@@ -61,7 +61,7 @@ ComputeDualQuatEngine< DataTypes >::ComputeDualQuatEngine()
 template < class DataTypes >
 void ComputeDualQuatEngine< DataTypes >::doUpdate()
 {
-    typedef sofa::helper::DualQuatCoord3<Real> DualQuat;
+    typedef sofa::type::DualQuatCoord3<Real> DualQuat;
 
 
     const VecCoord& x = d_x.getValue();
@@ -69,7 +69,7 @@ void ComputeDualQuatEngine< DataTypes >::doUpdate()
 
 
     // Clean the output
-    helper::vector< defaulttype::Vec4f >& dualQuats = *d_dualQuats.beginWriteOnly();
+    type::vector< type::Vec4f >& dualQuats = *d_dualQuats.beginWriteOnly();
     dualQuats.clear();
 
     const size_t size = x.size();
@@ -100,10 +100,10 @@ void ComputeDualQuatEngine< DataTypes >::doUpdate()
         DualQuat dualQuat( p.getCenter(), p.getOrientation());
 
         // Insert into the output
-        sofa::defaulttype::Vec<4,Real> orientation = dualQuat.getOrientation();
-        sofa::defaulttype::Vec<4,Real> dual = dualQuat.getDual();
-        dualQuats.push_back( defaulttype::Vec4f( orientation[0], orientation[1], orientation[2], orientation[3] ) );
-        dualQuats.push_back( defaulttype::Vec4f( dual[0], dual[1], dual[2], dual[3] ) );
+        sofa::type::Vec<4,Real> orientation = dualQuat.getOrientation();
+        sofa::type::Vec<4,Real> dual = dualQuat.getDual();
+        dualQuats.push_back( type::Vec4f( orientation[0], orientation[1], orientation[2], orientation[3] ) );
+        dualQuats.push_back( type::Vec4f( dual[0], dual[1], dual[2], dual[3] ) );
     }
 
     d_dualQuats.endEdit();

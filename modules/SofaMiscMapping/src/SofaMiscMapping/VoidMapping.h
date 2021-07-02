@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::mapping
 {
@@ -46,16 +46,16 @@ public:
     }
 
     /// Accessor to the input model of this mapping
-    virtual  helper::vector<core::BaseState*> getFrom() override
+    virtual  type::vector<core::BaseState*> getFrom() override
     {
-        helper::vector<core::BaseState*> vec(1,fromModel);
+        type::vector<core::BaseState*> vec(1,fromModel);
         return vec;
     }
 
     /// Accessor to the output model of this mapping
-    virtual helper::vector<core::BaseState*> getTo() override
+    virtual type::vector<core::BaseState*> getTo() override
     {
-        helper::vector<core::BaseState*> vec(1,toModel);
+        type::vector<core::BaseState*> vec(1,toModel);
         return vec;
     }
 
@@ -65,16 +65,16 @@ public:
     }
 
     /// Get the source (upper) model.
-    virtual helper::vector<sofa::core::behavior::BaseMechanicalState*> getMechFrom() override
+    virtual type::vector<sofa::core::behavior::BaseMechanicalState*> getMechFrom() override
     {
-        helper::vector<sofa::core::behavior::BaseMechanicalState*> vec(1, fromModel);
+        type::vector<sofa::core::behavior::BaseMechanicalState*> vec(1, fromModel);
         return vec;
     }
 
     /// Get the destination (lower, mapped) model.
-    virtual helper::vector<sofa::core::behavior::BaseMechanicalState*> getMechTo() override
+    virtual type::vector<sofa::core::behavior::BaseMechanicalState*> getMechTo() override
     {
-        helper::vector<sofa::core::behavior::BaseMechanicalState*> vec(1, toModel);
+        type::vector<sofa::core::behavior::BaseMechanicalState*> vec(1, toModel);
         return vec;
     }
 

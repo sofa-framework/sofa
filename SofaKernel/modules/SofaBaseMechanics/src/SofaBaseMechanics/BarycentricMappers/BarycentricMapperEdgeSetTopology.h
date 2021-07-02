@@ -28,8 +28,8 @@
 namespace sofa::component::mapping
 {
 
-using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vector3;
+using sofa::type::Mat3x3d;
+using sofa::type::Vector3;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 
 /////// Class allowing barycentric mapping computation on a EdgeSetTopology
@@ -62,9 +62,9 @@ protected:
 
     ~BarycentricMapperEdgeSetTopology() override {}
 
-    virtual helper::vector<Edge> getElements() override;
-    virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
-    helper::vector<SReal> getBaryCoef(const Real fx);
+    virtual type::vector<Edge> getElements() override;
+    virtual type::vector<SReal> getBaryCoef(const Real* f) override;
+    type::vector<SReal> getBaryCoef(const Real fx);
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Edge& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Edge& element) override;
     void computeDistance(double& d, const Vector3& v) override;

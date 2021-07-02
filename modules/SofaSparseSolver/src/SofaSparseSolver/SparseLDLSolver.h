@@ -19,6 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/******************************************************************************
+* Contributors:
+*   - jeremie.allard@insimo.fr (InSimo)
+*******************************************************************************/
+
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
 #include <SofaSparseSolver/config.h>
@@ -56,7 +61,7 @@ public :
     typedef sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector,TThreadManager> Inherit;
     typedef typename Inherit::ResMatrixType ResMatrixType;
     typedef typename Inherit::JMatrixType JMatrixType;
-    typedef SparseLDLImplInvertData<helper::vector<int>, helper::vector<Real> > InvertData;
+    typedef SparseLDLImplInvertData<type::vector<int>, type::vector<Real> > InvertData;
 
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
@@ -71,16 +76,35 @@ public :
         return new InvertData();
     }
 
+    // Override canCreate in order to analyze if template has been set or not.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        const std::string_view templateString = arg->getAttribute("template", "");
+
+        if (templateString.empty())
+        {
+            const std::string header = "SparseLDLSolver(" + std::string(arg->getAttribute("name", "")) + ")";
+            msg_warning(header) << "By default SparseLDLSolver uses blocks with a single double (to handle all cases of simulations).";
+            msg_warning(header) << "If you are using only 3D DOFs, you may consider using blocks of Matrix3 to speedup the calculations.";
+            msg_warning(header) << "If it is the case, add " << "template=\"CompressedRowSparseMatrixMat3x3d\" " << "to this object in your scene";
+            msg_warning(header) << "Otherwise, if you want to disable this message, add " << "template=\"CompressedRowSparseMatrixd\" " << ".";
+        }
+
+        return Inherit::canCreate(obj, context, arg);
+    }
+
 protected :
     SparseLDLSolver();
 
-    FullMatrix<Real> Jminv,Jdense;
+    type::vector<int> Jlocal2global;
+    FullMatrix<Real> JLinvDinv, JLinv;
     sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
 extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
-extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
+extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< type::Mat<3,3,double> >,FullVector<double> >;
 
 #endif
 

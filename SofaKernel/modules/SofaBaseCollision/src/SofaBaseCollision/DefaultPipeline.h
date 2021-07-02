@@ -47,7 +47,7 @@ protected:
     /// Remove collision response from last step
     void doCollisionReset() override;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) override;
+    void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) override;
     /// Add collision response in the simulation graph
     void doCollisionResponse() override;
 

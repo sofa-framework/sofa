@@ -27,6 +27,29 @@
 namespace sofa::component::collision
 {
 
+/**
+ * Basic intersection methods using proximities
+ * It uses proximities on cubes and spheres, but supported pairs of collision models can
+ * be extended. For example, see MeshMinProximityIntersection which adds support for
+ * additional types of intersection.
+ *
+ * Supported by default:
+ * - Cube/Cube
+ * - Sphere/Sphere (rigid or vec3)
+ * MeshMinProximityIntersection adds support for:
+ * - Point/Point (if usePointPoint is true)
+ * - Line/Point (if useLinePoint is true)
+ * - Line/Line (if useLineLine is true)
+ * - Triangle/Point
+ * - Sphere/Point (if useSphereTriangle is true)
+ * - RigidSphere/Point (if useSphereTriangle is true)
+ * - Triangle/Sphere (if useSphereTriangle is true)
+ * - Triangle/RigidSphere (if useSphereTriangle is true)
+ * - Line/Sphere (if useSphereTriangle is true)
+ * - Line/RigidSphere (if useSphereTriangle is true)
+ * Note that MeshMinProximityIntersection ignores Triangle/Line and Triangle/Triangle intersections.
+ * Datas can be set to ignore some pairs of collision models (useSphereTriangle, usePointPoint, etc).
+ */
 class SOFA_SOFABASECOLLISION_API MinProximityIntersection : public BaseProximityIntersection
 {
 public:
@@ -36,7 +59,6 @@ public:
     Data<bool> useSurfaceNormals; ///< Compute the norms of the Detection Outputs by considering the normals of the surfaces involved.
     Data<bool> useLinePoint; ///< activate Line-Point intersection tests
     Data<bool> useLineLine; ///< activate Line-Line  intersection tests
-    Data<bool> useTriangleLine;
 
 protected:
     MinProximityIntersection();
@@ -45,12 +67,10 @@ public:
 
     void init() override;
 
-    bool getUseSurfaceNormals();
+    bool getUseSurfaceNormals() const;
 
-    void draw(const core::visual::VisualParams* vparams) override;
-
-    bool testIntersection(Cube& cube1, Cube& cube2);
-    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
+    bool testIntersection(Cube& cube1, Cube& cube2) override;
+    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts) override;
 
     template<typename SphereType1, typename SphereType2>
     bool testIntersection(SphereType1& sph1, SphereType2& sph2)
@@ -66,9 +86,6 @@ public:
         return DiscreteIntersection::computeIntersectionSphere(sph1, sph2, contacts, alarmDist, contactDist);
     }
 
-private:
-    SReal mainAlarmDistance;
-    SReal mainContactDistance;
 };
 
 } // namespace sofa::component::collision

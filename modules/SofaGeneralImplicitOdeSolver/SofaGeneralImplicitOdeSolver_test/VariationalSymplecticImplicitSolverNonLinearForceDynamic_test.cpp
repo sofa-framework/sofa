@@ -19,10 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test_deprecated.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
 #include <SceneCreator/SceneCreator.h>
-
-
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -37,6 +39,8 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
+
+#include "SunPlanetSystemCreation.h"
 
 // For atan2 ??
 //#include <sofa/helper/rmath.h>
@@ -67,7 +71,7 @@ Check if Hamiltonian energy is constant during simulation: variational solver is
 */
 
 template <typename _DataTypes>
-struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public Elasticity_test_deprecated<_DataTypes>
+struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -84,9 +88,9 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
     /// Tested simulation
     simulation::Simulation* simulation;  
     /// Position and velocity array
-    helper::vector<Real> positionsArray;
-    helper::vector<Real> velocitiesArray;
-    helper::vector<Real> energiesArray;
+    type::vector<Real> positionsArray;
+    type::vector<Real> velocitiesArray;
+    type::vector<Real> energiesArray;
 
     // Variational solver
     VariationalSymplecticSolver::SPtr variationalSolver;
@@ -114,9 +118,9 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
         variationalSolver->f_saveEnergyInFile.setValue(0);
 
         CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
-        cgLinearSolver->f_maxIter=3000;
-        cgLinearSolver->f_tolerance =1e-12;
-        cgLinearSolver->f_smallDenominatorThreshold=1e-12;
+        cgLinearSolver->d_maxIter.setValue(3000);
+        cgLinearSolver->d_tolerance.setValue(1e-12);
+        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-12);
 
         // Set initial positions and velocities of fixed point and mass
         Coord xSun = Coord(0,0,0);
@@ -129,7 +133,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
         //MechanicalObject3::DataTypes::set( vPlanet[0], 0., 0.18, 0.);
 
         // Sun planet system
-        root = this->createSunPlanetSystem(
+        root = sofa::createSunPlanetSystem<DataTypes>(
                 root,           // add sun planet system to the node containing solver
                 M,              // sun mass
                 m,              // planet mass

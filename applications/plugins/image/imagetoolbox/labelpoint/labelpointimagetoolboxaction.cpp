@@ -58,11 +58,11 @@ sofa::component::engine::LabelPointImageToolBox* LabelPointImageToolBoxAction::L
     return dynamic_cast<sofa::component::engine::LabelPointImageToolBox*>(this->p_label);
 }
 
-void LabelPointImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value)
+void LabelPointImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& value)
 {
     
     select->setChecked(false);
-    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     
     sofa::component::engine::LabelPointImageToolBox* lp = LPITB();
     
@@ -80,12 +80,12 @@ void LabelPointImageToolBoxAction::selectionPointButtonClick(bool b)
     if(b)
     {
         //select->setChecked(true);
-        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     else
     {
         //select->setChecked(false);
-        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     
 }
@@ -114,7 +114,7 @@ void LabelPointImageToolBoxAction::addOnGraphs()
 
 void LabelPointImageToolBoxAction::updateGraphs()
 {
-    sofa::defaulttype::Vec3d pos = LPITB()->d_ip.getValue();
+    sofa::type::Vec3d pos = LPITB()->d_ip.getValue();
     
     //QRectF boundaryXY = GraphXY->itemsBoundingRect();
     
@@ -154,9 +154,9 @@ void LabelPointImageToolBoxAction::updateColor()
 void LabelPointImageToolBoxAction::sectionButtonClick()
 {
    // std::cout << "LabelPointImageToolBoxAction::sectionButtonClick()"<<std::endl;
-    sofa::defaulttype::Vec3d pos = LPITB()->d_ip.getValue();
+    sofa::type::Vec3d pos = LPITB()->d_ip.getValue();
     
-    sofa::defaulttype::Vec3i pos2(sofa::helper::round(pos.x()),sofa::helper::round(pos.y()),sofa::helper::round(pos.z()));
+    sofa::type::Vec3i pos2(sofa::helper::round(pos.x()),sofa::helper::round(pos.y()),sofa::helper::round(pos.z()));
 
     emit sectionChanged(pos2);
 }

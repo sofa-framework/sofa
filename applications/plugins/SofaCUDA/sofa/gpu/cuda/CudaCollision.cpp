@@ -42,7 +42,7 @@
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <SofaGeneralDeformable/VectorSpringForceField.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/core/Mapping.inl>
 #include <fstream>

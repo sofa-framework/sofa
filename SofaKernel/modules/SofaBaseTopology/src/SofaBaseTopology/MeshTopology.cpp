@@ -30,7 +30,7 @@
 namespace sofa::component::topology
 {
 
-using helper::vector;
+using type::vector;
 using sofa::core::topology::edgesInTetrahedronArray;
 using sofa::core::topology::edgesInHexahedronArray;
 
@@ -523,7 +523,7 @@ void MeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     if (arg->getAttribute("isToPrint")!=nullptr)
     {
-        msg_deprecated() << "The 'isToPrint' data field has been deprecated in Sofa 19.06 due to lack of consistency in how it should work." << msgendl
+        msg_deprecated() << "The 'isToPrint' data field has been deprecated in SOFA v19.06 due to lack of consistency in how it should work." << msgendl
                             "Please contact sofa-dev team in case you need similar.";
     }
     Inherit1::parse(arg);
@@ -646,7 +646,7 @@ void MeshTopology::clear()
 
 void MeshTopology::addPoint(SReal px, SReal py, SReal pz)
 {
-    seqPoints.beginEdit()->push_back(defaulttype::Vec<3,SReal>((SReal)px, (SReal)py, (SReal)pz));
+    seqPoints.beginEdit()->push_back(type::Vec<3,SReal>((SReal)px, (SReal)py, (SReal)pz));
     seqPoints.endEdit();
     if (seqPoints.getValue().size() > nbPoints)
         nbPoints = (int)seqPoints.getValue().size();
@@ -707,7 +707,7 @@ void MeshTopology::addHexa(Index p1, Index p2, Index p3, Index p4, Index p5, Ind
 
 void MeshTopology::addUV(SReal u, SReal v)
 {
-    seqUVs.beginEdit()->push_back(defaulttype::Vec<2,SReal>((SReal)u, (SReal)v));
+    seqUVs.beginEdit()->push_back(type::Vec<2,SReal>((SReal)u, (SReal)v));
     seqUVs.endEdit();
     if (seqUVs.getValue().size() > nbPoints)
         nbPoints = (int)seqUVs.getValue().size();
@@ -2433,7 +2433,7 @@ Size MeshTopology::getNumberOfConnectedComponent()
 }
 
 
-const sofa::helper::vector <Index> MeshTopology::getConnectedElement(Index elem)
+const sofa::type::vector<Index> MeshTopology::getConnectedElement(Index elem)
 {
     Size nbr = 0;
 
@@ -2448,8 +2448,8 @@ const sofa::helper::vector <Index> MeshTopology::getConnectedElement(Index elem)
     else
         nbr = this->getNbEdges();
 
-    sofa::helper::vector <Index> elemAll;
-    sofa::helper::vector <Index> elemOnFront, elemPreviousFront, elemNextFront;
+    sofa::type::vector<Index> elemAll;
+    sofa::type::vector<Index> elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     unsigned int cpt = 0;
 
@@ -2502,9 +2502,9 @@ const sofa::helper::vector <Index> MeshTopology::getConnectedElement(Index elem)
 }
 
 
-const sofa::helper::vector <Index> MeshTopology::getElementAroundElement(Index elem)
+const sofa::type::vector<Index> MeshTopology::getElementAroundElement(Index elem)
 {
-    sofa::helper::vector <Index> elems;
+    sofa::type::vector<Index> elems;
     unsigned int nbr = 0;
 
     if (m_upperElementType == core::topology::TopologyElementType::HEXAHEDRON)
@@ -2543,7 +2543,7 @@ const sofa::helper::vector <Index> MeshTopology::getElementAroundElement(Index e
 
     for(unsigned int i = 0; i<nbr; ++i) // for each node of the triangle
     {
-        sofa::helper::vector <Index> elemAV;
+        sofa::type::vector<Index> elemAV;
 
         if (m_upperElementType == core::topology::TopologyElementType::HEXAHEDRON)
             elemAV = this->getHexahedraAroundVertex(getHexahedron(elem)[i]);
@@ -2581,10 +2581,10 @@ const sofa::helper::vector <Index> MeshTopology::getElementAroundElement(Index e
 }
 
 
-const sofa::helper::vector <Index> MeshTopology::getElementAroundElements(sofa::helper::vector <Index> elems)
+const sofa::type::vector<Index> MeshTopology::getElementAroundElements(sofa::type::vector<Index> elems)
 {
-    sofa::helper::vector <Index> elemAll;
-    sofa::helper::vector <Index> elemTmp;
+    sofa::type::vector<Index> elemAll;
+    sofa::type::vector<Index> elemTmp;
 
     if (m_upperElementType == core::topology::TopologyElementType::HEXAHEDRON)
     {
@@ -2615,7 +2615,7 @@ const sofa::helper::vector <Index> MeshTopology::getElementAroundElements(sofa::
 
     for (unsigned int i = 0; i <elems.size(); ++i) // for each elementID of input vector
     {
-        sofa::helper::vector <Index> elemTmp2 = this->getElementAroundElement(elems[i]);
+        sofa::type::vector<Index> elemTmp2 = this->getElementAroundElement(elems[i]);
 
         elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
     }
@@ -2672,107 +2672,107 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     // Draw Edges
     if(_drawEdges.getValue())
     {
-        std::vector<defaulttype::Vector3> pos;
+        std::vector<type::Vector3> pos;
         pos.reserve(this->getNbEdges()*2u);
         for (EdgeID i=0; i<getNbEdges(); i++)
         {
             const Edge& c = getEdge(i);
-            pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
-            pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
+            pos.push_back(type::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos.push_back(type::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
         }
-        vparams->drawTool()->drawLines(pos, 1.0f, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawLines(pos, 1.0f, sofa::type::RGBAColor(0.4f,1.0f,0.3f,1.0f));
     }
 
     //Draw Triangles
     if(_drawTriangles.getValue())
     {
-        std::vector<defaulttype::Vector3> pos;
+        std::vector<type::Vector3> pos;
         pos.reserve(this->getNbTriangles()*3u);
         for (TriangleID i=0; i<getNbTriangles(); i++)
         {
             const Triangle& c = getTriangle(i);
-            pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
-            pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
-            pos.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
+            pos.push_back(type::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos.push_back(type::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
+            pos.push_back(type::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
         }
-        vparams->drawTool()->drawTriangles(pos, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawTriangles(pos, sofa::type::RGBAColor(0.4f,1.0f,0.3f,1.0f));
     }
 
     //Draw Quads
     if(_drawQuads.getValue())
     {
-        std::vector<defaulttype::Vector3> pos;
+        std::vector<type::Vector3> pos;
         pos.reserve(this->getNbQuads()*4u);
         for (QuadID i=0; i<getNbQuads(); i++)
         {
             const Quad& c = getQuad(i);
-            pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
-            pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
-            pos.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
-            pos.push_back(defaulttype::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
+            pos.push_back(type::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos.push_back(type::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
+            pos.push_back(type::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
+            pos.push_back(type::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
         }
-        vparams->drawTool()->drawQuads(pos, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawQuads(pos, sofa::type::RGBAColor(0.4f,1.0f,0.3f,1.0f));
     }
 
     //Draw Hexahedron
     if (_drawHexa.getValue())
     {
-        std::vector<defaulttype::Vector3> pos1;
-        std::vector<defaulttype::Vector3> pos2;
+        std::vector<type::Vector3> pos1;
+        std::vector<type::Vector3> pos2;
         pos1.reserve(this->getNbHexahedra()*8u);
         pos2.reserve(this->getNbHexahedra()*8u);
         for (HexahedronID i=0; i<getNbHexahedra(); i++)
         {
             const Hexa& c = getHexahedron(i);
-            pos1.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
-            pos1.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
-            pos1.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
-            pos1.push_back(defaulttype::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
-            pos1.push_back(defaulttype::Vector3(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4])));
-            pos1.push_back(defaulttype::Vector3(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5])));
-            pos1.push_back(defaulttype::Vector3(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6])));
-            pos1.push_back(defaulttype::Vector3(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7])));
+            pos1.push_back(type::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos1.push_back(type::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
+            pos1.push_back(type::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
+            pos1.push_back(type::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
+            pos1.push_back(type::Vector3(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4])));
+            pos1.push_back(type::Vector3(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5])));
+            pos1.push_back(type::Vector3(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6])));
+            pos1.push_back(type::Vector3(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7])));
 
-            pos2.push_back(defaulttype::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
-            pos2.push_back(defaulttype::Vector3(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7])));
-            pos2.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
-            pos2.push_back(defaulttype::Vector3(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6])));
-            pos2.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
-            pos2.push_back(defaulttype::Vector3(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4])));
-            pos2.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
-            pos2.push_back(defaulttype::Vector3(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5])));
+            pos2.push_back(type::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
+            pos2.push_back(type::Vector3(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7])));
+            pos2.push_back(type::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
+            pos2.push_back(type::Vector3(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6])));
+            pos2.push_back(type::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos2.push_back(type::Vector3(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4])));
+            pos2.push_back(type::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
+            pos2.push_back(type::Vector3(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5])));
         }
-        vparams->drawTool()->drawQuads(pos1, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
-        vparams->drawTool()->drawLines(pos2, 1.0f, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawQuads(pos1, sofa::type::RGBAColor(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawLines(pos2, 1.0f, sofa::type::RGBAColor(0.4f,1.0f,0.3f,1.0f));
     }
 
     // Draw Tetra
     if(_drawTetra.getValue())
     {
-        std::vector<defaulttype::Vector3> pos;
+        std::vector<type::Vector3> pos;
         pos.reserve(this->getNbTetrahedra()*12u);
         for (TetrahedronID i=0; i<getNbTetras(); i++)
         {
             const Tetra& t = getTetra(i);
-            pos.push_back(defaulttype::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));
-            pos.push_back(defaulttype::Vector3(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1])));
+            pos.push_back(type::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));
+            pos.push_back(type::Vector3(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1])));
 
-            pos.push_back(defaulttype::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));
-            pos.push_back(defaulttype::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
+            pos.push_back(type::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));
+            pos.push_back(type::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
 
-            pos.push_back(defaulttype::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));
-            pos.push_back(defaulttype::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
+            pos.push_back(type::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));
+            pos.push_back(type::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
 
-            pos.push_back(defaulttype::Vector3(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1])));
-            pos.push_back(defaulttype::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
+            pos.push_back(type::Vector3(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1])));
+            pos.push_back(type::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
 
-            pos.push_back(defaulttype::Vector3(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1])));
-            pos.push_back(defaulttype::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
+            pos.push_back(type::Vector3(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1])));
+            pos.push_back(type::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
 
-            pos.push_back(defaulttype::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
-            pos.push_back(defaulttype::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
+            pos.push_back(type::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
+            pos.push_back(type::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
         }
-        vparams->drawTool()->drawLines(pos, 1.0f, sofa::helper::types::RGBAColor(1.0f,0.0f,0.0f,1.0f));
+        vparams->drawTool()->drawLines(pos, 1.0f, sofa::type::RGBAColor(1.0f,0.0f,0.0f,1.0f));
     }
 
 }

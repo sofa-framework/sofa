@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::forcefield
 {
@@ -54,7 +54,7 @@ public:
     typedef Data<VecDeriv>                  DataVecDeriv;
 
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef type::Mat<N,N,Real> Mat;
 
 protected:
     class Contact
@@ -81,7 +81,7 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
+    Data<sofa::type::vector<Contact> > contacts; ///< Contacts
 
     EllipsoidForceFieldInternalData<DataTypes> data;
 
@@ -91,7 +91,7 @@ public:
     Data<Coord> vradius; ///< ellipsoid radius
     Data<Real> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
     Data<Real> damping; ///< force damping
-    Data<sofa::helper::types::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+    Data<sofa::type::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
 protected:
     EllipsoidForceField();
 

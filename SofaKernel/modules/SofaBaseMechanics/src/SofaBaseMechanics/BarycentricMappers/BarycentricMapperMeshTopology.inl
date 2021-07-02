@@ -27,13 +27,13 @@
 namespace sofa::component::mapping
 {
 
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::core::visual::VisualParams;
-using sofa::defaulttype::Vec;
-using sofa::defaulttype::Vector3;
-using sofa::defaulttype::Matrix3;
-using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vec3d;
+using sofa::type::Vec;
+using sofa::type::Vector3;
+using sofa::type::Matrix3;
+using sofa::type::Mat3x3d;
+using sofa::type::Vec3d;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
@@ -80,8 +80,8 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
 
     const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
     const SeqQuads& quads = this->m_fromTopology->getQuads();
-    helper::vector<Matrix3> bases;
-    helper::vector<Vector3> centers;
+    type::vector<Matrix3> bases;
+    type::vector<Vector3> centers;
     if ( tetras.empty() && hexas.empty() )
     {
         if ( triangles.empty() && quads.empty() )
@@ -91,8 +91,8 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
 
             clearMap1dAndReserve ( out.size() );
 
-            helper::vector< SReal >   lengthEdges;
-            helper::vector< Vector3 > unitaryVectors;
+            type::vector< SReal >   lengthEdges;
+            type::vector< Vector3 > unitaryVectors;
 
             Index e;
             for ( e=0; e<edges.size(); e++ )
@@ -358,14 +358,14 @@ BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Ou
     const typename In::Coord AB = p2-p1;
     const typename In::Coord AC = p3-p1;
     const typename In::Coord AQ = to_be_projected -p1;
-    sofa::defaulttype::Mat<2,2,typename In::Real> A;
-    sofa::defaulttype::Vec<2,typename In::Real> b;
+    sofa::type::Mat<2,2,typename In::Real> A;
+    sofa::type::Vec<2,typename In::Real> b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const typename In::Real det = sofa::defaulttype::determinant(A);
+    const typename In::Real det = sofa::type::determinant(A);
 
     baryCoords[0] = (b[0]*A[1][1] - b[1]*A[0][1])/det;
     baryCoords[1]  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
@@ -435,7 +435,7 @@ BarycentricMapperMeshTopology<In,Out>::createPointInQuad ( const typename Out::C
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     const typename In::Coord pB = ( *points ) [elem[3]] - p0;
     typename In::Coord pos = Out::getCPos(p) - p0;
-    sofa::defaulttype::Mat<3,3,typename In::Real> m,mt,base;
+    sofa::type::Mat<3,3,typename In::Real> m,mt,base;
     m[0] = pA;
     m[1] = pB;
     m[2] = cross ( pA, pB );
@@ -688,7 +688,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor::green());
+    vparams->drawTool()->drawLines ( points, 1, sofa::type::RGBAColor::green());
 }
 
 template <class In, class Out>

@@ -47,7 +47,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(ContactManager)
 
     typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
-    typedef sofa::helper::vector<Contact::SPtr> ContactVector;
+    typedef sofa::type::vector<Contact::SPtr> ContactVector;
 protected:
     /// Constructor
     ContactManager()

@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <set>
 #include <sofa/core/DataEngine.h>
@@ -60,7 +60,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef type::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 public:

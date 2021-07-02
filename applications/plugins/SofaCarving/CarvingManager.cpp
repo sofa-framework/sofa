@@ -180,7 +180,7 @@ void CarvingManager::doCarve()
         }
 
         int nbelems = 0;
-        helper::vector<Index> elemsToRemove;
+        type::vector<Index> elemsToRemove;
 
         for (size_t j = 0; j < ncontacts; ++j)
         {

@@ -23,9 +23,9 @@
 #include <SofaGeneralEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/SVector.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/SVector.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 namespace sofa::component::engine
 {
@@ -46,12 +46,12 @@ public:
 
     //Input
     Data<unsigned int> d_nbLabels; ///< number of label lists
-    typedef helper::vector<helper::SVector<T> > VecVLabels;
-    helper::vectorData<VecVLabels> d_labels;
-    Data<helper::vector<T> > d_connectLabels; ///< Pairs of label to be connected accross different label lists
+    typedef type::vector<type::SVector<T> > VecVLabels;
+    core::objectmodel::vectorData<VecVLabels> d_labels;
+    Data<type::vector<T> > d_connectLabels; ///< Pairs of label to be connected accross different label lists
 
     //Output
-    Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
+    Data<type::vector<Index> > d_indices; ///< selected point/cell indices
 
     /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
@@ -59,7 +59,7 @@ public:
 
     SelectConnectedLabelsROI(): Inherited()
       , d_nbLabels ( initData ( &d_nbLabels,(unsigned int)0,"nbLabels","number of label lists" ) )
-      , d_labels(this, "labels", "lists of labels associated to each point/cell", helper::DataEngineInput)
+      , d_labels(this, "labels", "lists of labels associated to each point/cell", core::objectmodel::DataEngineDataType::DataEngineInput)
       , d_connectLabels ( initData ( &d_connectLabels,"connectLabels","Pairs of label to be connected accross different label lists" ) )
       , d_indices ( initData ( &d_indices,"indices","selected point/cell indices" ) )
     {
@@ -103,14 +103,14 @@ protected:
 
     void doUpdate() override
     {
-        helper::WriteOnlyAccessor< Data< helper::vector<Index> > > indices = d_indices;
+        helper::WriteOnlyAccessor< Data< type::vector<Index> > > indices = d_indices;
         indices.clear();
 
         unsigned int nb = d_nbLabels.getValue();
         if(nb<2) return;
 
         // convert connectLabels to set for efficient look-up
-        helper::ReadAccessor<Data< helper::vector<T> > > connectL(this->d_connectLabels);
+        helper::ReadAccessor<Data< type::vector<T> > > connectL(this->d_connectLabels);
         typedef std::pair<T,T>  TPair;
         std::set<TPair> connectS;
         for(unsigned int i=0;i<connectL.size()/2;i++)

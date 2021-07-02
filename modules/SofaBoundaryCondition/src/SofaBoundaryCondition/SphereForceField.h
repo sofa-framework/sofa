@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::forcefield
 {
@@ -81,7 +81,7 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
+    Data<sofa::type::vector<Contact> > contacts; ///< Contacts
 
     SphereForceFieldInternalData<DataTypes> data;
 
@@ -91,10 +91,10 @@ public:
     Data<Real> sphereRadius; ///< sphere radius
     Data<Real> stiffness; ///< force stiffness
     Data<Real> damping; ///< force damping
-    Data<sofa::helper::types::RGBAColor> color; ///< sphere color. (default=[0,0,1,1])
+    Data<sofa::type::RGBAColor> color; ///< sphere color. (default=[0,0,1,1])
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > localRange;
+    Data< type::Vec<2,int> > localRange;
     /// option bilateral : if true, the force field is applied on both side of the plane
     Data<bool> bilateral;
 protected:

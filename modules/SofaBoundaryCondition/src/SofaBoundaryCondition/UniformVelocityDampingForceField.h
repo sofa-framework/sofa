@@ -42,7 +42,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef helper::vector<unsigned int> VecIndex;
+    typedef type::vector<unsigned int> VecIndex;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 

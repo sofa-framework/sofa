@@ -61,10 +61,10 @@ public:
 
     /// @name  Plasticity parameters such as "Interactive Virtual Materials", Muller & Gross, GI 2004
     //@{
-    Data<helper::vector<Real> > _max; ///< Plastic Max Threshold (2-norm of the strain)
-    Data<helper::vector<Real> > _yield; ///< Plastic Yield Threshold (2-norm of the strain)
-    helper::vector<Real> _squaredYield;
-    Data<helper::vector<Real> > _creep; ///< this parameter is different from the article, here it includes the multiplication by dt
+    Data<type::vector<Real> > _max; ///< Plastic Max Threshold (2-norm of the strain)
+    Data<type::vector<Real> > _yield; ///< Plastic Yield Threshold (2-norm of the strain)
+    type::vector<Real> _squaredYield;
+    Data<type::vector<Real> > _creep; ///< this parameter is different from the article, here it includes the multiplication by dt
     //@}
 
 
@@ -92,9 +92,9 @@ protected:
     PlasticStrainMapping( core::State<TStrain>* from = NULL, core::State<TStrain>* to = NULL )
         : Inherit ( from, to )
         , f_method ( initData ( &f_method,"method","" ) )
-        , _max(initData(&_max,helper::vector<Real>((int)1,(Real)0.1f),"max","Plastic Max Threshold (2-norm of the strain)"))
-        , _yield(initData(&_yield,helper::vector<Real>((int)1,(Real)0.0001f),"yield","Plastic Yield Threshold (2-norm of the strain)"))
-        , _creep(initData(&_creep,helper::vector<Real>((int)1,(Real)1.f),"creep","Plastic Creep Factor * dt [0,1]. 1 <-> pure plastic ; <1 <-> visco-plastic (warning depending on dt)"))
+        , _max(initData(&_max,type::vector<Real>((int)1,(Real)0.1f),"max","Plastic Max Threshold (2-norm of the strain)"))
+        , _yield(initData(&_yield,type::vector<Real>((int)1,(Real)0.0001f),"yield","Plastic Yield Threshold (2-norm of the strain)"))
+        , _creep(initData(&_creep,type::vector<Real>((int)1,(Real)1.f),"creep","Plastic Creep Factor * dt [0,1]. 1 <-> pure plastic ; <1 <-> visco-plastic (warning depending on dt)"))
     {
         helper::OptionsGroup Options;
         Options.setNbItems( NB_PlasticMethod );

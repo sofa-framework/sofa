@@ -389,7 +389,7 @@ public:
     //@{
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
-    typedef helper::ReadAccessor<Data<helper::vector<Coord> > > raVecCoord;
+    typedef helper::ReadAccessor<Data<type::vector<Coord> > > raVecCoord;
     //@}
 
     /** @name  Image data */
@@ -407,7 +407,7 @@ public:
     typedef typename Inherit::waDist waDist;
     Data< DistTypes > f_distances;
     Data<unsigned int> nbBoundaryConditions; ///< Number of boundary condition images provided
-    helper::vector<Data<DistTypes>*> f_boundaryConditions;
+    type::vector<Data<DistTypes>*> f_boundaryConditions;
 
 
     typedef typename Inherit::IndT IndT;
@@ -559,7 +559,7 @@ protected:
 
 
     template<class t>
-    void createInputDataVector(unsigned int nb, helper::vector< Data<t>* >& vf, std::string name, std::string help)
+    void createInputDataVector(unsigned int nb, type::vector< Data<t>* >& vf, std::string name, std::string help)
     {
         vf.reserve(nb);
         for (unsigned int i=vf.size(); i<nb; i++)
@@ -576,7 +576,7 @@ protected:
         }
     }
     template<class t>
-    void deleteInputDataVector(helper::vector< Data<t>* >& vf)
+    void deleteInputDataVector(type::vector< Data<t>* >& vf)
     {
         for (unsigned int i=0; i<vf.size(); ++i) delete vf[i];
         vf.clear();

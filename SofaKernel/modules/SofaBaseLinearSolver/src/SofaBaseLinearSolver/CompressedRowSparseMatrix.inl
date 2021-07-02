@@ -26,7 +26,7 @@ namespace sofa::component::linearsolver
 {
 
 template <> template <>
-inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
+inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
 {
     M.compress();
     nRow = M.rowSize();
@@ -59,7 +59,7 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Index j = M.colsIndex[xj] * 3;
-                defaulttype::Mat<3,3,double> b = M.colsValue[xj];
+                type::Mat<3,3,double> b = M.colsValue[xj];
                 if ((*filter)(i+lb,j+0,b[lb][0],ref))
                 {
                     colsIndex.push_back(j+0);
@@ -80,7 +80,7 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
                 }
             }
 
-            if (rowBegin.back() == vid)   // row was empty
+            if ((BaseMatrix::Index)rowBegin.back() == vid)   // row was empty
             {
                 rowIndex.pop_back();
                 rowBegin.pop_back();
@@ -91,7 +91,7 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
 }
 
 template <> template <>
-inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref)
+inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref)
 {
     M.compress();
     nRow = M.rowSize();
@@ -124,7 +124,7 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Index j = M.colsIndex[xj] * 3;
-                defaulttype::Mat<3,3,double> b = M.colsValue[xj];
+                type::Mat<3,3,double> b = M.colsValue[xj];
                 if ((*filter)(i+lb,j+0,b[lb][0],ref))
                 {
                     colsIndex.push_back(j+0);
@@ -145,7 +145,7 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
                 }
             }
 
-            if (rowBegin.back() == vid)   // row was empty
+            if ((BaseMatrix::Index)rowBegin.back() == vid)   // row was empty
             {
                 rowIndex.pop_back();
                 rowBegin.pop_back();
@@ -156,7 +156,7 @@ inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseM
 }
 
 template <> template <>
-inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref)
+inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref)
 {
     M.compress();
     nRow = M.rowSize();
@@ -189,7 +189,7 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Index j = M.colsIndex[xj] * 3;
-                defaulttype::Mat<3,3,float> b = M.colsValue[xj];
+                type::Mat<3,3,float> b = M.colsValue[xj];
                 if ((*filter)(i+lb,j+0,b[lb][0],ref))
                 {
                     colsIndex.push_back(j+0);
@@ -210,7 +210,7 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
                 }
             }
 
-            if (rowBegin.back() == vid)   // row was empty
+            if ((BaseMatrix::Index)rowBegin.back() == vid)   // row was empty
             {
                 rowIndex.pop_back();
                 rowBegin.pop_back();
@@ -221,7 +221,7 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
 }
 
 template <> template <>
-inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
+inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
 {
     M.compress();
     nRow = M.rowSize();
@@ -254,7 +254,7 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Index j = M.colsIndex[xj] * 3;
-                defaulttype::Mat<3,3,float> b = M.colsValue[xj];
+                type::Mat<3,3,float> b = M.colsValue[xj];
                 if ((*filter)(i+lb,j+0,b[lb][0],ref))
                 {
                     colsIndex.push_back(j+0);

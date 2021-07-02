@@ -37,7 +37,7 @@
 #include <sofa/helper/GenerateRigid.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/core/CategoryLibrary.h>
 
 #include <sofa/helper/AdvancedTimer.h>
@@ -54,6 +54,7 @@ using namespace sofa::helper;
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::component;
 
@@ -211,7 +212,7 @@ static PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args)
 static PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
 {
     float r = 0.0f, g = 0.0f, b = 0.0f;
-    sofa::helper::types::RGBAColor color;
+    sofa::type::RGBAColor color;
     if (!PyArg_ParseTuple(args, "fff", &r, &g, &b)) {
         return nullptr;
     }
@@ -276,15 +277,15 @@ static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
         SP_MESSAGE_ERROR( "setViewerCamera: no Viewer!" )
         return Py_BuildValue("i",-1);
     }
-    viewer->setView(sofa::defaulttype::Vector3(px,py,pz),sofa::defaulttype::Quat(qx,qy,qz,qw));
+    viewer->setView(sofa::type::Vector3(px,py,pz),sofa::type::Quat<SReal>(qx,qy,qz,qw));
 
     return Py_BuildValue("i",0);
 }
 
 
 static PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *) {
-    sofa::defaulttype::Vector3 pos;
-    sofa::defaulttype::Quat orient;
+    sofa::type::Vector3 pos;
+    sofa::type::Quat<SReal> orient;
 
 
     BaseGUI *gui = GUIManager::getGUI();
@@ -489,7 +490,7 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 
     if (loader)
     {
-        const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
+        const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();
         Node::SPtr node = loader->load(filename, false, sceneArgs);
         return PythonFactory::toPython(node.get());
     }

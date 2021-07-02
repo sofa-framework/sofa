@@ -25,8 +25,8 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <fstream>
 

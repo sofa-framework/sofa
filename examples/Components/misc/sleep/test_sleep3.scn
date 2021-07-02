@@ -2,7 +2,8 @@
 <Node name="root" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" response="default" />
 	<SleepController immobileThreshold="0.2" minTimeSinceWakeUp="0.1" printLog="0" />

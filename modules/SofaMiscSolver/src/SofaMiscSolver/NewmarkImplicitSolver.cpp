@@ -123,7 +123,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
 
-    matrix = MechanicalMatrix::K * (-h*h*beta - h*rK*gamma) + MechanicalMatrix::B*(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM);
+    matrix.setSystemMBKMatrix(MechanicalMatrix::K * (-h*h*beta - h*rK*gamma) + MechanicalMatrix::B*(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM));
 
     msg_info()<<"matrix = "<< MechanicalMatrix::K *(-h*h*beta + -h*rK*gamma) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix<<sendl;
     matrix.solve(aResult, b);

@@ -25,8 +25,8 @@
 #include <Flexible/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
 
@@ -72,8 +72,8 @@ public:
     /** @name position data */
     //@{
     static const unsigned int spatial_dimensions = 3;
-    typedef defaulttype::Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
-    typedef helper::vector<Coord> SeqPositions;
+    typedef type::Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
+    typedef type::vector<Coord> SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > f_position; ///< Samples position
@@ -81,8 +81,8 @@ public:
 
     /** @name orientation data */
     //@{
-    typedef defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> Transform;
-    typedef helper::vector<Transform> VTransform;
+    typedef type::Mat<spatial_dimensions,spatial_dimensions,Real> Transform;
+    typedef type::vector<Transform> VTransform;
     Data< VTransform > f_transforms;        ///< linear transformation in world space to orient samples
     //@}
 
@@ -90,9 +90,9 @@ public:
     /** @name volume integral data */
     //@{
     Data< unsigned int > f_order; ///< Order of quadrature method
-    typedef helper::vector<Real> volumeIntegralType;
-    Data< helper::vector<volumeIntegralType> > f_volume; ///< Weighted volumes associated to samples
-    typedef helper::WriteOnlyAccessor< Data< helper::vector<volumeIntegralType> > > waVolume;
+    typedef type::vector<Real> volumeIntegralType;
+    Data< type::vector<volumeIntegralType> > f_volume; ///< Weighted volumes associated to samples
+    typedef helper::WriteOnlyAccessor< Data< type::vector<volumeIntegralType> > > waVolume;
     //@}
 
     /** @name visu data */
@@ -107,7 +107,7 @@ public:
       , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
       , f_transforms(initData(&f_transforms,VTransform(),"transforms","output sample orientations"))
       , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
-      , f_volume(initData(&f_volume,helper::vector<volumeIntegralType>(),"volume","output weighted volume"))
+      , f_volume(initData(&f_volume,type::vector<volumeIntegralType>(),"volume","output weighted volume"))
       , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples scale"))
       , drawMode(initData(&drawMode,0,"drawMode","0: Green points; 1: Green spheres"))
       , showIndicesScale(initData(&showIndicesScale,0.0f,"showIndicesScale", "show indices scale"))
@@ -147,15 +147,15 @@ protected:
             switch( drawMode.getValue() ) {
             case 1:
                 vparams->drawTool()->setLightingEnabled(true);
-                vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+                vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.1f, 0.7f, 0.1f, 1.0f));
                 break;
             default:
-                vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
+                vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.2f, 1.0f, 0.2f, 1.0f));
                 break;
             }
         }
         if (showIndicesScale.getValue()>0) {
-            vparams->drawTool()->draw3DText_Indices(this->f_position.getValue(), showIndicesScale.getValue(), defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+            vparams->drawTool()->draw3DText_Indices(this->f_position.getValue(), showIndicesScale.getValue(), type::RGBAColor(0.1f, 0.7f, 0.1f, 1.0f));
         }
 
         vparams->drawTool()->restoreLastState();

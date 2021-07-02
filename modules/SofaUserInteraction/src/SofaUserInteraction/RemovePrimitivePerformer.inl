@@ -101,7 +101,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             picked.body->getContext()->get(topologyModifier);
 
             // Problem of type takeng by functions called: Converting selectedElem <unsigned int> in <int>
-            helper::vector<Index> ElemList_int;
+            type::vector<Index> ElemList_int;
             ElemList_int.resize(selectedElem.size());
             for (unsigned int i = 0; i<selectedElem.size(); ++i)
                 ElemList_int[i] = selectedElem[i];
@@ -261,7 +261,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
             // Get dofs on surface
             for (unsigned int i = 0; i<selectedElem.size(); ++i)
             {
-                helper::vector<unsigned int> elem;
+                type::vector<unsigned int> elem;
 
                 switch ( topoType ) // Get surfacique elements as array of vertices
                 {
@@ -311,7 +311,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
             // Get Volumique elements from list of vertices in tmp2
             for (unsigned int i = 0; i<tmp2.size(); ++i)
             {
-                helper::vector<unsigned int> elem;
+                type::vector<unsigned int> elem;
 
                 switch ( topoType )
                 {
@@ -428,7 +428,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
     // - STEP 1: get list of element vertices
     for (unsigned int i = 0; i<elementsToTest.size(); ++i)
     {
-        helper::vector<unsigned int> elem;
+        type::vector<unsigned int> elem;
 
         switch ( topoType ) // Get element as array of vertices
         {
@@ -552,7 +552,7 @@ template <class DataTypes>
 typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<DataTypes>::getElementInZone(VecIds& elementsToTest)
 {
     // - STEP 0: Compute appropriate scale from BB:  selectorScale = 100 => zone = all mesh
-    defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    type::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     core::objectmodel::BaseNode* root = mstateCollision->getContext()->toBaseNode();
     if (root) root = root->getRoot();
     if (root) { sceneMinBBox = root->f_bbox.getValue().minBBox(); sceneMaxBBox = root->f_bbox.getValue().maxBBox(); }
@@ -653,13 +653,13 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices_quads;
-    std::vector<sofa::defaulttype::Vector3> vertices_triangles;
-    sofa::helper::types::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
+    std::vector<sofa::type::Vector3> vertices_quads;
+    std::vector<sofa::type::Vector3> vertices_triangles;
+    sofa::type::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
 
     for (unsigned int i=0; i<selectedElem.size(); ++i)
     {
-        helper::vector<unsigned int> elem;
+        type::vector<unsigned int> elem;
 
         switch ( topoType )
         {
@@ -673,10 +673,10 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
             for (unsigned int j = 0; j<8; ++j)
             {
-                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
-                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
-                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
-                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[(j+3)%4][0], coordP[(j+3)%4][1], coordP[(j+3)%4][2]));
+                vertices_quads.push_back(sofa::type::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
+                vertices_quads.push_back(sofa::type::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
+                vertices_quads.push_back(sofa::type::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
+                vertices_quads.push_back(sofa::type::Vector3(coordP[(j+3)%4][0], coordP[(j+3)%4][1], coordP[(j+3)%4][2]));
             }
             break;
         }
@@ -690,9 +690,9 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
             for (unsigned int j = 0; j<4; ++j)
             {
-                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
-                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
-                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
+                vertices_triangles.push_back(sofa::type::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
+                vertices_triangles.push_back(sofa::type::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
+                vertices_triangles.push_back(sofa::type::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
             }
             break;
         }
@@ -703,7 +703,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             for (unsigned int j = 0; j<4; j++)
             {
                 Coord coordP = X[quad[j]];
-                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[0], coordP[1], coordP[2]));
+                vertices_quads.push_back(sofa::type::Vector3(coordP[0], coordP[1], coordP[2]));
             }
             break;
         }
@@ -714,12 +714,12 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             for (unsigned int j = 0; j<3; j++)
             {
                 Coord coordP = X[tri[j]];
-                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[0] * 1.001, coordP[1] * 1.001, coordP[2] * 1.001));
+                vertices_triangles.push_back(sofa::type::Vector3(coordP[0] * 1.001, coordP[1] * 1.001, coordP[2] * 1.001));
             }
             for (unsigned int j = 0; j<3; j++)
             {
                 Coord coordP = X[tri[j]];
-                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[0] * 0.999, coordP[1] * 0.999, coordP[2] * 0.999));
+                vertices_triangles.push_back(sofa::type::Vector3(coordP[0] * 0.999, coordP[1] * 0.999, coordP[2] * 0.999));
             }
 
             break;

@@ -28,7 +28,7 @@ namespace sofa
 namespace helper
 {
 using namespace sofa::helper;
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 //------------------------
 // DISTANCETRITRI
