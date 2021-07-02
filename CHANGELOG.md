@@ -225,8 +225,9 @@
 - [SofaOpenGLVisual] Fix unreachable code in VisualManagerSecondaryPass [#2068](https://github.com/sofa-framework/sofa/pull/2068)
 - [SofaOpenglVisual] Fix typo [#2029](https://github.com/sofa-framework/sofa/pull/2029)
 - [SofaRigid] fixes applyJT of RigidMapping [#1813](https://github.com/sofa-framework/sofa/pull/1813)
-- [SofaSimpleFEM] Fix TetrahedronFEMForceField Von Mises stress drawing [#1854](https://github.com/sofa-framework/sofa/pull/1854)
-- [SofaSimpleFEM] Fix nasty bug in HexaFEMForceField' s draw() [#1766](https://github.com/sofa-framework/sofa/pull/1766)
+- **[SofaSimpleFem]** Fix TetrahedronFEMForceField Von Mises stress drawing [#1854](https://github.com/sofa-framework/sofa/pull/1854)
+- **[SofaSimpleFem]** Fix nasty bug in HexaFEMForceField' s draw() [#1766](https://github.com/sofa-framework/sofa/pull/1766)
+- **[SofaSimpleFem]** Fix rendering options in TetrahedronFEMFF [#2156](https://github.com/sofa-framework/sofa/pull/2156)
 - **[SofaSimulation/Tests]** Fix init/cleanup in SofaSimulation modules [#1987](https://github.com/sofa-framework/sofa/pull/1987)
 - **[SofaSimulationCore]**  Set default  TaskScheduler worker threads to idle state [#1997](https://github.com/sofa-framework/sofa/pull/1997)
 - **[SofaSimulationCore]** Broken URL [#2011](https://github.com/sofa-framework/sofa/pull/2011)
@@ -359,7 +360,7 @@
 - [SofaMiscCollision] Move back to modules (instead of applications/plugins) [#2127](https://github.com/sofa-framework/sofa/pull/2127)
 - [SofaMiscMapping] Remove unused global variable [#1956](https://github.com/sofa-framework/sofa/pull/1956)
 - [SofaNonUniformFem] Remove shadow variable [#1874](https://github.com/sofa-framework/sofa/pull/1874)
-- [SofaSimpleFem] FIX wrong initialization order [#1938](https://github.com/sofa-framework/sofa/pull/1938)
+- **[SofaSimpleFem]** FIX wrong initialization order [#1938](https://github.com/sofa-framework/sofa/pull/1938)
 - **[SofaSimulation\*]** Fix confusion between namespaces [#1959](https://github.com/sofa-framework/sofa/pull/1959)
 - **[SofaSimulationCore]** Clean free motion animation loop [#1930](https://github.com/sofa-framework/sofa/pull/1930)
 - **[SofaSimulationCore]** Move WorkerThread class into its own file [#2002](https://github.com/sofa-framework/sofa/pull/2002)
@@ -481,7 +482,7 @@ ____________________________________________________________
 - [SofaGuiQt] Clean QtGLViewer with key events [#1850](https://github.com/sofa-framework/sofa/pull/1850)
 - **[SofaHelper]** FIX "name vs path" issue in PluginManager + FIX PluginManager_test [#1823](https://github.com/sofa-framework/sofa/pull/1823)
 - [SofaMiscFEM] Minor changes in TrianglePressureFF and TriangularFEMFF [#1779](https://github.com/sofa-framework/sofa/pull/1779)
-- **[SofaSimpleFEM]** Fix nasty bug in HexaFEMForceField' s draw() [#1766](https://github.com/sofa-framework/sofa/pull/1766)
+- **[SofaSimpleFem]** Fix nasty bug in HexaFEMForceField' s draw() [#1766](https://github.com/sofa-framework/sofa/pull/1766)
 
 **Plugins / Projects**
 - [Geomagic] Fix GeomagicVisualModel compilation [#1776](https://github.com/sofa-framework/sofa/pull/1776)
@@ -765,7 +766,7 @@ ____________________________________________________________
 - **[SofaKernel]** Remove the installation of external system libraries [#1387](https://github.com/sofa-framework/sofa/pull/1387)
 - **[SofaKernel]** Set default visibility to SOFA_EXPORT_DYNAMIC_LIBRARY [#1410](https://github.com/sofa-framework/sofa/pull/1410)
 - [SofaMiscTopology] Fix bug in TopologicalChangeProcessor [#1247](https://github.com/sofa-framework/sofa/pull/1247)
-- **[SofaSimpleFEM]** Small Fix [#1403](https://github.com/sofa-framework/sofa/pull/1403)
+- **[SofaSimpleFem]** Small Fix [#1403](https://github.com/sofa-framework/sofa/pull/1403)
 - **[SofaSimulationCore]** FIX resizing of bboxes in UpdateBoundingBoxVisitor [#1268](https://github.com/sofa-framework/sofa/pull/1268)
 - [SofaTopologyMapping] Fix Tetra2TriangleTopologicalMapping [#1319](https://github.com/sofa-framework/sofa/pull/1319)
 
@@ -1179,7 +1180,7 @@ ____________________________________________________________
 - **[SofaKernel]** Remove multigroup option in MatrixLinearSolver [#901](https://github.com/sofa-framework/sofa/pull/901)
 - [SofaRigid] Clean JointSpringFF [#850](https://github.com/sofa-framework/sofa/pull/850)
 - [SofaRigid] Cosmetic clean in RigidRigidMapping & msg_* update. [#1005](https://github.com/sofa-framework/sofa/pull/1005)
-- [SofaSimpleFem] Use msg and size_t in TetraDiff [#1016](https://github.com/sofa-framework/sofa/pull/1016)
+- **[SofaSimpleFem]** Use msg and size_t in TetraDiff [#1016](https://github.com/sofa-framework/sofa/pull/1016)
 
 **Plugins / Projects**
 - [image] Add warning guiding users regarding pluginization of DiffusionSolver [#1067](https://github.com/sofa-framework/sofa/pull/1067)
@@ -1361,7 +1362,7 @@ ____________________________________________________________
 - **[SofaKernel]** Move ScriptEvent class from SofaPython to core/objectModel [#764](https://github.com/sofa-framework/sofa/pull/764)
 - [SofaMiscFem] Clean BaseMaterial::handleTopologyChange [#817](https://github.com/sofa-framework/sofa/pull/817)
 - [SofaMiscMapping] Clean DeformableOnRigidFrameMapping [#848](https://github.com/sofa-framework/sofa/pull/848)
-- [SofaSimpleFem] Stc clean simplefem [#826](https://github.com/sofa-framework/sofa/pull/826)
+- **[SofaSimpleFem]** Stc clean simplefem [#826](https://github.com/sofa-framework/sofa/pull/826)
 
 **Plugins / Projects**
 - [Multithreading] Move TaskScheduler files from MultiThreading plugin to SofaKernel [#805](https://github.com/sofa-framework/sofa/pull/805)
