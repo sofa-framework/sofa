@@ -263,7 +263,6 @@ public:
 
 
     void draw(const core::visual::VisualParams* vparams) override;
-    void drawVonMisesStress(const core::visual::VisualParams* vparams);
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
