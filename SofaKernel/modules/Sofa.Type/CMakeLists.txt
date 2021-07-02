@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h
     ${SOFATYPESRC_ROOT}/Mat_solve_LU.h
     ${SOFATYPESRC_ROOT}/Mat_solve_SVD.h
+    ${SOFATYPESRC_ROOT}/Mat_solve_LCP.h
     ${SOFATYPESRC_ROOT}/trait/is_container.h
     ${SOFATYPESRC_ROOT}/trait/is_vector.h
     ${SOFATYPESRC_ROOT}/fwd.h
