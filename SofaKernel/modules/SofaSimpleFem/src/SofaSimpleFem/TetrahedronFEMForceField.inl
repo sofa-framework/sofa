@@ -1510,6 +1510,12 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         {
             m_VonMisesColorMap = new helper::ColorMap(256, _showStressColorMap.getValue());
         }
+
+        if (_computeVonMisesStress.getValue() == 1 && method == SMALL)
+        {
+            msg_warning() << "VonMisesStress can only be computed with full Green strain when the method is SMALL.";
+            _computeVonMisesStress.setValue(2);
+        }
     }
 
     m_restVolume = 0;
