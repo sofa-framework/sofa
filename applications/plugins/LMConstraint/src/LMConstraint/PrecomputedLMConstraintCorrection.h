@@ -61,7 +61,10 @@ public:
 	Data<std::string> fileDir; ///< If not empty, the compliance will be saved in this repertory
     
 protected:
-    PrecomputedLMConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr){};
+    PrecomputedLMConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr)
+    {
+        SOFA_UNUSED(mm);
+    };
 
 public:
     void bwdInit() override;
