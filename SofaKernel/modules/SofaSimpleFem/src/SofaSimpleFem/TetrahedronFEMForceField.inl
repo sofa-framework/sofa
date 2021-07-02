@@ -1763,13 +1763,14 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     bool drawVonMisesStress = false;
     if ( _showVonMisesStressPerNode.getValue() || _showVonMisesStressPerElement.getValue() )
     {
-        drawVonMisesStress = true;
-        if ( ! isComputeVonMisesStressMethodSet() )
+        if ( isComputeVonMisesStressMethodSet() )
+        {
+            drawVonMisesStress = true;
+        }
+        else
         {
             msg_warning() << "Cannot draw von Mises Stress. "
-                          << "Value of " << _computeVonMisesStress.getName() << " is invalid. "
-                          << "TetrahedronFEMForceField state is now Invalid.";
-            drawVonMisesStress = false;
+                          << "Value of " << _computeVonMisesStress.getName() << " is invalid.";
         }
     }
 
