@@ -25,7 +25,7 @@ public:
 	SOFA_CLASS(SOFA_TEMPLATE2(RigidComMultiMapping,TIn,TOut), 
 			   SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
 
-    typedef helper::vector<SReal> mass_type;
+    typedef type::vector<SReal> mass_type;
 	Data<mass_type> mass;
 	
 	typedef AssembledMultiMapping<TIn, TOut> base;
@@ -46,7 +46,7 @@ protected:
 	SReal total;
 
 	virtual void apply(typename self::out_pos_type& out, 
-                       const helper::vector<typename self::in_pos_type>& in ) override {
+                       const type::vector<typename self::in_pos_type>& in ) override {
 		const mass_type& m = mass.getValue();
 	
 		using namespace utils;
@@ -71,7 +71,7 @@ protected:
 		assert( off == m.size() );
 	}
 
-    void assemble(const helper::vector< typename self::in_pos_type >& in ) override {
+    void assemble(const type::vector< typename self::in_pos_type >& in ) override {
 		const mass_type& m = mass.getValue();
 		
         // resize/clean jacobians

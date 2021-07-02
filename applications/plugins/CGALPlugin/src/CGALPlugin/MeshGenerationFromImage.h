@@ -46,7 +46,7 @@ typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 namespace cgal
 {
 
-using sofa::helper::vector;
+using sofa::type::vector;
 using cimg_library::CImg;
 
 template <class DataTypes, class _ImageTypes>
@@ -61,7 +61,7 @@ public:
     typedef typename sofa::defaulttype::Vec3dTypes::Coord Point;
     typedef typename sofa::defaulttype::Vec3dTypes::Coord Coord;
     typedef typename sofa::defaulttype::Vec3dTypes::VecCoord VecCoord;
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
 
     typedef sofa::core::topology::BaseMeshTopology::Tetra Tetra;
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
@@ -136,8 +136,8 @@ public:
     //Outputs
     sofa::core::objectmodel::Data<VecCoord> d_newX0; ///< New Rest position coordinates from the tetrahedral generation
     sofa::core::objectmodel::Data<SeqTetrahedra> d_tetrahedra; ///< List of tetrahedra
-    sofa::core::objectmodel::Data<sofa::helper::vector<int> > d_tetraDomain; ///< domain of each tetrahedron
-    sofa::core::objectmodel::Data<sofa::helper::vector<double> > d_outputCellData; ///< Output cell data
+    sofa::core::objectmodel::Data<sofa::type::vector<int> > d_tetraDomain; ///< domain of each tetrahedron
+    sofa::core::objectmodel::Data<sofa::type::vector<double> > d_outputCellData; ///< Output cell data
     sofa::core::objectmodel::Data<bool> d_frozen; ///< true to prohibit recomputations of the mesh
 
     //Parameters
@@ -147,9 +147,9 @@ public:
     sofa::core::objectmodel::Data<double> d_facetApproximation; ///< Upper bound for the center-center distances of the surface mesh facets
     sofa::core::objectmodel::Data<double> d_cellRatio; ///< Upper bound for the radius-edge ratio of the tetrahedra
     sofa::core::objectmodel::Data<double> d_cellSize; ///< Uniform upper bound for the circumradii of the tetrahedra in the mesh
-    sofa::core::objectmodel::Data< sofa::helper::vector<int> > d_label; ///< label to be resized to a specific cellSize
-    sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellSize; ///< Uniform upper bound for the circumradii of the tetrahedra in the mesh by label
-    sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellData; ///< 1D cell data by label
+    sofa::core::objectmodel::Data< sofa::type::vector<int> > d_label; ///< label to be resized to a specific cellSize
+    sofa::core::objectmodel::Data< sofa::type::vector<double> > d_labelCellSize; ///< Uniform upper bound for the circumradii of the tetrahedra in the mesh by label
+    sofa::core::objectmodel::Data< sofa::type::vector<double> > d_labelCellData; ///< 1D cell data by label
     sofa::core::objectmodel::Data<bool> d_odt; ///< activate odt optimization
     sofa::core::objectmodel::Data<bool> d_lloyd; ///< activate lloyd optimization
     sofa::core::objectmodel::Data<bool> d_perturb; ///< activate perturb optimization
@@ -163,7 +163,7 @@ public:
     // Display
     sofa::core::objectmodel::Data<bool> d_drawTetras; ///< display generated tetra mesh
 
-    sofa::helper::vector<int> m_tetraDomainLabels;
+    sofa::type::vector<int> m_tetraDomainLabels;
 
 };
 

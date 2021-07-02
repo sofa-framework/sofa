@@ -166,9 +166,9 @@ public:
 
     Data<bool> d_activateSubGraph;
 
-    Data<std::map < std::string, sofa::helper::vector<double> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
-    Data<std::map < std::string, sofa::helper::vector<double> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
-    Data<std::map < std::string, sofa::helper::vector<double> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
+    Data<std::map < std::string, sofa::type::vector<double> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::type::vector<double> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::type::vector<double> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
 
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;}
 

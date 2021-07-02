@@ -74,7 +74,7 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
     const CTMuint  * indices = ctm.GetIntegerArray(CTM_INDICES);
 
     // Filling vertices buffer
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    type::vector<sofa::type::Vector3>& my_positions = *(d_positions.beginEdit());
     my_positions.fastResize(vertCount);
     for (unsigned int i=0; i<vertCount; ++i)
     {
@@ -85,7 +85,7 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
     d_positions.endEdit();
 
     // Filling triangles buffer
-    helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
+    type::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
     my_triangles.fastResize(triCount);
     for (unsigned int i=0; i<triCount; ++i)
     {
@@ -98,7 +98,7 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
     // Checking if mesh containes normals, otherwise fill empty buffer (NB seems mendatory for mecaObj)
     if (ctm.GetInteger(CTM_HAS_NORMALS) == CTM_TRUE)
     {
-        helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_normals   = *(d_normals.beginEdit());
+        type::vector<sofa::type::Vec<3,SReal> >& my_normals   = *(d_normals.beginEdit());
         my_normals.fastResize(vertCount);
 
         // Access the mesh normals        
@@ -116,7 +116,7 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
     if(ctm.GetInteger(CTM_UV_MAP_COUNT) > 0)
     {
         const CTMfloat * ctmTexCoords = ctm.GetFloatArray(CTM_UV_MAP_1);
-        helper::vector<sofa::defaulttype::Vector2>& my_texCoords = *texCoords.beginEdit();
+        type::vector<sofa::type::Vector2>& my_texCoords = *texCoords.beginEdit();
         my_texCoords.fastResize(vertCount);
         for (unsigned int i=0; i<vertCount; ++i)
         {

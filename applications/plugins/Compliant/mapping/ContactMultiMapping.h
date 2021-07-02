@@ -81,16 +81,16 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
 
-    typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
-    typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
+    typedef typename type::vector <const InVecCoord*> vecConstInVecCoord;
+    typedef typename type::vector<OutVecCoord*> vecOutVecCoord;
 
-    typedef defaulttype::Vec<2, unsigned> IndexPair;
-    typedef sofa::helper::vector< IndexPair > PairVector;
-    typedef sofa::helper::vector<core::collision::DetectionOutput> DetectionOutputVector;
+    typedef type::Vec<2, unsigned> IndexPair;
+    typedef sofa::type::vector< IndexPair > PairVector;
+    typedef sofa::type::vector<core::collision::DetectionOutput> DetectionOutputVector;
 
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-    helper::vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
+    type::vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
 
     ContactMultiMapping()
         : contacts(NULL), pairs(NULL)
@@ -123,7 +123,7 @@ public:
 
 
     virtual void apply(typename self::out_pos_type& out,
-        const helper::vector<typename self::in_pos_type>& /*in*/) {
+        const type::vector<typename self::in_pos_type>& /*in*/) {
 		
 		// local frames have been computed in assemble
         assert( contacts->size() == out.size() || std::count( mask.begin(),mask.end(),true)==out.size() );
@@ -154,7 +154,7 @@ protected:
     PairVector* pairs;
 
 
-    virtual void assemble( const helper::vector<typename self::in_pos_type>& /*in*/ ) override {
+    virtual void assemble( const type::vector<typename self::in_pos_type>& /*in*/ ) override {
 
 
         Eigen::Matrix<real, 3, self::Nout> local_frame;
@@ -179,7 +179,7 @@ protected:
 
             if( self::Nout==2 )
             {
-                Eigen::Matrix<real, 3, 1> n = utils::map( (defaulttype::Vec<3, real>)(*contacts)[i].normal );
+                Eigen::Matrix<real, 3, 1> n = utils::map( (type::Vec<3, real>)(*contacts)[i].normal );
                 try{
                     local_frame.template rightCols<2>() = ker( n );
                 }
@@ -192,7 +192,7 @@ protected:
             else
             {
                 // first vector is normal
-                local_frame.col(0) = utils::map( (defaulttype::Vec<3, real>)(*contacts)[i].normal );
+                local_frame.col(0) = utils::map( (type::Vec<3, real>)(*contacts)[i].normal );
 
                 // possibly tangent directions
                 if( self::Nout == 3 ) {

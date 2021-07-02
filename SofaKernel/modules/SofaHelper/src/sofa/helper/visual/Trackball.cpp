@@ -74,7 +74,7 @@
 namespace sofa::helper::visual
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 /*
  * This size should really be based on the distance from the center of
@@ -101,9 +101,9 @@ Trackball::~Trackball()
 {
 }
 
-Quaternion Trackball::GetQuaternion(void)
+type::Quat<SReal> Trackball::GetQuaternion(void)
 {
-    Quaternion	Q;
+    type::Quat<SReal> Q;
 
     Q[0] = _quat[0];
     Q[1] = _quat[1];
@@ -113,7 +113,7 @@ Quaternion Trackball::GetQuaternion(void)
     return Q;
 }
 
-void Trackball::SetQuaternion(Quaternion Q)
+void Trackball::SetQuaternion(type::Quat<SReal> Q)
 {
     _quat[0] = Q[0];
     _quat[1] = Q[1];

@@ -41,7 +41,7 @@ LineInfo::LineInfo(LocalMinDistanceFilter *lmdFilters)
 
 void LineInfo::buildFilter(Index edge_index)
 {
-    using sofa::helper::vector;
+    using sofa::type::vector;
     using sofa::core::topology::BaseMeshTopology;
 
     bool debug=false;
@@ -53,8 +53,8 @@ void LineInfo::buildFilter(Index edge_index)
 
     const Edge &e =  bmt->getEdge(edge_index);
 
-    const sofa::defaulttype::Vector3 &pt1 = (*this->position_filtering)[e[0]];
-    const sofa::defaulttype::Vector3 &pt2 = (*this->position_filtering)[e[1]];
+    const sofa::type::Vector3 &pt1 = (*this->position_filtering)[e[0]];
+    const sofa::type::Vector3 &pt2 = (*this->position_filtering)[e[1]];
 
     msg_info_when(debug, "LineInfo") <<"pt1: "<<pt1<<"  - pt2: "<<pt2;
 
@@ -78,7 +78,7 @@ void LineInfo::buildFilter(Index edge_index)
         return;
     }
 
-    const sofa::helper::vector<sofa::defaulttype::Vector3>& x = *this->position_filtering;
+    const sofa::type::vector<sofa::type::Vector3>& x = *this->position_filtering;
 
 
 
@@ -90,7 +90,7 @@ void LineInfo::buildFilter(Index edge_index)
 
     // compute the normal of the triangle situated on the right
     const BaseMeshTopology::Triangle& triangleRight = triangle0_is_left ? bmt->getTriangle(trianglesAroundEdge[1]): bmt->getTriangle(trianglesAroundEdge[0]);
-    sofa::defaulttype::Vector3 n1 = cross(x[triangleRight[1]] - x[triangleRight[0]], x[triangleRight[2]] - x[triangleRight[0]]);
+    sofa::type::Vector3 n1 = cross(x[triangleRight[1]] - x[triangleRight[0]], x[triangleRight[2]] - x[triangleRight[0]]);
     n1.normalize();
     m_nMean = n1;
     m_triangleRight = cross(n1, m_lineVector);
@@ -98,7 +98,7 @@ void LineInfo::buildFilter(Index edge_index)
 
     // compute the normal of the triangle situated on the left
     const BaseMeshTopology::Triangle& triangleLeft = triangle0_is_left ? bmt->getTriangle(trianglesAroundEdge[0]): bmt->getTriangle(trianglesAroundEdge[1]);
-    sofa::defaulttype::Vector3 n2 = cross(x[triangleLeft[1]] - x[triangleLeft[0]], x[triangleLeft[2]] - x[triangleLeft[0]]);
+    sofa::type::Vector3 n2 = cross(x[triangleLeft[1]] - x[triangleLeft[0]], x[triangleLeft[2]] - x[triangleLeft[0]]);
     n2.normalize();
     m_nMean += n2;
     m_triangleLeft = cross(m_lineVector, n2);
@@ -132,7 +132,7 @@ void LineInfo::buildFilter(Index edge_index)
     setValid();
 }
 
-bool LineInfo::validate(const Index edge_index, const defaulttype::Vector3& PQ)
+bool LineInfo::validate(const Index edge_index, const type::Vector3& PQ)
 {
     bool debug=false;
 
@@ -159,7 +159,7 @@ bool LineInfo::validate(const Index edge_index, const defaulttype::Vector3& PQ)
         }
         else
         {
-            sofa::defaulttype::Vector3 PQnormalized = PQ;
+            sofa::type::Vector3 PQnormalized = PQ;
             PQnormalized.normalize();
 
             if (fabs(dot(m_lineVector, PQnormalized)) > m_lmdFilters->getConeMinAngle() + 0.001)		// dot(AB,n1) should be equal to 0
@@ -202,7 +202,7 @@ void LineLocalMinDistanceFilter::init()
 
     if (bmt != nullptr)
     {
-        helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
+        type::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
         m_pointInfo.endEdit();
 
@@ -210,7 +210,7 @@ void LineLocalMinDistanceFilter::init()
         m_pointInfo.createTopologyHandler(bmt, pointInfoHandler);
         m_pointInfo.registerTopologicalData();
 
-        helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
+        type::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
         m_lineInfo.endEdit();
 
@@ -222,7 +222,7 @@ void LineLocalMinDistanceFilter::init()
 
 
 
-void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector<Index> &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*pointIndex*/, PointInfo &pInfo, const sofa::type::vector<Index> &, const sofa::type::vector< double >&)
 {
     const LineLocalMinDistanceFilter *lLMDFilter = this->f;
     pInfo.setLMDFilters(lLMDFilter);
@@ -239,7 +239,7 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*p
 
 
 
-void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index /*edgeIndex*/, LineInfo &lInfo, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector<Index> &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index /*edgeIndex*/, LineInfo &lInfo, const core::topology::BaseMeshTopology::Edge&, const sofa::type::vector<Index> &, const sofa::type::vector< double >&)
 {
     const LineLocalMinDistanceFilter *lLMDFilter = this->f;
     lInfo.setLMDFilters(lLMDFilter);
@@ -256,13 +256,13 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index /*ed
     }
 }
 
-bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
+bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const type::Vector3 &PQ)
 {
     PointInfo & Pi = m_pointInfo[pointIndex];
     if(this->isRigid())
     {
         // filter is precomputed in the rest position
-        defaulttype::Vector3 PQtest;
+        type::Vector3 PQtest;
         PQtest = pos->getOrientation().inverseRotate(PQ);
         return Pi.validate(pointIndex,PQtest);
     }
@@ -270,7 +270,7 @@ bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaultt
     return Pi.validate(pointIndex,PQ);
 }
 
-bool LineLocalMinDistanceFilter::validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
+bool LineLocalMinDistanceFilter::validLine(const int /*lineIndex*/, const type::Vector3 &/*PQ*/)
 {
     return true;
 }

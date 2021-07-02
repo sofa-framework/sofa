@@ -26,7 +26,7 @@
 #include "ImageTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 
 namespace sofa

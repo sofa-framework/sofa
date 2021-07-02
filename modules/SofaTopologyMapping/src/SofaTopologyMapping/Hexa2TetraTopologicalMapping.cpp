@@ -34,7 +34,7 @@
 
 #include <SofaBaseTopology/GridTopology.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -105,7 +105,7 @@ void Hexa2TetraTopologicalMapping::init()
     // Set the same number of points
     toModel->setNbPoints(fromModel->getNbPoints());
 
-    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     Loc2GlobVec.clear();
     Glob2LocMap.clear();

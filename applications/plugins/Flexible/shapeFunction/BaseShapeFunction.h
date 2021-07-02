@@ -26,11 +26,11 @@
 #include <Flexible/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/MatSym.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/SVector.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
 
@@ -117,11 +117,11 @@ public:
     }
 
     //Pierre-Luc : I added these two functions to fill indices, weights and derivatives from an external component. I also wanted to make a difference between gauss points and mesh vertices.
-    virtual void fillWithMeshQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< VReal >& /*w*/,
-                                    sofa::helper::vector< VGradient >& /*dw*/, sofa::helper::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
+    virtual void fillWithMeshQuery( sofa::type::vector< VRef >& /*index*/, sofa::type::vector< VReal >& /*w*/,
+                                    sofa::type::vector< VGradient >& /*dw*/, sofa::type::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
 
-    virtual void fillWithGaussQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< VReal >& /*w*/,
-                                     sofa::helper::vector< VGradient >& /*dw*/, sofa::helper::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
+    virtual void fillWithGaussQuery( sofa::type::vector< VRef >& /*index*/, sofa::type::vector< VReal >& /*w*/,
+                                     sofa::type::vector< VGradient >& /*dw*/, sofa::type::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
 
     /// interpolate shape function values (and their first and second derivatives) at a given child position
     /// 'cell' might be used to target a specific element/voxel in case of overlapping elements/voxels.
@@ -192,21 +192,21 @@ template <std::size_t spatial_dimensions_, class Real_>
 struct ShapeFunctionTypes
 {
     typedef Real_ Real;
-    typedef helper::vector<unsigned int> VRef;
-    typedef helper::vector<Real> VReal;
-    typedef defaulttype::Vec<spatial_dimensions_,Real> Coord;                          ///< Spatial coordinates in world space
-    typedef helper::vector<Coord> VCoord;
-    typedef defaulttype::Vec<spatial_dimensions_,Real> Gradient;                       ///< Gradient of a scalar value in world space
-    typedef helper::vector<Gradient> VGradient;
-    typedef defaulttype::Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
-    typedef helper::vector<Hessian> VHessian;
+    typedef type::vector<unsigned int> VRef;
+    typedef type::vector<Real> VReal;
+    typedef type::Vec<spatial_dimensions_,Real> Coord;                          ///< Spatial coordinates in world space
+    typedef type::vector<Coord> VCoord;
+    typedef type::Vec<spatial_dimensions_,Real> Gradient;                       ///< Gradient of a scalar value in world space
+    typedef type::vector<Gradient> VGradient;
+    typedef type::Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
+    typedef type::vector<Hessian> VHessian;
 	typedef int Cell;
-    typedef helper::vector<Cell> VCell;
+    typedef type::vector<Cell> VCell;
 
-    typedef helper::vector< helper::SVector<unsigned int> > VecVRef;
-    typedef helper::vector< helper::SVector<Real> > VecVReal;
-    typedef helper::vector< helper::SVector<Gradient> > VecVGradient;
-    typedef helper::vector< helper::SVector<Hessian> > VecVHessian;
+    typedef type::vector< type::SVector<unsigned int> > VecVRef;
+    typedef type::vector< type::SVector<Real> > VecVReal;
+    typedef type::vector< type::SVector<Gradient> > VecVGradient;
+    typedef type::vector< type::SVector<Hessian> > VecVHessian;
 
     static const std::size_t spatial_dimensions=spatial_dimensions_ ;
     static const char* Name();

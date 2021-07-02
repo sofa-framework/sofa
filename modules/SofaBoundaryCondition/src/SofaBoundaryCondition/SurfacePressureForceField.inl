@@ -27,7 +27,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <vector>
 #include <set>
 #include <iostream>
@@ -502,7 +502,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
 
     vparams->drawTool()->disableLighting();
 
-    const sofa::helper::types::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
+    const sofa::type::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
 
     vparams->drawTool()->setMaterial(boxcolor);
     vparams->drawTool()->drawBoundingBox(DataTypes::getCPos(m_min.getValue()), DataTypes::getCPos(m_max.getValue()));
@@ -514,8 +514,8 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
     if (m_drawForceScale.getValue() && m_f.size()==x.size())
     {
-        std::vector< defaulttype::Vector3 > points;
-        const sofa::helper::types::RGBAColor color(0,1,0.5,1);
+        std::vector< type::Vector3 > points;
+        const sofa::type::RGBAColor color(0,1,0.5,1);
 
         for (unsigned int i=0; i<x.size(); i++)
         {

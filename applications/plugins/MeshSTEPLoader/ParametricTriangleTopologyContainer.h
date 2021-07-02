@@ -3,7 +3,7 @@
 
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa
 {
@@ -16,8 +16,8 @@ class ParametricTriangleTopologyContainer : public TriangleSetTopologyContainer
 {
 public:
     SOFA_CLASS(ParametricTriangleTopologyContainer,TriangleSetTopologyContainer);
-    typedef defaulttype::Vector2 UV;
-    typedef helper::vector<UV> SeqUV;
+    typedef type::Vector2 UV;
+    typedef type::vector<UV> SeqUV;
 
     void init() override;
     void reinit() override;

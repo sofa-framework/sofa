@@ -26,9 +26,9 @@
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::mapping
@@ -85,12 +85,12 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef defaulttype::Vec<In::spatial_dimensions> Direction;
+    typedef type::Vec<In::spatial_dimensions> Direction;
     typedef typename Inherit::ForceMask ForceMask;
 
-    Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
+    Data< type::vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< InVecCoord >       f_targetPositions; ///< positions the distances are measured from
-    Data< helper::vector< Real > >   f_restDistances;   ///< rest distance from each position
+    Data< type::vector< Real > >   f_restDistances;   ///< rest distance from each position
     Data< unsigned >         d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     /// Add a target with a desired distance
@@ -116,24 +116,24 @@ public:
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const defaulttype::BaseMatrix* getK() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
     Data<float> d_showObjectScale; ///< Scale for object display
-    Data<sofa::helper::types::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
+    Data<sofa::type::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
 
 protected:
     DistanceFromTargetMapping();
     virtual ~DistanceFromTargetMapping();
 
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
-    helper::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
-    helper::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
+    type::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
+    type::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
     void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );

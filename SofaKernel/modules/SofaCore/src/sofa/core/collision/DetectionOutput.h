@@ -24,8 +24,8 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/CollisionElement.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
 #include <iostream>
 
 namespace sofa
@@ -78,7 +78,7 @@ public:
 class DetectionOutput
 {
 public:
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
     /// Pair of colliding elements.
     std::pair<core::CollisionElementIterator, core::CollisionElementIterator> elem;
     typedef int64_t ContactId;
@@ -113,10 +113,10 @@ public:
  */
 
 template<class CM1, class CM2>
-class TDetectionOutputVector : public DetectionOutputVector, public sofa::helper::vector<DetectionOutput>
+class TDetectionOutputVector : public DetectionOutputVector, public sofa::type::vector<DetectionOutput>
 {
 public:
-    typedef sofa::helper::vector<DetectionOutput> Vector;
+    typedef sofa::type::vector<DetectionOutput> Vector;
     ~TDetectionOutputVector() override {}
     /// Clear the content of this vector
     void clear() override

@@ -103,12 +103,12 @@ public:
     /** \brief Called by the MechanicalObject state change callback to initialize added
      * points according to the topology (topology element & local coordinates) 
      */
-    void initPointsAdded(const helper::vector< sofa::Index > &indices, const helper::vector< core::topology::PointAncestorElem > &ancestorElems
-        , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs ) override;
+    void initPointsAdded(const type::vector< sofa::Index > &indices, const type::vector< core::topology::PointAncestorElem > &ancestorElems
+        , const type::vector< core::VecCoordId >& coordVecs, const type::vector< core::VecDerivId >& derivVecs ) override;
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
-    virtual void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem, const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
+    virtual void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem, const type::vector< VecCoord* >& coordVecs, const type::vector< VecDeriv* >& derivVecs);
 
 protected:
     /** the object where the mechanical DOFs are stored */

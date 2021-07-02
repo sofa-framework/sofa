@@ -165,7 +165,7 @@ public:
     /// Change particles ordering inside a given cell have contiguous indices
     ///
     /// Fill the old2new and new2old arrays giving the permutation to apply
-    void reorderIndices(helper::vector<Index>* old2new, helper::vector<Index>* new2old);
+    void reorderIndices(type::vector<Index>* old2new, type::vector<Index>* new2old);
 
     enum { GRIDDIM_LOG2 = DataTypes::GRIDDIM_LOG2, GRIDDIM = 1<<GRIDDIM_LOG2 };
     enum { NCELL = GRIDDIM*GRIDDIM*GRIDDIM };
@@ -210,7 +210,7 @@ public:
 
     static Grid emptyGrid;
 
-    class Key : public helper::fixed_array<int, 3>
+    class Key : public type::fixed_array<int, 3>
     {
     public:
         Key() {}

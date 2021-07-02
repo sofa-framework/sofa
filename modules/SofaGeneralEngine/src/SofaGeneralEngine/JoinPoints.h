@@ -25,7 +25,7 @@
 
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::engine
 {
@@ -42,7 +42,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::type::Vec<3,Real> Vec3;
 
 protected:
 

@@ -25,7 +25,7 @@
 
 #include "TriangleFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <fstream> // for reading the file
@@ -322,10 +322,10 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J )
 {
-    defaulttype::Mat<3,6,Real> Jt;
+    type::Mat<3,6,Real> Jt;
     Jt.transpose( J );
 
-    defaulttype::Vec<3,Real> JtD;
+    type::Vec<3,Real> JtD;
 
     // Optimisations: The following values are 0 (per computeStrainDisplacement )
 
@@ -350,7 +350,7 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
     JtD[2] = Jt[2][0] * Depl[0] + Jt[2][1] * Depl[1] + Jt[2][2] * Depl[2] +
             Jt[2][3] * Depl[3] + Jt[2][4] * Depl[4] /* + Jt[2][5] * Depl[5] */ ;
 
-    defaulttype::Vec<3,Real> KJtD;
+    type::Vec<3,Real> KJtD;
 
     //	KJtD = K * JtD;
 
@@ -664,8 +664,8 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    std::vector<sofa::helper::types::RGBAColor> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colorVector;
+    std::vector<sofa::type::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -676,12 +676,12 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         Index b = (*it)[1];
         Index c = (*it)[2];
 
-        colorVector.push_back(sofa::helper::types::RGBAColor(0,1,0,1));
-        vertices.push_back(sofa::defaulttype::Vector3(x[a]));
-        colorVector.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
-        vertices.push_back(sofa::defaulttype::Vector3(x[b]));
-        colorVector.push_back(sofa::helper::types::RGBAColor(0,0,1,1));
-        vertices.push_back(sofa::defaulttype::Vector3(x[c]));
+        colorVector.push_back(sofa::type::RGBAColor(0,1,0,1));
+        vertices.push_back(sofa::type::Vector3(x[a]));
+        colorVector.push_back(sofa::type::RGBAColor(0,0.5,0.5,1));
+        vertices.push_back(sofa::type::Vector3(x[b]));
+        colorVector.push_back(sofa::type::RGBAColor(0,0,1,1));
+        vertices.push_back(sofa::type::Vector3(x[c]));
     }
     vparams->drawTool()->drawTriangles(vertices,colorVector);
 
@@ -692,14 +692,14 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot )
 {
-    defaulttype::MatNoInit<3, 6, Real> Jt;
+    type::MatNoInit<3, 6, Real> Jt;
     Jt.transpose( J );
 
-    defaulttype::MatNoInit<6, 6, Real> JKJt;
+    type::MatNoInit<6, 6, Real> JKJt;
     JKJt = J*K*Jt;  // in-plane stiffness matrix, 6x6
 
     // stiffness JKJt expanded to 3 dimensions
-    defaulttype::Mat<9, 9, Real> Ke; // initialized to 0
+    type::Mat<9, 9, Real> Ke; // initialized to 0
     // for each 2x2 block i,j
     for(unsigned i=0; i<3; i++)
     {
@@ -713,7 +713,7 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessM
     }
 
     // rotation matrices. TODO: use block-diagonal matrices, more efficient.
-    defaulttype::Mat<9, 9, Real> RR,RRt; // initialized to 0
+    type::Mat<9, 9, Real> RR,RRt; // initialized to 0
     for(int i=0; i<3; ++i)
         for(int j=0; j<3; ++j)
         {

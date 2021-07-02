@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
 
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
@@ -34,12 +34,12 @@ namespace sofa::simulation::mechanicalvisitor
 ///
 class SOFA_SIMULATION_CORE_API MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
 {
-    defaulttype::Vector6 m_momenta;
+    type::Vector6 m_momenta;
 
 public:
     MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams);
 
-    const defaulttype::Vector6& getMomentum() const;
+    const type::Vector6& getMomentum() const;
 
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);

@@ -36,8 +36,8 @@ namespace cuda
 
 struct GPUEllipsoid
 {
-    defaulttype::Vec3f center;
-    defaulttype::Vec3f inv_r2;
+    type::Vec3f center;
+    type::Vec3f inv_r2;
     float stiffness;
     float damping;
 };

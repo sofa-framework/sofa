@@ -24,17 +24,17 @@
 
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/SortedPermutation.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <Eigen/Core>
 #include <Eigen/Sparse>
 #include <sofa/helper/OwnershipSPtr.h>
 
 namespace sofa::component::linearsolver
 {
-using helper::vector;
+using type::vector;
 
 
 /** Variant of EigenBaseSparseMatrix, capable of block-view access.
@@ -64,7 +64,7 @@ public:
     typedef typename OutDataTypes::Deriv OutDeriv;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
     enum { Nin=InDataTypes::deriv_total_size, Nout=OutDataTypes::deriv_total_size };
-    typedef defaulttype::Mat<Nout,Nin, OutReal> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
+    typedef type::Mat<Nout,Nin, OutReal> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
     using Index = defaulttype::BaseMatrix::Index;
 protected:
@@ -248,7 +248,7 @@ public:
     /** Set from a CompressedRowSparseMatrix. @pre crs must be compressed
       */
     template<class AnyReal>
-    void copyFrom( const CompressedRowSparseMatrix< defaulttype::Mat<Nout,Nin, AnyReal> >& crs )
+    void copyFrom( const CompressedRowSparseMatrix< type::Mat<Nout,Nin, AnyReal> >& crs )
     {
         this->resize( crs.rowSize(), crs.colSize() );
 

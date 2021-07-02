@@ -28,8 +28,8 @@
 namespace sofa::component::interactionforcefield
 {
 
-using sofa::defaulttype::Vec4f;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vec4f;
+using sofa::type::Vector3;
 
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField()
@@ -100,7 +100,7 @@ void JointSpringForceField<DataTypes>::bwdInit()
     const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
 
     const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    helper::vector<Spring> &springsVector=*(d_springs.beginEdit());
+    type::vector<Spring> &springsVector=*(d_springs.beginEdit());
     for (sofa::Index i=0; i<d_springs.getValue().size(); ++i)
     {
         Spring &s=springsVector[i];
@@ -316,7 +316,7 @@ void JointSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    helper::vector<Spring>& springs = *d_springs.beginEdit();
+    type::vector<Spring>& springs = *d_springs.beginEdit();
 
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -345,7 +345,7 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
 
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    helper::vector<Spring>& springs = *d_springs.beginEdit();
+    type::vector<Spring>& springs = *d_springs.beginEdit();
     for (sofa::Index i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1, dx1, df2, dx2, i, springs[i], kFactor);
@@ -367,12 +367,12 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     vparams->drawTool()->setLightingEnabled(true);
 
     bool external = (this->mstate1!=this->mstate2);
-    const helper::vector<Spring>& springs = d_springs.getValue();
+    const type::vector<Spring>& springs = d_springs.getValue();
 
-    helper::vector<Vector3> vertices;
-    std::vector<sofa::helper::types::RGBAColor> colors;
+    type::vector<Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colors;
 
-    auto yellow = sofa::helper::types::RGBAColor::yellow();
+    auto yellow = sofa::type::RGBAColor::yellow();
 
     for (sofa::Index i=0; i<springs.size(); i++)
     {
@@ -401,7 +401,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         vertices.push_back(v1);
         colors.push_back(color);
 
-        sofa::defaulttype::Quaternion q0 = p1[springs[i].m1].getOrientation();
+        sofa::type::Quat<SReal> q0 = p1[springs[i].m1].getOrientation();
         const float cylinderSize = float(d_showFactorSize.getValue() / 15.0f);
         if(springs[i].freeMovements[3] == 1)
         {
@@ -461,7 +461,7 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    const helper::vector<Spring>& springs = d_springs.getValue();
+    const type::vector<Spring>& springs = d_springs.getValue();
 
     for (sofa::Index i = 0, iend = sofa::Size(springs.size()); i<iend; ++i)
     {
@@ -478,13 +478,13 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
             if (v1[c] < minBBox[c]) minBBox[c] = (Real)v1[c];
         }
     }
-    this->f_bbox.setValue( sofa::defaulttype::TBoundingBox<Real>(minBBox, maxBBox));
+    this->f_bbox.setValue( sofa::type::TBoundingBox<Real>(minBBox, maxBBox));
 }
 
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::updateForceMask()
 {
-    const helper::vector<Spring>& springs= d_springs.getValue();
+    const type::vector<Spring>& springs= d_springs.getValue();
 
     for(sofa::Index i=0, iend= sofa::Size(springs.size()) ; i<iend ; ++i )
     {
@@ -497,7 +497,7 @@ void JointSpringForceField<DataTypes>::updateForceMask()
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::clear(sofa::Size reserve)
 {
-    helper::vector<Spring>& springs = *d_springs.beginEdit();
+    type::vector<Spring>& springs = *d_springs.beginEdit();
     springs.clear();
     if (reserve) springs.reserve(reserve);
     d_springs.endEdit();

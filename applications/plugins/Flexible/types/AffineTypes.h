@@ -24,9 +24,9 @@
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/random.h>
@@ -50,26 +50,26 @@ public:
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<Real> VecReal;
 
     // ------------    Types and methods defined for easier data access
-    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
-    typedef Mat<spatial_dimensions,spatial_dimensions, Real> Frame;       ///< Matrix representing a frame
+    typedef type::Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
+    typedef type::Mat<spatial_dimensions,spatial_dimensions, Real> Frame;       ///< Matrix representing a frame
     typedef Frame Affine; // for compatibility with Quadratic typename
 
     typedef SpatialCoord CPos;
     typedef SpatialCoord DPos;
 
-    class Coord : public Vec<VSize,Real>
+    class Coord : public type::Vec<VSize,Real>
     {
-        typedef Vec<VSize,Real> MyVec;
+        typedef type::Vec<VSize,Real> MyVec;
 
     public:
 
         enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 12
 
         Coord() { clear(); }
-        Coord( const Vec<VSize,Real>& d):MyVec(d) {}
+        Coord( const type::Vec<VSize,Real>& d):MyVec(d) {}
         Coord( const SpatialCoord& c, const Frame& a) { getCenter()=c; getAffine()=a;}
         void clear()  { MyVec::clear(); for(std::size_t i=0; i<_spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
 
@@ -163,17 +163,17 @@ public:
 
 
         template< Size N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        void operator+=( const type::Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
         template< Size N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        void operator=( const type::Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
 
     static const char* Name();
 
 
-    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
+    static Coord interpolate ( const type::vector< Coord > & ancestors, const type::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
         Coord c;
@@ -185,24 +185,24 @@ public:
     {
         Frame m;
 #ifdef DEBUG
-        bool invertible = defaulttype::invertMatrix(m,c.getAffine());
+        bool invertible = type::invertMatrix(m,c.getAffine());
         assert(invertible);
 #else
-        defaulttype::invertMatrix(m,c.getAffine());
+        type::invertMatrix(m,c.getAffine());
 #endif
         return Coord( -(m*c.getCenter()),m );
     }
 
 
-    class Deriv : public Vec<VSize,Real>
+    class Deriv : public type::Vec<VSize,Real>
     {
-        typedef Vec<VSize,Real> MyVec;
+        typedef type::Vec<VSize,Real> MyVec;
     public:
 
         enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 12
 
         Deriv() { MyVec::clear(); }
-        Deriv( const Vec<VSize,Real>& d):MyVec(d) {}
+        Deriv( const type::Vec<VSize,Real>& d):MyVec(d) {}
         Deriv( const SpatialCoord& c, const Frame& a) { getVCenter()=c; getVAffine()=a;}
 
         //static const unsigned int total_size = VSize;
@@ -218,17 +218,17 @@ public:
 
         /// get jacobian of the projection dQ/dM
         /// method: 0=polar (default), 1=SVD
-        static void getJRigid(const Coord& c, Mat<VSize,VSize,Real>& J, unsigned method=0)
+        static void getJRigid(const Coord& c, type::Mat<VSize,VSize,Real>& J, unsigned method=0)
         {
             static const unsigned MSize = spatial_dimensions * spatial_dimensions;
-            Mat<MSize,MSize,Real> dQOverdM;
+            type::Mat<MSize,MSize,Real> dQOverdM;
 
             switch( method )
             {
                 case 1: // SVD
                 {
                     Frame U, V;
-                    Vec<spatial_dimensions,Real> diag;
+                    type::Vec<spatial_dimensions,Real> diag;
                     helper::Decompose<Real>::SVD_stable( c.getAffine(), U, diag, V ); // TODO this was already computed in setRigid...
                     helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( U, diag, V, dQOverdM );
                     break;
@@ -264,7 +264,7 @@ public:
                 case 1: // SVD
                 {
                     Frame U, V, dQ;
-                    Vec<spatial_dimensions,Real> diag;
+                    type::Vec<spatial_dimensions,Real> diag;
                     helper::Decompose<Real>::SVD_stable( c.getAffine(), U, diag, V );
                     helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( U, diag, V, this->getVAffine(), dQ );
                     this->getVAffine() = dQ;
@@ -279,7 +279,7 @@ public:
                     // the projection matrix is however non symmetric..
 
                     // Compute velocity tensor W = Adot.Ainv
-                    Frame Ainv;  defaulttype::invertMatrix(Ainv,c.getAffine());
+                    Frame Ainv;  type::invertMatrix(Ainv,c.getAffine());
                     Frame W = getVAffine() * Ainv;
 
                     // make it skew-symmetric
@@ -315,16 +315,16 @@ public:
 
 
         template< Size N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        void operator+=( const type::Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
         template< Size N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        void operator=( const type::Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
 
     };
 
-    typedef helper::vector<Deriv> VecDeriv;
+    typedef type::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
+    static Deriv interpolate ( const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;

@@ -49,12 +49,12 @@ bool BaseMultiMappingElement::initNode()
         BaseMapping* multimapping = this->getTypedObject()->toBaseMapping();
         NodeElement* currentNodeElement = dynamic_cast<NodeElement *>(getParent());
         simulation::Node* currentNode =  dynamic_cast<simulation::Node* >( currentNodeElement->getTypedObject() );
-        helper::vector<core::BaseState*> inputStates  = multimapping->getFrom();
-        helper::vector<core::BaseState*> outputStates = multimapping->getTo();
+        type::vector<core::BaseState*> inputStates  = multimapping->getFrom();
+        type::vector<core::BaseState*> outputStates = multimapping->getTo();
 
 
-        helper::vector<core::BaseState*>::iterator iterState;
-        helper::vector<simulation::Node*> inputNodes, outputNodes;
+        type::vector<core::BaseState*>::iterator iterState;
+        type::vector<simulation::Node*> inputNodes, outputNodes;
 
         /* get the Nodes corresponding to each input BaseState context */
         for( iterState = inputStates.begin();  iterState != inputStates.end(); ++iterState)
@@ -70,12 +70,12 @@ bool BaseMultiMappingElement::initNode()
             outputNodes.push_back(node);
         }
 
-        helper::vector<simulation::Node*>::iterator iterNode;
+        type::vector<simulation::Node*>::iterator iterNode;
         BaseNode* currentBaseNode;
 
         /* filter out inputNodes which already belong to the currentNode ancestors */
-        helper::vector<simulation::Node*> otherInputNodes;
-        helper::vector<simulation::Node*> ancestorInputNodes;
+        type::vector<simulation::Node*> otherInputNodes;
+        type::vector<simulation::Node*> ancestorInputNodes;
         iterNode = inputNodes.begin();
         currentBaseNode = currentNode;
         for( iterNode = inputNodes.begin(); iterNode != inputNodes.end(); ++iterNode)

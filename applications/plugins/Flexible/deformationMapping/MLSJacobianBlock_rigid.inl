@@ -23,8 +23,8 @@
 #define FLEXIBLE_MLSJacobianBlock_rigid_INL
 
 #include "MLSJacobianBlock.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include "../types/AffineTypes.h"
@@ -64,14 +64,14 @@ public:
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,dim,Real> MaterialToSpatial;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:   \f$ p = w.t + A.A0^{-1}.(p*-w.t0) + w.p0- p*   = w.t + A.q0 + C \f$
@@ -124,7 +124,7 @@ public:
         MatBlock J = MatBlock();
         for(unsigned int i=0; i<dim; ++i) J(i,i)=Pt;
 
-        cpMatrix W = -defaulttype::crossProductMatrix(Pa);
+        cpMatrix W = -type::crossProductMatrix(Pa);
         for(unsigned int l=0; l<adim; ++l) for (unsigned int i=0; i<dim; ++i) J(i,l+dim)=W(i,l);
         return J;
     }
@@ -161,16 +161,16 @@ public:
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:   \f$ F = grad p.M = t.grad w.M + A.A0^{-1}.grad(p*-w.t0).M + (p0.grad w + w.I - grad p*).M \f$
@@ -195,10 +195,10 @@ public:
     {
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
-        Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
+        type::Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
         rotMat AOinv; InPos.getOrientation().inverse().toMatrix(AOinv);
         PFa0.getF()=AOinv*(gradps* F0 - covMN(InPos.getCenter(),Ft) );
-        Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+        type::Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
         C.getF()=covMN(SPos,Ft) + (wI-gradps)*F0 ;
 
         rotMat A0; InPos.getOrientation().toMatrix(A0);
@@ -215,7 +215,7 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W=defaulttype::crossProductMatrix(getAngular(data));
+        const cpMatrix W=type::crossProductMatrix(getAngular(data));
         result.getF() += covMN(getLinear(data),Ft) + W * PFa.getF();
     }
 
@@ -233,7 +233,7 @@ public:
 
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W=-defaulttype::crossProductMatrix(PFa.getF().col(j));
+            cpMatrix W=-type::crossProductMatrix(PFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         return J;
@@ -272,16 +272,16 @@ public:
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:   \f$ F = grad p.M = t.grad w.M + A.A0^{-1}.grad(p*-w.t0).M + (p0.grad w + w.I - grad p*).M \f$
@@ -306,10 +306,10 @@ public:
     {
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
-        Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
+        type::Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
         rotMat AOinv; InPos.getOrientation().inverse().toMatrix(AOinv);
         PFa0.getF()=AOinv*(gradps* F0 - covMN(InPos.getCenter(),Ft) );
-        Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+        type::Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
         C.getF()=covMN(SPos,Ft) + (wI-gradps)*F0 ;
 
         rotMat A0; InPos.getOrientation().toMatrix(A0);
@@ -326,7 +326,7 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W=defaulttype::crossProductMatrix(getAngular(data));
+        const cpMatrix W=type::crossProductMatrix(getAngular(data));
         result.getF() += covMN(getLinear(data),Ft) + W * PFa.getF();
     }
 
@@ -344,7 +344,7 @@ public:
 
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W=-defaulttype::crossProductMatrix(PFa.getF().col(j));
+            cpMatrix W=-type::crossProductMatrix(PFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         return J;
@@ -383,16 +383,16 @@ public:
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:   \f$ F = grad p.M = t.grad w.M + A.A0^{-1}.grad(p*-w.t0).M + (p0.grad w + w.I - grad p*).M \f$
@@ -417,10 +417,10 @@ public:
     {
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
-        Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
+        type::Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
         rotMat AOinv; InPos.getOrientation().inverse().toMatrix(AOinv);
         PFa0.getF()=AOinv*(gradps* F0 - covMN(InPos.getCenter(),Ft) );
-        Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+        type::Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
         C.getF()=covMN(SPos,Ft) + (wI-gradps)*F0 ;
 
         rotMat A0; InPos.getOrientation().toMatrix(A0);
@@ -437,7 +437,7 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W = defaulttype::crossProductMatrix(getAngular(data));
+        const cpMatrix W = type::crossProductMatrix(getAngular(data));
         result.getF() += covMN(getLinear(data),Ft) + W * PFa.getF();
     }
 
@@ -455,7 +455,7 @@ public:
 
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W = -defaulttype::crossProductMatrix(PFa.getF().col(j));
+            cpMatrix W = -type::crossProductMatrix(PFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         return J;
@@ -494,17 +494,17 @@ public:
     enum { adim = InDeriv::total_size - dim };  // size of angular velocity vector
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
-    typedef Mat<dim,mdim,Real> mHessian;
+    typedef type::Vec<mdim,Real> mGradient;
+    typedef type::Mat<dim,mdim,Real> mHessian;
 
-    typedef Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
-    typedef Mat<dim,dim,Real> rotMat;
+    typedef type::Mat<dim,adim,Real> cpMatrix; // cross product matrix of angular part
+    typedef type::Mat<dim,dim,Real> rotMat;
 
     /**
     Mapping:
@@ -538,13 +538,13 @@ public:
 
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
-        Mat<dim,dim,Real> gradps; for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) gradps(i,j)=dp[j][i+1];
+        type::Mat<dim,dim,Real> gradps; for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) gradps(i,j)=dp[j][i+1];
         PFdFa0.getF()=A0inv*(gradps* F0 - covMN(InPos.getCenter(),Ft) );
         PFdFa.getF()= A0 * PFdFa0.getF();
-        Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+        type::Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
         C.getF()=covMN(SPos,Ft) + (wI-gradps)*F0 ;
 
-        Mat<dim,dim,Real> ddw; for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) ddw(i,j)=ddp(i,j)[0];
+        type::Mat<dim,dim,Real> ddw; for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) ddw(i,j)=ddp(i,j)[0];
         dFt=ddw.transposed()*F0;
 
         for (unsigned int k = 0; k < dim; ++k)
@@ -572,7 +572,7 @@ public:
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        const cpMatrix W = defaulttype::crossProductMatrix(getAngular(data));
+        const cpMatrix W = type::crossProductMatrix(getAngular(data));
 
         result.getF() += covMN(getLinear(data),Ft) + W * PFdFa.getF();
         for (unsigned int k = 0; k < dim; ++k) result.getGradientF(k) += covMN(getLinear(data),dFt[k]) + W * PFdFa.getGradientF(k);
@@ -596,7 +596,7 @@ public:
         for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+i*mdim,i)=Ft[j];
         for(unsigned int j=0; j<mdim; ++j)
         {
-            cpMatrix W = -defaulttype::crossProductMatrix(PFdFa.getF().col(j));
+            cpMatrix W = -type::crossProductMatrix(PFdFa.getF().col(j));
             for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+i*mdim,l+dim)+=W(i,l);
         }
         unsigned int offset=dim*mdim;
@@ -605,7 +605,7 @@ public:
             for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) J(j+offset+i*mdim,i)=dFt[k][j];
             for(unsigned int j=0; j<mdim; ++j)
             {
-                cpMatrix W = -defaulttype::crossProductMatrix(PFdFa.getGradientF(k).col(j));
+                cpMatrix W = -type::crossProductMatrix(PFdFa.getGradientF(k).col(j));
                 for(unsigned int l=0; l<adim; ++l)   for(unsigned int i=0; i<dim; ++i)   J(j+offset+i*mdim,l+dim)+=W(i,l);
             }
             offset+=dim*mdim;

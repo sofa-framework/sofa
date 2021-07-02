@@ -61,7 +61,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to the InfoFilter.
      */
-    virtual bool validate(const Index /*edge_index*/, const defaulttype::Vector3& /*PQ*/) = 0;
+    virtual bool validate(const Index /*edge_index*/, const type::Vector3& /*PQ*/) = 0;
 
     /**
      * @brief Returns cone information validity (up to date or not?).
@@ -86,7 +86,7 @@ public:
 
     void setBaseMeshTopology( core::topology::BaseMeshTopology *bmt) {base_mesh_topology = bmt;}
 
-    void setPositionFiltering(const sofa::helper::vector< sofa::defaulttype::Vector3 > *x) {position_filtering = x;}
+    void setPositionFiltering(const sofa::type::vector< sofa::type::Vector3 > *x) {position_filtering = x;}
 
 
 protected:
@@ -103,7 +103,7 @@ protected:
     const LocalMinDistanceFilter	*m_lmdFilters; ///< The LocalMinDistanceFilters object that contains this InfoFilter.
 
     core::topology::BaseMeshTopology* base_mesh_topology;
-    const sofa::helper::vector< sofa::defaulttype::Vector3 > *position_filtering;
+    const sofa::type::vector< sofa::type::Vector3 > *position_filtering;
 };
 
 

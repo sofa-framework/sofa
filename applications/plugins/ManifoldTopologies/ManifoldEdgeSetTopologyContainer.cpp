@@ -54,7 +54,7 @@ void ManifoldEdgeSetTopologyContainer::init()
     // load edges
     EdgeSetTopologyContainer::init();
 
-    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
     if (!m_edge.empty())
     {
         computeConnectedComponent();
@@ -74,7 +74,7 @@ void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
 
     m_edgesAroundVertex.resize( getNbPoints() );
 
-    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
     for (Index edge = 0; edge < m_edge.size(); ++edge)
     {
         // check to how many edges is the end vertex of each edge connnected to
@@ -106,7 +106,7 @@ void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
 }
 
 // Return the number of connected components
-int ManifoldEdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<Index>& components) // const
+int ManifoldEdgeSetTopologyContainer::getNumberConnectedComponents(sofa::type::vector<Index>& components) // const
 {
     computeConnectedComponent();
 
@@ -172,7 +172,7 @@ void ManifoldEdgeSetTopologyContainer::computeConnectedComponent()
 
         Graph G;
 
-        const sofa::helper::vector<Edge> &ea = getEdgeArray();
+        const sofa::type::vector<Edge> &ea = getEdgeArray();
         for (unsigned int k = 0; k<ea.size(); ++k)
         {
             add_edge(ea[k][0], ea[k][1], G);
@@ -332,13 +332,13 @@ int ManifoldEdgeSetTopologyContainer::getPreviousEdge(const Index i)
 }
 
 
-const sofa::helper::vector< Index > &ManifoldEdgeSetTopologyContainer::getComponentVertexArray() const
+const sofa::type::vector< Index > &ManifoldEdgeSetTopologyContainer::getComponentVertexArray() const
 {
     return m_ComponentVertexArray;
 }
 
 
-const sofa::helper::vector< sofa::component::topology::ManifoldEdgeSetTopologyContainer::ConnectedComponent > &ManifoldEdgeSetTopologyContainer::getConnectedComponentArray() const
+const sofa::type::vector< sofa::component::topology::ManifoldEdgeSetTopologyContainer::ConnectedComponent > &ManifoldEdgeSetTopologyContainer::getConnectedComponentArray() const
 {
     return m_ConnectedComponentArray;
 }

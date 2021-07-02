@@ -89,7 +89,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef typename helper::vector<MassType> VecMass;
+    typedef typename type::vector<MassType> VecMass;
     typedef MeshMatrixMass<TDataTypes, TMassType> TheMeshMatrixMass ;
 
     simulation::Simulation* simulation = nullptr;

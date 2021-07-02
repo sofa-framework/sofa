@@ -52,8 +52,8 @@ public:
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename InCoord::value_type Real;
     typedef typename OutCoord::value_type OutReal;
-    typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
-    typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
+    typedef typename type::vector<const InVecCoord*> vecConstInVecCoord;
+    typedef typename type::vector<OutVecCoord*> vecOutVecCoord;
 
     typedef Data<InVecCoord> InDataVecCoord;
     typedef Data<InVecDeriv> InDataVecDeriv;
@@ -66,13 +66,13 @@ public:
 
     void init() override;
 
-    void apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) override;
-    void applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) override;
-    void applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override;
+    void apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) override;
+    void applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) override;
+    void applyJT(const core::MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce) override;
     void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
-    void applyJT( const core::ConstraintParams* cparams, const helper::vector< InDataMatrixDeriv* >& dataMatOutConst, const helper::vector< const OutDataMatrixDeriv* >& dataMatInConst ) override;
+    void applyJT( const core::ConstraintParams* cparams, const type::vector< InDataMatrixDeriv* >& dataMatOutConst, const type::vector< const OutDataMatrixDeriv* >& dataMatInConst ) override;
 
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     void updateForceMask() override;
 
@@ -82,7 +82,7 @@ protected :
     IdentityMultiMapping();
     virtual ~IdentityMultiMapping();
 
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
     typedef linearsolver::EigenSparseMatrix<TIn,TOut> EigenMatrix;
 //    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence

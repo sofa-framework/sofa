@@ -85,14 +85,14 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     typedef OutCoord Coord;
     typedef OutDeriv Deriv;
     enum { N=Out::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vector ;
+    typedef type::Mat<N,N,Real> Mat;
+    typedef type::Vec<N,Real> Vector ;
 
     OutVecCoord rotatedPoints;
     DeformableOnRigidFrameMappingInternalData<In, Out> data;
     Data<unsigned int> index; ///< input DOF index
     Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
-    Data<sofa::helper::vector<unsigned int> >  repartition; ///< number of dest dofs per entry dof
+    Data<sofa::type::vector<unsigned int> >  repartition; ///< number of dest dofs per entry dof
     Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
     Data< Real > m_rootAngularForceScaleFactor; ///< Scale factor applied on the angular force accumulated on the rigid model
@@ -118,23 +118,23 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
     void apply(
-        const core::MechanicalParams* /* mparams */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-        const helper::vector<const InDataVecCoord*>& dataVecInPos ,
-        const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos) override;
+        const core::MechanicalParams* /* mparams */, const type::vector<OutDataVecCoord*>& dataVecOutPos,
+        const type::vector<const InDataVecCoord*>& dataVecInPos ,
+        const type::vector<const InRootDataVecCoord*>& dataVecInRootPos) override;
 
     //ApplyJ
     void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
     void applyJ(
-        const core::MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
-        const helper::vector<const InDataVecDeriv*>& dataVecInVel,
-        const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override;
+        const core::MechanicalParams* /* mparams */, const type::vector< OutDataVecDeriv*>& dataVecOutVel,
+        const type::vector<const InDataVecDeriv*>& dataVecInVel,
+        const type::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override;
 
     //ApplyJT Force
     void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );
     void applyJT(
-        const core::MechanicalParams* /* mparams */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
-        const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
-        const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override;
+        const core::MechanicalParams* /* mparams */, const type::vector< InDataVecDeriv*>& dataVecOutForce,
+        const type::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
+        const type::vector<const OutDataVecDeriv*>& dataVecInForce) override;
 
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
 
@@ -142,9 +142,9 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     //ApplyJT Constraint
     void applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outroot );
     void applyJT(
-        const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
-        const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
-        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst) override;
+        const core::ConstraintParams* /* cparams */, const type::vector< InDataMatrixDeriv*>& dataMatOutConst ,
+        const type::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
+        const type::vector<const OutDataMatrixDeriv*>& dataMatInConst) override;
 
     /**
       * @brief
@@ -158,7 +158,7 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     void clear ( int reserve=0 );
 
     void setRepartition ( unsigned int value );
-    void setRepartition ( sofa::helper::vector<unsigned int> values );
+    void setRepartition ( sofa::type::vector<unsigned int> values );
 
 protected:
     DeformableOnRigidFrameMapping();

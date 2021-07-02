@@ -25,7 +25,7 @@
 #include <MultiThreading/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-//#include <sofa/defaulttype/Vec.h>
+//#include <sofa/type/Vec.h>
 //#include <sofa/core/topology/BaseMeshTopology.h>
 //#include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>
@@ -50,12 +50,12 @@ namespace sofa
                 typedef typename DataTypes::Coord         Coord;
                 typedef typename DataTypes::VecCoord      VecCoord;
                 typedef typename DataTypes::Real          Real;
-                //typedef sofa::defaulttype::Vec<1, Real>                       Coord1D;
-                //typedef sofa::defaulttype::Vec<2, Real>                       Coord2D;
-                //typedef sofa::defaulttype::Vec<3, Real>                       Coord3D;
-                typedef sofa::helper::vector <Coord>       VectorCoord;
-                typedef sofa::helper::vector <VecCoord>    VectorVecCoord;
-                //typedef sofa::helper::vector <Coord3D>    VecCoord3D;
+                //typedef sofa::type::Vec<1, Real>                       Coord1D;
+                //typedef sofa::type::Vec<2, Real>                       Coord2D;
+                //typedef sofa::type::Vec<3, Real>                       Coord3D;
+                typedef sofa::type::vector<Coord>       VectorCoord;
+                typedef sofa::type::vector<VecCoord>    VectorVecCoord;
+                //typedef sofa::type::vector<Coord3D>    VecCoord3D;
 
             public:
                 SOFA_CLASS(SOFA_TEMPLATE(MeanComputation, DataTypes), core::objectmodel::BaseObject);
@@ -92,7 +92,7 @@ namespace sofa
 
                 //std::vector<component::container::MechanicalObject<DataTypes>*> _inputMechObjs;
                 
-                sofa::helper::vector< Data< VecCoord >* > _inputs;
+                sofa::type::vector< Data< VecCoord >* > _inputs;
                 
                 size_t _resultSize;
           

@@ -58,12 +58,12 @@ public:
 
     void setFilename(std::string f) {filename.setValue(f);}
 
-    helper::vector<ArticulationCenter*> getArticulationCenters() { return articulationCenters; }
+    type::vector<ArticulationCenter*> getArticulationCenters() { return articulationCenters; }
     ArticulationCenter* getArticulationCenterAsChild(int index);
-    helper::vector<ArticulationCenter*> getAcendantList(int index);
+    type::vector<ArticulationCenter*> getAcendantList(int index);
 
-    helper::vector<ArticulationCenter*> articulationCenters;
-    helper::vector<ArticulationCenter*> acendantList;
+    type::vector<ArticulationCenter*> articulationCenters;
+    type::vector<ArticulationCenter*> acendantList;
 
     bool chargedFromFile;
     int numOfFrames;
@@ -123,15 +123,15 @@ public:
     *	This will be computed in mapping using the global position of the parent DOF and the local position
     *	of the center articulation
     */
-    Data<defaulttype::Vector3> globalPosition; ///< Global position of the articulation center
+    Data<type::Vector3> globalPosition; ///< Global position of the articulation center
     /**
     *	It stores the local position of the center articulation in relation to the global position of the parentDOF
     */
-    Data<defaulttype::Vector3> posOnParent; ///< Parent position of the articulation center
+    Data<type::Vector3> posOnParent; ///< Parent position of the articulation center
     /**
     *	It stores the local position of the center articulation in relation to the global position of the childDOF
     */
-    Data<defaulttype::Vector3> posOnChild; ///< Child position of the articulation center
+    Data<type::Vector3> posOnChild; ///< Child position of the articulation center
     /**
     *	It tells if the articulations of the articulation center are processed one by one or globally:
     *   0 - (default         ) articulation are treated one by one, the axis of the second articulation is updated by the potential rotation of the first articulation
@@ -151,36 +151,36 @@ public:
     ArticulatedHierarchyContainer::Transform H_p_pLc, H_c_cLp, H_pLc_cLp;
 
 
-    helper::vector<Articulation*> articulations;
+    type::vector<Articulation*> articulations;
 
-    defaulttype::Vector3 posOnChildGlobal(defaulttype::Quat localToGlobal)
+    type::Vector3 posOnChildGlobal(type::Quat<SReal> localToGlobal)
     {
-        defaulttype::Vector3 result = localToGlobal.rotate(posOnChild.getValue());
+        type::Vector3 result = localToGlobal.rotate(posOnChild.getValue());
         return result;
     }
 
-    defaulttype::Vector3 initTranslateChild(defaulttype::Quat objectRotation)
+    type::Vector3 initTranslateChild(type::Quat<SReal> objectRotation)
     {
-        defaulttype::Vector3 PAParent = posOnParent.getValue() - defaulttype::Vector3(0,0,0);
-        defaulttype::Vector3 PAChild = posOnChild.getValue() - defaulttype::Vector3(0,0,0);
+        type::Vector3 PAParent = posOnParent.getValue() - type::Vector3(0,0,0);
+        type::Vector3 PAChild = posOnChild.getValue() - type::Vector3(0,0,0);
         return objectRotation.rotate(PAParent - PAChild);
     }
 
-    defaulttype::Vector3 translateChild(defaulttype::Quat object1Rotation, defaulttype::Quat object2Rotation)
+    type::Vector3 translateChild(type::Quat<SReal> object1Rotation, type::Quat<SReal> object2Rotation)
     {
-        defaulttype::Vector3 APChild = defaulttype::Vector3(0,0,0) - posOnChild.getValue();
-        defaulttype::Vector3 AP1 = object2Rotation.rotate(APChild);
-        defaulttype::Vector3 AP2 = object1Rotation.rotate(AP1);
+        type::Vector3 APChild = type::Vector3(0,0,0) - posOnChild.getValue();
+        type::Vector3 AP1 = object2Rotation.rotate(APChild);
+        type::Vector3 AP2 = object1Rotation.rotate(AP1);
         return AP2 - AP1;
     }
 
-    defaulttype::Vector3 correctPosChild(defaulttype::Vector3 object1Pos, defaulttype::Quat object1Rot, defaulttype::Vector3 object2Pos, defaulttype::Quat object2Rot)
+    type::Vector3 correctPosChild(type::Vector3 object1Pos, type::Quat<SReal> object1Rot, type::Vector3 object2Pos, type::Quat<SReal> object2Rot)
     {
-        defaulttype::Vector3 result;
-        defaulttype::Vector3 PAParent = posOnParent.getValue() - defaulttype::Vector3(0,0,0);
-        defaulttype::Vector3 PAChild = posOnChild.getValue() - defaulttype::Vector3(0,0,0);
-        defaulttype::Vector3 A1 = object1Pos + object1Rot.rotate(PAParent);
-        defaulttype::Vector3 A2 = object2Pos + object2Rot.rotate(PAChild);
+        type::Vector3 result;
+        type::Vector3 PAParent = posOnParent.getValue() - type::Vector3(0,0,0);
+        type::Vector3 PAChild = posOnChild.getValue() - type::Vector3(0,0,0);
+        type::Vector3 A1 = object1Pos + object1Rot.rotate(PAParent);
+        type::Vector3 A2 = object2Pos + object2Rot.rotate(PAChild);
 
         result = A1 - A2;
 
@@ -188,11 +188,11 @@ public:
 
     }
 
-    helper::vector<Articulation*>& getArticulations() { return articulations; }
+    type::vector<Articulation*>& getArticulations() { return articulations; }
 
-    defaulttype::Quat OrientationArticulationCenter;
-    defaulttype::Vector3 DisplacementArticulationCenter;
-    defaulttype::Vector3 Disp_Rotation;
+    type::Quat<SReal> OrientationArticulationCenter;
+    type::Vector3 DisplacementArticulationCenter;
+    type::Vector3 Disp_Rotation;
 
 
 }; // end ArticulationCenter
@@ -222,7 +222,7 @@ public:
     /**
     *	this variable defines the motion axis
     */
-    Data<defaulttype::Vector3> axis; ///< Set the rotation axis for the articulation
+    Data<type::Vector3> axis; ///< Set the rotation axis for the articulation
     /**
     *	If true, this variable sets a rotation motion
     *	otherwise it does nothing

@@ -9,8 +9,8 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <SofaLoader/MeshObjLoader.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 
 #include <sofa/helper/system/FileRepository.h>
 
@@ -71,12 +71,12 @@ void RegistrationExporter::init()
             if (this->f_printLog.getValue()) std::cout<<"RegistrationExporter: "<<this->inFileNames.back()<<"  ->  "<<this->outFileNames.back()<<std::endl;
 
             // get inverse transforms applied in loader
-                        defaulttype::Vector3 scale=loaders[l]->getScale();
+                        type::Vector3 scale=loaders[l]->getScale();
                         Mat4x4 m_scale; m_scale.fill(0);   for(unsigned int i=0;i<3;i++)	 m_scale[i][i]=1./scale[i]; m_scale[3][3]=1.;
-                        defaulttype::Quaternion q = helper::Quater< SReal >::createQuaterFromEuler(defaulttype::Vec< 3, SReal >(loaders[l]->getRotation()) * M_PI / 180.0);
+                        type::Quat<SReal> q = type::Quat< SReal >::createQuaterFromEuler(type::Vec< 3, SReal >(loaders[l]->getRotation()) * M_PI / 180.0);
                         Mat4x4 m_rot;
                         q.inverse().toHomogeneousMatrix(m_rot);
-                        defaulttype::Vector3 translation=loaders[l]->getTranslation();
+                        type::Vector3 translation=loaders[l]->getTranslation();
                         Mat4x4 m_translation; m_translation.fill(0);   for(unsigned int i=0;i<3;i++)	 m_translation[i][3]=-translation[i];  for(unsigned int i=0;i<4;i++)	 m_translation[i][i]=1;
                         this->inverseTransforms.push_back(m_scale*m_rot*m_translation);
                         if (this->f_printLog.getValue()) std::cout<<"RegistrationExporter: transform = "<<this->inverseTransforms.back()<<std::endl;
@@ -107,7 +107,7 @@ void RegistrationExporter::writeMesh()
 
                         values >> token;
                         if (token == "v") {
-                            defaulttype::Vec< 4, SReal > p(raPositions[count][0],raPositions[count][1],raPositions[count][2],1);
+                            type::Vec< 4, SReal > p(raPositions[count][0],raPositions[count][1],raPositions[count][2],1);
                                                          if(applyInverseTransform.getValue()) p=inverseTransforms[l]*p;
                             if(count<raPositions.size()) fileOut<<"v "<<p[0]<<" "<<p[1]<<" "<<p[2]<<std::endl;
                             count++;

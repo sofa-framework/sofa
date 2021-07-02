@@ -342,7 +342,7 @@ void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
     assert ( root!=nullptr );
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     root->execute<UpdateBoundingBoxVisitor>( params );
-    defaulttype::BoundingBox bb = root->f_bbox.getValue();
+    type::BoundingBox bb = root->f_bbox.getValue();
     for(int i=0; i<3; i++){
         minBBox[i]= bb.minBBox()[i];
         maxBBox[i]= bb.maxBBox()[i];

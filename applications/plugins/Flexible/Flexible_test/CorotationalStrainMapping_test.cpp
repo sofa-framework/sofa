@@ -31,8 +31,8 @@ namespace sofa {
             static_cast<_Mapping*>(this->mapping)->f_geometricStiffness.setValue(1);
             static_cast<_Mapping*>(this->mapping)->f_method.beginEdit()->setSelectedItem( method );
 
-            defaulttype::Mat<3,3,Real> rotation;
-            defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> symGradDef; // local frame with only stretch and shear and no rotation
+            type::Mat<3,3,Real> rotation;
+            type::Mat<In::material_dimensions,In::material_dimensions,Real> symGradDef; // local frame with only stretch and shear and no rotation
 
             // create a symmetric deformation gradient, encoding a pure deformation.
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
@@ -45,14 +45,14 @@ namespace sofa {
 
                 // expected mapped values
                 OutVecCoord expectedChildCoords(1);
-                defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( symGradDef );
+                type::Mat<In::material_dimensions,In::material_dimensions,Real> defo( symGradDef );
                 for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
                     defo[i][i] -= 1.0;
                 expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
 //              cerr<<"voigt strain = " << defo << endl;
 
-                helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
-//                helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // debug with no rotation
+                type::Quat<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
+//                type::Quat<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // debug with no rotation
 
                 return Inherited::runTest( rotation, symGradDef, expectedChildCoords );
 

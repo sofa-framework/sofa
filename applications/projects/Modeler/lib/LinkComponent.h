@@ -50,7 +50,7 @@ class LinkComponent : public QWidget
 {
     Q_OBJECT
 public:
-    typedef helper::vector< sofa::core::loader::BaseLoader* > Loaders;
+    typedef type::vector< sofa::core::loader::BaseLoader* > Loaders;
     LinkComponent(GraphModeler* mg, const std::vector<QTreeWidgetItem*>& items, QTreeWidgetItem* sel);
     ~LinkComponent() override;
 

@@ -33,8 +33,8 @@ namespace sofa
 namespace helper
 {
 
-using defaulttype::Mat;
-using defaulttype::Vec;
+using type::Mat;
+using type::Vec;
 
 
 template<class Real>
@@ -52,7 +52,7 @@ void Decompose<Real>::getRotation( Mat<3,3,Real>& r, Vec<3,Real>& edgex, Vec<3,R
 
 
 template<class Real>
-void Decompose<Real>::QRDecomposition( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R )
+void Decompose<Real>::QRDecomposition( const type::Mat<3,3,Real> &M, type::Mat<3,3,Real> &R )
 {
     Vec<3,Real> edgex( M[0][0], M[1][0], M[2][0] );
     Vec<3,Real> edgey( M[0][1], M[1][1], M[2][1] );
@@ -61,7 +61,7 @@ void Decompose<Real>::QRDecomposition( const defaulttype::Mat<3,3,Real> &M, defa
 }
 
 template<class Real>
-void Decompose<Real>::QRDecomposition( const defaulttype::Mat<3,2,Real> &M, defaulttype::Mat<3,2,Real> &r )
+void Decompose<Real>::QRDecomposition( const type::Mat<3,2,Real> &M, type::Mat<3,2,Real> &r )
 {
     Vec<3,Real> edgex( M[0][0], M[1][0], M[2][0] );
     Vec<3,Real> edgey( M[0][1], M[1][1], M[2][1] );
@@ -77,7 +77,7 @@ void Decompose<Real>::QRDecomposition( const defaulttype::Mat<3,2,Real> &M, defa
 }
 
 template<class Real>
-void Decompose<Real>::QRDecomposition( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &r )
+void Decompose<Real>::QRDecomposition( const type::Mat<2,2,Real> &M, type::Mat<2,2,Real> &r )
 {
     Vec<2,Real> edgex( M[0][0], M[1][0] ); edgex.normalize();
     r[0][0] = edgex[0];  r[1][0] = edgex[1];
@@ -85,7 +85,7 @@ void Decompose<Real>::QRDecomposition( const defaulttype::Mat<2,2,Real> &M, defa
 }
 
 template<class Real>
-bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &R )
+bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,3,Real> &M, type::Mat<3,3,Real> &R )
 {
     bool degenerated;
 
@@ -274,7 +274,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
 
 
 template<class Real>
-bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,2,Real> &M, defaulttype::Mat<3,2,Real> &r )
+bool Decompose<Real>::QRDecomposition_stable( const type::Mat<3,2,Real> &M, type::Mat<3,2,Real> &r )
 {
     bool degenerated;
 
@@ -390,7 +390,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,2,Real> &
 
 
 template<class Real>
-bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &r )
+bool Decompose<Real>::QRDecomposition_stable( const type::Mat<2,2,Real> &M, type::Mat<2,2,Real> &r )
 {
     bool degenerated;
 
@@ -440,7 +440,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 /******* Matrix Preliminaries *******/
 
 //template<class Real>
-//void Decompose<Real>::adjoint_transpose(const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT)
+//void Decompose<Real>::adjoint_transpose(const type::Mat<3,3,Real>& M, type::Mat<3,3,Real>& MadjT)
 //{
 //    MadjT[0] = cross(M[1],M[2]);
 //    MadjT[1] = cross(M[2],M[0]);
@@ -448,7 +448,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 //}
 
 //template<class Real>
-//Real Decompose<Real>::norm_inf(const defaulttype::Mat<3,3,Real>& M)
+//Real Decompose<Real>::norm_inf(const type::Mat<3,3,Real>& M)
 //{
 //    Real sum, max = 0;
 //    for (int i=0; i<3; i++)
@@ -460,7 +460,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 //}
 
 //template<class Real>
-//Real Decompose<Real>::norm_one(const defaulttype::Mat<3,3,Real>& M)
+//Real Decompose<Real>::norm_one(const type::Mat<3,3,Real>& M)
 //{
 //    Real sum, max = 0;
 //    for (int i=0; i<3; i++)
@@ -473,7 +473,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 
 
 //template<class Real>
-//int Decompose<Real>::find_max_col(const defaulttype::Mat<3,3,Real>& M)
+//int Decompose<Real>::find_max_col(const type::Mat<3,3,Real>& M)
 //{
 //    Real abs, max = 0;
 //    int col = -1;
@@ -487,7 +487,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 //}
 
 //template<class Real>
-//void Decompose<Real>::make_reflector(const defaulttype::Vec<3,Real>& v, defaulttype::Vec<3,Real>& u)
+//void Decompose<Real>::make_reflector(const type::Vec<3,Real>& v, type::Vec<3,Real>& u)
 //{
 //    Real s = (Real)sqrt(dot(v, v));
 //    u[0] = v[0]; u[1] = v[1];
@@ -498,7 +498,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 
 
 //template<class Real>
-//void Decompose<Real>::reflect_cols(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u)
+//void Decompose<Real>::reflect_cols(type::Mat<3,3,Real>& M, const type::Vec<3,Real>& u)
 //{
 //    for (int i=0; i<3; i++)
 //    {
@@ -509,7 +509,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 //}
 
 //template<class Real>
-//void Decompose<Real>::reflect_rows(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u)
+//void Decompose<Real>::reflect_rows(type::Mat<3,3,Real>& M, const type::Vec<3,Real>& u)
 //{
 //    for (int i=0; i<3; i++)
 //    {
@@ -520,9 +520,9 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 //}
 
 //template<class Real>
-//void Decompose<Real>::do_rank1(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q)
+//void Decompose<Real>::do_rank1(type::Mat<3,3,Real>& M, type::Mat<3,3,Real>& Q)
 //{
-//    defaulttype::Vec<3,Real> v1, v2;
+//    type::Vec<3,Real> v1, v2;
 //    Real s;
 //    int col;
 //    Q.identity();
@@ -540,9 +540,9 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 
 
 //template<class Real>
-//void Decompose<Real>::do_rank2(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT, defaulttype::Mat<3,3,Real>& Q)
+//void Decompose<Real>::do_rank2(type::Mat<3,3,Real>& M, type::Mat<3,3,Real>& MadjT, type::Mat<3,3,Real>& Q)
 //{
-//    defaulttype::Vec<3,Real> v1, v2;
+//    type::Vec<3,Real> v1, v2;
 //    Real w, x, y, z, c, s, d;
 //    int col;
 //    /* If rank(M) is 2, we should find a non-zero column in MadjT */
@@ -569,9 +569,9 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 
 
 //template<class Real>
-//Real Decompose<Real>::polarDecomposition(const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q, defaulttype::Mat<3,3,Real>& S)
+//Real Decompose<Real>::polarDecomposition(const type::Mat<3,3,Real>& M, type::Mat<3,3,Real>& Q, type::Mat<3,3,Real>& S)
 //{
-//    defaulttype::Mat<3,3,Real> Mk, MadjTk, Ek;
+//    type::Mat<3,3,Real> Mk, MadjTk, Ek;
 //    Real det, M_one, M_inf, MadjT_one, MadjT_inf, E_one, gamma, g1, g2;
 //    Mk.transpose(M);
 //    M_one = norm_one(Mk);  M_inf = norm_inf(Mk);
@@ -608,10 +608,10 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
 /// original code by Ken Shoemake, 1993
 /// version simplified by Jernej Barbič imported from Vega
 template<class Real>
-Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q, defaulttype::Mat<3,3,Real>& S )
+Real Decompose<Real>::polarDecomposition( const type::Mat<3,3,Real>& M, type::Mat<3,3,Real>& Q, type::Mat<3,3,Real>& S )
 {
-  defaulttype::Mat<3,3,Real> Mk;
-  defaulttype::Mat<3,3,Real> Ek;
+  type::Mat<3,3,Real> Mk;
+  type::Mat<3,3,Real> Ek;
   Real det, M_oneNorm, M_infNorm, E_oneNorm;
 
   // Mk = M^T
@@ -623,7 +623,7 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
   do
   {
 
-    defaulttype::Mat<3,3,Real> MadjTk;
+    type::Mat<3,3,Real> MadjTk;
 
     // row 2 x row 3
     MadjTk[0] = cross( Mk[1], Mk[2] );
@@ -672,10 +672,10 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
 
 
 template<class Real>
-Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q )
+Real Decompose<Real>::polarDecomposition( const type::Mat<3,3,Real>& M, type::Mat<3,3,Real>& Q )
 {
-  defaulttype::Mat<3,3,Real> Mk;
-  defaulttype::Mat<3,3,Real> Ek;
+  type::Mat<3,3,Real> Mk;
+  type::Mat<3,3,Real> Ek;
   Real det, M_oneNorm, M_infNorm, E_oneNorm;
 
   // Mk = M^T
@@ -686,7 +686,7 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
 
   do
   {
-    defaulttype::Mat<3,3,Real> MadjTk;
+    type::Mat<3,3,Real> MadjTk;
 
     // row 2 x row 3
     MadjTk[0] = cross( Mk[1], Mk[2] );
@@ -729,9 +729,9 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
 
 
 //template<class Real>
-//Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q )
+//Real Decompose<Real>::polarDecomposition( const type::Mat<3,3,Real>& M, type::Mat<3,3,Real>& Q )
 //{
-//    defaulttype::Mat<3,3,Real> Mk, MadjTk, Ek;
+//    type::Mat<3,3,Real> Mk, MadjTk, Ek;
 //    Real det, M_one, M_inf, MadjT_one, MadjT_inf, E_one, gamma, g1, g2;
 //    Mk.transpose(M);
 //    M_one = norm_one(Mk);  M_inf = norm_inf(Mk);
@@ -761,7 +761,7 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
 
 
 template<class Real>
-void Decompose<Real>::polarDecomposition( const defaulttype::Mat<2,2,Real>& M, defaulttype::Mat<2,2,Real>& Q )
+void Decompose<Real>::polarDecomposition( const type::Mat<2,2,Real>& M, type::Mat<2,2,Real>& Q )
 {
     Q[0][0] =  M[1][1];
     Q[0][1] = -M[1][0];
@@ -781,7 +781,7 @@ void Decompose<Real>::polarDecomposition( const defaulttype::Mat<2,2,Real>& M, d
 
 
 template<class Real>
-bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &Q, defaulttype::Mat<3,3,Real> &S )
+bool Decompose<Real>::polarDecomposition_stable( const type::Mat<3,3,Real> &M, type::Mat<3,3,Real> &Q, type::Mat<3,3,Real> &S )
 {
     bool degenerated = polarDecomposition_stable( M, Q );
     S = Q.multTranspose( M ); // S = Qt * M
@@ -791,10 +791,10 @@ bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<3,3,Real
 }
 
 template<class Real>
-bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &Q )
+bool Decompose<Real>::polarDecomposition_stable( const type::Mat<3,3,Real> &M, type::Mat<3,3,Real> &Q )
 {
-    defaulttype::Mat<3,3,Real> U, V;
-    defaulttype::Vec<3,Real> Sdiag;
+    type::Mat<3,3,Real> U, V;
+    type::Vec<3,Real> Sdiag;
     bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
 
     Q = U.multTransposed( V ); // Q = U * Vt
@@ -803,7 +803,7 @@ bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<3,3,Real
 }
 
 template<class Real>
-bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &Q, defaulttype::Mat<2,2,Real> &S )
+bool Decompose<Real>::polarDecomposition_stable( const type::Mat<2,2,Real> &M, type::Mat<2,2,Real> &Q, type::Mat<2,2,Real> &S )
 {
     bool degenerated = polarDecomposition_stable( M, Q );
     S = Q.multTranspose( M ); // S = Qt * M
@@ -813,10 +813,10 @@ bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<2,2,Real
 }
 
 template<class Real>
-bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &Q )
+bool Decompose<Real>::polarDecomposition_stable( const type::Mat<2,2,Real> &M, type::Mat<2,2,Real> &Q )
 {
-    defaulttype::Mat<2,2,Real> U, V;
-    defaulttype::Vec<2,Real> Sdiag;
+    type::Mat<2,2,Real> U, V;
+    type::Vec<2,Real> Sdiag;
     bool degenerated = helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
 
     Q = U.multTransposed( V ); // Q = U * Vt
@@ -826,11 +826,11 @@ bool Decompose<Real>::polarDecomposition_stable( const defaulttype::Mat<2,2,Real
 
 
 template<class Real>
-void Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,2,Real> &M, defaulttype::Mat<3,2,Real> &Q, defaulttype::Mat<2,2,Real> &S )
+void Decompose<Real>::polarDecomposition( const type::Mat<3,2,Real> &M, type::Mat<3,2,Real> &Q, type::Mat<2,2,Real> &S )
 {
-    defaulttype::Mat<3,2,Real> U;
-    defaulttype::Mat<2,2,Real> V;
-    defaulttype::Vec<2,Real> Sdiag;
+    type::Mat<3,2,Real> U;
+    type::Mat<2,2,Real> V;
+    type::Vec<2,Real> Sdiag;
     helper::Decompose<Real>::SVD_stable( M, U, Sdiag, V );
 
     Q = U.multTransposed( V );
@@ -840,9 +840,9 @@ void Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,2,Real> &M, d
 
 
 template<class Real>
-defaulttype::Mat<3,3,Real> Decompose<Real>::skewMat( const defaulttype::Vec<3,Real>& v )
+type::Mat<3,3,Real> Decompose<Real>::skewMat( const type::Vec<3,Real>& v )
 {
-    defaulttype::Mat<3,3,Real> M;
+    type::Mat<3,3,Real> M;
     M[0][1] = -v[2]; M[1][0] = -M[0][1];
     M[0][2] =  v[1]; M[2][0] = -M[0][2];
     M[1][2] = -v[0]; M[2][1] = -M[1][2];
@@ -850,9 +850,9 @@ defaulttype::Mat<3,3,Real> Decompose<Real>::skewMat( const defaulttype::Vec<3,Re
 }
 
 template<class Real>
-defaulttype::Vec<3,Real> Decompose<Real>::skewVec( const defaulttype::Mat<3,3,Real>& M )
+type::Vec<3,Real> Decompose<Real>::skewVec( const type::Mat<3,3,Real>& M )
 {
-    defaulttype::Vec<3,Real> v;
+    type::Vec<3,Real> v;
     v[0] = (Real)0.5 * ( M[2][1] - M[1][2] );
     v[1] = (Real)0.5 * ( M[0][2] - M[2][0] );
     v[2] = (Real)0.5 * ( M[1][0] - M[0][1] );
@@ -860,12 +860,12 @@ defaulttype::Vec<3,Real> Decompose<Real>::skewVec( const defaulttype::Mat<3,3,Re
 }
 
 template<class Real>
-void Decompose<Real>::polarDecompositionGradient_G( const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& S, defaulttype::Mat<3,3,Real>& invG )
+void Decompose<Real>::polarDecompositionGradient_G( const type::Mat<3,3,Real>& Q, const type::Mat<3,3,Real>& S, type::Mat<3,3,Real>& invG )
 {
     // invG = ((tr(S)*I-S)*Qt)^-1
 
-    defaulttype::Mat<3,3,Real> G = -S;
-    Real trace = defaulttype::trace( S );
+    type::Mat<3,3,Real> G = -S;
+    Real trace = type::trace( S );
     G[0][0] += trace;
     G[1][1] += trace;
     G[2][2] += trace;
@@ -877,16 +877,16 @@ void Decompose<Real>::polarDecompositionGradient_G( const defaulttype::Mat<3,3,R
 
 
 template<class Real>
-void Decompose<Real>::polarDecompositionGradient_dQ( const defaulttype::Mat<3,3,Real>& invG, const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ )
+void Decompose<Real>::polarDecompositionGradient_dQ( const type::Mat<3,3,Real>& invG, const type::Mat<3,3,Real>& Q, const type::Mat<3,3,Real>& dM, type::Mat<3,3,Real>& dQ )
 {
     // omega = invG * (2 * skew(Q^T * dM))
-    defaulttype::Vec<3,Real> omega = invG * skewVec( Q.multTranspose( dM ) ) * 2;
+    type::Vec<3,Real> omega = invG * skewVec( Q.multTranspose( dM ) ) * 2;
 
     dQ = skewMat( omega ) * Q;
 }
 
 template<class Real>
-void Decompose<Real>::polarDecompositionGradient_dQOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &invG,  defaulttype::Mat<9,9,Real>& J)
+void Decompose<Real>::polarDecompositionGradient_dQOverdM(const type::Mat<3,3,Real> &Q, const type::Mat<3,3,Real> &invG,  type::Mat<9,9,Real>& J)
 {
 J[0][0]=(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*Q[1][0]+(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*Q[2][0]; J[0][1]=(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*Q[1][1]+(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*Q[2][1]; J[0][2]=(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*Q[1][2]+(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*Q[2][2]; J[0][3]=(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*Q[0][0]+(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*Q[2][0]; J[0][4]=(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*Q[0][1]+(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*Q[2][1]; J[0][5]=(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*Q[0][2]+(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*Q[2][2]; J[0][6]=(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*Q[0][0]+(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*Q[1][0]; J[0][7]=(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*Q[0][1]+(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*Q[1][1]; J[0][8]=(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*Q[0][2]+(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*Q[1][2];
 J[1][0]=(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*Q[1][0]+(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*Q[2][0]; J[1][1]=(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*Q[1][1]+(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*Q[2][1]; J[1][2]=(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*Q[1][2]+(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*Q[2][2]; J[1][3]=(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*Q[0][0]+(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*Q[2][0]; J[1][4]=(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*Q[0][1]+(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*Q[2][1]; J[1][5]=(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*Q[0][2]+(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*Q[2][2]; J[1][6]=(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*Q[0][0]+(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*Q[1][0]; J[1][7]=(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*Q[0][1]+(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*Q[1][1]; J[1][8]=(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*Q[0][2]+(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*Q[1][2];
@@ -902,7 +902,7 @@ J[8][0]=(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*Q[1][0]+(-invG[1][0]*Q[2][1]+inv
 // another method based on the relation : M=QS -> dQ = (dM - Q dS)S^-1  ->  dQ = (dM - dSOverdM.dM)S^-1  -> dQ = JdM
 // coeff between dMij and dQkl = sum_m ( (1) - sum_n ( dSOverdM(n,m,i,j).Q(k,n) ) .Sinv(l,m)
 template<class Real>
-void Decompose<Real>::polarDecompositionGradient_dQOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &Sinv, const defaulttype::Mat<9,9,Real>& dSOverdM, defaulttype::Mat<9,9,Real>& J)
+void Decompose<Real>::polarDecompositionGradient_dQOverdM(const type::Mat<3,3,Real> &Q, const type::Mat<3,3,Real> &Sinv, const type::Mat<9,9,Real>& dSOverdM, type::Mat<9,9,Real>& J)
 {
     for(unsigned i=0;i<3;i++)
         for(unsigned j=0;j<3;j++)
@@ -921,13 +921,13 @@ void Decompose<Real>::polarDecompositionGradient_dQOverdM(const defaulttype::Mat
 }
 
 template<class Real>
-void Decompose<Real>::polarDecompositionGradient_dS( const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& S, const defaulttype::Mat<3,3,Real>& dQ, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dS )
+void Decompose<Real>::polarDecompositionGradient_dS( const type::Mat<3,3,Real>& Q, const type::Mat<3,3,Real>& S, const type::Mat<3,3,Real>& dQ, const type::Mat<3,3,Real>& dM, type::Mat<3,3,Real>& dS )
 {
     dS = Q.multTranspose( dM - dQ * S ); // dS = Qt * ( dM - dQ * S )
 }
 
 template<class Real>
-void Decompose<Real>::polarDecompositionGradient_dSOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &M, const  defaulttype::Mat<3,3,Real>& invG,  defaulttype::Mat<9,9,Real>& J)
+void Decompose<Real>::polarDecompositionGradient_dSOverdM(const type::Mat<3,3,Real> &Q, const type::Mat<3,3,Real> &M, const  type::Mat<3,3,Real>& invG,  type::Mat<9,9,Real>& J)
 {
 J[0][0]=Q[0][0]*(1-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][0]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][0])+Q[1][0]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][0]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][0])+Q[2][0]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][0]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][0]); J[0][1]=Q[0][0]*(-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][0]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][0])+Q[1][0]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][0]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][0])+Q[2][0]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][0]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][0]); J[0][2]=Q[0][0]*(-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][0]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][0])+Q[1][0]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][0]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][0])+Q[2][0]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][0]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][0]); J[0][3]=Q[0][0]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][0]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][0])+Q[1][0]*(1-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][0]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][0])+Q[2][0]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][0]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][0]); J[0][4]=Q[0][0]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][0]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][0])+Q[1][0]*(-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][0]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][0])+Q[2][0]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][0]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][0]); J[0][5]=Q[0][0]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][0]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][0])+Q[1][0]*(-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][0]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][0])+Q[2][0]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][0]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][0]); J[0][6]=Q[0][0]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][0]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][0])+Q[1][0]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][0]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][0])+Q[2][0]*(1-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][0]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][0]); J[0][7]=Q[0][0]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][0]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][0])+Q[1][0]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][0]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][0])+Q[2][0]*(-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][0]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][0]); J[0][8]=Q[0][0]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][0]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][0])+Q[1][0]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][0]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][0])+Q[2][0]*(-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][0]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][0]);
 J[1][0]=Q[0][0]*(-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][1]-(-invG[1][1]*Q[0][2]+invG[1][2]*Q[0][1])*M[2][1])+Q[1][0]*(-(-invG[2][1]*Q[0][2]+invG[2][2]*Q[0][1])*M[0][1]-(invG[0][1]*Q[0][2]-invG[0][2]*Q[0][1])*M[2][1])+Q[2][0]*(-(invG[1][1]*Q[0][2]-invG[1][2]*Q[0][1])*M[0][1]-(-invG[0][1]*Q[0][2]+invG[0][2]*Q[0][1])*M[1][1]); J[1][1]=Q[0][0]*(1-(-invG[2][0]*Q[0][2]+invG[2][2]*Q[0][0])*M[1][1]-(invG[1][0]*Q[0][2]-invG[1][2]*Q[0][0])*M[2][1])+Q[1][0]*(-(invG[2][0]*Q[0][2]-invG[2][2]*Q[0][0])*M[0][1]-(-invG[0][0]*Q[0][2]+invG[0][2]*Q[0][0])*M[2][1])+Q[2][0]*(-(-invG[1][0]*Q[0][2]+invG[1][2]*Q[0][0])*M[0][1]-(invG[0][0]*Q[0][2]-invG[0][2]*Q[0][0])*M[1][1]); J[1][2]=Q[0][0]*(-(invG[2][0]*Q[0][1]-invG[2][1]*Q[0][0])*M[1][1]-(-invG[1][0]*Q[0][1]+invG[1][1]*Q[0][0])*M[2][1])+Q[1][0]*(-(-invG[2][0]*Q[0][1]+invG[2][1]*Q[0][0])*M[0][1]-(invG[0][0]*Q[0][1]-invG[0][1]*Q[0][0])*M[2][1])+Q[2][0]*(-(invG[1][0]*Q[0][1]-invG[1][1]*Q[0][0])*M[0][1]-(-invG[0][0]*Q[0][1]+invG[0][1]*Q[0][0])*M[1][1]); J[1][3]=Q[0][0]*(-(invG[2][1]*Q[1][2]-invG[2][2]*Q[1][1])*M[1][1]-(-invG[1][1]*Q[1][2]+invG[1][2]*Q[1][1])*M[2][1])+Q[1][0]*(-(-invG[2][1]*Q[1][2]+invG[2][2]*Q[1][1])*M[0][1]-(invG[0][1]*Q[1][2]-invG[0][2]*Q[1][1])*M[2][1])+Q[2][0]*(-(invG[1][1]*Q[1][2]-invG[1][2]*Q[1][1])*M[0][1]-(-invG[0][1]*Q[1][2]+invG[0][2]*Q[1][1])*M[1][1]); J[1][4]=Q[0][0]*(-(-invG[2][0]*Q[1][2]+invG[2][2]*Q[1][0])*M[1][1]-(invG[1][0]*Q[1][2]-invG[1][2]*Q[1][0])*M[2][1])+Q[1][0]*(1-(invG[2][0]*Q[1][2]-invG[2][2]*Q[1][0])*M[0][1]-(-invG[0][0]*Q[1][2]+invG[0][2]*Q[1][0])*M[2][1])+Q[2][0]*(-(-invG[1][0]*Q[1][2]+invG[1][2]*Q[1][0])*M[0][1]-(invG[0][0]*Q[1][2]-invG[0][2]*Q[1][0])*M[1][1]); J[1][5]=Q[0][0]*(-(invG[2][0]*Q[1][1]-invG[2][1]*Q[1][0])*M[1][1]-(-invG[1][0]*Q[1][1]+invG[1][1]*Q[1][0])*M[2][1])+Q[1][0]*(-(-invG[2][0]*Q[1][1]+invG[2][1]*Q[1][0])*M[0][1]-(invG[0][0]*Q[1][1]-invG[0][1]*Q[1][0])*M[2][1])+Q[2][0]*(-(invG[1][0]*Q[1][1]-invG[1][1]*Q[1][0])*M[0][1]-(-invG[0][0]*Q[1][1]+invG[0][1]*Q[1][0])*M[1][1]); J[1][6]=Q[0][0]*(-(invG[2][1]*Q[2][2]-invG[2][2]*Q[2][1])*M[1][1]-(-invG[1][1]*Q[2][2]+invG[1][2]*Q[2][1])*M[2][1])+Q[1][0]*(-(-invG[2][1]*Q[2][2]+invG[2][2]*Q[2][1])*M[0][1]-(invG[0][1]*Q[2][2]-invG[0][2]*Q[2][1])*M[2][1])+Q[2][0]*(-(invG[1][1]*Q[2][2]-invG[1][2]*Q[2][1])*M[0][1]-(-invG[0][1]*Q[2][2]+invG[0][2]*Q[2][1])*M[1][1]); J[1][7]=Q[0][0]*(-(-invG[2][0]*Q[2][2]+invG[2][2]*Q[2][0])*M[1][1]-(invG[1][0]*Q[2][2]-invG[1][2]*Q[2][0])*M[2][1])+Q[1][0]*(-(invG[2][0]*Q[2][2]-invG[2][2]*Q[2][0])*M[0][1]-(-invG[0][0]*Q[2][2]+invG[0][2]*Q[2][0])*M[2][1])+Q[2][0]*(1-(-invG[1][0]*Q[2][2]+invG[1][2]*Q[2][0])*M[0][1]-(invG[0][0]*Q[2][2]-invG[0][2]*Q[2][0])*M[1][1]); J[1][8]=Q[0][0]*(-(invG[2][0]*Q[2][1]-invG[2][1]*Q[2][0])*M[1][1]-(-invG[1][0]*Q[2][1]+invG[1][1]*Q[2][0])*M[2][1])+Q[1][0]*(-(-invG[2][0]*Q[2][1]+invG[2][1]*Q[2][0])*M[0][1]-(invG[0][0]*Q[2][1]-invG[0][1]*Q[2][0])*M[2][1])+Q[2][0]*(-(invG[1][0]*Q[2][1]-invG[1][1]*Q[2][0])*M[0][1]-(-invG[0][0]*Q[2][1]+invG[0][1]*Q[2][0])*M[1][1]);
@@ -944,9 +944,9 @@ J[8][0]=Q[0][2]*(-(invG[2][1]*Q[0][2]-invG[2][2]*Q[0][1])*M[1][2]-(-invG[1][1]*Q
 // another method based on the relation :  M^TM = S.S -> M^TdM +dM^TM = dS.S + S.dS  -> J1.dM = J2.dS  -> J.dM = dS
 // requires the inversion of a 6x6 matrix
 template<class Real>
-void Decompose<Real>::polarDecompositionGradient_dSOverdM(const defaulttype::Mat<3,3,Real> &M, const defaulttype::Mat<3,3,Real> &S,  defaulttype::Mat<9,9,Real>& J)
+void Decompose<Real>::polarDecompositionGradient_dSOverdM(const type::Mat<3,3,Real> &M, const type::Mat<3,3,Real> &S,  type::Mat<9,9,Real>& J)
 {
-    defaulttype::Mat<6,9,Real> J1;
+    type::Mat<6,9,Real> J1;
     J1(0,0)=2*M(0,0);   J1(0,3)=2*M(1,0);   J1(0,6)=2*M(2,0);
     J1(1,0)=M(0,1);     J1(1,1)=M(0,0);     J1(1,3)=M(1,1);     J1(1,4)=M(1,0); J1(1,6)=M(2,1); J1(1,7)=M(2,0);
     J1(2,0)=M(0,2);     J1(2,2)=M(0,0);     J1(2,3)=M(1,2);     J1(2,5)=M(1,0); J1(2,6)=M(2,2); J1(2,8)=M(2,0);;
@@ -954,16 +954,16 @@ void Decompose<Real>::polarDecompositionGradient_dSOverdM(const defaulttype::Mat
     J1(4,1)=M(0,2);     J1(4,2)=M(0,1);     J1(4,4)=M(1,2);     J1(4,5)=M(1,1); J1(4,7)=M(2,2); J1(4,8)=M(2,1);
     J1(5,2)=2*M(0,2);   J1(5,5)=2*M(1,2);   J1(5,8)=2*M(2,2);
 
-    defaulttype::Mat<6,6,Real> J2;
+    type::Mat<6,6,Real> J2;
     J2(0,0)=2*S(0,0); J2(0,1)=2*S(1,0); J2(0,2)=2*S(2,0);
     J2(1,0)=S(1,0); J2(1,1)=S(0,0)+S(1,1); J2(1,2)=S(2,1); J2(1,3)=S(1,0); J2(1,4)=S(2,0);
     J2(2,0)=S(2,0); J2(2,1)=S(2,1); J2(2,2)=S(2,2)+S(0,0); J2(2,4)=S(1,0); J2(2,5)=S(2,0);
     J2(3,1)=2*S(1,0); J2(3,3)=2*S(1,1); J2(3,4)=2*S(2,1);
     J2(4,1)=S(2,0); J2(4,2)=S(1,0); J2(4,3)=S(2,1); J2(4,4)=S(2,2)+S(1,1); J2(4,5)=S(2,1);
     J2(5,2)=2*S(2,0); J2(5,4)=2*S(2,1); J2(5,5)=2*S(2,2);
-    defaulttype::Mat<6,6,Real> J2inv; J2inv.invert(J2);
+    type::Mat<6,6,Real> J2inv; J2inv.invert(J2);
 
-    defaulttype::Mat<6,9,Real> J69 = J2inv*J1;
+    type::Mat<6,9,Real> J69 = J2inv*J1;
 
     J(0)=J69(0);
     J(1)=J(3)=J69(1);
@@ -975,10 +975,10 @@ void Decompose<Real>::polarDecompositionGradient_dSOverdM(const defaulttype::Mat
 
 
 template<class Real>
-bool Decompose<Real>::polarDecomposition_stable_Gradient_dQ( const defaulttype::Mat<3,3,Real>& U, const defaulttype::Vec<3,Real>& Sdiag, const defaulttype::Mat<3,3,Real>& V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ )
+bool Decompose<Real>::polarDecomposition_stable_Gradient_dQ( const type::Mat<3,3,Real>& U, const type::Vec<3,Real>& Sdiag, const type::Mat<3,3,Real>& V, const type::Mat<3,3,Real>& dM, type::Mat<3,3,Real>& dQ )
 {
-    defaulttype::Mat<3,3,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
-    defaulttype::Mat<3,3,Real> omega;
+    type::Mat<3,3,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
+    type::Mat<3,3,Real> omega;
 
     for( int i=0 ; i<3 ; ++i )
     {
@@ -1003,10 +1003,10 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQ( const defaulttype::
 }
 
 template<class Real>
-bool Decompose<Real>::polarDecompositionGradient_dQ( const defaulttype::Mat<3,2,Real>& U, const defaulttype::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dQ )
+bool Decompose<Real>::polarDecompositionGradient_dQ( const type::Mat<3,2,Real>& U, const type::Vec<2,Real>& Sdiag, const type::Mat<2,2,Real>& V, const type::Mat<3,2,Real>& dM, type::Mat<3,2,Real>& dQ )
 {
-    defaulttype::Mat<2,2,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
-    defaulttype::Mat<2,2,Real> omega;
+    type::Mat<2,2,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
+    type::Mat<2,2,Real> omega;
 
     Real A = Sdiag[0] + Sdiag[1];
 
@@ -1023,7 +1023,7 @@ bool Decompose<Real>::polarDecompositionGradient_dQ( const defaulttype::Mat<3,2,
 
 
 template<class Real>
-bool Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &Sdiag, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dQOverdM )
+bool Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( const type::Mat<3,3,Real> &U, const type::Vec<3,Real> &Sdiag, const type::Mat<3,3,Real> &V, type::Mat<9,9,Real>& dQOverdM )
 {
 
     Mat< 3,3, Mat<3,3,Real> > omega;
@@ -1066,7 +1066,7 @@ bool Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( const default
 
 
 template<class Real>
-bool Decompose<Real>::polarDecompositionGradient_dQOverdM( const defaulttype::Mat<3,2,Real>& U, const defaulttype::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, defaulttype::Mat<6,6,Real>& dQOverdM )
+bool Decompose<Real>::polarDecompositionGradient_dQOverdM( const type::Mat<3,2,Real>& U, const type::Vec<2,Real>& Sdiag, const type::Mat<2,2,Real>& V, type::Mat<6,6,Real>& dQOverdM )
 {
     Mat< 3,2, Mat<3,2,Real> > dQdMij;
 
@@ -1365,7 +1365,7 @@ void Decompose<Real>::ComputeVectors(const Mat<3,3,Real>& A, Vec<3,Real>& U2, in
 
 
 template <typename Real>
-void Decompose<Real>::eigenDecomposition( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag )
+void Decompose<Real>::eigenDecomposition( const type::Mat<3,3,Real> &A, type::Mat<3,3,Real> &V, type::Vec<3,Real> &diag )
 {
     // Scale the matrix so its entries are in [-1,1].  The scaling is applied
     // only when at least one matrix entry has magnitude larger than 1.
@@ -1481,7 +1481,7 @@ void Decompose<Real>::eigenDecomposition( const defaulttype::Mat<3,3,Real> &A, d
 
 
 template <typename Real>
-void Decompose<Real>::eigenDecomposition( const defaulttype::Mat<2,2,Real> &A, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag )
+void Decompose<Real>::eigenDecomposition( const type::Mat<2,2,Real> &A, type::Mat<2,2,Real> &V, type::Vec<2,Real> &diag )
 {
     Real inv2 = A[0][0] + A[1][1]; // trace(A)
     Real inv1 = inv2 * (Real)0.5; // trace(A) / 2
@@ -1521,7 +1521,7 @@ void Decompose<Real>::eigenDecomposition( const defaulttype::Mat<2,2,Real> &A, d
 
 template <typename Real>
 template <sofa::Size iSize>
-void Decompose<Real>::QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V )
+void Decompose<Real>::QLAlgorithm( type::Vec<iSize,Real> &diag, type::Vec<iSize,Real> &subDiag, type::Mat<iSize,iSize,Real> &V )
 {
     static const sofa::Index iMaxIter = 32;
 
@@ -1593,7 +1593,7 @@ void Decompose<Real>::QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaultty
 
 
 template<class Real>
-void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag )
+void Decompose<Real>::eigenDecomposition_iterative( const type::Mat<3,3,Real> &M, type::Mat<3,3,Real> &V, type::Vec<3,Real> &diag )
 {
     Vec<3,Real> subDiag;
 
@@ -1643,10 +1643,10 @@ void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<3,3,R
 
 
 template<class Real>
-void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag )
+void Decompose<Real>::eigenDecomposition_iterative( const type::Mat<2,2,Real> &M, type::Mat<2,2,Real> &V, type::Vec<2,Real> &diag )
 {
-//    typedef defaulttype::Vec<2,Real> Vec2;
-//    typedef defaulttype::Mat<2,2,Real> Mat22;
+//    typedef type::Vec<2,Real> Vec2;
+//    typedef type::Mat<2,2,Real> Mat22;
 
     Vec<2,Real> subDiag;
 
@@ -1667,14 +1667,14 @@ void Decompose<Real>::eigenDecomposition_iterative( const defaulttype::Mat<2,2,R
 
 
 template<class Real>
-void Decompose<Real>::SVD( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, defaulttype::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V )
+void Decompose<Real>::SVD( const type::Mat<3,3,Real> &F, type::Mat<3,3,Real> &U, type::Vec<3,Real> &S, type::Mat<3,3,Real> &V )
 {
-    defaulttype::Mat<3,3,Real> FtF = F.multTranspose( F );
+    type::Mat<3,3,Real> FtF = F.multTranspose( F );
 
     helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S ); // eigen problem to obtain an orthogonal matrix V and diagonal S
     // at that point S = S^2
 
-    defaulttype::Vec<3,Real> S_1;
+    type::Vec<3,Real> S_1;
     for( int i = 0 ; i<3; ++i )
     {
         if( S[i] < zeroTolerance() ) // numerical issues
@@ -1694,9 +1694,9 @@ void Decompose<Real>::SVD( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat
 
 
 template<class Real>
-bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, defaulttype::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V )
+bool Decompose<Real>::SVD_stable( const type::Mat<3,3,Real> &F, type::Mat<3,3,Real> &U, type::Vec<3,Real> &S, type::Mat<3,3,Real> &V )
 {
-    defaulttype::Mat<3,3,Real> FtF = F.multTranspose( F );
+    type::Mat<3,3,Real> FtF = F.multTranspose( F );
 
     helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S ); // eigen problem to obtain an orthogonal matrix V and diagonal S
     // at that point S = S^2
@@ -1709,7 +1709,7 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaultty
     // the numbers of strain values too close to 0 indicates the kind of degenerescence
     int degenerated = 0;
 
-    defaulttype::Vec<3,Real> S_1;
+    type::Vec<3,Real> S_1;
 
     for( int i = 0 ; i<3; ++i )
     {
@@ -1863,9 +1863,9 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaultty
 
 
 template<class Real>
-bool Decompose<Real>::SVD_stable( const defaulttype::Mat<2,2,Real> &F, defaulttype::Mat<2,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V )
+bool Decompose<Real>::SVD_stable( const type::Mat<2,2,Real> &F, type::Mat<2,2,Real> &U, type::Vec<2,Real> &S, type::Mat<2,2,Real> &V )
 {
-    defaulttype::Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+    type::Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
     helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S );
 
@@ -1878,7 +1878,7 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<2,2,Real> &F, defaultty
     int degenerated = 0;
 
     // compute the diagonalized strain and take the inverse
-    defaulttype::Vec<2,Real> S_1;
+    type::Vec<2,Real> S_1;
     for( int i = 0 ; i<2; ++i )
     {
         if( S[i] < zeroTolerance() ) // numerical issues
@@ -1974,14 +1974,14 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<2,2,Real> &F, defaultty
 
 
 template<class Real>
-void Decompose<Real>::SVD( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V )
+void Decompose<Real>::SVD( const type::Mat<3,2,Real> &F, type::Mat<3,2,Real> &U, type::Vec<2,Real> &S, type::Mat<2,2,Real> &V )
 {
-    defaulttype::Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+    type::Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
     helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S );
 
     // compute the diagonalized strain and take the inverse
-    defaulttype::Vec<2,Real> S_1;
+    type::Vec<2,Real> S_1;
     for( int i = 0 ; i<2; ++i )
     {
         if( S[i] < zeroTolerance() ) // numerical issues
@@ -2001,9 +2001,9 @@ void Decompose<Real>::SVD( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat
 
 
 template<class Real>
-bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V )
+bool Decompose<Real>::SVD_stable( const type::Mat<3,2,Real> &F, type::Mat<3,2,Real> &U, type::Vec<2,Real> &S, type::Mat<2,2,Real> &V )
 {
-    defaulttype::Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
+    type::Mat<2,2,Real> FtF = F.multTranspose( F ); // transformation from actual pos to rest pos
 
     helper::Decompose<Real>::eigenDecomposition_iterative( FtF, V, S );
 
@@ -2016,7 +2016,7 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,2,Real> &F, defaultty
     int degenerated = 0;
 
     // compute the diagonalized strain and take the inverse
-    defaulttype::Vec<2,Real> S_1;
+    type::Vec<2,Real> S_1;
     for( int i = 0 ; i<2; ++i )
     {
         if( S[i] < zeroTolerance() ) // numerical issues
@@ -2105,7 +2105,7 @@ bool Decompose<Real>::SVD_stable( const defaulttype::Mat<3,2,Real> &F, defaultty
 #define TIKHONOV_REGULARIZATION
 
 template<class Real>
-bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dUOverdM, defaulttype::Mat<9,9,Real>& dVOverdM )
+bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, const type::Vec<3,Real> &S, const type::Mat<3,3,Real> &V, type::Mat<9,9,Real>& dUOverdM, type::Mat<9,9,Real>& dVOverdM )
 {
     Mat< 3,3, Mat<3,3,Real> > omegaU, omegaV;
 
@@ -2115,10 +2115,10 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &
             for( int k=0 ; k<3 ; ++k ) // resolve 3 2x2 systems to find omegaU[i][j] & omegaV[i][j]
             {
                 int l=(k+1)%3;
-                defaulttype::Mat<2,2,Real> A, invA;
+                type::Mat<2,2,Real> A, invA;
                 A[0][0] = A[1][1] = S[l];
                 A[0][1] = A[1][0] = S[k];
-                defaulttype::Vec<2,Real> v( U[i][k]*V[l][j], -U[i][l]*V[k][j] ), w;
+                type::Vec<2,Real> v( U[i][k]*V[l][j], -U[i][l]*V[k][j] ), w;
 
                 if( helper::rabs( S[k]-S[l] ) > zeroTolerance() )
                 {
@@ -2131,7 +2131,7 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &
                     return false;
 #else
                     // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
-                    defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
+                    type::Mat<2,2,Real> AtA = A.multTranspose( A );
                     AtA[0][0] += (Real)1;
                     AtA[1][1] += (Real)1;
                     invA.invert( AtA );
@@ -2190,7 +2190,7 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &
 
 
 template<class Real>
-bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, defaulttype::Mat<6,6,Real>& dUOverdM, defaulttype::Mat<4,6,Real>& dVOverdM )
+bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,2,Real> &U, const type::Vec<2,Real> &S, const type::Mat<2,2,Real> &V, type::Mat<6,6,Real>& dUOverdM, type::Mat<4,6,Real>& dVOverdM )
 {
     Mat< 3,2, Mat<3,2,Real> > dUdMij;
     Mat< 3,2, Mat<2,2,Real> > dVdMij;
@@ -2199,10 +2199,10 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &
         for( int j=0 ; j<2 ; ++j ) // col of dM
         {
             Mat<2,2,Real> omegaU, omegaV;
-            defaulttype::Mat<2,2,Real> A, invA;
+            type::Mat<2,2,Real> A, invA;
             A[0][0] = A[1][1] = S[1];
             A[0][1] = A[1][0] = S[0];
-            defaulttype::Vec<2,Real> v( U[i][0]*V[1][j], -U[i][1]*V[0][j] ), w;
+            type::Vec<2,Real> v( U[i][0]*V[1][j], -U[i][1]*V[0][j] ), w;
 
             if( helper::rabs( S[0]-S[1] ) > zeroTolerance() )
             {
@@ -2215,7 +2215,7 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &
                     return false;
 #else
                 // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
-                defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
+                type::Mat<2,2,Real> AtA = A.multTranspose( A );
                 AtA[0][0] += (Real)1;
                 AtA[1][1] += (Real)1;
                 invA.invert( AtA );
@@ -2247,18 +2247,18 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &
 
 
 template<class Real>
-bool Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dU, defaulttype::Mat<3,3,Real>& dV )
+bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,3,Real> &U, const type::Vec<3,Real> &S, const type::Mat<3,3,Real> &V, const type::Mat<3,3,Real>& dM, type::Mat<3,3,Real>& dU, type::Mat<3,3,Real>& dV )
 {
-    defaulttype::Mat<3,3,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
-    defaulttype::Mat<3,3,Real> omegaU, omegaV;
+    type::Mat<3,3,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
+    type::Mat<3,3,Real> omegaU, omegaV;
 
     for( int i=0 ; i<3 ; ++i )
     {
         int j=(i+1)%3;
-        defaulttype::Mat<2,2,Real> A, invA;
+        type::Mat<2,2,Real> A, invA;
         A[0][0] = A[1][1] = S[j];
         A[0][1] = A[1][0] = S[i];
-        defaulttype::Vec<2,Real> v( UtdMV[i][j], -UtdMV[j][i] ), w;
+        type::Vec<2,Real> v( UtdMV[i][j], -UtdMV[j][i] ), w;
 
         if( helper::rabs( S[i]-S[j] ) > zeroTolerance() )
         {
@@ -2271,7 +2271,7 @@ bool Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, con
                     return false;
 #else
             // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
-            defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
+            type::Mat<2,2,Real> AtA = A.multTranspose( A );
             AtA[0][0] += (Real)1;
             AtA[1][1] += (Real)1;
             invA.invert( AtA );
@@ -2291,16 +2291,16 @@ bool Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, con
 
 
 template<class Real>
-bool Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dU, defaulttype::Mat<2,2,Real>& dV )
+bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,2,Real> &U, const type::Vec<2,Real> &S, const type::Mat<2,2,Real> &V, const type::Mat<3,2,Real>& dM, type::Mat<3,2,Real>& dU, type::Mat<2,2,Real>& dV )
 {
-    defaulttype::Mat<2,2,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
-    defaulttype::Mat<2,2,Real> omegaU;
-    defaulttype::Mat<2,2,Real> omegaV;
+    type::Mat<2,2,Real> UtdMV = U.multTranspose( dM ).multTransposed( V );
+    type::Mat<2,2,Real> omegaU;
+    type::Mat<2,2,Real> omegaV;
 
-    defaulttype::Mat<2,2,Real> A, invA;
+    type::Mat<2,2,Real> A, invA;
     A[0][0] = A[1][1] = S[1];
     A[0][1] = A[1][0] = S[0];
-    defaulttype::Vec<2,Real> v( UtdMV[0][1], -UtdMV[1][0] ), w;
+    type::Vec<2,Real> v( UtdMV[0][1], -UtdMV[1][0] ), w;
 
     if( helper::rabs( S[0]-S[1] ) > zeroTolerance() )
     {
@@ -2313,7 +2313,7 @@ bool Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, con
                     return false;
 #else
         // Tikhonov regularization w = (AtA + I)^-1 At v (suggested in "Invertible Isotropic Hyperelasticity using SVD Gradients", F Sin, Y Zhu, Y Li, D Schroeder, J Barbič, Poster SCA 2011)
-        defaulttype::Mat<2,2,Real> AtA = A.multTranspose( A );
+        type::Mat<2,2,Real> AtA = A.multTranspose( A );
         AtA[0][0] += (Real)1;
         AtA[1][1] += (Real)1;
         invA.invert( AtA );
@@ -2343,7 +2343,7 @@ bool Decompose<Real>::SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, con
 static const double M_SQRT3 = 1.73205080756887729352744634151;   // sqrt(3)
 
 template <class Real>
-int dsyevc3( const defaulttype::Mat<3,3,Real> &A, defaulttype::Vec<3,Real> &w)
+int dsyevc3( const type::Mat<3,3,Real> &A, type::Vec<3,Real> &w)
 // ----------------------------------------------------------------------------
 // Calculates the eigenvalues of a symmetric 3x3 matrix A using Cardano's
 // analytical algorithm.
@@ -2399,7 +2399,7 @@ int dsyevc3( const defaulttype::Mat<3,3,Real> &A, defaulttype::Vec<3,Real> &w)
 
 
 template <class Real>
-inline void dsytrd3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &d, defaulttype::Vec<3,Real> &e)
+inline void dsytrd3(const type::Mat<3,3,Real> &A, type::Mat<3,3,Real> &Q, type::Vec<3,Real> &d, type::Vec<3,Real> &e)
 // ----------------------------------------------------------------------------
 // Reduces a symmetric 3x3 matrix to tridiagonal form by applying
 // (unitary) Householder transformations:
@@ -2479,7 +2479,7 @@ inline void dsytrd3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Re
 
 
 template <class Real>
-int dsyevq3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w)
+int dsyevq3(const type::Mat<3,3,Real> &A, type::Mat<3,3,Real> &Q, type::Vec<3,Real> &w)
 // ----------------------------------------------------------------------------
 // Calculates the eigenvalues and normalized eigenvectors of a symmetric 3x3
 // matrix A using the QL algorithm with implicit shifts, preceded by a
@@ -2497,7 +2497,7 @@ int dsyevq3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, 
 //  -1: Error (no convergence)
 {
   const int n = 3;
-  defaulttype::Vec<3,Real> e;                   // The third element is used only as temporary workspace
+  type::Vec<3,Real> e;                   // The third element is used only as temporary workspace
   Real g, r, p, f, b, s, c, t; // Intermediate storage
   int m;
 
@@ -2586,7 +2586,7 @@ int dsyevq3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, 
 
 
 template<class Real>
-int Decompose<Real>::symmetricDiagonalization( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w )
+int Decompose<Real>::symmetricDiagonalization( const type::Mat<3,3,Real> &A, type::Mat<3,3,Real> &Q, type::Vec<3,Real> &w )
 // ----------------------------------------------------------------------------
 // originally named dsyevh3
 // Calculates the eigenvalues and normalized eigenvectors of a symmetric 3x3
@@ -2695,10 +2695,10 @@ int Decompose<Real>::symmetricDiagonalization( const defaulttype::Mat<3,3,Real> 
 
 
 template<class Real>
-void Decompose<Real>::PSDProjection( defaulttype::Mat<3,3,Real> &A )
+void Decompose<Real>::PSDProjection( type::Mat<3,3,Real> &A )
 {
-    defaulttype::Mat<3,3,Real> Q;
-    defaulttype::Vec<3,Real> w;
+    type::Mat<3,3,Real> Q;
+    type::Vec<3,Real> w;
     if( !symmetricDiagonalization( A, Q, w ) )
     {
         bool modified = false;
@@ -2707,7 +2707,7 @@ void Decompose<Real>::PSDProjection( defaulttype::Mat<3,3,Real> &A )
 
         if( modified )
         {
-//            defaulttype::Mat<3,3,Real> invQ; invQ.invert( Q );
+//            type::Mat<3,3,Real> invQ; invQ.invert( Q );
 //            A = Q.multDiagonal( w )*invQ;
             A = (Q.multDiagonal( w )).multTransposed( Q ); // A = Q*wId*Q^T  // only valid for symmetric matrices
         }
@@ -2788,10 +2788,10 @@ inline void dsyev2(Real A, Real B, Real C, Real &rt1, Real &rt2,
 
 
 template<class Real>
-void Decompose<Real>::PSDProjection( defaulttype::Mat<2,2,Real> &A )
+void Decompose<Real>::PSDProjection( type::Mat<2,2,Real> &A )
 {
-    defaulttype::Mat<2,2,Real> Q;
-    defaulttype::Vec<2,Real> w;
+    type::Mat<2,2,Real> Q;
+    type::Vec<2,Real> w;
     dsyev2( (Real)A[0][0], (Real)A[0][1], (Real)A[1][1], w[0], w[1], Q[0][0], Q[1][0] );
 
     bool modified = false;
@@ -2812,8 +2812,8 @@ void Decompose<Real>::PSDProjection( defaulttype::Mat<2,2,Real> &A )
 template<class Real>
 void Decompose<Real>::PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 )
 {
-    defaulttype::Mat<2,2,Real> Q;
-    defaulttype::Vec<2,Real> w;
+    type::Mat<2,2,Real> Q;
+    type::Vec<2,Real> w;
     dsyev2( A00, A01, A11, w[0], w[1], Q[0][0], Q[1][0] );
 
     bool modified = false;
@@ -2825,7 +2825,7 @@ void Decompose<Real>::PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
         Q[1][1] = Q[0][0];
         Q[0][1] = -Q[1][0];
 
-        defaulttype::Mat<2,2,Real> tmp = Q.multDiagonal( w );
+        type::Mat<2,2,Real> tmp = Q.multDiagonal( w );
 
         // A = Q*wId*Q^T
 
@@ -2840,10 +2840,10 @@ void Decompose<Real>::PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
 
 
 template<class Real>
-void Decompose<Real>::NSDProjection( defaulttype::Mat<3,3,Real> &A )
+void Decompose<Real>::NSDProjection( type::Mat<3,3,Real> &A )
 {
-    defaulttype::Mat<3,3,Real> Q;
-    defaulttype::Vec<3,Real> w;
+    type::Mat<3,3,Real> Q;
+    type::Vec<3,Real> w;
     if( !symmetricDiagonalization( A, Q, w ) )
     {
         bool modified = false;
@@ -2852,7 +2852,7 @@ void Decompose<Real>::NSDProjection( defaulttype::Mat<3,3,Real> &A )
 
         if( modified )
         {
-//            defaulttype::Mat<3,3,Real> invQ; invQ.invert( Q );
+//            type::Mat<3,3,Real> invQ; invQ.invert( Q );
 //            A = Q.multDiagonal( w )*invQ;
             A = (Q.multDiagonal( w )).multTransposed( Q ); // A = Q*wId*Q^T  // only valid for symmetric matrices
         }
@@ -2863,10 +2863,10 @@ void Decompose<Real>::NSDProjection( defaulttype::Mat<3,3,Real> &A )
 
 
 template<class Real>
-void Decompose<Real>::NSDProjection( defaulttype::Mat<2,2,Real> &A )
+void Decompose<Real>::NSDProjection( type::Mat<2,2,Real> &A )
 {
-    defaulttype::Mat<2,2,Real> Q;
-    defaulttype::Vec<2,Real> w;
+    type::Mat<2,2,Real> Q;
+    type::Vec<2,Real> w;
     dsyev2( (Real)A[0][0], (Real)A[0][1], (Real)A[1][1], w[0], w[1], Q[0][0], Q[1][0] );
 
     bool modified = false;
@@ -2887,8 +2887,8 @@ void Decompose<Real>::NSDProjection( defaulttype::Mat<2,2,Real> &A )
 template<class Real>
 void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 )
 {
-    defaulttype::Mat<2,2,Real> Q;
-    defaulttype::Vec<2,Real> w;
+    type::Mat<2,2,Real> Q;
+    type::Vec<2,Real> w;
     dsyev2( A00, A01, A11, w[0], w[1], Q[0][0], Q[1][0] );
 
     bool modified = false;
@@ -2900,7 +2900,7 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
         Q[1][1] = Q[0][0];
         Q[0][1] = -Q[1][0];
 
-        defaulttype::Mat<2,2,Real> tmp = Q.multDiagonal( w );
+        type::Mat<2,2,Real> tmp = Q.multDiagonal( w );
 
         // A = Q*wId*Q^T
 

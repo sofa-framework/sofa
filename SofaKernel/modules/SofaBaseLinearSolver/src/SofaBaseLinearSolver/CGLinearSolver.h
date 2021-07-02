@@ -38,11 +38,12 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+
     Data<unsigned> d_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
     Data<SReal> d_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
     Data<SReal> d_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
     Data<bool> d_warmStart; ///< Use previous solution as initial solution
-    Data<std::map < std::string, sofa::helper::vector<SReal> > > d_graph; ///< Graph of residuals at each iteration
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graph; ///< Graph of residuals at each iteration
 
 protected:
 
@@ -104,11 +105,11 @@ extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< GraphScatter
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< FullMatrix<double>, FullVector<double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< SparseMatrix<double>, FullVector<double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<2,2,double> >, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<4,4,double> >, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<6,6,double> >, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<8,8,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,double> >, FullVector<double> >;
 
 
 #endif

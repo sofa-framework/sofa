@@ -29,7 +29,7 @@ using sofa::testing::BaseSimulationTest;
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <SofaBase/initSofaBase.h>
 #include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>

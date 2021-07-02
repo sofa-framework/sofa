@@ -33,9 +33,9 @@ public:
 	typedef typename TOut::Real out_real;
 
     typedef std::pair<unsigned, typename TIn::Coord> set_type;
-    Data< helper::vector< set_type > > set;
+    Data< type::vector< set_type > > set;
 	
-    Data< helper::vector<SReal> > offset;
+    Data< type::vector<SReal> > offset;
 
 	typedef AssembledMapping<TIn, TOut> base;
 	typedef ProjectionMapping self;
@@ -61,7 +61,7 @@ protected:
 	
     virtual void assemble( const typename self::in_pos_type& in) override {
 		
-        const helper::vector<set_type>& s = set.getValue();
+        const type::vector<set_type>& s = set.getValue();
 		
 		// resize/clear jacobian
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
@@ -89,8 +89,8 @@ protected:
 	
 	virtual void apply(typename self::out_pos_type& out, 
                        const typename self::in_pos_type& in ) override {
-        const helper::vector<set_type>& s = set.getValue();
-        const helper::vector<SReal>& off = offset.getValue();
+        const type::vector<set_type>& s = set.getValue();
+        const type::vector<SReal>& off = offset.getValue();
 		
 		assert(s.size() == out.size());	
 
@@ -105,7 +105,7 @@ protected:
 
     virtual void updateForceMask() override
     {
-        const helper::vector<set_type>& s = set.getValue();
+        const type::vector<set_type>& s = set.getValue();
 
         for( size_t i = 0, iend = s.size(); i < iend; ++i )
         {

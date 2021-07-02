@@ -104,9 +104,9 @@ void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeri
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(helper::vector<unsigned int>* /*old2new*/, helper::vector<unsigned int>* /*new2old*/)
+void SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(type::vector<unsigned int>* /*old2new*/, type::vector<unsigned int>* /*new2old*/)
 {
-    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(helper::vector<unsigned int>* old2new, helper::vector<unsigned int>* new2old)"<<std::endl;
+    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > >::reorderIndices(type::vector<unsigned int>* old2new, type::vector<unsigned int>* new2old)"<<std::endl;
 }
 
 template<>

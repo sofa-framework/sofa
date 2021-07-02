@@ -43,7 +43,7 @@ void kdTree<Coord>::build(const VecCoord& positions)
 }
 
 template<class Coord>
-void kdTree<Coord>::build(const VecCoord& positions, const helper::vector<unsigned int> &ROI)
+void kdTree<Coord>::build(const VecCoord& positions, const type::vector<unsigned int> &ROI)
 {
     const size_t nbp = ROI.size();
     UIlist list;

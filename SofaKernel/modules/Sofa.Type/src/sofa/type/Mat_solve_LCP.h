@@ -19,22 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_LCPSOLVER_INL
-#define SOFA_HELPER_LCPSOLVER_INL
+#pragma once
 
-#include <sofa/helper/LCPSolver.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 
-#include <cstdio>		// fopen and friends
-
-namespace sofa
+namespace sofa::type
 {
-
-namespace helper
-{
-
-#define EPS     0.00001	// epsilon pour tests = 0
-#define EPSP    0.00000000001	// epsilon pour pivot
-#define MAX_BOU 50	// nombre maximal de boucles de calcul
 
 // -----------------------------------------------------------------
 // --- Resoud un LCP ecrit sous la forme U = q + M.F
@@ -42,11 +33,16 @@ namespace helper
 // ---   res[0..dim-1] = U
 // ---   res[dim..2*dim-1] = F
 // -----------------------------------------------------------------
-template <int dim>
-bool LCPSolver<dim>::solve(const double *q, const Matrix &M, double *res)
+template <Size dim, typename real>
+[[nodiscard]] 
+bool solveLCP(const Vec<dim,real> &q, const Mat<dim,dim,real> &M, Vec<dim * 2, real> &res)
 {
-    const int	dim_mult2 = 2 * dim;
-    const int	dim_mult2_plus1 = dim_mult2 + 1;
+    constexpr real EPSILON_ZERO  = 0.00001;	        // epsilon pour tests = 0
+    constexpr real EPSILON_PIVOT = 0.00000000001;	// epsilon pour pivot
+    constexpr Size MAX_NB_LOOP   = 50;	            // nombre maximal de boucles de calcul
+
+    const Size	dim_mult2 = 2 * dim;
+    const Size	dim_mult2_plus1 = dim_mult2 + 1;
 
     int         ii, jj;
     int         ligPiv;	// ligne du pivot
@@ -87,7 +83,7 @@ bool LCPSolver<dim>::solve(const double *q, const Matrix &M, double *res)
 
     // recherche de la ligne du pivot
     ligPiv = -1;
-    min = -EPS;
+    min = -EPSILON_ZERO;
     for (ii = 0; ii < dim; ii++)
     {
         if (mat[ii][dim_mult2] < min)
@@ -98,7 +94,7 @@ bool LCPSolver<dim>::solve(const double *q, const Matrix &M, double *res)
     }
 
     // tant que tous les q[i] ne sont pas > 0 et qu'on ne boucle pas trop
-    while ((ligPiv >= 0) && (boucles < MAX_BOU))
+    while ((ligPiv >= 0) && (boucles < MAX_NB_LOOP))
     {
         // augmentation du nombre de passages dans cette boucle
         boucles++;
@@ -119,10 +115,10 @@ bool LCPSolver<dim>::solve(const double *q, const Matrix &M, double *res)
         pivot = mat[ligPiv][colPiv];
 
         // si le pivot est nul, le LCP echoue
-        if (fabs(pivot) < EPSP)
+        if (fabs(pivot) < EPSILON_PIVOT)
         {
             printf("  + No solution to LCP + \n");
-            boucles = MAX_BOU;
+            boucles = MAX_NB_LOOP;
             return false;
         }
         else
@@ -147,7 +143,7 @@ bool LCPSolver<dim>::solve(const double *q, const Matrix &M, double *res)
 
             // recherche de la nouvelle ligne du pivot
             ligPiv = -1;
-            min = -EPS;
+            min = -EPSILON_ZERO;
 
             for (ii = 0; ii < dim; ii++)
             {
@@ -165,7 +161,7 @@ bool LCPSolver<dim>::solve(const double *q, const Matrix &M, double *res)
         res[ii] = 0;
 
     // si on est arrive a resoudre le pb, seules les variables en base sont non nulles
-    if (boucles < MAX_BOU)
+    if (boucles < MAX_NB_LOOP)
     {
         for (ii = 0; ii < dim; ii++)
             res[base[ii]] = mat[ii][dim_mult2];
@@ -174,40 +170,4 @@ bool LCPSolver<dim>::solve(const double *q, const Matrix &M, double *res)
     return true;
 }
 
-
-// -----------------------------------------------------------------
-// ---
-// -----------------------------------------------------------------
-template <int dim> void LCPSolver<dim>::printInfo(double *q, Matrix &M)
-{
-    int ii, jj;
-
-    // affichage de la matrice du LCP
-    printf("M = [");
-    for(ii=0; ii<dim; ii++)
-    {
-        for(jj=0; jj<dim; jj++)
-        {
-            printf("\t%.4f",M[ii][jj]);
-        }
-        printf("\n");
-    }
-    printf("      ]\n\n");
-
-    // affichage de q
-    printf("q = [");
-    for (ii=0; ii<dim; ii++)
-    {
-        printf("\t%.4f\n",q[ii]);
-    }
-    printf("      ]\n\n");
-}
-
-//template<> class LCPSolver<3>;
-//template<> class LCPSolver<5>;
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::type

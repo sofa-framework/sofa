@@ -37,7 +37,7 @@ namespace cuda
 
 extern "C"
 {
-    void PenalityContactForceFieldCuda3f_setContacts(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* outputs, void* contacts, float d0, float stiffness, defaulttype::Mat3x3f xform);
+    void PenalityContactForceFieldCuda3f_setContacts(unsigned int size, unsigned int nbTests, unsigned int maxPoints, const void* tests, const void* outputs, void* contacts, float d0, float stiffness, type::Mat3x3f xform);
     void PenalityContactForceFieldCuda3f_addForce(unsigned int size, const void* contacts, void* penetration, void* f1, const void* x1, const void* v1, void* f2, const void* x2, const void* v2);
     void PenalityContactForceFieldCuda3f_addDForce(unsigned int size, const void* contacts, const void* penetration, void* f1, const void* dx1, void* f2, const void* dx2, double factor);
 }
@@ -91,14 +91,14 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(int /*m1*/, int /*m2*
        c.age = 0;
     }
     */
-    sofa::defaulttype::Vec4f c(norm, dist);
+    sofa::type::Vec4f c(norm, dist);
     Real fact = helper::rsqrt(ks);
     c *= fact;
     contacts.push_back(c);
     pen.push_back(0);
 }
 
-void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffness, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, defaulttype::Mat3x3f* normXForm)
+void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffness, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, type::Mat3x3f* normXForm)
 {
 #if 1
     int n = outputs->size();
@@ -111,7 +111,7 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
         Real distance = (useDistance) ? d0 + o->distance : d0;
         Real ks = (distance > 1.0e-10) ? stiffness / distance : stiffness;
         Coord n = (normXForm)?(*normXForm)*o->normal : o->normal;
-        defaulttype::Vec4f c(n, distance);
+        type::Vec4f c(n, distance);
         c *= helper::rsqrt(ks);
         contacts[i] = c;
         pen[i] = 0;
@@ -124,7 +124,7 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
         if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
     contacts.fastResize(n);
     pen.fastResize(n);
-    defaulttype::Mat3x3f xform;
+    type::Mat3x3f xform;
     if (normXForm) xform = *normXForm; else xform.identity();
     PenalityContactForceFieldCuda3f_setContacts(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), contacts.deviceWrite(), d0, stiffness, xform);
 #endif
@@ -146,7 +146,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addForce(const core::MechanicalP
 #if 0
     for (unsigned int i=0; i<contacts.size(); i++)
     {
-        sofa::defaulttype::Vec4f c = contacts[i];
+        sofa::type::Vec4f c = contacts[i];
         //Coord u = x2[c.m2]-x1[c.m1];
         Coord u = x2[i]-x1[i];
         Coord norm(c[0],c[1],c[2]);
@@ -186,7 +186,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::Mechanical
     {
         if (pen[i] > 0) // + dpen > 0)
         {
-            sofa::defaulttype::Vec4f c = contacts[i];
+            sofa::type::Vec4f c = contacts[i];
             //Coord du = dx2[c.m2]-dx1[c.m1];
             Coord du = dx2[i]-dx1[i];
             Coord norm(c[0],c[1],c[2]);
@@ -226,7 +226,7 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
     glBegin(GL_LINES);
     for (unsigned int i=0; i<contacts.size(); i++)
     {
-        sofa::defaulttype::Vec4f c = contacts[i];
+        sofa::type::Vec4f c = contacts[i];
         Coord u = p2[i]-p1[i];
         Coord norm(c[0],c[1],c[2]);
         //c.pen = c.dist - u*c.norm;
@@ -252,7 +252,7 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
         glBegin(GL_LINES);
         for (unsigned int i=0; i<contacts.size(); i++)
         {
-            sofa::defaulttype::Vec4f c = contacts[i];
+            sofa::type::Vec4f c = contacts[i];
             Coord norm(c[0],c[1],c[2]); norm.normalize();
             Coord p = p1[i] - norm*0.1;
             sofa::gl::glVertexT(p1[i]);

@@ -22,8 +22,8 @@
 #pragma once
 #include <SofaLoader/config.h>
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/helper/SVector.h>
-#include <sofa/helper/types/Material.h>
+#include <sofa/type/SVector.h>
+#include <sofa/type/Material.h>
 
 namespace sofa::component::loader
 {
@@ -45,7 +45,7 @@ public:
 
 protected:
     bool readOBJ (std::ifstream &file, const char* filename);
-    bool readMTL (const char* filename, helper::vector <sofa::helper::types::Material>& d_materials);
+    bool readMTL (const char* filename, type::vector<sofa::type::Material>& d_materials);
     void addGroup (const sofa::core::loader::PrimitiveGroup& g);
     void doClearBuffers() override;
 
@@ -55,26 +55,26 @@ protected:
 public:
     Data<bool> d_handleSeams;
     Data<bool> d_loadMaterial;
-    Data<sofa::helper::types::Material> d_material;
-    Data <helper::vector <sofa::helper::types::Material> > d_materials;
-    Data <helper::SVector <helper::SVector <int> > > d_faceList;
-    Data <helper::SVector <helper::SVector <int> > > d_texIndexList;
-    Data <helper::vector<sofa::defaulttype::Vector3> > d_positionsList;
-    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoordsList;
-    Data <helper::SVector<helper::SVector<int> > > d_normalsIndexList;
-    Data <helper::vector<sofa::defaulttype::Vector3> > d_normalsList;
-    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoords;
+    Data<sofa::type::Material> d_material;
+    Data <type::vector<sofa::type::Material> > d_materials;
+    Data <type::SVector <type::SVector <int> > > d_faceList;
+    Data <type::SVector <type::SVector <int> > > d_texIndexList;
+    Data <type::vector<sofa::type::Vector3> > d_positionsList;
+    Data< type::vector<sofa::type::Vector2> > d_texCoordsList;
+    Data <type::SVector<type::SVector<int> > > d_normalsIndexList;
+    Data <type::vector<sofa::type::Vector3> > d_normalsList;
+    Data< type::vector<sofa::type::Vector2> > d_texCoords;
     Data< bool > d_computeMaterialFaces;
-    helper::vector< Data <helper::vector <unsigned int> >* > d_subsets_indices;
+    type::vector< Data <type::vector<unsigned int> >* > d_subsets_indices;
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertex
     /// If it is empty then each vertex correspond to one position
-    Data< helper::vector<int> > d_vertPosIdx;
+    Data< type::vector<int> > d_vertPosIdx;
 
     /// Similarly this vector store which input normal is used for each vertex
     /// If it is empty then each vertex correspond to one normal
-    Data< helper::vector<int> > d_vertNormIdx;
+    Data< type::vector<int> > d_vertNormIdx;
 
     virtual std::string type() { return "The format of this mesh is OBJ."; }
 };

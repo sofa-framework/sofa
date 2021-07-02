@@ -502,7 +502,7 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vpara
         vparams->drawTool()->disableLighting();
 
         helper::ReadAccessor< Data< VecCoord > > coords = m_points;
-        std::vector<defaulttype::Vector3> points;
+        std::vector<type::Vector3> points;
 
         // Vertices
         points.resize(m_nbVertices);
@@ -531,7 +531,7 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vpara
     {
         helper::ReadAccessor< Data< VecCoord > > coords = m_points;
         helper::ReadAccessor< Data< SeqTetrahedra > > tetras = m_tetras;
-        std::vector<defaulttype::Vector3> points;
+        std::vector<type::Vector3> points;
 
         vparams->drawTool()->disableLighting();
 

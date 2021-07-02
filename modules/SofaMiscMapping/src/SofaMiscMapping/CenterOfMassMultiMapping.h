@@ -65,22 +65,22 @@ public:
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
 
-    typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
-    typedef typename helper::vector<const InVecCoord*> vecConstInVecCoord;
+    typedef typename type::vector<OutVecCoord*> vecOutVecCoord;
+    typedef typename type::vector<const InVecCoord*> vecConstInVecCoord;
 
-    void apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) override;
-    //virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
+    void apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) override;
+    //virtual void apply(const type::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
 
-    void applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) override;
-    //virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
+    void applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) override;
+    //virtual void applyJ(const type::vector<OutVecDeriv*>& outDeriv, const type::vector<const  InVecDeriv*>& inDeriv);
 
-    void applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override;
-    //virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
+    void applyJT(const core::MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce) override;
+    //virtual void applyJT(const type::vector< InVecDeriv*>& outDeriv, const type::vector<const OutVecDeriv*>& inDeriv);
 
 
     //virtual void apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos );
-    //virtual void applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv);
-    //virtual void applyJT( const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv );
+    //virtual void applyJ(const type::vector< OutVecDeriv*>& outDeriv, const type::vector<const InVecDeriv*>& inDeriv);
+    //virtual void applyJT( const type::vector<InVecDeriv*>& outDeriv , const type::vector<const OutVecDeriv*>& inDeriv );
 
     void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
@@ -96,10 +96,10 @@ protected:
 
     virtual ~CenterOfMassMultiMapping() {}
 
-    helper::vector<const core::behavior::BaseMass*> inputBaseMass;
+    type::vector<const core::behavior::BaseMass*> inputBaseMass;
     InVecCoord inputWeightedCOM;
     InVecDeriv inputWeightedForce;
-    helper::vector<double> inputTotalMass;
+    type::vector<double> inputTotalMass;
     double invTotalMass;
 };
 

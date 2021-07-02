@@ -80,7 +80,7 @@ public:
         delete name;
     }
 
-    void setParameters(helper::vector< sofa::component::engine::LabelGridImageToolBoxNoTemplated* > &list)
+    void setParameters(type::vector< sofa::component::engine::LabelGridImageToolBoxNoTemplated* > &list)
     {
 
 
@@ -207,8 +207,8 @@ private:
     void offsetToText(QString &out, double outValue, int type);
 
 
-    void lineTo(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition);
-    void moveTo(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition);
+    void lineTo(const unsigned int axis,const sofa::type::Vec3d& imageposition);
+    void moveTo(const unsigned int axis,const sofa::type::Vec3d& imageposition);
 
 
 public slots:
@@ -219,7 +219,7 @@ public slots:
 
 
 private slots:
-    void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
+    void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& value);
     
     void executeButtonClick();
     void saveButtonClick();
@@ -233,7 +233,7 @@ private slots:
 private:
     QPushButton* select;
     QTableWidget *listLayers;
-    helper::vector< DepthRowImageToolBoxAction* > listRows;
+    type::vector< DepthRowImageToolBoxAction* > listRows;
     
 };
 

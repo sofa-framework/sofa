@@ -63,7 +63,7 @@ protected:
     bool first;
     unsigned int fixedIndex;
 
-    sofa::helper::vector <Spring> addedSprings;
+    sofa::type::vector<Spring> addedSprings;
 
     BodyPicked firstPicked;
     SpringObjectType *SpringObject;

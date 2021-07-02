@@ -35,7 +35,7 @@ namespace sofa
 {
 
 /** determinant for 1x1 matrix  to complement 2x2 and 3x3 implementations (used for visualization of  det F ) **/
-namespace defaulttype { template<class real> inline real determinant(const Mat<1,1,real>& m) { return m(0,0);} }
+namespace defaulttype { template<class real> inline real determinant(const type::Mat<1,1,real>& m) { return m(0,0);} }
 
 namespace component
 {
@@ -43,7 +43,7 @@ namespace mapping
 {
 
 template<Size matdim,typename Real>
-void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype::Vec<3,Real> &p, const float& scale)
+void drawEllipsoid(const type::Mat<3,matdim,Real> & F, const type::Vec<3,Real> &p, const float& scale)
 {
 #if FLEXIBLE_HAVE_SOFA_GL
     glPushMatrix();
@@ -57,7 +57,7 @@ void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype:
     }
     else if(matdim==2)
     {
-        defaulttype::Vec<3,Real> w=cross(F.transposed()[0],F.transposed()[1]); w.normalize();
+        type::Vec<3,Real> w=cross(F.transposed()[0],F.transposed()[1]); w.normalize();
         for(Size i=0; i<3; i++)  transformMatrix[8+i]=(double)w[i]*scale*0.01; // arbitrarily small thickness
     }
 
@@ -78,7 +78,7 @@ void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype:
 
 /** inversion of rectangular deformation gradients (used in backward mapping) **/
 template <Size L,typename Real>
-inline static void invert(defaulttype::Mat<L,L,Real> &Minv, const defaulttype::Mat<L,L,Real> &M)
+inline static void invert(type::Mat<L,L,Real> &Minv, const type::Mat<L,L,Real> &M)
 {
     //    Eigen::Map<const Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eM(&M[0][0]);
     //    Eigen::Map<Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eMinv(&Minv[0][0]);
@@ -87,7 +87,7 @@ inline static void invert(defaulttype::Mat<L,L,Real> &Minv, const defaulttype::M
 }
 
 template <Size L,typename Real>
-inline static void invert(defaulttype::Mat<1,L,Real> &Minv, const defaulttype::Mat<L,1,Real> &M)
+inline static void invert(type::Mat<1,L,Real> &Minv, const type::Mat<L,1,Real> &M)
 {
     Real n2inv=0; for(Size i=0; i<L; i++) n2inv+=M[i][0]*M[i][0];
     n2inv=1./n2inv;
@@ -95,12 +95,12 @@ inline static void invert(defaulttype::Mat<1,L,Real> &Minv, const defaulttype::M
 }
 
 template <typename Real>
-inline static void invert(defaulttype::Mat<2,3,Real> &Minv, const defaulttype::Mat<3,2,Real> &M)
+inline static void invert(type::Mat<2,3,Real> &Minv, const type::Mat<3,2,Real> &M)
 {
-    defaulttype::Vec<3,Real> u=M.transposed()[0],v=M.transposed()[1],w=cross(u,v);
+    type::Vec<3,Real> u=M.transposed()[0],v=M.transposed()[1],w=cross(u,v);
     w.normalize();
-    defaulttype::Mat<3,3,Real> Mc; for(Size i=0; i<3; i++) {Mc[i][0]=M[i][0]; Mc[i][1]=M[i][1]; Mc[i][2]=w[i];}
-    defaulttype::Mat<3,3,Real> Mcinv; invert(Mcinv,Mc);
+    type::Mat<3,3,Real> Mc; for(Size i=0; i<3; i++) {Mc[i][0]=M[i][0]; Mc[i][1]=M[i][1]; Mc[i][2]=w[i];}
+    type::Mat<3,3,Real> Mcinv; invert(Mcinv,Mc);
     for(Size i=0; i<2; i++) for(Size j=0; j<3; j++) Minv[i][j]=Mcinv[i][0];
 }
 
@@ -116,7 +116,7 @@ inline static Mat identity()
 }
 
 template <Size C,Size L,typename Real>
-inline static void identity(defaulttype::Mat<C,L,Real> &F)
+inline static void identity(type::Mat<C,L,Real> &F)
 {
     F.clear();
     if(L>=C) for(Size i=0; i<C; i++) F[i][i]=1.0;
@@ -124,7 +124,7 @@ inline static void identity(defaulttype::Mat<C,L,Real> &F)
 }
 
 template <Size C1,Size L1,Size C2,Size L2,typename Real>
-inline static void copy(defaulttype::Mat<C1,L1,Real> &F1, const defaulttype::Mat<C2,L2,Real> &F2)
+inline static void copy(type::Mat<C1,L1,Real> &F1, const type::Mat<C2,L2,Real> &F2)
 {
     F1.clear();
     for(Size c=0; c<C1 && c<C2; c++)

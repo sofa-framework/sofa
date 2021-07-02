@@ -23,8 +23,8 @@
 #define FLEXIBLE_PrincipalStretchesJacobianBlock_H
 
 #include "../BaseJacobian.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
 
@@ -74,8 +74,8 @@ public:
     enum { strain_size = Out::strain_size };
     enum { frame_size = spatial_dimensions*material_dimensions };
 
-    typedef Mat<material_dimensions,material_dimensions,Real> MaterialMaterialMat;
-    typedef Mat<spatial_dimensions,material_dimensions,Real> SpatialMaterialMat;
+    typedef type::Mat<material_dimensions,material_dimensions,Real> MaterialMaterialMat;
+    typedef type::Mat<spatial_dimensions,material_dimensions,Real> SpatialMaterialMat;
 
     /**
     Mapping:   \f$ E = Ut.F.V\f$
@@ -92,8 +92,8 @@ public:
 
     MatBlock _J;
 
-    Mat<frame_size,frame_size,Real> _dUOverdF;
-    Mat<material_dimensions*material_dimensions,frame_size,Real> _dVOverdF;
+    type::Mat<frame_size,frame_size,Real> _dUOverdF;
+    type::Mat<material_dimensions*material_dimensions,frame_size,Real> _dVOverdF;
 
     bool _degenerated;
 
@@ -210,7 +210,7 @@ public:
 
     /// @ todo find a general algorithm to compute K for any dimensions
     // see the maple file doc/principalStretches_geometricStiffnessMatrix.mw
-    void compute_K( Mat<9,9,Real>& K, const OutDeriv& childForce ) // for spatial=3 material=3
+    void compute_K( type::Mat<9,9,Real>& K, const OutDeriv& childForce ) // for spatial=3 material=3
     {
         K[0][0] = _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][0] + _dUOverdF[2][0] * childForce.getStrain()[2] * _V[2][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][0] + _U[0][2] * childForce.getStrain()[2] * _dVOverdF[6][0];
         K[0][1] = _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][1] + _dUOverdF[2][0] * childForce.getStrain()[2] * _V[2][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[4][0] + _U[0][2] * childForce.getStrain()[2] * _dVOverdF[7][0];
@@ -305,7 +305,7 @@ public:
     }
 
 
-    void compute_K( Mat<6,6,Real>& K, const OutDeriv& childForce )  // for spatial=3 material=2
+    void compute_K( type::Mat<6,6,Real>& K, const OutDeriv& childForce )  // for spatial=3 material=2
     {
         K[0][0] =  _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[2][0];
         K[0][1] =  _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][0];

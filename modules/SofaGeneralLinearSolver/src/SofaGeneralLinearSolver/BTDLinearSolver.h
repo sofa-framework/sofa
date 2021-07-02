@@ -27,7 +27,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <cmath>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 namespace sofa::component::linearsolver
 {
@@ -44,23 +44,23 @@ public:
     class TransposedBloc{
 
     public:
-        const defaulttype::Mat<BSIZE,BSIZE,Real>& m;
+        const type::Mat<BSIZE,BSIZE,Real>& m;
 
-        TransposedBloc(const sofa::defaulttype::Mat<BSIZE, BSIZE, Real>& m_a) : m(m_a){
+        TransposedBloc(const sofa::type::Mat<BSIZE, BSIZE, Real>& m_a) : m(m_a){
 }
 
-        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
         {
             return m.multTranspose(v);
         }
 
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
+        type::Mat<BSIZE,BSIZE,Real> operator-() const
         {
             return -m.transposed();
         }
     };
 
-    class Bloc : public defaulttype::Mat<BSIZE,BSIZE,Real>
+    class Bloc : public type::Mat<BSIZE,BSIZE,Real>
     {
     public:
         Index Nrows() const;
@@ -69,33 +69,33 @@ public:
         const T& element(Index i, Index j) const;
         void set(Index i, Index j, const T& v);
         void add(Index i, Index j, const T& v);
-        void operator=(const defaulttype::Mat<BSIZE,BSIZE,Real>& v)
+        void operator=(const type::Mat<BSIZE,BSIZE,Real>& v)
         {
-            defaulttype::Mat<BSIZE,BSIZE,Real>::operator=(v);
+            type::Mat<BSIZE,BSIZE,Real>::operator=(v);
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
+        type::Mat<BSIZE,BSIZE,Real> operator-() const
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-();
+            return type::Mat<BSIZE,BSIZE,Real>::operator-();
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator-(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) const
+        type::Mat<BSIZE,BSIZE,Real> operator-(const type::Mat<BSIZE,BSIZE,Real>& m) const
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-(m);
+            return type::Mat<BSIZE,BSIZE,Real>::operator-(m);
         }
-        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(v);
+            return type::Mat<BSIZE,BSIZE,Real>::operator*(v);
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const defaulttype::Mat<BSIZE,BSIZE,Real>& m)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const type::Mat<BSIZE,BSIZE,Real>& m)
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m)
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt)
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
+            return type::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
         }
         TransposedBloc t() const;
         Bloc i() const;
@@ -217,26 +217,26 @@ public:
     typedef typename Inherit::iterator iterator;
     typedef typename Inherit::const_iterator const_iterator;
 
-    class Bloc : public defaulttype::Vec<N,T>
+    class Bloc : public type::Vec<N,T>
     {
     public:
         Index Nrows() const { return N; }
         void resize(Index) { this->clear(); }
-        void operator=(const defaulttype::Vec<N,T>& v)
+        void operator=(const type::Vec<N,T>& v)
         {
-            defaulttype::Vec<N,T>::operator=(v);
+            type::Vec<N,T>::operator=(v);
         }
         void operator=(int v)
         {
-            defaulttype::Vec<N,T>::fill((float)v);
+            type::Vec<N,T>::fill((float)v);
         }
         void operator=(float v)
         {
-            defaulttype::Vec<N,T>::fill(v);
+            type::Vec<N,T>::fill(v);
         }
         void operator=(double v)
         {
-            defaulttype::Vec<N,T>::fill(v);
+            type::Vec<N,T>::fill(v);
         }
     };
 
@@ -274,15 +274,15 @@ public:
     class TransposedBloc
     {
     public:
-        const defaulttype::Mat<BSIZE,BSIZE,Real>& m;
-        TransposedBloc(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) : m(m) {}
-        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        const type::Mat<BSIZE,BSIZE,Real>& m;
+        TransposedBloc(const type::Mat<BSIZE,BSIZE,Real>& m) : m(m) {}
+        type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
         {
             return m.multTranspose(v);
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
+        type::Mat<BSIZE,BSIZE,Real> operator-() const
         {
-            defaulttype::Mat<BSIZE,BSIZE,Real> r;
+            type::Mat<BSIZE,BSIZE,Real> r;
             for (Index i=0; i<BSIZE; i++)
                 for (Index j=0; j<BSIZE; j++)
                     r[i][j]=-m[j][i];
@@ -290,7 +290,7 @@ public:
         }
     };
 
-    class Bloc : public defaulttype::Mat<BSIZE,BSIZE,Real>
+    class Bloc : public type::Mat<BSIZE,BSIZE,Real>
     {
     public:
         Index Nrows() const { return BSIZE; }
@@ -302,37 +302,37 @@ public:
         const T& element(Index i, Index j) const { return (*this)[i][j]; }
         void set(Index i, Index j, const T& v) { (*this)[i][j] = v; }
         void add(Index i, Index j, const T& v) { (*this)[i][j] += v; }
-        void operator=(const defaulttype::Mat<BSIZE,BSIZE,Real>& v)
+        void operator=(const type::Mat<BSIZE,BSIZE,Real>& v)
         {
-            defaulttype::Mat<BSIZE,BSIZE,Real>::operator=(v);
+            type::Mat<BSIZE,BSIZE,Real>::operator=(v);
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
+        type::Mat<BSIZE,BSIZE,Real> operator-() const
         {
-            defaulttype::Mat<BSIZE,BSIZE,Real> r;
+            type::Mat<BSIZE,BSIZE,Real> r;
             for (Index i=0; i<BSIZE; i++)
                 for (Index j=0; j<BSIZE; j++)
                     r[i][j]=-(*this)[i][j];
             return r;
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator-(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) const
+        type::Mat<BSIZE,BSIZE,Real> operator-(const type::Mat<BSIZE,BSIZE,Real>& m) const
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-(m);
+            return type::Mat<BSIZE,BSIZE,Real>::operator-(m);
         }
-        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(v);
+            return type::Mat<BSIZE,BSIZE,Real>::operator*(v);
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const defaulttype::Mat<BSIZE,BSIZE,Real>& m)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const type::Mat<BSIZE,BSIZE,Real>& m)
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m)
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
         }
-        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt)
         {
-            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
+            return type::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
         }
         TransposedBloc t() const
         {
@@ -347,7 +347,7 @@ public:
     };
 
     typedef Bloc SubMatrixType;
-    typedef sofa::defaulttype::Mat<N,N,Real> BlocType;
+    typedef sofa::type::Mat<N,N,Real> BlocType;
     typedef BlocFullMatrix<N,T> InvMatrixType;
     // return the dimension of submatrices when requesting a given size
     static Index getSubMatrixDim(Index) { return BSIZE; }
@@ -477,10 +477,10 @@ public:
     typedef std::map<IndexPair, SubMatrix> MysparseM;
     typedef typename std::map<IndexPair, SubMatrix>::iterator MysparseMit;
 
-    //helper::vector<SubMatrix> alpha;
-    helper::vector<SubMatrix> alpha_inv;
-    helper::vector<SubMatrix> lambda;
-    helper::vector<SubMatrix> B;
+    //type::vector<SubMatrix> alpha;
+    type::vector<SubMatrix> alpha_inv;
+    type::vector<SubMatrix> lambda;
+    type::vector<SubMatrix> B;
     typename Matrix::InvMatrixType Minv;  //inverse matrix
 
 
@@ -498,7 +498,7 @@ public:
     std::vector<SubVector> Vec_dRH;			// buf the dRH on block that are not current_bloc...
     ////////////////////////////
 
-    helper::vector<Index> nBlockComputedMinv;
+    type::vector<Index> nBlockComputedMinv;
     Vector Y;
 
     Data<int> f_blockSize; ///< dimension of the blocks in the matrix

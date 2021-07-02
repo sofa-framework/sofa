@@ -147,12 +147,12 @@ public:
 
     Data < std::set<int> > constraintGroups; ///< list of ID of groups of constraints to be handled by this solver.
 
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of residuals at each iteration
+    Data<std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of residuals at each iteration
 
     Data<int> showLevels; ///< Number of constraint levels to display
     Data<double> showCellWidth; ///< Distance between each constraint cells
-    Data<defaulttype::Vector3> showTranslation; ///< Position of the first cell
-    Data<defaulttype::Vector3> showLevelTranslation; ///< Translation between levels
+    Data<type::Vector3> showTranslation; ///< Position of the first cell
+    Data<type::Vector3> showLevelTranslation; ///< Translation between levels
 
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
@@ -229,20 +229,20 @@ public:
     };
 
     std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
-    helper::vector< double > _previousForces;
+    type::vector< double > _previousForces;
 
-    helper::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;
-    helper::vector< VecPersistentID > hierarchy_constraintIds;
-    helper::vector< VecConstCoord > hierarchy_constraintPositions;
-    helper::vector< VecConstDeriv > hierarchy_constraintDirections;
-    helper::vector< VecConstArea > hierarchy_constraintAreas;
+    type::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;
+    type::vector< VecPersistentID > hierarchy_constraintIds;
+    type::vector< VecConstCoord > hierarchy_constraintPositions;
+    type::vector< VecConstDeriv > hierarchy_constraintDirections;
+    type::vector< VecConstArea > hierarchy_constraintAreas;
 
     // for gaussseidel_unbuilt
-    helper::vector< helper::LocalBlock33 > unbuilt_W33;
-    helper::vector< double > unbuilt_d;
+    type::vector< helper::LocalBlock33 > unbuilt_W33;
+    type::vector< double > unbuilt_d;
 
-    helper::vector< double > unbuilt_W11;
-    helper::vector< double > unbuilt_invW11;
+    type::vector< double > unbuilt_W11;
+    type::vector< double > unbuilt_invW11;
 
     bool isActive;
 };

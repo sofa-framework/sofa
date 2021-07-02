@@ -47,7 +47,7 @@ public:
 
     typedef Grid2D::real real;
     typedef Grid2D::vec2 vec2;
-    typedef sofa::defaulttype::Vec<3,real> vec3;
+    typedef sofa::type::Vec<3,real> vec3;
 protected:
 
     Grid2D* fluid;
@@ -98,8 +98,8 @@ protected:
         int p[3];
     };
 
-    sofa::helper::vector<Vertex> points;
-    sofa::helper::vector<Face> facets;
+    sofa::type::vector<Vertex> points;
+    sofa::type::vector<Face> facets;
 
     /// For each cube, store the vertex indices on each 3 first edges, and the data value
     struct CubeData
@@ -108,9 +108,9 @@ protected:
     };
 
     // temporary storage for marching cube
-    sofa::helper::vector<CubeData> planes;
-    //typename sofa::helper::vector<CubeData>::iterator P0; /// Pointer to first plane
-    //typename sofa::helper::vector<CubeData>::iterator P1; /// Pointer to second plane
+    sofa::type::vector<CubeData> planes;
+    //typename sofa::type::vector<CubeData>::iterator P0; /// Pointer to first plane
+    //typename sofa::type::vector<CubeData>::iterator P1; /// Pointer to second plane
 
     template<int C>
     int addPoint(int x,int y,int z, real v0, real v1, real iso)

@@ -5,7 +5,7 @@
 #include "Binding_PointSetTopologyModifier.h"
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 SP_DECLARE_CLASS_TYPE(TriangleSetTopologyModifier)
 

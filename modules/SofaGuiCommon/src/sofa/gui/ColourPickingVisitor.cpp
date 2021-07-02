@@ -35,6 +35,7 @@
 namespace sofa::gui
 {
 
+using namespace sofa::type;
 using namespace sofa::component::collision;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -45,12 +46,12 @@ namespace
 const float threshold = std::numeric_limits<float>::min();
 }
 
-void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::component::collision::BodyPicked& body)
+void decodeCollisionElement(const sofa::type::Vec4f colour,  sofa::component::collision::BodyPicked& body)
 {
 
     if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  ) // make sure we are not picking the background...
     {
-        helper::vector<core::CollisionModel*> listCollisionModel;
+        type::vector<core::CollisionModel*> listCollisionModel;
         if (body.body) body.body->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         const std::size_t totalCollisionModel = listCollisionModel.size();
         const int indexListCollisionModel = (int) ( colour[0] * (float)totalCollisionModel + 0.5) - 1;
@@ -68,7 +69,7 @@ void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::compon
 
 }
 
-void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f colour, const TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void decodePosition(BodyPicked& body, const sofa::type::Vec4f colour, const TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index)
 {
 
@@ -81,7 +82,7 @@ void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f colour, con
 
 }
 
-void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f /*colour*/, const SphereCollisionModel<sofa::defaulttype::Vec3Types> *model,
+void decodePosition(BodyPicked& body, const sofa::type::Vec4f /*colour*/, const SphereCollisionModel<sofa::defaulttype::Vec3Types> *model,
         const unsigned int index)
 {
     Sphere s(const_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);
@@ -117,11 +118,11 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
 
-    helper::vector<Vector3> points;
-    helper::vector<Vector3> normals;
-    std::vector<sofa::helper::types::RGBAColor> colours;
-    helper::vector<core::CollisionModel*> listCollisionModel;
-    helper::vector<core::CollisionModel*>::iterator iter;
+    type::vector<Vector3> points;
+    type::vector<Vector3> normals;
+    std::vector<sofa::type::RGBAColor> colours;
+    type::vector<core::CollisionModel*> listCollisionModel;
+    type::vector<core::CollisionModel*>::iterator iter;
     float r,g;
 
     int size = tmodel->getSize();
@@ -174,11 +175,11 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
 
     if( method == ENCODE_RELATIVEPOSITION ) return; // we pick the center of the sphere.
 
-    helper::vector<core::CollisionModel*> listCollisionModel;
+    type::vector<core::CollisionModel*> listCollisionModel;
 
     node->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
     const std::size_t totalCollisionModel = listCollisionModel.size();
-    helper::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), smodel);
+    type::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), smodel);
     const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
     float red = (float)indexCollisionModel / (float)totalCollisionModel;
     // Check topological modifications

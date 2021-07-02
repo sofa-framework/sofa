@@ -32,7 +32,7 @@ using sofa::core::visual::VisualParams ;
 using sofa::core::objectmodel::Event ;
 using sofa::core::ExecParams ;
 using sofa::core::DataEngine ;
-using sofa::helper::vector ;
+using sofa::type::vector ;
 using std::string ;
 
 namespace sofa
@@ -86,7 +86,7 @@ protected:
 public:
     sofa::core::objectmodel::DataFileName       m_filename;
     sofa::core::objectmodel::Data<std::string>  m_classname;
-    sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; /// array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
+    sofa::core::objectmodel::Data< type::vector< std::string > >  m_variables; /// array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
     sofa::core::objectmodel::Data<bool>         m_timingEnabled;
     sofa::core::objectmodel::Data<bool>         m_doAutoReload;
     sofa::core::objectmodel::Data<bool>         d_doUpdate;    

@@ -4,7 +4,7 @@
 #include "ConstantAssembledMapping.h"
 #include "ConstantAssembledMultiMapping.h"
 
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.inl>
 
@@ -35,12 +35,12 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
 
     typedef DifferenceMapping self;
 
-    typedef defaulttype::Vec<2, unsigned> index_pair;
-    typedef helper::vector< index_pair > pairs_type;
+    typedef type::Vec<2, unsigned> index_pair;
+    typedef type::vector< index_pair > pairs_type;
 
     Data< pairs_type > pairs; ///< index pairs for computing deltas
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< sofa::helper::types::RGBAColor > d_color; ///< drawing color
+    Data< sofa::type::RGBAColor > d_color; ///< drawing color
 
 
 
@@ -48,7 +48,7 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
     DifferenceMapping()
         : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+        , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {}
 
     enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
@@ -130,11 +130,11 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
 
         if( !scale )
         {
-            helper::vector< defaulttype::Vector3 > points(p.size()*2);
+            type::vector< type::Vector3 > points(p.size()*2);
             for(unsigned i=0; i<p.size(); i++ )
             {
-                points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
-                points[i*2+1] = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                points[i*2  ] = type::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                points[i*2+1] = type::Vector3( TIn::getCPos(pos[p[i][1]]) );
             }
             vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
         }
@@ -142,8 +142,8 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
         {
             for(unsigned i=0; i<p.size(); i++ )
             {
-                defaulttype::Vector3 p0 = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
-                defaulttype::Vector3 p1 = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                type::Vector3 p0 = type::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                type::Vector3 p1 = type::Vector3( TIn::getCPos(pos[p[i][1]]) );
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
@@ -207,8 +207,8 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
         typedef typename In::VecDeriv InVecDeriv;
         typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
 
-        typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
-        typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
+        typedef typename type::vector <const InVecCoord*> vecConstInVecCoord;
+        typedef typename type::vector<OutVecCoord*> vecOutVecCoord;
 
         enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
@@ -237,7 +237,7 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
         }
 
         virtual void apply(typename self::out_pos_type& out,
-                           const helper::vector<typename self::in_pos_type>& in) override {
+                           const type::vector<typename self::in_pos_type>& in) override {
             // macro_trace;
             assert( in.size() == 2 );
 
@@ -253,8 +253,8 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
         }
 
 
-        typedef defaulttype::Vec<2, unsigned> index_pair;
-        typedef helper::vector< index_pair > pairs_type;
+        typedef type::Vec<2, unsigned> index_pair;
+        typedef type::vector< index_pair > pairs_type;
 
         Data< pairs_type > pairs; ///< index pairs for computing deltas
 
@@ -265,7 +265,7 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
 
         }
 
-        void assemble(const helper::vector<typename self::in_pos_type>& in ) override {
+        void assemble(const type::vector<typename self::in_pos_type>& in ) override {
 
             const pairs_type& p = pairs.getValue();
             assert( !p.empty() );
