@@ -45,8 +45,8 @@ using sofa::core::execparams::defaultInstance;
 #include <SofaOpenglVisual/OglLabel.h>
 using sofa::component::visualmodel::OglLabel ;
 
-#include <sofa/helper/types/RGBAColor.h>
-using sofa::helper::types::RGBAColor ;
+#include <sofa/type/RGBAColor.h>
+using sofa::type::RGBAColor ;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 

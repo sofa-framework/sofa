@@ -89,7 +89,7 @@ struct FixedConstraint_test : public BaseTest
 
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
-        root->setGravity( defaulttype::Vector3(0,0,0) );
+        root->setGravity( type::Vector3(0,0,0) );
 
 #if SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER
         simpleapi::createObject(root , "RequiredPlugin", {{"name", "SofaSparseSolver"}}) ;
@@ -166,7 +166,7 @@ struct FixedConstraint_test : public BaseTest
         
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
-        root->setGravity(defaulttype::Vector3(0, 0, 0));
+        root->setGravity(type::Vector3(0, 0, 0));
 
         /// Create euler solver
         simulation::Node::SPtr node = createEulerSolverNode(root, "test");
@@ -210,7 +210,7 @@ struct FixedConstraint_test : public BaseTest
 
         /// Add fixconstraint
         typename FixedConstraint::SPtr cst = sofa::core::objectmodel::New<FixedConstraint>();
-        helper::vector<Index> indices = { 0, 1, 2 };
+        type::vector<Index> indices = { 0, 1, 2 };
         cst->d_indices.setValue(indices);
         node->addObject(cst);
 
@@ -233,7 +233,7 @@ struct FixedConstraint_test : public BaseTest
         EXPECT_NEAR(readX[4][0], 5.32231, 1e-4);
 
         /// remove some points from topological mechanism
-        sofa::helper::vector< sofa::Index > indicesRemove = {0, 2, 3};
+        sofa::type::vector< sofa::Index > indicesRemove = {0, 2, 3};
         tMod->removePoints(indicesRemove, true);
         nbrDofs -= sofa::Size(indicesRemove.size());
 

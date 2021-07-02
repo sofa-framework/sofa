@@ -40,6 +40,7 @@ namespace sofa::component::collision
 
 using namespace sofa::core::collision;
 using namespace helper;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 using core::topology::BaseMeshTopology;
@@ -120,7 +121,7 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
     b[0] = AB*AC;
     b[1] = -CD*AC;
 
-    const double det = defaulttype::determinant(A);
+    const double det = type::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -180,7 +181,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     A[0][1] = A[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const double det = defaulttype::determinant(A);
+    const double det = type::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -293,7 +294,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
-    const double det = defaulttype::determinant(A);
+    const double det = type::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -350,7 +351,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 
 
 
-    const double det = defaulttype::determinant(A);
+    const double det = type::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -449,7 +450,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
-    const double det = defaulttype::determinant(A);
+    const double det = type::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -510,7 +511,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
 
 
 
-    const double det = defaulttype::determinant(A);
+    const double det = type::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -1215,7 +1216,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) const
         return true;
 
     BaseMeshTopology* topology = p.getCollisionModel()->getCollisionTopology();
-    const helper::vector<Vector3>& x =(p.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+    const type::vector<Vector3>& x =(p.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
 
     const auto& trianglesAroundVertex = topology->getTrianglesAroundVertex(p.getIndex());
     const auto& edgesAroundVertex = topology->getEdgesAroundVertex(p.getIndex());
@@ -1294,7 +1295,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ) const
     AB.normalize();
 
     BaseMeshTopology* topology = l.getCollisionModel()->getCollisionTopology();
-    const helper::vector<Vector3>& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+    const type::vector<Vector3>& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
     const auto& trianglesAroundEdge = topology->getTrianglesAroundEdge(l.getIndex());
 
     if ( trianglesAroundEdge.size() == 2)

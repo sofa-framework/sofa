@@ -78,7 +78,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeParticleMasses(  )
     unsigned int numPoints = this->_topology->getNbPoints();
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
-    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+    type::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
 
     particleMasses.clear();
     particleMasses.resize( numPoints );
@@ -104,7 +104,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeLumpedMasses(  )
 
     if( _useLumpedMass.getValue() )
     {
-        helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+        type::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
 
         lumpedMasses.clear();
         lumpedMasses.resize( numPoints, Coord(0.0, 0.0, 0.0) );
@@ -135,15 +135,15 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
-    helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
-    helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
+    type::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
+    type::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
 
     elementMasses.resize( hexahedra.size() );
     elementTotalMass.resize( hexahedra.size() );
 
     for(unsigned int i=0; i<hexahedra.size(); ++i)
     {
-        defaulttype::Vec<8,Coord> nodes;
+        type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
             nodes[w] = initialPoints[hexahedra[i][w]];
 
@@ -157,7 +157,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, Real& totalMass,
-        const helper::fixed_array<Coord,8> &nodes)
+        const type::fixed_array<Coord,8> &nodes)
 {
     // volume of a element
     Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
@@ -228,7 +228,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
         const VecElement& hexahedra = this->_topology->getHexahedra();
         for(unsigned int i=0; i<hexahedra.size(); ++i)
         {
-            defaulttype::Vec<24, Real> actualDx, actualF;
+            type::Vec<24, Real> actualDx, actualF;
 
             for(int k=0 ; k<8 ; ++k )
             {
@@ -298,7 +298,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::Mechani
     int i,j,n1, n2, e;
 
     //typename VecElement::const_iterator it;
-    typename helper::vector<HexahedronInformation>::const_iterator it;
+    typename type::vector<HexahedronInformation>::const_iterator it;
 
     Index node1, node2;
     const VecElement& hexahedra = this->_topology->getHexahedra();
@@ -348,7 +348,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
         return;
     }
 
-    typename helper::vector<HexahedronInformation>::const_iterator it;
+    typename type::vector<HexahedronInformation>::const_iterator it;
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
 
@@ -461,7 +461,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
-    std::vector<defaulttype::Vector3> pos;
+    std::vector<type::Vector3> pos;
     pos.resize(x.size());
     auto posIT = pos.begin();
     typename VecCoord::const_iterator xIT = x.begin();
@@ -470,7 +470,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
         *posIT = *xIT;
     }
 
-    vparams->drawTool()->drawPoints(pos,2.0f, sofa::helper::types::RGBAColor::white());
+    vparams->drawTool()->drawPoints(pos,2.0f, sofa::type::RGBAColor::white());
 }
 
 } // namespace sofa::component::forcefield

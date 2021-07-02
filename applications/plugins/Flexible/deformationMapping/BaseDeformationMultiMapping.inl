@@ -165,7 +165,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     else if (_shapeFunction) // if we do not have the needed data, and have a shape function, we use it to compute needed data (index, weights, etc.)
     {
         msg_info()<<"found shape function "<<_shapeFunction->getName();
-        helper::vector<mCoord> mpos0;
+        type::vector<mCoord> mpos0;
         mpos0.resize(pos0.size());
         for(size_t i=0; i<pos0.size(); ++i)  defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
@@ -206,7 +206,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
 
 
 template <class JacobianBlockType1,class JacobianBlockType2>
-void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
+void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut(const type::vector<Coord>& position0, type::vector<type::vector<unsigned int> > index,type::vector<type::vector<Real> > w, type::vector<type::vector<type::Vec<spatial_dimensions,Real> > > dw, type::vector<type::vector<type::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, type::vector<type::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
     {
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
@@ -590,7 +590,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::Backwa
     MaterialToSpatial F0;  VRef ref; VReal w; VGradient dw;
     Coord pnew;
     MaterialToSpatial F;
-    defaulttype::Mat<material_dimensions,spatial_dimensions,Real> Finv;
+    type::Mat<material_dimensions,spatial_dimensions,Real> Finv;
 
     identity(F0);
     while(count<NbMaxIt)
@@ -648,7 +648,7 @@ unsigned int BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>
 
 
 template <class JacobianBlockType1,class JacobianBlockType2>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::getJs()
 {
     if( !this->assemble.getValue() )
     {
@@ -690,7 +690,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
 
     if (vparams->displayFlags().getShowMechanicalMappings())
     {
-        helper::vector< defaulttype::Vector3 > edge;     edge.resize(2);
+        type::vector< type::Vector3 > edge;     edge.resize(2);
         type::RGBAColor col;
 
         for(size_t i=0; i<out.size(); i++ )
@@ -712,36 +712,37 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
         const Data<OutVecDeriv>* outf = this->toModel->read(core::ConstVecDerivId::force());
         glEnable ( GL_LIGHTING );
         float scale=showDeformationGradientScale.getValue();
+
         type::RGBAColor col( 0.5, 0.5, 0.0, 1.0 );
-        defaulttype::Mat<3,3,float> F;
-        defaulttype::Vec<3,float> p;
+        type::Mat<3,3,float> F;
+        type::Vec<3,float> p;
 
         static const int subdiv = 8;
 
         for(size_t i=0; i<out.size(); i++ )
         {
-            if(OutDataTypesInfo<Out>::FMapped) F=(defaulttype::Mat<3,3,float>)OutDataTypesInfo<Out>::getF(out[i]); else F=(defaulttype::Mat<3,3,float>)f_F[i];
+            if(OutDataTypesInfo<Out>::FMapped) F=(type::Mat<3,3,float>)OutDataTypesInfo<Out>::getF(out[i]); else F=(type::Mat<3,3,float>)f_F[i];
             if(OutDataTypesInfo<Out>::positionMapped) Out::get(p[0],p[1],p[2],out[i]); else p=f_pos[i];
 
             if(showDeformationGradientStyle.getValue().getSelectedId()==0)
                 for(int j=0; j<material_dimensions; j++)
                 {
-                    defaulttype::Vec<3,float> u=F.transposed()(j)*0.5*scale;
+                    type::Vec<3,float> u=F.transposed()(j)*0.5*scale;
                     vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
             {
-                defaulttype::Vec<3,float> u=F.transposed()(0)*0.5*scale;
+                type::Vec<3,float> u=F.transposed()(0)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==2)
             {
-                defaulttype::Vec<3,float> u=F.transposed()(1)*0.5*scale;
+                type::Vec<3,float> u=F.transposed()(1)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==3)
             {
-                defaulttype::Vec<3,float> u=F.transposed()(2)*0.5*scale;
+                type::Vec<3,float> u=F.transposed()(2)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
@@ -752,7 +753,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
             else if(showDeformationGradientStyle.getValue().getSelectedId()==5 && outf) // stress
                 if(OutDataTypesInfo<Out>::FMapped)
                 {
-                    F=(defaulttype::Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf->getValue()[i]);
+                    F=(type::Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf->getValue()[i]);
                     vparams->drawTool()->setMaterial(col);
                     drawEllipsoid(F,p,0.5*scale);
                 }
@@ -768,8 +769,14 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
         {
             if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
 
-            if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(defaulttype::trace(F.transposed()*F)-3.);
-            else  val[i]=sqrt(defaulttype::determinant(F.transposed()*F))-1.;
+            if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(type::trace(F.transposed()*F)-3.);
+            else
+            {
+                if constexpr(spatial_dimensions > 1 && material_dimensions > 1)
+                {
+                    val[i]=sqrt(type::determinant(F.transposed()*F))-1.;
+                }
+            }
 
             //if (val[i]<0) val[i]=2*val[i]/(val[i]+1.);
             val[i]*=240 * this->showColorScale.getValue();
@@ -782,8 +789,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
         if(triangles) nb+=triangles->size();
         if(extTriangles) nb+=extTriangles->size();
 
-        std::vector< defaulttype::Vector3 > points(3*nb),normals;
-        std::vector< sofa::helper::types::RGBAColor > colors(3*nb);
+        std::vector< type::Vector3 > points(3*nb),normals;
+        std::vector< sofa::type::RGBAColor > colors(3*nb);
         size_t count=0;
 
         if(triangles)
@@ -792,7 +799,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
                 {
                     size_t index = (*triangles)[i][j];
                     if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    colors[count] = sofa::helper::types::RGBAColor::fromHSVA(float(val[index]),1.f,.8f,1.f);
+                    colors[count] = sofa::type::RGBAColor::fromHSVA(float(val[index]),1.f,.8f,1.f);
                     count++;
                 }
         if(extTriangles)
@@ -802,7 +809,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
                     size_t index = (*extTriangles)[i][j];
                     if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
                     if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    colors[count] = sofa::helper::types::RGBAColor::fromHSVA(float(val[index]),1.f,.8f,1.f);
+                    colors[count] = sofa::type::RGBAColor::fromHSVA(float(val[index]),1.f,.8f,1.f);
                     count++;
                 }
 

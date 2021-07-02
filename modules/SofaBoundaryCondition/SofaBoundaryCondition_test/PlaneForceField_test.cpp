@@ -56,6 +56,7 @@ namespace sofa {
 
 namespace {
 using namespace component;
+using namespace type;
 using namespace defaulttype;
 using namespace core::objectmodel;
 

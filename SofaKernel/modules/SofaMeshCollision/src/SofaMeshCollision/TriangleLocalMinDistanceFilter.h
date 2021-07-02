@@ -53,7 +53,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this TriangleInfo.
      */
-    bool validate(const Index /*p*/, const defaulttype::Vector3 & /*PQ*/) override;
+    bool validate(const Index /*p*/, const type::Vector3 & /*PQ*/) override;
     /**
      * @brief Output stream.
      */
@@ -79,7 +79,7 @@ public:
 protected:
 
 
-    sofa::defaulttype::Vector3 m_normal; ///< Stored normal of the triangle.
+    sofa::type::Vector3 m_normal; ///< Stored normal of the triangle.
 };
 
 
@@ -119,30 +119,30 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const Index pointIndex, const defaulttype::Vector3 &PQ);
+    bool validPoint(const Index pointIndex, const type::Vector3 &PQ);
 
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const Index lineIndex, const defaulttype::Vector3 &PQ);
+    bool validLine(const Index lineIndex, const type::Vector3 &PQ);
 
     /**
      * @brief Triangle Collision Primitive validation method.
      */
-    bool validTriangle(const Index triangleIndex, const defaulttype::Vector3 &PQ);
+    bool validTriangle(const Index triangleIndex, const type::Vector3 &PQ);
 
     //@}
 
     /**
      * @brief New Points creations callback.
      */
-    class PointInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >
+    class PointInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<PointInfo> >
     {
     public:
-        PointInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
+        PointInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::PointData<type::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<PointInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(Index pointIndex, PointInfo& m, const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
+        void applyCreateFunction(Index pointIndex, PointInfo& m, const sofa::type::vector< Index > &,
+                const sofa::type::vector< double > &);
     protected:
         TriangleLocalMinDistanceFilter* f;
     };
@@ -150,13 +150,13 @@ public:
     /**
      * @brief New Edges creations callback.
      */
-    class LineInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >
+    class LineInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<LineInfo> >
     {
     public:
-        LineInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::EdgeData<helper::vector<LineInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >(_data), f(_f) {}
+        LineInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::EdgeData<type::vector<LineInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<LineInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(Index edgeIndex, LineInfo& m, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
+        void applyCreateFunction(Index edgeIndex, LineInfo& m, const core::topology::BaseMeshTopology::Edge&, const sofa::type::vector< Index > &,
+                const sofa::type::vector< double > &);
     protected:
         TriangleLocalMinDistanceFilter* f;
     };
@@ -164,13 +164,13 @@ public:
     /**
      * @brief New Triangles creations callback.
      */
-    class TriangleInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, helper::vector<TriangleInfo> >
+    class TriangleInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, type::vector<TriangleInfo> >
     {
     public:
-        TriangleInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::TriangleData<helper::vector<TriangleInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, helper::vector<TriangleInfo> >(_data), f(_f) {}
+        TriangleInfoHandler(TriangleLocalMinDistanceFilter* _f, topology::TriangleData<type::vector<TriangleInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, type::vector<TriangleInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(Index triangleIndex, TriangleInfo& m, const core::topology::BaseMeshTopology::Triangle&, const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
+        void applyCreateFunction(Index triangleIndex, TriangleInfo& m, const core::topology::BaseMeshTopology::Triangle&, const sofa::type::vector< Index > &,
+                const sofa::type::vector< double > &);
     protected:
         TriangleLocalMinDistanceFilter* f;
     };
@@ -179,9 +179,9 @@ public:
     SingleLink<TriangleLocalMinDistanceFilter, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 private:
-    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
-    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo; ///< line filter data
-    topology::TriangleData< sofa::helper::vector<TriangleInfo> > m_triangleInfo; ///< triangle filter data
+    topology::PointData< sofa::type::vector<PointInfo> > m_pointInfo; ///< point filter data
+    topology::EdgeData< sofa::type::vector<LineInfo> > m_lineInfo; ///< line filter data
+    topology::TriangleData< sofa::type::vector<TriangleInfo> > m_triangleInfo; ///< triangle filter data
 
     PointInfoHandler* pointInfoHandler;
     LineInfoHandler* lineInfoHandler;

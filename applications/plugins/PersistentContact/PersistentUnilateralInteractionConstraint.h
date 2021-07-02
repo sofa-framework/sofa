@@ -66,7 +66,7 @@ public:
         m_constraint = c;
     }
 
-    void setInitForce(defaulttype::Vec3d f)
+    void setInitForce(type::Vec3d f)
     {
         _f[0] = f.x();
         _f[1] = f.y();

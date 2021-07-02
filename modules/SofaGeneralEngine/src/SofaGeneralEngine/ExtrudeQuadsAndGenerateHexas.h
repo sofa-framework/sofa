@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -46,7 +46,7 @@ public:
     typedef typename DataTypes::Coord     Coord;
     typedef typename DataTypes::VecCoord  VecCoord;
     typedef typename DataTypes::Real      Real;
-    typedef defaulttype::Vec<3,Real>      Vec3;
+    typedef type::Vec<3,Real>      Vec3;
 
 protected:
 
@@ -71,11 +71,11 @@ public:
     Data<int>                                        f_numberOfSlices; ///< Number of slices / steps in the extrusion
     Data<bool>                                       f_flipNormals;
     Data<VecCoord>                                   f_surfaceVertices; ///< Position coordinates of the surface
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_surfaceQuads; ///< Indices of the quads of the surface to extrude
+    Data< type::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_surfaceQuads; ///< Indices of the quads of the surface to extrude
     Data<VecCoord>                                   f_extrudedVertices; ///< Coordinates of the extruded vertices
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedSurfaceQuads; ///< List of new surface quads generated during the extrusion
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedQuads; ///< List of all quads generated during the extrusion
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Hexa> >   f_extrudedHexas; ///< List of hexahedra generated during the extrusion
+    Data< type::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedSurfaceQuads; ///< List of new surface quads generated during the extrusion
+    Data< type::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedQuads; ///< List of all quads generated during the extrusion
+    Data< type::vector<sofa::core::topology::BaseMeshTopology::Hexa> >   f_extrudedHexas; ///< List of hexahedra generated during the extrusion
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP)

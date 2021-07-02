@@ -27,10 +27,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::projectiveconstraintset
@@ -39,7 +39,7 @@ namespace sofa::component::projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
+bool PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
     return lc != 0;
 }
@@ -114,7 +114,7 @@ void PartialLinearMovementConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::removeIndex(Index index)
 {
-    sofa::helper::removeValue(*m_indices.beginEdit(),index);
+    sofa::type::removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
 }
 
@@ -281,7 +281,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
     if(linearMovementBetweenNodesInIndices.getValue())
     {
 
-        const helper::vector<Real> &imposedDisplacmentOnMacroNodes = this->m_imposedDisplacmentOnMacroNodes.getValue();
+        const type::vector<Real> &imposedDisplacmentOnMacroNodes = this->m_imposedDisplacmentOnMacroNodes.getValue();
         Real a = X0.getValue();
         Real b = Y0.getValue();
         Real c = Z0.getValue();
@@ -360,8 +360,8 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
-    helper::Quater<Real> prevOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(prevM));
-    helper::Quater<Real> nextOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(nextM));
+    type::Quat<Real> prevOrientation = type::Quat<Real>::createQuaterFromEuler(getVOrientation(prevM));
+    type::Quat<Real> nextOrientation = type::Quat<Real>::createQuaterFromEuler(getVOrientation(nextM));
 
     //set the motion to the Dofs
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -398,7 +398,7 @@ void PartialLinearMovementConstraint<DataTypes>::findKeyTimes()
         nextT = *m_keyTimes.getValue().begin();
         prevT = nextT;
 
-        typename helper::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
+        typename type::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
         typename VecDeriv::const_iterator it_m = m_keyMovements.getValue().begin();
 
         //WARNING : we consider that the key-events are in chronological order
@@ -479,13 +479,13 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
 
-    sofa::helper::vector<defaulttype::Vector3> vertices;
-    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::type::vector<type::Vector3> vertices;
+    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {
         vparams->drawTool()->disableLighting();
-        defaulttype::Vector3 v0, v1;
+        type::Vector3 v0, v1;
 
         const SetIndexArray & indices = m_indices.getValue();
         const VecDeriv& keyMovements = m_keyMovements.getValue();
@@ -506,7 +506,7 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-        defaulttype::Vector3 point;
+        type::Vector3 point;
         const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {

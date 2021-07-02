@@ -35,12 +35,13 @@
 namespace sofa::gl
 {
 
-template class SOFA_GL_API BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
-template class SOFA_GL_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
+template class SOFA_GL_API BasicShapesGL_Sphere< sofa::type::Vector3 >;
+template class SOFA_GL_API BasicShapesGL_FakeSphere< sofa::type::Vector3 >;
 
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
-using sofa::helper::types::RGBAColor;
+using sofa::type::RGBAColor;
 
 DrawToolGL::DrawToolGL()
 {
@@ -161,7 +162,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector< defaulttype::Vec<2,int> > &index, float size, const RGBAColor& color=RGBAColor(1.0f,1.0f,1.0f,1.0f))
+void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector< type::Vec<2,int> > &index, float size, const RGBAColor& color=RGBAColor(1.0f,1.0f,1.0f,1.0f))
 {
     setMaterial(color);
     glLineWidth(size);
@@ -322,7 +323,7 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const Vector3
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const std::vector< defaulttype::Vec<3,int> > &index,
+void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const std::vector< type::Vec<3,int> > &index,
         const std::vector<Vector3> &normal, const RGBAColor& color=RGBAColor(1.0f,1.0f,1.0f,1.0f))
 {
     setMaterial(color);
@@ -678,12 +679,12 @@ void DrawToolGL::drawArrow   (const Vector3& p1, const Vector3 &p2, float radius
 
 void DrawToolGL::drawCross(const Vector3&p, float length, const RGBAColor& color)
 {
-    std::vector<sofa::defaulttype::Vector3> bounds;
+    std::vector<sofa::type::Vector3> bounds;
 
     for ( unsigned int i=0 ; i<3 ; i++ )
     {
-        sofa::defaulttype::Vector3 p0 = p;
-        sofa::defaulttype::Vector3 p1 = p;
+        sofa::type::Vector3 p0 = p;
+        sofa::type::Vector3 p1 = p;
 
         p0[i] -= length;
         p1[i] += length;

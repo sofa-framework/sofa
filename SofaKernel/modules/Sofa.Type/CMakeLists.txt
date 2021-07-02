@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h
     ${SOFATYPESRC_ROOT}/Mat_solve_LU.h
     ${SOFATYPESRC_ROOT}/Mat_solve_SVD.h
+    ${SOFATYPESRC_ROOT}/Mat_solve_LCP.h
     ${SOFATYPESRC_ROOT}/trait/is_container.h
     ${SOFATYPESRC_ROOT}/trait/is_vector.h
     ${SOFATYPESRC_ROOT}/fwd.h
@@ -62,7 +63,7 @@ set(SOURCE_FILES
 
 sofa_find_package(Boost REQUIRED)
 sofa_find_package(Sofa.Config REQUIRED)
-sofa_find_package(Sofa.Compat REQUIRED BOTH_SCOPES) #TODO remove REQUIRED once the sofa code has been ported
+sofa_find_package(Sofa.Compat QUIET BOTH_SCOPES)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 

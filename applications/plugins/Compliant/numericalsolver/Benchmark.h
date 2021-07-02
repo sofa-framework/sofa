@@ -26,11 +26,11 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 	Data<SReal> factor; ///< time elapsed during factor
 	
 	// convergence
-    Data< helper::vector<SReal> > primal; ///< primal error
-    Data< helper::vector<SReal> > dual; ///< dual error
-    Data< helper::vector<SReal> > complementarity; ///< complementarity error
-    Data< helper::vector<SReal> > optimality; ///< optimality error
-    Data< helper::vector<SReal> > duration; ///< cumulated solve time
+    Data< type::vector<SReal> > primal; ///< primal error
+    Data< type::vector<SReal> > dual; ///< dual error
+    Data< type::vector<SReal> > complementarity; ///< complementarity error
+    Data< type::vector<SReal> > optimality; ///< optimality error
+    Data< type::vector<SReal> > duration; ///< cumulated solve time
 	
 	typedef SReal real;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;

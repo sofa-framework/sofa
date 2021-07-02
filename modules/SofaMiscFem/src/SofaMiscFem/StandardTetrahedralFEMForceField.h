@@ -27,9 +27,9 @@
 #include <SofaMiscFem/HyperelasticMaterial.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/MatSym.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <string>
@@ -59,16 +59,16 @@ class StandardTetrahedralFEMForceField: public core::behavior::ForceField<DataTy
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef defaulttype::Mat<3,3,Real> Matrix3;
-    typedef defaulttype::Mat<6,6,Real> Matrix6;
-    typedef defaulttype::Mat<6,3,Real> Matrix63;
-    typedef defaulttype::MatSym<3,Real> MatrixSym;
+    typedef type::Mat<3,3,Real> Matrix3;
+    typedef type::Mat<6,6,Real> Matrix6;
+    typedef type::Mat<6,3,Real> Matrix63;
+    typedef type::MatSym<3,Real> MatrixSym;
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv; 
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord; 
 
-    typedef helper::vector<Real> SetParameterArray;
-    typedef helper::vector<Coord> SetAnisotropyDirectionArray;
+    typedef type::vector<Real> SetParameterArray;
+    typedef type::vector<Coord> SetAnisotropyDirectionArray;
 
     typedef core::topology::BaseMeshTopology::Index Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
@@ -159,10 +159,10 @@ public:
 	void setMaterialName(const std::string& name) {
 		f_materialName.setValue(name);
 	}
-    void setparameter(const helper::vector<Real>& param) {
+    void setparameter(const type::vector<Real>& param) {
 		f_parameterSet.setValue(param);
 	}
-    void setdirection(const helper::vector<Coord>& direction) {
+    void setdirection(const type::vector<Coord>& direction) {
 		f_anisotropySet.setValue(direction);
 	}
 
@@ -189,7 +189,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-  //  defaulttype::Mat<3,3,double> getPhi( int );
+  //  type::Mat<3,3,double> getPhi( int );
 
     class GHTetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >
         {
@@ -205,8 +205,8 @@ public:
 
           void applyCreateFunction(Index, TetrahedronRestInformation &t,
                                    const core::topology::BaseMeshTopology::Tetrahedron&,
-                                   const sofa::helper::vector<Index> &,
-                                   const sofa::helper::vector<double> &);
+                                   const sofa::type::vector<Index> &,
+                                   const sofa::type::vector<double> &);
 
          protected:
           StandardTetrahedralFEMForceField<DataTypes>* ff;
@@ -219,7 +219,7 @@ public:
 	fem::HyperelasticMaterial<DataTypes> *myMaterial;
 
         topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
-        //EdgeData<sofa::helper::vector< EdgeInformation> > edgeInfo; ///< Internal edge data
+        //EdgeData<sofa::type::vector< EdgeInformation> > edgeInfo; ///< Internal edge data
         topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
 
 

@@ -51,7 +51,7 @@ public:
     void init() override;
 
     void addCollisionModel(core::CollisionModel *cm) override;
-    void addCollisionModels(const sofa::helper::vector<core::CollisionModel *>& v) override;
+    void addCollisionModels(const sofa::type::vector<core::CollisionModel *>& v) override;
 
 protected:
     ParallelBruteForceBroadPhase();

@@ -75,9 +75,9 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public BaseSimulationTe
     /// Tested simulation
     simulation::Simulation* simulation;  
     /// Position and velocity array
-    helper::vector<double> positionsArray;
-    helper::vector<double> velocitiesArray;
-    helper::vector<double> energiesArray;
+    type::vector<double> positionsArray;
+    type::vector<double> velocitiesArray;
+    type::vector<double> energiesArray;
     // solver
     VariationalSymplecticSolver::SPtr variationalSolver;
 

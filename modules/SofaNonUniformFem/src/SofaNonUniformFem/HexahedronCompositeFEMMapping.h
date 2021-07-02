@@ -30,8 +30,8 @@
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <SofaNonUniformFem/HexahedronCompositeFEMForceFieldAndMass.h>
 
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Mat.h>
 
 namespace sofa::component::mapping
 {
@@ -76,9 +76,9 @@ public:
     typedef sofa::component::forcefield::HexahedronCompositeFEMForceFieldAndMass<In> HexahedronCompositeFEMForceFieldAndMassT;
 
 
-    typedef defaulttype::Mat<3,8*3> Weight;
+    typedef type::Mat<3,8*3> Weight;
     typedef typename HexahedronCompositeFEMForceFieldAndMassT::Transformation Transformation;
-    typedef helper::fixed_array< InCoord, 8 > Nodes;
+    typedef type::fixed_array< InCoord, 8 > Nodes;
 
 protected:
     HexahedronCompositeFEMMapping (  ): Inherit ( )
@@ -116,7 +116,7 @@ protected :
     bool _alreadyInit;
 
 
-    helper::vector< OutCoord > _finePos;
+    type::vector< OutCoord > _finePos;
 
     // in order to treat large dispacements in translation (rotation is given by the corotational force field)
 // 	  InVecCoord _baycenters0;
@@ -125,17 +125,17 @@ protected :
     InVecCoord _qCoarse0, _qFine0; // intial position of the element nodes
     InVecCoord _qFine; // only for drawing
 
-// 	  helper::vector< helper::Quater<Real> > _rotations;
-    helper::vector< Transformation >  _rotations;
+// 	  type::vector< type::Quat<Real> > _rotations;
+    type::vector< Transformation >  _rotations;
 
 
-// 	  helper::vector< helper::vector<unsigned > > _pointsCorrespondingToElem; // in which element is the interpolated vertex?
-    helper::vector< Weight > _weights; // a weight matrix for each vertex, such as dp=W.dq with q the 8 values of the embedding element
+// 	  type::vector< type::vector<unsigned > > _pointsCorrespondingToElem; // in which element is the interpolated vertex?
+    type::vector< Weight > _weights; // a weight matrix for each vertex, such as dp=W.dq with q the 8 values of the embedding element
 
     // for method 2
-    helper::vector< std::pair< int, helper::fixed_array<Real,8> > > _finestBarycentricCoord; // barycentric coordinates for each mapped points into the finest elements (fine element idx + weights)
+    type::vector< std::pair< int, type::fixed_array<Real,8> > > _finestBarycentricCoord; // barycentric coordinates for each mapped points into the finest elements (fine element idx + weights)
 
-    helper::vector< std::map< int, Weight > > _finestWeights; // for each fine nodes -> a list of incident coarse element idx and the corresponding weight
+    type::vector< std::map< int, Weight > > _finestWeights; // for each fine nodes -> a list of incident coarse element idx and the corresponding weight
 
     // necessary objects
     SparseGridTopologyT* _sparseGrid;

@@ -70,15 +70,15 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     else if (this->f_method.getValue() == "polar")
         this->setMethod(HexahedralFEMForceFieldT::POLAR);
 
-    helper::vector<typename HexahedralFEMForceField<T>::HexahedronInformation>& hexahedronInf = *(this->hexahedronInfo.beginEdit());
+    type::vector<typename HexahedralFEMForceField<T>::HexahedronInformation>& hexahedronInf = *(this->hexahedronInfo.beginEdit());
     hexahedronInf.resize(this->_topology->getNbHexahedra());
     this->hexahedronInfo.endEdit();
 
-    helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
+    type::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
     elementMasses.resize( this->_topology->getNbHexahedra() );
     this->_elementMasses.endEdit();
 
-    helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
+    type::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
     elementTotalMass.resize( this->_topology->getNbHexahedra() );
     this->_elementTotalMass.endEdit();
 
@@ -92,11 +92,11 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     }
 
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    defaulttype::Vec<8,Coord> nodesCoarse;
+    type::Vec<8,Coord> nodesCoarse;
     for(int w=0; w<8; ++w)
         nodesCoarse[w] = (X0)[this->_topology->getHexahedron(0)[w]];
 
-    defaulttype::Vec<8,Coord> nodesFine;
+    type::Vec<8,Coord> nodesFine;
     for(int w=0; w<8; ++w)
         nodesFine[w] = (nodesCoarse[w] - nodesCoarse[0]) / coarseNodeSize;
 
@@ -269,7 +269,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::to
     break;
     }
 
-    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+    type::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
 
     for(unsigned int i=0; i<hexaModif.size(); ++i)
     {
@@ -285,7 +285,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::to
 
     if( this->_useLumpedMass.getValue() )
     {
-        helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+        type::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
 
         for(unsigned int i=0; i<hexaModif.size(); ++i)
         {
@@ -315,7 +315,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::
     dmsg_info() << "HEXAHEDRAREMOVED hexaId: " << hexaModif ;
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
-    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+    type::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
 
     for(unsigned int i=0; i<hexaModif.size(); ++i)
     {
@@ -331,7 +331,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::
 
     if( this->_useLumpedMass.getValue() )
     {
-        helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+        type::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
 
         for(unsigned int i=0; i<hexaModif.size(); ++i)
         {
@@ -366,12 +366,12 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const co
     const int coarseNodeSize = (1 << level);
 
     // subtract the contributions of removed voxels from element matrices
-    helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
-    helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
-    helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
+    type::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
+    type::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
+    type::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
 
-    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
-    helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+    type::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+    type::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
 
     for(unsigned int i=0; i<hexaModif.size(); ++i)
     {
@@ -430,7 +430,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
 {
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    defaulttype::Vec<8,Coord> nodes;
+    type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
         nodes[w] = (X0)[this->_topology->getHexahedron(i)[w]];
 
@@ -442,9 +442,9 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
     typename HexahedralFEMForceFieldT::Transformation R_0_1;
     this->computeRotationLarge(R_0_1, horizontal, vertical);
 
-    helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
-    helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
-    helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
+    type::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
+    type::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
+    type::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
 
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
@@ -465,7 +465,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
 {
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    defaulttype::Vec<8,Coord> nodes;
+    type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
         nodes[j] = (X0)[this->_topology->getHexahedron(i)[j]];
 
@@ -473,9 +473,9 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
     this->computeRotationPolar( R_0_1, nodes );
 
 
-    helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
-    helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
-    helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
+    type::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
+    type::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
+    type::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
 
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
@@ -573,7 +573,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         typedef std::pair< unsigned int, unsigned int > t_int_interval;
         typedef std::list< t_int_interval > t_interval_list;
 
-        helper::vector< t_interval_list >	intervals(intervalLevels);
+        type::vector< t_interval_list >	intervals(intervalLevels);
 
         std::set<unsigned int> fineChildren;
         const unsigned int coarseNodeSize = (1 << level);
@@ -937,7 +937,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
     helper::ReadAccessor < DataVecDeriv > dx = *mparams->readDx(this->mstate);
     helper::WriteAccessor< DataVecDeriv > df = *dfId[this->mstate.get()].write();
     const VecElement& hexahedra = this->_topology->getHexahedra();
-    const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = this->hexahedronInfo.getValue();
+    const type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = this->hexahedronInfo.getValue();
 
     // WARNING !  MBK is used not only in the equation matrix, but also in the right-hand term, with different coefficients.
     // We want to correct it only in the equation matrix, and we assume that mFactor<=0 correspond to the right-hand term.

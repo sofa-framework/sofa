@@ -23,13 +23,13 @@
 #define FLEXIBLE_QUADRATICTYPES_H
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/decompose.h>
 
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 
 #include "DeformableFrameMass.h"
@@ -42,21 +42,21 @@ namespace defaulttype
 
 
 template<typename Real>
-static Vec<2,Real> convertSpatialToQuadraticCoord(const Vec<1,Real>& p)
+static type::Vec<2,Real> convertSpatialToQuadraticCoord(const type::Vec<1,Real>& p)
 {
-    return Vec<5,Real>( p[0], p[0]*p[0]);
+    return type::Vec<5,Real>( p[0], p[0]*p[0]);
 }
 
 template<typename Real>
-static Vec<5,Real> convertSpatialToQuadraticCoord(const Vec<2,Real>& p)
+static type::Vec<5,Real> convertSpatialToQuadraticCoord(const type::Vec<2,Real>& p)
 {
-    return Vec<5,Real>( p[0], p[1], p[0]*p[0], p[1]*p[1], p[0]*p[1]);
+    return type::Vec<5,Real>( p[0], p[1], p[0]*p[0], p[1]*p[1], p[0]*p[1]);
 }
 
 template<typename Real>
-static Vec<9,Real> convertSpatialToQuadraticCoord(const Vec<3,Real>& p)
+static type::Vec<9,Real> convertSpatialToQuadraticCoord(const type::Vec<3,Real>& p)
 {
-    return Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
+    return type::Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
 }
 
 /** DOF types associated with 2nd order deformable frames. Each deformable frame generates an quadratic displacement field, with 30 independent degrees of freedom.
@@ -72,30 +72,30 @@ public:
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<Real> VecReal;
 
     // ------------    Types and methods defined for easier data access
-    typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
-    typedef Vec<num_quadratic_terms, Real> QuadraticCoord;                   ///< Position or velocity of a point, and its second-degree polynomial values
-    typedef Mat<spatial_dimensions,num_cross_terms,Real> CrossM;
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Affine;
-    typedef Mat<spatial_dimensions,num_quadratic_terms, Real> Frame;
+    typedef type::Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
+    typedef type::Vec<num_quadratic_terms, Real> QuadraticCoord;                   ///< Position or velocity of a point, and its second-degree polynomial values
+    typedef type::Mat<spatial_dimensions,num_cross_terms,Real> CrossM;
+    typedef type::Mat<spatial_dimensions,spatial_dimensions,Real> Affine;
+    typedef type::Mat<spatial_dimensions,num_quadratic_terms, Real> Frame;
 
     typedef SpatialCoord CPos;
     typedef SpatialCoord DPos;
 
 
 
-    class Coord : public Vec<VSize,Real>
+    class Coord : public type::Vec<VSize,Real>
     {
-        typedef Vec<VSize,Real> MyVec;
+        typedef type::Vec<VSize,Real> MyVec;
 
     public:
 
         enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 30
 
         Coord() { clear(); }
-        Coord( const Vec<VSize,Real>& d):MyVec(d) {}
+        Coord( const type::Vec<VSize,Real>& d):MyVec(d) {}
         Coord( const SpatialCoord& c, const Frame& a) { getCenter()=c; getQuadratic()=a;}
         Coord ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
         {
@@ -153,7 +153,7 @@ public:
             return in;
         }
 
-        /// Write the OpenGL transformation matrix
+        /// Write the OpenGL transformation type::Mat<rix
         void writeOpenGlMatrix ( float m[16] ) const
         {
             static_assert(spatial_dimensions == 3, "");
@@ -200,7 +200,7 @@ public:
         void setRigid( unsigned method=0 )
         {
             Frame& q = getQuadratic();
-            // first matrix is pure rotation
+            // first type::Mat<rix is pure rotation
             Affine rotation;
 
             if( method==1 ) // SVD
@@ -219,19 +219,19 @@ public:
         }
 
         template< Size N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        void operator+=( const type::Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
         template< Size N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        void operator=( const type::Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
 
     };
 
 
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
 
     static const char* Name();
 
 
-    static Coord interpolate ( const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs )
+    static Coord interpolate ( const type::vector< Coord > & ancestors, const type::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
         Coord c;
@@ -245,24 +245,24 @@ public:
     {
         Affine m;
 #ifdef DEBUG
-        bool invertible = defaulttype::invertMatrix(m,c.getAffine());
+        bool invertible = type::invertMatrix(m,c.getAffine());
         assert(invertible);
 #else
-        defaulttype::invertMatrix(m,c.getAffine());
+        type::invertMatrix(m,c.getAffine());
 #endif
         return Coord( -(m*c.getCenter()),m );
     }
 
 
 
-    class Deriv : public Vec<VSize,Real>
+    class Deriv : public type::Vec<VSize,Real>
     {
-        typedef Vec<VSize,Real> MyVec;
+        typedef type::Vec<VSize,Real> MyVec;
     public:
         enum { spatial_dimensions = _spatial_dimensions }; // different from Vec::spatial_dimensions == 30
 
         Deriv() { MyVec::clear(); }
-        Deriv( const Vec<VSize,Real>& d):MyVec(d) {}
+        Deriv( const type::Vec<VSize,Real>& d):MyVec(d) {}
         Deriv( const SpatialCoord& c, const Frame& a) { getVCenter()=c; getVQuadratic()=a;}
         Deriv ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
         {
@@ -308,17 +308,17 @@ public:
 
         /// get jacobian of the projection dQ/dM
         /// method: 0=polar (default), 1=SVD
-        static void getJRigid(const Coord& c, Mat<VSize,VSize,Real>& J, unsigned method=0)
+        static void getJRigid(const Coord& c, type::Mat<VSize,VSize,Real>& J, unsigned method=0)
         {
             static const unsigned MSize = spatial_dimensions * spatial_dimensions;
-            Mat<MSize,MSize,Real> dQOverdM;
+            type::Mat<MSize,MSize,Real> dQOverdM;
 
             switch( method )
             {
                 case 1: // SVD
                 {
                     Affine U, V;
-                    Vec<spatial_dimensions,Real> diag;
+                    type::Vec<spatial_dimensions,Real> diag;
                     helper::Decompose<Real>::SVD_stable( c.getAffine(), U, diag, V ); // TODO this was already computed in setRigid...
                     helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( U, diag, V, dQOverdM );
                     break;
@@ -357,7 +357,7 @@ public:
                 case 1: // SVD
                 {
                     Affine U, V, dQ;
-                    Vec<spatial_dimensions,Real> diag;
+                    type::Vec<spatial_dimensions,Real> diag;
                     helper::Decompose<Real>::SVD_stable( c.getAffine(), U, diag, V );
                     helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( U, diag, V, this->getAffine(), dQ );
 
@@ -375,12 +375,12 @@ public:
                 }
                 case 2: // approximation
                 {
-                    // good approximation of the solution with no inversion of a 6x6 matrix
+                    // good approximation of the solution with no inversion of a 6x6 type::Mat<rix
                     // based on : dR ~ 0.5*(dA.A^-1 - A^-T dA^T) R
-                    // the projection matrix is however non symmetric..
+                    // the projection type::Mat<rix is however non symmetric..
 
                     // Compute velocity tensor W = Adot.Ainv
-                    Affine Ainv;  defaulttype::invertMatrix(Ainv,c.getAffine());
+                    Affine Ainv;  type::invertMatrix(Ainv,c.getAffine());
                     Affine W = getAffine() * Ainv;
 
                     // make it skew-symmetric
@@ -435,15 +435,15 @@ public:
 
 
         template< Size N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        void operator+=( const type::Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
         template< Size N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        void operator=( const type::Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
-    typedef helper::vector<Deriv> VecDeriv;
+    typedef type::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
+    static Deriv interpolate ( const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
@@ -528,26 +528,26 @@ public:
 // returns dp^* / dp
 
 template<typename Real>
-static Mat<2,1,Real> SpatialToQuadraticCoordGradient(const Vec<1,Real>& p)
+static type::Mat<2,1,Real> SpatialToQuadraticCoordGradient(const type::Vec<1,Real>& p)
 {
-    Mat<2,1,Real> M;
+    type::Mat<2,1,Real> M;
     M(0,0)=1;     M(1,0)=2*p[0];
     return M;
 }
 
 template<typename Real>
-static Mat<5,2,Real> SpatialToQuadraticCoordGradient(const Vec<2,Real>& p)
+static type::Mat<5,2,Real> SpatialToQuadraticCoordGradient(const type::Vec<2,Real>& p)
 {
-    Mat<5,2,Real> M;
+    type::Mat<5,2,Real> M;
     for(Size i=0;i<2;i++) { M(i,i)=1;  M(i+2,i)=2*p[i];}
     M(4,0)=p[1];     M(4,1)=p[0];
     return M;
 }
 
 template<typename Real>
-static Mat<9,3,Real> SpatialToQuadraticCoordGradient(const Vec<3,Real>& p)
+static type::Mat<9,3,Real> SpatialToQuadraticCoordGradient(const type::Vec<3,Real>& p)
 {
-    Mat<9,3,Real> M;
+    type::Mat<9,3,Real> M;
     for(Size i=0;i<3;i++) { M(i,i)=1;  M(i+3,i)=2*p[i];}
     M(6,0)=p[1]; M(6,1)=p[0];
     M(7,1)=p[2]; M(7,2)=p[1];

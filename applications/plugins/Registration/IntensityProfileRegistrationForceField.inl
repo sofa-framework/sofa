@@ -66,7 +66,7 @@ IntensityProfileRegistrationForceField<DataTypes, ImageTypes>::IntensityProfileR
     , similarity(initData(&similarity,similarityTypes(),"similarity","similarity image"))
     , maskOutside(initData(&maskOutside,false,"maskOutside","discard profiles outside images"))
     , useAnisotropicStiffness(initData(&useAnisotropicStiffness,false,"useAnisotropicStiffness", "use more accurate but non constant stiffness matrix."))
-    , Sizes(initData(&Sizes,defaulttype::Vec<2,unsigned int>(5,5),"sizes","Inwards/outwards profile size."))
+    , Sizes(initData(&Sizes,type::Vec<2,unsigned int>(5,5),"sizes","Inwards/outwards profile size."))
     , Step(initData(&Step,(Real)1E-2,"step","Spacing of the profile discretization."))
     , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
     , SimilarityMeasure( initData ( &SimilarityMeasure,"measure","Similarity measure." ) )
@@ -164,8 +164,8 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 
     // allocate
     unsigned int nbpoints=pos.size();
-    defaulttype::Vec<2,unsigned int> sizes(this->Sizes.getValue()[0]+ (ref?0:searchRange.getValue()) ,this->Sizes.getValue()[1]+ (ref?0:searchRange.getValue()));
-    defaulttype::Vec<4,unsigned int> dims(sizes[0]+sizes[1]+1,nbpoints,1,img.spectrum());
+    type::Vec<2,unsigned int> sizes(this->Sizes.getValue()[0]+ (ref?0:searchRange.getValue()) ,this->Sizes.getValue()[1]+ (ref?0:searchRange.getValue()));
+    type::Vec<4,unsigned int> dims(sizes[0]+sizes[1]+1,nbpoints,1,img.spectrum());
 
     waImage out(ref?this->refProfiles:this->profiles);
     if( out->isEmpty() )  out->getCImgList().push_back(CImg<T>());
@@ -255,7 +255,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 
     // allocate
     unsigned int nbpoints=pos.size();
-    defaulttype::Vec<4,unsigned int> dims(2*searchRange.getValue()+1,nbpoints,1,1);
+    type::Vec<4,unsigned int> dims(2*searchRange.getValue()+1,nbpoints,1,1);
 
     waSimilarity out(this->similarity);
     if( out->isEmpty() )  out->getCImgList().push_back(CImg<Ts>());
@@ -410,7 +410,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addForce(cons
         f[i]+=k*u;
         if(this->useAnisotropicStiffness.getValue())
         {
-            if(nrm2) this->dfdx[i] = defaulttype::dyad(u,u)/u.norm2();
+            if(nrm2) this->dfdx[i] = type::dyad(u,u)/u.norm2();
             else this->dfdx[i].identity(); // use to stabilize points with no force
         }
         m_potentialEnergy += nrm2 * k * 0.5;
@@ -476,11 +476,11 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::draw(const co
     unsigned int nb = this->targetPos.size();
     if (vparams->displayFlags().getShowForceFields())
     {
-        std::vector< defaulttype::Vector3 > points;
+        std::vector< type::Vector3 > points;
         for (unsigned int i=0; i<nb; i++)
         {
-            defaulttype::Vector3 point1 = DataTypes::getCPos(x[i]);
-            defaulttype::Vector3 point2 = DataTypes::getCPos(this->targetPos[i]);
+            type::Vector3 point1 = DataTypes::getCPos(x[i]);
+            type::Vector3 point2 = DataTypes::getCPos(this->targetPos[i]);
             points.push_back(point1);
             points.push_back(point2);
         }

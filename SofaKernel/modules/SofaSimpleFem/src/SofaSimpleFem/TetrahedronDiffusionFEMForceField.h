@@ -23,10 +23,10 @@
 #include <SofaSimpleFem/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/fixed_array.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -46,10 +46,10 @@ class TetrahedronDiffusionFEMForceField : public core::behavior::ForceField<Data
       typedef typename DataTypes::Coord    Coord   ;
       typedef typename DataTypes::Deriv    Deriv   ;
       typedef typename Coord::value_type   Real    ;
-      typedef typename sofa::helper::vector< Real > VectorReal    ;
+      typedef typename sofa::type::vector< Real > VectorReal    ;
 
       /// assumes the mechanical object type (3D)
-      typedef defaulttype::Vec<3,Real>                            Vec3;
+      typedef type::Vec<3,Real>                            Vec3;
       typedef defaulttype::StdVectorTypes< Vec3, Vec3, Real >     MechanicalTypes ;
       typedef sofa::core::behavior::MechanicalState<MechanicalTypes>      MechObject;
 
@@ -79,14 +79,14 @@ public:
       SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const override;
 
       /// Get diffusion coefficient coefficient
-      sofa::helper::vector<Real> getDiffusionCoefficient();
+      sofa::type::vector<Real> getDiffusionCoefficient();
       /// Get diffusion coefficient for tetra i
       Real getTetraDiffusionCoefficient(Index i);
 
       /// Set diffusion coefficient with constant value
       void setDiffusionCoefficient(const Real val);
       /// Set diffusion coefficient with vector of value for each tetra
-      void setDiffusionCoefficient(const sofa::helper::vector<Real> val);
+      void setDiffusionCoefficient(const sofa::type::vector<Real> val);
 
 
 
@@ -95,13 +95,13 @@ public:
       /// Single value for diffusion coefficient (constant coefficient)
       Data<Real> d_constantDiffusionCoefficient;
       /// Vector of diffusivities associated to all tetras
-      Data<sofa::helper::vector<Real> > d_tetraDiffusionCoefficient;
+      Data<sofa::type::vector<Real> > d_tetraDiffusionCoefficient;
       /// bool used to specify 1D diffusion
       Data<bool> d_1DDiffusion;
       /// Ratio for anisotropic diffusion
       Data<Real> d_transverseAnisotropyRatio;
       /// Vector for transverse anisotropy
-      Data<sofa::helper::vector<Vec3> > d_transverseAnisotropyDirectionArray;
+      Data<sofa::type::vector<Vec3> > d_transverseAnisotropyDirectionArray;
       /// Mechanic xml tags of the system.
       Data<std::string> d_tagMeshMechanics;
       /// Boolean enabling to visualize the different diffusion coefficient
@@ -116,7 +116,7 @@ protected:
       void computeEdgeDiffusionCoefficient();
 
       /// Vector saving the edge diffusion coefficients
-      sofa::helper::vector<Real> edgeDiffusionCoefficient;
+      sofa::type::vector<Real> edgeDiffusionCoefficient;
       /// Pointer to mechanical mechanicalObject
       typename MechObject::SPtr mechanicalObject;
       /// Pointer to topology

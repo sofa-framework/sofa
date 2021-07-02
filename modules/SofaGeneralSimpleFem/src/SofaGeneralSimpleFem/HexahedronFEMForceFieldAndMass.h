@@ -56,7 +56,7 @@ public:
     typedef typename HexahedronFEMForceFieldT::VecElement VecElement;
     typedef typename HexahedronFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedronFEMForceFieldT::ElementStiffness ElementMass;
-    typedef helper::vector<Real> MassVector;
+    typedef type::vector<Real> MassVector;
     using Index = sofa::Index;
 
 protected:
@@ -67,7 +67,7 @@ public:
     void reinit( ) override;
 
     virtual void computeElementMasses( ); ///< compute the mass matrices
-    virtual void computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const Index elementIndice, SReal stiffnessFactor=1.0); ///< compute the mass matrix of an element
+    virtual void computeElementMass( ElementMass &Mass, const type::fixed_array<Coord,8> &nodes, const Index elementIndice, SReal stiffnessFactor=1.0); ///< compute the mass matrix of an element
     Real integrateMass( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
 
     // -- Mass interface
@@ -133,7 +133,7 @@ protected :
     Data<bool> d_lumpedMass; ///< Does it use lumped masses?
 
     MassVector _particleMasses; ///< masses per particle in order to compute gravity
-    helper::vector<Coord> _lumpedMasses; ///< masses per particle computed by lumping mass matrices
+    type::vector<Coord> _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 
 
 };

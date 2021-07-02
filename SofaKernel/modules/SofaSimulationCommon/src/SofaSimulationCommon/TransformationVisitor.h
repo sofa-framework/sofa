@@ -22,8 +22,8 @@
 #pragma once
 #include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 #include <sofa/core/visual/VisualModel.h>
 
 namespace sofa::simulation
@@ -33,7 +33,7 @@ namespace sofa::simulation
 class SOFA_SOFASIMULATIONCOMMON_API TransformationVisitor : public Visitor
 {
 public:
-    using Vector3 = sofa::defaulttype::Vector3;
+    using Vector3 = sofa::type::Vector3;
 
     TransformationVisitor(const sofa::core::ExecParams* params);
 

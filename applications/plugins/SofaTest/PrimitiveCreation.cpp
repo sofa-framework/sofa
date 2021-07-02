@@ -7,6 +7,7 @@ typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Ty
 
 using sofa::core::objectmodel::New;
 using sofa::component::container::MechanicalObject;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 namespace sofa{
@@ -16,7 +17,7 @@ namespace sofa{
 void rotx(double ax,Vec3 & x,Vec3 & y,Vec3 & z){
     Vec3 ix = Vec3(1,0,0);
 
-    Quaternion rotx(ix,ax);
+    Quat<SReal> rotx(ix,ax);
 
     x = rotx.rotate(x);y = rotx.rotate(y);z = rotx.rotate(z);
 }
@@ -24,7 +25,7 @@ void rotx(double ax,Vec3 & x,Vec3 & y,Vec3 & z){
 void roty(double angle,Vec3 & x,Vec3 & y,Vec3 & z){
     Vec3 iy = Vec3(0,1,0);
 
-    Quaternion rot(iy,angle);
+    Quat<SReal> rot(iy,angle);
 
     x = rot.rotate(x);y = rot.rotate(y);z = rot.rotate(z);
 }
@@ -32,7 +33,7 @@ void roty(double angle,Vec3 & x,Vec3 & y,Vec3 & z){
 void rotz(double angle,Vec3 & x,Vec3 & y,Vec3 & z){
     Vec3 iz = Vec3(0,0,1);
 
-    Quaternion rot(iz,angle);
+    Quat<SReal> rot(iz,angle);
 
     x = rot.rotate(x);y = rot.rotate(y);z = rot.rotate(z);
 }
@@ -68,7 +69,7 @@ sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::S
 
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = Rigid3Types::Coord(p,Quaternion::createQuaterFromFrame(x,y,z));
+    positions[0] = Rigid3Types::Coord(p, Quat<SReal>::createQuaterFromFrame(x,y,z));
 
     dpositions.endEdit();
 
@@ -233,7 +234,7 @@ sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>
 
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = Rigid3Types::Coord(p,Quaternion::createQuaterFromFrame(x,y,z));
+    positions[0] = Rigid3Types::Coord(p, Quat<SReal>::createQuaterFromFrame(x,y,z));
 
     dpositions.endEdit();
 

@@ -31,8 +31,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/SVector.h>
 
 
 namespace sofa::component::engine
@@ -57,13 +57,13 @@ public:
     typedef typename Coord::value_type Real;
 
     typedef sofa::core::topology::BaseMeshTopology::PointID ID;
-    typedef helper::vector<ID> VI;
-    typedef helper::vector<VI> VVI;
+    typedef type::vector<ID> VI;
+    typedef type::vector<VI> VVI;
 
-    typedef helper::vector<Real> VD;
-    typedef helper::vector<VD> VVD;
+    typedef type::vector<Real> VD;
+    typedef type::vector<VD> VVD;
 
-    typedef defaulttype::Vec<2,unsigned int> indicesType;
+    typedef type::Vec<2,unsigned int> indicesType;
 
 public:
 

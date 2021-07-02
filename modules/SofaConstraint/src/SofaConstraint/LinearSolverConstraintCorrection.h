@@ -27,8 +27,8 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
@@ -94,7 +94,7 @@ public:
     /// @{
 
     Data< bool > wire_optimization; ///< constraints are reordered along a wire-like topology (from tip to base)
-    Data< helper::vector< std::string > >  solverName; ///< name of the constraint solver
+    Data< type::vector< std::string > >  solverName; ///< name of the constraint solver
 
     void verify_constraints();
 

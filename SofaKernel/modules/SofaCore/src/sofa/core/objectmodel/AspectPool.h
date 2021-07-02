@@ -25,7 +25,7 @@
 
 #include <sofa/core/config.h>
 #include <sofa/helper/system/thread/CircularQueue.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/sptr.h>
 
 
@@ -129,7 +129,7 @@ private:
     helper::system::thread::ManyThreadsPerEnd>
     AspectQueue;
 
-    helper::vector<Aspect*> aspects;
+    type::vector<Aspect*> aspects;
     AspectQueue freeAspects;
     std::function<void (int)> releaseCallback;
 };

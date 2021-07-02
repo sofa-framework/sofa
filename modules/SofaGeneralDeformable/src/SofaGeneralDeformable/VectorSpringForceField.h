@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
@@ -89,7 +89,7 @@ protected:
     bool useTopology;
     bool usingMask;
     /// indices in case we don't use the topology
-    sofa::helper::vector<core::topology::BaseMeshTopology::Edge> edgeArray;
+    sofa::type::vector<core::topology::BaseMeshTopology::Edge> edgeArray;
 
 
     void resizeArray(std::size_t n);
@@ -98,14 +98,14 @@ protected:
 public:
 
     /// where the springs information are stored
-    sofa::component::topology::EdgeData<sofa::helper::vector<Spring> > springArray;
+    sofa::component::topology::EdgeData<sofa::type::vector<Spring> > springArray;
 
-    class EdgeDataHandler : public sofa::component::topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge, sofa::helper::vector<Spring> >
+    class EdgeDataHandler : public sofa::component::topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge, sofa::type::vector<Spring> >
     {
     public:
         typedef typename VectorSpringForceField<DataTypes>::Spring Spring;
-        EdgeDataHandler(VectorSpringForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<Spring> >* data)
-            :topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge,sofa::helper::vector<Spring> >(data)
+        EdgeDataHandler(VectorSpringForceField<DataTypes>* ff, topology::EdgeData<sofa::type::vector<Spring> >* data)
+            :topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge,sofa::type::vector<Spring> >(data)
             ,ff(ff)
         {
 
@@ -113,7 +113,7 @@ public:
 
         void applyCreateFunction(Index, Spring &t,
                 const core::topology::BaseMeshTopology::Edge &,
-                const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &);
+                const sofa::type::vector<Index> &, const sofa::type::vector<double> &);
     protected:
         VectorSpringForceField<DataTypes>* ff;
 
@@ -170,7 +170,7 @@ public:
     {
         return Real(m_viscosity.getValue());
     }
-    const topology::EdgeData<sofa::helper::vector<Spring> >& getSpringArray() const
+    const topology::EdgeData<sofa::type::vector<Spring> >& getSpringArray() const
     {
         return springArray;
     }
@@ -181,7 +181,7 @@ public:
 
     void clear(int reserve=0)
     {
-        helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+        type::vector<Spring>& springArrayData = *(springArray.beginEdit());
         springArrayData.clear();
         if (reserve) springArrayData.reserve(reserve);
         springArray.endEdit();

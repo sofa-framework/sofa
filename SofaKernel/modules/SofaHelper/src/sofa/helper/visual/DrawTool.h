@@ -22,10 +22,10 @@
 #pragma once
 
 #include <sofa/helper/config.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/RGBAColor.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/fwd.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <vector>
 
 namespace sofa::helper::visual
@@ -44,12 +44,12 @@ class DrawTool
 {
 
 public:
-    typedef sofa::helper::types::RGBAColor RGBAColor;
-    typedef sofa::defaulttype::Vec3f   Vec3f;
-    typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::defaulttype::Vec<3,int> Vec3i;
-    typedef sofa::defaulttype::Vec<2,int> Vec2i;
-    typedef sofa::defaulttype::Quaternion Quaternion;
+    typedef sofa::type::RGBAColor RGBAColor;
+    typedef sofa::type::Vec3f   Vec3f;
+    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec<3,int> Vec3i;
+    typedef sofa::type::Vec<2,int> Vec2i;
+    typedef sofa::type::Quat<SReal> Quaternion;
 
     DrawTool() { clear(); }
     virtual ~DrawTool() {}
@@ -225,7 +225,7 @@ public:
     virtual void clear() {}
 
     /// Compatibility wrapper functions 
-    using Vec4f = sofa::defaulttype::Vec4f;
+    using Vec4f = sofa::type::Vec4f;
 
     // Necessary to not break existing code
     // as std::vector<RGBAColor> is not a std::vector<Vec4f>

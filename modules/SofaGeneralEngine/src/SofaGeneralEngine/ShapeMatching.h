@@ -31,8 +31,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/SVector.h>
 
 
 namespace sofa::component::engine
@@ -49,12 +49,12 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename Coord::value_type Real;
-    typedef defaulttype::Mat<3,3,Real> Mat3x3;
+    typedef type::Mat<3,3,Real> Mat3x3;
 
     typedef core::topology::BaseMeshTopology::PointID ID;
-    typedef helper::vector<ID> VI;
-    typedef helper::vector<VI> VVI;
-	typedef helper::vector<Real> VD;	
+    typedef type::vector<ID> VI;
+    typedef type::vector<VI> VVI;
+	typedef type::vector<Real> VD;	
 
 public:
 
@@ -88,11 +88,11 @@ private:
     Real oldfixedweight;
     VecCoord Xcm0;
     VecCoord Xcm;
-    helper::vector<unsigned int> nbClust;
+    type::vector<unsigned int> nbClust;
     VD W;
 
-    helper::vector<Mat3x3> Qxinv; // Qx = sum(X0-Xcm0)(X0-Xcm0)^T
-    helper::vector<Mat3x3> T;
+    type::vector<Mat3x3> Qxinv; // Qx = sum(X0-Xcm0)(X0-Xcm0)^T
+    type::vector<Mat3x3> T;
 };
 
 

@@ -45,10 +45,10 @@ double DSAPBox::squaredDistance(const DSAPBox &other) const
 
 double DSAPBox::squaredDistance(const DSAPBox &other, int axis) const
 {
-    const defaulttype::Vector3 &min0 = this->cube.minVect();
-    const defaulttype::Vector3 &max0 = this->cube.maxVect();
-    const defaulttype::Vector3 &min1 = other.cube.minVect();
-    const defaulttype::Vector3 &max1 = other.cube.maxVect();
+    const type::Vector3 &min0 = this->cube.minVect();
+    const type::Vector3 &max0 = this->cube.maxVect();
+    const type::Vector3 &min1 = other.cube.minVect();
+    const type::Vector3 &max1 = other.cube.maxVect();
 
     if (min0[axis] > max1[axis])
     {

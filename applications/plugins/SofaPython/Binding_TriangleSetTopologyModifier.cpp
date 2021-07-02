@@ -2,8 +2,8 @@
 #include "Binding_PointSetTopologyModifier.h"
 #include "PythonToSofa.inl"
 
-#include <sofa/helper/vector.h>
-using sofa::helper::vector;
+#include <sofa/type/vector.h>
+using sofa::type::vector;
 
 using sofa::component::topology::TriangleSetTopologyModifier ;
 using sofa::core::topology::Topology ;

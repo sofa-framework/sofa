@@ -44,8 +44,8 @@ int OglShaderClass = core::RegisterObject("OglShader")
 OglShader::OglShader():
     turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),
     passive(initData(&passive, (bool) false, "passive", "Will this shader be activated manually or automatically?")),
-    vertFilename(initData(&vertFilename, helper::SVector<std::string>(1,"shaders/toonShading.vert"), "fileVertexShaders", "Set the vertex shader filename to load")),
-    fragFilename(initData(&fragFilename, helper::SVector<std::string>(1,"shaders/toonShading.frag"), "fileFragmentShaders", "Set the fragment shader filename to load")),
+    vertFilename(initData(&vertFilename, type::SVector<std::string>(1,"shaders/toonShading.vert"), "fileVertexShaders", "Set the vertex shader filename to load")),
+    fragFilename(initData(&fragFilename, type::SVector<std::string>(1,"shaders/toonShading.frag"), "fileFragmentShaders", "Set the fragment shader filename to load")),
 #ifdef GL_GEOMETRY_SHADER_EXT
     geoFilename(initData(&geoFilename, "fileGeometryShaders", "Set the geometry shader filename to load")),
 #endif
@@ -201,7 +201,7 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
     if( fileVertexShader || fileVertexShaderAlias )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileVertexShader' or 'vertFilename', please use the new Data<SVector<string>>'fileVertexShaders'";
-        helper::vector<std::string> simplevector;
+        type::vector<std::string> simplevector;
         std::istringstream( fileVertexShader ? fileVertexShader : fileVertexShaderAlias ) >> simplevector;
         vertFilename.setValue( simplevector );
     }
@@ -210,7 +210,7 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
     if( fileFragmentShader || fileFragmentShaderAlias )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileFragmentShader' or 'fragFilename', please use the new Data<SVector<string>>'fileFragmentShaders'";
-        helper::vector<std::string> simplevector;
+        type::vector<std::string> simplevector;
         std::istringstream( fileFragmentShader ? fileFragmentShader : fileFragmentShaderAlias ) >> simplevector;
         fragFilename.setValue( simplevector );
     }
@@ -220,7 +220,7 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
     if( fileGeometryShader || fileGeometryShaderAlias )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileGeometryShader' or 'geoFilename', please use the new Data<SVector<string>>'fileGeometryShaders'";
-        helper::vector<std::string> simplevector;
+        type::vector<std::string> simplevector;
         std::istringstream( fileGeometryShader ? fileGeometryShader : fileGeometryShaderAlias ) >> simplevector;
         geoFilename.setValue( simplevector );
     }
@@ -230,7 +230,7 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
     if( fileTessellationControlShader )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileTessellationControlShader', please use the new Data<SVector<string>>'fileTessellationControlShaders'";
-        helper::vector<std::string> simplevector;
+        type::vector<std::string> simplevector;
         std::istringstream( fileTessellationControlShader ) >> simplevector;
         tessellationControlFilename.setValue( simplevector );
     }
@@ -240,7 +240,7 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
     if( fileTessellationEvaluationShader )
     {
         msg_deprecated() << "Parse: You are using a deprecated Data<vector<string>> 'fileTessellationEvaluationShader', please use the new Data<SVector<string>>'fileTessellationEvaluationShaders'";
-        helper::vector<std::string> simplevector;
+        type::vector<std::string> simplevector;
         std::istringstream( fileTessellationEvaluationShader ) >> simplevector;
         tessellationEvaluationFilename.setValue( simplevector );
     }
@@ -277,7 +277,7 @@ void OglShader::start()
 #if defined(GL_TESS_CONTROL_SHADER)
         if (shaderVector[indexActiveShader.getValue()]->GetTessellationEvaluationShaderID() && !shaderVector[indexActiveShader.getValue()]->GetTessellationControlShaderID() && GLEW_ARB_tessellation_shader)
         {
-            helper::fixed_array<GLfloat,4> levels;
+            type::fixed_array<GLfloat,4> levels;
             levels.assign(tessellationOuterLevel.getValue());
             glPatchParameterfv(GL_PATCH_DEFAULT_OUTER_LEVEL, levels.data());
             levels.assign(tessellationInnerLevel.getValue());
@@ -573,12 +573,12 @@ void OglShaderElement::init()
     sofa::core::objectmodel::TagSet::const_iterator begin = this->getTags().begin();
     sofa::core::objectmodel::TagSet::const_iterator end = this->getTags().end();
     sofa::core::objectmodel::TagSet::const_iterator it;
-    helper::vector<OglShader*> gotShaders;
+    type::vector<OglShader*> gotShaders;
 
     for (it = begin; it != end; ++it)
     {
-        mycontext->core::objectmodel::BaseContext::get<OglShader, helper::vector<OglShader*> >(&gotShaders, (*it));
-        for(helper::vector<OglShader*>::iterator it2 = gotShaders.begin(); it2!= gotShaders.end(); ++it2) //merge into shaders vector
+        mycontext->core::objectmodel::BaseContext::get<OglShader, type::vector<OglShader*> >(&gotShaders, (*it));
+        for(type::vector<OglShader*>::iterator it2 = gotShaders.begin(); it2!= gotShaders.end(); ++it2) //merge into shaders vector
         {
             shaders.insert(*it2);
             //shaders.push_back(*it2);

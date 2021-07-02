@@ -10,7 +10,7 @@
 #include <Eigen/Geometry>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 
 #include <limits>
 
@@ -39,13 +39,13 @@ struct SE3 {
     
 	// easy mappings between sofa/eigen vectors
     template<sofa::Size I>
-	static Eigen::Map< Eigen::Matrix<real, I, 1> > map(::sofa::defaulttype::Vec<I, real>& v) {
+	static Eigen::Map< Eigen::Matrix<real, I, 1> > map(::sofa::type::Vec<I, real>& v) {
 		return Eigen::Map< Eigen::Matrix<real, I, 1> >(v.ptr());
 	}
 
 
     template<sofa::Size I>
-	static Eigen::Map<const Eigen::Matrix<real, I, 1> > map(const ::sofa::defaulttype::Vec<I, real>& v) {
+	static Eigen::Map<const Eigen::Matrix<real, I, 1> > map(const ::sofa::type::Vec<I, real>& v) {
 		return Eigen::Map<const Eigen::Matrix<real, I, 1> >(v.ptr());
 	}
 
@@ -62,15 +62,15 @@ struct SE3 {
 
 
 	//  quaternion conversion
-	static quat coord(const ::sofa::helper::Quater<real>& at) {
+    static quat coord(const ::sofa::type::Quat<real>& at) {
 		return quat(at[3],
 		            at[0],
 		            at[1],
 		            at[2]);
 	}
 
-	static ::sofa::helper::Quater<real> coord(const quat& at) {
-		return ::sofa::helper::Quater<real>(at.coeffs()(1),
+    static ::sofa::type::Quat<real> coord(const quat& at) {
+        return ::sofa::type::Quat<real>(at.coeffs()(1),
 		                                    at.coeffs()(2),
 		                                    at.coeffs()(3),
 		                                    at.coeffs()(0));
@@ -205,7 +205,7 @@ struct SE3 {
 
 
 	//  SO(3) adjoint map quaternion -> matrix conversion
-	static mat33 Ad(const ::sofa::helper::Quater<real>& at) {
+    static mat33 Ad(const ::sofa::type::Quat<real>& at) {
 		return coord(at).toRotationMatrix();
 	}
 

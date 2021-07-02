@@ -76,9 +76,9 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
             nodeToTriangles[triangles[i][j]].insert(i);
     }
 
-    helper::WriteOnlyAccessor< Data<helper::vector<unsigned> > > triangleIndices(f_triangleIndices); triangleIndices.resize(0);
-    helper::WriteOnlyAccessor< Data<helper::vector<unsigned> > > endIndices(f_endIndices); endIndices.resize(0);
-    helper::WriteOnlyAccessor< Data<helper::vector<Real> > > weights(f_weights); weights.resize(0);
+    helper::WriteOnlyAccessor< Data<type::vector<unsigned> > > triangleIndices(f_triangleIndices); triangleIndices.resize(0);
+    helper::WriteOnlyAccessor< Data<type::vector<unsigned> > > endIndices(f_endIndices); endIndices.resize(0);
+    helper::WriteOnlyAccessor< Data<type::vector<Real> > > weights(f_weights); weights.resize(0);
     unsigned endIndex=0;
     for( MapNodeToTriangles::const_iterator i=nodeToTriangles.begin(), iend=nodeToTriangles.end(); i!=iend; i++ ) // for each node
     {
@@ -124,9 +124,9 @@ void TriangleStrainAverageMapping<TIn, TOut>::mult( Data<OutVecCoord>& dOut, con
 {
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  nodeValues = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  triangleValues = dIn;
-    helper::ReadAccessor< Data<helper::vector<unsigned> > > triangleIndices(f_triangleIndices);
-    helper::ReadAccessor< Data<helper::vector<unsigned> > > endIndices(f_endIndices);
-    helper::ReadAccessor< Data<helper::vector<Real> > > weights(f_weights);
+    helper::ReadAccessor< Data<type::vector<unsigned> > > triangleIndices(f_triangleIndices);
+    helper::ReadAccessor< Data<type::vector<unsigned> > > endIndices(f_endIndices);
+    helper::ReadAccessor< Data<type::vector<Real> > > weights(f_weights);
 
     unsigned startIndex=0;
     for(unsigned i=0; i<endIndices.size(); i++ )
@@ -159,9 +159,9 @@ void TriangleStrainAverageMapping<TIn, TOut>::applyJT(const core::MechanicalPara
 {
     helper::ReadAccessor< Data<OutVecDeriv> >  nodeValues = dOut;
     helper::WriteAccessor< Data<InVecDeriv> >  triangleValues = dIn;
-    helper::ReadAccessor< Data<helper::vector<unsigned> > > triangleIndices(f_triangleIndices);
-    helper::ReadAccessor< Data<helper::vector<unsigned> > > endIndices(f_endIndices);
-    helper::ReadAccessor< Data<helper::vector<Real> > > weights(f_weights);
+    helper::ReadAccessor< Data<type::vector<unsigned> > > triangleIndices(f_triangleIndices);
+    helper::ReadAccessor< Data<type::vector<unsigned> > > endIndices(f_endIndices);
+    helper::ReadAccessor< Data<type::vector<Real> > > weights(f_weights);
 
     unsigned startIndex=0;
     for(unsigned i=0; i<endIndices.size(); i++ )
@@ -189,7 +189,7 @@ const sofa::defaulttype::BaseMatrix* TriangleStrainAverageMapping<TIn, TOut>::ge
 }
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* TriangleStrainAverageMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* TriangleStrainAverageMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }

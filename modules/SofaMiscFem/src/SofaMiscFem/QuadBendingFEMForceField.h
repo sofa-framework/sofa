@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 #include <map>
@@ -62,7 +62,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqQuads VecElement;
     typedef sofa::core::topology::BaseMeshTopology::QuadsAroundVertex QuadsAroundVertex;
 
-    typedef sofa::helper::Quater<Real> Quat;
+    typedef sofa::type::Quat<Real> Quat;
 
     enum {
         SMALL = 1,   ///< Symbol of large displacements quad solver
@@ -71,10 +71,10 @@ public:
 protected:
 
     //bool _anisotropicMaterial;			                 	    /// used to turn on / off optimizations
-    typedef defaulttype::Vec<20, Real> Displacement;					    ///< the displacement vector
-    typedef defaulttype::Mat<8, 8, Real> MaterialStiffness;				    ///< the matrix of material stiffness
-    typedef defaulttype::Mat<32, 20, Real> StrainDisplacement;				    ///< the strain-displacement matrix
-    typedef defaulttype::Mat<20, 20, Real> Stiffness;					    ///< the stiffness matrix
+    typedef type::Vec<20, Real> Displacement;					    ///< the displacement vector
+    typedef type::Mat<8, 8, Real> MaterialStiffness;				    ///< the matrix of material stiffness
+    typedef type::Mat<32, 20, Real> StrainDisplacement;				    ///< the strain-displacement matrix
+    typedef type::Mat<20, 20, Real> Stiffness;					    ///< the stiffness matrix
     
 protected:
     /// ForceField API
@@ -102,14 +102,14 @@ public:
         Stiffness Shearstiffness;
         //Real area;
         // large displacement method
-        helper::fixed_array<Coord,3> InitialPosElements;
+        type::fixed_array<Coord,3> InitialPosElements;
         Coord IntlengthElement;
         Coord IntheightElement;
         Coord Intcentroid;
         Real Inthalflength;
         Real Inthalfheight;
 
-        //helper::vector<Coord> lastNStressDirection;
+        //type::vector<Coord> lastNStressDirection;
 
         QuadInformation() { }
 
@@ -166,20 +166,20 @@ public:
     };
 
 /// Topology Data
-    topology::QuadData<sofa::helper::vector<QuadInformation> > quadInfo;
-    topology::PointData<sofa::helper::vector<VertexInformation> > vertexInfo; ///< Internal point data
-    topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
+    topology::QuadData<sofa::type::vector<QuadInformation> > quadInfo;
+    topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
+    topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
-    class QuadHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Quad,helper::vector<QuadInformation> >
+    class QuadHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Quad,type::vector<QuadInformation> >
     {
     public:
-        QuadHandler(QuadBendingFEMForceField<DataTypes>* _ff, topology::QuadData<sofa::helper::vector<QuadInformation> >* _data) : 
-        topology::TopologyDataHandler<core::topology::BaseMeshTopology::Quad, sofa::helper::vector<QuadInformation> >(_data), ff(_ff) {}
+        QuadHandler(QuadBendingFEMForceField<DataTypes>* _ff, topology::QuadData<sofa::type::vector<QuadInformation> >* _data) : 
+        topology::TopologyDataHandler<core::topology::BaseMeshTopology::Quad, sofa::type::vector<QuadInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int quadIndex, QuadInformation& ,
                 const core::topology::BaseMeshTopology::Quad & t,
-                const sofa::helper::vector< unsigned int > &,
-                const sofa::helper::vector< double > &);
+                const sofa::type::vector< unsigned int > &,
+                const sofa::type::vector< double > &);
     protected:
         QuadBendingFEMForceField<DataTypes>* ff;
     };
@@ -190,13 +190,13 @@ public:
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val)
     {
-        helper::vector<Real> newP(1, val);
+        type::vector<Real> newP(1, val);
         f_poisson.setValue(newP);
     }
     Real getYoung() { return (f_young.getValue())[0]; }
     void setYoung(Real val)
     {
-        helper::vector<Real> newY(1, val);
+        type::vector<Real> newY(1, val);
         f_young.setValue(newY);
     }
     int  getMethod() { return method; }
@@ -226,8 +226,8 @@ public:
     /// Forcefield intern paramaters
     int method;
     Data<std::string> f_method; ///< large: large displacements, small: small displacements
-    Data<helper::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
-    Data<helper::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
+    Data<type::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
+    Data<type::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
     Data<Real> f_thickness;
     QuadHandler* quadHandler;
 

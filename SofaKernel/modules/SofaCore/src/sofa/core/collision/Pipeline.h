@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/helper/set.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 
 namespace sofa
@@ -58,13 +58,13 @@ public:
 
 protected:
 
-    //sofa::helper::vector<DetectionOutput*> detectionOutputs;
+    //sofa::type::vector<DetectionOutput*> detectionOutputs;
 
-    sofa::helper::vector<Intersection*> intersectionMethods;
-    sofa::helper::vector<BroadPhaseDetection*> broadPhaseDetections;
-    sofa::helper::vector<NarrowPhaseDetection*> narrowPhaseDetections;
-    sofa::helper::vector<ContactManager*> contactManagers;
-    sofa::helper::vector<CollisionGroupManager*> groupManagers;
+    sofa::type::vector<Intersection*> intersectionMethods;
+    sofa::type::vector<BroadPhaseDetection*> broadPhaseDetections;
+    sofa::type::vector<NarrowPhaseDetection*> narrowPhaseDetections;
+    sofa::type::vector<ContactManager*> contactManagers;
+    sofa::type::vector<CollisionGroupManager*> groupManagers;
 
     Intersection* intersectionMethod;
     BroadPhaseDetection* broadPhaseDetection;
@@ -102,7 +102,7 @@ public:
         computeCollisionResponse();
     }
 
-    //sofa::helper::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }
+    //sofa::type::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }
 
     /// Broad phase collision detection method accessor.
     const BroadPhaseDetection *getBroadPhaseDetection() const;
@@ -116,7 +116,7 @@ protected:
     /// Remove collision response from last step
     virtual void doCollisionReset() = 0;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) = 0;
+    virtual void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) = 0;
     /// Add collision response in the simulation graph
     virtual void doCollisionResponse() = 0;
 

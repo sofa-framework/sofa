@@ -42,7 +42,7 @@ struct RigidJointMappingTest : public Mapping_test<Mapping>
     typedef Mapping_test<Mapping> base;
 
     typedef SE3< typename self::Real > se3;
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 
@@ -60,7 +60,7 @@ struct RigidJointMappingTest : public Mapping_test<Mapping>
         // parents
         typename self::InVecCoord xin(2);
 
-        defaulttype::Quat q = defaulttype::Quat::fromEuler(M_PI_2,M_PI/8,M_PI_4);
+        auto q = type::Quat<SReal>::fromEuler(M_PI_2,M_PI/8,M_PI_4);
 
         // finite difference method does not work well with large rotations
         // this seems mainly due to the fact that se3::log(q*dq) != se3::log(q) + se3::log(dq)

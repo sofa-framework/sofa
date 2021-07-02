@@ -51,13 +51,13 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > f_lambda0; ///< optimal fiber stretch
-    Data<helper::vector<Real> > f_sigmaMax; ///< maximum isometric stress
-    Data<helper::vector<Real> > f_a; ///< activation level
-    Data<helper::vector<Real> > f_b;
-    Data<helper::vector<Real> > f_Vvm;
-    Data<helper::vector<Real> > f_Ver;
-    Data<helper::vector<Real> > f_Vsh;
+    Data<type::vector<Real> > f_lambda0; ///< optimal fiber stretch
+    Data<type::vector<Real> > f_sigmaMax; ///< maximum isometric stress
+    Data<type::vector<Real> > f_a; ///< activation level
+    Data<type::vector<Real> > f_b;
+    Data<type::vector<Real> > f_Vvm;
+    Data<type::vector<Real> > f_Ver;
+    Data<type::vector<Real> > f_Vsh;
     //@}
 
     virtual void reinit() override
@@ -81,13 +81,13 @@ public:
 protected:
     MuscleMaterialForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_lambda0(initData(&f_lambda0,helper::vector<Real>((int)1,(Real)1.),"lambda0","optimal fiber stretch"))
-        , f_sigmaMax(initData(&f_sigmaMax,helper::vector<Real>((int)1,(Real)3E5),"sigmaMax","maximum isometric stress"))
-        , f_a(initData(&f_a,helper::vector<Real>((int)1,(Real)0),"a","activation level"))
-        , f_b(initData(&f_b,helper::vector<Real>((int)1,(Real)0.5),"b",""))
-        , f_Vvm(initData(&f_Vvm,helper::vector<Real>((int)1,(Real)10),"Vvm",""))
-        , f_Ver(initData(&f_Ver,helper::vector<Real>((int)1,(Real)0.5),"Ver",""))
-        , f_Vsh(initData(&f_Vsh,helper::vector<Real>((int)1,(Real)0.3),"Vsh",""))
+        , f_lambda0(initData(&f_lambda0,type::vector<Real>((int)1,(Real)1.),"lambda0","optimal fiber stretch"))
+        , f_sigmaMax(initData(&f_sigmaMax,type::vector<Real>((int)1,(Real)3E5),"sigmaMax","maximum isometric stress"))
+        , f_a(initData(&f_a,type::vector<Real>((int)1,(Real)0),"a","activation level"))
+        , f_b(initData(&f_b,type::vector<Real>((int)1,(Real)0.5),"b",""))
+        , f_Vvm(initData(&f_Vvm,type::vector<Real>((int)1,(Real)10),"Vvm",""))
+        , f_Ver(initData(&f_Ver,type::vector<Real>((int)1,(Real)0.5),"Ver",""))
+        , f_Vsh(initData(&f_Vsh,type::vector<Real>((int)1,(Real)0.3),"Vsh",""))
     {
     }
 

@@ -58,7 +58,7 @@ public:
     void execute();
     void draw(const core::visual::VisualParams* vparams);
 
-    using GetFixationPointsOnModelFunction = std::function<void(sofa::core::sptr<sofa::core::CollisionModel>, const Index, helper::vector<Index>&, Coord&)>;
+    using GetFixationPointsOnModelFunction = std::function<void(sofa::core::sptr<sofa::core::CollisionModel>, const Index, type::vector<Index>&, Coord&)>;
 
     template<typename TCollisionModel>
     static int RegisterSupportedModel(GetFixationPointsOnModelFunction func)
@@ -69,7 +69,7 @@ public:
     }
 
     template<typename TTriangleCollisionModel>
-    static void getFixationPointsTriangle(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, Coord& fixPoint)
+    static void getFixationPointsTriangle(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, type::vector<Index>& points, Coord& fixPoint)
     {
         auto* triangle = static_cast<TTriangleCollisionModel*>(model.get());
 
@@ -80,7 +80,7 @@ public:
         points.push_back(t.p3Index());
     }
 
-    static void getFixationPointsSphere(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, Coord& fixPoint)
+    static void getFixationPointsSphere(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, type::vector<Index>& points, Coord& fixPoint)
     {
         auto* collisionState = model->getContext()->getMechanicalState();
         fixPoint[0] = collisionState->getPX(idx);
@@ -91,7 +91,7 @@ public:
     }
 
 protected:
-    MouseContainer* getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint);
+    MouseContainer* getFixationPoints(const BodyPicked &b, type::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint);
 
     std::vector< simulation::Node * > fixations;
 

@@ -22,9 +22,9 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/set.h>
 
 namespace sofa::component::topology
@@ -35,9 +35,9 @@ template< typename Real, int N>
 class NumericalIntegrationDescriptor {
  
 public:
-    typedef sofa::defaulttype::Vec<N, Real> BarycentricCoordinatesType;
+    typedef sofa::type::Vec<N, Real> BarycentricCoordinatesType;
 	typedef std::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
-	typedef sofa::helper::vector<QuadraturePoint> QuadraturePointArray;
+	typedef sofa::type::vector<QuadraturePoint> QuadraturePointArray;
 	
 	typedef enum {
 		GAUSS_LEGENDRE_METHOD =0,

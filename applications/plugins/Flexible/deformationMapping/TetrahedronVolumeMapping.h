@@ -49,7 +49,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TIn> SparseKMatrixEigen;
     typedef sofa::core::topology::BaseMeshTopology::Tetra Tetra;
     typedef sofa::core::topology::BaseMeshTopology::Index Index;
-    typedef sofa::helper::vector< Index > VecIndex;
+    typedef sofa::type::vector< Index > VecIndex;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
     SOFA_CLASS(SOFA_TEMPLATE2(TetrahedronVolumeMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -194,7 +194,7 @@ public:
     }
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() override { return &jacobian; }
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override { return &baseMatrices; }
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override { return &baseMatrices; }
 
 protected:
     TetrahedronVolumeMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
@@ -210,9 +210,9 @@ protected:
     sofa::core::topology::BaseMeshTopology* m_topology;  ///< where the triangles/quads are defined
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen geometricStiffness; ///< Stiffness due to the non-linearity of the mapping
-    typedef defaulttype::Mat<12,12,Real> Hessian;
+    typedef type::Mat<12,12,Real> Hessian;
     typedef std::list<Hessian> Hessians;
     Hessians hessians; ///< local dJ per tetrahedron
 

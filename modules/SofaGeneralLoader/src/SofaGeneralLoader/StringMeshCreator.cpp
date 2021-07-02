@@ -26,9 +26,10 @@
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
-using helper::vector;
+using type::vector;
 
 int StringMeshCreatorClass = core::RegisterObject("Procedural creation of a one-dimensional mesh.")
         .add< StringMeshCreator >()
@@ -59,7 +60,7 @@ void StringMeshCreator::doClearBuffers()
 
 bool StringMeshCreator::doLoad()
 {
-    helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (d_positions);
+    helper::WriteAccessor<Data<vector<sofa::type::Vector3> > > my_positions (d_positions);
     unsigned numX = resolution.getValue();
 
     // Warning: Vertex creation order must be consistent with method vert.
@@ -67,7 +68,7 @@ bool StringMeshCreator::doLoad()
     {
         my_positions.push_back( Vector3(x * 1./(numX-1), 0, 0) );
     }
-    helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
+    type::vector<Edge >& my_edges = *(d_edges.beginEdit());
     for( unsigned e=1; e<numX; e++ )
     {
         my_edges.push_back( Edge(e-1,e) );

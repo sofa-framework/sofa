@@ -94,10 +94,10 @@ protected:
         }
 	};
 	
-	Data<sofa::helper::vector<Contact> > contacts;
+	Data<sofa::type::vector<Contact> > contacts;
 	
 	// contacts from previous frame
-    sofa::helper::vector<Contact> prevContacts;
+    sofa::type::vector<Contact> prevContacts;
 
 
 public:
@@ -121,14 +121,14 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override;
 
-    const helper::vector< Contact >& getContact() const { return contacts.getValue();}
+    const type::vector< Contact >& getContact() const { return contacts.getValue();}
 
     // -- tool grabing utility
     void grabPoint( const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
-                    const helper::vector< unsigned int > &index,
-                    helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
-                    helper::vector< unsigned int > &triangle,
-                    helper::vector< unsigned int > &index_point) ;
+                    const type::vector< unsigned int > &index,
+                    type::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,
+                    type::vector< unsigned int > &triangle,
+                    type::vector< unsigned int > &index_point) ;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

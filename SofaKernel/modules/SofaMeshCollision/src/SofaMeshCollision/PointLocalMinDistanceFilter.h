@@ -38,7 +38,7 @@ namespace sofa::component::collision
 class SOFA_SOFAMESHCOLLISION_API PointInfo : public InfoFilter //< Point >
 {
 public:
-    typedef std::vector< std::pair< sofa::defaulttype::Vector3, double > > TDataContainer;
+    typedef std::vector< std::pair< sofa::type::Vector3, double > > TDataContainer;
 
     /**
      * @brief Default constructor.
@@ -53,8 +53,8 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this PointInfo.
      */
-    //virtual bool validate(const Point & /*p*/, const defaulttype::Vector3 & /*PQ*/);
-    bool validate(const Index /*p*/, const defaulttype::Vector3 & /*PQ*/) override;
+    //virtual bool validate(const Point & /*p*/, const type::Vector3 & /*PQ*/);
+    bool validate(const Index /*p*/, const type::Vector3 & /*PQ*/) override;
     /**
      * @brief Output stream.
      */
@@ -119,7 +119,7 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validPoint(Index /*pointIndex*/, const type::Vector3 &/*PQ*/)
     {
         return true;
     }
@@ -129,19 +129,19 @@ public:
     /**
      * @brief New Points creations handler.
      */
-    class PointInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >
+    class PointInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<PointInfo> >
     {
     public:
-        PointInfoHandler(PointLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
+        PointInfoHandler(PointLocalMinDistanceFilter* _f, topology::PointData<type::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<PointInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(Index pointIndex, PointInfo& m, const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
+        void applyCreateFunction(Index pointIndex, PointInfo& m, const sofa::type::vector< Index > &,
+                const sofa::type::vector< double > &);
     protected:
         PointLocalMinDistanceFilter* f;
     };
 
 private:
-    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
+    topology::PointData< sofa::type::vector<PointInfo> > m_pointInfo; ///< point filter data
     PointInfoHandler* pointInfoHandler;
     core::topology::BaseMeshTopology *bmt;
 };

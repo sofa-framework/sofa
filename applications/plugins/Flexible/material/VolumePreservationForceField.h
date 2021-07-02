@@ -54,7 +54,7 @@ public:
     /** @name  Material parameters */
     //@{
     Data<helper::OptionsGroup> f_method; ///< energy form
-    Data<helper::vector<Real> > f_k; ///< bulk modulus: weight ln(J)^2/2 term in energy 
+    Data<type::vector<Real> > f_k; ///< bulk modulus: weight ln(J)^2/2 term in energy 
     //@}
 
     virtual void reinit() override
@@ -100,7 +100,7 @@ protected:
     VolumePreservationForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
         , f_method ( initData ( &f_method,"method","energy form" ) )
-        , f_k(initData(&f_k,helper::vector<Real>((int)1,(Real)0),"k","bulk modulus: weight ln(J)^2/2 term in energy "))
+        , f_k(initData(&f_k,type::vector<Real>((int)1,(Real)0),"k","bulk modulus: weight ln(J)^2/2 term in energy "))
     {
         helper::OptionsGroup Options(2	,"0 - k.ln(J)^2/2"
                 ,"1 - k.(J-1)^2/2" );

@@ -142,7 +142,7 @@ public:
         // Method to get a given step duration (ms) given its name and parent name
         SReal getStepMs(const std::string& stepName, const std::string& parentName);
 
-        sofa::helper::vector<AnimationSubStepData*> m_children;
+        sofa::type::vector<AnimationSubStepData*> m_children;
     };
 
     /**
@@ -168,7 +168,7 @@ public:
         int m_stepIteration;
         SReal m_totalMs;
 
-        sofa::helper::vector<AnimationSubStepData*> m_subSteps;
+        sofa::type::vector<AnimationSubStepData*> m_subSteps;
     protected:
         bool processData(const std::string& idString);
     };

@@ -22,8 +22,8 @@
 #pragma once
 #include <SofaGeneralEngine/SubsetTopology.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/BoundingBox.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/BoundingBox.h>
+#include <sofa/type/RGBAColor.h>
 #include <limits>
 
 namespace sofa::component::engine
@@ -294,7 +294,7 @@ void SubsetTopology<DataTypes>::findVertexOnBorder(const Triangle &t, unsigned i
 {
     const VecCoord* x0 = &f_X0.getValue();
 
-    sofa::helper::vector<unsigned int> onborder;
+    sofa::type::vector<unsigned int> onborder;
     bool findIn = false;
     bool findOut = false;
 
@@ -336,7 +336,7 @@ void SubsetTopology<DataTypes>::findVertexOnBorder(const Tetra &t, unsigned int 
 {
     const VecCoord* x0 = &f_X0.getValue();
 
-    sofa::helper::vector<unsigned int> onborder;
+    sofa::type::vector<unsigned int> onborder;
     bool findIn = false;
     bool findOut = false;
 
@@ -376,10 +376,10 @@ template <class DataTypes>
 void SubsetTopology<DataTypes>::doUpdate()
 {
     unsigned int ROInum = 0;
-    const helper::vector<Vec3>& cen = (centers.getValue());
-    const helper::vector<Real>& rad = (radii.getValue());
+    const type::vector<Vec3>& cen = (centers.getValue());
+    const type::vector<Real>& rad = (radii.getValue());
 
-    helper::vector<Vec6>& vb = *(boxes.beginEdit());
+    type::vector<Vec6>& vb = *(boxes.beginEdit());
     for (unsigned int bi=0; bi<vb.size(); ++bi)
     {
         if (vb[bi][0] > vb[bi][3]) std::swap(vb[bi][0],vb[bi][3]);
@@ -405,11 +405,11 @@ void SubsetTopology<DataTypes>::doUpdate()
 
 
     // Read accessor for input topology
-    helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<helper::vector<Quad> > > quads = f_quads;
-    helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
-    helper::ReadAccessor< Data<helper::vector<Hexa> > > hexahedra = f_hexahedra;
+    helper::ReadAccessor< Data<type::vector<Edge> > > edges = f_edges;
+    helper::ReadAccessor< Data<type::vector<Triangle> > > triangles = f_triangles;
+    helper::ReadAccessor< Data<type::vector<Quad> > > quads = f_quads;
+    helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    helper::ReadAccessor< Data<type::vector<Hexa> > > hexahedra = f_hexahedra;
 
     const VecCoord* x0 = &f_X0.getValue();
 
@@ -425,16 +425,16 @@ void SubsetTopology<DataTypes>::doUpdate()
     // Write accessor for toplogical element in ROI
     helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
     helper::WriteOnlyAccessor< Data<VecCoord > > pointsOutROI = f_pointsOutROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesOutROI = f_edgesOutROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesOutROI = f_trianglesOutROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Quad> > > quadsOutROI = f_quadsOutROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraOutROI = f_tetrahedraOutROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Hexa> > > hexahedraOutROI = f_hexahedraOutROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Edge> > > edgesOutROI = f_edgesOutROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Triangle> > > trianglesOutROI = f_trianglesOutROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Quad> > > quadsInROI = f_quadsInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Quad> > > quadsOutROI = f_quadsOutROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Tetra> > > tetrahedraOutROI = f_tetrahedraOutROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Hexa> > > hexahedraOutROI = f_hexahedraOutROI;
 
 
 
@@ -663,7 +663,7 @@ void SubsetTopology<DataTypes>::doUpdate()
 	else
 	{
 		helper::ReadAccessor< Data<SetIndex> > tetrahedraInput = d_tetrahedraInput;
-		sofa::helper::vector<bool> pointCheckedIn, pointCheckedOut;
+		sofa::type::vector<bool> pointCheckedIn, pointCheckedOut;
 		pointCheckedIn.resize(x0->size(), false);
 		pointCheckedOut.resize(x0->size(), false);
 
@@ -768,7 +768,7 @@ void SubsetTopology<DataTypes>::doUpdate()
 }
 
 template <class DataTypes>
-bool SubsetTopology<DataTypes>::isPointChecked(unsigned int id, sofa::helper::vector<bool>& pointChecked)
+bool SubsetTopology<DataTypes>::isPointChecked(unsigned int id, sofa::type::vector<bool>& pointChecked)
 {
 	if (!pointChecked[id])
 	{
@@ -787,23 +787,23 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
 
     const VecCoord* x0 = &f_X0.getValue();
-    const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::cyan();
+    const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
     if( p_drawROI.getValue())
     {
         ///draw the boxes
-        const helper::vector<Vec6>& vb=boxes.getValue();
+        const type::vector<Vec6>& vb=boxes.getValue();
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
             const Vec6& b=vb[bi];
-            const sofa::defaulttype::Vector3 minBBox(b[0], b[1], b[2]);
-            const sofa::defaulttype::Vector3 maxBBox(b[3], b[4], b[5]);
+            const sofa::type::Vector3 minBBox(b[0], b[1], b[2]);
+            const sofa::type::Vector3 maxBBox(b[3], b[4], b[5]);
             vparams->drawTool()->setMaterial(color);
             vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, 1.0);
         }
     }
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
     vparams->drawTool()->disableLighting();
 
     if( p_drawPoints.getValue())
@@ -820,7 +820,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vertices.clear();
         ///draw edges in boxes
-        helper::ReadAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
+        helper::ReadAccessor< Data<type::vector<Edge> > > edgesInROI = f_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
             Edge e = edgesInROI[i];
@@ -835,7 +835,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vertices.clear();
         ///draw triangles in boxes
-        helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+        helper::ReadAccessor< Data<type::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
             Triangle t = trianglesInROI[i];
@@ -851,7 +851,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vertices.clear();
         ///draw tetrahedra in boxes
-        helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+        helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
             Tetra t = tetrahedraInROI[i];
@@ -877,7 +877,7 @@ void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params , bo
     SOFA_UNUSED(params);
     SOFA_UNUSED(onlyVisible);
 
-    const helper::vector<Vec6>& vb=boxes.getValue();
+    const type::vector<Vec6>& vb=boxes.getValue();
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
@@ -893,7 +893,7 @@ void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params , bo
         if (b[4] > maxBBox[1]) maxBBox[1] = b[4];
         if (b[5] > maxBBox[2]) maxBBox[2] = b[5];
     }
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } //namespace sofa::component::engine

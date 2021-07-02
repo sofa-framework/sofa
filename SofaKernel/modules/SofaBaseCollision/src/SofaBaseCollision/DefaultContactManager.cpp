@@ -92,7 +92,7 @@ void DefaultContactManager::setDefaultResponseType(const std::string &responseT)
 {
     if (response.getValue().size() == 0)
     {
-        helper::vector<std::string> listResponse(1,responseT);
+        type::vector<std::string> listResponse(1,responseT);
         sofa::helper::OptionsGroup responseOptions(listResponse);
         response.setValue(responseOptions);
     }

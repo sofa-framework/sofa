@@ -65,7 +65,7 @@ const int SlicedVolumetricModel::__edges__[12][2] = {{ 0,1 }, { 3,2 }, { 4,5 }, 
 SlicedVolumetricModel::SlicedVolumetricModel() //const std::string &name, std::string filename, std::string loader, std::string textureName)
     :
     alpha(initData(&alpha, 0.2f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
-    color(initData(&color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=1.0,1.0,1.0,1.0)")),
+    color(initData(&color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=1.0,1.0,1.0,1.0)")),
     _nbPlanes(initData(&_nbPlanes, 100, "nbSlices", "Number of billboards.")),
     _topology(nullptr),
     _mstate(nullptr),
@@ -282,7 +282,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
 
             // find intersections
-            helper::vector<Intersection> intersections;
+            type::vector<Intersection> intersections;
             for(int i=0; i<12; ++i)
             {
                 int e0 = __edges__[i][0];
@@ -342,9 +342,9 @@ void SlicedVolumetricModel::findAndDrawTriangles()
             nbintersections += (int)intersections.size();
 
             // trier les intersections
-            helper::vector<std::pair<Real,int> > neg; // angle + indice
-            helper::vector<std::pair<Real,int> > pos;
-            helper::vector<int> nul;
+            type::vector<std::pair<Real,int> > neg; // angle + indice
+            type::vector<std::pair<Real,int> > pos;
+            type::vector<int> nul;
 
             Coord referenceLine = intersections[1].first - intersections[0].first;
             Coord referenceLine2( referenceLine[1],- referenceLine[0], 0);
@@ -365,7 +365,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
             stable_sort( pos.begin(),pos.end());
             stable_sort( neg.begin(),neg.end());
 
-            helper::vector<int> tripoints;
+            type::vector<int> tripoints;
 
             glPointSize(30.0);
             for(unsigned  int i=0; i<pos.size(); ++i)

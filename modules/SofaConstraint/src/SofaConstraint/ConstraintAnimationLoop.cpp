@@ -793,7 +793,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     bool convergence = false;
     double sor = d_sor.getValue();
     bool allVerified = d_allVerified.getValue();
-    sofa::helper::vector<double> tempForces;
+    sofa::type::vector<double> tempForces;
     if(sor != 1.0) tempForces.resize(dim);
 
     if(d_scaleTolerance.getValue() && !allVerified)
@@ -805,7 +805,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
         i += res[i]->getNbLines();
     }
 
-    std::map < std::string, sofa::helper::vector<double> >* graphs = d_graphForces.beginEdit();
+    std::map < std::string, sofa::type::vector<double> >* graphs = d_graphForces.beginEdit();
     graphs->clear();
     d_graphForces.endEdit();
 
@@ -825,10 +825,10 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
             df[j] = -force[j];
     }
 
-    sofa::helper::vector<double>& graph_residuals = (*d_graphErrors.beginEdit())["Error"];
+    sofa::type::vector<double>& graph_residuals = (*d_graphErrors.beginEdit())["Error"];
     graph_residuals.clear();
 
-    sofa::helper::vector<double> tabErrors;
+    sofa::type::vector<double> tabErrors;
     tabErrors.resize(dim);
 
     for(iter=0; iter<numItMax; iter++)
@@ -916,13 +916,13 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
 
 
         /// display a graph with the force of each constraint dimension at each iteration
-        std::map < std::string, sofa::helper::vector<double> >* graphs = d_graphForces.beginEdit();
+        std::map < std::string, sofa::type::vector<double> >* graphs = d_graphForces.beginEdit();
         for(int j=0; j<dim; j++)
         {
             std::ostringstream oss;
             oss << "f" << j;
 
-            sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
+            sofa::type::vector<double>& graph_force = (*graphs)[oss.str()];
             graph_force.push_back(force[j]);
         }
         d_graphForces.endEdit();
@@ -984,7 +984,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     ////////// DISPLAY A GRAPH WITH THE CONVERGENCE PERF ON THE GUI :
     d_graphErrors.endEdit();
 
-    sofa::helper::vector<double>& graph_constraints = (*d_graphConstraints.beginEdit())["Constraints"];
+    sofa::type::vector<double>& graph_constraints = (*d_graphConstraints.beginEdit())["Constraints"];
     graph_constraints.clear();
 
     for(int j=0; j<dim; )

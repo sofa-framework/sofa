@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -67,14 +67,14 @@ public:
 
 
     enum { N=DataTypes1::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real1> Mat;
+    typedef type::Mat<N,N,Real1> Mat;
 protected:
     class Contact
     {
     public:
         int index;
         Deriv1 pos,force;
-        sofa::defaulttype::Vec<3,SReal> bras_levier;
+        sofa::type::Vec<3,SReal> bras_levier;
         Mat m;
         Contact( int index=0, const Mat& m=Mat())
             : index(index), m(m)
@@ -95,7 +95,7 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
+    Data<sofa::type::vector<Contact> > contacts; ///< Contacts
 
     InteractionEllipsoidForceFieldInternalData<DataTypes1, DataTypes2> data;
 
@@ -107,7 +107,7 @@ public:
     Data<VecCoord1> vradius; ///< ellipsoid radius
     Data<Real1> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
     Data<Real1> damping; ///< force damping
-    Data<sofa::helper::types::RGBAColor> color; ///< ellipsoid color. (default=[0.0,0.5,1.0,1.0])
+    Data<sofa::type::RGBAColor> color; ///< ellipsoid color. (default=[0.0,0.5,1.0,1.0])
     Data<bool> bDraw; ///< enable/disable drawing of the ellipsoid
     Data<int> object2_dof_index; ///< Dof index of object 2 where the forcefield is attached
     Data<bool> object2_forces; ///< enable/disable propagation of forces to object 2
@@ -120,7 +120,7 @@ protected:
         , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
         , stiffness(initData(&stiffness, (Real1)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
         , damping(initData(&damping, (Real1)5, "damping", "force damping"))
-        , color(initData(&color, sofa::helper::types::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=[0.0,0.5,1.0,1.0])"))
+        , color(initData(&color, sofa::type::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=[0.0,0.5,1.0,1.0])"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
         , object2_dof_index(initData(&object2_dof_index, (int)0, "object2_dof_index", "Dof index of object 2 where the forcefield is attached"))
         , object2_forces(initData(&object2_forces, true, "object2_forces", "enable/disable propagation of forces to object 2"))

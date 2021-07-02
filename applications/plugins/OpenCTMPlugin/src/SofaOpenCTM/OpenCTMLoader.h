@@ -55,7 +55,7 @@ protected:
 
 public:
     // Data buffer for texture coordinates
-    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords; ///< Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data
+    Data< type::vector<sofa::type::Vector2> > texCoords; ///< Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data
 };
 
 

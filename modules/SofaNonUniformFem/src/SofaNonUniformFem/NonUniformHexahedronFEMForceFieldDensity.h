@@ -37,7 +37,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-using sofa::helper::vector;
+using sofa::type::vector;
 
 /** Need a SparseGridTopology with _sparseGrid->_nbVirtualFinerLevels >= this->_nbVirtualFinerLevels
 

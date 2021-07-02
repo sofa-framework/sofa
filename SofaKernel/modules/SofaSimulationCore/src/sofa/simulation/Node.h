@@ -558,7 +558,7 @@ private:
 protected:
     BaseContext* _context;
 
-    helper::vector<MutationListener*> listener;
+    type::vector<MutationListener*> listener;
 
 
 public:

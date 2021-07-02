@@ -39,7 +39,7 @@ struct BodyPicked
     sofa::core::CollisionModel *body;
     sofa::core::behavior::BaseMechanicalState *mstate;
     sofa::Index indexCollisionElement;
-    defaulttype::Vector3 point;
+    type::Vector3 point;
     SReal dist;
     SReal rayLength;
     operator bool() { return mstate != nullptr; }
@@ -50,7 +50,7 @@ class SOFA_SOFAUSERINTERACTION_API BaseMouseInteractor : public core::BehaviorMo
 public:
     SOFA_ABSTRACT_CLASS(BaseMouseInteractor, core::BehaviorModel);
     typedef sofa::component::collision::RayCollisionModel MouseCollisionModel;
-    typedef helper::vector< InteractionPerformer* > VecPerformer;
+    typedef type::vector< InteractionPerformer* > VecPerformer;
 protected:
     BaseMouseInteractor(): isAttached(false),distanceFromMouse(0) {}
 public:
