@@ -124,8 +124,8 @@ void GenericConstraintCorrection::bwdInit()
     }
 
     msg_info() << "Found " << m_linearSolvers.size() << " m_linearSolvers";
-    for (auto & m_linearSolver : m_linearSolvers)
-        msg_info() << m_linearSolver->getName();
+    for (auto & linearSolver : m_linearSolvers)
+        msg_info() << linearSolver->getName();
 }
 
 void GenericConstraintCorrection::cleanup()
