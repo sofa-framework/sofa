@@ -111,11 +111,31 @@ public:
     void removeOnMovedPosition(const sofa::helper::vector<Index>& indices) override;
 
 protected:
+    /**
+    * Internal method called at the end of @sa swap method to apply internal mechanism, such as map swap.
+    * @param i1 First element index to be swaped.
+    * @param i2 Second element index to be swaped with first one.
+    */
     virtual void swapPostProcess(Index i1, Index i2);
 
+    /**
+    * Internal method called at the end of @sa remove method to apply internal mechanism, such as updating the map size
+    * @param nbElements Number of element removed.
+    */
     virtual void removePostProcess(sofa::Size nbElements);
 
+    /**
+    * Internal method called at the end of @sa add method to apply internal mechanism, such as updating the map size.
+    * @param nbElements Number of element added
+    */
     virtual void addPostProcess(sofa::Size nbElements);
+
+    /**
+    * Internal method to update the last element of this Data and/or map when the topology buffer is reduced.
+    * @param posLastIndex Index position of the last topology element in this subset.
+    * @param newGlobalId Global topology element index to be set at Data[posLastIndex].
+    */
+    virtual void updateLastIndex(Index posLastIndex, Index newGlobalId);
 
 protected:
     /// same size as this SubsetData but contains id of element link to each data[]

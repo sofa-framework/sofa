@@ -162,24 +162,31 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
         Index idElem = sofa::InvalidID;
         
         idElem = this->indexOfElement(idRemove);
-        if (idElem == sofa::InvalidID)
-            continue;
-
-        if (this->m_topologyHandler)
+        if (idElem != sofa::InvalidID) // index in the map, need to update the subsetData
         {
-            this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
+            if (this->m_topologyHandler)
+            {
+                this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
+            }
+
+            this->swap(idElem, last);
+            cptDone++;
+            if (last == 0)
+                break;
+            else
+                --last;
         }
 
-        this->swap(idElem, last);
-        cptDone++;
-        if (last == 0)
-            break;
-        else
-            --last;     
+        // need to check if lastIndex in the map        
+        idElem = this->indexOfElement(this->lastElementIndex);
+        if (idElem != sofa::InvalidID)
+        {
+            updateLastIndex(idElem, idRemove);
+        }
+        this->lastElementIndex--;
     }
 
     data.resize(data.size() - cptDone);
-    this->lastElementIndex = last;
     this->endEdit();
 
     removePostProcess(data.size() - cptDone);
@@ -231,6 +238,13 @@ void TopologySubsetData <TopologyElementType, VecT>::addPostProcess(sofa::Size n
         this->lastElementIndex++;
         m_map2Elements.push_back(this->lastElementIndex);
     }
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySubsetData <TopologyElementType, VecT>::updateLastIndex(Index posLastIndex, Index newGlobalId)
+{
+    m_map2Elements[posLastIndex] = newGlobalId;
 }
 
 

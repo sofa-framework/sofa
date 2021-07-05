@@ -58,6 +58,8 @@ protected:
     void removePostProcess(sofa::Size nbElements) override;
 
     void addPostProcess(sofa::Size nbElements) override;
+
+    void updateLastIndex(Index posLastIndex, Index newGlobalId) override;
 };
 
 #if !defined(SOFA_COMPONENT_TOPOLOGY_SUBSETINDICES_CPP)

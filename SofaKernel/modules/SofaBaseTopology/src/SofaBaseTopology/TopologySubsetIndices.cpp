@@ -77,6 +77,13 @@ void TopologySubsetIndices::addPostProcess(sofa::Size nbElements)
     this->lastElementIndex += nbElements;
 }
 
+void TopologySubsetIndices::updateLastIndex(Index posLastIndex, Index newGlobalId)
+{
+    container_type& data = *(this->beginEdit());
+    data[posLastIndex] = newGlobalId;
+    this->endEdit();
+}
+
 template class SOFA_SOFABASETOPOLOGY_API sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, helper::vector<Index> >;
 template class SOFA_SOFABASETOPOLOGY_API sofa::component::topology::TopologyData < core::topology::BaseMeshTopology::Point, helper::vector<Index> >;
 //template class SOFA_SOFABASETOPOLOGY_API sofa::core::topology::BaseTopologyData < helper::vector<Index> >;
