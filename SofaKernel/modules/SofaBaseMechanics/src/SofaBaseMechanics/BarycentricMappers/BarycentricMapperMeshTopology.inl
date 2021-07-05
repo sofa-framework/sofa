@@ -64,13 +64,6 @@ BarycentricMapperMeshTopology<In,Out>::~BarycentricMapperMeshTopology()
 }
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::addMatrixContrib(MatrixType* m,
-                                                             int row, int col, Real value)
-{
-    Inherit1::addMatrixContrib(m, row, col, value);
-}
-
-template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     m_updateJ = true;
@@ -601,10 +594,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
-                Real f[3];
-                f[0] = ( 1-fx-fy );
-                f[1] = fx;
-                f[2] = fy;
+                const Real f[3] = {( 1-fx-fy ), fx, fy};
                 for ( int j=0; j<3; j++ )
                 {
                     if ( f[j]<=-0.0001 || f[j]>=0.0001 )
