@@ -37,7 +37,7 @@ namespace sofa::component::topology
 
 /** \brief A class for storing topology related data. Automatically manages topology changes.
 *
-* This class is a wrapper of class helper::vector that is made to take care transparently of all topology changes that might
+* This class is a wrapper of class type::vector that is made to take care transparently of all topology changes that might
 * happen (non exhaustive list: element added, removed, fused, renumbered).
 */
 template< class TopologyElementType, class VecT>

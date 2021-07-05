@@ -42,6 +42,20 @@ for plugin in \
         THMPGSpatialHashing   \
         SofaCarving           \
         RigidScale            \
+                              \
+        LMConstraint          \
+        SofaHaptics           \
+        SofaValidation        \
+        SofaNonUniformFem     \
+        SofaExporter          \
+        SofaPreconditioner    \
+        SofaMiscTopology      \
+        SofaMiscExtra         \
+        SofaMiscForceField    \
+        SofaMiscEngine        \
+        SofaMiscSolver        \
+        SofaMiscFem           \
+        SofaMiscMapping       \
     ; do
     disabled_plugins=$disabled_plugins'\|'$plugin
 done

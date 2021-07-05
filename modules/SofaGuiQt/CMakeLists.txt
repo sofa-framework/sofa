@@ -363,12 +363,7 @@ sofa_create_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
-    RELOCATABLE "plugins"
     )
-
-# sofa_create_package_with_targets add automatically PROJECT_NAME as include_dir
-# but SofaGui's code is like sofa/gui... so we need to forcefully add src/SofaGuiQt
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}>")
 
 # Qt deployment
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
