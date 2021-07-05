@@ -56,7 +56,7 @@ sofa_add_plugin(SensableEmulation SensableEmulation)
 sofa_add_plugin(SofaHAPI SofaHAPI)
 sofa_add_plugin(THMPGSpatialHashing THMPGSpatialHashing)
 sofa_add_plugin(SofaCarving SofaCarving)
-sofa_add_plugin(RigidScale RigidScale)
+sofa_add_plugin_external(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
