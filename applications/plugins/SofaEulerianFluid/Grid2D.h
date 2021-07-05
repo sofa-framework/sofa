@@ -26,8 +26,8 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <iostream>
-
 
 namespace sofa
 {
