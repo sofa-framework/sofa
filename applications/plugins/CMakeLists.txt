@@ -24,7 +24,7 @@ if(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
 endif()
 
 sofa_add_plugin(image image)           # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
-sofa_add_plugin(Compliant Compliant)
+sofa_add_plugin_external(Compliant Compliant)
 
 if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     # Add SofaPython AFTER image and Compliant to disable their soft dependency
@@ -34,7 +34,7 @@ endif()
 sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
-sofa_add_plugin(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
+sofa_add_plugin_external(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
 sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
 sofa_add_plugin(LMConstraint LMConstraint ON)
 sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
