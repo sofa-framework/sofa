@@ -392,7 +392,7 @@ public:
     bool operator==(const Mat<L,C,real>& b) const
     {
         for (Size i=0; i<L; i++)
-            if (!(this->elems[i]==b[i])) return false;
+            if (this->elems[i] != b[i]) return false;
         return true;
     }
 
