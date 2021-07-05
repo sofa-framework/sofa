@@ -262,7 +262,7 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 
 void GenericConstraintCorrection::computeResidual(const ExecParams* params, defaulttype::BaseVector *lambda)
 {
-    for (auto & m_linearSolver : m_linearSolvers)
+    for (auto & linearSolver : m_linearSolvers)
     {
         m_linearSolver->computeResidual(params, lambda);
     }
