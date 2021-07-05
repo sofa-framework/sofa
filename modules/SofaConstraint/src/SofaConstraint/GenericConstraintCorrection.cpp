@@ -264,7 +264,7 @@ void GenericConstraintCorrection::computeResidual(const ExecParams* params, defa
 {
     for (auto & linearSolver : m_linearSolvers)
     {
-        m_linearSolver->computeResidual(params, lambda);
+        linearSolver->computeResidual(params, lambda);
     }
 }
 
