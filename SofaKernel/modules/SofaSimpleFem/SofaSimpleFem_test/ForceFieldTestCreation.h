@@ -56,7 +56,7 @@ namespace sofa {
  * Pointers to node, state and force are available.
  * Deriving the ForceField test from this class makes it easy to write: just call function run_test with positions, velocities and the corresponding expected forces.
  * This function automatically checks not only the forces (function addForce), but also the stiffness (methods addDForce and addKToMatrix), using finite differences.
- * @author Fran�ois Faure, 2014
+ * @author François Faure, 2014
  *
  */
 template <typename _ForceFieldType>
