@@ -190,7 +190,7 @@ void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const Constr
 {
     for (auto & linearSolver : m_linearSolvers)
     {
-        m_linearSolver->applyConstraintForce(cparams, dx, lambda);
+        linearSolver->applyConstraintForce(cparams, dx, lambda);
     }
 }
 
