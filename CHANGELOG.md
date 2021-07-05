@@ -161,6 +161,7 @@
 - [All] FIX warnings during STC#11 [#2140](https://github.com/sofa-framework/sofa/pull/2140)
 - [All] Fix compilation warning. [#1699](https://github.com/sofa-framework/sofa/pull/1699)
 - [All] Fix invalid Memory access in MechanicalObject and Compliant_test [#1849](https://github.com/sofa-framework/sofa/pull/1849)
+- [All] Fix debug compilation [#2223](https://github.com/sofa-framework/sofa/pull/2223)
 - **[Sofa.Type]** Add forgotten function declaration, used in Debug [#1937](https://github.com/sofa-framework/sofa/pull/1937)
 - **[Sofa.Type]** Add missing header in fixed_array [#2006](https://github.com/sofa-framework/sofa/pull/2006)
 - **[SofaBaseCollision]** Fix pipeline warning test [#2132](https://github.com/sofa-framework/sofa/pull/2132)
