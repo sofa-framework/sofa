@@ -202,7 +202,7 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
                                                         double positionFactor,
                                                         double velocityFactor)
 {
-    for (auto & m_linearSolver : m_linearSolvers)
+    for (auto & linearSolver : m_linearSolvers)
     {
         MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, m_linearSolver->getSystemMultiMatrixAccessor());
         m_linearSolver->getContext()->executeVisitor(&v);
