@@ -622,13 +622,9 @@ void GenericConstraintProblem::clear(int nbC)
 
 void GenericConstraintProblem::freeConstraintResolutions()
 {
-    for(auto & constraintsResolution : constraintsResolutions)
+    for(auto* constraintsResolution : constraintsResolutions)
     {
-        if (constraintsResolution != nullptr)
-        {
-            delete constraintsResolution;
-            constraintsResolution = nullptr;
-        }
+        delete constraintsResolution;
     }
 }
 int GenericConstraintProblem::getNumConstraints()
