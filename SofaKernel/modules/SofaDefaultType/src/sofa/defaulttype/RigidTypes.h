@@ -34,6 +34,10 @@
 #include <cstdlib>
 #include <cmath>
 
+#if !defined(NDEBUG)
+#include <sofa/helper/logging/Messaging.h>
+#endif
+
 namespace sofa
 {
 
