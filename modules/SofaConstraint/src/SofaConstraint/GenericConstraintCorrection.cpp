@@ -150,8 +150,8 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
 
 void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceFactor)
 {
-    for (auto & m_linearSolver : m_linearSolvers)
-        m_linearSolver->rebuildSystem(massFactor, forceFactor);
+    for (auto & linearSolver : m_linearSolvers)
+        linearSolver->rebuildSystem(massFactor, forceFactor);
 }
 
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
