@@ -22,7 +22,6 @@
 #include <sofa/type/RGBAColor.h>
 
 #include <sstream>
-#include <locale>
 
 #include <sofa/type/fixed_array_algorithms.h>
 using namespace sofa::type::pairwise;
