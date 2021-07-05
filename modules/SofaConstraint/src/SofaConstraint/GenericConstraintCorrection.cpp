@@ -188,7 +188,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
 void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const defaulttype::BaseVector * lambda)
 {
-    for (auto & m_linearSolver : m_linearSolvers)
+    for (auto & linearSolver : m_linearSolvers)
     {
         m_linearSolver->applyConstraintForce(cparams, dx, lambda);
     }
