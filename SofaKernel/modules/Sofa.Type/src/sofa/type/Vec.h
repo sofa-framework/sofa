@@ -770,19 +770,7 @@ public:
     {
     }
 
-    /// Assignment operator from an array of values.
-    template<typename real2>
-    void operator=(const real2* p)
-    {
-        this->Vec<N,real>::operator=(p);
-    }
-
-    /// Assignment from a vector with different dimensions.
-    template<sofa::Size M, typename real2>
-    void operator=(const Vec<M,real2>& v)
-    {
-        this->Vec<N,real>::operator=(v);
-    }
+    using Vec<N,real>::operator=; // make every = from Vec available
 
     /// Scalar vector multiplication operator.
     friend Vec<N,real> operator*(real r, const Vec<N,real>& v)
