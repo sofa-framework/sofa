@@ -27,7 +27,7 @@ using sofa::type::SVector;
 
 
 /// testing SVector::read/write
-/// (other vector functions should be tested in helper::vector)
+/// (other vector functions should be tested in type::vector)
 template<class T>
 struct SVector_test : public ::testing::Test
 {
