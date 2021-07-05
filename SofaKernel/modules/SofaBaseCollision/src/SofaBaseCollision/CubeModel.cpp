@@ -180,37 +180,38 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
     sofa::type::RGBAColor c(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
 
     std::vector< Vector3 > points;
+    points.reserve( size * 8 * 3);
     for (Index i=0; i<size; i++)
     {
         const Vector3& vmin = elems[i].minBBox;
         const Vector3& vmax = elems[i].maxBBox;
 
-        points.push_back(Vector3(vmin[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
+        points.emplace_back(vmin[0], vmin[1], vmin[2]);
+        points.emplace_back(vmin[0], vmin[1], vmax[2]);
+        points.emplace_back(vmin[0], vmax[1], vmin[2]);
+        points.emplace_back(vmin[0], vmax[1], vmax[2]);
+        points.emplace_back(vmax[0], vmin[1], vmin[2]);
+        points.emplace_back(vmax[0], vmin[1], vmax[2]);
+        points.emplace_back(vmax[0], vmax[1], vmin[2]);
+        points.emplace_back(vmax[0], vmax[1], vmax[2]);
 
-        points.push_back(Vector3(vmin[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
+        points.emplace_back(vmin[0], vmin[1], vmin[2]);
+        points.emplace_back(vmin[0], vmax[1], vmin[2]);
+        points.emplace_back(vmin[0], vmin[1], vmax[2]);
+        points.emplace_back(vmin[0], vmax[1], vmax[2]);
+        points.emplace_back(vmax[0], vmin[1], vmin[2]);
+        points.emplace_back(vmax[0], vmax[1], vmin[2]);
+        points.emplace_back(vmax[0], vmin[1], vmax[2]);
+        points.emplace_back(vmax[0], vmax[1], vmax[2]);
 
-        points.push_back(Vector3(vmin[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
+        points.emplace_back(vmin[0], vmin[1], vmin[2]);
+        points.emplace_back(vmax[0], vmin[1], vmin[2]);
+        points.emplace_back(vmin[0], vmax[1], vmin[2]);
+        points.emplace_back(vmax[0], vmax[1], vmin[2]);
+        points.emplace_back(vmin[0], vmin[1], vmax[2]);
+        points.emplace_back(vmax[0], vmin[1], vmax[2]);
+        points.emplace_back(vmin[0], vmax[1], vmax[2]);
+        points.emplace_back(vmax[0], vmax[1], vmax[2]);
     }
 
     vparams->drawTool()->drawLines(points, 1, c);
