@@ -58,7 +58,6 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
         const type::vector< core::topology::BaseMeshTopology::Tetrahedron > &tetrahedronArray=ff->m_topology->getTetrahedra() ;
         const std::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=ff->m_topology->getEdges() ;
         unsigned int j;
-        /*int l*/;
         typename DataTypes::Real volume;
         typename DataTypes::Coord point[4];
         const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -95,7 +94,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
             if (!(j%2))
                 tinfo.shapeVector[j]=-cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
             else
-                tinfo.shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;;
+                tinfo.shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
         }
 
 

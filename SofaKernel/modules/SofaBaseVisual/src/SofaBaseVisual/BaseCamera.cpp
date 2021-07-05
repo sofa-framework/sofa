@@ -417,7 +417,7 @@ void BaseCamera::getProjectionMatrix(double mat[16])
         mat[0] = pm00; // FocalX
         mat[5] = pm11; // FocalY
         mat[10] = -(currentZFar + currentZNear) / (currentZFar - currentZNear);
-        mat[11] = -2.0 * currentZFar * currentZNear / (currentZFar - currentZNear);;
+        mat[11] = -2.0 * currentZFar * currentZNear / (currentZFar - currentZNear);
         mat[14] = -1.0;
     }
     else
