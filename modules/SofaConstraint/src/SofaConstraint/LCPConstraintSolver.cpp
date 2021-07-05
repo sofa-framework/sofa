@@ -222,8 +222,6 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
     return true;
 }
 
-#define MAX_NUM_CONSTRAINTS 3000
-
 LCPConstraintSolver::LCPConstraintSolver()
     : displayDebug(initData(&displayDebug, false, "displayDebug","Display debug information."))
     , displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of LCPConstraintSolver."))

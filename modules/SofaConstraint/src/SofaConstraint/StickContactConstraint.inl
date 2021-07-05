@@ -145,7 +145,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
     mappedContacts.resize(contacts.size());
-    for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+    for (auto it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
         sofa::core::collision::DetectionOutput* o = *it;
         CollisionElement1 elem1(o->elem.first);
@@ -187,7 +187,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
     {
         activateMappers();
         int i = 0;
-        for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+        for (auto it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
             sofa::core::collision::DetectionOutput* o = *it;
             int index1 = mappedContacts[i].first.first;

@@ -151,8 +151,9 @@ bool MechanicalAccumulateConstraint2::stopAtMechanicalMapping(simulation::Node* 
 }
 
 ConstraintProblem::ConstraintProblem(bool printLog)
-    : m_printLog(printLog)
 {
+    SOFA_UNUSED(printLog);
+
     this->_tol = 0.0001;
     this->_dim = 0;
 
@@ -367,9 +368,8 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
         sofa::core::ConstraintParams cparams(*params);
         sofa::core::MultiVecDerivId f =  core::VecDerivId::externalForce();
 
-        for (unsigned int i=0; i<constraintCorrections.size(); i++ )
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->applyPredictiveConstraintForce(&cparams, f, getCP()->getF());
         }
     }
@@ -405,9 +405,8 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
 
 void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* params, simulation::Node *context)
 {
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
 
@@ -496,9 +495,8 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE) << "   4. get Compliance " ;
 
     sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
-    for (unsigned int i=0; i<constraintCorrections.size(); i++ )
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->addComplianceInConstraintSpace(core::constraintparams::defaultInstance(), getCP()->getW());
     }
 
@@ -516,18 +514,16 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     if(d_schemeCorrection.getValue())
     {
         // IF SCHEME CORRECTIVE=> correct the motion using dF
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->applyContactForce(getCP()->getdF());
         }
     }
     else
     {
         // ELSE => only correct the motion using F
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->applyContactForce(getCP()->getF());
         }
     }
@@ -543,9 +539,8 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
 
     if(!d_schemeCorrection.getValue())
     {
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->resetContactForce();
         }
     }
@@ -607,7 +602,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 #if !defined(WIN32)
     if (d_realTimeCompensation.getValue())
     {
-        if (timer == 0)
+        if (timer == nullptr)
         {
             timer = new CTime();
             compTime = iterationTime = (SReal)timer->getTime();

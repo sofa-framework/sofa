@@ -2393,7 +2393,7 @@ void TetrahedronFEMForceField<DataTypes>::setMethod(int val)
     case POLAR: f_method.setValue("polar"); break;
     case SVD:   f_method.setValue("svd"); break;
     default   : f_method.setValue("large");
-    };
+    }
 }
 
 
@@ -2617,9 +2617,9 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 }
 
 template<class DataTypes>
-const bool TetrahedronFEMForceField<DataTypes>::isComputeVonMisesStressMethodSet()
+bool TetrahedronFEMForceField<DataTypes>::isComputeVonMisesStressMethodSet()
 {
-    return ( _computeVonMisesStress.getValue() == 1 || _computeVonMisesStress.getValue() == 2 );
+    return _computeVonMisesStress.getValue() == 1 || _computeVonMisesStress.getValue() == 2;
 }
 
 

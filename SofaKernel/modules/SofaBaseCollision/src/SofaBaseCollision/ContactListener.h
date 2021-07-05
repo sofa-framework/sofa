@@ -50,10 +50,6 @@ public:
 
     void init(void) override;
 
-    // DetectionOutput iterators
-    typedef type::vector<const type::vector<DetectionOutput>* >::const_iterator ContactVectorsIterator;
-    typedef type::vector<DetectionOutput>::const_iterator ContactsIterator;
-
     virtual void beginContact(const type::vector<const type::vector<DetectionOutput>* >& ) {}
     virtual void endContact(void*) {}
 

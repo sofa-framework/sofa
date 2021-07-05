@@ -104,7 +104,6 @@ public:
     SOFA_CLASS(LCPConstraintSolver, ConstraintSolverImpl);
 
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
-    typedef std::vector<list_cc> VecListcc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 protected:
@@ -242,7 +241,6 @@ public:
     type::vector< double > unbuilt_d;
 
     type::vector< double > unbuilt_W11;
-    type::vector< double > unbuilt_invW11;
 
     bool isActive;
 };

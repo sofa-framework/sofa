@@ -262,15 +262,15 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
 
         // Then clear all existing levels
         {
-            for (std::list<CubeCollisionModel*>::iterator it = levels.begin(); it != levels.end(); ++it)
-                (*it)->resize(0);
+            for (auto & level : levels)
+                level->resize(0);
         }
 
         // Then build root cell
         dmsg_info() << "CubeCollisionModel: add root cube";
         root->addCube(Cube(this,0),Cube(this,size));
         // Construct tree by splitting cells along their biggest dimension
-        std::list<CubeCollisionModel*>::iterator it = levels.begin();
+        auto it = levels.begin();
         CubeCollisionModel* level = *it;
         ++it;
         int lvl = 0;
@@ -330,7 +330,7 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
     {
         // Simply update the existing tree, starting from the bottom
         int lvl = 0;
-        for (std::list<CubeCollisionModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); ++it)
+        for (auto it = levels.rbegin(); it != levels.rend(); ++it)
         {
             dmsg_info() << "CubeCollisionModel: update level " << lvl;
             (*it)->updateCubes();

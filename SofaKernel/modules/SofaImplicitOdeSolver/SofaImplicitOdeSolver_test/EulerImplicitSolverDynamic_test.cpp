@@ -29,7 +29,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <sofa/simulation/Node.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
