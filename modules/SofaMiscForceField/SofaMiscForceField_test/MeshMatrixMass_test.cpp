@@ -1294,7 +1294,7 @@ public:
         EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to hexahedron Topology
         
         // -- remove hexahedron id: 0 -- 
-        sofa::helper::vector<sofa::Index> hexaIds = { 0 };
+        sofa::type::vector<sofa::Index> hexaIds = { 0 };
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 26);
         EXPECT_EQ(eMasses.size(), 87);
@@ -1401,7 +1401,7 @@ public:
         EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
 
         // -- remove tetrahedron id: 0 -- 
-        sofa::helper::vector<sofa::Index> elemIds = { 0 };
+        sofa::type::vector<sofa::Index> elemIds = { 0 };
         modifier->removeTetrahedra(elemIds);
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_EQ(eMasses.size(), 18);
@@ -1503,7 +1503,7 @@ public:
         EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to quad Topology
 
         // -- remove quad id: 0 -- 
-        sofa::helper::vector<sofa::Index> elemIds = { 0 };
+        sofa::type::vector<sofa::Index> elemIds = { 0 };
         modifier->removeQuads(elemIds, true, true);
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_EQ(eMasses.size(), 14);
@@ -1591,7 +1591,7 @@ public:
         EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
 
         // -- remove triangle id: 0 -- 
-        sofa::helper::vector<sofa::Index> elemIds = { 0 };
+        sofa::type::vector<sofa::Index> elemIds = { 0 };
         modifier->removeTriangles(elemIds, true, true);
         EXPECT_EQ(vMasses.size(), 9);
         EXPECT_EQ(eMasses.size(), 15);
@@ -1694,7 +1694,7 @@ public:
         EXPECT_FLOAT_EQ(eMasses[1], wrongValue);
 
         // -- remove edge id: 0 -- 
-        sofa::helper::vector<sofa::Index> elemIds = { 0 };
+        sofa::type::vector<sofa::Index> elemIds = { 0 };
         modifier->removeEdges(elemIds, true);
         EXPECT_EQ(vMasses.size(), 3);
         EXPECT_EQ(eMasses.size(), 2);
