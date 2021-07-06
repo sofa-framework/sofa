@@ -245,6 +245,9 @@ protected:
                 const sofa::type::vector< Index > &,
                 const sofa::type::vector< double >&);
 
+        /// Apply removing 
+        void applyDestroyFunction(Index, TMassType&);
+
 
         ///////////////////////// Functions on Triangles //////////////////////////////////////
 
@@ -333,6 +336,9 @@ protected:
                 const core::topology::BaseMeshTopology::Edge&,
                 const sofa::type::vector< Index > &,
                 const sofa::type::vector< double >&);
+
+        /// Apply removing 
+        void applyDestroyFunction(Index, MassType&);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,MassVector>::ApplyTopologyChange;
 
