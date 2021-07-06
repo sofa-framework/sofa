@@ -106,7 +106,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::Image<T>>
         }
 
         // prepare neighborood
-        sofa::defaulttype::Vec<27,  Coord > lpos;      // precomputed local positions
+        sofa::type::Vec<27,  Coord > lpos;      // precomputed local positions
         int count=0;
         for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++) lpos[count++]= inT->fromImage(P+Coord(i,j,k)) - childPosition;
 
@@ -118,8 +118,8 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::Image<T>>
             IndT ind=indices(P[0],P[1],P[2],r);
             if(ind>0)
             {
-                helper::vector<DistT> val; val.reserve(27);
-                helper::vector<Coord> pos; pos.reserve(27);
+                type::vector<DistT> val; val.reserve(27);
+                type::vector<Coord> pos; pos.reserve(27);
                 // add neighbors with same index
                 count=0;
                 for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++)
@@ -133,7 +133,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::Image<T>>
                     count++;
                 }
                 // fit weights
-                helper::vector<Real> coeff;
+                type::vector<Real> coeff;
                 defaulttype::PolynomialFit(coeff,val,pos, order);
                 //std::cout<<ind<<":"<<coeff[0]<<", err= "<<getPolynomialFit_Error(coeff,val,pos)<< std::endl;
                 if(!dw) defaulttype::getPolynomialFit_differential(coeff,w[index]);
@@ -213,7 +213,7 @@ public:
     Data< IndTypes > f_index;
 
     // only used for branching image
-     Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
+     Data< type::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
     //@}
 
     /// interpolate weights and their derivatives at a spatial position
@@ -227,7 +227,7 @@ public:
         if(ddw) { ddw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*ddw)[j].fill(0); }
 
 //        // material to world transformation = image orientation
-//        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(this->transform.getValue().getRotation() * (Real)M_PI / (Real)180.0);
+//        type::Quat<Real> q = type::Quat< Real >::createQuaterFromEuler(this->transform.getValue().getRotation() * (Real)M_PI / (Real)180.0);
 //        Mat<3,3,Real> R; q.toMatrix(R);
 //        for ( unsigned int i = 0; i < BaseImageShapeFunction::spatial_dimensions; i++ )  for ( unsigned int j = 0; j < BaseImageShapeFunction::spatial_dimensions; j++ ) M[i][j]=R[i][j];
 

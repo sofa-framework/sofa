@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <cmath>
 #include <sofa/core/behavior/RotationMatrix.h>
@@ -56,7 +56,7 @@ public:
     typedef TVector Vector;
     typedef typename TMatrix::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,ThreadManager> Inherit;
-    typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
+    typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
     typedef TMatrix TRotationMatrix;
     typedef typename Inherit::JMatrixType JMatrixType;
     using Index = typename TMatrix::Index;

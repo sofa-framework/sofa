@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 #include <sofa/core/behavior/BaseMass.h>
 
@@ -32,4 +31,4 @@ Visitor::Result MechanicalGetNonDiagonalMassesCountVisitor::fwdMass(VisitorConte
     return RESULT_CONTINUE;
 }
 
-}
+} // namespace sofa::simulation::mechanicalvisitor

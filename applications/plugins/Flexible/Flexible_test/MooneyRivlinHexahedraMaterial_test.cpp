@@ -40,7 +40,7 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 const size_t sizePressureArray = 11;
 

@@ -56,7 +56,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     Data<VecCoord> input_position; ///< Input position
-    Data<helper::vector <unsigned int> > input_indices; ///< Position indices that need to be smoothed, leave empty for all positions
+    Data<type::vector<unsigned int> > input_indices; ///< Position indices that need to be smoothed, leave empty for all positions
     Data<VecCoord> output_position; ///< Output position
 
     Data<unsigned int> nb_iterations; ///< Number of iterations of laplacian smoothing

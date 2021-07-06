@@ -23,7 +23,7 @@
 #define SOFA_HELPER_INTEGER_ID_H
 
 #include <sofa/helper/config.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/logging/Messaging.h>

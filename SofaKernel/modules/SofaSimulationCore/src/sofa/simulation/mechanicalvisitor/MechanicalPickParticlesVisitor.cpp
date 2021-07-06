@@ -65,7 +65,7 @@ Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalMapping(simulation:
 }
 
 /// get the closest pickable particle
-void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, sofa::Index& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength )
+void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, sofa::Index& indexCollisionElement, type::Vector3& point, SReal& rayLength )
 {
     mstate = nullptr;
 
@@ -75,7 +75,7 @@ void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMec
 
     core::behavior::BaseMechanicalState* mstatei;
     unsigned int indexCollisionElementi;
-    defaulttype::Vector3 pointi;
+    type::Vector3 pointi;
     SReal rayLengthi;
 
     // particles are sorted from their distance to the ray

@@ -27,7 +27,7 @@
 
 
 #include <vector>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::gui::qt
 {
@@ -59,8 +59,8 @@ public:
 
     void setChart( std::vector< dataTime >& value, unsigned int s);
     void clear();
-    static defaulttype::Vec<3,int> getColor(int i);
-    static std::vector< defaulttype::Vec<3,int> > colorArray;
+    static type::Vec<3,int> getColor(int i);
+    static std::vector< type::Vec<3,int> > colorArray;
 protected:
     std::vector< dataTime > data;
 

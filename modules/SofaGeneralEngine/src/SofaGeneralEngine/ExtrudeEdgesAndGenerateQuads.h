@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -46,7 +46,7 @@ public:
     typedef typename DataTypes::Coord     Coord;
     typedef typename DataTypes::VecCoord  VecCoord;
     typedef typename DataTypes::Real      Real;
-    typedef defaulttype::Vec<3,Real>      Vec3;
+    typedef type::Vec<3,Real>      Vec3;
 
 protected:
 
@@ -67,10 +67,10 @@ public:
     Data<Real>                                       d_thicknessOut; ///< Thickness of the extruded volume in the direction of the normals
     Data<int>                                        d_nbSections; ///< Number of sections / steps in the extrusion
     Data<VecCoord>                                   d_curveVertices; ///< Position coordinates along the initial curve
-    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_curveEdges; ///< Indices of the edges of the curve to extrude
+    Data<type::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_curveEdges; ///< Indices of the edges of the curve to extrude
     Data<VecCoord>                                   d_extrudedVertices; ///< Coordinates of the extruded vertices
-    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_extrudedEdges; ///< List of all edges generated during the extrusion
-    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   d_extrudedQuads; ///< List of all quads generated during the extrusion
+    Data<type::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_extrudedEdges; ///< List of all edges generated during the extrusion
+    Data<type::vector<sofa::core::topology::BaseMeshTopology::Quad> >   d_extrudedQuads; ///< List of all quads generated during the extrusion
 
 protected:
 

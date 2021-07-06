@@ -54,9 +54,9 @@ protected:
 public:
     //Add specific Data here:
     Data <bool> p_trian2; ///< Set to true if the mesh is a trian2 format.
-    Data <helper::vector < helper::fixed_array <int,3> > > neighborTable; ///< Table of neighborhood triangle indices for each triangle.
-    Data <helper::vector < helper::vector <unsigned int> > > edgesOnBorder; ///< List of edges which are on the border of the mesh loaded.
-    Data <helper::vector <unsigned int> > trianglesOnBorderList; ///< List of triangle indices which are on the border of the mesh loaded.
+    Data <type::vector< type::fixed_array <int,3> > > neighborTable; ///< Table of neighborhood triangle indices for each triangle.
+    Data <type::vector< type::vector<unsigned int> > > edgesOnBorder; ///< List of edges which are on the border of the mesh loaded.
+    Data <type::vector<unsigned int> > trianglesOnBorderList; ///< List of triangle indices which are on the border of the mesh loaded.
 };
 
 

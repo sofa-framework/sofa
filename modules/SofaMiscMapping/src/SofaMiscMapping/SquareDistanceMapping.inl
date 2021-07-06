@@ -38,7 +38,7 @@ SquareDistanceMapping<TIn, TOut>::SquareDistanceMapping()
 //    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if no restLengths are given and if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
 //    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+    , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
 {
 }
@@ -80,7 +80,7 @@ void SquareDistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mp
 {
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-//    helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
+//    helper::ReadAccessor<Data<type::vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = edgeContainer->getEdges();
 
     //    jacobian.clear();
@@ -201,7 +201,7 @@ const sofa::defaulttype::BaseMatrix* SquareDistanceMapping<TIn, TOut>::getJ()
 }
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* SquareDistanceMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* SquareDistanceMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -260,11 +260,11 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
     if( d_showObjectScale.getValue() == 0 )
     {
         vparams->drawTool()->disableLighting();
-        helper::vector< defaulttype::Vector3 > points;
+        type::vector< type::Vector3 > points;
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
-            points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][1]]) ));
+            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
+            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][1]]) ));
         }
         vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
@@ -273,8 +273,8 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
         vparams->drawTool()->enableLighting();
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            defaulttype::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
-            defaulttype::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
+            type::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
+            type::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }

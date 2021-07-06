@@ -23,8 +23,8 @@
 #define FLEXIBLE_MLSJacobianBlock_quadratic_INL
 
 #include "MLSJacobianBlock.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include "../types/AffineTypes.h"
@@ -66,11 +66,11 @@ public:
     enum { dim = Out::spatial_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:   \f$ p = w.t + A.A0^{-1}.(p*-w.t0^*) + w.p0 - p*   = w.t + A.q0^* + C \f$
@@ -157,13 +157,13 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -181,7 +181,7 @@ public:
     static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
-    Mat<dimq,mdim,Real> PFa;      ///< =   A0^{-1}.(grad p*- t0^*.grad w).M   =  dF/dA
+    type::Mat<dimq,mdim,Real> PFa;      ///< =   A0^{-1}.(grad p*- t0^*.grad w).M   =  dF/dA
     OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M      =  constant term
 
     // Warning: here we suppose that AOinv is the identity
@@ -190,11 +190,11 @@ public:
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
 
-        Mat<dimq,dim,Real> gradps; for (unsigned int j = 0; j < dimq; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
+        type::Mat<dimq,dim,Real> gradps; for (unsigned int j = 0; j < dimq; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
         PFa = (gradps* F0 - covMN(convertSpatialToQuadraticCoord(InPos.getCenter()),Ft) );
 
-        Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
-        Mat<dim,dim,Real> gradps1;  for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps1(j,k)=gradps(j,k);
+        type::Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+        type::Mat<dim,dim,Real> gradps1;  for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps1(j,k)=gradps(j,k);
         C.getF()=covMN(SPos,Ft) + (wI-gradps1)*F0 ;
     }
 
@@ -261,13 +261,13 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -285,7 +285,7 @@ public:
     static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
-    Mat<dimq,mdim,Real> PFa;      ///< =   A0^{-1}.(grad p*- t0^*.grad w).M   =  dF/dA
+    type::Mat<dimq,mdim,Real> PFa;      ///< =   A0^{-1}.(grad p*- t0^*.grad w).M   =  dF/dA
     OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M      =  constant term
 
     // Warning: here we suppose that AOinv is the identity
@@ -294,11 +294,11 @@ public:
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
 
-        Mat<dimq,dim,Real> gradps; for (unsigned int j = 0; j < dimq; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
+        type::Mat<dimq,dim,Real> gradps; for (unsigned int j = 0; j < dimq; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
         PFa = (gradps* F0 - covMN(convertSpatialToQuadraticCoord(InPos.getCenter()),Ft) );
 
-        Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
-        Mat<dim,dim,Real> gradps1;  for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps1(j,k)=gradps(j,k);
+        type::Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+        type::Mat<dim,dim,Real> gradps1;  for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps1(j,k)=gradps(j,k);
         C.getF()=covMN(SPos,Ft) + (wI-gradps1)*F0 ;
     }
 
@@ -365,13 +365,13 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -389,7 +389,7 @@ public:
     static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
-    Mat<dimq,mdim,Real> PFa;      ///< =   A0^{-1}.(grad p*- t0^*.grad w).M   =  dF/dA
+    type::Mat<dimq,mdim,Real> PFa;      ///< =   A0^{-1}.(grad p*- t0^*.grad w).M   =  dF/dA
     OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M      =  constant term
 
     // Warning: here we suppose that AOinv is the identity
@@ -398,11 +398,11 @@ public:
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
 
-        Mat<dimq,dim,Real> gradps; for (unsigned int j = 0; j < dimq; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
+        type::Mat<dimq,dim,Real> gradps; for (unsigned int j = 0; j < dimq; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
         PFa = (gradps* F0 - covMN(convertSpatialToQuadraticCoord(InPos.getCenter()),Ft) );
 
-        Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
-        Mat<dim,dim,Real> gradps1;  for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps1(j,k)=gradps(j,k);
+        type::Mat<dim,dim,Real> wI; for (unsigned int j = 0; j < dim; ++j) wI(j,j)=p[0];
+        type::Mat<dim,dim,Real> gradps1;  for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps1(j,k)=gradps(j,k);
         C.getF()=covMN(SPos,Ft) + (wI-gradps1)*F0 ;
     }
 
@@ -468,14 +468,14 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
-    typedef Mat<dim,mdim,Real> mHessian;
+    typedef type::Vec<mdim,Real> mGradient;
+    typedef type::Mat<dim,mdim,Real> mHessian;
 
     /**
     Mapping:
@@ -496,7 +496,7 @@ public:
 
     mGradient Ft;       ///< =   grad w     =  d F/dt
     mHessian dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
-    Vec<dim+1,Mat<dimq,mdim,Real> > PFdFa;      ///< =   q0.grad w + w.grad q0^*, [q0.(grad2 w)_k^T + (grad w)_k.grad q0^* +  grad q0^*_k.grad w]   =  dF/dA , d (grad F)_k/dA
+    type::Vec<dim+1,type::Mat<dimq,mdim,Real> > PFdFa;      ///< =   q0.grad w + w.grad q0^*, [q0.(grad2 w)_k^T + (grad w)_k.grad q0^* +  grad q0^*_k.grad w]   =  dF/dA , d (grad F)_k/dA
 
     void init( const InCoord& /*InPos*/, const OutCoord& /*OutPos*/, const SpatialCoord& /*SPos*/, const MaterialToSpatial& /*F0*/, const Basis& /*p*/, const Gradient& /*dp*/, const Hessian& /*ddp*/)
     {
@@ -508,13 +508,13 @@ public:
 //        SpatialCoord q0 = inverseInitialTransform.pointToParent(SPos);
 //        QuadraticCoord vectorInLocalCoordinates = convertSpatialToQuadraticCoord( q0 ); // q0^*
 
-//        Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
+//        type::Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
 //        for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
 //        PFdFa[0]=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
 
-//        Mat<dim,dimq,Real> gradQ0T = gradQ0.transposed();
-//        Mat<dimq,mdim> gradQ0M; for (unsigned int k = 0; k < dimq; ++k) gradQ0M[k]=F0.transposed()*gradQ0[k];
+//        type::Mat<dim,dimq,Real> gradQ0T = gradQ0.transposed();
+//        type::Mat<dimq,mdim> gradQ0M; for (unsigned int k = 0; k < dimq; ++k) gradQ0M[k]=F0.transposed()*gradQ0[k];
 //        for (unsigned int k = 0; k < dim; ++k) PFdFa[k+1] = covMN( vectorInLocalCoordinates, dFt[k]) + gradQ0M * dw[k] + covMN(gradQ0T[k],Ft);
     }
 

@@ -46,8 +46,8 @@ int CatchAllVectorClass = core::RegisterObject("CatchAllVector")
         .add<CatchAllVector<long > >()
         .add<CatchAllVector<unsigned long > >()
         .add<CatchAllVector<bool > >()
-        .add<CatchAllVector<sofa::defaulttype::Vec3f> >()
-        .add<CatchAllVector<sofa::defaulttype::Vec3d> >()
+        .add<CatchAllVector<sofa::type::Vec3f> >()
+        .add<CatchAllVector<sofa::type::Vec3d> >()
         ;
 
 template class SOFA_IMAGE_GUI_API CatchAllVector<float >;
@@ -61,8 +61,8 @@ template class SOFA_IMAGE_GUI_API CatchAllVector<double >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<long >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<unsigned long >;
 template class SOFA_IMAGE_GUI_API CatchAllVector<bool >;
-template class SOFA_IMAGE_GUI_API CatchAllVector<sofa::defaulttype::Vec3f >;
-template class SOFA_IMAGE_GUI_API CatchAllVector<sofa::defaulttype::Vec3d >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<sofa::type::Vec3f >;
+template class SOFA_IMAGE_GUI_API CatchAllVector<sofa::type::Vec3d >;
 
 
 

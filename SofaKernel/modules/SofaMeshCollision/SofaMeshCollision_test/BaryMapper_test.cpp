@@ -33,7 +33,7 @@ using sofa::testing::BaseTest;
 
 namespace sofa {
 
-using defaulttype::Vector3;
+using type::Vector3;
 using core::objectmodel::New;
 
 typedef sofa::component::topology::MeshTopology MeshTopology;

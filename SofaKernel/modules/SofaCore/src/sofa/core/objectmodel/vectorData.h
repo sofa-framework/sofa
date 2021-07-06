@@ -24,7 +24,7 @@
 
 #include <string>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/DataEngine.h>
@@ -46,11 +46,11 @@ enum class DataEngineDataType {DataEngineNothing,DataEngineInput,DataEngineOutpu
  * @author Thomas Lemaire @date 2014
  */
 template<class T>
-class vectorData : public helper::vector< core::objectmodel::Data<T>* > {
+class vectorData : public type::vector< core::objectmodel::Data<T>* > {
 
 public:
 
-    typedef helper::vector< core::objectmodel::Data<T>* > Inherit;
+    typedef type::vector< core::objectmodel::Data<T>* > Inherit;
 
     /// 'dataEngineInOut' is only valid if 'component' is a DataEngine
     vectorData(core::objectmodel::Base* component, std::string const& name, std::string const& help, DataEngineDataType dataEngineDataType= DataEngineDataType::DataEngineNothing, const T& defaultValue=T())

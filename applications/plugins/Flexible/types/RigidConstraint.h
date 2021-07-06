@@ -59,7 +59,7 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
 
-    typedef helper::vector<unsigned int> Indices;
+    typedef type::vector<unsigned int> Indices;
 
     typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
@@ -88,7 +88,7 @@ public:
         f_index.setValue(tmp);
 
         // store positions to compute jacobian
-        const helper::vector<unsigned> & indices = f_index.getValue();
+        const type::vector<unsigned> & indices = f_index.getValue();
         oldPos.resize(indices.size());
         helper::ReadAccessor< Data< VecCoord > > pos(*this->getMState()->read(core::ConstVecCoordId::position()));
         for(unsigned i=0; i<indices.size(); i++)       oldPos[i]=pos[indices[i]];
@@ -97,7 +97,7 @@ public:
     template <class VecDerivType>
     void projectResponseT( VecDerivType& res)
     {
-        const helper::vector<unsigned> & indices = f_index.getValue();
+        const type::vector<unsigned> & indices = f_index.getValue();
         unsigned method = d_method.getValue();
         for(unsigned ind=0; ind<indices.size(); ind++) res[indices[ind]].setRigid( oldPos[ind], method );
     }
@@ -117,7 +117,7 @@ public:
     virtual void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData) override
     {
         helper::WriteAccessor<DataVecCoord> res = xData;
-        const helper::vector<unsigned> & indices = f_index.getValue();
+        const type::vector<unsigned> & indices = f_index.getValue();
         oldPos.resize(indices.size());
         unsigned method = d_method.getValue();
         for(unsigned i=0; i<indices.size(); i++)      { oldPos[i]=res[indices[i]];  res[indices[i]].setRigid( method ); }
@@ -154,7 +154,7 @@ public:
         unsigned method = d_method.getValue();
 
         // fill jacobian
-        const helper::vector<unsigned> & indices = f_index.getValue();
+        const type::vector<unsigned> & indices = f_index.getValue();
         unsigned i = 0, j = 0;
         while( i < numBlocks )
         {
@@ -194,9 +194,9 @@ protected:
         if (!vparams->displayFlags().getShowBehaviorModels()) return;
         if (!this->isActive()) return;
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        const helper::vector<unsigned> & indices = f_index.getValue();
-        std::vector< defaulttype::Vector3 > points;
-        for (helper::vector<unsigned>::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(DataTypes::getCPos(x[*it]));
+        const type::vector<unsigned> & indices = f_index.getValue();
+        std::vector< type::Vector3 > points;
+        for (type::vector<unsigned>::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(DataTypes::getCPos(x[*it]));
         if( _drawSize.getValue() == 0)  vparams->drawTool()->drawPoints(points, 10, type::RGBAColor(1,0.0,0.5,1)); // old classical drawing by points
         else  vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), type::RGBAColor(1.0f,0.0f,0.35f,1.0f)); // new drawing by spheres
     }

@@ -59,7 +59,7 @@ void ParallelBVHNarrowPhase::init()
     }
 }
 
-void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
+void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
 {
     ScopedAdvancedTimer createTasksTimer("addCollisionPairs");
 
@@ -105,7 +105,7 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::helper::vector< std::
 }
 
 void ParallelBVHNarrowPhase::createOutput(
-        const helper::vector <std::pair<core::CollisionModel *, core::CollisionModel *>> &v)
+        const type::vector<std::pair<core::CollisionModel *, core::CollisionModel *>> &v)
 {
     ScopedAdvancedTimer createTasksTimer("OutputCreation");
 

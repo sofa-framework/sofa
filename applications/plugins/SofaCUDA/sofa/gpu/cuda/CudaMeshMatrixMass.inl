@@ -64,7 +64,7 @@ using namespace sofa::gpu::cuda;
 template<>
 void MeshMatrixMass<CudaVec3fTypes, float>::copyVertexMass()
 {
-    helper::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
+    type::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
 
     for (int i=0; i<this->m_topology->getNbPoints(); ++i)
@@ -89,7 +89,7 @@ void MeshMatrixMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParam
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
 
     MeshMatrixMassCuda_addForce3f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();
@@ -113,7 +113,7 @@ void MeshMatrixMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParam
 template<>
 void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
 {
-    helper::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
+    type::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
 
     for (int i=0; i<this->m_topology->getNbPoints(); ++i)
@@ -138,7 +138,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParam
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
 
     MeshMatrixMassCuda_addForce2f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();
@@ -162,7 +162,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::accFromF(const core::MechanicalParam
 template<>
 void MeshMatrixMass<CudaVec1fTypes, float>::copyVertexMass()
 {
-    helper::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
+    type::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
 
     for (int i=0; i<this->m_topology->getNbPoints(); ++i)
@@ -187,7 +187,7 @@ void MeshMatrixMass<CudaVec1fTypes, float>::addForce(const core::MechanicalParam
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
 
     MeshMatrixMassCuda_addForce1f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();

@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <iostream>
 #include <sofa/helper/cast.h>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 
@@ -36,7 +36,7 @@ namespace sofa::component::projectiveconstraintset
 
 // Define TestFunction
 template< class DataTypes>
-bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
+bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
     return fc != 0;
 }
@@ -328,7 +328,7 @@ void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
 }
 

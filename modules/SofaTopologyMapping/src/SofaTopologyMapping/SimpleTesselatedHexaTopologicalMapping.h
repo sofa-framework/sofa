@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <set>
 
@@ -81,10 +81,10 @@ public:
      *
      */
 protected:
-    helper::vector<int> pointMappedFromPoint;
-    std::map<helper::fixed_array<int,2>, int> pointMappedFromEdge;
-    std::map<helper::fixed_array<int,4>, int> pointMappedFromFacet;
-    helper::vector<int> pointMappedFromHexa;
+    type::vector<int> pointMappedFromPoint;
+    std::map<type::fixed_array<int,2>, int> pointMappedFromEdge;
+    std::map<type::fixed_array<int,4>, int> pointMappedFromFacet;
+    type::vector<int> pointMappedFromHexa;
 };
 
 } //namespace sofa::component::topology

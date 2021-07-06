@@ -46,7 +46,7 @@ PointInfo::PointInfo(LocalMinDistanceFilter *lmdFilters)
 void PointInfo::buildFilter(Index p_index)
 {
     using sofa::simulation::Node;
-    using sofa::helper::vector;
+    using sofa::type::vector;
     using sofa::core::topology::BaseMeshTopology;
 
 
@@ -57,8 +57,8 @@ void PointInfo::buildFilter(Index p_index)
     m_noLineModel = false;
 
     // get the positions:
-    const sofa::helper::vector<sofa::defaulttype::Vector3>& x = *this->position_filtering;
-    const sofa::defaulttype::Vector3 &pt = x[p_index];
+    const sofa::type::vector<sofa::type::Vector3>& x = *this->position_filtering;
+    const sofa::type::Vector3 &pt = x[p_index];
 
     // get the topology
     BaseMeshTopology* bmt = this->base_mesh_topology;
@@ -80,11 +80,11 @@ void PointInfo::buildFilter(Index p_index)
     // 1. using triangle around the point
     auto triIt = trianglesAroundVertex.begin();
     auto triItEnd = trianglesAroundVertex.end();
-    sofa::defaulttype::Vector3 nMean;
+    sofa::type::Vector3 nMean;
     while (triIt != triItEnd)
     {
         const BaseMeshTopology::Triangle& triangle = bmt->getTriangle(*triIt);
-        sofa::defaulttype::Vector3 nCur = (x[triangle[1]] - x[triangle[0]]).cross(x[triangle[2]] - x[triangle[0]]);
+        sofa::type::Vector3 nCur = (x[triangle[1]] - x[triangle[0]]).cross(x[triangle[2]] - x[triangle[0]]);
         nCur.normalize();
         nMean += nCur;
         ++triIt;
@@ -101,7 +101,7 @@ void PointInfo::buildFilter(Index p_index)
         {
             const BaseMeshTopology::Edge& edge = bmt->getEdge(*edgeIt);
 
-            sofa::defaulttype::Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
+            sofa::type::Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
             l.normalize();
             nMean += l;
             ++edgeIt;
@@ -129,7 +129,7 @@ void PointInfo::buildFilter(Index p_index)
     {
         const BaseMeshTopology::Edge& edge = bmt->getEdge(*edgeIt);
 
-        sofa::defaulttype::Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
+        sofa::type::Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
         l.normalize();
 
 
@@ -154,7 +154,7 @@ void PointInfo::buildFilter(Index p_index)
 
 
 
-bool PointInfo::validate(const Index p, const defaulttype::Vector3 &PQ)
+bool PointInfo::validate(const Index p, const type::Vector3 &PQ)
 {
 
     bool debug=false;
@@ -213,7 +213,7 @@ void PointLocalMinDistanceFilter::init()
 
     if (bmt != nullptr)
     {
-        helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
+        type::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
         m_pointInfo.endEdit();
 
@@ -225,7 +225,7 @@ void PointLocalMinDistanceFilter::init()
     {
         // Precomputation of the filters in the rigid case
         //points:
-        helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
+        type::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         for(Index p=0; p<pInfo.size(); p++)
         {
             pInfo[p].buildFilter(p);
@@ -248,7 +248,7 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
     }
 }
 
-void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector<Index> &, const sofa::helper::vector< double >&)
+void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*pointIndex*/, PointInfo &pInfo, const sofa::type::vector<Index> &, const sofa::type::vector< double >&)
 {
     const PointLocalMinDistanceFilter *pLMDFilter = this->f;
     pInfo.setLMDFilters(pLMDFilter);

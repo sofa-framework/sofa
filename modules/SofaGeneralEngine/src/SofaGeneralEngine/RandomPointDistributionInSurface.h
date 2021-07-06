@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -47,7 +47,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
 
 protected:
 
@@ -73,7 +73,7 @@ public:
     Data<unsigned int> numberOfTests; ///< Number of tests to find if the point is inside or not (odd number)
 
     Data<VecCoord> f_vertices; ///< Vertices
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles; ///< Triangles indices
+    Data< type::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles; ///< Triangles indices
     Data<VecCoord> f_inPoints; ///< Points inside the surface
     Data<VecCoord> f_outPoints; ///< Points outside the surface
 

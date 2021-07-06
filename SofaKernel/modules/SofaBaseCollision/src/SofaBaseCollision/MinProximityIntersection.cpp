@@ -23,7 +23,7 @@
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
 
 namespace sofa::core::collision

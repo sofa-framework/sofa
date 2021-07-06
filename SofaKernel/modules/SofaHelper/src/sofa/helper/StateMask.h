@@ -47,8 +47,8 @@
 
 
 #ifdef SOFA_USE_MASK
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Mat.h>
 #include <Eigen/SparseCore>
 namespace sofa::helper
 {
@@ -58,7 +58,7 @@ class SOFA_HELPER_API StateMask
 
 public:
 
-    typedef helper::vector<bool> InternalStorage; // note this should be space-optimized (a bool = a bit) in the STL
+    typedef type::vector<bool> InternalStorage; // note this should be space-optimized (a bool = a bit) in the STL
 
     StateMask() : activated(false) {}
 

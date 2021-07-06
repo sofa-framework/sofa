@@ -26,8 +26,8 @@
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <vector>
 #include <sofa/core/objectmodel/DataFileName.h>
 
@@ -46,8 +46,8 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
 
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef sofa::defaulttype::Vec<N,Real> Vector;
+    typedef type::Mat<N,N,Real> Mat;
+    typedef sofa::type::Vec<N,Real> Vector;
 
     unsigned int  m1, m2;			/// the two extremities of the spring: masses m1 and m2
     unsigned int  p1, p2;			/// the two parents of each extremity
@@ -57,7 +57,7 @@ public:
 
     Real kd;				/// damping factor
 
-    sofa::defaulttype::Vec<2,unsigned int> freeAxis;	///defines the axis where the movements is free.
+    sofa::type::Vec<2,unsigned int> freeAxis;	///defines the axis where the movements is free.
     Real hardStiffnessTrans;	///stiffness to apply on axis where the translations are forbidden (default 10000.0)
     Real softStiffnessRot;	///stiffness to apply on axis where the rotations are free (default 10000.0)
     Real hardStiffnessRot;	///stiffness to apply on axis where the rotations are forbidden (default 10000.0)
@@ -72,7 +72,7 @@ public:
     Real getHardStiffnessRotation() {return hardStiffnessRot;}
     Real getSoftStiffnessRotation() {return softStiffnessRot;}
     Real getHardStiffnessTranslation() {return hardStiffnessTrans;}
-    sofa::defaulttype::Vec<2,unsigned int> getFreeAxis() { return freeAxis;}
+    sofa::type::Vec<2,unsigned int> getFreeAxis() { return freeAxis;}
     Real getRatio() {return Ratio;}
 
     //affectors
@@ -81,10 +81,10 @@ public:
     void setHardStiffnessTranslation(Real kst) { hardStiffnessTrans = kst;  }
     void setRatio(Real ratio) { Ratio = ratio;  }
 
-    void setFreeAxis(const sofa::defaulttype::Vec<2,unsigned int>& axis) { freeAxis = axis; }
+    void setFreeAxis(const sofa::type::Vec<2,unsigned int>& axis) { freeAxis = axis; }
     void setFreeAxis(unsigned int axis1, unsigned int axis2)
     {
-        freeAxis = sofa::defaulttype::Vec<2,unsigned int>(axis1, axis2);
+        freeAxis = sofa::type::Vec<2,unsigned int>(axis1, axis2);
     }
     void setDamping(Real _kd) {  kd = _kd;	  }
 
@@ -92,7 +92,7 @@ public:
     inline friend std::istream& operator >> ( std::istream& in, GearSpring<DataTypes>& s )
     {
         //default Gear is a Gear around x
-        s.freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
+        s.freeAxis = sofa::type::Vec<2,unsigned int>(0,0);
 
         std::string str;
         in>>str;
@@ -176,8 +176,8 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef sofa::defaulttype::Vec<N,Real> Vector;
+    typedef type::Mat<N,N,Real> Mat;
+    typedef sofa::type::Vec<N,Real> Vector;
 
     typedef GearSpring<DataTypes> Spring;
 
@@ -215,7 +215,7 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 
-    sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
+    sofa::type::vector<Spring> * getSprings() { return springs.beginEdit(); }
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -223,7 +223,7 @@ public:
 
     void clear(int reserve=0)
     {
-        helper::vector<Spring>& springs = *this->springs.beginEdit();
+        type::vector<Spring>& springs = *this->springs.beginEdit();
         springs.clear();
         if (reserve) springs.reserve(reserve);
         this->springs.endEdit();
@@ -286,7 +286,7 @@ public:
 
 
     /// the list of the springs
-    Data<sofa::helper::vector<Spring> > springs;
+    Data<sofa::type::vector<Spring> > springs;
     sofa::core::objectmodel::DataFileName f_filename; ///< output file name
     Data < Real > f_period; ///< period between outputs
     Data<bool> f_reinit; ///< flag enabling reinitialization of the output file at each timestep

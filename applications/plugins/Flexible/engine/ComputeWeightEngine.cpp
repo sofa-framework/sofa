@@ -74,12 +74,12 @@ void ComputeWeightEngine::doUpdate()
     // Get vertices from the visual model.
     // We can not use another method as vertices might be duplicated
     // and this is the only method that takes it into account.
-    sofa::helper::vector<sofa::defaulttype::Vec< 3, Vec3Types::Real > > vertices ( l_visualModel.get()->getVertices() );
+    sofa::type::vector<sofa::type::Vec< 3, Vec3Types::Real > > vertices ( l_visualModel.get()->getVertices() );
     size_t nb_vertices = vertices.size();
 
     // Get indices and weight
-    sofa::helper::vector< Indices >& indices = *d_indices.beginWriteOnly();
-    sofa::helper::vector< Weights >& weights = *d_weights.beginWriteOnly();
+    sofa::type::vector< Indices >& indices = *d_indices.beginWriteOnly();
+    sofa::type::vector< Weights >& weights = *d_weights.beginWriteOnly();
 
     indices.resize( nb_vertices );
     weights.resize( nb_vertices );

@@ -74,29 +74,29 @@ const typename MultiMapping<In,Out>::VecToModels& MultiMapping<In,Out>::getToMod
 }
 
 template< class In, class Out >
-helper::vector<BaseState*> MultiMapping<In,Out>::getFrom()
+type::vector<BaseState*> MultiMapping<In,Out>::getFrom()
 {
     const VecFromModels& models = getFromModels();
     size_t size = models.size();
-    helper::vector<BaseState*> baseModels(size);
+    type::vector<BaseState*> baseModels(size);
     for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;
 }
 
 template< class In, class Out >
-helper::vector<BaseState* > MultiMapping<In,Out>::getTo()
+type::vector<BaseState* > MultiMapping<In,Out>::getTo()
 {
     const VecToModels& models = getToModels();
     size_t size = models.size();
-    helper::vector<BaseState*> baseModels(size);
+    type::vector<BaseState*> baseModels(size);
     for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;
 }
 
 template <class In, class Out>
-helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechFrom()
+type::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechFrom()
 {
-    helper::vector<behavior::BaseMechanicalState*> mechFromVec;
+    type::vector<behavior::BaseMechanicalState*> mechFromVec;
     for (size_t i=0 ; i<this->fromModels.size() ; i++)
     {
         behavior::BaseMechanicalState* meshFrom = this->fromModels.get((unsigned)i)->toBaseMechanicalState();
@@ -107,9 +107,9 @@ helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechFrom
 }
 
 template <class In, class Out>
-helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
+type::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
 {
-    helper::vector<behavior::BaseMechanicalState*> mechToVec;
+    type::vector<behavior::BaseMechanicalState*> mechToVec;
     for (size_t i=0 ; i<this->toModels.size() ; i++)
     {
         behavior::BaseMechanicalState* meshTo = this->toModels.get((unsigned)i)->toBaseMechanicalState();
@@ -139,9 +139,9 @@ void MultiMapping<In,Out>::init()
 template <class In, class Out>
 void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
 {
-    helper::vector<OutDataVecCoord*> vecOutPos;
+    type::vector<OutDataVecCoord*> vecOutPos;
     getVecOutCoord(outPos, vecOutPos);
-    helper::vector<const InDataVecCoord*> vecInPos;
+    type::vector<const InDataVecCoord*> vecInPos;
     getConstVecInCoord(inPos, vecInPos);
     this->apply(mparams, vecOutPos, vecInPos);
 
@@ -153,9 +153,9 @@ void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordI
 template <class In, class Out>
 void MultiMapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
 {
-    helper::vector<OutDataVecDeriv*> vecOutVel;
+    type::vector<OutDataVecDeriv*> vecOutVel;
     getVecOutDeriv(outVel, vecOutVel);
-    helper::vector<const InDataVecDeriv*> vecInVel;
+    type::vector<const InDataVecDeriv*> vecInVel;
     getConstVecInDeriv(inVel, vecInVel);
     this->applyJ(mparams, vecOutVel, vecInVel);
 }// MultiMapping::applyJ
@@ -163,9 +163,9 @@ void MultiMapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDeriv
 template <class In, class Out>
 void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
 {
-    helper::vector<InDataVecDeriv*> vecOutForce;
+    type::vector<InDataVecDeriv*> vecOutForce;
     getVecInDeriv(inForce, vecOutForce);
-    helper::vector<const OutDataVecDeriv*> vecInForce;
+    type::vector<const OutDataVecDeriv*> vecInForce;
     getConstVecOutDeriv(outForce, vecInForce);
 
     this->applyJT(mparams, vecOutForce, vecInForce);
@@ -187,7 +187,7 @@ void MultiMapping<In,Out>::disable()
 template < class In, class Out >
 void MultiMapping<In,Out>::updateForceMask()
 {
-    helper::vector<behavior::BaseMechanicalState*> fromModels = getMechFrom();
+    type::vector<behavior::BaseMechanicalState*> fromModels = getMechFrom();
     for (size_t i=0 ; i<fromModels.size() ; i++)
         fromModels[i]->forceMask.assign(fromModels[i]->getSize(),true);
 }

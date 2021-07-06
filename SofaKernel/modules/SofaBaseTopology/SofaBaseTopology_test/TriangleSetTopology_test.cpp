@@ -92,12 +92,12 @@ bool TriangleSetTopology_test::testTriangleBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 triangles in this file should be :
-    sofa::helper::fixed_array<TriangleSetTopologyContainer::PointID, 3> triTruth0(0, 18, 11);
-    sofa::helper::fixed_array<TriangleSetTopologyContainer::PointID, 3> triTruth1(0, 4, 18);
+    sofa::type::fixed_array<TriangleSetTopologyContainer::PointID, 3> triTruth0(0, 18, 11);
+    sofa::type::fixed_array<TriangleSetTopologyContainer::PointID, 3> triTruth1(0, 4, 18);
 
 
     // check triangle buffer
-    const sofa::helper::vector<TriangleSetTopologyContainer::Triangle>& triangles = topoCon->getTriangleArray();
+    const sofa::type::vector<TriangleSetTopologyContainer::Triangle>& triangles = topoCon->getTriangleArray();
     if (triangles.empty())
         return false;
     
@@ -147,7 +147,7 @@ bool TriangleSetTopology_test::testEdgeBuffers()
     }
 
     // create and check edges
-    const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundEdge >& triAroundEdges = topoCon->getTrianglesAroundEdgeArray();
+    const sofa::type::vector< TriangleSetTopologyContainer::TrianglesAroundEdge >& triAroundEdges = topoCon->getTrianglesAroundEdgeArray();
         
     // check only the edge buffer size: Full test on edges are done in EdgeSetTopology_test
     EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
@@ -175,7 +175,7 @@ bool TriangleSetTopology_test::testEdgeBuffers()
 
 
     // check EdgesInTriangle buffer acces
-    const sofa::helper::vector< TriangleSetTopologyContainer::EdgesInTriangle > & edgeInTriangles = topoCon->getEdgesInTriangleArray();
+    const sofa::type::vector< TriangleSetTopologyContainer::EdgesInTriangle > & edgeInTriangles = topoCon->getEdgesInTriangleArray();
     EXPECT_EQ(edgeInTriangles.size(), nbrTriangle);
 
     const TriangleSetTopologyContainer::EdgesInTriangle& edgeInTri = edgeInTriangles[2];
@@ -185,7 +185,7 @@ bool TriangleSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInTri.size(); i++)
         EXPECT_EQ(edgeInTri[i], edgeInTriM[i]);
 
-    sofa::helper::fixed_array<int, 3> edgeInTriTruth(5, 6, 3);
+    sofa::type::fixed_array<int, 3> edgeInTriTruth(5, 6, 3);
     for (size_t i = 0; i<edgeInTriTruth.size(); ++i)
         EXPECT_EQ(edgeInTri[i], edgeInTriTruth[i]);
     
@@ -242,7 +242,7 @@ bool TriangleSetTopology_test::testVertexBuffers()
     }
 
     // create and check vertex buffer
-    const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundVertex >& triAroundVertices = topoCon->getTrianglesAroundVertexArray();
+    const sofa::type::vector< TriangleSetTopologyContainer::TrianglesAroundVertex >& triAroundVertices = topoCon->getTrianglesAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);

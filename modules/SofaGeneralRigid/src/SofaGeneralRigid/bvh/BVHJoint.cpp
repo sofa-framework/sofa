@@ -23,7 +23,7 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sstream>
@@ -77,11 +77,11 @@ void BVHJoint::display(int frameNum)
 
     drawtool->pushMatrix();
     drawtool->disableLighting();
-    drawtool->drawLine({ 0.0f, 0.0f, 0.0f }, { float(offset->x), float(offset->y), float(offset->z) }, helper::types::RGBAColor::black());
+    drawtool->drawLine({ 0.0f, 0.0f, 0.0f }, { float(offset->x), float(offset->y), float(offset->z) }, type::RGBAColor::black());
 
     core::visual::VisualParams::defaultInstance()->getModelViewMatrix(matrix);
 
-    defaulttype::Quatf q;
+    type::Quatf q;
     float rotmat[16];
     if (channels != nullptr)
     {
@@ -119,7 +119,7 @@ void BVHJoint::display(int frameNum)
         }
     }
 
-    drawtool->setMaterial( sofa::helper::types::RGBAColor{ 1.0,0.0,0.0,1.0f });
+    drawtool->setMaterial( sofa::type::RGBAColor{ 1.0,0.0,0.0,1.0f });
     drawtool->drawSphere({ 0.0f, 0.0f, 0.0f }, 0.01f);
 
     for (unsigned int i=0; i<children.size(); i++)
@@ -141,7 +141,7 @@ void BVHJoint::displayInGlobalFrame(void)
 
     drawtool->disableLighting();
 
-    drawtool->setMaterial(sofa::helper::types::RGBAColor{ 1.0,0.0,0.0,1.0f });
+    drawtool->setMaterial(sofa::type::RGBAColor{ 1.0,0.0,0.0,1.0f });
     drawtool->drawSphere({ 0.0f, 0.0f, 0.0f }, 0.005f);
 
     for (unsigned int i=0; i<children.size(); i++)

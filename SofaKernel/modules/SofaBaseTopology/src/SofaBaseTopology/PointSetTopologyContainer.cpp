@@ -69,7 +69,7 @@ void PointSetTopologyContainer::setNbPoints(Size n)
 {
 
     int diffSize = n - nbPoints.getValue();
-    sofa::helper::WriteAccessor< sofa::Data< sofa::helper::vector<PointID> > > points = this->points;
+    sofa::helper::WriteAccessor< sofa::Data< sofa::type::vector<PointID> > > points = this->points;
     points.resize(n);
 
     if( diffSize > 0 )
@@ -96,7 +96,7 @@ void PointSetTopologyContainer::clear()
     nbPoints.setValue(0);
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.clear();
-    sofa::helper::WriteAccessor< sofa::Data< sofa::helper::vector<PointID> > > points = this->points;
+    sofa::helper::WriteAccessor< sofa::Data< sofa::type::vector<PointID> > > points = this->points;
     points.clear();
 }
 
@@ -195,7 +195,7 @@ void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyHa
     this->m_enginesList.push_back(_engine);
 }
 
-const sofa::helper::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
+const sofa::type::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
 {
     return points.getValue();
 }
@@ -255,8 +255,8 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
         std::list<sofa::core::topology::TopologyHandler *> next_enginesLevel;
 
         // for drawing graph
-        sofa::helper::vector <std::string> enginesNames;
-        sofa::helper::vector <std::string> dataNames;
+        sofa::type::vector<std::string> enginesNames;
+        sofa::type::vector<std::string> dataNames;
 
         // doing one level of data outputs, looking for engines
         for ( it = _outs.begin(); it!=_outs.end(); ++it)
@@ -356,7 +356,7 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
 
     for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
     {
-        sofa::helper::vector <std::string> enginesNames = this->m_enginesGraph[i];
+        sofa::type::vector<std::string> enginesNames = this->m_enginesGraph[i];
 
         unsigned int cpt_engine_tmp = cpt_engine;
         for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
@@ -374,7 +374,7 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
 
         for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
         {
-            sofa::helper::vector <std::string> dataNames = this->m_dataGraph[cpt_engine];
+            sofa::type::vector<std::string> dataNames = this->m_dataGraph[cpt_engine];
             for (unsigned int k=0; k<dataNames.size(); ++k)
                 tmpmsg << dataNames[k] << "     " ;
             tmpmsg << "            ";

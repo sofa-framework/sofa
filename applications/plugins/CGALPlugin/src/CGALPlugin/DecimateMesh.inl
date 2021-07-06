@@ -173,7 +173,7 @@ void DecimateMesh<DataTypes>::computeNormals()
     helper::ReadAccessor< Data< VecCoord > > outVertices = d_outVertices;
     helper::ReadAccessor< Data< SeqTriangles > > outTriangles = d_outTriangles;
 
-    helper::WriteAccessor< Data< helper::vector<Vec3> > > outNormals = d_outNormals;
+    helper::WriteAccessor< Data< type::vector<Vec3> > > outNormals = d_outNormals;
 
 
     for (unsigned int i=0; i<outVertices.size(); i++)

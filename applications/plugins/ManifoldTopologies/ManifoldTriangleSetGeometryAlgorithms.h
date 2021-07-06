@@ -74,22 +74,22 @@ public:
      * @returns the indice of the end point, or -1 if the incision failed.
      */
     virtual int SplitAlongPath(Index pa, Coord& a, Index pb, Coord& b,
-            sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
-            sofa::helper::vector<Index>& indices_list,
-            sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-            sofa::helper::vector<core::topology::BaseMeshTopology::EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0) override;
+            sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+            sofa::type::vector<Index>& indices_list,
+            sofa::type::vector< sofa::type::Vec<3, double> >& coords_list,
+            sofa::type::vector<core::topology::BaseMeshTopology::EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0) override;
 
 
     /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
      * @returns true if the incision succeeded.
      */
-    virtual bool InciseAlongEdgeList(const sofa::helper::vector<Index>& edges, sofa::helper::vector<Index>& new_points, sofa::helper::vector<Index>& end_points, bool& reachBorder) override;
+    virtual bool InciseAlongEdgeList(const sofa::type::vector<Index>& edges, sofa::type::vector<Index>& new_points, sofa::type::vector<Index>& end_points, bool& reachBorder) override;
 
 
     /** \brief: Swap a list of edges.
      *
      */
-    void edgeSwapProcess (const sofa::helper::vector <core::topology::BaseMeshTopology::EdgeID>& listEdges);
+    void edgeSwapProcess (const sofa::type::vector <core::topology::BaseMeshTopology::EdgeID>& listEdges);
 
 
     /** \brief: Swap the edge adjacent to the two input triangles (To be used by the ray pick interactor).
@@ -101,17 +101,17 @@ public:
     /** \brief: Reorder the mesh by swaping a list of edges.
      * For each edge, check if topology will be better before swaping it.
      */
-    void swapRemeshing (sofa::helper::vector <core::topology::BaseMeshTopology::EdgeID>& listEdges);
+    void swapRemeshing (sofa::type::vector <core::topology::BaseMeshTopology::EdgeID>& listEdges);
 
     /** \brief: Reorder the whole mesh by swaping a all edges.
      * For each edge, check if topology will be better before swaping it.
-     * @see swapRemeshing (const sofa::helper::vector <Index>& listedges)
+     * @see swapRemeshing (const sofa::type::vector <Index>& listedges)
      */
     void swapRemeshing ();
 
 protected:
 
-    Data< sofa::helper::vector< Index> > m_triSwap; ///< Debug : Test swap function (only while animate).
+    Data< sofa::type::vector< Index> > m_triSwap; ///< Debug : Test swap function (only while animate).
     Data< bool > m_swapMesh; ///< If true, optimize the mesh only by swapping edges
 
     /**\brief Function swaping edge between two adjacents triangles. Create two new triangles and remove the two old one.

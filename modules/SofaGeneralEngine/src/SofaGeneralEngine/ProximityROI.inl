@@ -27,7 +27,7 @@
 
 #include <SofaGeneralEngine/ProximityROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::engine
 {
@@ -122,8 +122,8 @@ public:
 template <class DataTypes>
 void ProximityROI<DataTypes>::doUpdate()
 {
-    const helper::vector<Vec3>& cen = (centers.getValue());
-    const helper::vector<Real>& rad = (radii.getValue());
+    const type::vector<Vec3>& cen = (centers.getValue());
+    const type::vector<Real>& rad = (radii.getValue());
 
     if (cen.empty())
         return;
@@ -144,7 +144,7 @@ void ProximityROI<DataTypes>::doUpdate()
     // are filled with the last known value.
     if (cen.size() > rad.size())
     {
-        helper::WriteAccessor< Data<helper::vector<Real> > > rada = radii;
+        helper::WriteAccessor< Data<type::vector<Real> > > rada = radii;
         Real value=rad[rad.size()-1];
         for(unsigned int i=rad.size(); i<cen.size(); ++i)
         {
@@ -165,7 +165,7 @@ void ProximityROI<DataTypes>::doUpdate()
 
     // Write accessor for toplogical element
     helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Real> > > distanceInROI = f_distanceInROI;
+    helper::WriteOnlyAccessor< Data<type::vector<Real> > > distanceInROI = f_distanceInROI;
 
     // Clear lists
     indices.clear();
@@ -251,15 +251,15 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->saveLastState();
 
-    const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::cyan();
+    const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
     if(p_drawSphere.getValue()) // old classical drawing by points
     {
-        std::vector<sofa::defaulttype::Vector3> drawcenters;
+        std::vector<sofa::type::Vector3> drawcenters;
         std::vector<float> drawradii;
         ///draw the boxes
-        const helper::vector<Vec3>& c=centers.getValue();
-        const helper::vector<Real>& r=radii.getValue();
+        const type::vector<Vec3>& c=centers.getValue();
+        const type::vector<Real>& r=radii.getValue();
 
         for (unsigned int i=0; i<c.size() && i<r.size(); ++i)
         {
@@ -277,7 +277,7 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->disableLighting();
 
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::type::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {

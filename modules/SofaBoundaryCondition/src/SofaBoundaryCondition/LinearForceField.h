@@ -50,7 +50,7 @@ public:
     typedef typename Coord::value_type Real;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef type::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 protected:
@@ -66,7 +66,7 @@ public:
     Data< Real > d_force;
 
     /// the key frames when the forces are defined by the user
-    Data< helper::vector< Real > > d_keyTimes;
+    Data< type::vector< Real > > d_keyTimes;
 
     /// forces corresponding to the key frames
     Data< VecDeriv > d_keyForces;

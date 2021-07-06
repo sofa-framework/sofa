@@ -56,11 +56,11 @@ void IndexValueMapper<DataTypes>::reinit()
 template <class DataTypes>
 void IndexValueMapper<DataTypes>::doUpdate()
 {
-    helper::ReadAccessor< Data< helper::vector<Real> > > inputValues = f_inputValues;
-    helper::ReadAccessor< Data< helper::vector<Index> > > indices = f_indices;
+    helper::ReadAccessor< Data< type::vector<Real> > > inputValues = f_inputValues;
+    helper::ReadAccessor< Data< type::vector<Index> > > indices = f_indices;
     const Real& value = f_value.getValue();
 
-    helper::WriteOnlyAccessor< Data< helper::vector<Real> > > outputValues = f_outputValues;
+    helper::WriteOnlyAccessor< Data< type::vector<Real> > > outputValues = f_outputValues;
 
     const Real& defaultValue = p_defaultValue.getValue();
 

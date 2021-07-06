@@ -23,7 +23,7 @@
 #include <SofaBaseTopology/config.h>
 
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::topology
 {
@@ -71,7 +71,7 @@ protected:
         ,initializedCubatureTables(false)
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::helper::types::RGBAColor(0.3f,0.5f,0.8f,1.0f), "drawColorTriangles", "RGBA code color used to draw edges."))
+        , _drawColor(initData(&_drawColor, sofa::type::RGBAColor(0.3f,0.5f,0.8f,1.0f), "drawColorTriangles", "RGBA code color used to draw edges."))
         , _drawNormals(initData(&_drawNormals, false, "drawNormals","if true, draw the triangles in the topology"))
         , _drawNormalLength (initData(&_drawNormalLength, (SReal)10, "drawNormalLength", "Fiber length visualisation."))
         , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals."))
@@ -93,7 +93,7 @@ public:
 
     Coord computeRestTriangleCenter(const TriangleID i) const;
 
-    void computeTriangleCircumcenterBaryCoefs(sofa::defaulttype::Vec<3,Real> &baryCoord, const TriangleID i) const;
+    void computeTriangleCircumcenterBaryCoefs(sofa::type::Vec<3,Real> &baryCoord, const TriangleID i) const;
 
     Coord computeTriangleCircumcenter(const TriangleID i) const;
 
@@ -119,17 +119,17 @@ public:
     /** \brief Computes barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
     *
     */
-    sofa::helper::vector< double > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::defaulttype::Vec<3,double> &p) const;
+    sofa::type::vector< double > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,double> &p) const;
 
     /** \brief Computes barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
     *
     */
-    sofa::helper::vector< double > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::defaulttype::Vec<3, double>& p) const;
+    sofa::type::vector< double > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, double>& p) const;
 
     /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
      *
      */
-    sofa::helper::vector< double > compute3PointsBarycoefs( const sofa::defaulttype::Vec<3,double> &p,
+    sofa::type::vector< double > compute3PointsBarycoefs( const sofa::type::Vec<3,double> &p,
             PointID ind_p1,
             PointID ind_p2,
             PointID ind_p3,
@@ -144,17 +144,17 @@ public:
     /** \brief Tests if a point is included in the triangle indexed by ind_t
      *
      */
-    bool isPointInsideTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, TriangleID &ind_t_test, bool bRest=false) const;
+    bool isPointInsideTriangle(const TriangleID ind_t, bool is_tested, const sofa::type::Vec<3,Real>& p, TriangleID &ind_t_test, bool bRest=false) const;
 
-    bool isPointInTriangle(const TriangleID ind_t, bool is_tested, const sofa::defaulttype::Vec<3,Real>& p, TriangleID &ind_t_test) const;
+    bool isPointInTriangle(const TriangleID ind_t, bool is_tested, const sofa::type::Vec<3,Real>& p, TriangleID &ind_t_test) const;
 
 
 
     /** \brief Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
      *
      */
-    sofa::defaulttype::Vec<3,double> computeBaryEdgePoint(PointID p0, PointID p1, double coord_p) const;
-    sofa::defaulttype::Vec<3,double> computeBaryEdgePoint(Edge e, double coord_p) const
+    sofa::type::Vec<3,double> computeBaryEdgePoint(PointID p0, PointID p1, double coord_p) const;
+    sofa::type::Vec<3,double> computeBaryEdgePoint(Edge e, double coord_p) const
     {
         return computeBaryEdgePoint(e[0], e[1], coord_p);
     }
@@ -162,8 +162,8 @@ public:
     /** \brief Computes the point defined by 3 indices of vertex and 1 barycentric coordinate
      *
      */
-    sofa::defaulttype::Vec<3,double> computeBaryTrianglePoint(PointID p0, PointID p1, PointID p2, sofa::defaulttype::Vec<3,double>& coord_p) const;
-    sofa::defaulttype::Vec<3,double> computeBaryTrianglePoint(Triangle& t, sofa::defaulttype::Vec<3,double>& coord_p) const
+    sofa::type::Vec<3,double> computeBaryTrianglePoint(PointID p0, PointID p1, PointID p2, sofa::type::Vec<3,double>& coord_p) const;
+    sofa::type::Vec<3,double> computeBaryTrianglePoint(Triangle& t, sofa::type::Vec<3,double>& coord_p) const
     {
         return computeBaryTrianglePoint(t[0], t[1], t[2], coord_p);
     }
@@ -172,7 +172,7 @@ public:
     /** \brief Computes the normal vector of a triangle indexed by ind_t (not normed)
      *
      */
-    sofa::defaulttype::Vec<3,double> computeTriangleNormal(const TriangleID ind_t) const;
+    sofa::type::Vec<3,double> computeTriangleNormal(const TriangleID ind_t) const;
 
     /** \brief Tests how to triangularize a quad whose vertices are defined by (p_q1, p_q2, ind_q3, ind_q4) according to the Delaunay criterion
     *
@@ -202,13 +202,13 @@ public:
     /** \brief Computes the opposite point to ind_p
      *
      */
-    sofa::defaulttype::Vec<3,double> getOppositePoint(PointID ind_p, const Edge& indices, double coord_p) const;
+    sofa::type::Vec<3,double> getOppositePoint(PointID ind_p, const Edge& indices, double coord_p) const;
 
     /** \brief Tests if a triangle indexed by ind_t (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
      *
     */
     bool isTriangleInPlane(const TriangleID ind_t, const PointID ind_p,
-            const sofa::defaulttype::Vec<3,Real>& plane_vect) const;
+            const sofa::type::Vec<3,Real>& plane_vect) const;
 
     /** \brief Prepares the duplication of a vertex
      *
@@ -217,8 +217,8 @@ public:
             const TriangleID ind_t_from, const TriangleID ind_t_to,
             const Edge& indices_from, const double &coord_from,
             const Edge& indices_to, const double &coord_to,
-            sofa::helper::vector< TriangleID > &triangles_list_1,
-            sofa::helper::vector< TriangleID > &triangles_list_2) const;
+            sofa::type::vector< TriangleID > &triangles_list_1,
+            sofa::type::vector< TriangleID > &triangles_list_2) const;
 
     /** \brief Computes the intersection of the vector from point a to point b and the triangle indexed by t
      *
@@ -230,10 +230,10 @@ public:
      * @param coord_kmin : barycoef of the intersection point on the vecteur AB.
      */
     bool computeSegmentTriangleIntersection(bool is_entered,
-            const sofa::defaulttype::Vec<3,double>& a,
-            const sofa::defaulttype::Vec<3,double>& b,
+            const sofa::type::Vec<3,double>& a,
+            const sofa::type::Vec<3,double>& b,
             const TriangleID ind_t,
-            sofa::helper::vector<PointID> &indices,
+            sofa::type::vector<PointID> &indices,
             double &baryCoef, double& coord_kmin) const;
 
     /** \brief Computes the intersections of the vector from point a to point b and the triangle indexed by t
@@ -245,23 +245,23 @@ public:
     * @param baryCoef : barycoef of intersections points on the edge
     */
     bool computeIntersectionsLineTriangle(bool is_entered,
-        const sofa::defaulttype::Vec<3, Real>& a,
-        const sofa::defaulttype::Vec<3, Real>& b,
+        const sofa::type::Vec<3, Real>& a,
+        const sofa::type::Vec<3, Real>& b,
         const TriangleID ind_t,
-        sofa::helper::vector<PointID>& indices,
-        sofa::helper::vector<Real>& vecBaryCoef,
-        sofa::helper::vector<Real>& vecCoordKmin) const;
+        sofa::type::vector<PointID>& indices,
+        sofa::type::vector<Real>& vecBaryCoef,
+        sofa::type::vector<Real>& vecCoordKmin) const;
 
     /** \brief Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
      *
      */
     bool computeIntersectedPointsList(const PointID last_point,
-            const sofa::defaulttype::Vec<3,double>& a,
-            const sofa::defaulttype::Vec<3,double>& b,
+            const sofa::type::Vec<3,double>& a,
+            const sofa::type::Vec<3,double>& b,
             TriangleID& ind_ta, TriangleID& ind_tb,
-            sofa::helper::vector< TriangleID > &triangles_list,
-            sofa::helper::vector< EdgeID > &edges_list,
-            sofa::helper::vector< double >& coords_list,
+            sofa::type::vector< TriangleID > &triangles_list,
+            sofa::type::vector< EdgeID > &edges_list,
+            sofa::type::vector< double >& coords_list,
             bool& is_on_boundary) const;
 
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
@@ -272,16 +272,16 @@ public:
      * (i.e 0 coord for a point, 1 for and edge and 3 for a triangle).
      */
     bool computeIntersectedObjectsList (const PointID last_point,
-            const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
+            const sofa::type::Vec<3,double>& a, const sofa::type::Vec<3,double>& b,
             TriangleID& ind_ta, TriangleID& ind_tb,
-            sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
-            sofa::helper::vector<ElemID>& indices_list,
-            sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list) const;
+            sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+            sofa::type::vector<ElemID>& indices_list,
+            sofa::type::vector< sofa::type::Vec<3, double> >& coords_list) const;
 
 
     /** \brief Get the triangle in a given direction from a point.
      */
-    int getTriangleInDirection(PointID p, const sofa::defaulttype::Vec<3,double>& dir) const;
+    int getTriangleInDirection(PointID p, const sofa::type::Vec<3,double>& dir) const;
 
 
     /** \brief Write the current mesh into a msh file
@@ -296,7 +296,7 @@ public:
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
     void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem
-        , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs) override;
+        , const type::vector< VecCoord* >& coordVecs, const type::vector< VecDeriv* >& derivVecs) override;
 
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,3> &getTriangleNumericalIntegrationDescriptor();
@@ -308,14 +308,14 @@ public:
 
     /** \brief Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
      */
-    void RemoveAlongTrianglesList(const sofa::defaulttype::Vec<3, double>& a,
-        const sofa::defaulttype::Vec<3, double>& b,
+    void RemoveAlongTrianglesList(const sofa::type::Vec<3, double>& a,
+        const sofa::type::Vec<3, double>& b,
         const TriangleID ind_ta, const TriangleID ind_tb);
 
     /** \brief Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
      */
-    void InciseAlongLinesList(const sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& input_points,
-        const sofa::helper::vector< TriangleID > &input_triangles);
+    void InciseAlongLinesList(const sofa::type::vector< sofa::type::Vec<3, double> >& input_points,
+        const sofa::type::vector< TriangleID > &input_triangles);
 
 
 
@@ -324,26 +324,26 @@ public:
      * @returns the indice of the end point, or -1 if the incision failed.
      */
     virtual int SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
-        sofa::helper::vector<ElemID>& indices_list,
-        sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-        sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
+        sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+        sofa::type::vector<ElemID>& indices_list,
+        sofa::type::vector< sofa::type::Vec<3, double> >& coords_list,
+        sofa::type::vector<EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
 
 
 
-    /* void SnapAlongPath (sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
-      sofa::helper::vector<double>& coords_list, sofa::helper::vector<double>& points2Snap);*/
+    /* void SnapAlongPath (sofa::type::vector<TriangleID>& triangles_list, sofa::type::vector<EdgeID>& edges_list,
+      sofa::type::vector<double>& coords_list, sofa::type::vector<double>& points2Snap);*/
 
-    void SnapAlongPath(sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
-        sofa::helper::vector<ElemID>& indices_list, sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-        sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
+    void SnapAlongPath(sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+        sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, double> >& coords_list,
+        sofa::type::vector< sofa::type::vector<double> >& points2Snap,
         double epsilonSnapPath);
 
     void SnapBorderPath(PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
-        sofa::helper::vector<ElemID>& indices_list,
-        sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-        sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
+        sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+        sofa::type::vector<ElemID>& indices_list,
+        sofa::type::vector< sofa::type::Vec<3, double> >& coords_list,
+        sofa::type::vector< sofa::type::vector<double> >& points2Snap,
         double epsilonSnapBorder);
 
 
@@ -351,7 +351,7 @@ public:
     /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
      * @returns true if the incision succeeded.
      */
-    virtual bool InciseAlongEdgeList(const sofa::helper::vector<EdgeID>& edges, sofa::helper::vector<PointID>& new_points, sofa::helper::vector<PointID>& end_points, bool& reachBorder);
+    virtual bool InciseAlongEdgeList(const sofa::type::vector<EdgeID>& edges, sofa::type::vector<PointID>& new_points, sofa::type::vector<PointID>& end_points, bool& reachBorder);
 
 
 
@@ -359,7 +359,7 @@ public:
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
     Data<bool> _draw; ///< if true, draw the triangles in the topology
-    Data<sofa::helper::types::RGBAColor> _drawColor; ///< RGBA code color used to draw triangles.
+    Data<sofa::type::RGBAColor> _drawColor; ///< RGBA code color used to draw triangles.
     Data<bool> _drawNormals; ///< if true, draw the triangles in the topology
     Data <SReal> _drawNormalLength; ///< Fiber length visualisation.
     Data<bool> p_recomputeTrianglesOrientation; ///< if true, will recompute triangles orientation according to normals.
@@ -374,21 +374,21 @@ private:
 
 
 /*template< class Real>
-  bool is_point_in_triangle(const sofa::defaulttype::Vec<3,Real>& p,
-  const sofa::defaulttype::Vec<3,Real>& a,
-  const sofa::defaulttype::Vec<3,Real>& b,
-  const sofa::defaulttype::Vec<3,Real>& c);*/
+  bool is_point_in_triangle(const sofa::type::Vec<3,Real>& p,
+  const sofa::type::Vec<3,Real>& a,
+  const sofa::type::Vec<3,Real>& b,
+  const sofa::type::Vec<3,Real>& c);*/
 template<class Real>
-bool is_point_in_triangle(const sofa::defaulttype::Vec<3,Real>& p,
-        const sofa::defaulttype::Vec<3,Real>& a, const sofa::defaulttype::Vec<3,Real>& b, const sofa::defaulttype::Vec<3,Real>& c);
+bool is_point_in_triangle(const sofa::type::Vec<3,Real>& p,
+        const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b, const sofa::type::Vec<3,Real>& c);
 
 
 template< class Real>
-bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p,
+bool is_point_in_halfplane(const sofa::type::Vec<3,Real>& p,
         unsigned int e0, unsigned int e1,
-        const sofa::defaulttype::Vec<3,Real>& a,
-        const sofa::defaulttype::Vec<3,Real>& b,
-        const sofa::defaulttype::Vec<3,Real>& c,
+        const sofa::type::Vec<3,Real>& a,
+        const sofa::type::Vec<3,Real>& b,
+        const sofa::type::Vec<3,Real>& c,
         unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2);
 
 void SOFA_SOFABASETOPOLOGY_API snapping_test_triangle(double epsilon,
@@ -400,13 +400,13 @@ void SOFA_SOFABASETOPOLOGY_API snapping_test_edge(double epsilon,
         bool& is_snap_0, bool& is_snap_1);
 
 template< class Real>
-inline Real areaProduct(const sofa::defaulttype::Vec<3,Real>& a, const sofa::defaulttype::Vec<3,Real>& b);
+inline Real areaProduct(const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b);
 
 template< class Real>
-inline Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b );
+inline Real areaProduct(const type::Vec<2,Real>& a, const type::Vec<2,Real>& b );
 
 template< class Real>
-inline Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>&  );
+inline Real areaProduct(const type::Vec<1,Real>& , const type::Vec<1,Real>&  );
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>;

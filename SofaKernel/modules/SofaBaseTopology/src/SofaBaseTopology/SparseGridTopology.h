@@ -25,7 +25,7 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <sofa/helper/io/Mesh.h>
 #include <stack>
@@ -49,10 +49,10 @@ class SOFA_SOFABASETOPOLOGY_API SparseGridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(SparseGridTopology,MeshTopology);
-    typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::defaulttype::Vec3i   Vec3i;
-    typedef sofa::helper::fixed_array<Vector3,8> CubeCorners;
-    typedef sofa::defaulttype::BoundingBox BoundingBox;
+    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3i   Vec3i;
+    typedef sofa::type::fixed_array<Vector3,8> CubeCorners;
+    typedef sofa::type::BoundingBox BoundingBox;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
 protected:
     SparseGridTopology(bool _isVirtual=false);
@@ -77,37 +77,37 @@ public:
     typedef std::map<Vector3, Index> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
 
     /// connexion between several coarsened levels
-    typedef std::vector<helper::fixed_array<Index,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
+    typedef std::vector<type::fixed_array<Index,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
     HierarchicalCubeMap _hierarchicalCubeMap;
-    typedef helper::vector<Index> InverseHierarchicalCubeMap; ///< a fine cube indice -> corresponding coarser cube indice
+    typedef type::vector<Index> InverseHierarchicalCubeMap; ///< a fine cube indice -> corresponding coarser cube indice
     InverseHierarchicalCubeMap _inverseHierarchicalCubeMap;
 
     typedef std::map<Index,float> AHierarchicalPointMap;
-    typedef helper::vector< AHierarchicalPointMap > HierarchicalPointMap; ///< a point indice -> corresponding 27 child indices on the potential _finerSparseGrid with corresponding weight
+    typedef type::vector< AHierarchicalPointMap > HierarchicalPointMap; ///< a point indice -> corresponding 27 child indices on the potential _finerSparseGrid with corresponding weight
     HierarchicalPointMap _hierarchicalPointMap;
-    typedef helper::vector< AHierarchicalPointMap > InverseHierarchicalPointMap; ///< a fine point indice -> corresponding some parent points for interpolation
+    typedef type::vector< AHierarchicalPointMap > InverseHierarchicalPointMap; ///< a fine point indice -> corresponding some parent points for interpolation
     InverseHierarchicalPointMap _inverseHierarchicalPointMap;
-    typedef helper::vector< Index > PointMap;
+    typedef type::vector< Index > PointMap;
     PointMap _pointMap; ///< a coarse point indice -> corresponding point in finer level
     PointMap _inversePointMap;  ///< a fine point indice -> corresponding point in coarser level
 
 
     enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED_NODES};
-    typedef helper::vector< helper::fixed_array<Index,NUM_CONNECTED_NODES> > NodeAdjacency; ///< a node -> its 6 neighboors
+    typedef type::vector< type::fixed_array<Index,NUM_CONNECTED_NODES> > NodeAdjacency; ///< a node -> its 6 neighboors
     NodeAdjacency _nodeAdjacency;
-    typedef helper::vector< helper::vector<Index> >NodeCubesAdjacency; ///< a node -> its 8 neighboor cells
+    typedef type::vector< type::vector<Index> >NodeCubesAdjacency; ///< a node -> its 8 neighboor cells
     NodeCubesAdjacency _nodeCubesAdjacency;
-    typedef helper::vector< helper::vector<Index> >NodeCornersAdjacency; ///< a node -> its 8 corners of neighboor cells
+    typedef type::vector< type::vector<Index> >NodeCornersAdjacency; ///< a node -> its 8 corners of neighboor cells
     NodeCornersAdjacency _nodeCornersAdjacency;
 
 
-    helper::vector< SparseGridTopology::SPtr > _virtualFinerLevels; ///< saving the virtual levels (cf _nbVirtualFinerLevels)
+    type::vector< SparseGridTopology::SPtr > _virtualFinerLevels; ///< saving the virtual levels (cf _nbVirtualFinerLevels)
     int getNbVirtualFinerLevels() const { return _nbVirtualFinerLevels.getValue();}
     void setNbVirtualFinerLevels(int n) {_nbVirtualFinerLevels.setValue(n);}
 
 
     /// Resolution
-    sofa::defaulttype::Vec<3, int> getN() const { return n.getValue();}
+    sofa::type::Vec<3, int> getN() const { return n.getValue();}
     int getNx() const { return n.getValue()[0]; }
     int getNy() const { return n.getValue()[1]; }
     int getNz() const { return n.getValue()[2]; }
@@ -148,7 +148,7 @@ public:
     virtual Index findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
 
     /// return indices of 6 neighboor cubes
-    virtual helper::fixed_array<Index,6> findneighboorCubes(Index indice );
+    virtual type::fixed_array<Index,6> findneighboorCubes(Index indice );
 
     /// return the type of the i-th cube
     virtual Type getType(Index i );
@@ -166,8 +166,8 @@ public:
     void updateMesh();
 
     sofa::core::sptr<RegularGridTopology> _regularGrid; ///< based on a corresponding RegularGrid
-    helper::vector< Index > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
-    helper::vector< Index > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
+    type::vector< Index > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
+    type::vector< Index > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
 
     Vector3 getPointPos(Index i ) { return Vector3( seqPoints.getValue()[i][0],seqPoints.getValue()[i][1],seqPoints.getValue()[i][2] ); }
 
@@ -186,7 +186,7 @@ public:
         return dataVoxels.getValue()[index]==1;
     }
 
-    Data< helper::vector< unsigned char > >     dataVoxels;
+    Data< type::vector< unsigned char > >     dataVoxels;
     Data<bool> _fillWeighted; ///< is quantity of matter inside a cell taken into account?
 
     Data<bool> d_bOnlyInsideCells; ///< Select only inside cells (exclude boundary cells)
@@ -195,7 +195,7 @@ public:
 protected:
     bool isVirtual;
     /// cutting number in all directions
-    Data< sofa::defaulttype::Vec< 3, int > > n;
+    Data< sofa::type::Vec< 3, int > > n;
     Data< Vector3 > _min; ///< Min
     Data< Vector3 > _max; ///< Max
     Data< SReal > _cellWidth; ///< if > 0 : dimension of each cell in the created grid
@@ -207,14 +207,14 @@ public:
     Data< unsigned int >    marchingCubeStep; ///< Step of the Marching Cube algorithm
     Data< unsigned int >    convolutionSize; ///< Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.
 
-    Data< helper::vector < helper::vector <Index> > >facets; ///< Input mesh facets
+    Data< type::vector< type::vector<Index> > >facets; ///< Input mesh facets
 
     /** Create the data structure based on resolution, size and filling.
           \param numPoints  Number of points in the x,y,and z directions
           \param box  Volume occupied by the grid
           \param filling Voxel filling: true if the cell is defined, false if the cell is empty. Voxel order is: for(each z){ for(each y){ for(each x) }}}
           */
-    void buildFromData( Vec3i numPoints, BoundingBox box, const helper::vector<bool>& filling );
+    void buildFromData( Vec3i numPoints, BoundingBox box, const type::vector<bool>& filling );
 
 protected:
     virtual void updateEdges();
@@ -223,36 +223,36 @@ protected:
     sofa::helper::MarchingCubeUtility                 marchingCubes;
     bool                                _usingMC;
 
-    helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
+    type::vector<Type> _types; ///< BOUNDARY or FULL filled cells
 
-    helper::vector< float > _stiffnessCoefs; ///< a stiffness coefficient per hexa (BOUNDARY=.5, FULL=1)
-    helper::vector< float > _massCoefs; ///< a stiffness coefficient per hexa (BOUNDARY=.5, FULL=1)
+    type::vector< float > _stiffnessCoefs; ///< a stiffness coefficient per hexa (BOUNDARY=.5, FULL=1)
+    type::vector< float > _massCoefs; ///< a stiffness coefficient per hexa (BOUNDARY=.5, FULL=1)
 
     /// start from a seed cell (i,j,k) the OUTSIDE filling is propagated to neighboor cells until meet a BOUNDARY cell (this function is called from all border cells of the RegularGrid)
     void launchPropagationFromSeed(const Vec3i& point,
             sofa::core::sptr<RegularGridTopology> regularGrid,
-            helper::vector<Type>& regularGrdidTypes,
-            helper::vector<bool>& alreadyTested,
+            type::vector<Type>& regularGrdidTypes,
+            type::vector<bool>& alreadyTested,
             std::stack<Vec3i>& seed) const;
 
     void propagateFrom(  const Vec3i& point,
             sofa::core::sptr<RegularGridTopology> regularGrid,
-            helper::vector<Type>& regularGridTypes,
-            helper::vector<bool>& alreadyTested,
-            std::stack< sofa::defaulttype::Vec<3,int> > &seed) const;
+            type::vector<Type>& regularGridTypes,
+            type::vector<bool>& alreadyTested,
+            std::stack< sofa::type::Vec<3,int> > &seed) const;
 
-    void computeBoundingBox(const helper::vector<Vector3>& vertices,
+    void computeBoundingBox(const type::vector<Vector3>& vertices,
             SReal& xmin, SReal& xmax,
             SReal& ymin, SReal& ymax,
             SReal& zmin, SReal& zmax) const;
 
     void voxelizeTriangleMesh(helper::io::Mesh* mesh,
             sofa::core::sptr<RegularGridTopology> regularGrid,
-            helper::vector<Type>& regularGridTypes) const;
+            type::vector<Type>& regularGridTypes) const;
 
     void buildFromTriangleMesh(sofa::helper::io::Mesh* mesh);
 
-    void buildFromRegularGridTypes(sofa::core::sptr<RegularGridTopology> regularGrid, const helper::vector<Type>& regularGridTypes);
+    void buildFromRegularGridTypes(sofa::core::sptr<RegularGridTopology> regularGrid, const type::vector<Type>& regularGridTypes);
 
 
 
@@ -271,8 +271,8 @@ protected:
     void buildFromVoxelLoader(sofa::core::loader::VoxelLoader * loader);
 
     template< class T>
-    void constructCollisionModels(const sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > &list_mesh,
-            const helper::vector< Data< helper::vector< sofa::defaulttype::Vec<3,T> > >* >            &list_X) ;
+    void constructCollisionModels(const sofa::type::vector< sofa::core::topology::BaseMeshTopology * > &list_mesh,
+            const type::vector< Data< type::vector< sofa::type::Vec<3,T> > >* >            &list_X) ;
 
     SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
     SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid

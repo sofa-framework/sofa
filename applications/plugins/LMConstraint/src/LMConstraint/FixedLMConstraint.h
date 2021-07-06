@@ -57,7 +57,7 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef helper::vector<Index> SetIndexArray;
+    typedef type::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
@@ -114,8 +114,8 @@ public:
 
 
         bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
+                const sofa::type::vector< Index > & /*ancestors*/,
+                const sofa::type::vector< double > & /*coefs*/);
     protected:
         FixedLMConstraint<DataTypes> *fc;
     };

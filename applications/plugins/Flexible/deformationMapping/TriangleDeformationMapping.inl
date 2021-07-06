@@ -110,7 +110,7 @@ void TriangleDeformationMapping<TIn, TOut>::init()
             InDeriv v = cross(normal,edge01);                        // second axis orthogonal to the first, in the plane of the triangle
             m[1] = MCoord( edge01*edge02/edge01.norm(), v*edge02 );  // second edge in the local orthonormal frame
 
-            if( ! defaulttype::invertMatrix(inverseRestEdges[i], m) )
+            if( ! type::invertMatrix(inverseRestEdges[i], m) )
             {
                 cerr<<"TriangleDeformationMapping<TIn, TOut>::init(), matrix not invertible: " << endl << m << endl;
             }
@@ -211,7 +211,7 @@ const sofa::defaulttype::BaseMatrix* TriangleDeformationMapping<TIn, TOut>::getJ
 }
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* TriangleDeformationMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* TriangleDeformationMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -227,12 +227,12 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
 
 
     // x axes
-    helper::vector< Vector3 > points;
+    type::vector< type::Vector3 > points;
     for(unsigned i=0; i<triangles.size(); i++ )
     {
 //        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getF() << endl;
 //        cerr<<"TriangleDeformationMapping<TIn, TOut>::draw, F = " << endl << pos[i].getVec() << endl;
-        Vector3 centre = vert[triangles[i][0]]*1./3 + vert[triangles[i][1]]*1./3 + vert[triangles[i][2]]*1./3;
+        type::Vector3 centre = vert[triangles[i][0]]*1./3 + vert[triangles[i][1]]*1./3 + vert[triangles[i][2]]*1./3;
         points.push_back(centre);
         unsigned id=0; // x
         InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] ) ;
@@ -245,7 +245,7 @@ void TriangleDeformationMapping<TIn, TOut>::draw(const core::visual::VisualParam
     points.clear();
     for(unsigned i=0; i<triangles.size(); i++ )
     {
-        Vector3 centre = vert[triangles[i][0]]*1./3 + vert[triangles[i][1]]*1./3 + vert[triangles[i][2]]*1./3;
+        type::Vector3 centre = vert[triangles[i][0]]*1./3 + vert[triangles[i][1]]*1./3 + vert[triangles[i][2]]*1./3;
         points.push_back(centre);
         unsigned id=1; // y
         InDeriv axis( pos[i].getF()[0][id], pos[i].getF()[1][id], pos[i].getF()[2][id] );

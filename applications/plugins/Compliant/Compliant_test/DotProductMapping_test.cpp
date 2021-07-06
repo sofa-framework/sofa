@@ -37,7 +37,7 @@ struct DotProductMappingTest : public Mapping_test<Mapping>
     typedef DotProductMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 
@@ -125,7 +125,7 @@ struct DotProductMultiMappingTest : public MultiMapping_test<Mapping>
         this->setupScene(NP); // NP parents, 1 child
 
         // parent positions
-        helper::vector< typename self::InVecCoord > incoords(NP);
+        type::vector< typename self::InVecCoord > incoords(NP);
         for( int i=0; i<NP; i++ )
         {
             incoords[i].resize(2);
@@ -172,7 +172,7 @@ struct DotProductFromTargetMappingTest : public Mapping_test<Mapping>
     typedef DotProductFromTargetMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
 
     Mapping* mapping;
 
@@ -200,7 +200,7 @@ struct DotProductFromTargetMappingTest : public Mapping_test<Mapping>
         expected[2] = typename self::OutCoord(15);
 
         // mapping parameters
-        helper::vector<unsigned> indices(3);
+        type::vector<unsigned> indices(3);
         indices[0] = 0;
         indices[1] = 1;
         indices[2] = 2;

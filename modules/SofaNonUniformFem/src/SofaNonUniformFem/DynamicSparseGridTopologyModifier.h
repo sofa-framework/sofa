@@ -51,7 +51,7 @@ public:
     *
     * \sa addHexahedraWarning
     */
-    void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra ) override;
+    void addHexahedraProcess ( const sofa::type::vector< Hexahedron > &hexahedra ) override;
 
     /** \brief Actually Add some hexahedra to this topology.
     *
@@ -59,7 +59,7 @@ public:
     *
     * \sa addHexahedraWarning
     */
-    virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices );
+    virtual void addHexahedraProcess ( const sofa::type::vector< Hexahedron > &hexahedra, const sofa::type::vector< unsigned int> &indices );
 
     /** \brief Remove a subset of hexahedra
     *
@@ -69,13 +69,13 @@ public:
     * \sa removeHexahedraWarning
     * @param removeIsolatedItems if true remove isolated quads, edges and vertices
     */
-    void removeHexahedraProcess(const sofa::helper::vector<Index>&indices, const bool removeIsolatedItems = false) override;
+    void removeHexahedraProcess(const sofa::type::vector<Index>&indices, const bool removeIsolatedItems = false) override;
 
     /** \brief Renumber the attributes of this class
     *
     * This method is automatically called in removeHexahedraProcess() if the user has not ever called it.
     */
-    virtual void renumberAttributes( const sofa::helper::vector<Index> &hexahedra );
+    virtual void renumberAttributes( const sofa::type::vector<Index> &hexahedra );
 
 private:
     bool everRenumbered;

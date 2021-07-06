@@ -29,8 +29,8 @@
 #include <sofa/core/collision/Intersection.inl>
 
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 
 
 #include <iostream>
@@ -39,6 +39,7 @@
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;

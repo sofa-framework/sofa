@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
@@ -81,7 +81,7 @@ protected:
     Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
     Data<bool> noNewTriangles; ///< If true no new triangles are being created
     Data<bool> noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
-    sofa::helper::vector<Index> addedTriangleIndex;
+    sofa::type::vector<Index> addedTriangleIndex;
     TriangleSetTopologyModifier* m_outTopoModifier; ///< Pointer to the output topology modifier
 };
 

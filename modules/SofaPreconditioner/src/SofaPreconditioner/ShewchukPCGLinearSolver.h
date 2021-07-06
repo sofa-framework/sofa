@@ -56,7 +56,7 @@ public:
     Data<unsigned> f_update_step; ///< Number of steps before the next refresh of precondtioners
     Data<bool> f_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
     Data< std::string > f_preconditioners; ///< If not empty: path to the solvers to use as preconditioners
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of residuals at each iteration
+    Data<std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of residuals at each iteration
 
 
 protected:

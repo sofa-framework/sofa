@@ -47,11 +47,11 @@ int32_t fingersIdsArray[5] = {-1,-1,-1,-1,-1};
 LeapMotionDriver::LeapMotionDriver()
     : scale(initData(&scale, 1.0, "scale","Default scale applied to the Leap Motion Coordinates. "))
     , translation(initData(&translation, Vec3d(0,0,0), "translation","Position of the tool/hand in the Leap Motion reference frame"))
-    , rotation(initData(&rotation, sofa::defaulttype::Vector3(), "rotation", "Rotation of the DOFs of the hand"))
+    , rotation(initData(&rotation, sofa::type::Vector3(), "rotation", "Rotation of the DOFs of the hand"))
     , handPalmCoordinate(initData(&handPalmCoordinate, "handPalmCoordinate","Coordinate of the hand detected by the Leap Motion"))
     , sphereCenter(initData(&sphereCenter, "sphereCenter","Center of the sphere of the hand detected by the Leap Motion"))
     , sphereRadius(initData(&sphereRadius, "sphereRadius","Radius of the sphere of the hand detected by the Leap Motion"))
-    , fingersCoordinates(initData(&fingersCoordinates, sofa::helper::vector<Rigid3dTypes::Coord>(1,Rigid3dTypes::Coord(sofa::defaulttype::Vector3(0,0,0),Quat(0,0,0,1))), "fingersCoordinates","Coordinate of the fingers detected by the Leap Motion"))
+    , fingersCoordinates(initData(&fingersCoordinates, sofa::type::vector<Rigid3dTypes::Coord>(1,Rigid3dTypes::Coord(sofa::type::Vector3(0,0,0),Quat(0,0,0,1))), "fingersCoordinates","Coordinate of the fingers detected by the Leap Motion"))
     , gestureType(initData(&gestureType, int(-1) ,"gestureType","Type of the current gesture detected by the Leap Motion"))
     , gesturePosition(initData(&gesturePosition, "gesturePosition","Position of the current gesture detected by the Leap Motion"))
     , gestureDirection(initData(&gestureDirection, "gestureDirection","Direction of the current gesture detected by the Leap Motion"))
@@ -120,7 +120,7 @@ void LeapMotionDriver::init()
 
 
 	//initialisation of the fingers coordinates array
-        helper::WriteAccessor<Data<sofa::helper::vector<RigidCoord<3,double> > > > fingerCoords = fingersCoordinates;
+        helper::WriteAccessor<Data<sofa::type::vector<RigidCoord<3,double> > > > fingerCoords = fingersCoordinates;
         for (int i=0; i<14; i++)
             fingerCoords.push_back(fingerCoords[i]);
 	
@@ -167,7 +167,7 @@ Vec3d LeapMotionDriver::verticeOnRadius(Vec3d center, Vec3d vecOnCirclePlane, Ve
 	return Vec3d(center + radius*(vecOnCirclePlane*cos(radAngle) + orthoVecOnCirclePlane*sin(radAngle)));
 }
 
-void LeapMotionDriver::computeFingerJoints(int i, helper::WriteAccessor<Data<sofa::helper::vector<RigidCoord<3,double> > > >* fingersCoordsArray )
+void LeapMotionDriver::computeFingerJoints(int i, helper::WriteAccessor<Data<sofa::type::vector<RigidCoord<3,double> > > >* fingersCoordsArray )
 {
 	//palm normal
 	Mat3x3d palmMatrix;
@@ -308,7 +308,7 @@ void LeapMotionDriver::computeBBox(const core::ExecParams * params, bool /*onlyV
         minBBox[c] = ((handPalmCoordinate.getValue()[c] - palmDiag) < minBBox[c]) ? (handPalmCoordinate.getValue()[c] - palmDiag) : minBBox[c] ;
         maxBBox[c] = ((handPalmCoordinate.getValue()[c] + palmDiag) > maxBBox[c]) ? (handPalmCoordinate.getValue()[c] + palmDiag) : maxBBox[c] ;
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<double>(minBBox,maxBBox));
+    this->f_bbox.setValue(params,sofa::type::TBoundingBox<double>(minBBox,maxBBox));
 }
 
 
@@ -388,7 +388,7 @@ void LeapMotionDriver::handleEvent(core::objectmodel::Event *event)
         tmpIds.clear();
         //----end finger registration init
 
-        helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > fingerCoords = fingersCoordinates;
+        helper::WriteAccessor<Data<type::vector<RigidCoord<3,double> > > > fingerCoords = fingersCoordinates;
         for(int i=0; i<15; i++)
         {
             fingerCoords[i] = handPalmCoordinate.getValue();

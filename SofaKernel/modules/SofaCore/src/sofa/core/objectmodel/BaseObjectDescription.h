@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_H
 #define SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_H
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <map>
 
 #include <sofa/core/config.h>

@@ -96,14 +96,14 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::clear(int /*reserve*/)
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::setRepartition(unsigned int value)
 {
-    helper::vector<unsigned int>& rep = *this->repartition.beginEdit();
+    type::vector<unsigned int>& rep = *this->repartition.beginEdit();
     rep.clear();
     rep.push_back(value);
     this->repartition.endEdit();
 }
 
 template <class TIn, class TInRoot, class TOut>
-void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::setRepartition(sofa::helper::vector<unsigned int> /*values*/)
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::setRepartition(sofa::type::vector<unsigned int> /*values*/)
 {
 
 }
@@ -222,9 +222,9 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::Vec
 }
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply(
-    const core::MechanicalParams* /* mparams */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-    const helper::vector<const InDataVecCoord*>& dataVecInPos ,
-    const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos)
+    const core::MechanicalParams* /* mparams */, const type::vector<OutDataVecCoord*>& dataVecOutPos,
+    const type::vector<const InDataVecCoord*>& dataVecInPos ,
+    const type::vector<const InRootDataVecCoord*>& dataVecInRootPos)
 {
     if(dataVecOutPos.empty() || dataVecInPos.empty())
         return;
@@ -282,9 +282,9 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::Ve
 
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ(
-    const core::MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
-    const helper::vector<const InDataVecDeriv*>& dataVecInVel,
-    const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel)
+    const core::MechanicalParams* /* mparams */, const type::vector< OutDataVecDeriv*>& dataVecOutVel,
+    const type::vector<const InDataVecDeriv*>& dataVecInVel,
+    const type::vector<const InRootDataVecDeriv*>& dataVecInRootVel)
 {
     if(dataVecOutVel.empty() || dataVecInVel.empty())
         return;
@@ -361,9 +361,9 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
 
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
-    const core::MechanicalParams* /* mparams */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
-    const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
-    const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+    const core::MechanicalParams* /* mparams */, const type::vector< InDataVecDeriv*>& dataVecOutForce,
+    const type::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
+    const type::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
     if(dataVecOutForce.empty() || dataVecInForce.empty())
         return;
@@ -444,9 +444,9 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
 
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
-    const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
-    const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
-    const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst)
+    const core::ConstraintParams* /* cparams */, const type::vector< InDataMatrixDeriv*>& dataMatOutConst ,
+    const type::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
+    const type::vector<const OutDataMatrixDeriv*>& dataMatInConst)
 {
     if(dataMatOutConst.empty() || dataMatInConst.empty())
         return;
@@ -510,8 +510,8 @@ template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings()) return;
-    std::vector< sofa::defaulttype::Vector3 > points;
-    sofa::defaulttype::Vector3 point;
+    std::vector< sofa::type::Vector3 > points;
+    sofa::type::Vector3 point;
 
     const typename Out::VecCoord& x = m_toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
@@ -519,7 +519,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual:
         point = Out::getCPos(x[i]);
         points.push_back(point);
     }
-    vparams->drawTool()->drawPoints(points, 7, sofa::helper::types::RGBAColor::yellow());
+    vparams->drawTool()->drawPoints(points, 7, sofa::type::RGBAColor::yellow());
 }
 
 } // namespace sofa::component::mapping

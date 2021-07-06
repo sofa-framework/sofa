@@ -50,7 +50,7 @@ using namespace sofa::core::topology;
 
 OglCylinderModel::OglCylinderModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      color(initData(&color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
+      color(initData(&color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
       // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
@@ -82,7 +82,7 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
     vparams->drawTool()->setLightingEnabled(true);
     Real _radius = radius.getValue();
 
-    sofa::helper::types::RGBAColor col( r, g, b, a );
+    sofa::type::RGBAColor col( r, g, b, a );
 
     const SeqEdges& edges = d_edges.getValue();
 

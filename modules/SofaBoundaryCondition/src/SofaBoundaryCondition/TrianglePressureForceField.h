@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySparseData.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/MatSym.h>
+#include <sofa/type/MatSym.h>
 
 namespace sofa::component::forcefield
 {
@@ -42,8 +42,8 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
-    typedef defaulttype::Mat<3,3,Real> Mat33;
-    typedef defaulttype::MatSym<3,Real> MatSym3;
+    typedef type::Mat<3,3,Real> Mat33;
+    typedef type::MatSym<3,Real> MatSym3;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
@@ -53,7 +53,7 @@ public:
     Data<Deriv> pressure; ///< pressure is a vector with specified direction
   	Data<MatSym3> cauchyStress; ///< the Cauchy stress applied on triangles
 
-    Data<sofa::helper::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
+    Data<sofa::type::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
@@ -102,7 +102,7 @@ protected:
         }
     };
 
-    component::topology::TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure
+    component::topology::TriangleSparseData<sofa::type::vector<TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 	sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;

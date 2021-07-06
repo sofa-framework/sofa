@@ -177,16 +177,16 @@ void RigidRigidMapping<TIn, TOut>::clear()
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
 {
-    helper::vector<sofa::Size>& rep = *this->repartition.beginEdit();
+    type::vector<sofa::Size>& rep = *this->repartition.beginEdit();
     rep.clear();
     rep.push_back(value);
     this->repartition.endEdit();
 }
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<sofa::Size> values)
+void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::type::vector<sofa::Size> values)
 {
-    helper::vector<sofa::Size>& rep = *this->repartition.beginEdit();
+    type::vector<sofa::Size>& rep = *this->repartition.beginEdit();
     rep.clear();
     rep.reserve(values.size());
     auto it = values.begin();
@@ -742,7 +742,7 @@ void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
 	if (!getShow(this,vparams)) return;
 
     const typename Out::VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
-    const defaulttype::Vector3& sizes = defaulttype::Vector3(axisLength.getValue(), axisLength.getValue(), axisLength.getValue());
+    const type::Vector3& sizes = type::Vector3(axisLength.getValue(), axisLength.getValue(), axisLength.getValue());
     for (sofa::Index i=0; i<x.size(); i++)
     {
         vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), sizes);

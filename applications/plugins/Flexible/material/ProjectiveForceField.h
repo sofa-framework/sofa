@@ -55,8 +55,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulus; ///< Young Modulus
-    Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
+    Data<type::vector<Real> > _youngModulus; ///< Young Modulus
+    Data<type::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
     virtual void reinit() override
@@ -83,8 +83,8 @@ public:
 protected:
     ProjectiveForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , _youngModulus(initData(&_youngModulus,helper::vector<Real>((int)1,(Real)5000),"youngModulus","Young Modulus"))
-        , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
+        , _youngModulus(initData(&_youngModulus,type::vector<Real>((int)1,(Real)5000),"youngModulus","Young Modulus"))
+        , _viscosity(initData(&_viscosity,type::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
     }
 

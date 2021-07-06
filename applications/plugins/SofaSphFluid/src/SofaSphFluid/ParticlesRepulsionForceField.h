@@ -69,10 +69,10 @@ protected:
 
     struct Particle
     {
-        sofa::helper::vector< int > neighbors; ///< indice + r/h
+        sofa::type::vector< int > neighbors; ///< indice + r/h
     };
 
-    sofa::helper::vector<Particle> particles;
+    sofa::type::vector<Particle> particles;
 
 public:
     /// this method is called by the SpatialGrid when w connection between two particles is detected

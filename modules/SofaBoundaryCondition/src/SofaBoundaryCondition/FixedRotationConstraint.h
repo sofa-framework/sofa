@@ -23,7 +23,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -47,7 +47,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
 
 
 protected:
@@ -68,7 +68,7 @@ protected :
     Data< bool > FixedXRotation; ///< Prevent Rotation around X axis
     Data< bool > FixedYRotation; ///< Prevent Rotation around Y axis
     Data< bool > FixedZRotation; ///< Prevent Rotation around Z axis
-    helper::vector<defaulttype::Quat> previousOrientation;
+    type::vector<type::Quat<SReal>> previousOrientation;
 };
 
 

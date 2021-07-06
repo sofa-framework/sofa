@@ -36,9 +36,9 @@ namespace {
     using std::endl;
     using namespace core;
     using namespace component;
-    using defaulttype::Vec;
-    using defaulttype::Mat;
-    using sofa::helper::vector;
+    using type::Vec;
+    using type::Mat;
+    using sofa::type::vector;
 
 /**  Test suite for WinchMultiMapping
   */
@@ -50,7 +50,7 @@ struct WinchMultiMappingTest : public MultiMapping_test<Mapping>
     typedef MultiMapping_test<Mapping> base;
     typedef typename self::OutVecCoord OutVecCoord;
     typedef typename self::InVecCoord InVecCoord;
-    typedef typename helper::vector < InVecCoord> VecOfInVecCoord;
+    typedef typename type::vector < InVecCoord> VecOfInVecCoord;
 
     bool test()
     {

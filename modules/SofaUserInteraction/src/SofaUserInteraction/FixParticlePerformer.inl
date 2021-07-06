@@ -36,7 +36,7 @@ void FixParticlePerformer<DataTypes>::start()
 {
     const BodyPicked &picked=this->interactor->getBodyPicked();
 
-    helper::vector<unsigned int > points;
+    type::vector<unsigned int > points;
     typename DataTypes::Coord fixPoint;
     MouseContainer* mstateCollision=getFixationPoints(picked, points, fixPoint);
 
@@ -107,7 +107,7 @@ FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TI
 
 
 template <class DataTypes>
-sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, helper::vector<Index> &points, Coord &fixPoint)
+sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, type::vector<Index> &points, Coord &fixPoint)
 {
     const auto idx=b.indexCollisionElement;
     MouseContainer* collisionState=0;

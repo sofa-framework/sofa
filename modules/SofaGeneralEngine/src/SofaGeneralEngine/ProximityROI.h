@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -45,8 +45,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
-    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef type::Vec<3,Real> Vec3;
+    typedef type::Vec<6,Real> Vec6;
     typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
 
     typedef typename DataTypes::CPos CPos;
@@ -87,15 +87,15 @@ public:
 
 public:
     //Input
-    Data< helper::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
-    Data< helper::vector<Real> > radii; ///< Radius(i) of the sphere(s)
+    Data< type::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
+    Data< type::vector<Real> > radii; ///< Radius(i) of the sphere(s)
     Data<unsigned int> f_num; ///< Maximum number of points to select
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
 
     //Output
     Data<SetIndex> f_indices; ///< Indices of the points contained in the ROI
     Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
-    Data< helper::vector<Real> > f_distanceInROI; ///< distance between the points contained in the ROI and the closest center.
+    Data< type::vector<Real> > f_distanceInROI; ///< distance between the points contained in the ROI and the closest center.
 
     Data<SetIndex> f_indicesOut; ///< Indices of the points not contained in the ROI
 

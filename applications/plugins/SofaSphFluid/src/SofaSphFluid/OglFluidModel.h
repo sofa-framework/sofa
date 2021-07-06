@@ -6,7 +6,7 @@
 #include <sofa/gl/FrameBufferObject.h>
 #include <sofa/gl/GLSLShader.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa
 {
@@ -14,7 +14,6 @@ namespace component
 {
 namespace visualmodel
 {
-using namespace sofa::defaulttype;
 /**
  *  \brief Render volume using particles
  *
@@ -66,7 +65,7 @@ public:
     Data<float> d_spriteBlurRadius;
     Data<float> d_spriteBlurScale;
     Data<float> d_spriteBlurDepthFalloff;
-    Data<sofa::helper::types::RGBAColor> d_spriteDiffuseColor;
+    Data<sofa::type::RGBAColor> d_spriteDiffuseColor;
 
 
     void init() override;

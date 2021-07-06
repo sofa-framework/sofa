@@ -23,9 +23,9 @@
 #define MAPPINGJACOBIAN_H
 
 #include <Flexible/types/AffineTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -34,12 +34,12 @@ namespace component
 {
 namespace mapping
 {
-	typedef defaulttype::Mat<3, 3, SReal> Mat3x3;
-	typedef defaulttype::Mat<12, 3, SReal> Mat12x3;
-	typedef defaulttype::Mat<12, 6, SReal> Mat12x6;
+	typedef type::Mat<3, 3, SReal> Mat3x3;
+	typedef type::Mat<12, 3, SReal> Mat12x3;
+	typedef type::Mat<12, 6, SReal> Mat12x6;
 
-    typedef defaulttype::Mat<6, 3, SReal> Mat6x3;
-    typedef defaulttype::Mat<6, 6, SReal> Mat6x6;
+    typedef type::Mat<6, 3, SReal> Mat6x3;
+    typedef type::Mat<6, 6, SReal> Mat6x6;
 
     //============================================================
     // Jacobian of RigidToAffineMultiMapping

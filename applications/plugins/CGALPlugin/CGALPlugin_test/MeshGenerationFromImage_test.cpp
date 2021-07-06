@@ -216,16 +216,16 @@ TEST_F(MeshGenerationFromImage_test, MeshFromImageLabelSize)
 {
     loadSceneDefault();
 
-    sofa::helper::vector<int> newLabel;
+    sofa::type::vector<int> newLabel;
     newLabel.push_back(1);
     newLabel.push_back(2);
     newLabel.push_back(3);
-    sofa::helper::vector<double> newLabelCellSize;
+    sofa::type::vector<double> newLabelCellSize;
     double newSize = 0.1;
     newLabelCellSize.push_back(newSize);
     newLabelCellSize.push_back(newSize);
     newLabelCellSize.push_back(newSize);
-    sofa::helper::vector<double> newLabelCellData;
+    sofa::type::vector<double> newLabelCellData;
     newLabelCellData.push_back(100);
     newLabelCellData.push_back(200);
     newLabelCellData.push_back(300);

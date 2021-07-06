@@ -25,8 +25,8 @@
 #include <Flexible/config.h>
 
 #include <sofa/core/Mapping.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <sofa/simulation/Simulation.h>
 
 #include <sofa/core/Mapping.h>
@@ -74,15 +74,15 @@ public:
 
     /** @name  Shape Function types    */
     //@{
-    typedef helper::vector<Real> VReal;
-    typedef helper::vector< helper::SVector<Real> > VecVReal;
-    typedef helper::vector<unsigned int> VRef;
-    typedef helper::vector< helper::SVector<unsigned int> > VecVRef;
+    typedef type::vector<Real> VReal;
+    typedef type::vector< type::SVector<Real> > VecVReal;
+    typedef type::vector<unsigned int> VRef;
+    typedef type::vector< type::SVector<unsigned int> > VecVRef;
     //@}
 
     /** @name  Jacobian types    */
     //@{
-    typedef helper::vector<helper::vector<BlockType> >  SparseMatrix;
+    typedef type::vector<type::vector<BlockType> >  SparseMatrix;
     typedef linearsolver::EigenSparseMatrix<TStrain,TStrain>    SparseMatrixEigen;
     //@}
 
@@ -230,7 +230,7 @@ public:
     }
 
     // Compliant plugin API
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override
     {
         if(!this->d_assemble.getValue())  // J should have been updated in apply() that is call before (when assemble==1)
         {
@@ -281,7 +281,7 @@ protected:
     helper::StateMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
     void updateJ()
     {
