@@ -87,7 +87,7 @@ public:
     /// @name Data of mass information
     /// @{
     /// Mass stored on vertices
-    Data< sofa::helper::vector< Real > > d_vertexMass;
+    Data< sofa::type::vector< Real > > d_vertexMass;
     /// Mass density of the object
     Data< sofa::type::vector< Real > > d_massDensity;
     /// Total mass of the object
