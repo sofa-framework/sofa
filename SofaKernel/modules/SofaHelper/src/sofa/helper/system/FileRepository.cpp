@@ -79,8 +79,8 @@ std::string cleanPath( const std::string& path )
 FileRepository PluginRepository(
     "SOFA_PLUGIN_PATH",
     {
-        Utils::getSofaPathTo("plugins"),
         Utils::getSofaPathTo("bin"),
+        Utils::getSofaPathTo("plugins"),
         Utils::getExecutableDirectory(),
     }
 );
