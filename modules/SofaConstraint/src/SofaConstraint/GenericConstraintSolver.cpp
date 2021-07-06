@@ -135,7 +135,7 @@ void GenericConstraintSolver::init()
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
     {
-        for (auto & constraintCorrection : constraintCorrections)
+        for (auto* constraintCorrection : constraintCorrections)
             constraintCorrection->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
@@ -163,12 +163,10 @@ void GenericConstraintSolver::init()
 
 void GenericConstraintSolver::cleanup()
 {
-    if (!constraintCorrections.empty())
-    {
-        for (auto & constraintCorrection : constraintCorrections)
-            constraintCorrection->removeConstraintSolver(this);
-        constraintCorrections.clear();
-    }
+    for (auto* constraintCorrection : constraintCorrections)
+        constraintCorrection->removeConstraintSolver(this);
+    constraintCorrections.clear();
+
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     vop.v_free(m_lambdaId, false, true);
     vop.v_free(m_dxId, false, true);
@@ -258,7 +256,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
     if (unbuilt.getValue())
     {
-        for (auto cc : constraintCorrections)
+        for (auto* cc : constraintCorrections)
         {
             if (!cc->isActive()) continue;
             cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
@@ -351,7 +349,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
             }
 
         } else {
-            for (auto cc : constraintCorrections)
+            for (auto* cc : constraintCorrections)
             {
                 if (!cc->isActive())
                     continue;
@@ -377,7 +375,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
 void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFactor)
 {
-    for (auto cc : constraintCorrections)
+    for (auto* cc : constraintCorrections)
     {
         if (!cc->isActive()) continue;
         cc->rebuildSystem(massFactor, forceFactor);
@@ -479,7 +477,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
 void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
 {
-    for (auto cc : constraintCorrections)
+    for (auto* cc : constraintCorrections)
     {
         cc->computeResidual(eparam,&current_cp->f);
     }
