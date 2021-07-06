@@ -19,7 +19,7 @@ PythonMultiMapping<TIn, TOut>::PythonMultiMapping() :
 }
     
 template<class TIn, class TOut>
-void PythonMultiMapping<TIn, TOut>::assemble_geometric(const helper::vector<typename self::in_pos_type>& in,
+void PythonMultiMapping<TIn, TOut>::assemble_geometric(const type::vector<typename self::in_pos_type>& in,
                                                        const typename self::const_out_deriv_type& out) {
 
     if(!gs_callback.getValue().data) return;
@@ -42,7 +42,7 @@ void PythonMultiMapping<TIn, TOut>::assemble_geometric(const helper::vector<type
 }
     
 template<class TIn, class TOut>
-void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self::in_pos_type>& in )  {
+void PythonMultiMapping<TIn, TOut>::assemble( const type::vector<typename self::in_pos_type>& in )  {
 
     if(!jacobian_callback.getValue().data) {
         serr << "no jacobian callback, solve *will* fail !" << sendl;
@@ -70,7 +70,7 @@ void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self
 
 template<class TIn, class TOut>
 void PythonMultiMapping<TIn, TOut>::apply(typename self::out_pos_type& out, 
-                                          const helper::vector<typename self::in_pos_type>& in ){
+                                          const type::vector<typename self::in_pos_type>& in ){
 
     if(!apply_callback.getValue().data) {
         serr << "no apply callback" << sendl;

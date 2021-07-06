@@ -64,7 +64,7 @@ public:
     enum {spatial_dimensions=Inherit::spatial_dimensions};
 
     typedef topology::HighOrderTetrahedronSetTopologyContainer BezierTopoContainer;
-    typedef defaulttype::StdVectorTypes<defaulttype::Vec<Inherit::spatial_dimensions,Real>,defaulttype::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
+    typedef defaulttype::StdVectorTypes<type::Vec<Inherit::spatial_dimensions,Real>,type::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
     typedef topology::BezierTetrahedronSetGeometryAlgorithms<VecSpatialDimensionType> BezierGeoAlg;
     typedef typename BezierGeoAlg::Vec4 Vec4;
     typedef typename BezierGeoAlg::Mat44 Mat44;
@@ -72,14 +72,14 @@ public:
 protected:
     BezierTopoContainer* container;
     BezierGeoAlg* geoAlgo;
-    helper::vector<topology::TetrahedronIndexVector> tbiArray;
+    type::vector<topology::TetrahedronIndexVector> tbiArray;
 
 public:
 
     template<class Real1, class Real2,  int Dim1, int Dim2>
-    inline defaulttype::Mat<Dim1, Dim2, Real2> covMN(const defaulttype::Vec<Dim1,Real1>& v1, const defaulttype::Vec<Dim2,Real2>& v2)
+    inline type::Mat<Dim1, Dim2, Real2> covMN(const type::Vec<Dim1,Real1>& v1, const type::Vec<Dim2,Real2>& v2)
     {
-        defaulttype::Mat<Dim1, Dim2, Real2> res;
+        type::Mat<Dim1, Dim2, Real2> res;
         for ( unsigned int i = 0; i < Dim1; ++i)
             for ( unsigned int j = 0; j < Dim2; ++j)
             {

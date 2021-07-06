@@ -25,9 +25,9 @@
 #include <sofa/core/collision/Intersection.h>
 
 #include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/BaseIntTool.h>
-#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaMiscCollision/OBBModel.h>
+#include <SofaMiscCollision/BaseIntTool.h>
+#include <SofaMiscCollision/MeshIntTool.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.h>
 #include <SofaUserInteraction/RayModel.h>
 

@@ -1,9 +1,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <SofaMain/init.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/helper/system/SetDirectory.h>
 
@@ -41,7 +41,7 @@ namespace
 		//Default files containing the declaration of the vector type\n\
 		#include <sofa/defaulttype/VecTypes.h>\n\
 		#include <sofa/defaulttype/RigidTypes.h>\n\
-		#include <sofa/defaulttype/Mat.h>\n\n\
+		#include <sofa/type/Mat.h>\n\n\
 		\n\
 		#ifdef SOFA_GPU_CUDA\n\
 		#include <sofa/gpu/cuda/CudaTypes.h>\n\
@@ -76,8 +76,8 @@ int main(int argc, char** argv)
 	sofa::helper::system::PluginManager::getInstance().init();
 
 
-	helper::vector<ObjectFactory::ClassEntry::SPtr> registry;
-	helper::vector<ObjectFactory::ClassEntry::SPtr>::iterator it;
+	type::vector<ObjectFactory::ClassEntry::SPtr> registry;
+	type::vector<ObjectFactory::ClassEntry::SPtr>::iterator it;
 
 	//std::string outputPath = SetDirectory::GetRelativeFromProcess("../modules/sofa/");
 	std::string outputPath = "/modules/sofa/";
@@ -90,8 +90,8 @@ int main(int argc, char** argv)
 
 	// retrieve creators
 
-	typedef std::map< std::string, helper::vector< ObjectFactory::Creator::SPtr >  > TargetCreatorMap;
-	typedef std::map< std::string, helper::vector< ObjectFactory::ClassEntry::SPtr >  > TargetClassEntryMap;
+	typedef std::map< std::string, type::vector< ObjectFactory::Creator::SPtr >  > TargetCreatorMap;
+	typedef std::map< std::string, type::vector< ObjectFactory::ClassEntry::SPtr >  > TargetClassEntryMap;
 	TargetCreatorMap targetCreatorMap;
 	TargetClassEntryMap targetClassEntryMap;
 
@@ -140,14 +140,14 @@ int main(int argc, char** argv)
 		target_h << target_h_guarding_block.str();
 		target_h << defaultIncludes;
 
-		helper::vector< ObjectFactory::Creator::SPtr> targetCreatorList = it_target->second;
-		helper::vector< ObjectFactory::Creator::SPtr>::iterator it_creatorlist;
+		type::vector< ObjectFactory::Creator::SPtr> targetCreatorList = it_target->second;
+		type::vector< ObjectFactory::Creator::SPtr>::iterator it_creatorlist;
 		std::pair<TargetClassEntryMap::iterator,TargetClassEntryMap::iterator> range = targetClassEntryMap.equal_range(it_target->first);
 		TargetClassEntryMap::iterator it_vecEntry;
 		for(it_vecEntry = range.first; it_vecEntry != range.second; ++it_vecEntry)
 		{
-			helper::vector< ObjectFactory::ClassEntry::SPtr> &  vecEntry = it_vecEntry->second;
-			helper::vector< ObjectFactory::ClassEntry::SPtr>::iterator it_entry;
+			type::vector< ObjectFactory::ClassEntry::SPtr> &  vecEntry = it_vecEntry->second;
+			type::vector< ObjectFactory::ClassEntry::SPtr>::iterator it_entry;
 			for(it_entry = vecEntry.begin(); it_entry != vecEntry.end(); ++it_entry)
 			{
 				ObjectFactory::ClassEntry::SPtr entry = *it_entry;
@@ -213,7 +213,7 @@ int main(int argc, char** argv)
 			size_t oldPos = 0;
 			std::string namespaceName = creator->getClass()->namespaceName;
 			size_t bracketCount = 0;
-			helper::vector<std::string> namespaces;
+			type::vector<std::string> namespaces;
 			while( ( curPos = namespaceName.find(std::string("::"),oldPos) ) != std::string::npos)
 			{
 				std::string currentNamespace = namespaceName.substr(oldPos,curPos-oldPos);
@@ -222,7 +222,7 @@ int main(int argc, char** argv)
 				++bracketCount;
 			}
 			namespaces.push_back(namespaceName.substr(oldPos));
-			helper::vector<std::string>::iterator it_namespace;
+			type::vector<std::string>::iterator it_namespace;
 			for(it_namespace = namespaces.begin(); it_namespace != namespaces.end(); ++it_namespace)
 			{
 				target_h << "namespace " << *it_namespace << std::endl;
@@ -231,12 +231,12 @@ int main(int argc, char** argv)
 
 			if(!templateName.empty())
 			{
-				target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
+				target_h << "typedef " <<  sofa::helper::NameDecoder::decodeFullName(type)
 					<< " " << creator->getClass()->className << "_" << templateName << ";";
 			}
 			else
 			{
-				target_h << "typedef " <<  sofa::core::objectmodel::BaseClass::decodeFullName(type)
+				target_h << "typedef " <<  sofa::helper::NameDecoder::decodeFullName(type)
 					<< " " << creator->getClass()->className << ";";
 			}
 			target_h << std::endl;

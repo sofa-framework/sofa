@@ -19,7 +19,7 @@ class TableWidgetForLabelPointBySectionToolBoxAction: public QGroupBox
 Q_OBJECT
 
 public:
-    typedef sofa::defaulttype::Vec3f Vec3f;
+    typedef sofa::type::Vec3f Vec3f;
 
     struct Point
     {
@@ -27,7 +27,7 @@ public:
         Vec3f p;
     };
 
-    typedef sofa::helper::vector<Point> VecCoord;
+    typedef sofa::type::vector<Point> VecCoord;
     typedef QMap<unsigned int, VecCoord > MapSection;
 
 

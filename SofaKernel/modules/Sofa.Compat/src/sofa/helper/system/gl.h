@@ -20,13 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/helper/config.h>
 
-#if __has_include(<sofa/gl/gl.h>)
-#include <sofa/gl/gl.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/gl.h")
-
-#else
-#error "OpenGL headers have been moved to Sofa.GL; you will need to link against your library if you need OpenGL, and include <sofa/gl/gl.h> instead of this one."
-#endif
+SOFA_DISABLED_HEADER("v20.12 (PR#1649)", "v21.06", "sofa/gl/gl.h")

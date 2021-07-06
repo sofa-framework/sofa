@@ -78,7 +78,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     gpu::cuda::GPUSPHFluid<Real> params;
-    gpu::cuda::CudaVector<defaulttype::Vec4f> pos4;
+    gpu::cuda::CudaVector<type::Vec4f> pos4;
 
     void fillParams(Main* m, int kernelType, double kFactor=1.0, double bFactor=1.0)
     {

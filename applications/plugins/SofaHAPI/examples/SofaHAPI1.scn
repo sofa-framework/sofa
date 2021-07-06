@@ -10,7 +10,8 @@
 	<GenericConstraintSolver />
 
 	<DefaultPipeline depth="8" />
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
 <!--	<DefaultContactManager name="Response" response="FrictionContact"/>-->
 	<RuleBasedContactManager name="Response" response="FrictionContact"

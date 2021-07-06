@@ -23,7 +23,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
@@ -106,7 +106,7 @@ public:
     // Outputs
     sofa::core::objectmodel::Data<VecCoord> d_outVertices; ///< New vertices after decimation
     sofa::core::objectmodel::Data<SeqTriangles> d_outTriangles; ///< New triangles after decimation
-    sofa::core::objectmodel::Data< helper::vector<Vec3> > d_outNormals; ///< New normals after decimation
+    sofa::core::objectmodel::Data< type::vector<Vec3> > d_outNormals; ///< New normals after decimation
 
     // Parameters
     sofa::core::objectmodel::Data<bool> d_writeToFile; ///< Writes the decimated mesh into a file

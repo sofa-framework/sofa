@@ -72,13 +72,13 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
     typedef typename DataTypes::Real                                  Real;
     typedef component::container::MechanicalObject< DataTypes > Point3dState;
 
-    typedef defaulttype::Vec<DataTypes::spatial_dimensions,Real> MouseVec;
+    typedef type::Vec<DataTypes::spatial_dimensions,Real> MouseVec;
     typedef defaulttype::StdVectorTypes<MouseVec,MouseVec,Real> MouseTypes;
     typedef component::collision::BaseContactMapper< MouseTypes > MouseContactMapper;
 
 
 
-    typedef defaulttype::StdVectorTypes< defaulttype::Vec<1,Real>, defaulttype::Vec<1,Real>  >  DataTypes1;
+    typedef defaulttype::StdVectorTypes< type::Vec<1,Real>, type::Vec<1,Real>  >  DataTypes1;
 
 
     simulation::Node::SPtr pickedNode;       ///< Node containing the picked MechanicalState
@@ -101,7 +101,7 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
     SReal _compliance;
     bool _isCompliance;
     SReal _arrowSize;
-    sofa::helper::types::RGBAColor _color;
+    sofa::type::RGBAColor _color;
     bool _visualmodel;  // to be able to export the mouse spring in obj
 
 

@@ -2,11 +2,11 @@
 #include "Binding_Data.h"
 #include "PythonToSofa.inl"
 
-using sofa::defaulttype::BoundingBox;
+using sofa::type::BoundingBox;
 using namespace sofa::core::objectmodel;
 
 static inline Data<BoundingBox>* get_boundingbox(PyObject* obj) {
-    return sofa::py::unwrap<Data<sofa::defaulttype::BoundingBox> >(obj);
+    return sofa::py::unwrap<Data<sofa::type::BoundingBox> >(obj);
 }
 
 

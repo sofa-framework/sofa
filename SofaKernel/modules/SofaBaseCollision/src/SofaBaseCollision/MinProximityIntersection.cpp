@@ -23,14 +23,8 @@
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/proximity.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <iostream>
-#include <algorithm>
-
-#define DYNAMIC_CONE_ANGLE_COMPUTATION
 
 namespace sofa::core::collision
 {
@@ -65,6 +59,11 @@ void MinProximityIntersection::init()
     intersectors.add<RigidSphereModel,RigidSphereModel, MinProximityIntersection> (this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MinProximityIntersection>(this);
 
+    //By default, all the previous pairs of collision models are supported,
+    //but other C++ components are able to add a list of pairs to be supported.
+    //In the following function, all the C++ components that registered to
+    //MinProximityIntersection are created. In their constructors, they add
+    //new supported pairs of collision models. For example, see MeshMinProximityIntersection.
     IntersectorFactory::getInstance()->addIntersectors(this);
 
 	BaseProximityIntersection::init();
@@ -77,17 +76,12 @@ bool MinProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
 
 int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
 {
-    return BaseProximityIntersection::testIntersection(cube1, cube2);
+    return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts);
 }
 
-bool MinProximityIntersection::getUseSurfaceNormals(){
-    return useSurfaceNormals.getValue();
-}
-
-void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
+bool MinProximityIntersection::getUseSurfaceNormals() const
 {
-    if (!vparams->displayFlags().getShowCollisionModels())
-        return;
+    return useSurfaceNormals.getValue();
 }
 
 } // namespace sofa::component::collision

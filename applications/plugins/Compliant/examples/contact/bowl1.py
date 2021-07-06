@@ -85,7 +85,7 @@ def createScene(node):
     dofs.velocity = vel.tolist()
     
     mass = particles.createObject('UniformMass', template = 'Vec3d')
-    model = particles.createObject('SphereModel', template = 'Vec3d',
+    model = particles.createObject('SphereCollisionModel', template = 'Vec3d',
                                    selfCollision = True,
                                    radius = 0.1)
 

@@ -45,8 +45,8 @@ int AverageCatchAllVectorClass = core::RegisterObject("AverageCatchAllVector")
         .add<AverageCatchAllVector<long > >()
         .add<AverageCatchAllVector<unsigned long > >()
         .add<AverageCatchAllVector<bool > >()
-        .add<AverageCatchAllVector<sofa::defaulttype::Vec3f> >()
-        .add<AverageCatchAllVector<sofa::defaulttype::Vec3d> >()
+        .add<AverageCatchAllVector<sofa::type::Vec3f> >()
+        .add<AverageCatchAllVector<sofa::type::Vec3d> >()
         ;
 
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<float >;
@@ -60,8 +60,8 @@ template class SOFA_IMAGE_GUI_API AverageCatchAllVector<double >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<long >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<unsigned long >;
 template class SOFA_IMAGE_GUI_API AverageCatchAllVector<bool >;
-template class SOFA_IMAGE_GUI_API AverageCatchAllVector<sofa::defaulttype::Vec3f >;
-template class SOFA_IMAGE_GUI_API AverageCatchAllVector<sofa::defaulttype::Vec3d >;
+template class SOFA_IMAGE_GUI_API AverageCatchAllVector<sofa::type::Vec3f >;
+template class SOFA_IMAGE_GUI_API AverageCatchAllVector<sofa::type::Vec3d >;
 
 
 

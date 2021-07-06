@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/SVector.h>
 #include <type_traits>
 
 namespace sofa::component::projectiveconstraintset
@@ -89,7 +89,7 @@ public:
     template<class MyCoord>
     void localToGlobal(typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
-    void setSkeletalMotion(const helper::vector<SkeletonJoint<DataTypes> >& skeletonJoints, const helper::vector<SkeletonBone>& skeletonBones);
+    void setSkeletalMotion(const type::vector<SkeletonJoint<DataTypes> >& skeletonJoints, const type::vector<SkeletonBone>& skeletonBones);
 
 	void addChannel(unsigned int index , Coord channel, double time);
 
@@ -102,9 +102,9 @@ protected:
 
 protected:
 	// every nodes needed in the animation chain
-    Data<helper::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints; ///< skeleton joints
+    Data<type::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints; ///< skeleton joints
     // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
-    Data<helper::SVector<SkeletonBone> >				skeletonBones; ///< skeleton bones
+    Data<type::SVector<SkeletonBone> >				skeletonBones; ///< skeleton bones
 
 	// control how fast the animation is played since animation time is not simulation time
 	Data<float>											animationSpeed; ///< animation speed
@@ -208,10 +208,10 @@ struct SkeletonJoint
     // following data are useful for animation only, you must fill those vectors if this joint is animated
 
     // each channel represents a local transformation at a given time in the animation
-    helper::vector<Coord>				mChannels;
+    type::vector<Coord>				mChannels;
 
     // times corresponding to each animation channel, the channel mChannels[i] must be played at the time contained in mTimes[i]
-    helper::vector<double>				mTimes;
+    type::vector<double>				mTimes;
 
 private:
 

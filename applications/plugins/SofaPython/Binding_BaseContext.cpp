@@ -28,6 +28,7 @@
 #include "PythonToSofa.inl"
 
 #include <sofa/defaulttype/VecTypes.h>
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 #include <sofa/core/ObjectFactory.h>
@@ -320,7 +321,7 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         }
     }
 
-    sofa::helper::vector< BaseObject::SPtr > list;
+    sofa::type::vector< BaseObject::SPtr > list;
     context->get<BaseObject>(&list,search_direction_enum);
 
     PyObject *pyList = PyList_New(0);

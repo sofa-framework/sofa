@@ -68,12 +68,12 @@ protected:
     typedef MultiLink<MultiMapping<In,Out>, State< In >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkFromModels;
     typedef typename LinkFromModels::Container VecFromModels;
     LinkFromModels fromModels;
-    //helper::vector<State<In>*> fromModels;
+    //type::vector<State<In>*> fromModels;
     /// Output Model container. New outputs are added through addOutputModel( Ou* )
     typedef MultiLink<MultiMapping<In,Out>, State< Out >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkToModels;
     typedef typename LinkToModels::Container VecToModels;
     LinkToModels toModels;
-    //helper::vector<State<Out>*> toModels;
+    //type::vector<State<Out>*> toModels;
 
 public:
 
@@ -95,15 +95,15 @@ public:
     const VecToModels& getToModels();
 
     /// Return a container of input models statically casted as BaseObject*
-    helper::vector<BaseState* > getFrom() override;
+    type::vector<BaseState* > getFrom() override;
     /// Return container of output model statically casted as BaseObject*.
-    helper::vector<BaseState* > getTo() override;
+    type::vector<BaseState* > getTo() override;
 
     /// Get the source (upper) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom() override;
+    virtual type::vector<behavior::BaseMechanicalState*> getMechFrom() override;
 
     /// Get the destination (lower, mapped) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechTo() override;
+    virtual type::vector<behavior::BaseMechanicalState*> getMechTo() override;
 
     /// Apply ///
     /// Apply the mapping to position vectors.
@@ -116,7 +116,7 @@ public:
     /// InPos and OutPos by default contains VecIds of type V_COORD.
     /// The size of InPos vector is the same as the number of fromModels.
     /// The size of OutPos vector is the same as the number of OutModels.
-    virtual void apply(const MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) = 0;
+    virtual void apply(const MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) = 0;
 
     /// ApplyJ ///
     /// Apply the mapping to derived (velocity, displacement) vectors.
@@ -128,7 +128,7 @@ public:
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJ(const MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) = 0;
+    virtual void applyJ(const MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) = 0;
 
     /// ApplyJT (Force)///
     /// Apply the reverse mapping to force vectors.
@@ -140,41 +140,41 @@ public:
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJT(const MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
+    virtual void applyJT(const MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
 
     /// ApplyJT (Constraint)///
     void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override
     {
-        helper::vector<InDataMatrixDeriv*> matOutConst;
+        type::vector<InDataMatrixDeriv*> matOutConst;
         getMatInDeriv(inConst, matOutConst);
-        helper::vector<const OutDataMatrixDeriv*> matInConst;
+        type::vector<const OutDataMatrixDeriv*> matInConst;
         getConstMatOutDeriv(outConst, matInConst);
 
         this->applyJT(cparams, matOutConst, matInConst);
     }
     /// This method must be reimplemented by all mappings if they need to support constraints.
-    virtual void applyJT( const ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ )
+    virtual void applyJT( const ConstraintParams* /* cparams */, const type::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const type::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ )
     {
-        msg_error() << "This mapping does not support certain constraints since MultiMapping::applyJT( const ConstraintParams*, const helper::vector< InDataMatrixDeriv* >& , const helper::vector< const OutDataMatrixDeriv* >&  ) is not overloaded";
+        msg_error() << "This mapping does not support certain constraints since MultiMapping::applyJT( const ConstraintParams*, const type::vector< InDataMatrixDeriv* >& , const type::vector< const OutDataMatrixDeriv* >&  ) is not overloaded";
     }
 
     /// computeAccFromMapping
     void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) override
     {
-        helper::vector<OutDataVecDeriv*> vecOutAcc;
+        type::vector<OutDataVecDeriv*> vecOutAcc;
         getVecOutDeriv(outAcc, vecOutAcc);
-        helper::vector<const InDataVecDeriv*> vecInVel;
+        type::vector<const InDataVecDeriv*> vecInVel;
         getConstVecInDeriv(inVel, vecInVel);
-        helper::vector<const InDataVecDeriv*> vecInAcc;
+        type::vector<const InDataVecDeriv*> vecInAcc;
         getConstVecInDeriv(inAcc, vecInAcc);
 
         this->computeAccFromMapping(mparams, vecOutAcc, vecInVel, vecInAcc);
     }
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(
-        const MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>&  /* dataVecOutAcc */,
-        const helper::vector<const InDataVecDeriv*>& /* dataVecInVel */,
-        const helper::vector<const InDataVecDeriv*>& /* dataVecInAcc */)
+        const MechanicalParams* /* mparams */, const type::vector< OutDataVecDeriv*>&  /* dataVecOutAcc */,
+        const type::vector<const InDataVecDeriv*>& /* dataVecInVel */,
+        const type::vector<const InDataVecDeriv*>& /* dataVecInAcc */)
     {
     }
 
@@ -184,8 +184,8 @@ public:
     ///<TO REMOVE>
     /// Apply the mapping to position and velocity vectors.
     ///
-    /// This method call the internal apply(helper::vector<VecId>& InPos, helper::vector<VecId>& OutPos)
-    /// and applyJ(helper::vector<VecId>& InDeriv, helper::vector<VecId>& OutDeriv) methods.
+    /// This method call the internal apply(type::vector<VecId>& InPos, type::vector<VecId>& OutPos)
+    /// and applyJ(type::vector<VecId>& InDeriv, type::vector<VecId>& OutDeriv) methods.
     //virtual void updateMapping();
 
     /// Disable the mapping to get the original coordinates of the mapped model.
@@ -215,7 +215,8 @@ public:
             arg->logError("The 'input' data attribute is empty. It should contain a valid path "
                           "to one or more mechanical states of type '" + std::string(TIn::Name()) + "'.");
             return false;
-        } else if (!LinkFromModels::CheckPaths(input, context)) {
+
+        } else if (!PathResolver::CheckPaths(context, LinkFromModels::DestType::GetClass(), input)) {
             arg->logError("The 'input' data attribute does not contain a valid path to one or more mechanical "
                           "states of type '" + std::string(TIn::Name()) + "'.");
             return false;
@@ -226,7 +227,7 @@ public:
             arg->logError("The 'output' data attribute is empty. It should contain a valid path "
                           "to one or more mechanical states. of type '" + std::string(TOut::Name()) + "'.");
             return false;
-        } else if (!LinkToModels::CheckPaths(output, context)) {
+        } else if (!PathResolver::CheckPaths(context, LinkToModels::DestType::GetClass(), output)) {
             arg->logError("The 'output' data attribute does not contain a valid path to one or more mechanical "
                           "states of type '" + std::string(TOut::Name()) + "'.");
             return false;
@@ -257,30 +258,30 @@ public:
 
 protected:
 
-    void getVecInCoord     (const MultiVecCoordId id,         helper::vector<      InDataVecCoord* > &v) const
+    void getVecInCoord     (const MultiVecCoordId id,         type::vector<      InDataVecCoord* > &v) const
     {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }
-    void getConstVecInCoord(const ConstMultiVecCoordId id,    helper::vector<const InDataVecCoord* > &v) const
+    void getConstVecInCoord(const ConstMultiVecCoordId id,    type::vector<const InDataVecCoord* > &v) const
     {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].read());  }
-    void getVecInDeriv      (const MultiVecDerivId id,         helper::vector<      InDataVecDeriv* > &v) const
+    void getVecInDeriv      (const MultiVecDerivId id,         type::vector<      InDataVecDeriv* > &v) const
     {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }
-    void getConstVecInDeriv (const ConstMultiVecDerivId id,    helper::vector<const InDataVecDeriv* > &v) const
+    void getConstVecInDeriv (const ConstMultiVecDerivId id,    type::vector<const InDataVecDeriv* > &v) const
     {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].read());  }
-    void getMatInDeriv      (const MultiMatrixDerivId id,      helper::vector<      InDataMatrixDeriv* > &v) const
+    void getMatInDeriv      (const MultiMatrixDerivId id,      type::vector<      InDataMatrixDeriv* > &v) const
     {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }
-    void getConstMatInDeriv (const ConstMultiMatrixDerivId id, helper::vector<const InDataMatrixDeriv* > &v) const
+    void getConstMatInDeriv (const ConstMultiMatrixDerivId id, type::vector<const InDataMatrixDeriv* > &v) const
     {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].read());  }
 
-    void getVecOutCoord     (const MultiVecCoordId id,         helper::vector<      OutDataVecCoord* > &v) const
+    void getVecOutCoord     (const MultiVecCoordId id,         type::vector<      OutDataVecCoord* > &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write());    }
-    void getConstVecOutCoord(const ConstMultiVecCoordId id,    helper::vector<const OutDataVecCoord* > &v) const
+    void getConstVecOutCoord(const ConstMultiVecCoordId id,    type::vector<const OutDataVecCoord* > &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());     }
-    void getVecOutDeriv     (const MultiVecDerivId id,         helper::vector<      OutDataVecDeriv* > &v) const
+    void getVecOutDeriv     (const MultiVecDerivId id,         type::vector<      OutDataVecDeriv* > &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write());    }
-    void getConstVecOutDeriv(const ConstMultiVecDerivId id,    helper::vector<const OutDataVecDeriv* > &v) const
+    void getConstVecOutDeriv(const ConstMultiVecDerivId id,    type::vector<const OutDataVecDeriv* > &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());     }
-    void getMatOutDeriv     (const MultiMatrixDerivId id,      helper::vector<      OutDataMatrixDeriv* > &v) const
+    void getMatOutDeriv     (const MultiMatrixDerivId id,      type::vector<      OutDataMatrixDeriv* > &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write()); }
-    void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, helper::vector<const OutDataMatrixDeriv* > &v) const
+    void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, type::vector<const OutDataMatrixDeriv* > &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());  }
 
     /// Useful when the mapping is applied only on a subset of parent dofs.
@@ -291,7 +292,7 @@ protected:
     void updateForceMask() override;
 
     /// keep pointers on the masks
-    helper::vector<helper::StateMask*> maskFrom, maskTo;
+    type::vector<helper::StateMask*> maskFrom, maskTo;
 
 };
 

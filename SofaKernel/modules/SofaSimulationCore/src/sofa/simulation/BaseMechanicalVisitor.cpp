@@ -46,152 +46,94 @@ namespace sofa::simulation
 
 using namespace sofa::core;
 
-BaseMechanicalVisitor::BaseMechanicalVisitor(const sofa::core::ExecParams* params)
-    : Visitor(params)
-    , root(nullptr), rootData(nullptr)
+const std::string BaseMechanicalVisitor::fwdVisitorType = "fwd";
+const std::string BaseMechanicalVisitor::bwdVisitorType = "bwd";
+
+BaseMechanicalVisitor::BaseMechanicalVisitor(const sofa::core::ExecParams *params)
+        : Visitor(params), root(nullptr), rootData(nullptr)
 {
     // mechanical visitors shouldn't be able to acess a sleeping node, only visual visitor should
     canAccessSleepingNode = false;
 }
 
-Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node, VisitorContext* ctx)
+Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node *node, VisitorContext *ctx)
 {
+    for (auto *solver : node->solver)
+    {
+        if (runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdOdeSolver, solver, fwdVisitorType) == RESULT_PRUNE)
+        {
+            return RESULT_PRUNE;
+        }
+    }
+
     Result res = RESULT_CONTINUE;
-
-    for (unsigned i=0; i<node->solver.size() && res!=RESULT_PRUNE; i++ )
+    if (node->mechanicalMapping != nullptr)
     {
-        if(testTags(node->solver[i]))
+        if (stopAtMechanicalMapping(node, node->mechanicalMapping))
         {
-            debug_write_state_before(node->solver[i]);
-            ctime_t t = begin(node, node->solver[i], "fwd");
-            res = this->fwdOdeSolver(ctx, node->solver[i]);
-            end(node, node->solver[i], t);
-            debug_write_state_after(node->solver[i]);
+            // stop all mechanical computations
+            return RESULT_PRUNE;
+        }
+        res = runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMechanicalMapping, &*node->mechanicalMapping, fwdVisitorType);
+    }
+
+    if (node->mechanicalState != nullptr)
+    {
+        if (node->mechanicalMapping != nullptr)
+        {
+            res = runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMappedMechanicalState, &*node->mechanicalState, fwdVisitorType);
+        }
+        else
+        {
+            res = runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMechanicalState, &*node->mechanicalState, fwdVisitorType);
         }
     }
 
-
-    if (res != RESULT_PRUNE)
+    if (res == RESULT_PRUNE)
     {
-
-        if (node->mechanicalState != nullptr)
-        {
-            if (node->mechanicalMapping != nullptr)
-            {
-                if (stopAtMechanicalMapping(node, node->mechanicalMapping))
-                {
-                    // stop all mechanical computations
-                    return RESULT_PRUNE;
-                }
-
-                Result res2 = RESULT_CONTINUE;
-                if(testTags(node->mechanicalMapping))
-                {
-                    debug_write_state_before(node->mechanicalMapping);
-                    ctime_t t = begin(node, node->mechanicalMapping, "fwd");
-                    res = this->fwdMechanicalMapping(ctx, node->mechanicalMapping);
-                    end(node, node->mechanicalMapping , t);
-                    debug_write_state_after(node->mechanicalMapping);
-                }
-
-                if(testTags(node->mechanicalState))
-                {
-                    debug_write_state_before(node->mechanicalState);
-                    ctime_t t = begin(node, node->mechanicalState, "fwd");
-                    res2 = this->fwdMappedMechanicalState(ctx, node->mechanicalState);
-                    end(node, node->mechanicalState, t);
-                    debug_write_state_after(node->mechanicalState);
-                }
-
-                if (res2 == RESULT_PRUNE)
-                    res = res2;
-            }
-            else
-            {
-                if(testTags(node->mechanicalState))
-                {
-                    debug_write_state_before(node->mechanicalState);
-                    ctime_t t = begin(node, node->mechanicalState, "fwd");
-                    res = this->fwdMechanicalState(ctx, node->mechanicalState);
-                    end(node, node->mechanicalState, t);
-                    debug_write_state_after(node->mechanicalState);
-                }
-            }
-        }
-        else if (node->mechanicalMapping != nullptr) // rare case of a mechanical mapping which controls a state located elsewhere.
-        {
-            if (stopAtMechanicalMapping(node, node->mechanicalMapping))
-            {
-                // stop all mechanical computations
-                return RESULT_PRUNE;
-            }
-
-            Result res2 = RESULT_CONTINUE;
-            if(testTags(node->mechanicalMapping))
-            {
-                debug_write_state_before(node->mechanicalMapping);
-                ctime_t t = begin(node, node->mechanicalMapping, "fwd");
-                res = this->fwdMechanicalMapping(ctx, node->mechanicalMapping);
-                end(node, node->mechanicalMapping , t);
-                debug_write_state_after(node->mechanicalMapping);
-            }
-
-            if (res2 == RESULT_PRUNE)
-                res = res2;
-        }
+        return RESULT_PRUNE;
     }
 
-    if (res != RESULT_PRUNE)
+    if (node->mass != nullptr &&
+        runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMass, &*node->mass, fwdVisitorType) == RESULT_PRUNE)
     {
-        if (node->mass != nullptr)
-        {
-            if(testTags(node->mass))
-            {
-                debug_write_state_before(node->mass);
-                ctime_t t = begin(node, node->mass, "fwd");
-                res = this->fwdMass(ctx, node->mass);
-                end(node, node->mass, t);
-                debug_write_state_after(node->mass);
-            }
-        }
+        return RESULT_PRUNE;
     }
 
-    if (res != RESULT_PRUNE)
+    if (for_each(this, ctx, node->constraintSolver, &BaseMechanicalVisitor::fwdConstraintSolver, fwdVisitorType) == RESULT_PRUNE)
     {
-        res = for_each_r(this, ctx, node->constraintSolver, &BaseMechanicalVisitor::fwdConstraintSolver);
+        return RESULT_PRUNE;
     }
 
-    if (res != RESULT_PRUNE)
+    if (for_each(this, ctx, node->forceField, &BaseMechanicalVisitor::fwdForceField, fwdVisitorType) == RESULT_PRUNE)
     {
-        res = for_each_r(this, ctx, node->forceField, &BaseMechanicalVisitor::fwdForceField);
+        return RESULT_PRUNE;
     }
 
-    if (res != RESULT_PRUNE)
+    if (for_each(this, ctx, node->interactionForceField, &BaseMechanicalVisitor::fwdInteractionForceField, fwdVisitorType) == RESULT_PRUNE)
     {
-        res = for_each_r(this, ctx, node->interactionForceField, &BaseMechanicalVisitor::fwdInteractionForceField);
+        return RESULT_PRUNE;
     }
 
-
-    if (res != RESULT_PRUNE)
+    if (for_each(this, ctx, node->projectiveConstraintSet, &BaseMechanicalVisitor::fwdProjectiveConstraintSet, fwdVisitorType) == RESULT_PRUNE)
     {
-        res = for_each_r(this, ctx, node->projectiveConstraintSet, &BaseMechanicalVisitor::fwdProjectiveConstraintSet);
+        return RESULT_PRUNE;
     }
 
-    if (res != RESULT_PRUNE)
+    if (for_each(this, ctx, node->constraintSet, &BaseMechanicalVisitor::fwdConstraintSet, fwdVisitorType) == RESULT_PRUNE)
     {
-        res = for_each_r(this, ctx, node->constraintSet, &BaseMechanicalVisitor::fwdConstraintSet);
+        return RESULT_PRUNE;
     }
 
-
-    return res;
+    return RESULT_CONTINUE;
 }
 
 
-void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorContext* ctx)
+void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node *node, VisitorContext *ctx)
 {
-    for_each(this, ctx, node->projectiveConstraintSet, &BaseMechanicalVisitor::bwdProjectiveConstraintSet);
-    for_each(this, ctx, node->constraintSet, &BaseMechanicalVisitor::bwdConstraintSet);
-    for_each(this, ctx, node->constraintSolver, &BaseMechanicalVisitor::bwdConstraintSolver);
+    for_each(this, ctx, node->projectiveConstraintSet, &BaseMechanicalVisitor::bwdProjectiveConstraintSet, bwdVisitorType);
+    for_each(this, ctx, node->constraintSet, &BaseMechanicalVisitor::bwdConstraintSet, bwdVisitorType);
+    for_each(this, ctx, node->constraintSolver, &BaseMechanicalVisitor::bwdConstraintSolver, bwdVisitorType);
 
     if (node->mechanicalState != nullptr)
     {
@@ -199,45 +141,27 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorC
         {
             if (!stopAtMechanicalMapping(node, node->mechanicalMapping))
             {
-                if(testTags(node->mechanicalState))
+                if (testTags(node->mechanicalState))
                 {
-                    ctime_t t = begin(node, node->mechanicalState, "bwd");
-                    this->bwdMappedMechanicalState(ctx, node->mechanicalState);
-                    end(node, node->mechanicalState, t);
-                    t = begin(node, node->mechanicalMapping, "bwd");
-                    this->bwdMechanicalMapping(ctx, node->mechanicalMapping);
-                    end(node, node->mechanicalMapping, t);
+                    runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMappedMechanicalState, &*node->mechanicalState, bwdVisitorType);
+                    runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMechanicalMapping, &*node->mechanicalMapping, bwdVisitorType);
                 }
             }
         }
         else
         {
-            if(testTags(node->mechanicalState))
-            {
-                ctime_t t = begin(node, node->mechanicalState, "bwd");
-                this->bwdMechanicalState(ctx, node->mechanicalState);
-                end(node, node->mechanicalState, t);
-            }
+            runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMechanicalState, &*node->mechanicalState, bwdVisitorType);
         }
 
     }
 
-    for (unsigned i=0; i<node->solver.size(); i++ )
-    {
-        if(testTags(node->solver[i]))
-        {
-            ctime_t t = begin(node, node->solver[i], "bwd");
-            this->bwdOdeSolver(ctx, node->solver[i]);
-            end(node, node->solver[i], t);
-        }
-    }
+    for_each(this, ctx, node->solver, &BaseMechanicalVisitor::bwdOdeSolver, bwdVisitorType);
 
     if (node == root)
     {
         root = nullptr;
     }
 }
-
 
 Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node)
 {

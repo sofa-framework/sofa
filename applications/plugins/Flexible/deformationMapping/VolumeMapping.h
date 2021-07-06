@@ -26,9 +26,9 @@
 #include <sofa/core/MechanicalParams.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 
 namespace sofa
@@ -84,7 +84,7 @@ public:
     typedef typename core::topology::BaseMeshTopology::SeqQuads SeqQuads;
     typedef helper::ReadAccessor<Data< SeqQuads > > raQuads;
     typedef typename sofa::core::topology::BaseMeshTopology::Index Index;
-    typedef sofa::helper::vector< Index > VecIndex;
+    typedef sofa::type::vector< Index > VecIndex;
 
     virtual void init() override
     {
@@ -117,18 +117,18 @@ public:
         }
         if( f_geometricStiffness.getValue() )
         {
-            defaulttype::Mat<3,3,Real> DsnDA;
+            type::Mat<3,3,Real> DsnDA;
             DsnDA[0][0]=0;           DsnDA[0][1]=-bc[2]/6.;   DsnDA[0][2]=bc[1]/6.;
             DsnDA[1][0]=bc[2]/6.;    DsnDA[1][1]=0;           DsnDA[1][2]=-bc[0]/6.;
             DsnDA[2][0]=-bc[1]/6.;   DsnDA[2][1]=bc[0]/6.;    DsnDA[2][2]=0;
 
-            defaulttype::Mat<3,3,Real> DsnDB;
+            type::Mat<3,3,Real> DsnDB;
             DsnDB[0][0]=0;           DsnDB[0][1]=ac[2]/6.;    DsnDB[0][2]=-ac[1]/6.;
             DsnDB[1][0]=-ac[2]/6.;   DsnDB[1][1]=0;           DsnDB[1][2]=ac[0]/6.;
             DsnDB[2][0]=ac[1]/6.;    DsnDB[2][1]=-ac[0]/6.;   DsnDB[2][2]=0;
 
 
-            defaulttype::Mat<3,3,Real> DsnDC;
+            type::Mat<3,3,Real> DsnDC;
             DsnDC[0][0]=0;           DsnDC[0][1]=-ab[2]/6.;   DsnDC[0][2]=ab[1]/6.;
             DsnDC[1][0]=ab[2]/6.;    DsnDC[1][1]=0;           DsnDC[1][2]=-ab[0]/6.;
             DsnDC[2][0]=-ab[1]/6.;   DsnDC[2][1]=ab[0]/6.;    DsnDC[2][2]=0;
@@ -212,7 +212,7 @@ public:
     }
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() override { return &jacobian; }
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override { return &baseMatrices; }
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override { return &baseMatrices; }
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
@@ -234,7 +234,7 @@ public:
 protected:
     VolumeMapping()
         : Inherit()
-        , offset(initData(&offset, helper::vector<Real>((int)1,(Real)0.0), "offset", "offsets added to output volumes"))
+        , offset(initData(&offset, type::vector<Real>((int)1,(Real)0.0), "offset", "offsets added to output volumes"))
         , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to compute the volume for") )
         , vf_triangles(this,"triangles", "input triangles for mesh ")
         , vf_quads(this,"quads", "input quads for mesh ")
@@ -249,16 +249,16 @@ protected:
 
     virtual ~VolumeMapping() {}
 
-    Data<helper::vector<Real> > offset; ///< offsets added to output volumes
+    Data<type::vector<Real> > offset; ///< offsets added to output volumes
 
     Data<unsigned int> f_nbMeshes; ///< number of meshes to compute the volume for
-    helper::vectorData< SeqTriangles > vf_triangles;
-    helper::vectorData< SeqQuads > vf_quads;
+    core::objectmodel::vectorData< SeqTriangles > vf_triangles;
+    core::objectmodel::vectorData< SeqQuads > vf_quads;
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
-    helper::vector<SparseKMatrixEigen> hessian;
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<SparseKMatrixEigen> hessian;
     SparseKMatrixEigen K; ///< Stiffness due to the non-linearity of the mapping
 };
 

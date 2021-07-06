@@ -16,6 +16,11 @@ list(APPEND SOURCE_FILES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaMiscMapping)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaBase SofaMiscMapping SceneCreator)
+
+get_target_property(SOFABASEMECHANICSTEST_INCLUDES SofaBaseMechanics_test INCLUDE_DIRECTORIES)
+
+# to use MappingTestCreation
+target_include_directories(${PROJECT_NAME} PUBLIC ${SOFABASEMECHANICSTEST_INCLUDES})
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

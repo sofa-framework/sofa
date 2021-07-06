@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "proximity.h"
-#include <sofa/helper/LCPSolver.inl>
+#include <sofa/type/Mat_solve_LCP.h>
 
 namespace sofa
 {
@@ -28,7 +28,7 @@ namespace sofa
 namespace helper
 {
 using namespace sofa::helper;
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 //------------------------
 // DISTANCETRITRI
@@ -68,27 +68,12 @@ DistanceTriTri::
 void DistanceTriTri::
 NewComputation(const Vector3& P1, const Vector3& P2, const Vector3& P3, const Vector3& Q1, const Vector3& Q2, const Vector3& Q3, Vector3 &Presult, Vector3 &Qresult)
 {
-    //Vector3 P1, P2, P3, Q1, Q2, Q3;
-    //P1 = triP->p1();
-    //P2 = triP->p2();
-    //P3 = triP->p3();
-    //Q1 = triQ->p1();
-    //Q2 = triQ->p2();
-    //Q3 = triQ->p3();
-
     double alphaP, betaP, alphaQ, betaQ;
     int i;
     Vector3 P1P2, P1P3, Q1Q2, Q1Q3, P1Q1, PQ;
-    LCPSolver<6>::Matrix  A;
-    double          b[6], result[12];
-    LCPSolver<6>          lcp;
-
-    // clear result
-    for (i=0; i<12; i++)
-    {
-        result[i] = 0.0;
-    }
-
+    type::Mat<6, 6, SReal> A;
+    type::Vec<6, SReal> b;
+    type::Vec<12, SReal> result;
 
     P1P2=P2 - P1;
     P1P3=P3 - P1;
@@ -117,7 +102,7 @@ NewComputation(const Vector3& P1, const Vector3& P2, const Vector3& P3, const Ve
     b[0]=-dot(P1Q1,P1P2);  b[1]=-dot(P1Q1,P1P3);  b[2]= dot(P1Q1,Q1Q2); b[3]= dot(P1Q1,Q1Q3);
     b[4]=1.0;  b[5]=1.0;
 
-    if(lcp.solve(b, A, result)==1)
+    if(type::solveLCP(b, A, result) == true)
     {
         alphaP=result[6];
         betaP=result[7];
@@ -165,14 +150,9 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
 
 
     Vector3 P1P2, P1P3, Q1Q2, P1Q1, PQ;
-    LCPSolver<5>::Matrix  A;
-    double          b[5], result[10];
-    LCPSolver<5>          lcp;
-
-    for (i=0; i<10; i++)
-    {
-        result[i] = 0.0;
-    }
+    type::Mat<5, 5, SReal> A;
+    type::Vec<5, SReal> b;
+    type::Vec<10, SReal> result;
 
     Q1Q2 = Q2 - Q1;
     P1P2 = P2 - P1;
@@ -195,7 +175,7 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
     b[3]=1.0;  b[4]=1.0;
     b[0]=-dot(P1Q1,P1P2);  b[1]=-dot(P1Q1,P1P3);  b[2]=dot(P1Q1,Q1Q2);
 
-    if(lcp.solve(b, A, result))
+    if(type::solveLCP(b, A, result))
     {
         alpha=result[5];
         beta=result[6];
@@ -240,19 +220,9 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
     //Vector3 P1, P2, P3;
 
     Vector3 P1P2, P1P3, P1Q;
-    LCPSolver<3>::Matrix  A;
-    double          b[3], result[6];
-    LCPSolver<3>    lcp;
-
-    //P1 = tri->p1();
-    //P2 = tri->p2();
-    //P3 = tri->p3();
-
-
-    for (i=0; i<6; i++)
-    {
-        result[i] = 0.0;
-    }
+    type::Mat<3, 3, SReal> A;
+    type::Vec<3, SReal> b;
+    type::Vec<6, SReal> result;
 
     P1P2 = P2 - P1;
     P1P3 = P3 - P1;
@@ -269,7 +239,7 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
     b[2]=1.0;
     b[0]=-dot(P1Q,P1P2);  b[1]=-dot(P1Q,P1P3);
 
-    if(lcp.solve(b, A, result))
+    if(type::solveLCP(b, A, result))
     {
         alpha=result[3];
         beta=result[4];

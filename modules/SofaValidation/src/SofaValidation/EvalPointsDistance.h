@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/PathResolver.h>
 #include <fstream>
 
@@ -50,7 +50,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef typename defaulttype::Vector3 Vec3;
+    typedef typename type::Vector3 Vec3;
 
     /// Rendering of lines between associated points (activation)
     Data < bool > f_draw;
@@ -61,7 +61,7 @@ public:
     /// Period between outputs
     Data < double > f_period;
     /// Computed distances
-    Data < helper::vector<Real> > dist;
+    Data < type::vector<Real> > dist;
 
     Data < double > distMean; ///< mean distance (OUTPUT)
     Data < double > distMin; ///< min distance (OUTPUT)
@@ -143,8 +143,8 @@ protected:
     /// time value for the distance computations
     double lastTime;
 
-    sofa::defaulttype::BoundingBox box1;
-    sofa::defaulttype::BoundingBox box2;
+    sofa::type::BoundingBox box1;
+    sofa::type::BoundingBox box2;
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP)

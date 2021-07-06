@@ -33,7 +33,7 @@ using sofa::testing::BaseTest;
 
 namespace sofa {
 
-using defaulttype::Vector3;
+using type::Vector3;
 using core::objectmodel::New;
 
 typedef sofa::component::topology::MeshTopology MeshTopology;
@@ -73,7 +73,9 @@ static bool equal(const Vector3 & v0,const Vector3 & v1){
 }
 
 MeshTopology* BaryMapperTest::initMesh(NodePtr &father){
+
     sofa::collision_test::makeTri(triPts[0],triPts[1],triPts[2],Vector3(0,0,0),father);
+
     norm = cross(-triPts[0] + triPts[1],triPts[2] - triPts[0]);
     norm.normalize();
 

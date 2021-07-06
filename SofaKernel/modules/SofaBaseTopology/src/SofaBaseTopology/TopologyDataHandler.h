@@ -120,8 +120,8 @@ public:
 
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(Index, value_type& t,
-        const sofa::helper::vector< Index >&,
-        const sofa::helper::vector< double >&) 
+        const sofa::type::vector< Index >&,
+        const sofa::type::vector< double >&) 
     {
         t = m_defaultValue;
     }
@@ -129,23 +129,23 @@ public:
     /// WARNING NEED TO UNIFY THIS
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType&,
-        const sofa::helper::vector< Index >& ancestors,
-        const sofa::helper::vector< double >& coefs)
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
     {
         applyCreateFunction(i, t, ancestors, coefs);
     }
 
     virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType& e,
-        const sofa::helper::vector< Index >& ancestors,
-        const sofa::helper::vector< double >& coefs,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs,
         const AncestorElem* /*ancestorElem*/)
     {
         applyCreateFunction(i, t, e, ancestors, coefs);
     }
 
     virtual bool applyTestCreateFunction(Index /*index*/,
-        const sofa::helper::vector< Index >& /*ancestors*/,
-        const sofa::helper::vector< double >& /*coefs*/) {
+        const sofa::type::vector< Index >& /*ancestors*/,
+        const sofa::type::vector< double >& /*coefs*/) {
         return false;
     }
 

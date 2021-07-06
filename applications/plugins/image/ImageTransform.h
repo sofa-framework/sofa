@@ -26,7 +26,7 @@
 #include "ImageTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <sofa/helper/OptionsGroup.h>
 
@@ -54,7 +54,7 @@ public:
 
     typedef _ImageTypes ImageTypes;
     typedef SReal Real;
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::type::Vec<3,Real> Vec3;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;

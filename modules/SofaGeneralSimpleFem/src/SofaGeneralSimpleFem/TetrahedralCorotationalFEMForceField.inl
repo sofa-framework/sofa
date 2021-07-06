@@ -40,8 +40,8 @@ template< class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
         TetrahedronInformation &,
         const core::topology::BaseMeshTopology::Tetrahedron &,
-        const sofa::helper::vector<Index> &,
-        const sofa::helper::vector<double> &)
+        const sofa::type::vector<Index> &,
+        const sofa::type::vector<double> &)
 {
 
     if (ff)
@@ -83,10 +83,10 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
     , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
     , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
-    , drawColor1(initData(&drawColor1,sofa::helper::types::RGBAColor(0.0f,0.0f,1.0f,1.0f),"drawColor1"," draw color for faces 1"))
-    , drawColor2(initData(&drawColor2,sofa::helper::types::RGBAColor(0.0f,0.5f,1.0f,1.0f),"drawColor2"," draw color for faces 2"))
-    , drawColor3(initData(&drawColor3,sofa::helper::types::RGBAColor(0.0f,1.0f,1.0f,1.0f),"drawColor3"," draw color for faces 3"))
-    , drawColor4(initData(&drawColor4,sofa::helper::types::RGBAColor(0.5f,1.0f,1.0f,1.0f),"drawColor4"," draw color for faces 4"))
+    , drawColor1(initData(&drawColor1,sofa::type::RGBAColor(0.0f,0.0f,1.0f,1.0f),"drawColor1"," draw color for faces 1"))
+    , drawColor2(initData(&drawColor2,sofa::type::RGBAColor(0.0f,0.5f,1.0f,1.0f),"drawColor2"," draw color for faces 2"))
+    , drawColor3(initData(&drawColor3,sofa::type::RGBAColor(0.0f,1.0f,1.0f,1.0f),"drawColor3"," draw color for faces 3"))
+    , drawColor4(initData(&drawColor4,sofa::type::RGBAColor(0.5f,1.0f,1.0f,1.0f),"drawColor4"," draw color for faces 4"))
     , l_topology(initLink("topology", "link to the topology container"))
     , tetrahedronHandler(nullptr)
 
@@ -217,7 +217,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
         elemLambda.resize(_indexedElements->size());
         elemMu.resize(_indexedElements->size());
 
-        helper::WriteAccessor<Data<helper::vector<Real> > > vMN = _vonMisesPerNode;
+        helper::WriteAccessor<Data<type::vector<Real> > > vMN = _vonMisesPerNode;
         vMN.resize(this->mstate->getSize());
 
         prevMaxStress = -1.0;
@@ -240,7 +240,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
         _stiffnesses.resize( sizeMO * 3 );
     }
 
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
@@ -272,7 +272,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
                     matVert[k][l] = X0[ix][l - 1];
             }
 
-            defaulttype::invertMatrix(elemShapeFun[i], matVert);
+            type::invertMatrix(elemShapeFun[i], matVert);
         }
         computeVonMisesStress();
     }
@@ -382,7 +382,7 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacementTransposed &J, Coord a, Coord b, Coord c, Coord d )
 {
     // shape functions matrix
-    defaulttype::Mat<2, 3, Real> M;
+    type::Mat<2, 3, Real> M;
 
     M[0][0] = b[1];
     M[0][1] = c[1];
@@ -459,7 +459,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeStrainDisplacement(
 }
 
 template<class DataTypes>
-typename TetrahedralCorotationalFEMForceField<DataTypes>::Real TetrahedralCorotationalFEMForceField<DataTypes>::peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M )
+typename TetrahedralCorotationalFEMForceField<DataTypes>::Real TetrahedralCorotationalFEMForceField<DataTypes>::peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M )
 {
     return  M[0][1]*M[1][2] - M[1][1]*M[0][2] -  M[0][0]*M[1][2] + M[1][0]*M[0][2] + M[0][0]*M[1][1] - M[1][0]*M[0][1];
 }
@@ -467,13 +467,13 @@ typename TetrahedralCorotationalFEMForceField<DataTypes>::Real TetrahedralCorota
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacementTransposed &J, const Transformation& Rot )
 {
-    defaulttype::MatNoInit<6, 12, Real> Jt;
+    type::MatNoInit<6, 12, Real> Jt;
     Jt.transpose( J );
 
-    defaulttype::MatNoInit<12, 12, Real> JKJt;
+    type::MatNoInit<12, 12, Real> JKJt;
     JKJt = J*K*Jt;
 
-    defaulttype::MatNoInit<12, 12, Real> RR,RRt;
+    type::MatNoInit<12, 12, Real> RR,RRt;
     RR.clear();
     RRt.clear();
     for(int i=0; i<3; ++i)
@@ -493,7 +493,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
 
     const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
 
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
     computeMaterialStiffness(tetrahedronInf[i].materialMatrix, a, b, c, d, (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/m_topology->getNbTetrahedra()]));
 
     const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i * localStiffnessFactor.size() / _indexedElements->size()]) * _youngModulus.getValue();
@@ -582,7 +582,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
     J[11][0]  J[11][1]            J[11][3]
     */
 
-    defaulttype::VecNoInit<6,Real> JtD;
+    type::VecNoInit<6,Real> JtD;
     JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
             J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
             J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
@@ -608,7 +608,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
             J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
             J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
 
-    defaulttype::VecNoInit<6,Real> KJtD;
+    type::VecNoInit<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
             /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
     KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
@@ -681,7 +681,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
     J[11][0]  J[11][1]            J[11][3]
     */
 
-    defaulttype::VecNoInit<6,Real> JtD;
+    type::VecNoInit<6,Real> JtD;
     JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
             J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
             J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
@@ -708,7 +708,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
             J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
 
 
-    defaulttype::VecNoInit<6,Real> KJtD;
+    type::VecNoInit<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
             /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
     KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
@@ -759,7 +759,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initSmall(int i, Index&a, 
 {
     const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     computeStrainDisplacement(tetrahedronInf[i].strainDisplacementTransposedMatrix, (X0)[a], (X0)[b], (X0)[c], (X0)[d] );
 
@@ -799,7 +799,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
     // compute force on element
     Displacement F;
 
-    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
     if(!_assembling.getValue())
     {
@@ -885,7 +885,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessSmall( Vecto
 
     Displacement F;
 
-    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
     computeForce( F, X,tetrahedronInf[i].materialMatrix,tetrahedronInf[i].strainDisplacementTransposedMatrix, fact);
 
@@ -932,7 +932,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeRotationLarg
 template <class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementRotation(Transformation& R, Index elementIdx)
 {
-    helper::vector<TetrahedronInformation>& tetraInf = *(tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronInformation>& tetraInf = *(tetrahedronInfo.beginEdit());
     TetrahedronInformation *tinfo = &tetraInf[elementIdx];
     Transformation r01,r21;
     r01=tinfo->initialTransformation;
@@ -943,7 +943,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementRotation(
 template <class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transformation& R, Index nodeIdx)
 {
-    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = tetrahedronInfo.getValue();
     int numNeiTetra=m_topology->getTetrahedraAroundVertex(nodeIdx).size();
     Transformation r;
     r.clear();
@@ -986,7 +986,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transfo
 template <class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, Index elementIndex)
 {
-    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = tetrahedronInfo.getValue();
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
     Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
@@ -1016,7 +1016,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffness
 
     MaterialStiffness	materialMatrix;
     StrainDisplacementTransposed	strainMatrix;
-    helper::fixed_array<Coord,4> rotatedInitialElements;
+    type::fixed_array<Coord,4> rotatedInitialElements;
 
     rotatedInitialElements[0] = R_0_1*(X0)[a];
     rotatedInitialElements[1] = R_0_1*(X0)[b];
@@ -1057,7 +1057,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
     Transformation R_0_1;
     computeRotationLarge( R_0_1, (X0), a, b, c);
 
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     tetrahedronInf[i].rotatedInitialElements[0] = R_0_1*(X0)[a];
     tetrahedronInf[i].rotatedInitialElements[1] = R_0_1*(X0)[b];
@@ -1081,7 +1081,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
 {
     const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(elementIndex);
 
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     // Rotation matrix (deformed and displaced Tetrahedron/world)
     Transformation R_0_2;
@@ -1089,7 +1089,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
     tetrahedronInf[elementIndex].rotation.transpose(R_0_2);
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    helper::fixed_array<Coord,4> deforme;
+    type::fixed_array<Coord,4> deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2*p[t[i]];
 
@@ -1197,7 +1197,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, SReal fact)
 {
-    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
     Transformation R_0_2;
     R_0_2.transpose(tetrahedronInf[i].rotation);
@@ -1244,7 +1244,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initPolar(int i, Index& a,
 {
     const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     Transformation A;
     A[0] = (X0)[b]-(X0)[a];
@@ -1276,15 +1276,15 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
     A[2] = p[t[3]]-p[t[0]];
 
     Transformation R_0_2;
-    defaulttype::MatNoInit<3,3,Real> S;
+    type::MatNoInit<3,3,Real> S;
     helper::Decompose<Real>::polarDecomposition(A, R_0_2);
 
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     tetrahedronInf[elementIndex].rotation.transpose( R_0_2 );
 
     // positions of the deformed and displaced Tetrahedre in its frame
-    helper::fixed_array<Coord, 4>  deforme;
+    type::fixed_array<Coord, 4>  deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2 * p[t[i]];
 
@@ -1327,7 +1327,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, SReal fact )
 {
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     Transformation R_0_2;
     R_0_2.transpose( tetrahedronInf[i].rotation );
@@ -1393,7 +1393,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeBBox(const core::Ex
 		}
 	}
 
-	this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+	this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
@@ -1416,7 +1416,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     }
 
 
-    std::vector< defaulttype::Vector3 > points[4];
+    std::vector< type::Vector3 > points[4];
     for(Size i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
@@ -1466,8 +1466,8 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
             msg_warning() << "Von Mises Stress color map can only be displayed if option computeVonMisesStress is set to true";
         }
 
-        std::vector< defaulttype::Vector3 > points;
-        std::vector< sofa::helper::types::RGBAColor > colorVector;
+        std::vector< type::Vector3 > points;
+        std::vector< sofa::type::RGBAColor > colorVector;
         typename VecElement::const_iterator it;
         int i;
         for (it = _indexedElements->begin(), i = 0; it != _indexedElements->end(); ++it, ++i)
@@ -1492,10 +1492,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 
 
             // create corresponding colors
-            sofa::helper::types::RGBAColor color[4];
-            const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+            sofa::type::RGBAColor color[4];
+            const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
             helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-            auto col = sofa::helper::types::RGBAColor::fromVec4(evalColor(tetrahedronInf[i].vonMisesStress));
+            auto col = sofa::type::RGBAColor::fromVec4(evalColor(tetrahedronInf[i].vonMisesStress));
             col[3] = 1.0f;
             color[0] = col;
             color[1] = col;
@@ -1533,7 +1533,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::default
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
 
-    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
     Index noeud1, noeud2;
 
@@ -1584,7 +1584,7 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::printStiffnessMatrix(int idTetra)
 {
 
-    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
@@ -1626,10 +1626,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
 
     typename VecElement::const_iterator it;
     Index el;
-    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+    const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
     for (it = _indexedElements->begin(), el = 0; it != _indexedElements->end(); ++it, ++el)
     {
-        defaulttype::Vec<6, Real> vStrain;
+        type::Vec<6, Real> vStrain;
         Mat33 gradU;
 
         if (_computeVonMisesStress.getValue() == true) {
@@ -1639,7 +1639,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
             // Rotation matrix (deformed and displaced Tetrahedron/world)
             Transformation R_0_2;
             Displacement D;
-            helper::fixed_array<Coord, 4> deforme;
+            type::fixed_array<Coord, 4> deforme;
             switch (method)
             {
             case LARGE :
@@ -1733,7 +1733,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeVonMisesStress()
         for (Index k = 0; k < 3; k++)
             s[k] += lambda * traceStrain;
 
-        helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& editTetrahedronInfo = *(tetrahedronInfo.beginEdit());
+        type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& editTetrahedronInfo = *(tetrahedronInfo.beginEdit());
         editTetrahedronInfo[el].vonMisesStress = helper::rsqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2] - s[0] * s[1] - s[1] * s[2] - s[2] * s[0] + 3 * s[3] * s[3] + 3 * s[4] * s[4] + 3 * s[5] * s[5]);
         if (editTetrahedronInfo[el].vonMisesStress < 1e-10)
             editTetrahedronInfo[el].vonMisesStress = 0.0;

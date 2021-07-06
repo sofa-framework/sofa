@@ -31,6 +31,7 @@ using namespace sofa::helper;
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for trian (only triangulations) file format.")
@@ -97,7 +98,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
     // --- data used in trian files ---
     unsigned int nbVertices = 0;
     unsigned int nbTriangles = 0;
-    sofa::helper::vector <unsigned int> the_edge;
+    sofa::type::vector<unsigned int> the_edge;
     the_edge.resize (2);
 
 
@@ -125,7 +126,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
     for (unsigned int i=0; i<nbTriangles; ++i)
     {
         Triangle nodes;
-        helper::fixed_array <int,3> ngh;
+        type::fixed_array <int,3> ngh;
 
         dataFile >>  nodes[0] >> nodes[1] >> nodes[2] >> ngh[0] >> ngh[1] >> ngh[2];
 

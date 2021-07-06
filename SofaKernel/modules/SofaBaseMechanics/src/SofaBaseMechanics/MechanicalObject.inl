@@ -47,7 +47,7 @@ namespace
 {
 
 template<class V>
-void renumber(V* v, V* tmp, const sofa::helper::vector< sofa::Index > &index )
+void renumber(V* v, V* tmp, const sofa::type::vector< sofa::Index > &index )
 {
     if (v == nullptr)
         return;
@@ -89,7 +89,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity. (default=false)"))
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
-    , d_color(initData(&d_color, helper::types::RGBAColor::white(), "showColor", "Color for object display. (default=[1 1 1 1])"))
+    , d_color(initData(&d_color, type::RGBAColor::white(), "showColor", "Color for object display. (default=[1 1 1 1])"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -192,8 +192,8 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 template <class DataTypes>
 void MechanicalObject<DataTypes>::MOPointHandler::applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
-                                                                      const sofa::helper::vector< unsigned int > &ancestors,
-                                                                      const sofa::helper::vector< double > &coefs)
+                                                                      const sofa::type::vector< unsigned int > &ancestors,
+                                                                      const sofa::type::vector< double > &coefs)
 {
     if (!obj)
         return;
@@ -332,7 +332,7 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
     if (arg->getAttribute("isToPrint")!=nullptr)
     {
-        msg_deprecated() << "The 'isToPrint' data field has been deprecated in Sofa 19.06 due to lack of consistency in how it should work." << msgendl
+        msg_deprecated() << "The 'isToPrint' data field has been deprecated in SOFA v19.06 due to lack of consistency in how it should work." << msgendl
                             "Please contact sofa-dev team in case you need similar.";
     }
 
@@ -342,7 +342,7 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
 #if 0 //SOFA_HAVE_NEW_TOPOLOGYCHANGES
 template <class DataTypes>
-void MechanicalObject<DataTypes>::PointCreationFunction(int , void * param, Coord & , const sofa::helper::vector<unsigned int> & ancestors, const sofa::helper::vector<double> & coefs)
+void MechanicalObject<DataTypes>::PointCreationFunction(int , void * param, Coord & , const sofa::type::vector<unsigned int> & ancestors, const sofa::type::vector<double> & coefs)
 {
     MechanicalObject<DataTypes> *meca = (MechanicalObject<DataTypes>*) param;
 
@@ -406,7 +406,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         {
         case core::topology::POINTSADDED:
         {
-            using sofa::helper::vector;
+            using sofa::type::vector;
             const PointsAdded &pointsAdded = *static_cast< const PointsAdded * >( *itBegin );
 
             Size prevSizeMechObj = getSize();
@@ -460,8 +460,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
             if (!pointsAdded.ancestorElems.empty() && (geoAlgo != nullptr))
             {
-                helper::vector< core::VecCoordId > coordVecs;
-                helper::vector< core::VecDerivId > derivVecs;
+                type::vector< core::VecCoordId > coordVecs;
+                type::vector< core::VecDerivId > derivVecs;
 
                 for (unsigned int k = 0; k < vectorsCoord.size(); k++)
                 {
@@ -511,7 +511,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         }
         case core::topology::POINTSMOVED:
         {
-            using sofa::helper::vector;
+            using sofa::type::vector;
 
             const auto& indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
             const auto& ancestors = ( static_cast< const PointsMoved * >( *itBegin ) )->ancestorsList;
@@ -638,7 +638,7 @@ void MechanicalObject<DataTypes>::swapValues (const Index idx1, const Index idx2
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< Index > &index )
+void MechanicalObject<DataTypes>::renumberValues( const sofa::type::vector< Index > &index )
 {
     VecDeriv dtmp;
     VecCoord ctmp;
@@ -755,21 +755,21 @@ void MechanicalObject<DataTypes>::applyTranslation (const SReal dx, const SReal 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const SReal rx, const SReal ry, const SReal rz)
 {
-    sofa::defaulttype::Quaternion q =
-            helper::Quater< SReal >::createQuaterFromEuler(sofa::defaulttype::Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
+    sofa::type::Quat<SReal> q =
+            type::Quat< SReal >::createQuaterFromEuler(sofa::type::Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
     applyRotation(q);
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
+void MechanicalObject<DataTypes>::applyRotation (const type::Quat<SReal> q)
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::VecCoordId::position());
 
     for (unsigned int i = 0; i < x_wA.size(); i++)
     {
-        sofa::defaulttype::Vec<3,Real> pos;
+        sofa::type::Vec<3,Real> pos;
         DataTypes::get(pos[0], pos[1], pos[2], x_wA[i]);
-        sofa::defaulttype::Vec<3,Real> newposition = q.rotate(pos);
+        sofa::type::Vec<3,Real> newposition = q.rotate(pos);
         DataTypes::set(x_wA[i], newposition[0], newposition[1], newposition[2]);
     }
 }
@@ -779,7 +779,7 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
 
-    const sofa::defaulttype::Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
+    const sofa::type::Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
     for (unsigned int i=0; i<x_wA.size(); ++i)
     {
         for (unsigned int j=0; j<std::min(3, (int)DataTypes::Coord::total_size); ++j)
@@ -788,7 +788,7 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
+void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::type::vector<Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
 {
     helper::ReadAccessor< Data<VecCoord> > x_rA = this->readPositions();
 
@@ -804,7 +804,7 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<Index>&
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sofa::helper::vector< Index >& ancestors, const sofa::helper::vector< double >& coefs)
+void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sofa::type::vector< Index >& ancestors, const sofa::type::vector< double >& coefs)
 {
     // HD interpolate position, speed,force,...
     // assume all coef sum to 1.0
@@ -812,9 +812,9 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sof
 
     const Size ancestorsSize = Size(ancestors.size());
 
-    helper::vector< Coord > ancestorsCoord(ancestorsSize);
-    helper::vector< Deriv > ancestorsDeriv(ancestorsSize);
-    helper::vector< Real > ancestorsCoefs(ancestorsSize);
+    type::vector< Coord > ancestorsCoord(ancestorsSize);
+    type::vector< Deriv > ancestorsDeriv(ancestorsSize);
+    type::vector< Real > ancestorsCoefs(ancestorsSize);
 
     for (Index k = 0; k < vectorsCoord.size(); k++)
     {
@@ -861,7 +861,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sof
 
 // Force the position of a point (and force its velocity to zero value)
 template <class DataTypes>
-void MechanicalObject<DataTypes>::forcePointPosition(const Index i, const sofa::helper::vector< double >& m_x)
+void MechanicalObject<DataTypes>::forcePointPosition(const Index i, const sofa::type::vector< double >& m_x)
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
     helper::WriteAccessor< Data<VecDeriv> > v_wA = this->writeVelocities();
@@ -2578,7 +2578,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ConstraintPa
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
+void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::type::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
 {
     const auto N = Deriv::size();
     Data<MatrixDeriv>* cMatrix= this->write(mID);
@@ -2716,9 +2716,9 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
 {
     float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-    std::vector<defaulttype::Vector3> positions;
+    std::vector<type::Vector3> positions;
     for (int i = 0; i <d_size.getValue(); ++i)
-        positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
+        positions.push_back(type::Vector3(getPX(i), getPY(i), getPZ(i)));
 
     vparams->drawTool()->draw3DText_Indices(positions, scale, d_color.getValue());
 }
@@ -2728,7 +2728,7 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
 {
     float scale = showVectorsScale.getValue();
     sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
-    helper::vector<Vector3> points;
+    type::vector<Vector3> points;
     points.resize(2);
     for(Size i=0; i<v_rA.size(); ++i )
     {
@@ -2743,13 +2743,13 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
         case 0:
             points[0] = p1;
             points[1] = p2;
-            vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::white());
+            vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::white());
             break;
         case 1:
-            vparams->drawTool()->drawCylinder(p1, p2, rad, sofa::helper::types::RGBAColor::white());
+            vparams->drawTool()->drawCylinder(p1, p2, rad, sofa::type::RGBAColor::white());
             break;
         case 2:
-            vparams->drawTool()->drawArrow(p1, p2, rad, sofa::helper::types::RGBAColor::white());
+            vparams->drawTool()->drawArrow(p1, p2, rad, sofa::type::RGBAColor::white());
             break;
         default:
             msg_error() << "No proper drawing mode found!";
@@ -2777,7 +2777,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        helper::vector<Vector3> positions(d_size.getValue());
+        type::vector<Vector3> positions(d_size.getValue());
         for (Index i = 0; i < Size(d_size.getValue()); ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
 
@@ -2792,15 +2792,15 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             break;
         case 2:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::red());
+            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::red());
             break;
         case 3:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::green());
+            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::green());
             break;
         case 4:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::blue());
+            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::blue());
             break;
         default:
             msg_error() << "No proper drawing mode found!";
@@ -2825,18 +2825,18 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
         // seems to be valid DOFs
         const VecCoord& x =this->read(core::ConstVecCoordId::position())->getValue();
 
-        defaulttype::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
-        defaulttype::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
+        type::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
+        type::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
         for (int i=0; i< d_size.getValue(); ++i)
         {
-            defaulttype::Vec<3,Real> pos;
+            type::Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);
 
             if (pos == origin) continue;
             SReal dist = (pos-origin)*direction;
             if (dist < 0) continue; // discard particles behind the camera, such as mouse position
 
-            defaulttype::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
+            type::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
             SReal distToRay = vecPoint.norm2();
             SReal maxr = radius0 + dRadius*dist;
             if (distToRay <= maxr*maxr)
@@ -2862,7 +2862,7 @@ bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
     const VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
     for(Size i=0; i<x.size(); i++ )
     {
-        defaulttype::Vec<3,Real> p;
+        type::Vec<3,Real> p;
         DataTypes::get( p[0], p[1], p[2], x[i] );
 
         for( unsigned int j=0 ; j<spatial_dimensions; ++j )

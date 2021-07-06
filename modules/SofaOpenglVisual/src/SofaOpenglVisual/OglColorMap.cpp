@@ -48,7 +48,7 @@ OglColorMap::OglColorMap()
 : f_paletteSize(initData(&f_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
 , f_colorScheme(initData(&f_colorScheme, "colorScheme", "Color scheme to use"))
 , f_showLegend(initData(&f_showLegend, false, "showLegend", "Activate rendering of color scale legend on the side"))
-, f_legendOffset(initData(&f_legendOffset, defaulttype::Vec2f(10.0f,5.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
+, f_legendOffset(initData(&f_legendOffset, type::Vec2f(10.0f,5.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
 , f_legendTitle(initData(&f_legendTitle,"legendTitle", "Add a title to the legend"))
 , d_min(initData(&d_min,0.0f,"min","min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min"))
 , d_max(initData(&d_max,0.0f,"max","max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max"))
@@ -90,21 +90,6 @@ OglColorMap::~OglColorMap() {
         glDeleteTextures(1, &texture);
 }
 
-// For backward compatibility only
-// TODO: remove this later
-//void OglColorMap::initOld(const std::string &data)
-//{
-//    if (data == "") {
-//        entries.insert(entries.end(), DefaultOglColorMapEntries, DefaultOglColorMapEntries+NDefaultOglColorMapEntries);
-//        return;
-//    }
-//
-//    std::istringstream is(data);
-//    is >> *this;
-//
-//    return;
-//}
-
 void OglColorMap::init()
 {
     reinit();
@@ -124,7 +109,6 @@ OglColorMap* OglColorMap::getDefault()
     if (defaultOglColorMap == nullptr) {
         defaultOglColorMap = sofa::core::objectmodel::New< OglColorMap >();
         std::string tmp("");
-        //defaultOglColorMap->initOld(tmp); // TODO: replace initOld() with init()
         defaultOglColorMap->init();
     }
     return defaultOglColorMap.get();
@@ -250,8 +234,8 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glGetFloatv(GL_COLOR_CLEAR_VALUE,bgcol);
 
     Color textcolor(1.0f, 1.0f, 1.0f, 1.0f);
-    static const sofa::defaulttype::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
-    float backgroundLuminance = sofa::defaulttype::Vec3f(bgcol[0], bgcol[1], bgcol[2]) * luminanceMatrix;
+    static const sofa::type::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
+    float backgroundLuminance = sofa::type::Vec3f(bgcol[0], bgcol[1], bgcol[2]) * luminanceMatrix;
     if(backgroundLuminance > 0.5f)
         textcolor = Color(0.0f, 0.0f, 0.0f, 1.0f);
 

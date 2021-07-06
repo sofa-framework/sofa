@@ -6,7 +6,8 @@
 	<FreeMotionAnimationLoop name="freeMotionMasterSolver6" />
 	<LCPConstraintSolver name="lCPConstraintSolver7"  group="0" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-	<BruteForceDetection name="Detection" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<LocalMinDistance name="localMinDistance0"  alarmDistance="0.3"  contactDistance="0.15" />
 	<DefaultContactManager name="Response"  response="FrictionContact" />
 	<Node 	name="haption" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >

@@ -46,10 +46,10 @@ WriteState::WriteState()
     , d_writeX0( initData(&d_writeX0, false, "writeX0", "flag enabling output of X0 vector"))
     , d_writeV( initData(&d_writeV, false, "writeV", "flag enabling output of V vector"))
     , d_writeF( initData(&d_writeF, false, "writeF", "flag enabling output of F vector"))
-    , d_time( initData(&d_time, helper::vector<double>(0), "time", "set time to write outputs (by default export at t=0)"))
+    , d_time( initData(&d_time, type::vector<double>(0), "time", "set time to write outputs (by default export at t=0)"))
     , d_period( initData(&d_period, 0.0, "period", "period between outputs"))
-    , d_DOFsX( initData(&d_DOFsX, helper::vector<unsigned int>(0), "DOFsX", "set the position DOFs to write"))
-    , d_DOFsV( initData(&d_DOFsV, helper::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
+    , d_DOFsX( initData(&d_DOFsX, type::vector<unsigned int>(0), "DOFsX", "set the position DOFs to write"))
+    , d_DOFsV( initData(&d_DOFsV, type::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
     , d_stopAt( initData(&d_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
     , d_keperiod( initData(&d_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
     , mmodel(nullptr)
@@ -137,7 +137,7 @@ void WriteState::init()
             msg_warning() << "starting time should be specified to know when to start the periodic export"
                           << "by default: start time=0";
 
-            helper::vector<double>& timeVector = *d_time.beginEdit();
+            type::vector<double>& timeVector = *d_time.beginEdit();
             timeVector.clear();
             timeVector.resize(1);
             timeVector[0] = 0.0;
@@ -145,7 +145,7 @@ void WriteState::init()
         }
         if(d_time.getValue().size() > 1)
         {
-            helper::vector<double>& timeVector = *d_time.beginEdit();
+            type::vector<double>& timeVector = *d_time.beginEdit();
             timeVector.resize(1);
             d_time.endEdit();
             msg_warning() << "using the period assume to have only one starting time for export: "<<d_time.getValue()[0];
@@ -176,7 +176,7 @@ void WriteState::init()
     {
         msg_warning() << "an export time should be specified"
                       << "by default, export at t=0.0";
-        helper::vector<double>& timeVector = *d_time.beginEdit();
+        type::vector<double>& timeVector = *d_time.beginEdit();
         timeVector.clear();
         timeVector.resize(1);
         timeVector[0] = 0.0;

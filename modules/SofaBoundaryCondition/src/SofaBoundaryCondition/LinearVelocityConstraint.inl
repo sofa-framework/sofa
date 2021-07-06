@@ -24,11 +24,11 @@
 #include <SofaBoundaryCondition/LinearVelocityConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::projectiveconstraintset
@@ -37,7 +37,7 @@ namespace sofa::component::projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class TDataTypes>
-bool LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
+bool LinearVelocityConstraint<TDataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
     return lc != 0;
 }
@@ -96,7 +96,7 @@ void LinearVelocityConstraint<TDataTypes>::addIndex(Index index)
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::removeIndex(Index index)
 {
-    sofa::helper::removeValue(*d_indices.beginEdit(),index);
+    sofa::type::removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();
 }
 
@@ -307,7 +307,7 @@ void LinearVelocityConstraint<DataTypes>::findKeyTimes()
         nextT = *d_keyTimes.getValue().begin();
         prevT = nextT;
 
-        typename helper::vector<Real>::const_iterator it_t = d_keyTimes.getValue().begin();
+        typename type::vector<Real>::const_iterator it_t = d_keyTimes.getValue().begin();
         typename VecDeriv::const_iterator it_v = d_keyVelocities.getValue().begin();
 
         //WARNING : we consider that the key-events are in chronological order
@@ -346,8 +346,8 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
 
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
-    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
+    std::vector<sofa::type::Vector3> vertices;
+    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
     const VecDeriv& keyVelocities = d_keyVelocities.getValue();
     const SetIndexArray & indices = d_indices.getValue();
     for (unsigned int i=0 ; i<keyVelocities.size()-1 ; i++)
@@ -357,8 +357,8 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
             const typename DataTypes::CPos& cpos0 = DataTypes::getCPos(x0[*it]+keyVelocities[i]);
             const typename DataTypes::CPos& cpos1 = DataTypes::getCPos(x0[*it]+keyVelocities[i+1]);
 
-            vertices.push_back(sofa::defaulttype::Vector3(cpos0));
-            vertices.push_back(sofa::defaulttype::Vector3(cpos1));
+            vertices.push_back(sofa::type::Vector3(cpos0));
+            vertices.push_back(sofa::type::Vector3(cpos1));
         }
     }
 

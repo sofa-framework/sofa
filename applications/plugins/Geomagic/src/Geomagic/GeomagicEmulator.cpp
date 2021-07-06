@@ -38,6 +38,7 @@
 
 namespace sofa::component::controller
 {
+using namespace sofa::type;
 
 GeomagicEmulatorTask::GeomagicEmulatorTask(GeomagicEmulator* ptr, CpuTask::Status* pStatus)
     :CpuTask(pStatus)
@@ -174,7 +175,7 @@ void GeomagicEmulator::computeTransform()
 }
 
 
-void GeomagicEmulator::applyTranslation(sofa::defaulttype::Vec3 translation)
+void GeomagicEmulator::applyTranslation(sofa::type::Vec3 translation)
 {
     lockPosition.lock();
     Vec3d & posDevice = *d_positionBase.beginEdit();
@@ -186,7 +187,7 @@ void GeomagicEmulator::applyTranslation(sofa::defaulttype::Vec3 translation)
 
 
 
-void GeomagicEmulator::worldToLocal(sofa::defaulttype::Vec3& vector)
+void GeomagicEmulator::worldToLocal(sofa::type::Vec3& vector)
 {
     vector = d_orientationTool.getValue().rotate(vector);
 }

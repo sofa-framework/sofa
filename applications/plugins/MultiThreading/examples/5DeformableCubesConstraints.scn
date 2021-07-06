@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<!--
+5 deformable cubes. Each of them has its own ODE solver.
+The FreeMotionAnimationLoop requests to solve each solver in parallel.
+In this scene, collision is detected in parallel.
+-->
+<Node name="root" gravity="0 -9.81 0">
+    <RequiredPlugin name="SofaGeneralDeformable"/>
+    <RequiredPlugin name="SofaMiscCollision"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaMeshCollision"/>
+    <RequiredPlugin name="SofaTopologyMapping"/>
+    <RequiredPlugin name="SofaLoader"/>
+    <RequiredPlugin name="SofaConstraint"/>
+    <RequiredPlugin name="SofaGeneralEngine"/>
+    <RequiredPlugin name="SofaSimpleFem"/>
+    <RequiredPlugin name="MultiThreading"/>
+
+    <VisualStyle displayFlags="showCollisionModels"/>
+
+    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop"
+                             parallelCollisionDetectionAndFreeMotion="false"
+                             parallelODESolving="true"/>
+    <DefaultPipeline/>
+    <ParallelBruteForceBroadPhase/>
+    <ParallelBVHNarrowPhase/>
+    <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
+    <DefaultContactManager name="Response" response="FrictionContact"/>
+    <LCPConstraintSolver maxIt="1000" tolerance="0.001"  build_lcp="false"/>
+    <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
+
+    <Node name="Cube1">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+
+        <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
+        <TransformEngine name="transform" translation="0 0 0" input_position="@grid.position" />
+
+        <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
+        <UniformMass totalMass="30"/>
+        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+
+        <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
+
+        <Node name="Collision">
+            <QuadSetTopologyContainer name="Quad_topology"/>
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
+
+            <Node name="CollisionTriangles">
+                <TriangleSetTopologyContainer  name="Container"/>
+                <TriangleSetTopologyModifier   name="Modifier"/>
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"/>
+
+                <Quad2TriangleTopologicalMapping input="@../Quad_topology" output="@Container" name="mapping_topo"/>
+
+                <TriangleCollisionModel/>
+                <LineCollisionModel/>
+                <PointCollisionModel/>
+            </Node>
+        </Node>
+
+    </Node>
+
+    <Node name="Cube2">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+
+        <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
+        <TransformEngine name="transform" translation="10 15 0" input_position="@grid.position" />
+
+        <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
+        <UniformMass totalMass="30"/>
+        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+
+        <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
+
+        <Node name="Collision">
+            <QuadSetTopologyContainer name="Quad_topology"/>
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
+
+            <Node name="CollisionTriangles">
+                <TriangleSetTopologyContainer  name="Container"/>
+                <TriangleSetTopologyModifier   name="Modifier"/>
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"/>
+
+                <Quad2TriangleTopologicalMapping input="@../Quad_topology" output="@Container" name="mapping_topo"/>
+
+                <TriangleCollisionModel/>
+                <LineCollisionModel/>
+                <PointCollisionModel/>
+            </Node>
+        </Node>
+
+    </Node>
+
+    <Node name="Cube3">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+
+        <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
+        <TransformEngine name="transform" translation="-5 15 10" input_position="@grid.position" />
+
+        <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
+        <UniformMass totalMass="30"/>
+        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+
+        <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
+
+        <Node name="Collision">
+            <QuadSetTopologyContainer name="Quad_topology"/>
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
+
+            <Node name="CollisionTriangles">
+                <TriangleSetTopologyContainer  name="Container"/>
+                <TriangleSetTopologyModifier   name="Modifier"/>
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"/>
+
+                <Quad2TriangleTopologicalMapping input="@../Quad_topology" output="@Container" name="mapping_topo"/>
+
+                <TriangleCollisionModel/>
+                <LineCollisionModel/>
+                <PointCollisionModel/>
+            </Node>
+        </Node>
+
+    </Node>
+
+    <Node name="Cube4">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+
+        <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
+        <TransformEngine name="transform" translation="0 30 10" input_position="@grid.position" />
+
+        <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
+        <UniformMass totalMass="30"/>
+        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+
+        <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
+
+        <Node name="Collision">
+            <QuadSetTopologyContainer name="Quad_topology"/>
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
+
+            <Node name="CollisionTriangles">
+                <TriangleSetTopologyContainer  name="Container"/>
+                <TriangleSetTopologyModifier   name="Modifier"/>
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"/>
+
+                <Quad2TriangleTopologicalMapping input="@../Quad_topology" output="@Container" name="mapping_topo"/>
+
+                <TriangleCollisionModel/>
+                <LineCollisionModel/>
+                <PointCollisionModel/>
+            </Node>
+        </Node>
+
+    </Node>
+
+
+    <Node name="Cube5">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+
+        <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
+        <TransformEngine name="transform" translation="0 45 -10" input_position="@grid.position" />
+
+        <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
+        <UniformMass totalMass="30"/>
+        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+
+        <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
+
+        <Node name="Collision">
+            <QuadSetTopologyContainer name="Quad_topology"/>
+            <QuadSetTopologyModifier name="Modifier"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
+
+            <Node name="CollisionTriangles">
+                <TriangleSetTopologyContainer  name="Container"/>
+                <TriangleSetTopologyModifier   name="Modifier"/>
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"/>
+
+                <Quad2TriangleTopologicalMapping input="@../Quad_topology" output="@Container" name="mapping_topo"/>
+
+                <TriangleCollisionModel/>
+                <LineCollisionModel/>
+                <PointCollisionModel/>
+            </Node>
+        </Node>
+
+    </Node>
+
+    <Node name="Floor">
+        <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
+        <MeshTopology src="@loader"/>
+        <MechanicalObject src="@loader" dy="-10" scale="0.5"/>
+        <TriangleCollisionModel simulated="false"/>
+        <LineCollisionModel simulated="false"/>
+        <PointCollisionModel simulated="false"/>
+    </Node>
+
+</Node>

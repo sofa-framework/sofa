@@ -9,74 +9,97 @@ sofa_find_package(SofaConstraint REQUIRED)
 sofa_find_package(SofaExplicitOdeSolver REQUIRED)
 sofa_find_package(SofaGeneralExplicitOdeSolver REQUIRED)
 sofa_find_package(SofaImplicitOdeSolver REQUIRED)
-sofa_find_package(SofaSphFluid QUIET)
-sofa_find_package(SofaDistanceGrid QUIET)
 
-set(SRC_ROOT src/SofaMiscCollision)
+set(SOFAMISCCOLLISION_SRC src/SofaMiscCollision)
 
 set(HEADER_FILES
-    ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/initSofaMiscCollision.h
+    ${SOFAMISCCOLLISION_SRC}/config.h.in
+    ${SOFAMISCCOLLISION_SRC}/initSofaMiscCollision.h
     )
 
 set(SOURCE_FILES
-    ${SRC_ROOT}/initSofaMiscCollision.cpp
+    ${SOFAMISCCOLLISION_SRC}/initSofaMiscCollision.cpp
     )
 
 set(EXTRA_FILES
-    ${SRC_ROOT}/README.md
+    ${SOFAMISCCOLLISION_SRC}/README.md
     )
 
 list(APPEND HEADER_FILES
-    ${SRC_ROOT}/BarycentricStickContact.h
-    ${SRC_ROOT}/BarycentricStickContact.inl
-    ${SRC_ROOT}/CapsuleIntersection.h
-    ${SRC_ROOT}/DefaultCollisionGroupManager.h
-    ${SRC_ROOT}/OBBIntersection.h
-    ${SRC_ROOT}/RayTriangleVisitor.h
-    ${SRC_ROOT}/RuleBasedContactManager.h
-    ${SRC_ROOT}/SolverMerger.h
-    ${SRC_ROOT}/TetrahedronDiscreteIntersection.h
-    ${SRC_ROOT}/TetrahedronModel.h
-    ${SRC_ROOT}/TriangleModelInRegularGrid.h
-    ${SRC_ROOT}/CapsuleContactMapper.h
-    ${SRC_ROOT}/OBBContactMapper.h
+    ${SOFAMISCCOLLISION_SRC}/BarycentricStickContact.h
+    ${SOFAMISCCOLLISION_SRC}/BarycentricStickContact.inl
+    ${SOFAMISCCOLLISION_SRC}/CapsuleIntersection.h
+    ${SOFAMISCCOLLISION_SRC}/DefaultCollisionGroupManager.h
+    ${SOFAMISCCOLLISION_SRC}/OBBIntersection.h
+    ${SOFAMISCCOLLISION_SRC}/RayTriangleVisitor.h
+    ${SOFAMISCCOLLISION_SRC}/RuleBasedContactManager.h
+    ${SOFAMISCCOLLISION_SRC}/SolverMerger.h
+    ${SOFAMISCCOLLISION_SRC}/TetrahedronDiscreteIntersection.h
+    ${SOFAMISCCOLLISION_SRC}/TetrahedronModel.h
+    ${SOFAMISCCOLLISION_SRC}/TriangleModelInRegularGrid.h
+    ${SOFAMISCCOLLISION_SRC}/CapsuleContactMapper.h
+    ${SOFAMISCCOLLISION_SRC}/OBBContactMapper.h
+    ${SOFAMISCCOLLISION_SRC}/BaseIntTool.h
+    ${SOFAMISCCOLLISION_SRC}/CapsuleIntTool.h
+    ${SOFAMISCCOLLISION_SRC}/CapsuleIntTool.inl
+    ${SOFAMISCCOLLISION_SRC}/CapsuleModel.h
+    ${SOFAMISCCOLLISION_SRC}/CapsuleModel.inl
+    ${SOFAMISCCOLLISION_SRC}/IntrCapsuleOBB.h
+    ${SOFAMISCCOLLISION_SRC}/IntrCapsuleOBB.inl
+    ${SOFAMISCCOLLISION_SRC}/IntrOBBOBB.h
+    ${SOFAMISCCOLLISION_SRC}/IntrOBBOBB.inl
+    ${SOFAMISCCOLLISION_SRC}/IntrSphereOBB.h
+    ${SOFAMISCCOLLISION_SRC}/IntrSphereOBB.inl
+    ${SOFAMISCCOLLISION_SRC}/IntrUtility3.h
+    ${SOFAMISCCOLLISION_SRC}/IntrUtility3.inl
+    ${SOFAMISCCOLLISION_SRC}/OBBIntTool.h
+    ${SOFAMISCCOLLISION_SRC}/OBBModel.h
+    ${SOFAMISCCOLLISION_SRC}/OBBModel.inl
+    ${SOFAMISCCOLLISION_SRC}/RigidCapsuleModel.h
+    ${SOFAMISCCOLLISION_SRC}/RigidCapsuleModel.inl
+    ${SOFAMISCCOLLISION_SRC}/IntrMeshUtility.h
+    ${SOFAMISCCOLLISION_SRC}/IntrMeshUtility.inl
+    ${SOFAMISCCOLLISION_SRC}/IntrTriangleOBB.h
+    ${SOFAMISCCOLLISION_SRC}/IntrTriangleOBB.inl
+    ${SOFAMISCCOLLISION_SRC}/MeshIntTool.h
+    ${SOFAMISCCOLLISION_SRC}/MeshIntTool.inl
     )
 
 list(APPEND SOURCE_FILES
-    ${SRC_ROOT}/BarycentricStickContact.cpp
-    ${SRC_ROOT}/CapsuleIntersection.cpp
-    ${SRC_ROOT}/CapsuleContact.cpp
-    ${SRC_ROOT}/CapsuleContactMapper.h
-    ${SRC_ROOT}/CapsuleContactMapper.cpp
-    ${SRC_ROOT}/DefaultCollisionGroupManager.cpp
-    ${SRC_ROOT}/OBBIntersection.cpp
-    ${SRC_ROOT}/OBBContact.cpp
-    ${SRC_ROOT}/OBBContactMapper.h
-    ${SRC_ROOT}/OBBContactMapper.cpp
-    ${SRC_ROOT}/RayTriangleVisitor.cpp
-    ${SRC_ROOT}/RuleBasedContactManager.cpp
-    ${SRC_ROOT}/SolverMerger.cpp
-    ${SRC_ROOT}/TetrahedronBarycentricPenalityContact.cpp
-    ${SRC_ROOT}/TetrahedronDiscreteIntersection.cpp
-    ${SRC_ROOT}/TetrahedronFrictionContact.cpp
-    ${SRC_ROOT}/TetrahedronModel.cpp
-    ${SRC_ROOT}/TetrahedronRayContact.cpp
-    ${SRC_ROOT}/TriangleModelInRegularGrid.cpp
+    ${SOFAMISCCOLLISION_SRC}/BarycentricStickContact.cpp
+    ${SOFAMISCCOLLISION_SRC}/CapsuleIntersection.cpp
+    ${SOFAMISCCOLLISION_SRC}/CapsuleContact.cpp
+    ${SOFAMISCCOLLISION_SRC}/CapsuleContactMapper.h
+    ${SOFAMISCCOLLISION_SRC}/CapsuleContactMapper.cpp
+    ${SOFAMISCCOLLISION_SRC}/DefaultCollisionGroupManager.cpp
+    ${SOFAMISCCOLLISION_SRC}/OBBIntersection.cpp
+    ${SOFAMISCCOLLISION_SRC}/OBBContact.cpp
+    ${SOFAMISCCOLLISION_SRC}/OBBContactMapper.h
+    ${SOFAMISCCOLLISION_SRC}/OBBContactMapper.cpp
+    ${SOFAMISCCOLLISION_SRC}/RayTriangleVisitor.cpp
+    ${SOFAMISCCOLLISION_SRC}/RuleBasedContactManager.cpp
+    ${SOFAMISCCOLLISION_SRC}/SolverMerger.cpp
+    ${SOFAMISCCOLLISION_SRC}/TetrahedronBarycentricPenalityContact.cpp
+    ${SOFAMISCCOLLISION_SRC}/TetrahedronDiscreteIntersection.cpp
+    ${SOFAMISCCOLLISION_SRC}/TetrahedronFrictionContact.cpp
+    ${SOFAMISCCOLLISION_SRC}/TetrahedronModel.cpp
+    ${SOFAMISCCOLLISION_SRC}/TetrahedronRayContact.cpp
+    ${SOFAMISCCOLLISION_SRC}/TriangleModelInRegularGrid.cpp
+    ${SOFAMISCCOLLISION_SRC}/BaseIntTool.cpp
+    ${SOFAMISCCOLLISION_SRC}/CapsuleIntTool.cpp
+    ${SOFAMISCCOLLISION_SRC}/CapsuleModel.cpp
+    ${SOFAMISCCOLLISION_SRC}/IntrCapsuleOBB.cpp
+    ${SOFAMISCCOLLISION_SRC}/IntrOBBOBB.cpp
+    ${SOFAMISCCOLLISION_SRC}/IntrSphereOBB.cpp
+    ${SOFAMISCCOLLISION_SRC}/IntrUtility3.cpp
+    ${SOFAMISCCOLLISION_SRC}/OBBIntTool.cpp
+    ${SOFAMISCCOLLISION_SRC}/OBBModel.cpp
+    ${SOFAMISCCOLLISION_SRC}/RigidCapsuleModel.cpp
+    ${SOFAMISCCOLLISION_SRC}/IntrMeshUtility.cpp
+    ${SOFAMISCCOLLISION_SRC}/IntrTriangleOBB.cpp
+    ${SOFAMISCCOLLISION_SRC}/MeshIntTool.cpp
     )
 message(STATUS "SofaMiscModule: build all maintained sofa components.")
-
-if(SofaSphFluid_FOUND)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/SpatialGridPointModel.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/SpatialGridPointModel.cpp)
-    message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid found activing: <SpatialGridPointModel>")
-else()
-    message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid not found de-activing: <SpatialGridPointModel>")
-endif()
-
-if(SofaDistanceGrid_FOUND)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/FrictionContact_DistanceGrid.cpp)
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaBaseCollision)

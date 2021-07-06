@@ -27,7 +27,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 #include <fstream>
@@ -76,10 +76,10 @@ OptiTrackNatNetDevice::OptiTrackNatNetDevice()
     , jointOpenAngle(initData(&jointOpenAngle, (Real)10, "jointOpenAngle", "Input: rotation angle when opened (for articulated instruments)"))
     , jointClosedAngle(initData(&jointClosedAngle, (Real)-10, "jointClosedAngle", "Input: rotation angle when closed (for articulated instruments)"))
 
-    , drawAxisSize(initData(&drawAxisSize, sofa::defaulttype::Vec3f(1,1,1), "drawAxisSize", "Size of displayed axis"))
+    , drawAxisSize(initData(&drawAxisSize, sofa::type::Vec3f(1,1,1), "drawAxisSize", "Size of displayed axis"))
     , drawMarkersSize(initData(&drawMarkersSize, 0.1f, "drawMarkersSize", "Size of displayed markers"))
     , drawMarkersIDSize(initData(&drawMarkersIDSize, 0.0f, "drawMarkersIDSize", "Size of displayed markers ID"))
-    , drawMarkersColor(initData(&drawMarkersColor, sofa::defaulttype::Vec4f(1,1,1,1), "drawMarkersColor", "Color of displayed markers"))
+    , drawMarkersColor(initData(&drawMarkersColor, sofa::type::RGBAColor::white(), "drawMarkersColor", "Color of displayed markers"))
     , writeInMarkersMesh(100)
     , readSimMarkersMesh(1)
     , smoothDistance(-1)
@@ -221,14 +221,14 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
 //        sout << "Tracked frame: " << frame << sendl;
         this->trackedFrame.setValue(frame);
 
-        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > > markers = this->markers;
+        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::type::vector<CPos> > > markers = this->markers;
         markers.resize(rigid.nMarkers);
         for (int m=0; m<rigid.nMarkers; ++m)
             markers[m] = rigid.markersPos[m];
 
         if (rigid.markersID)
         {
-            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<int> > > markersID = this->markersID;
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::type::vector<int> > > markersID = this->markersID;
             markersID.resize(rigid.nMarkers);
             for (int m=0; m<rigid.nMarkers; ++m)
                 markersID[m] = rigid.markersID[m];
@@ -236,13 +236,13 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
 
         if (rigid.markersSize)
         {
-            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<Real> > > markersSize = this->markersSize;
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::type::vector<Real> > > markersSize = this->markersSize;
             markersSize.resize(rigid.nMarkers);
             for (int m=0; m<rigid.nMarkers; ++m)
                 markersSize[m] = rigid.markersSize[m];
         }
 
-        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > > inMarkers = this->inLocalMarkers;
+        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::type::vector<CPos> > > inMarkers = this->inLocalMarkers;
         inMarkers.resize(rigid.nMarkers);
         for (int m=0; m<rigid.nMarkers; ++m)
             inMarkers[m] = frame.getOrientation().inverse().rotate(markers[m] - frame.getCenter());
@@ -379,8 +379,8 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
             else // read markers from mesh file
             {
                 serr << "Reading simulation markers mesh " << meshFile << sendl;
-                sofa::helper::vector<CPos> vertices;
-                sofa::helper::vector<sofa::helper::fixed_array<int,3> > triangles;
+                sofa::type::vector<CPos> vertices;
+                sofa::type::vector<sofa::type::fixed_array<int,3> > triangles;
                 std::string line, cmd;
                 while (!infile.eof())
                 {
@@ -395,7 +395,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                     }
                     else if (cmd == "f")
                     {
-                        sofa::helper::fixed_array<int,3> f;
+                        sofa::type::fixed_array<int,3> f;
                         std::string s;
                         str >> s;
                         f[0] = atoi(s.c_str())-1;
@@ -452,7 +452,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                     }
                 }
                 // fill simMarkers with the center of mass of each group
-                sofa::helper::vector<CPos> simMarkers;
+                sofa::type::vector<CPos> simMarkers;
                 simMarkers.reserve(rigid.nMarkers);
                 for (std::map<int,std::vector<int> >::const_iterator itg = groups.begin(), itgend = groups.end(); itg != itgend; ++itg)
                 {
@@ -469,7 +469,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                 }
                 this->simLocalMarkers.setValue(simMarkers);
                 sout << "Read " << simMarkers.size() << " markers from mesh file" << sendl;
-                sofa::helper::vector<CPos> inMarkers = this->inLocalMarkers.getValue();
+                sofa::type::vector<CPos> inMarkers = this->inLocalMarkers.getValue();
                 if (simMarkers.size() == inMarkers.size())
                 {
                     sout << "Computing transformation between input markers and positions from mesh file..." << sendl;
@@ -533,7 +533,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                         Real bestSimArea = -sortedMarkers[0].first;
                         //sout << "sim best frame: dirX = " << (simMarkers[0] - simCenter) << "    area = " << bestSimArea << sendl;
 
-                        sofa::defaulttype::Mat<3,3,Real> inFrame;
+                        sofa::type::Mat<3,3,Real> inFrame;
                         unsigned int inMX = 0;
                         unsigned int inMY = 1;
                         inFrame[0] = inMarkers[inMX] - inCenter;
@@ -556,7 +556,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                         for (unsigned int m=0; m<inMarkers.size(); ++m)
                             inMarkersXForm[m] = inFrame * ((inMarkers[m] - inCenter)*in2simScale);
 
-                        sofa::defaulttype::Mat<3,3,Real> bestSimFrame;
+                        sofa::type::Mat<3,3,Real> bestSimFrame;
                         Real bestMatchError = -1;
 
                         for (unsigned int simMX = 0; simMX < simMarkers.size(); ++simMX)
@@ -569,7 +569,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                                 if (simMY == simMX) continue;
                                 Real area = cross(simMarkers[simMX] - simCenter, simMarkers[simMY] - simCenter).norm();
                                 if (area < 0.5f*bestSimArea) continue;
-                                sofa::defaulttype::Mat<3,3,Real> simFrame;
+                                sofa::type::Mat<3,3,Real> simFrame;
                                 simFrame[0] = simMarkers[simMX] - simCenter;
                                 simFrame[1] = simMarkers[simMY] - simCenter;
                                 simFrame[2] = cross(simFrame[0],simFrame[1]);
@@ -667,8 +667,8 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
         this->position.setValue(pos);
         this->orientation.setValue(rot);
 
-        sofa::defaulttype::BoundingBox bb(pos, pos);
-        const sofa::defaulttype::Vec3f axisSize = drawAxisSize.getValue();
+        sofa::type::BoundingBox bb(pos, pos);
+        const sofa::type::Vec3f axisSize = drawAxisSize.getValue();
         if (axisSize.norm2() > 0.0f)
         {
             bb.include(pos+rot.rotate(CPos(axisSize[0],0,0)));
@@ -688,11 +688,11 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
 
         if (distanceMarkersID.isSet())
         {
-            sofa::helper::fixed_array<int,2> distM = distanceMarkersID.getValue();
-            const sofa::helper::vector<int>& markersID = this->markersID.getValue();
+            sofa::type::fixed_array<int,2> distM = distanceMarkersID.getValue();
+            const sofa::type::vector<int>& markersID = this->markersID.getValue();
             if (!markersID.empty())
             {
-                sofa::helper::fixed_array<int,2> distMIndex(-1,-1);
+                sofa::type::fixed_array<int,2> distMIndex(-1,-1);
 
                 for (unsigned int i=0; i<markersID.size(); ++i)
                 {
@@ -701,7 +701,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                 }
                 distM = distMIndex;
             }
-            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > > distanceMarkersPos = this->distanceMarkersPos;
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::type::vector<CPos> > > distanceMarkersPos = this->distanceMarkersPos;
             distanceMarkersPos.resize(0);
 
             if (distM[0] != distM[1] && (unsigned)distM[0] < markers.size() && (unsigned)distM[1] < markers.size())
@@ -764,7 +764,7 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
 {
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
     if (!this->tracked.getValue()) return;
-    const sofa::defaulttype::Vec3f axisSize = drawAxisSize.getValue();
+    const sofa::type::Vec3f axisSize = drawAxisSize.getValue();
     const float markersSize = drawMarkersSize.getValue();
     const float markersIDSize = drawMarkersIDSize.getValue();
     if (isGlobalFrame.getValue())
@@ -783,15 +783,15 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
         vparams->drawTool()->drawSpheres(markers.getValue(), markersSize, drawMarkersColor.getValue());
     if (markersSize > 0 && !distanceMarkersPos.getValue().empty())
     {
-        vparams->drawTool()->drawLines(distanceMarkersPos.getValue(), markersSize/5, (open.getValue() ? sofa::defaulttype::Vec4f(0,1,0,1) : closed.getValue() ? sofa::defaulttype::Vec4f(1,0,0,1) : drawMarkersColor.getValue()));
+        vparams->drawTool()->drawLines(distanceMarkersPos.getValue(), markersSize/5, (open.getValue() ? sofa::type::RGBAColor::green() : closed.getValue() ? sofa::type::RGBAColor::red() : drawMarkersColor.getValue()));
     }
     if (markersIDSize && !markersID.getValue().empty())
     {
-        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
+        sofa::type::Mat<4,4, GLfloat> modelviewM;
         glDisable(GL_LIGHTING);
-        const sofa::helper::vector<CPos>& markers = this->markers.getValue();
-        //const sofa::helper::vector<CPos>& inMarkers = this->inLocalMarkers.getValue();
-        const sofa::helper::vector<int>& markersID = this->markersID.getValue();
+        const sofa::type::vector<CPos>& markers = this->markers.getValue();
+        //const sofa::type::vector<CPos>& inMarkers = this->inLocalMarkers.getValue();
+        const sofa::type::vector<int>& markersID = this->markersID.getValue();
         glPushMatrix();
 
         // Makes text always face the viewer by removing the scene rotation
@@ -801,7 +801,7 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
         const float scale = markersIDSize/50;
         for (unsigned int i =0; i<markersID.size() && i<markers.size(); i++)
         {
-            sofa::defaulttype::Vec3f center; center = markers[i];
+            sofa::type::Vec3f center; center = markers[i];
             std::ostringstream oss;
             oss << std::hex << markersID[i];
             if ((int)i + 1 != markersID[i]) oss << "-" << (i + 1);
@@ -812,11 +812,11 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
     }
     if (jointCenter.isSet())
     {
-        sofa::helper::vector<CPos> points;
+        sofa::type::vector<CPos> points;
         Coord xform = frame.getValue();
         points.push_back(xform.pointToParent(jointCenter.getValue() - jointAxis.getValue()));
         points.push_back(xform.pointToParent(jointCenter.getValue() + jointAxis.getValue()));
-        vparams->drawTool()->drawLines(points, markersSize, sofa::defaulttype::Vec4f(0,0,1,1));
+        vparams->drawTool()->drawLines(points, markersSize, sofa::type::RGBAColor::blue());
     }
     if (isGlobalFrame.getValue())
     {

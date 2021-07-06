@@ -24,7 +24,7 @@
 
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 
 using namespace sofa::core::collision;
 
@@ -38,7 +38,7 @@ public:
     sofa::Index addPoint(const typename TVec3Types::Coord& P, sofa::Index index, typename TVec3Types::Real& r)
     {
         const typename TVec3Types::Coord& cP = P - this->model->center(index);
-        const defaulttype::Quaternion& ori = this->model->orientation(index);
+        const type::Quat<SReal>& ori = this->model->orientation(index);
 
         return RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >::addPoint(ori.inverseRotate(cP), index, r);
     }

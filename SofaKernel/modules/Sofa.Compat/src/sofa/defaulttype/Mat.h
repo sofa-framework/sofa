@@ -26,13 +26,10 @@
 // Lots of code does not include Vec because they include Mat
 // So it makes sense to do that for them implicitly
 // And it will generate a warning as well
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
 
-// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
-// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
-// (PR #1790)
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Mat.h")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/Mat.h")
 
 namespace sofa::defaulttype
 {
@@ -105,7 +102,7 @@ inline real trace(const Mat<N, N, real>& m)
 }
 
 template<sofa::Size N, class real>
-inline Vec<N, real> diagonal(const Mat<N, N, real>& m)
+inline type::Vec<N, real> diagonal(const Mat<N, N, real>& m)
 {
     return type::diagonal(m);
 }
@@ -164,7 +161,7 @@ void printMaple(std::ostream& o, const Mat<L, C, real>& m)
 }
 
 template <sofa::Size L, sofa::Size C, typename T>
-inline Mat<L, C, T> dyad(const Vec<L, T>& u, const Vec<C, T>& v)
+inline Mat<L, C, T> dyad(const type::Vec<L, T>& u, const type::Vec<C, T>& v)
 {
     return type::dyad(u,v);
 }
@@ -176,7 +173,7 @@ inline real scalarProduct(const Mat<L, C, real>& left, const Mat<L, C, real>& ri
 }
 
 template<class Real>
-inline Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v)
+inline Mat<3, 3, Real> crossProductMatrix(const type::Vec<3, Real>& v)
 {
     return type::crossProductMatrix(v);
 }
@@ -184,7 +181,7 @@ inline Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v)
 
 /// return a * b^T
 template<sofa::Size L, class Real>
-static Mat<L, L, Real> tensorProduct(const Vec<L, Real> a, const Vec<L, Real> b)
+static Mat<L, L, Real> tensorProduct(const type::Vec<L, Real> a, const type::Vec<L, Real> b)
 {
     return type::tensorProduct(a, b);
 }

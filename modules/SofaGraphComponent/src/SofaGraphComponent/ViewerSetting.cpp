@@ -27,7 +27,7 @@
 namespace sofa::component::configurationsetting
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 using namespace sofa::helper;
 
 int ViewerSettingClass = core::RegisterObject("Configuration for the Viewer of your application")

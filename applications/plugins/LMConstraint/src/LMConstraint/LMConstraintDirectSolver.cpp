@@ -72,11 +72,11 @@ bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("AnalyseConstraints");
 #endif
-    const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
+    const type::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
 
     JacobianRows rowsL ; rowsL.reserve(numConstraint);
     JacobianRows rowsLT; rowsLT.reserve(numConstraint);
-    helper::vector< unsigned int > rightHandElements;
+    type::vector< unsigned int > rightHandElements;
 
     analyseConstraints(LMConstraints, cParams->constOrder(),
             rowsL, rowsLT, rightHandElements);
@@ -100,7 +100,7 @@ bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams
     //TODO: change newC by c
     c=VectorEigen::Zero(rowsL.size());
     unsigned int idx=0;
-    for (helper::vector<unsigned int >::const_iterator it=rightHandElements.begin(); it!=rightHandElements.end(); ++it)
+    for (type::vector<unsigned int >::const_iterator it=rightHandElements.begin(); it!=rightHandElements.end(); ++it)
         c[idx++]=previousC[*it];
 
     //------------------------------------------------------------------
@@ -202,8 +202,8 @@ bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams
 }
 
 
-void LMConstraintDirectSolver::analyseConstraints(const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
-        JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const
+void LMConstraintDirectSolver::analyseConstraints(const type::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
+        JacobianRows &rowsL,JacobianRows &rowsLT, type::vector< unsigned int > &rightHandElements) const
 {
     //Iterate among all the Sofa LMConstraint
     for (unsigned int componentConstraint=0; componentConstraint<LMConstraints.size(); ++componentConstraint)
@@ -212,9 +212,9 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< sofa::co
         //Find the constraint dealing with contact
         if (ContactDescriptionHandler* contactDescriptor=dynamic_cast<ContactDescriptionHandler*>(constraint))
         {
-            const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
+            const type::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
             //Iterate among all the contacts
-            for (helper::vector< sofa::core::behavior::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
+            for (type::vector< sofa::core::behavior::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
             {
                 const sofa::core::behavior::ConstraintGroup* group=*itGroup;
                 const sofa::component::constraintset::ContactDescription& contact=contactDescriptor->getContactDescription(group);
@@ -268,8 +268,8 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< sofa::co
         else
         {
             //Non contact constraints: we add all the equations
-            const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
-            for (helper::vector< sofa::core::behavior::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
+            const type::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
+            for (type::vector< sofa::core::behavior::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
             {
                 const sofa::core::behavior::ConstraintGroup* group=*itGroup;
                 std::pair< sofa::core::behavior::ConstraintGroup::EquationConstIterator,sofa::core::behavior::ConstraintGroup::EquationConstIterator> range=group->data();

@@ -22,6 +22,7 @@ namespace mass
 
 using namespace	sofa::component::topology;
 using namespace core::topology;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 

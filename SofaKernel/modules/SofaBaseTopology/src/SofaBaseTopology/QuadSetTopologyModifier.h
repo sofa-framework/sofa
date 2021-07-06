@@ -60,7 +60,7 @@ public:
     /** \brief add a set of quads
     @param quads an array of vertex indices describing the quads to be created
     */
-    virtual void addQuads(const sofa::helper::vector< Quad > &quads);
+    virtual void addQuads(const sofa::type::vector< Quad > &quads);
 
     /** \brief add a set of quads
     @param quads an array of vertex indices describing the quads to be created
@@ -68,9 +68,9 @@ public:
     @param baryCoefs for each quad provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
     *
     */
-    virtual void addQuads(const sofa::helper::vector< Quad > &quads,
-            const sofa::helper::vector< sofa::helper::vector< QuadID > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
+    virtual void addQuads(const sofa::type::vector< Quad > &quads,
+            const sofa::type::vector< sofa::type::vector< QuadID > > & ancestors,
+            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs) ;
 
     /** \brief Effectively Add a quad.
     */
@@ -83,13 +83,13 @@ public:
     @param removeIsolatedPoints if true isolated vertices are also removed
     *
     */
-    virtual void removeQuads(const sofa::helper::vector<QuadID> &quadIds,
+    virtual void removeQuads(const sofa::type::vector<QuadID> &quadIds,
             const bool removeIsolatedEdges,
             const bool removeIsolatedPoints);
 
     /** \brief Generic method to remove a list of items.
     */
-    void removeItems(const sofa::helper::vector< QuadID >& items) override;
+    void removeItems(const sofa::type::vector< QuadID >& items) override;
 
 protected:
     /** \brief Sends a message to warn that some quads were added in this topology.
@@ -97,24 +97,24 @@ protected:
     * \sa addQuadsProcess
     */
     void addQuadsWarning(const size_t nQuads,
-        const sofa::helper::vector< Quad >& quadsList,
-        const sofa::helper::vector< QuadID >& quadsIndexList);
+        const sofa::type::vector< Quad >& quadsList,
+        const sofa::type::vector< QuadID >& quadsIndexList);
 
     /** \brief Sends a message to warn that some quads were added in this topology.
     *
     * \sa addQuadsProcess
     */
     void addQuadsWarning(const size_t nQuads,
-        const sofa::helper::vector< Quad >& quadsList,
-        const sofa::helper::vector< QuadID >& quadsIndexList,
-        const sofa::helper::vector< sofa::helper::vector< QuadID > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
+        const sofa::type::vector< Quad >& quadsList,
+        const sofa::type::vector< QuadID >& quadsIndexList,
+        const sofa::type::vector< sofa::type::vector< QuadID > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs);
 
     /** \brief Effectively Add some quads to this topology.
     *
      * \sa addQuadsWarning
      */
-    virtual void addQuadsProcess(const sofa::helper::vector< Quad >& quads);
+    virtual void addQuadsProcess(const sofa::type::vector< Quad >& quads);
 
     /** \brief Sends a message to warn that some quads are about to be deleted.
     *
@@ -122,7 +122,7 @@ protected:
     *
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     */
-    virtual void removeQuadsWarning(sofa::helper::vector<QuadID>& quads);
+    virtual void removeQuadsWarning(sofa::type::vector<QuadID>& quads);
 
     /** \brief Remove a subset of  quads. Eventually remove isolated edges and vertices
     *
@@ -132,7 +132,7 @@ protected:
     * @param removeIsolatedEdges if true isolated edges are also removed
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void removeQuadsProcess(const sofa::helper::vector<QuadID>& indices,
+    virtual void removeQuadsProcess(const sofa::type::vector<QuadID>& indices,
         const bool removeIsolatedEdges = false,
         const bool removeIsolatedPoints = false);
 
@@ -141,7 +141,7 @@ protected:
     *
     * \sa addEdgesWarning
     */
-    void addEdgesProcess(const sofa::helper::vector< Edge >& edges) override;
+    void addEdgesProcess(const sofa::type::vector< Edge >& edges) override;
 
     /** \brief Remove a subset of edges
     *
@@ -151,7 +151,7 @@ protected:
     * @param removeIsolatedItems if true isolated vertices are also removed
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     */
-    void removeEdgesProcess(const sofa::helper::vector<QuadID>& indices,
+    void removeEdgesProcess(const sofa::type::vector<QuadID>& indices,
         const bool removeIsolatedItems = false) override;
 
 
@@ -169,7 +169,7 @@ protected:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    void removePointsProcess(const sofa::helper::vector<PointID>& indices,
+    void removePointsProcess(const sofa::type::vector<PointID>& indices,
         const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
@@ -177,8 +177,8 @@ protected:
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
-        const sofa::helper::vector<PointID>& inv_index,
+    void renumberPointsProcess(const sofa::type::vector<PointID>& index,
+        const sofa::type::vector<PointID>& inv_index,
         const bool renumberDOF = true) override;
 
 

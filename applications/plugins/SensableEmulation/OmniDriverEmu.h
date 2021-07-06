@@ -49,23 +49,20 @@ namespace controller
 
 class ForceFeedback;
 
-
-using namespace sofa::defaulttype;
-
 /** Holds data retrieved from HDAPI. */
 typedef struct
 {
     int nupdates;
     int m_buttonState;					/* Has the device button has been pressed. */
-    Vec3d pos;
-    Quat quat;
+    type::Vec3d pos;
+    type::Quat<SReal> quat;
     bool ready;
     bool stop;
 } DeviceData;
 
 typedef struct
 {
-    helper::vector<ForceFeedback*> forceFeedbacks;
+    type::vector<ForceFeedback*> forceFeedbacks;
     int forceFeedbackIndice;
     simulation::Node *context;
 
@@ -94,8 +91,11 @@ class SOFA_SENSABLEEMUPLUGIN_API OmniDriverEmu : public Controller
 {
 
 public:
-    typedef Rigid3dTypes::Coord Coord;
-    typedef Rigid3dTypes::VecCoord VecCoord;
+    typedef defaulttype::Rigid3dTypes::Coord Coord;
+    typedef defaulttype::Rigid3dTypes::VecCoord VecCoord;
+
+    using Vec3d = sofa::type::Vec3d;
+    using Quat = sofa::type::Quat<SReal>;
 
     SOFA_CLASS(OmniDriverEmu, Controller);
     Data<double> forceScale; ///< Default forceScale applied to the force feedback.
@@ -123,14 +123,14 @@ public:
     void draw(const core::visual::VisualParams*) override;
 
     int initDevice(OmniData& data);
-    void setForceFeedbacks(helper::vector<ForceFeedback*> ffs);
+    void setForceFeedbacks(type::vector<ForceFeedback*> ffs);
 
     void setDataValue();
 
     void setOmniSimThreadCreated(bool b) { omniSimThreadCreated = b;}
 
     bool afterFirstStep;
-    SolidTypes<double>::Transform prevPosition;
+    defaulttype::SolidTypes<double>::Transform prevPosition;
 
     //need for "omni simulation"
     helper::system::thread::CTime *thTimer;
@@ -144,7 +144,7 @@ public:
     double lastStep;
     bool executeAsynchro;
     Data<VecCoord> trajPts; ///< Trajectory positions
-    Data<helper::vector<double> > trajTim; ///< Trajectory timing
+    Data<type::vector<double> > trajTim; ///< Trajectory timing
 
     int getCurrentToolIndex() { return currentToolIndex;}
     void handleEvent(core::objectmodel::Event *) override ;
@@ -159,7 +159,7 @@ private:
     bool moveOmniBase;
     Vec3d positionBase_buf;
 
-    core::behavior::MechanicalState<Rigid3dTypes> *mState; ///< Controlled MechanicalState.
+    core::behavior::MechanicalState<defaulttype::Rigid3dTypes> *mState; ///< Controlled MechanicalState.
 
     bool omniSimThreadCreated;
     int currentToolIndex;

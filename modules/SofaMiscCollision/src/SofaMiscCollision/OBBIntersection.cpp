@@ -25,8 +25,8 @@
 #include <sofa/core/collision/Intersection.inl>
 
 #include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaMiscCollision/OBBModel.h>
+#include <SofaMiscCollision/CapsuleModel.h>
 #include <SofaUserInteraction/RayModel.h>
 
 #include <SofaUserInteraction/FixParticlePerformer.h>
@@ -34,6 +34,7 @@
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
@@ -83,7 +84,7 @@ int  RigidDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, Output
     //Box
     const Vector3 v3HalfExtents = rObb.extents();
     const Vector3& v3BoxCenter = rObb.center();
-    const Quaternion& qOrientation = rObb.orientation();
+    const Quat<SReal>& qOrientation = rObb.orientation();
     Mat33 m33Orientation;
     qOrientation.toMatrix(m33Orientation);
 
@@ -232,7 +233,7 @@ using FixParticlePerformer3d = sofa::component::collision::FixParticlePerformer<
 
 int obbFixParticle = FixParticlePerformer3d::RegisterSupportedModel<OBBCollisionModel<sofa::defaulttype::Rigid3Types>>(
     []
-(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
+(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, type::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
     {
         auto* obb = dynamic_cast<OBBCollisionModel<sofa::defaulttype::Rigid3Types>*>(model.get());
 

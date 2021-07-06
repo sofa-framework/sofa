@@ -25,11 +25,11 @@
 #include <Flexible/config.h>
 #include "../types/PolynomialBasis.h"
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <SofaBaseMechanics/MechanicalObject.inl>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/random.h>
 
@@ -67,7 +67,7 @@ public:
     enum { deriv_total_size = VSize };
     enum { order = _order };
 
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<Real> VecReal;
 
     class Deriv
     {
@@ -87,7 +87,7 @@ public:
 
         static Size size() { return VSize; }
 
-        /// seen as a vector
+        /// seen as a type::Vec<tor
         Real* ptr() { return v.ptr(); }
         const Real* ptr() const { return v.ptr(); }
 
@@ -168,10 +168,10 @@ public:
         /// @}
     };
 
-    typedef helper::vector<Deriv> VecDeriv;
+    typedef type::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
+    static Deriv interpolate ( const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs )
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
@@ -181,7 +181,7 @@ public:
 
     typedef Deriv Coord;
 
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
 
     static const char* Name();
 
@@ -246,9 +246,9 @@ public:
     static const char* Name();
 
     static const Size material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
-    typedef Vec<material_dimensions, Real> MaterialCoord;
-    typedef helper::vector<MaterialCoord> VecMaterialCoord;
-    typedef Mat<material_dimensions,material_dimensions,Real> StrainMat;    ///< Strain in matrix form
+    typedef type::Vec<material_dimensions, Real> MaterialCoord;
+    typedef type::vector<MaterialCoord> VecMaterialCoord;
+    typedef type::Mat<material_dimensions,material_dimensions,Real> StrainMat;    ///< Strain in matrix form
 };
 
 typedef StrainTypes<3, 3, 0, double> E331dTypes;
@@ -369,9 +369,9 @@ public:
     static const char* Name();
 
     static const Size material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
-    typedef Vec<material_dimensions, _Real> MaterialCoord;
-    typedef helper::vector<MaterialCoord> VecMaterialCoord;
-    typedef Mat<material_dimensions,material_dimensions,_Real> StrainMat;    ///< Strain in matrix form
+    typedef type::Vec<material_dimensions, _Real> MaterialCoord;
+    typedef type::vector<MaterialCoord> VecMaterialCoord;
+    typedef type::Mat<material_dimensions,material_dimensions,_Real> StrainMat;    ///< Strain in matrix form
 };
 
 typedef PrincipalStretchesStrainTypes<3, 3, 0, double> U331dTypes;
@@ -409,11 +409,11 @@ template<> struct DataTypeName< defaulttype::U321dTypes::Coord > { static const 
 
 /// Convert a symmetric strain matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx) eyz=(Fyz+Fzy), ezx=(Fxz+Fzx)
 template<Size material_dimensions, Size dim, typename Real>
-static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> StrainMatToVoigt( const  Mat<dim,material_dimensions, Real>& f )
+static inline type::Vec<material_dimensions * (1+material_dimensions) / 2, Real> StrainMatToVoigt( const  type::Mat<dim,material_dimensions, Real>& f )
 {
     static const Size strain_size = material_dimensions * (1+material_dimensions) / 2; ///< independent entries in the strain tensor
-    typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
-    StrainVec s(NOINIT);
+    typedef type::Vec<strain_size,Real> StrainVec;    ///< Strain in type::Vec<tor form
+    StrainVec s(type::NOINIT);
     unsigned int ei=0;
     for(Size j=0; j<material_dimensions; j++)
         for( Size k=0; k<material_dimensions-j; k++ )
@@ -425,10 +425,10 @@ static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> Strai
 
 /// Convert a diagonal matrix to principal stretches  exx=Fxx etc.
 template<Size material_dimensions, typename Real>
-static inline Vec<material_dimensions, Real> MatToPrincipalStretches( const  Mat<material_dimensions,material_dimensions, Real>& f )
+static inline type::Vec<material_dimensions, Real> MatToPrincipalStretches( const  type::Mat<material_dimensions,material_dimensions, Real>& f )
 {
     assert( f.isDiagonal() );
-    Vec<material_dimensions, Real> s(NOINIT);
+    type::Vec<material_dimensions, Real> s(type::NOINIT);
     for(Size i=0; i<material_dimensions; i++)
         s[i] = f[i][i];
     return s;
@@ -437,10 +437,10 @@ static inline Vec<material_dimensions, Real> MatToPrincipalStretches( const  Mat
 
 /// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy/2, etc. for strain tensors
 template<typename Real>
-static inline Mat<3,3, Real> StrainVoigtToMat( const Vec<6, Real>& s )
+static inline type::Mat<3,3, Real> StrainVoigtToMat( const type::Vec<6, Real>& s )
 {
     static const Size material_dimensions=3;
-    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
+    type::Mat<material_dimensions,material_dimensions, Real> f(type::NOINIT);
 
     f[0][0] = s[0];
     f[1][1] = s[1];
@@ -454,10 +454,10 @@ static inline Mat<3,3, Real> StrainVoigtToMat( const Vec<6, Real>& s )
 
 /// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy/2, etc. for strain tensors
 template<typename Real>
-static inline Mat<2,2, Real> StrainVoigtToMat( const Vec<3, Real>& s )
+static inline type::Mat<2,2, Real> StrainVoigtToMat( const type::Vec<3, Real>& s )
 {
     static const Size material_dimensions=2;
-    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
+    type::Mat<material_dimensions,material_dimensions, Real> f(type::NOINIT);
 
     f[0][0] = s[0];
     f[1][1] = s[1];
@@ -469,10 +469,10 @@ static inline Mat<2,2, Real> StrainVoigtToMat( const Vec<3, Real>& s )
 
 /// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy/2, etc. for strain tensors
 template<typename Real>
-static inline Mat<1,1, Real> StrainVoigtToMat( const Vec<1, Real>& s )
+static inline type::Mat<1,1, Real> StrainVoigtToMat( const type::Vec<1, Real>& s )
 {
     static const Size material_dimensions=1;
-    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
+    type::Mat<material_dimensions,material_dimensions, Real> f(type::NOINIT);
     f[0][0] = s[0];
     return f;
 }
@@ -480,9 +480,9 @@ static inline Mat<1,1, Real> StrainVoigtToMat( const Vec<1, Real>& s )
 
 /// PrincipalStretches to diagonal matrix Fxx=sxx etc.
 template<Size material_dimensions,typename Real>
-static inline Mat<material_dimensions,material_dimensions, Real> PrincipalStretchesToMat( const Vec<material_dimensions, Real>& s )
+static inline type::Mat<material_dimensions,material_dimensions, Real> PrincipalStretchesToMat( const type::Vec<material_dimensions, Real>& s )
 {
-    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
+    type::Mat<material_dimensions,material_dimensions, Real> f(type::NOINIT);
 
     for( Size i=0 ; i<material_dimensions ; ++i )
     {
@@ -500,11 +500,11 @@ static inline Mat<material_dimensions,material_dimensions, Real> PrincipalStretc
 
 /// Convert a symmetric stress matrix to voigt notation  exx=Fxx, eyy=Fyy, ezz=Fzz, exy=(Fxy+Fyx)/2 eyz=(Fyz+Fzy)/2, ezx=(Fxz+Fzx)/2
 template<Size material_dimensions, typename Real>
-static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> StressMatToVoigt( const  Mat<material_dimensions,material_dimensions, Real>& f )
+static inline type::Vec<material_dimensions * (1+material_dimensions) / 2, Real> StressMatToVoigt( const  type::Mat<material_dimensions,material_dimensions, Real>& f )
 {
     static const Size strain_size = material_dimensions * (1+material_dimensions) / 2; ///< independent entries in the strain tensor
-    typedef Vec<strain_size,Real> StrainVec;    ///< Strain in vector form
-    StrainVec s(NOINIT);
+    typedef type::Vec<strain_size,Real> StrainVec;    ///< Strain in type::Vec<tor form
+    StrainVec s(type::NOINIT);
     unsigned int ei=0;
     for(Size j=0; j<material_dimensions; j++)
         for( Size k=0; k<material_dimensions-j; k++ )
@@ -515,10 +515,10 @@ static inline Vec<material_dimensions * (1+material_dimensions) / 2, Real> Stres
 
 /// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy, etc. for stress tensors
 template<typename Real>
-static inline Mat<3,3, Real> StressVoigtToMat( const Vec<6, Real>& s )
+static inline type::Mat<3,3, Real> StressVoigtToMat( const type::Vec<6, Real>& s )
 {
     static const Size material_dimensions=3;
-    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
+    type::Mat<material_dimensions,material_dimensions, Real> f(type::NOINIT);
 
     f[0][0] = s[0];
     f[1][1] = s[1];
@@ -531,10 +531,10 @@ static inline Mat<3,3, Real> StressVoigtToMat( const Vec<6, Real>& s )
 
 /// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy, etc. for stress tensors
 template<typename Real>
-static inline Mat<2,2, Real> StressVoigtToMat( const Vec<3, Real>& s )
+static inline type::Mat<2,2, Real> StressVoigtToMat( const type::Vec<3, Real>& s )
 {
     static const Size material_dimensions=2;
-    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
+    type::Mat<material_dimensions,material_dimensions, Real> f(type::NOINIT);
     /*unsigned int ei=0;
     for(unsigned int j=0; j<material_dimensions; j++){
         for( unsigned int k=0; k<material_dimensions-j; k++ )
@@ -548,24 +548,24 @@ static inline Mat<2,2, Real> StressVoigtToMat( const Vec<3, Real>& s )
 
 /// Voigt notation to symmetric matrix Fxx=sxx, Fxy=Fyx=sxy, etc. for stress tensors
 template<typename Real>
-static inline Mat<1,1, Real> StressVoigtToMat( const Vec<1, Real>& s )
+static inline type::Mat<1,1, Real> StressVoigtToMat( const type::Vec<1, Real>& s )
 {
     static const Size material_dimensions=1;
-    Mat<material_dimensions,material_dimensions, Real> f(NOINIT);
+    type::Mat<material_dimensions,material_dimensions, Real> f(type::NOINIT);
     f[0][0] = s[0];
     return f;
 }
 
 
 
-// TODO: ADD  Mat*VoigtVec operators
+// TODO: ADD  type::Mat<*VoigtVec operators
 
 
 /// \return 0.5 * ( A + At )
 template<Size N, class Real>
-static defaulttype::Mat<N,N,Real> cauchyStrainTensor( const defaulttype::Mat<N,N,Real>& A )
+static type::Mat<N,N,Real> cauchyStrainTensor( const type::Mat<N,N,Real>& A )
 {
-    defaulttype::Mat<N,N,Real> B;
+    type::Mat<N,N,Real> B;
     for( Size i=0 ; i<N ; i++ )
     {
         B[i][i] = A[i][i];

@@ -23,7 +23,7 @@ class SOFA_REGISTRATION_API RegistrationExporter : public core::objectmodel::Bas
 {
 public:
     SOFA_CLASS(RegistrationExporter,core::objectmodel::BaseObject);
-	typedef defaulttype::Mat<4,4,SReal> Mat4x4;
+	typedef type::Mat<4,4,SReal> Mat4x4;
 
 protected:
 	sofa::core::behavior::BaseMechanicalState* mstate;

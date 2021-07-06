@@ -48,10 +48,10 @@ public:
 };
 
 template<int N, typename Real>
-class AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> >
+class AddMToMatrixFunctor< type::Vec<N,Real>, type::Mat<N,N,Real> >
 {
 public:
-    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::Mat<N,N,Real>& mass, int pos, double fact)
+    void operator()(defaulttype::BaseMatrix * mat, const type::Mat<N,N,Real>& mass, int pos, double fact)
     {
         for (int i=0; i<N; ++i)
             for (int j=0; j<N; ++j)

@@ -4,7 +4,8 @@
     <VisualStyle displayFlags="showBehaviorModels hideCollisionModels hideMappings hideForceFields"/>
     <RequiredPlugin name="ManifoldTopologies"/>
 	<DefaultPipeline verbose="0" />
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager response="default" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
 	<DefaultCollisionGroupManager />
@@ -21,7 +22,7 @@
 		<FixedConstraint indices="2 3"/>
 		<TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />  
 		<TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0"/>
-		<TriangleSet/>
+		<TriangleCollisionModel/>
 		<Node >
 			<OglModel name="Visual" color="red"/>
 			<IdentityMapping input="@.." output="@Visual"/>

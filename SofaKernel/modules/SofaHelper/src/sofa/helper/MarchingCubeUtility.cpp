@@ -476,8 +476,8 @@ void MarchingCubeUtility::initCell ( GridCell& cell, const Vec3i& coord, const u
     0 will be returned if the grid cell is either totally above
     of totally below the isolevel.
     */
-int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float isolevel, sofa::helper::vector< PointID > &triangles,
-        std::map< Vector3, PointID> &map_vertices, sofa::helper::vector< Vector3 > &map_indices ) const
+int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float isolevel, sofa::type::vector< PointID > &triangles,
+        std::map< Vector3, PointID> &map_vertices, sofa::type::vector< Vector3 > &map_indices ) const
 {
 
     int i,ntriang;
@@ -563,14 +563,14 @@ int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float
 
 
 
-void MarchingCubeUtility::propagateFrom ( const sofa::helper::vector<Vec3i>& coord,
+void MarchingCubeUtility::propagateFrom ( const sofa::type::vector<Vec3i>& coord,
         unsigned char* data,
         const float isolevel,
-        sofa::helper::vector< PointID >& mesh,
-        sofa::helper::vector< Vector3 >& vertices,
+        sofa::type::vector< PointID >& mesh,
+        sofa::type::vector< Vector3 >& vertices,
         std::set<Vec3i>& generatedCubes,
         std::map< Vector3, PointID>& map_vertices,
-        helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid,
+        type::vector< type::vector<unsigned int> >* triangleIndexInRegularGrid,
         bool propagate
                                         ) const
 {
@@ -584,7 +584,7 @@ void MarchingCubeUtility::propagateFrom ( const sofa::helper::vector<Vec3i>& coo
 
     Vec3i cubeCoord, nextCube;
     stack<Vec3i> cubesToGenerate; // Stack of cubes to generate.
-    for( sofa::helper::vector<Vec3i>::const_iterator it = coord.begin(); it != coord.end(); ++it)
+    for( sofa::type::vector<Vec3i>::const_iterator it = coord.begin(); it != coord.end(); ++it)
     {
         const Vec3i& voxel = *it;
         if ( ( voxel[0] >= bbox.min[0]-1 ) && ( voxel[1] >= bbox.min[1]-1 ) && ( voxel[2] >= bbox.min[2]-1 ) &&
@@ -624,12 +624,12 @@ void MarchingCubeUtility::propagateFrom ( const sofa::helper::vector<Vec3i>& coo
 
 
 
-void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector< Vec3i > & seeds,
+void MarchingCubeUtility::run ( unsigned char *_data, const sofa::type::vector< Vec3i > & seeds,
         const float isolevel,
-        sofa::helper::vector< PointID >& mesh,
-        sofa::helper::vector< Vector3>& vertices,
+        sofa::type::vector< PointID >& mesh,
+        sofa::type::vector< Vector3>& vertices,
         std::map< Vector3, PointID>& map_vertices,
-        helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
+        type::vector< type::vector<unsigned int> >*triangleIndexInRegularGrid,
         bool propagate ) const
 {
 //    Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
@@ -660,11 +660,11 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
 
 
 
-void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector< Vec3i > & seeds,
+void MarchingCubeUtility::run ( unsigned char *_data, const sofa::type::vector< Vec3i > & seeds,
         const float isolevel,
-        sofa::helper::vector< PointID >& mesh,
-        sofa::helper::vector< Vector3>& vertices,
-        helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
+        sofa::type::vector< PointID >& mesh,
+        sofa::type::vector< Vector3>& vertices,
+        type::vector< type::vector<unsigned int> >*triangleIndexInRegularGrid,
         bool propagate ) const
 {
     std::map< Vector3, PointID> map_vertices;
@@ -677,9 +677,9 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
 
 
 void MarchingCubeUtility::run ( unsigned char *_data, const float isolevel,
-        sofa::helper::vector< PointID >& mesh,
-        sofa::helper::vector< Vector3 >& vertices,
-        helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid ) const
+        sofa::type::vector< PointID >& mesh,
+        sofa::type::vector< Vector3 >& vertices,
+        type::vector< type::vector<unsigned int> >* triangleIndexInRegularGrid ) const
 {
     size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
 
@@ -735,8 +735,8 @@ void MarchingCubeUtility::run ( unsigned char *_data, const float isolevel,
 void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
         sofa::helper::io::Mesh &m ) const
 {
-    using sofa::helper::vector;
-    using sofa::defaulttype::Vector3;
+    using sofa::type::vector;
+    using sofa::type::Vector3;
 
     msg_info() << "Creating Mesh using Marching Cubes\n";
     vector<Vector3> &vertices                 = m.getVertices();
@@ -849,7 +849,7 @@ void MarchingCubeUtility::setVerticesTranslation( Vector3 verticesTranslation)
 
 
 
-void MarchingCubeUtility::updateTriangleInRegularGridVector ( helper::vector< helper::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, unsigned int nbTriangles ) const
+void MarchingCubeUtility::updateTriangleInRegularGridVector ( type::vector< type::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, unsigned int nbTriangles ) const
 {
     vector<unsigned int> voxels;
     if ( cell.val[0] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *dataResolution[0] + ( coord[2]+0 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube

@@ -46,7 +46,7 @@ class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAPNarrowPhase : public core::coll
 public:
     SOFA_CLASS(DirectSAPNarrowPhase, core::collision::NarrowPhaseDetection);
 
-    typedef sofa::helper::vector<EndPoint *> EndPointList;
+    typedef sofa::type::vector<EndPoint *> EndPointList;
 
 private:
 
@@ -71,13 +71,13 @@ private:
     /// The container is a std::list to avoid invalidation of pointers after an insertion
     std::list<EndPoint> m_endPointContainer;
 
-    sofa::helper::vector<DSAPBox> m_boxes;//boxes
-    sofa::helper::vector<bool> m_isBoxInvestigated;
+    sofa::type::vector<DSAPBox> m_boxes;//boxes
+    sofa::type::vector<bool> m_isBoxInvestigated;
     EndPointList m_sortedEndPoints; ///< list of EndPoints dedicated to be sorted. Owner of pointers is m_endPointContainer
     int m_currentAxis;//the current greatest variance axis
 
     std::unordered_set<core::CollisionModel *> m_addedCollisionModels;//used to check if a collision model is added
-    sofa::helper::vector<core::CollisionModel *> m_newCollisionModels;//eventual new collision models to add at a step
+    sofa::type::vector<core::CollisionModel *> m_newCollisionModels;//eventual new collision models to add at a step
 
     double m_alarmDist;
     double m_alarmDist_d2;

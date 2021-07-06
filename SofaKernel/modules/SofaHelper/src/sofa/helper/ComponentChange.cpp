@@ -31,9 +31,10 @@ namespace lifecycle
 
 std::map<std::string, Deprecated> deprecatedComponents = {
     // SofaMiscForceField
-    {"LennardJonesForceField", Deprecated("v17.12", "v18.12")},
     {"MatrixMass", Deprecated("v19.06", "v19.12")},
-
+    {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
+    {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
+    {"DirectSAP", Deprecated("v21.06", "v21.12")},
 };
 
 std::map<std::string, ComponentChange> uncreatableComponents = {
@@ -160,7 +161,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaMiscForceField was pluginized in #1520
     { "GearSpringForceField", Pluginized("v20.12", "SofaMiscForceField") },
     { "MeshMatrixMass", Pluginized("v20.12", "SofaMiscForceField") },
-    { "LennardJonesForceField", Pluginized("v20.12", "SofaMiscForceField") },
 
     // SofaMiscMapping was pluginized in #1520
     { "BeamLinearMapping", Pluginized("v20.12", "SofaMiscMapping") },
@@ -545,9 +545,21 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{ "MechanicalObject", Pluginized("v20.12", "SofaBaseMechanics") },
     //{ "SubsetMapping", Pluginized("v20.12", "SofaBaseMechanics") },
     //{ "UniformMass", Pluginized("v20.12", "SofaBaseMechanics") },
+
+
+
+    /***********************/
+    // REMOVED SINCE v21.06
+
+    {"LennardJonesForceField", Removed("v17.12", "v21.06")},
+    {"LengthContainer", Removed("v21.06", "v21.06")},
+    {"PoissonContainer", Removed("v21.06", "v21.06")},
+    {"RadiusContainer", Removed("v21.06", "v21.06")},
+    {"StiffnessContainer", Removed("v21.06", "v21.06")},
         
     /***********************/
     // REMOVED SINCE v20.12
+
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
     { "HexahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
     { "TetrahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
@@ -559,39 +571,15 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     /***********************/
     // REMOVED SINCE v20.06
 
-    // SofaKernel
-    {"Point", Removed("v19.12", "v20.06")},
-    {"TPointModel", Removed("v19.12", "v20.06")},
-    {"PointModel", Removed("v19.12", "v20.06")},
-    {"PointMesh", Removed("v19.12", "v20.06")},
-    {"PointSet", Removed("v19.12", "v20.06")},
-
-    {"Line", Removed("v19.12", "v20.06")},
-    {"TLineModel", Removed("v19.12", "v20.06")},
-    {"LineMeshModel", Removed("v19.12", "v20.06")},
-    {"LineSetModel", Removed("v19.12", "v20.06")},
-    {"LineMesh", Removed("v19.12", "v20.06")},
-    {"LineSet", Removed("v19.12", "v20.06")},
-    {"LineModel", Removed("v19.12", "v20.06")},
-
-    {"Triangle", Removed("v19.12", "v20.06")},
-    {"TriangleSet", Removed("v19.12", "v20.06")},
-    {"TriangleMesh", Removed("v19.12", "v20.06")},
-    {"TriangleSetModel", Removed("v19.12", "v20.06")},
-    {"TriangleMeshModel", Removed("v19.12", "v20.06")},
-    {"TriangleModel", Removed("v19.12", "v20.06")},
-    {"TTriangleModel", Removed("v19.12", "v20.06")},
-
-    {"Sphere", Removed("v19.12", "v20.06")},
-    {"SphereModel", Removed("v19.12", "v20.06")},
-    {"TSphereModel", Removed("v19.12", "v20.06")},
+    {"Euler", Removed("v19.12", "v20.06")},
+    {"EulerExplicit", Removed("v19.12", "v20.06")},
+    {"ExplicitEuler", Removed("v19.12", "v20.06")},
+    {"EulerSolver", Removed("v19.12", "v20.06")},
+    {"ExplicitEulerSolver", Removed("v19.12", "v20.06")},
 
     {"Capsule", Removed("v19.12", "v20.06")},
     {"CapsuleModel", Removed("v19.12", "v20.06")},
     {"TCapsuleModel", Removed("v19.12", "v20.06")},
-
-    {"RigidCapsule", Removed("v19.12", "v20.06")},
-    {"CapsuleModel", Removed("v19.12", "v20.06")},
 
     {"Cube", Removed("v19.12", "v20.06")},
     {"CubeModel", Removed("v19.12", "v20.06")},
@@ -602,17 +590,45 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"Cylinder", Removed("v19.12", "v20.06")},
     {"CylinderModel", Removed("v19.12", "v20.06")},
 
+    {"Line", Removed("v19.12", "v20.06")},
+    {"TLineModel", Removed("v19.12", "v20.06")},
+    {"LineMeshModel", Removed("v19.12", "v20.06")},
+    {"LineSetModel", Removed("v19.12", "v20.06")},
+    {"LineMesh", Removed("v19.12", "v20.06")},
+    {"LineSet", Removed("v19.12", "v20.06")},
+    {"LineModel", Removed("v19.12", "v20.06")},
+
+    {"OBB", Removed("v19.12", "v20.06")},
+    {"OBBModel", Removed("v19.12", "v20.06")},
+    {"TOBBModel", Removed("v19.12", "v20.06")},
+
+    {"Point", Removed("v19.12", "v20.06")},
+    {"TPointModel", Removed("v19.12", "v20.06")},
+    {"PointModel", Removed("v19.12", "v20.06")},
+    {"PointMesh", Removed("v19.12", "v20.06")},
+    {"PointSet", Removed("v19.12", "v20.06")},
+
     {"Ray", Removed("v19.12", "v20.06")},
     {"RayModel", Removed("v19.12", "v20.06")},
+
+    {"RigidCapsule", Removed("v19.12", "v20.06")},
+    {"RigidCapsuleModel", Removed("v19.12", "v20.06")},
+    {"RigidCapsuleCollisionModel", Removed("v19.12", "v20.06")},
+
+    {"Sphere", Removed("v19.12", "v20.06")},
+    {"SphereModel", Removed("v19.12", "v20.06")},
+    {"TSphereModel", Removed("v19.12", "v20.06")},
 
     {"Tetrahedron", Removed("v19.12", "v20.06")},
     {"TetrahedronModel", Removed("v19.12", "v20.06")},
 
-    {"Euler", Removed("v19.12", "v20.06")},
-    {"EulerExplicit", Removed("v19.12", "v20.06")},
-    {"ExplicitEuler", Removed("v19.12", "v20.06")},
-    {"EulerSolver", Removed("v19.12", "v20.06")},
-    {"ExplicitEulerSolver", Removed("v19.12", "v20.06")},
+    {"Triangle", Removed("v19.12", "v20.06")},
+    {"TriangleSet", Removed("v19.12", "v20.06")},
+    {"TriangleMesh", Removed("v19.12", "v20.06")},
+    {"TriangleSetModel", Removed("v19.12", "v20.06")},
+    {"TriangleMeshModel", Removed("v19.12", "v20.06")},
+    {"TriangleModel", Removed("v19.12", "v20.06")},
+    {"TTriangleModel", Removed("v19.12", "v20.06")},
 
     /***********************/
     // REMOVED SINCE v18.12
@@ -646,8 +662,15 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"InterpolationController", Removed("v17.12", "v18.12")},
     {"MechanicalStateControllerOmni", Removed("v17.12", "v18.12")},
     {"NodeToggleController", Removed("v17.12", "v18.12")},
-};
 
+    /***********************/
+    // MOVED SINCE v21.06
+    { "OBBCollisionModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
+    { "RigidCapsuleCollisionModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
+    { "CapsuleModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
+    { "SpatialGridPointModel", Moved("v21.06", "SofaMiscCollision", "SofaSphFluid") },
+
+};
 
 } // namespace lifecycle
 } // namespace helper

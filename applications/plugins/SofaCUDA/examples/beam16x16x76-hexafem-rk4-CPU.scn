@@ -2,7 +2,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
 	
 	<DefaultPipeline depth="6" verbose="0" draw="0"/>
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
 	<DefaultContactManager name="Response" response="default" />
 	<DefaultCollisionGroupManager name="Group" />

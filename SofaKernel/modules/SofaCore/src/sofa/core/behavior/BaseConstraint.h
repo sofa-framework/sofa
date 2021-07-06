@@ -68,13 +68,13 @@ public:
     void setGroup(int g) { group.setValue(g); }
 
     typedef long long PersistentID;
-    typedef helper::vector<PersistentID> VecPersistentID;
-    typedef defaulttype::Vec<3,int> ConstCoord;
-    typedef helper::vector<ConstCoord> VecConstCoord;
-    typedef defaulttype::Vec<3,double> ConstDeriv;
-    typedef helper::vector<ConstDeriv> VecConstDeriv;
+    typedef type::vector<PersistentID> VecPersistentID;
+    typedef type::Vec<3,int> ConstCoord;
+    typedef type::vector<ConstCoord> VecConstCoord;
+    typedef type::Vec<3,double> ConstDeriv;
+    typedef type::vector<ConstDeriv> VecConstDeriv;
     typedef double ConstArea;
-    typedef helper::vector<ConstArea> VecConstArea;
+    typedef type::vector<ConstArea> VecConstArea;
 
     class ConstraintBlockInfo
     {
@@ -94,7 +94,7 @@ public:
         ConstraintBlockInfo() : parent(nullptr), const0(0), nbLines(1), nbGroups(0), hasId(false), hasPosition(false), hasDirection(false), hasArea(false), offsetId(0), offsetPosition(0), offsetDirection(0), offsetArea(0)
         {}
     };
-    typedef helper::vector<ConstraintBlockInfo> VecConstraintBlockInfo;
+    typedef type::vector<ConstraintBlockInfo> VecConstraintBlockInfo;
 
     /// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)

@@ -22,7 +22,7 @@
 #include <SofaBaseTopology/GridTopology.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::topology
 {
@@ -348,7 +348,7 @@ GridTopology::Index GridTopology::getIndex( int i, int j, int k ) const
 }
 
 
-sofa::defaulttype::Vector3 GridTopology::getPoint(Index i) const
+sofa::type::Vector3 GridTopology::getPoint(Index i) const
 {
     int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
     int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
@@ -357,13 +357,13 @@ sofa::defaulttype::Vector3 GridTopology::getPoint(Index i) const
     return getPointInGrid(x,y,z);
 }
 
-sofa::defaulttype::Vector3 GridTopology::getPointInGrid(int i, int j, int k) const
+sofa::type::Vector3 GridTopology::getPointInGrid(int i, int j, int k) const
 {
     Index id = this->getIndex(i, j, k);
     if (id < seqPoints.getValue().size())
         return seqPoints.getValue()[id];
     else
-        return sofa::defaulttype::Vector3();
+        return sofa::type::Vector3();
 }
 
 

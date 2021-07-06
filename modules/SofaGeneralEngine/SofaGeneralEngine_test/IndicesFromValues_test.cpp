@@ -26,11 +26,13 @@ using sofa::component::engine::IndicesFromValues;
 using sofa::core::objectmodel::New ;
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseTest;
 
 namespace sofa
 {
-struct TestIndicesFromValues : public Sofa_test<>{
+struct TestIndicesFromValues : public BaseTest 
+{
     // Test computation on a simple example
     void search_one_index(){
         IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();

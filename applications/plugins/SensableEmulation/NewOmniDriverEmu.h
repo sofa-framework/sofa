@@ -134,7 +134,7 @@ public:
     double lastStep;
     bool executeAsynchro;
     Data<VecCoord> trajPts; ///< Trajectory positions
-    Data<helper::vector<double> > trajTim; ///< Trajectory timing
+    Data<type::vector<double> > trajTim; ///< Trajectory timing
 
 private:
     void handleEvent(core::objectmodel::Event *);

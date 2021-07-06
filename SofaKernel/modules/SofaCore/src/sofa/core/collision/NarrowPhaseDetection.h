@@ -60,7 +60,7 @@ public:
     virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;
 
     /// Add a new list of potentially colliding pairs of models
-    virtual void addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v);
+    virtual void addCollisionPairs(const sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v);
 
     virtual void endNarrowPhase();
 

@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
 #include <CGALPlugin/BooleanOperations.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -270,8 +268,8 @@ void BooleanOperations::buildIndicesDistribution(const Exact_point_map &meshOut_
                                                  const Exact_point_map &mesh1_exact_points,
                                                  const Exact_point_map &mesh2_exact_points)
 {
-    helper::WriteAccessor< Data<helper::vector<int>> > indices1 = d_indices1Out;
-    helper::WriteAccessor< Data<helper::vector<int>> > indices2 = d_indices2Out;
+    helper::WriteAccessor< Data<type::vector<int>> > indices1 = d_indices1Out;
+    helper::WriteAccessor< Data<type::vector<int>> > indices2 = d_indices2Out;
     m_distribution.clear();
     std::pair<int, std::pair<int, int>> pair;
 

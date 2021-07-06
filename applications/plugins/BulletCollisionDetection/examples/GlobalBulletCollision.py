@@ -29,7 +29,7 @@ class GlobalCollision(Sofa.PythonScriptController):
 		mec=mapped.createObject('MechanicalObject', src='@loader',name='the_bol')
 		mec.applyScale(50,50,50)
 		mapped.createObject('BulletTriangleModel', name='Floor', simulated=0, moving=0, margin="1")
-		#floorNode.createObject('Line', name='Floor', simulated=0, moving=0)
+		#floorNode.createObject('LineCollisionModel', name='Floor', simulated=0, moving=0)
 		mapped.createObject('OglModel', name='FloorV', filename='mesh/SaladBowl.obj',texturename='textures/texture.bmp')#, texturename='textures/SaladBowl$.bmp')
 		mapped.createObject('RigidMapping',template='Rigid,Vec3d',name='rigid_mapping',input='@../father',output='@the_bol')
 		#self.generatePrimitives1(40)

@@ -43,7 +43,7 @@ DistanceMapping<TIn, TOut>::DistanceMapping()
     , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
     , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color,sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+    , d_color(initData(&d_color,sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_geometricStiffness(initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_edgeContainer(nullptr)
@@ -91,7 +91,7 @@ void DistanceMapping<TIn, TOut>::init()
     // compute the rest lengths if they are not known
     if( f_restLengths.getValue().size() != links.size() )
     {
-        helper::WriteOnlyAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+        helper::WriteOnlyAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
         restLengths.resize( links.size() );
         if(!(f_computeDistance.getValue()))
         {
@@ -111,7 +111,7 @@ void DistanceMapping<TIn, TOut>::init()
     }
     else if (compliance) // for warning message
     {
-        helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+        helper::ReadAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
         std::stringstream sstream;
         for (unsigned i = 0; i < links.size(); i++)
             if (restLengths[i] <= s_null_distance_epsilon) 
@@ -136,7 +136,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 {
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
+    helper::ReadAccessor<Data<type::vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = m_edgeContainer->getEdges();
 
     jacobian.clear();
@@ -238,7 +238,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
             // if stabilized GS (geometricStiffness==2) -> keep only force in extension
             if( childForce[i][0] < 0 || geometricStiffness==1 )
             {
-                sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+                sofa::type::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
                 for(unsigned j=0; j<In::spatial_dimensions; j++)
                 {
                     for(unsigned k=0; k<In::spatial_dimensions; k++)
@@ -287,7 +287,7 @@ const sofa::defaulttype::BaseMatrix* DistanceMapping<TIn, TOut>::getJ()
 }
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -314,7 +314,7 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
-            sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+            sofa::type::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
 
             for(unsigned j=0; j<In::spatial_dimensions; j++)
             {
@@ -357,11 +357,11 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     if( d_showObjectScale.getValue() == 0 )
     {
         vparams->drawTool()->disableLighting();
-        helper::vector< defaulttype::Vector3 > points;
+        type::vector< type::Vector3 > points;
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
-            points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][1]]) ));
+            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
+            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][1]]) ));
         }
         vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
@@ -370,8 +370,8 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->enableLighting();
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            defaulttype::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
-            defaulttype::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
+            type::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
+            type::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
@@ -410,7 +410,7 @@ DistanceMultiMapping<TIn, TOut>::DistanceMultiMapping()
     , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
     , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+    , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
     , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , l_topology(initLink("topology", "link to the topology container"))
@@ -447,8 +447,8 @@ template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from<this->fromModels.size());
-    helper::vector<defaulttype::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
-    indexPairsVector.push_back(defaulttype::Vec2i(from,index));
+    type::vector<type::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
+    indexPairsVector.push_back(type::Vec2i(from,index));
     d_indexPairs.endEdit();
 }
 
@@ -477,7 +477,7 @@ void DistanceMultiMapping<TIn, TOut>::init()
 
     this->getToModels()[0]->resize( links.size() );
 
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     // only used for warning message
     bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
@@ -485,14 +485,14 @@ void DistanceMultiMapping<TIn, TOut>::init()
     // compute the rest lengths if they are not known
     if( f_restLengths.getValue().size() != links.size() )
     {
-        helper::WriteAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+        helper::WriteAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
         restLengths.resize( links.size() );
         if(!(f_computeDistance.getValue()))
         {
             for(unsigned i=0; i<links.size(); i++ )
             {
-                const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-                const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+                const type::Vec2i& pair0 = pairs[ links[i][0] ];
+                const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
                 const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
                 const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
@@ -511,7 +511,7 @@ void DistanceMultiMapping<TIn, TOut>::init()
     }
     else if( compliance ) // manually set // for warning message
     {
-        helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+        helper::ReadAccessor< Data<type::vector<Real> > > restLengths(f_restLengths);
         std::stringstream sstream;
         for(unsigned i=0; i<links.size(); i++ )
             if( restLengths[i]<=s_null_distance_epsilon ) sstream <<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance \n";
@@ -530,12 +530,12 @@ void DistanceMultiMapping<TIn, TOut>::computeCoordPositionDifference( Direction&
 }
 
 template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos)
+void DistanceMultiMapping<TIn, TOut>::apply(const type::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos)
 {
     OutVecCoord& out = *outPos[0];
 
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
-    helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
+    const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
+    helper::ReadAccessor<Data<type::vector<Real> > > restLengths(f_restLengths);
     const SeqEdges& links = m_edgeContainer->getEdges();
 
 
@@ -556,8 +556,8 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
     {
         Direction& gap = directions[i];
 
-        const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-        const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+        const type::Vec2i& pair0 = pairs[ links[i][0] ];
+        const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
         const InCoord& pos0 = (*inPos[pair0[0]])[pair0[1]];
         const InCoord& pos1 = (*inPos[pair1[0]])[pair1[1]];
@@ -607,7 +607,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
 
 
 template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv)
+void DistanceMultiMapping<TIn, TOut>::applyJ(const type::vector<OutVecDeriv*>& outDeriv, const type::vector<const  InVecDeriv*>& inDeriv)
 {
     unsigned n = baseMatrices.size();
     unsigned i = 0;
@@ -632,7 +632,7 @@ void DistanceMultiMapping<TIn, TOut>::applyJ(const helper::vector<OutVecDeriv*>&
 }
 
 template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv)
+void DistanceMultiMapping<TIn, TOut>::applyJT(const type::vector< InVecDeriv*>& outDeriv, const type::vector<const OutVecDeriv*>& inDeriv)
 {
     for( unsigned i = 0, n = baseMatrices.size(); i < n; ++i) {
         const SparseMatrixEigen& J = *static_cast<SparseMatrixEigen*>(baseMatrices[i]);
@@ -652,12 +652,12 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     const SReal kfactor = mparams->kFactor();
     const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
     const SeqEdges& links = m_edgeContainer->getEdges();
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     unsigned size = this->getFromModels().size();
 
-    helper::vector<InVecDeriv*> parentForce( size );
-    helper::vector<const InVecDeriv*> parentDisplacement( size );
+    type::vector<InVecDeriv*> parentForce( size );
+    type::vector<const InVecDeriv*> parentDisplacement( size );
     for( unsigned i=0; i< size ; i++ )
     {
         core::State<In>* fromModel = this->getFromModels()[i];
@@ -673,8 +673,8 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
 
             InVecDeriv& parentForce0 = *parentForce[pair0[0]];
@@ -683,7 +683,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
             const InVecDeriv& parentDisplacement1 = *parentDisplacement[pair1[0]];
 
 
-            defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+            type::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
             for(unsigned j=0; j<In::spatial_dimensions; j++)
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
@@ -724,7 +724,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
 
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -737,7 +737,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[(const core::State<TOut>*)this->getToModels()[0]].read() );
     const SeqEdges& links = m_edgeContainer->getEdges();
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     for(size_t i=0; i<links.size(); i++)
     {
@@ -747,7 +747,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
 
-            defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+            type::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
             for(unsigned j=0; j<In::spatial_dimensions; j++)
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
@@ -761,8 +761,8 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
 
 
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
             // TODO optimize (precompute base Index per mechanicalobject)
             size_t globalIndex0 = 0;
@@ -804,21 +804,21 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 
     const SeqEdges& links = m_edgeContainer->getEdges();
 
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     if( d_showObjectScale.getValue() == 0 )
     {
-        helper::vector< defaulttype::Vector3 > points;
+        type::vector< type::Vector3 > points;
         for(unsigned i=0; i<links.size(); i++ )
         {
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
             const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
             const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
 
-            points.push_back( defaulttype::Vector3( TIn::getCPos(pos0) ) );
-            points.push_back( defaulttype::Vector3( TIn::getCPos(pos1) ) );
+            points.push_back( type::Vector3( TIn::getCPos(pos0) ) );
+            points.push_back( type::Vector3( TIn::getCPos(pos1) ) );
         }
         vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
@@ -826,14 +826,14 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
     {
         for(unsigned i=0; i<links.size(); i++ )
         {
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
             const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
             const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
 
-            defaulttype::Vector3 p0 = TIn::getCPos(pos0);
-            defaulttype::Vector3 p1 = TIn::getCPos(pos1);
+            type::Vector3 p0 = TIn::getCPos(pos0);
+            type::Vector3 p1 = TIn::getCPos(pos1);
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
@@ -844,14 +844,14 @@ template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::updateForceMask()
 {
     const SeqEdges& links = m_edgeContainer->getEdges();
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     for(size_t i=0; i<links.size(); i++ )
     {
         if( this->maskTo[0]->getEntry(i) )
         {
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
             this->maskFrom[pair0[0]]->insertEntry( pair0[1] );
             this->maskFrom[pair1[0]]->insertEntry( pair1[1] );

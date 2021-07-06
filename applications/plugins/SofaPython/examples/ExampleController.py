@@ -31,7 +31,7 @@ def testNodes(node):
 def oneParticleSample(node):
 	node.findData('name').value='oneParticleSample'
 	node.findData('gravity').value=[0.0, -9.81, 0.0]
-	solver = node.createObject('EulerSolver',printLog='false')
+	solver = node.createObject('EulerExplicitSolver',printLog='false')
 	particule_node = node.createChild('particle_node')
 	particle = particule_node.createObject('MechanicalObject')
 	particle.resize(1)

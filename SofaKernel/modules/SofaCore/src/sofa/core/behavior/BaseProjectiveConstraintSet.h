@@ -75,7 +75,7 @@ public:
 
 
     /// Return the lists of models this constraint applies to. 
-    virtual helper::vector< core::BaseState* > getModels() = 0;
+    virtual type::vector< core::BaseState* > getModels() = 0;
 
     /// @name Vector operations
     /// @{

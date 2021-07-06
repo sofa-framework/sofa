@@ -52,6 +52,7 @@ namespace sofa::gui::qt::viewer::qgl
 {
 
 using std::endl;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::gl;
 using sofa::simulation::getSimulation;
@@ -585,7 +586,7 @@ void QtGLViewer::DisplayOBJs()
     if (!groot->f_bbox.getValue().isValid()) viewAll();
 
 
-    sofa::defaulttype::BoundingBox& bbox = vparams->sceneBBox();
+    sofa::type::BoundingBox& bbox = vparams->sceneBBox();
     bbox = groot->f_bbox.getValue();
 
     Enable<GL_LIGHTING> light;
@@ -628,11 +629,11 @@ void QtGLViewer::DisplayOBJs()
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            sofa::defaulttype::Quaternion sofaQuat( this->camera()->orientation()[0]
+            sofa::type::Quat<SReal> sofaQuat( this->camera()->orientation()[0]
                     , this->camera()->orientation()[1]
                     , this->camera()->orientation()[2]
                     , this->camera()->orientation()[3]);
-            gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -733,7 +734,7 @@ void QtGLViewer::drawScene(void)
 void QtGLViewer::viewAll()
 {
     if (!groot) return;
-    sofa::defaulttype::BoundingBox& bbox = vparams->sceneBBox();
+    sofa::type::BoundingBox& bbox = vparams->sceneBBox();
     bbox = groot->f_bbox.getValue();
 
 
@@ -810,7 +811,9 @@ void QtGLViewer::draw()
         SofaViewer::captureEvent();
 
     if (_waitForRender)
+    {
         _waitForRender = false;
+    }
 
     emit( redrawn() );
 }
@@ -987,7 +990,7 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     transform[1][3] = p0[1];
     transform[2][3] = p0[2];
     Mat3x3d mat; mat = transform;
-    Quat q; q.fromMatrix(mat);
+    Quat<SReal> q; q.fromMatrix(mat);
 
 
     Vec3d position, direction;
@@ -1083,7 +1086,7 @@ void QtGLViewer::saveView()
     }
 }
 
-void QtGLViewer::getView(Vec3d& pos, Quat& ori) const
+void QtGLViewer::getView(Vec3d& pos, Quat<SReal>& ori) const
 {
     qglviewer::Vec position = camera()->position();
     for(int i = 0; i < 3; ++i) pos[i] = position[i];
@@ -1091,7 +1094,7 @@ void QtGLViewer::getView(Vec3d& pos, Quat& ori) const
     for(int i = 0; i < 4; ++i) ori[i] = orientation[i];
 }
 
-void QtGLViewer::setView(const Vec3d& pos, const Quat &ori)
+void QtGLViewer::setView(const Vec3d& pos, const Quat<SReal> &ori)
 {
     camera()->setPosition(qglviewer::Vec(pos[0],pos[1],pos[2]));
     camera()->setOrientation(qglviewer::Quaternion(ori[0],ori[1],ori[2],ori[3]));

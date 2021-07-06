@@ -132,7 +132,7 @@ const sofa::defaulttype::BaseMatrix* SquareMapping<TIn, TOut>::getJ()
 }
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* SquareMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* SquareMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }

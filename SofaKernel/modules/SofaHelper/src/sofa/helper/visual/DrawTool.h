@@ -22,10 +22,10 @@
 #pragma once
 
 #include <sofa/helper/config.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/RGBAColor.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/fwd.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <vector>
 
 namespace sofa::helper::visual
@@ -44,12 +44,12 @@ class DrawTool
 {
 
 public:
-    typedef sofa::helper::types::RGBAColor RGBAColor;
-    typedef sofa::defaulttype::Vec3f   Vec3f;
-    typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::defaulttype::Vec<3,int> Vec3i;
-    typedef sofa::defaulttype::Vec<2,int> Vec2i;
-    typedef sofa::defaulttype::Quaternion Quaternion;
+    typedef sofa::type::RGBAColor RGBAColor;
+    typedef sofa::type::Vec3f   Vec3f;
+    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec<3,int> Vec3i;
+    typedef sofa::type::Vec<2,int> Vec2i;
+    typedef sofa::type::Quat<SReal> Quaternion;
 
     DrawTool() { clear(); }
     virtual ~DrawTool() {}
@@ -225,366 +225,186 @@ public:
     virtual void clear() {}
 
     /// Compatibility wrapper functions 
-    using Vec4f = sofa::defaulttype::Vec4f;
-#define DEPRECATE_VEC4F \
-    [[deprecated("This function has been deprecated in #PR 1626. The function will be removed " \
-    "in the v21.06 release. Vec4f defining a color is deprecated, use RGBAColor instead.")]]
-
+    using Vec4f = sofa::type::Vec4f;
 
     // Necessary to not break existing code
     // as std::vector<RGBAColor> is not a std::vector<Vec4f>
-    DEPRECATE_VEC4F
-    void drawPoints(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colour)
-    {
-        std::vector<RGBAColor> rgbaColours;
-        std::copy(colour.begin(), colour.end(), rgbaColours.begin());
-        drawPoints(points, size, rgbaColours);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawPoints(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colour) = delete;
     
-    DEPRECATE_VEC4F
-    void drawLines(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colours)
-    {
-        std::vector<RGBAColor> rgbaColours;
-        std::copy(colours.begin(), colours.end(), rgbaColours.begin());
-        drawLines(points, size, rgbaColours);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawLines(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colours) = delete;
 
-    DEPRECATE_VEC4F
-    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec3i >& index, const std::vector<Vector3>& normal, const std::vector<Vec4f>& colour)
-    {
-        std::vector<RGBAColor> rgbaColours;
-        std::copy(colour.begin(), colour.end(), rgbaColours.begin());
-        drawTriangles(points, index, normal, rgbaColours);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec3i >& index, const std::vector<Vector3>& normal, const std::vector<Vec4f>& colour) = delete;
 
 
-    DEPRECATE_VEC4F
-    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec4f >& colour)
-    {
-        std::vector<RGBAColor> rgbaColours;
-        std::copy(colour.begin(), colour.end(), rgbaColours.begin());
-        drawTriangles(points, rgbaColours);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec4f >& colour) = delete;
 
-    DEPRECATE_VEC4F
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangles(const std::vector<Vector3>& points,
             const std::vector<Vector3>& normal,
-            const std::vector< Vec4f >& colour)
-    {
-        std::vector<RGBAColor> rgbaColours;
-        std::copy(colour.begin(), colour.end(), rgbaColours.begin());
-        drawTriangles(points, normal, rgbaColours);
-    }
+            const std::vector< Vec4f >& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawQuads(const std::vector<Vector3>& points, const std::vector<Vec4f>& colours)
-    {        
-        std::vector<RGBAColor> rgbaColours;
-        std::copy(colours.begin(), colours.end(), rgbaColours.begin());
-        drawQuads(points,rgbaColours);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawQuads(const std::vector<Vector3>& points, const std::vector<Vec4f>& colours) = delete;
 
-    ///////
-    // Just for the deprecation
-    DEPRECATE_VEC4F
-    void drawPoints(const std::vector<Vector3>& points, float size, const Vec4f& colour)
-    {
-        drawPoints(points, size, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawPoints(const std::vector<Vector3>& points, float size, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawLine(const Vector3& p1, const Vector3& p2, const Vec4f& colour)
-    {
-        drawLine(p1, p2, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawLine(const Vector3& p1, const Vector3& p2, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawInfiniteLine(const Vector3& point, const Vector3& direction, const Vec4f& color)
-    {
-        drawInfiniteLine(point, direction, RGBAColor(color));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawInfiniteLine(const Vector3& point, const Vector3& direction, const Vec4f& color) = delete;
 
-    DEPRECATE_VEC4F
-    void drawLines(const std::vector<Vector3>& points, float size, const Vec4f& colour)
-    {
-        drawLines(points, size, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawLines(const std::vector<Vector3>& points, float size, const Vec4f& colour) = delete;
 
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawLines(const std::vector<Vector3>& points, const std::vector< Vec2i >& index, float size, const Vec4f& colour) = delete;
 
-    void drawLines(const std::vector<Vector3>& points, const std::vector< Vec2i >& index, float size, const Vec4f& colour)
-    {
-        drawLines(points, index, size, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawLineStrip(const std::vector<Vector3>& points, float size, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawLineStrip(const std::vector<Vector3>& points, float size, const Vec4f& colour)
-    {
-        drawLineStrip(points, size, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawLineLoop(const std::vector<Vector3>& points, float size, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawLineLoop(const std::vector<Vector3>& points, float size, const Vec4f& colour)
-    {
-        drawLineLoop(points, size, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawDisk(float radius, double from, double to, int resolution, const Vec4f& color) = delete;
 
-    DEPRECATE_VEC4F
-    void drawDisk(float radius, double from, double to, int resolution, const Vec4f& color) 
-    {
-        drawDisk(radius, from, to, resolution, RGBAColor(color));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawCircle(float radius, float lineThickness, int resolution, const Vec4f& color) = delete;
 
-    DEPRECATE_VEC4F
-    void drawCircle(float radius, float lineThickness, int resolution, const Vec4f& color)
-    {
-        drawCircle(radius, lineThickness, resolution, RGBAColor(color));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawTriangles(const std::vector<Vector3>& points, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawTriangles(const std::vector<Vector3>& points, const Vec4f& colour)
-    {
-        drawTriangles(points, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawTriangles(const std::vector<Vector3>& points, const Vector3& normal, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawTriangles(const std::vector<Vector3>& points, const Vector3& normal, const Vec4f& colour)
-    {
-        drawTriangles(points, normal, RGBAColor(colour));
-    }
-
-    DEPRECATE_VEC4F
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangles(const std::vector<Vector3>& points,
         const std::vector< Vec3i >& index,
         const std::vector<Vector3>& normal,
-        const Vec4f& colour)
-    {
-        drawTriangles(points, index, normal, RGBAColor(colour));
-    }
+        const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangleStrip(const std::vector<Vector3>& points,
         const std::vector<Vector3>& normal,
-        const Vec4f& colour)
-    {
-        drawTriangleStrip(points, normal, RGBAColor(colour));
-    }
+        const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangleFan(const std::vector<Vector3>& points,
         const std::vector<Vector3>& normal,
-        const Vec4f& colour)
-    {
-        drawTriangleFan(points, normal, RGBAColor(colour));
-    }
+        const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawFrame(const Vector3& position, const Quaternion& orientation, const Vec3f& size, const Vec4f& colour)
-    {
-        drawFrame(position, orientation, size, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawFrame(const Vector3& position, const Quaternion& orientation, const Vec3f& size, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& colour)
-    {
-        drawSpheres(points, radius, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& colour)
-    {
-        drawSpheres(points, radius, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawFakeSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& colour)
-    {
-        drawFakeSpheres(points, radius, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawFakeSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawFakeSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& colour)
-    {
-        drawFakeSpheres(points, radius, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawFakeSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawCone(const Vector3& p1, const Vector3& p2, float radius1, float radius2, const Vec4f& colour, int subd = 16)
-    {
-        drawCone(p1, p2, radius1, radius2, RGBAColor(colour), subd);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawCone(const Vector3& p1, const Vector3& p2, float radius1, float radius2, const Vec4f& colour, int subd = 16) = delete;
 
-    DEPRECATE_VEC4F
-    void drawCube(const float& radius, const Vec4f& colour, const int& subd = 16)
-    {
-        drawCube(radius, RGBAColor(colour), subd);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawCube(const float& radius, const Vec4f& colour, const int& subd = 16) = delete;
 
-    DEPRECATE_VEC4F
-    void drawCylinder(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16)
-    {
-        drawCylinder(p1, p2, radius, RGBAColor(colour), subd);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawCylinder(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16) = delete;
 
-    DEPRECATE_VEC4F
-    void drawCapsule(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16)
-    {
-        drawCapsule(p1, p2, radius, RGBAColor(colour), subd);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawCapsule(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16) = delete;
 
-    DEPRECATE_VEC4F
-    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16)
-    {
-        drawArrow(p1, p2, radius, RGBAColor(colour), subd);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16) = delete;
 
-    DEPRECATE_VEC4F
-    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, float coneLength, const Vec4f& colour, int subd = 16)
-    {
-        drawArrow(p1, p2, radius, coneLength, RGBAColor(colour), subd);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, float coneLength, const Vec4f& colour, int subd = 16) = delete;
 
-    DEPRECATE_VEC4F
-    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, float coneLength, float coneRadius, const Vec4f& color, int subd = 16)
-    {
-        drawArrow(p1, p2, radius, coneLength, coneRadius, RGBAColor(color), subd);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, float coneLength, float coneRadius, const Vec4f& color, int subd = 16) = delete;
 
-    DEPRECATE_VEC4F
-    void drawCross(const Vector3& p, float length, const Vec4f& colour)
-    {
-        drawCross(p, length, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawCross(const Vector3& p, float length, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawPlus(const float& radius, const Vec4f& colour, const int& subd = 16)
-    {
-        drawPlus(radius, RGBAColor(colour), subd);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawPlus(const float& radius, const Vec4f& colour, const int& subd = 16) = delete;
 
-    DEPRECATE_VEC4F
-    void drawPoint(const Vector3& p, const Vec4f& c)
-    {
-        drawPoint(p, RGBAColor(c));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawPoint(const Vector3& p, const Vec4f& c) = delete;
 
-    DEPRECATE_VEC4F
-    void drawPoint(const Vector3& p, const Vector3& n, const Vec4f& c)
-    {
-        drawPoint(p, n, RGBAColor(c));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawPoint(const Vector3& p, const Vector3& n, const Vec4f& c) = delete;
 
-    DEPRECATE_VEC4F
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangle(const Vector3& p1, const Vector3& p2, const Vector3& p3,
         const Vector3& normal,
-        const Vec4f& c1, const Vec4f& c2, const Vec4f& c3)
-    {
-        drawTriangle(p1, p2, p3, normal, RGBAColor(c1), RGBAColor(c2), RGBAColor(c3));
-    }
+        const Vec4f& c1, const Vec4f& c2, const Vec4f& c3) = delete;
 
-    DEPRECATE_VEC4F
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangle(const Vector3& p1, const Vector3& p2, const Vector3& p3,
         const Vector3& normal1, const Vector3& normal2, const Vector3& normal3,
-        const Vec4f& c1, const Vec4f& c2, const Vec4f& c3)
-    {
-        drawTriangle(p1, p2, p3, normal1, normal2, normal3, RGBAColor(c1), RGBAColor(c2), RGBAColor(c3));
-    }
+        const Vec4f& c1, const Vec4f& c2, const Vec4f& c3) = delete;
 
-    DEPRECATE_VEC4F
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawQuad(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& p4,
-        const Vector3& normal, const Vec4f& c)
-    {
-        drawQuad(p1, p2, p3, p4, normal, RGBAColor(c));
-    }
+        const Vector3& normal, const Vec4f& c) = delete;
 
-    DEPRECATE_VEC4F
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawQuad(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& p4,
         const Vector3& normal1, const Vector3& normal2, const Vector3& normal3, const Vector3& normal4,
-        const Vec4f& c1, const Vec4f& c2, const Vec4f& c3, const Vec4f& c4)
-    {
-        drawQuad(p1, p2, p3, p4, normal1, normal2, normal3, normal4, RGBAColor(c1), RGBAColor(c2), RGBAColor(c3), RGBAColor(c4));
-    }
+        const Vec4f& c1, const Vec4f& c2, const Vec4f& c3, const Vec4f& c4) = delete;
 
-    DEPRECATE_VEC4F
-    void drawQuads(const std::vector<Vector3>& points, const Vec4f& colour)
-    {
-        drawQuads(points, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawQuads(const std::vector<Vector3>& points, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vec4f& colour)
-    {
-        drawTetrahedron(p0, p1, p2, p3, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawTetrahedra(const std::vector<Vector3>& points, const Vec4f& colour)
-    {
-        drawTetrahedra(points, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawTetrahedra(const std::vector<Vector3>& points, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawScaledTetrahedra(const std::vector<Vector3>& points, const Vec4f& colour, const float scale)
-    {
-        drawScaledTetrahedra(points, RGBAColor(colour), scale);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawScaledTetrahedra(const std::vector<Vector3>& points, const Vec4f& colour, const float scale) = delete;
 
-    DEPRECATE_VEC4F
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawHexahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3,
-        const Vector3& p4, const Vector3& p5, const Vector3& p6, const Vector3& p7, const Vec4f& colour)
-    {
-        drawHexahedron(p0, p1, p2, p3, p4, p5, p6, p7, RGBAColor(colour));
-    }
+        const Vector3& p4, const Vector3& p5, const Vector3& p6, const Vector3& p7, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawHexahedra(const std::vector<Vector3>& points, const Vec4f& colour)
-    {
-        drawHexahedra(points, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawHexahedra(const std::vector<Vector3>& points, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void drawScaledHexahedra(const std::vector<Vector3>& points, const Vec4f& colour, const float scale)
-    {
-        drawScaledHexahedra(points, RGBAColor(colour), scale);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawScaledHexahedra(const std::vector<Vector3>& points, const Vec4f& colour, const float scale) = delete;
 
-    DEPRECATE_VEC4F
-    void drawSphere(const Vector3& p, float radius, const Vec4f& colour)
-    {
-        drawSphere(p, radius, RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void drawSphere(const Vector3& p, float radius, const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void draw3DText(const Vector3& p, float scale, const Vec4f& color, const char* text)
-    {
-        draw3DText(p, scale, RGBAColor(color), text);
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void draw3DText(const Vector3& p, float scale, const Vec4f& color, const char* text) = delete;
 
-    DEPRECATE_VEC4F
-    void draw3DText_Indices(const std::vector<Vector3>& positions, float scale, const Vec4f& color)
-    {
-        draw3DText_Indices(positions, scale, RGBAColor(color));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void draw3DText_Indices(const std::vector<Vector3>& positions, float scale, const Vec4f& color) = delete;
 
-    DEPRECATE_VEC4F
-    void setMaterial(const Vec4f& colour)
-    {
-        setMaterial(RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void setMaterial(const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void resetMaterial(const Vec4f& colour)
-    {
-        resetMaterial(RGBAColor(colour));
-    }
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void resetMaterial(const Vec4f& colour) = delete;
 
-    DEPRECATE_VEC4F
-    void writeOverlayText(int x, int y, unsigned fontSize, const Vec4f& color, const char* text)
-    {
-        writeOverlayText(x, y, fontSize, RGBAColor(color), text);
-    }
-
-#undef DEPRECATE_VEC4F
-
+    SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
+    void writeOverlayText(int x, int y, unsigned fontSize, const Vec4f& color, const char* text) = delete;
 };
 
 } // namespace sofa::helper::visual

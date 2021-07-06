@@ -23,7 +23,7 @@
 
 #include <sofa/type/BoundingBox.h>
 
-// SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/BoundingBox.h")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/BoundingBox.h")
 
 namespace sofa::defaulttype
 {

@@ -35,7 +35,7 @@ class SOFA_Compliant_API NormalizationMapping : public AssembledMapping<T, T>
     typedef typename T::Coord Coord;
     typedef typename T::Real Real;
 
-    typedef helper::vector<unsigned> Indices;
+    typedef type::vector<unsigned> Indices;
     Data<Indices> d_indices; ///< indices of vector to normalize
 
 	
@@ -53,7 +53,7 @@ class SOFA_Compliant_API NormalizationMapping : public AssembledMapping<T, T>
 
     virtual void reinit() override
     {
-        helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(d_indices);
+        helper::ReadAccessor< Data<type::vector<unsigned> > > indices(d_indices);
         size_t size = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
         this->getToModel()->resize( size );
@@ -63,7 +63,7 @@ class SOFA_Compliant_API NormalizationMapping : public AssembledMapping<T, T>
 	virtual void apply(typename self::out_pos_type& out, 
                        const typename self::in_pos_type& in ) override {
 
-        helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(d_indices);
+        helper::ReadAccessor< Data<type::vector<unsigned> > > indices(d_indices);
         size_t size = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
         assert( out.size() == size );
@@ -77,7 +77,7 @@ class SOFA_Compliant_API NormalizationMapping : public AssembledMapping<T, T>
 
     virtual void assemble( const typename self::in_pos_type& in ) override {
 
-        helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(d_indices);
+        helper::ReadAccessor< Data<type::vector<unsigned> > > indices(d_indices);
         size_t size = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
         typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;

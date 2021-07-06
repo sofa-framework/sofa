@@ -40,6 +40,7 @@ using sofa::testing::NumericTest;
 namespace sofa {
 
 using namespace modeling;
+using namespace type;
 using namespace testing;
 using namespace defaulttype;
 using core::objectmodel::New;
@@ -68,9 +69,9 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
 
         EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver>(root);
         CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>(root);
-        linearSolver->f_maxIter.setValue(25);
-        linearSolver->f_tolerance.setValue(1e-5);
-        linearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+        linearSolver->d_maxIter.setValue(25);
+        linearSolver->d_tolerance.setValue(1e-5);
+        linearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
         simulation::Node::SPtr string = massSpringString(
                     root, // attached to root node
@@ -151,9 +152,9 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
         EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (root );
         CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver> (root );
-        linearSolver->f_maxIter.setValue(25);
-        linearSolver->f_tolerance.setValue(1e-5);
-        linearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+        linearSolver->d_maxIter.setValue(25);
+        linearSolver->d_tolerance.setValue(1e-5);
+        linearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
 
         MechanicalObject<Vec3Types>::SPtr DOF = addNew<MechanicalObject<Vec3Types> >(root,"DOF");

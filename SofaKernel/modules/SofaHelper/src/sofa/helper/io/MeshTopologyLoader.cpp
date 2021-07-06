@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <cstring>
 
 #if defined(WIN32)
@@ -40,7 +40,7 @@ namespace helper
 namespace io
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 bool MeshTopologyLoader::addMeshtoTopology()
 {

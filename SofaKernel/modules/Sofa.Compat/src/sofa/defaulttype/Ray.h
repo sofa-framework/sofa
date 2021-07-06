@@ -23,7 +23,7 @@
 
 #include <sofa/type/Ray.h>
 
-// SOFA_DEPRECATED_HEADER(v21.12, "sofa/defaulttype/Ray.h")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/Ray.h")
 
 namespace sofa::defaulttype
 {

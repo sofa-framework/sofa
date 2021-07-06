@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
 #include <CGALPlugin/UpsamplePointCloud.h>
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>

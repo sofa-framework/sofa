@@ -40,7 +40,7 @@
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -169,17 +169,17 @@ void SubsetTopologicalMapping::init()
         {
             if (fromModel->hasPos() && toModel->hasPos())
             {
-                std::map<sofa::defaulttype::Vec3d,Index> pmapS;
+                std::map<sofa::type::Vec3d,Index> pmapS;
                 for (Index ps = 0; ps < npS; ++ps)
                 {
-                    defaulttype::Vec3d key(fromModel->getPX(ps),fromModel->getPY(ps),fromModel->getPZ(ps));
+                    type::Vec3d key(fromModel->getPX(ps),fromModel->getPY(ps),fromModel->getPZ(ps));
                     pmapS[key] = ps;
                     pS2D[ps] = sofa::InvalidID;
                 }
                 for (Index pd = 0; pd < npD; ++pd)
                 {
-                    defaulttype::Vec3d key(toModel->getPX(pd),toModel->getPY(pd),toModel->getPZ(pd));
-                    std::map<sofa::defaulttype::Vec3d,Index>::const_iterator it = pmapS.find(key);
+                    type::Vec3d key(toModel->getPX(pd),toModel->getPY(pd),toModel->getPZ(pd));
+                    std::map<sofa::type::Vec3d,Index>::const_iterator it = pmapS.find(key);
                     if (it == pmapS.end())
                     {
                         msg_error() << "Point " << pd << " not found in source topology";
@@ -494,8 +494,8 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             }
             else
             {
-                helper::vector< helper::vector<Index> > ancestors;
-                helper::vector< helper::vector<double> > coefs;
+                type::vector< type::vector<Index> > ancestors;
+                type::vector< type::vector<double> > coefs;
                 size_t nDadd = 0;
                 size_t pD0 = pD2S.size();
                 pS2D.resize(pS0+nSadd);
@@ -543,7 +543,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSREMOVED:
         {
             const PointsRemoved *pRem = static_cast< const PointsRemoved * >( topoChange );
-            sofa::helper::vector<Index> tab = pRem->getArray();
+            sofa::type::vector<Index> tab = pRem->getArray();
             if (samePoints.getValue())
             {
                 msg_info() << "[" << count << "]POINTSREMOVED : " << tab.size() << " : " << tab;
@@ -551,7 +551,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             }
             else
             {
-                sofa::helper::vector<Index> tab2;
+                sofa::type::vector<Index> tab2;
                 tab2.reserve(tab.size());
                 for (unsigned int pi=0; pi<tab.size(); ++pi)
                 {
@@ -606,8 +606,8 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSRENUMBERING:
         {
             const PointsRenumbering *pRenumber = static_cast< const PointsRenumbering * >( topoChange );
-            const sofa::helper::vector<Index> &tab = pRenumber->getIndexArray();
-            const sofa::helper::vector<Index> &inv_tab = pRenumber->getinv_IndexArray();
+            const sofa::type::vector<Index> &tab = pRenumber->getIndexArray();
+            const sofa::type::vector<Index> &inv_tab = pRenumber->getinv_IndexArray();
             if (samePoints.getValue())
             {
                 msg_info() << "[" << count << "]POINTSRENUMBERING : " << tab.size() << " : " << tab;
@@ -615,8 +615,8 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             }
             else
             {
-                sofa::helper::vector<Index> tab2;
-                sofa::helper::vector<Index> inv_tab2;
+                sofa::type::vector<Index> tab2;
+                sofa::type::vector<Index> inv_tab2;
                 tab2.resize(pD2S.size());
                 inv_tab2.resize(pD2S.size());
                 for (Index pd = 0; pd < pD2S.size(); ++pd)
@@ -660,10 +660,10 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             //toEdgeMod->addEdgesProcess(eAdd->edgeArray);
             //toEdgeMod->addEdgesWarning(eAdd->getNbAddedEdges(), eAdd->edgeArray, eAdd->edgeIndexArray, eAdd->ancestorsList, eAdd->coefs);
             //toEdgeMod->propagateTopologicalChanges();
-            helper::vector< core::topology::BaseMeshTopology::Edge > edgeArray;
-            helper::vector< Index > edgeIndexArray;
-            helper::vector< helper::vector<Index> > ancestors;
-            helper::vector< helper::vector<double> > coefs;
+            type::vector< core::topology::BaseMeshTopology::Edge > edgeArray;
+            type::vector< Index > edgeIndexArray;
+            type::vector< type::vector<Index> > ancestors;
+            type::vector< type::vector<double> > coefs;
             size_t nSadd = eAdd->getNbAddedEdges();
             unsigned int nDadd = 0;
             size_t eS0 = eS2D.size();
@@ -723,11 +723,11 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toEdgeMod) toModel->getContext()->get(toEdgeMod);
             if (!toEdgeMod) break;
             const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( topoChange );
-            sofa::helper::vector<Index> tab = eRem->getArray();
+            sofa::type::vector<Index> tab = eRem->getArray();
             //toEdgeMod->removeEdgesWarning(tab);
             //toEdgeMod->propagateTopologicalChanges();
             //toEdgeMod->removeEdgesProcess(tab, false);
-            sofa::helper::vector<Index> tab2;
+            sofa::type::vector<Index> tab2;
             tab2.reserve(tab.size());
             for (unsigned int ei=0; ei<tab.size(); ++ei)
             {
@@ -804,10 +804,10 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             //toTriangleMod->addTrianglesProcess(tAdd->triangleArray);
             //toTriangleMod->addTrianglesWarning(tAdd->getNbAddedTriangles(), tAdd->triangleArray, tAdd->triangleIndexArray, tAdd->ancestorsList, tAdd->coefs);
             //toTriangleMod->propagateTopologicalChanges();
-            helper::vector< core::topology::BaseMeshTopology::Triangle > triangleArray;
-            helper::vector< Index > triangleIndexArray;
-            helper::vector< helper::vector<Index> > ancestors;
-            helper::vector< helper::vector<double> > coefs;
+            type::vector< core::topology::BaseMeshTopology::Triangle > triangleArray;
+            type::vector< Index > triangleIndexArray;
+            type::vector< type::vector<Index> > ancestors;
+            type::vector< type::vector<double> > coefs;
             size_t nSadd = tAdd->getNbAddedTriangles();
             unsigned int nDadd = 0;
             size_t tS0 = tS2D.size();
@@ -867,11 +867,11 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toTriangleMod) toModel->getContext()->get(toTriangleMod);
             if (!toTriangleMod) break;
             const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( topoChange );
-            sofa::helper::vector<Index> tab = tRem->getArray();
+            sofa::type::vector<Index> tab = tRem->getArray();
             //toTriangleMod->removeTrianglesWarning(tab);
             //toTriangleMod->propagateTopologicalChanges();
             //toTriangleMod->removeTrianglesProcess(tab, false);
-            sofa::helper::vector<Index> tab2;
+            sofa::type::vector<Index> tab2;
             tab2.reserve(tab.size());
             for (unsigned int ti=0; ti<tab.size(); ++ti)
             {

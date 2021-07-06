@@ -27,7 +27,7 @@
 namespace sofa::component::engine
 {
 
-using helper::vector;
+using type::vector;
 using sofa::core::topology::BaseMeshTopology;
 
 template <class DataTypes>

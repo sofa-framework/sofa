@@ -6,7 +6,6 @@ set(SRC_ROOT "src/sofa/simulation")
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/fwd.h
-    ${SRC_ROOT}/simulationcore.h
     ${SRC_ROOT}/AnimateBeginEvent.h
     ${SRC_ROOT}/AnimateEndEvent.h
     ${SRC_ROOT}/AnimateVisitor.h
@@ -97,9 +96,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeGeometricStiffness.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalEndIntegrationVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetDimensionVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMomentumVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrationVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h
@@ -218,9 +217,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeGeometricStiffness.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalEndIntegrationVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetDimensionVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMomentumVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrationVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.cpp
@@ -256,6 +255,10 @@ set(SOURCE_FILES
 sofa_find_package(Sofa.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)
+
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
 
 # is this a compiler/linker version specific problem?

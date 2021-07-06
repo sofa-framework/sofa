@@ -91,11 +91,12 @@ public:
 	TTriangle& shape() { return *this; }
     const TTriangle& shape() const { return *this; }
 
-    Coord interpX(defaulttype::Vec<2,Real> bary) const
+    Coord interpX(type::Vec<2,Real> bary) const
     {
 		return (p1()*(1-bary[0]-bary[1])) + (p2()*bary[0]) + (p3()*bary[1]);
 	}
 };
+using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
 
 /**
  * This class will create collision elements based on a triangle and/or quad mesh.
@@ -241,10 +242,6 @@ inline TTriangle<DataTypes>::TTriangle(ParentModel* model, Index index, helper::
 {
     SOFA_UNUSED(x);
 }
-
-template <class TDataTypes> using TTriangleModel [[deprecated("The TTriangleModel is now deprecated, please use TriangleCollisionModel instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<TDataTypes>;
-using TriangleModel [[deprecated("The TriangleModel is now deprecated, please use TriangleCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = TriangleCollisionModel<sofa::defaulttype::Vec3Types>;
-using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP)
 extern template class SOFA_SOFAMESHCOLLISION_API TTriangle<defaulttype::Vec3Types>;

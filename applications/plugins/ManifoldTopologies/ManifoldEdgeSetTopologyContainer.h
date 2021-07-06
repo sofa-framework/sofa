@@ -71,7 +71,7 @@ public:
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
     @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
     */
-    virtual int getNumberConnectedComponents(sofa::helper::vector<Index>& components) override;
+    virtual int getNumberConnectedComponents(sofa::type::vector<Index>& components) override;
 
 protected:
     /** \brief Creates the EdgeSetIndex.
@@ -143,17 +143,17 @@ private:
     int getPreviousEdge(const Index i);
 
     /// \brief Returns the ComponentVertex array.
-    const sofa::helper::vector< Index > &getComponentVertexArray() const;
+    const sofa::type::vector< Index > &getComponentVertexArray() const;
 
     /// \brief Returns the array of connected components.
-    const sofa::helper::vector< ConnectedComponent > &getConnectedComponentArray() const;
+    const sofa::type::vector< ConnectedComponent > &getConnectedComponentArray() const;
 
 private:
     /** The array that stores for each vertex index, the connected component the vertex belongs to */
-    sofa::helper::vector< Index > m_ComponentVertexArray;
+    sofa::type::vector< Index > m_ComponentVertexArray;
 
     /** The array that stores the connected components */
-    sofa::helper::vector< ConnectedComponent > m_ConnectedComponentArray;
+    sofa::type::vector< ConnectedComponent > m_ConnectedComponentArray;
 };
 
 } // namespace topology

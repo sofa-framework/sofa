@@ -103,14 +103,14 @@ void GLPickHandler::destroySelectionBuffer()
 }
 
 //WARNING: do not use this method with Ogre
-component::collision::BodyPicked GLPickHandler::findCollisionUsingColourCoding(const defaulttype::Vector3& origin,
-        const defaulttype::Vector3& direction)
+component::collision::BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vector3& origin,
+        const type::Vector3& direction)
 {
     assert(_fboAllocated);
     BodyPicked result;
 
     result.dist =  0;
-    sofa::defaulttype::Vec4f color;
+    sofa::type::Vec4f color;
     int x = mousePosition.x;
     int y = mousePosition.screenHeight - mousePosition.y;
     TriangleCollisionModel<defaulttype::Vec3Types>* tmodel;

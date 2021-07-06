@@ -173,91 +173,91 @@ public:
     /// using getContext()->getObjects<T>(BaseContext::Local)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchLocal) to update.")
-    helper::vector<typename T::SPtr> searchAllLocal() const = delete;
+    type::vector<typename T::SPtr> searchAllLocal() const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchUp)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
-    helper::vector<typename T::SPtr> searchAllUp() const = delete;
+    type::vector<typename T::SPtr> searchAllUp() const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchDown)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
-    helper::vector<typename T::SPtr> searchAllDown() const = delete;
+    type::vector<typename T::SPtr> searchAllDown() const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchRoot)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchRoot) to update.")
-    helper::vector<typename T::SPtr> searchAllFromRoot() const = delete;
+    type::vector<typename T::SPtr> searchAllFromRoot() const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchParents)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
-    helper::vector<typename T::SPtr> searchAllInParents() const = delete;
+    type::vector<typename T::SPtr> searchAllInParents() const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::Local)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchLocal) to update.")
-    helper::vector<typename T::SPtr> searchAllLocal(const Tag& t) const = delete;
+    type::vector<typename T::SPtr> searchAllLocal(const Tag& t) const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchUp)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
-    helper::vector<typename T::SPtr> searchAllUp(const Tag& t) const = delete;
+    type::vector<typename T::SPtr> searchAllUp(const Tag& t) const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchDown)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
-    helper::vector<typename T::SPtr> searchAllDown(const Tag& t) const = delete;
+    type::vector<typename T::SPtr> searchAllDown(const Tag& t) const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchRoot)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchRoot) to update.")
-    helper::vector<typename T::SPtr> searchAllFromRoot(const Tag& t) const = delete;
+    type::vector<typename T::SPtr> searchAllFromRoot(const Tag& t) const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchParents)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
-    helper::vector<typename T::SPtr> searchAllInParents(const Tag& t) const = delete;
+    type::vector<typename T::SPtr> searchAllInParents(const Tag& t) const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::Local)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::Local) to update.")
-    helper::vector<typename T::SPtr> searchAllLocal(const TagSet& t) const = delete;
+    type::vector<typename T::SPtr> searchAllLocal(const TagSet& t) const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchUp)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
-    helper::vector<typename T::SPtr> searchAllUp(const TagSet& t) const = delete;
+    type::vector<typename T::SPtr> searchAllUp(const TagSet& t) const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchDown)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
-    helper::vector<typename T::SPtr> searchAllDown(const TagSet& t) const = delete;
+    type::vector<typename T::SPtr> searchAllDown(const TagSet& t) const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchRoot)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchRoot) to update.")
-    helper::vector<typename T::SPtr> searchAllFromRoot(const TagSet& t) const = delete;
+    type::vector<typename T::SPtr> searchAllFromRoot(const TagSet& t) const = delete;
 
     /// This function was removed as it duplicates the behavior that is already available by
     /// using getContext()->getObjects<T>(BaseContext::SearchParents)
     template<class T>
     SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
-    helper::vector<typename T::SPtr> searchAllInParents(const TagSet& t) const = delete;
+    type::vector<typename T::SPtr> searchAllInParents(const TagSet& t) const = delete;
 
     /// @}
 

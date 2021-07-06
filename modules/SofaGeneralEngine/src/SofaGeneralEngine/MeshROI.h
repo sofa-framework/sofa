@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -46,7 +46,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef type::Vec<6,Real> Vec6;
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
@@ -104,13 +104,13 @@ public:
     //Input
     // Global mesh
     Data<VecCoord> d_X0; ///< Rest position coordinates of the degrees of freedom
-    Data<helper::vector<Edge> > d_edges; ///< Edge Topology
-    Data<helper::vector<Triangle> > d_triangles; ///< Triangle Topology
-    Data<helper::vector<Tetra> > d_tetrahedra; ///< Tetrahedron Topology
+    Data<type::vector<Edge> > d_edges; ///< Edge Topology
+    Data<type::vector<Triangle> > d_triangles; ///< Triangle Topology
+    Data<type::vector<Tetra> > d_tetrahedra; ///< Tetrahedron Topology
     // ROI mesh
     Data<VecCoord> d_X0_i; ///< ROI position coordinates of the degrees of freedom
-    Data<helper::vector<Edge> > d_edges_i; ///< ROI Edge Topology
-    Data<helper::vector<Triangle> > d_triangles_i; ///< ROI Triangle Topology
+    Data<type::vector<Edge> > d_edges_i; ///< ROI Edge Topology
+    Data<type::vector<Triangle> > d_triangles_i; ///< ROI Triangle Topology
 
     Data<bool> d_computeEdges; ///< If true, will compute edge list and index list inside the ROI.
     Data<bool> d_computeTriangles; ///< If true, will compute triangle list and index list inside the ROI.
@@ -124,14 +124,14 @@ public:
     Data<SetIndex> d_triangleIndices; ///< Indices of the triangles contained in the ROI
     Data<SetIndex> d_tetrahedronIndices; ///< Indices of the tetrahedra contained in the ROI
     Data<VecCoord > d_pointsInROI; ///< Points contained in the ROI
-    Data<helper::vector<Edge> > d_edgesInROI; ///< Edges contained in the ROI
-    Data<helper::vector<Triangle> > d_trianglesInROI; ///< Triangles contained in the ROI
-    Data<helper::vector<Tetra> > d_tetrahedraInROI; ///< Tetrahedra contained in the ROI
+    Data<type::vector<Edge> > d_edgesInROI; ///< Edges contained in the ROI
+    Data<type::vector<Triangle> > d_trianglesInROI; ///< Triangles contained in the ROI
+    Data<type::vector<Tetra> > d_tetrahedraInROI; ///< Tetrahedra contained in the ROI
 
     Data<VecCoord > d_pointsOutROI; ///< Points not contained in the ROI
-    Data<helper::vector<Edge> > d_edgesOutROI; ///< Edges not contained in the ROI
-    Data<helper::vector<Triangle> > d_trianglesOutROI; ///< Triangles not contained in the ROI
-    Data<helper::vector<Tetra> > d_tetrahedraOutROI; ///< Tetrahedra not contained in the ROI
+    Data<type::vector<Edge> > d_edgesOutROI; ///< Edges not contained in the ROI
+    Data<type::vector<Triangle> > d_trianglesOutROI; ///< Triangles not contained in the ROI
+    Data<type::vector<Tetra> > d_tetrahedraOutROI; ///< Tetrahedra not contained in the ROI
     Data<SetIndex> d_indicesOut; ///< Indices of the points not contained in the ROI
     Data<SetIndex> d_edgeOutIndices; ///< Indices of the edges not contained in the ROI
     Data<SetIndex> d_triangleOutIndices; ///< Indices of the triangles not contained in the ROI

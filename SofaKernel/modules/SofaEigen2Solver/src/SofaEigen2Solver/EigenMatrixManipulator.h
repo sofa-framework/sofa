@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaEigen2Solver/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <Eigen/Core>
 #ifndef EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
@@ -42,7 +42,7 @@ struct LMatrixManipulator;
 struct SOFA_SOFAEIGEN2SOLVER_API LLineManipulator
 {
     typedef std::pair<unsigned int, SReal> LineCombination;
-    typedef helper::vector< LineCombination > InternalData;
+    typedef type::vector< LineCombination > InternalData;
 public:
     LLineManipulator& addCombination(unsigned int idxConstraint, SReal factor=1.0);
 
@@ -77,9 +77,9 @@ struct SOFA_SOFAEIGEN2SOLVER_API LMatrixManipulator
 {
     void init(const SparseMatrixEigen& L);
 
-    void buildLMatrix(const helper::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const;
+    void buildLMatrix(const type::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const;
 
-    helper::vector< SparseVectorEigen > LMatrix;
+    type::vector< SparseVectorEigen > LMatrix;
 };
 
 } // namespace sofa::component::linearsolver

@@ -59,14 +59,14 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
 {
     //Input
     const std::string& strMap = p_mapGroupModulus.getValue();
-    const helper::vector<unsigned int>& primitives = f_primitives.getValue();
-    const helper::vector<sofa::core::loader::PrimitiveGroup >& groups = f_groups.getValue();
-    const helper::vector<int >& elementsGroup = f_elementsGroup.getValue();
+    const auto& primitives = f_primitives.getValue();
+    const auto& groups = f_groups.getValue();
+    const auto& elementsGroup = f_elementsGroup.getValue();
 
     const Real& defaultModulus =  p_defaultModulus.getValue();
 
     //Output
-    helper::vector<Real>& youngModulusVector = *f_youngModulus.beginWriteOnly();
+    type::vector<Real>& youngModulusVector = *f_youngModulus.beginWriteOnly();
 
     //1st method : with Group definition
     if (!groups.empty())
@@ -78,7 +78,7 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
 
             //does not matter if primitives is empty
             int maxSize = primitives.size();
-            std::map<sofa::core::loader::PrimitiveGroup, Real> mapMG;
+            std::map<sofa::type::PrimitiveGroup, Real> mapMG;
 
             //read string and tokenize
             while(end != std::string::npos )
@@ -123,10 +123,10 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
             youngModulusVector.resize(maxSize);
             std::fill(youngModulusVector.begin(), youngModulusVector.end(), defaultModulus);
 
-            typename std::map<sofa::core::loader::PrimitiveGroup, Real>::const_iterator itMapMG;
+            typename std::map<sofa::type::PrimitiveGroup, Real>::const_iterator itMapMG;
             for (itMapMG = mapMG.begin() ; itMapMG != mapMG.end() ; itMapMG++)
             {
-                sofa::core::loader::PrimitiveGroup pg = (*itMapMG).first;
+                sofa::type::PrimitiveGroup pg = (*itMapMG).first;
                 Real ym = (*itMapMG).second;
 
                 for (int i=pg.p0 ; i<pg.p0+pg.nbp ; i++)
@@ -151,7 +151,7 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
         int gid;
         Real youngModulus;
 
-        helper::vector<Real> mapMG;
+        type::vector<Real> mapMG;
         youngModulusVector.resize(1);
 
         //read string and tokenize

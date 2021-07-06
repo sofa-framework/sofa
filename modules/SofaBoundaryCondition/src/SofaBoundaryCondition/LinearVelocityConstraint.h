@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -58,14 +58,14 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<Index> SetIndexArray;
+    typedef type::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 public :
     /// indices of the DOFs the constraint is applied to
     SetIndex d_indices;
     /// the key frames when the motion is defined by the user
-    Data<helper::vector<Real> > d_keyTimes;
+    Data<type::vector<Real> > d_keyTimes;
     /// the motions corresponding to the key frames
     Data<VecDeriv > d_keyVelocities;
     /// the coordinates on which to applay velocities
@@ -125,8 +125,8 @@ public:
 
 
         bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
+                const sofa::type::vector< Index > & /*ancestors*/,
+                const sofa::type::vector< double > & /*coefs*/);
     protected:
         LinearVelocityConstraint<DataTypes> *lc;
     };

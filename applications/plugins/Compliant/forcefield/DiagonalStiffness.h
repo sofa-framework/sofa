@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_Stiffness_DiagonalStiffness_H
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
@@ -39,7 +39,7 @@ public:
 
     Data< VecDeriv > diagonal; ///< diagonal values
 
-    Data< helper::vector<SReal> > damping; ///< diagonal damping
+    Data< type::vector<SReal> > damping; ///< diagonal damping
 
     virtual void init() override;
 

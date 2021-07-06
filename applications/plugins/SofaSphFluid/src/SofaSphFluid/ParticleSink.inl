@@ -101,7 +101,7 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     int n = int(x.size());
-    helper::vector<Index> remove;
+    type::vector<Index> remove;
     for (int i=n-1; i>=0; --i) // always remove points in reverse order
     {
         Real d = x[i]*d_planeNormal.getValue()-d_planeD1.getValue();
@@ -215,21 +215,21 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->saveLastState();
 
-    defaulttype::Vec3d normal; normal = d_planeNormal.getValue();
+    type::Vec3d normal; normal = d_planeNormal.getValue();
 
     // find a first vector inside the plane
-    defaulttype::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = defaulttype::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
-    else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, -normal[0]/normal[1],0.0);
-    else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
+    type::Vec3d v1;
+    if( 0.0 != normal[0] ) v1 = type::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
+    else if ( 0.0 != normal[1] ) v1 = type::Vec3d(1.0, -normal[0]/normal[1],0.0);
+    else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
     v1.normalize();
     // find a second vector inside the plane and orthogonal to the first
-    defaulttype::Vec3d v2;
+    type::Vec3d v2;
     v2 = v1.cross(normal);
     v2.normalize();
     const float size=1.0f;
-    defaulttype::Vec3d center = normal*d_planeD0.getValue();
-    defaulttype::Vec3d corners[4];
+    type::Vec3d center = normal*d_planeD0.getValue();
+    type::Vec3d corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
     corners[2] = center+v1*size+v2*size;
@@ -238,13 +238,13 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->disableLighting();
     vparams->drawTool()->setPolygonMode(0, true);
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
-    vertices.push_back(sofa::defaulttype::Vector3(corners[0]));
-    vertices.push_back(sofa::defaulttype::Vector3(corners[1]));
-    vertices.push_back(sofa::defaulttype::Vector3(corners[2]));
-    vertices.push_back(sofa::defaulttype::Vector3(corners[3]));
-    vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), sofa::helper::types::RGBAColor(0.0f, 0.5f, 0.2f, 1.0f));
+    vertices.push_back(sofa::type::Vector3(corners[0]));
+    vertices.push_back(sofa::type::Vector3(corners[1]));
+    vertices.push_back(sofa::type::Vector3(corners[2]));
+    vertices.push_back(sofa::type::Vector3(corners[3]));
+    vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), sofa::type::RGBAColor(0.0f, 0.5f, 0.2f, 1.0f));
 
     vparams->drawTool()->restoreLastState();
 }
