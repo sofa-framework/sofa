@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <LMConstraint/LMConstraint.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/simulation/Node.h>
 
 
@@ -59,7 +59,7 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef sofa::component::topology::PointSubsetData< type::vector<Index> > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
     typedef type::vector<Index> SetIndexArray;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
@@ -120,7 +120,7 @@ public:
     class FCTPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<Index> >
     {
     public:
-        FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<type::vector<Index> >* _data)
+        FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, SetIndex* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, sofa::type::vector<Index> >(_data), fc(_fc) {}
 
 

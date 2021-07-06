@@ -29,14 +29,12 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector_algorithm.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa::component::projectiveconstraintset
 {
 
 using sofa::helper::WriteAccessor;
 using sofa::type::Vec;
-using sofa::component::topology::PointSubsetData;
 using sofa::component::topology::TopologyDataHandler;
 
 
@@ -48,7 +46,7 @@ class FixedPlaneConstraint<DataTypes>::FCPointHandler :
 public:
     typedef typename FixedPlaneConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-    FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
+    FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, SetIndex* _data)
         : TopologyDataHandler<BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
     void applyDestroyFunction(Index /*index*/, value_type& /*T*/);

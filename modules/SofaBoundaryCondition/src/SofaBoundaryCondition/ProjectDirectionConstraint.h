@@ -32,7 +32,7 @@
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <set>
 
@@ -68,7 +68,7 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef type::vector<Index> Indices;
     typedef sofa::type::Vector3 Vector3;
-    typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
+    typedef sofa::component::topology::TopologySubsetIndices IndexSubsetData;
     typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
@@ -125,7 +125,7 @@ public:
     public:
         typedef typename ProjectDirectionConstraint<DataTypes>::Indices Indices;
         typedef sofa::core::topology::Point Point;
-        FCPointHandler(ProjectDirectionConstraint<DataTypes>* _fc, component::topology::PointSubsetData<Indices>* _data)
+        FCPointHandler(ProjectDirectionConstraint<DataTypes>* _fc, IndexSubsetData* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >(_data), fc(_fc) {}
 
 

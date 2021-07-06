@@ -22,8 +22,6 @@
 #pragma once
 #include <SofaBaseMechanics/SubsetMapping.h>
 
-#include <SofaBaseTopology/TopologySubsetData.inl>
-
 namespace sofa::component::mapping
 {
 

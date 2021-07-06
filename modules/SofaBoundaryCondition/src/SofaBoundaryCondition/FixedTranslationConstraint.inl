@@ -25,7 +25,6 @@
 #include <SofaBoundaryCondition/FixedTranslationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/vector_algorithm.h>
 
 namespace sofa::component::projectiveconstraintset

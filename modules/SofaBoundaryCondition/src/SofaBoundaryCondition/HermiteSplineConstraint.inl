@@ -23,7 +23,6 @@
 
 #include <SofaBoundaryCondition/HermiteSplineConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::projectiveconstraintset

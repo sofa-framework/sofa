@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_MISC_PARTICLESOURCE_INL
 #include <SofaSphFluid/config.h>
 #include <SofaSphFluid/ParticleSource.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
@@ -83,7 +84,7 @@ void ParticleSource<DataTypes>::init()
     if (_topology != nullptr)
     {
         m_pointHandler = new PSPointHandler(this, &m_lastparticles);
-        m_lastparticles.createTopologyHandler(_topology, m_pointHandler);
+       // m_lastparticles.createTopologyHandler(_topology, m_pointHandler);
     }
 
     msg_info() << "ParticleSource: center = " << d_center.getValue();
@@ -101,9 +102,10 @@ void ParticleSource<DataTypes>::reset()
         m_lastTime = 0.0;
     m_maxdist = 0;
 
-    helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
+    SetIndexArray& _lastparticles = *this->m_lastparticles.beginEdit();
     _lastparticles.clear();
     m_lastpos.clear();
+    this->m_lastparticles.endEdit();
 }
 
 
@@ -122,7 +124,7 @@ void ParticleSource<DataTypes>::projectResponse(const sofa::core::MechanicalPara
     }
 
     VecDeriv& dx = *dxData.beginEdit();
-    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
+    const SetIndexArray& _lastparticles = this->m_lastparticles.getValue();
     for (unsigned int s = 0; s<_lastparticles.size(); s++)
     {
         dx[_lastparticles[s]] = Deriv();
@@ -148,8 +150,8 @@ void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalPara
     // constraint the most recent particles
     VecCoord& x = *xData.beginEdit();
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
-    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;    
-    msg_info() << "projectPosition: " << _lastparticles.ref();
+    const SetIndexArray& _lastparticles = this->m_lastparticles.getValue();
+    msg_info() << "projectPosition: " << _lastparticles;
     for (unsigned int s = 0; s < _lastparticles.size(); s++)
     {
         x[_lastparticles[s]] = m_lastpos[s];
@@ -176,7 +178,7 @@ void ParticleSource<DataTypes>::projectVelocity(const sofa::core::MechanicalPara
     // constraint the most recent particles with the initial Velocity
     VecDeriv& res = *vData.beginEdit();
     Deriv v0 = d_velocity.getValue();
-    helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;
+    const SetIndexArray& _lastparticles = this->m_lastparticles.getValue();
     for (unsigned int s = 0; s<_lastparticles.size(); s++)
     {
         res[_lastparticles[s]] = v0;
@@ -218,7 +220,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
     {
         msg_info() << "ParticleSource: animate begin time= " << time << " | size: " << i0 << sendl;
         msg_info() << "nbParticlesToCreate: " << nbParticlesToCreate << " m_maxdist: " << m_maxdist;
-        helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
+        SetIndexArray& _lastparticles = *m_lastparticles.beginEdit(); ///< lastparticles indices
 
         type::vector< Coord > newX;
         type::vector< Deriv > newV;
@@ -232,7 +234,6 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
             m_maxdist += d_delay.getValue() * d_velocity.getValue().norm() / d_scale.getValue();
 
             //int lastparticle = i0 + i * N;
-
             size_t lp0 = _lastparticles.empty() ? 0 : _lastparticles.size() / 2;
             if (lp0 > 0)
             {
@@ -299,6 +300,8 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
             v[i0 + s] = newV[s];
         }
     }
+
+    m_lastparticles.endEdit();
 }
 
 
