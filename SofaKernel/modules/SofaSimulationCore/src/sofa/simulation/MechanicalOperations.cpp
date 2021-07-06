@@ -584,54 +584,14 @@ void MechanicalOperations::printWithElapsedTime( core::ConstMultiVecId /*v*/, un
 
 void MechanicalOperations::showMissingLinearSolverError() const
 {
-    msg_error_when(!hasShownMissingLinearSolverMap[ctx], ctx)
-        << "A linear solver is required, but has not been found. Add a linear solver to your scene to "
-           "fix this issue. The list of available linear solver components "
-           "is: [" << listLinearSolverComponents() << "].";
-    hasShownMissingLinearSolverMap[ctx] = true;
-}
-
-std::string MechanicalOperations::listLinearSolverComponents()
-{
-    const auto comma_fold = [](std::string a, std::string b)
+    if (!hasShownMissingLinearSolverMap[ctx])
     {
-        return std::move(a) + ", " + std::move(b);
-    };
-    const auto listComponents = findLinearSolverComponentTypes();
-    if (listComponents.empty())
-    {
-        return std::string();
+        const auto solvers = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseLinearSolver>();
+        msg_error(ctx) << "A linear solver is required, but has not been found. Add a linear solver to your scene to "
+                          "fix this issue. The list of available linear solver components "
+                          "is: [" << solvers << "].";
+        hasShownMissingLinearSolverMap[ctx] = true;
     }
-    return std::accumulate(
-            std::next(listComponents.begin()), listComponents.end(),
-            listComponents[0],
-            comma_fold);
-}
-
-type::vector<std::string> MechanicalOperations::findLinearSolverComponentTypes()
-{
-    std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
-    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
-
-    type::vector<std::string> components;
-
-    for (const auto &entry : entries)
-    {
-        const auto creatorEntry = entry->creatorMap.begin();
-        if (creatorEntry != entry->creatorMap.end())
-        {
-            const sofa::core::objectmodel::BaseClass *baseClass = creatorEntry->second->getClass();
-            if (baseClass)
-            {
-                if (baseClass->hasParent(sofa::core::behavior::BaseLinearSolver::GetClass()))
-                {
-                    components.push_back(baseClass->className);
-                }
-            }
-        }
-    }
-
-    return components;
 }
 
 }
