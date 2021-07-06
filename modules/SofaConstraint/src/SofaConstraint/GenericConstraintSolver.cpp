@@ -142,7 +142,7 @@ void GenericConstraintSolver::init()
 
     getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
     constraintCorrectionIsActive.resize(constraintCorrections.size());
-    for (auto & constraintCorrection : constraintCorrections)
+    for (auto* constraintCorrection : constraintCorrections)
         constraintCorrection->addConstraintSolver(this);
     context = getContext();
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
