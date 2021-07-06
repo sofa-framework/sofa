@@ -82,8 +82,10 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
     const sofa::helper::vector<sofa::helper::vector<double> >& coefs)
 {
-    if (!this->getSparseDataStatus())
+    if (!this->getSparseDataStatus()) {
+        this->lastElementIndex += nbElements;
         return;
+    }
 
     // Using default values
     container_type& data = *(this->beginEdit());
@@ -186,10 +188,16 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::helper::
         this->lastElementIndex--;
     }
 
-    data.resize(data.size() - cptDone);
+    if (cptDone != 0)
+    {
+        sofa::Size nbElements = 0;
+        if (cptDone < data.size()) {
+            nbElements = data.size() - cptDone;
+        }
+        data.resize(nbElements);
+        removePostProcess(nbElements);
+    }
     this->endEdit();
-
-    removePostProcess(data.size() - cptDone);
 }
 
 template <typename TopologyElementType, typename VecT>
