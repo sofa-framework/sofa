@@ -19,38 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
 #include <SofaGeneralEngine/TransformEngine.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 using sofa::component::engine::TransformEngine;
 
-sofa::defaulttype::Vector3		nullptr_VEC(0,0,0);
-sofa::defaulttype::Vector3		nullptr_SCALE(1,1,1);
+sofa::type::Vector3		nullptr_VEC(0,0,0);
+sofa::type::Vector3		nullptr_SCALE(1,1,1);
 
-sofa::defaulttype::Vector3		INPUT_POS(1,0,0);
-sofa::helper::Quater<SReal>		INPUT_QUAT(0,0,0,1);
+sofa::type::Vector3		INPUT_POS(1,0,0);
+sofa::type::Quat<SReal>		INPUT_QUAT(0,0,0,1);
 
-sofa::defaulttype::Vector3		TRANSLATION(1,2,3);
-sofa::defaulttype::Vector3		OUTPUT_TRANSLATION_POS(2,2,3);
+sofa::type::Vector3		TRANSLATION(1,2,3);
+sofa::type::Vector3		OUTPUT_TRANSLATION_POS(2,2,3);
 
-sofa::defaulttype::Vector3		ROTATION(0,0,90);
-sofa::defaulttype::Vector3		OUTPUT_ROTATION_POS(0,1,0);
-sofa::helper::Quater<SReal>		OUTPUT_ROTATION_QUAT(0,0,0.7071,0.7071);
+sofa::type::Vector3		ROTATION(0,0,90);
+sofa::type::Vector3		OUTPUT_ROTATION_POS(0,1,0);
+sofa::type::Quat<SReal>		OUTPUT_ROTATION_QUAT(0,0,0.7071,0.7071);
 
-sofa::defaulttype::Vector3		SCALE(5,10,20);
-sofa::defaulttype::Vector3		OUTPUT_SCALE_POS(5,0,0);
+sofa::type::Vector3		SCALE(5,10,20);
+sofa::type::Vector3		OUTPUT_SCALE_POS(5,0,0);
 
-sofa::defaulttype::Vector3		OUTPUT_ROTATION_SCALE_POS(0,5,0);
+sofa::type::Vector3		OUTPUT_ROTATION_SCALE_POS(0,5,0);
 
 
 namespace sofa 
 {
 
-using defaulttype::Vector3;
+using type::Vector3;
 
 template <typename _DataTypes>
 class TransformEngine_test : public ::testing::Test, public TransformEngine<_DataTypes>
@@ -60,7 +64,7 @@ public:
 	typedef typename DataTypes::VecCoord VecCoord;
 	typedef typename DataTypes::Coord Coord;
 	typedef typename DataTypes::Real Real;
-	typedef sofa::helper::Quater<SReal> Quat;
+	typedef sofa::type::Quat<SReal> Quat;
 
 
 	TransformEngine_test(bool init = true)
@@ -78,7 +82,7 @@ public:
 	VecCoord initInputVecCoord()
 	{
 		VecCoord testVec;
-		testVec.push_back(createCoord<DataTypes>(INPUT_POS, INPUT_QUAT));
+		testVec.push_back(sofa::testing::createCoord<DataTypes>(INPUT_POS, INPUT_QUAT));
 	
 		return testVec;
 	}
@@ -95,7 +99,7 @@ public:
 	void testOutput(Vector3 pos, Quat quat = Quat())
 	{
 		Coord output = this->f_outputX.getValue()[0];
-		Coord referenceCoord = createCoord<DataTypes>(pos, quat);
+		Coord referenceCoord = sofa::testing::createCoord<DataTypes>(pos, quat);
 
 		const Real diff			= (referenceCoord - output).norm();
 		const Real abs_error	= 1e-5;

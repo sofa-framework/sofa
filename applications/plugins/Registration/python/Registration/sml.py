@@ -117,7 +117,7 @@ class SceneRegisterArticulatedRigid(Compliant.sml.SceneArticulatedRigid):
 
         registration_node.createObject('MeshTopology', name='topo', src='@./source_topology')
         registration_node.createObject('MechanicalObject', name='DOFs')
-        registration_node.createObject('Triangle')
+        registration_node.createObject('TriangleCollisionModel')
 
         registration_node.createObject('RigidMapping', template='Rigid3d,Vec3d',
                                        input="@" + Tools.node_path_rel(registration_node, self.nodes["dofRigid"]),

@@ -23,4 +23,4 @@
 
 #include <sofa/type/Mat_solve_SVD.h>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Mat_solve_SVD.h")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/Mat_solve_SVD.h")

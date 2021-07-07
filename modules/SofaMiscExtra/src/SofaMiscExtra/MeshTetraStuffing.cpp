@@ -34,7 +34,7 @@ namespace sofa::component::misc
 {
 
 using namespace sofa::defaulttype;
-using helper::vector;
+using type::vector;
 
 int MeshTetraStuffingClass = core::RegisterObject("Create a tetrahedral volume mesh from a surface, using the algorithm from F. Labelle and J.R. Shewchuk, \"Isosurface Stuffing: Fast Tetrahedral Meshes with Good Dihedral Angles\", SIGGRAPH 2007.")
         .add< MeshTetraStuffing >()
@@ -83,7 +83,7 @@ void MeshTetraStuffing::init()
         }
     }
     SeqPoints inTN;
-    helper::fixed_array<Point,2> inputBBox;
+    type::fixed_array<Point,2> inputBBox;
     {
         inputBBox[0] = inP[0];
         inputBBox[1] = inP[0];
@@ -101,7 +101,7 @@ void MeshTetraStuffing::init()
             inTN[t] = (inP[inT[t][1]]-inP[inT[t][0]]).cross(inP[inT[t][2]]-inP[inT[t][0]]);
         }
     }
-    helper::fixed_array<Point,2>& bb = *vbbox.beginEdit();
+    type::fixed_array<Point,2>& bb = *vbbox.beginEdit();
     if (bb[0][0] >= bb[1][0])
     {
         bb[0] = inputBBox[0] - (inputBBox[1]-inputBBox[0])*0.01;
@@ -190,7 +190,7 @@ void MeshTetraStuffing::init()
                 Point direction = outP[p1] - origin; //getEdgeDir(e);
                 //rays.push_back(origin);
                 //rays.push_back(origin+direction);
-                helper::vector< collision::TriangleOctree::traceResult > results;
+                type::vector< collision::TriangleOctree::traceResult > results;
 #ifdef USE_OCTREE
                 octree.octreeRoot->traceAll(origin, direction, results);
                 std::set< int > tris;
@@ -902,13 +902,13 @@ void MeshTetraStuffing::draw(const core::visual::VisualParams* vparams)
         return;
 
     const SeqPoints& outP = outputPoints.getValue();
-    vparams->drawTool()->drawPoints(intersections, 2, sofa::helper::types::RGBAColor::red());
-    vparams->drawTool()->drawPoints(outP, 1, sofa::helper::types::RGBAColor::green());
+    vparams->drawTool()->drawPoints(intersections, 2, sofa::type::RGBAColor::red());
+    vparams->drawTool()->drawPoints(outP, 1, sofa::type::RGBAColor::green());
     if (!diags.empty())
-        vparams->drawTool()->drawLines(diags, 1, sofa::helper::types::RGBAColor::cyan());
+        vparams->drawTool()->drawLines(diags, 1, sofa::type::RGBAColor::cyan());
 
     if (!snaps.empty())
-        vparams->drawTool()->drawPoints(snaps, 4, sofa::helper::types::RGBAColor::blue());
+        vparams->drawTool()->drawPoints(snaps, 4, sofa::type::RGBAColor::blue());
 }
 
 } //  sofa::component::misc

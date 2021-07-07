@@ -34,6 +34,26 @@
 namespace sofa::component::collision
 {
 
+/**
+ * Intersection methods using proximities. Filters are added to limit the number of contacts.
+ * The following pairs of collision models are supported:
+ * - Cube/Cube
+ * - Sphere/Sphere
+ * - Sphere/Point
+ * - Point/Point
+ * - Line/Line
+ * - Line/Point
+ * - Line/Sphere
+ * - Triangle/Point
+ * - Triangle/Sphere
+ * - Ray/Triangle
+ * - Ray/Sphere
+ * The following pairs of collision models are ignored:
+ * - Triangle/Line
+ * - Triangle/Triangle
+ * - Ray/Point
+ * - Ray/Line
+ */
 class SOFA_SOFACONSTRAINT_API LocalMinDistance : public BaseProximityIntersection
 {
 public:
@@ -46,17 +66,17 @@ public:
     Data<double> coneFactor; ///< Factor for filtering cone angle computation
     Data<bool> useLMDFilters; ///< Use external cone computation (Work in Progress)
 
-
 protected:
     LocalMinDistance();
+
 public:
     void init() override;
 
-    bool testIntersection(Cube& ,Cube&);
+    bool testIntersection(Cube& ,Cube&) override;
 
     bool testIntersection(Point&, Point&);
     bool testIntersection(Sphere&, Point&);
-    bool testIntersection(Sphere&, Sphere&);
+    bool testIntersection(Sphere&, Sphere&) override;
     bool testIntersection(Line&, Point&);
     bool testIntersection(Line&, Sphere&);
     bool testIntersection(Line&, Line&);
@@ -65,10 +85,10 @@ public:
     bool testIntersection(Ray&, Sphere&);
     bool testIntersection(Ray&, Triangle&);
 
-    int computeIntersection(Cube&, Cube&, OutputVector*);
+    int computeIntersection(Cube&, Cube&, OutputVector*) override;
     int computeIntersection(Point&, Point&, OutputVector*);
     int computeIntersection(Sphere&, Point&, OutputVector*);
-    int computeIntersection(Sphere&, Sphere&, OutputVector*);
+    int computeIntersection(Sphere&, Sphere&, OutputVector*) override;
     int computeIntersection(Line&, Point&, OutputVector*);
     int computeIntersection(Line&, Sphere&, OutputVector*);
     int computeIntersection(Line&, Line&, OutputVector*);
@@ -81,24 +101,11 @@ public:
     /// According to the local configuration around the found intersected primitive,
     /// we build a "Region Of Interest" geometric cone.
     /// Pertinent intersections have to belong to this cone, others are not taking into account anymore.
-    bool testValidity(Sphere&, const defaulttype::Vector3&) { return true; }
-    bool testValidity(Point&, const defaulttype::Vector3&);
-    bool testValidity(Line&, const defaulttype::Vector3&);
-    bool testValidity(Triangle&, const defaulttype::Vector3&);
+    bool testValidity(Sphere&, const type::Vector3&) const { return true; }
+    bool testValidity(Point&, const type::Vector3&) const;
+    bool testValidity(Line&, const type::Vector3&) const;
+    bool testValidity(Triangle&, const type::Vector3&) const;
 
-    void draw(const core::visual::VisualParams* vparams) override;
-
-    /// Actions to accomplish when the broadPhase is started. By default do nothing.
-    void beginBroadPhase() override {}
-
-    int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
-    {
-        return 0;
-    }
-
-private:
-    double mainAlarmDistance;
-    double mainContactDistance;
 };
 
 } // namespace sofa::component::collision

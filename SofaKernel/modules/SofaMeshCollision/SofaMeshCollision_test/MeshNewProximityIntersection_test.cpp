@@ -21,23 +21,20 @@
 ******************************************************************************/
 
 #include <gtest/gtest.h>
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
-
 
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
+#include <sofa/testing/NumericTest.h>
 
 
 namespace sofa{
 
-    struct MeshNewProximityIntersectionTest : public Sofa_test<>
+    struct MeshNewProximityIntersectionTest : public BaseTest
     {
-        typedef sofa::defaulttype::Vector3 Vec3;
-        typedef sofa::defaulttype::Vector2 Vec2;
+        typedef sofa::type::Vector3 Vec3;
+        typedef sofa::type::Vector2 Vec2;
         typedef sofa::component::collision::MeshNewProximityIntersection ProximityIntersection;
 
         MeshNewProximityIntersectionTest(){
@@ -45,7 +42,7 @@ namespace sofa{
 
         bool checkOutput(sofa::core::collision::DetectionOutput& o, Vec3 pc)
         {
-            if (Sofa_test::vectorMaxDiff<3,SReal>(pc, o.point[0])>1e-6)
+            if (sofa::testing::NumericTest<SReal>::vectorMaxDiff<3,SReal>(pc, o.point[0])>1e-6)
             {
                 ADD_FAILURE() <<"wrong collision point: "<<o.point[0]<<", expected: "<<pc;
                 return false;
@@ -57,7 +54,8 @@ namespace sofa{
 
         bool pointTriangle()
         {
-            sofa::helper::vector<sofa::core::collision::DetectionOutput> outputVector;
+            using Real = SReal;
+            sofa::type::vector<sofa::core::collision::DetectionOutput> outputVector;
             unsigned nbTest = 100;
             int flag = 0xffff;
 

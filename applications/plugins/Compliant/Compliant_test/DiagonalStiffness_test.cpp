@@ -22,7 +22,7 @@
 #include <Compliant/forcefield/DiagonalStiffness.h>
 #include <SofaTest/ForceField_test.h>
 
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 using sofa::helper::logging::Message ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>

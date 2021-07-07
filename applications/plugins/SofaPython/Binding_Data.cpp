@@ -33,7 +33,6 @@ using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::Base ;
 
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 using sofa::defaulttype::AbstractTypeInfo ;
 
 #include <sofa/core/objectmodel/BaseNode.h>
@@ -771,7 +770,7 @@ static PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
     void* valueVoidPtr = typeinfo->getValuePtr(dataValueVoidPtr);
 
     /// N-dimensional arrays
-    sofa::helper::vector<size_t> dimensions;
+    sofa::type::vector<size_t> dimensions;
     dimensions.push_back( typeinfo->size(dataValueVoidPtr) );   /// total size to begin with
     const AbstractTypeInfo* valuetypeinfo = typeinfo;           /// to go trough encapsulated types (at the end, it will correspond to the finest type)
 

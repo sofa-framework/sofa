@@ -66,7 +66,7 @@ void DefaultCollisionGroupManager::changeInstance(Instance inst)
     groupMap.swap(storedGroupSet[inst]);
 }
 
-void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact::SPtr>& contacts)
+void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::type::vector<Contact::SPtr>& contacts)
 {
     sofa::helper::ScopedAdvancedTimer timer("CreateGroups");
 
@@ -78,13 +78,13 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     MergeGroupsMap mergedGroups;
 
     // list of nodes that must be removed due to a move from a node to another
-    sofa::helper::vector< simulation::Node::SPtr > removedGroup;
+    sofa::type::vector< simulation::Node::SPtr > removedGroup;
 
-    sofa::helper::vector< std::pair<core::collision::Contact*, simulation::Node::SPtr> > contactGroup;
+    sofa::type::vector< std::pair<core::collision::Contact*, simulation::Node::SPtr> > contactGroup;
 
     //list of contacts considered stationary: one of the collision model has no associated ODE solver (= stationary)
     //for stationary contacts, no need to combine nodes into a single ODE solver
-    sofa::helper::vector< Contact* > stationaryContacts;
+    sofa::type::vector< Contact* > stationaryContacts;
 
     for (const auto& contact : contacts)
     {
@@ -136,9 +136,9 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 void DefaultCollisionGroupManager::createGroup(core::collision::Contact* contact,
                                                int& groupIndex,
                                                MergeGroupsMap& mergedGroups,
-                                               sofa::helper::vector< std::pair<core::collision::Contact*, simulation::Node::SPtr> >& contactGroup,
-                                               sofa::helper::vector< simulation::Node::SPtr >& removedGroup,
-                                               sofa::helper::vector< core::collision::Contact* >& stationaryContacts)
+                                               sofa::type::vector< std::pair<core::collision::Contact*, simulation::Node::SPtr> >& contactGroup,
+                                               sofa::type::vector< simulation::Node::SPtr >& removedGroup,
+                                               sofa::type::vector< core::collision::Contact* >& stationaryContacts)
 {
     const auto contactCollisionModels = contact->getCollisionModels();
     core::CollisionModel* cm_1 = contactCollisionModels.first;
@@ -296,7 +296,7 @@ void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /
 simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::CollisionModel* model)
 {
     simulation::Node* node = static_cast<simulation::Node*>(model->getContext());
-    helper::vector< core::behavior::OdeSolver *> listSolver;
+    type::vector< core::behavior::OdeSolver *> listSolver;
     node->get< core::behavior::OdeSolver >(&listSolver);
 
     if (listSolver.empty())

@@ -23,7 +23,8 @@ def createScene(root):
         ########################    global components    ########################
         
         root.createObject('DefaultPipeline', name='DefaultCollisionPipeline', depth="6")
-        root.createObject('BruteForceDetection')
+        root.createObject('BruteForceBroadPhase', name='N2')
+        root.createObject('BVHNarrowPhase')
         root.createObject('NewProximityIntersection', name="Proximity", alarmDistance="0.2", contactDistance="0")
         root.createObject('DefaultCollisionGroupManager')
         
@@ -42,7 +43,7 @@ def createScene(root):
         fixedNode.createObject('MechanicalObject',template="Rigid",position="0 0 0 0 0 0 1")
         fixedNode.createObject('RigidMass',mass="1",inertia="1 1 1")
         fixedNode.createObject('FixedConstraint',template="Rigid",indices="0")
-        fixedNode.createObject('Sphere',contactRestitution=1)
+        fixedNode.createObject('SphereCollisionModel',contactRestitution=1)
 
         
         ########################   moving spheres   ########################
@@ -52,7 +53,7 @@ def createScene(root):
             movingNode = root.createChild('moving'+str(c))
             movingNode.createObject('MechanicalObject',template="Rigid",name="dofs",position="0.5 0 0 0 0 0 1",velocity=str(vel)+" 0 0 0 0 0")
             movingNode.createObject('RigidMass',mass="1",inertia="1 1 1")
-            movingNode.createObject('Sphere',contactRestitution=c,group=1)
+            movingNode.createObject('SphereCollisionModel',contactRestitution=c,group=1)
                 
 
         return 0

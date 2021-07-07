@@ -49,9 +49,9 @@ protected:
 
     bool readGmsh(std::ifstream &file, const unsigned int gmshFormat);
 
-    void addInGroup(helper::vector< sofa::helper::types::PrimitiveGroup>& group, int tag, std::size_t eid);
+    void addInGroup(type::vector< sofa::type::PrimitiveGroup>& group, int tag, std::size_t eid);
 
-    void normalizeGroup(helper::vector< sofa::helper::types::PrimitiveGroup>& group);
+    void normalizeGroup(type::vector< sofa::type::PrimitiveGroup>& group);
 };
 
 } // namespace io

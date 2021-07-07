@@ -47,7 +47,7 @@ class SOFA_SIMULATION_CORE_API Simulation: public virtual sofa::core::objectmode
 public:
     SOFA_CLASS(Simulation, sofa::core::objectmodel::Base);
 
-    [[deprecated("Simulation::DisplayFlags is deprecated use sofa::core::visual::DisplayFlags instead.")]]
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1730)", "v21.12", "Use sofa::core::visual::DisplayFlags instead.")
     typedef int DisplayFlags;
 
     Simulation();

@@ -37,7 +37,7 @@
 #include <sofa/core/behavior/RotationFinder.h>
 
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 #include <sofa/simulation/fwd.h>
 
@@ -226,9 +226,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invM->data = new Real[nbRows * nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
+        const sofa::type::Vec3d gravity = this->getContext()->getGravity();
 
-        const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
+        const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravity(gravity_zero);
 
         sofa::component::odesolver::EulerImplicitSolver* eulerSolver;
@@ -268,13 +268,13 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         if (cgLinearSolver)
         {
-            buf_tolerance = (double) cgLinearSolver->f_tolerance.getValue();
-            buf_maxIter   = (int) cgLinearSolver->f_maxIter.getValue();
-            buf_threshold = (double) cgLinearSolver->f_smallDenominatorThreshold.getValue();
+            buf_tolerance = (double) cgLinearSolver->d_tolerance.getValue();
+            buf_maxIter   = (int) cgLinearSolver->d_maxIter.getValue();
+            buf_threshold = (double) cgLinearSolver->d_smallDenominatorThreshold.getValue();
 
-            cgLinearSolver->f_tolerance.setValue(1e-20);
-            cgLinearSolver->f_maxIter.setValue(5000);
-            cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-35);
+            cgLinearSolver->d_tolerance.setValue(1e-20);
+            cgLinearSolver->d_maxIter.setValue(5000);
+            cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-35);
         }
 
 
@@ -363,9 +363,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         // Restore linear solver parameters
         if (cgLinearSolver)
         {
-            cgLinearSolver->f_tolerance.setValue(buf_tolerance);
-            cgLinearSolver->f_maxIter.setValue(buf_maxIter);
-            cgLinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+            cgLinearSolver->d_tolerance.setValue(buf_tolerance);
+            cgLinearSolver->d_maxIter.setValue(buf_maxIter);
+            cgLinearSolver->d_smallDenominatorThreshold.setValue(buf_threshold);
         }
 
         // Retore velocity
@@ -840,7 +840,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
             Ri = rotationFinder->getRotations()[i];
         }
 
-        sofa::defaulttype::Matrix3 RotMat;
+        sofa::type::Matrix3 RotMat;
 
         for (unsigned int a=0; a<3; a++)
         {
@@ -850,9 +850,9 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
             }
         }
 
-        sofa::defaulttype::Quat q;
+        sofa::type::Quat<SReal> q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[i]), q, sofa::defaulttype::Vec3f(this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue()));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[i]), q, sofa::type::Vec3f(this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue()));
 
     }
 

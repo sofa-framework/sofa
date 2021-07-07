@@ -6,7 +6,6 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
-//#include <sofa/helper/system/atomic.h>
 
 #include <thread>
 

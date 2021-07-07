@@ -41,13 +41,14 @@ public:
     SOFA_ABSTRACT_CLASS(BaseMeshTopology, core::topology::Topology);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMeshTopology)
 
-    using index_type [[deprecated("PR#1515 (2020-10-14) BaseMeshTopology::index_type is a deprecated typedef. From now on, please sofa::Index instead of sofa::core::topology::BaseMeshTopology::index_type.")]] = sofa::Index;
+    SOFA_ATTRIBUTE_DISABLED("v20.12 (PR#1515)", "v21.06", "Use sofa::Index instead of sofa::core::topology::BaseMeshTopology::index_type")
+    typedef DeprecatedAndRemoved index_type;
 
-    typedef sofa::helper::vector<Edge> 		        SeqEdges;
-    typedef sofa::helper::vector<Triangle>		    SeqTriangles;
-    typedef sofa::helper::vector<Quad>		        SeqQuads;
-    typedef sofa::helper::vector<Tetra>		        SeqTetrahedra;
-    typedef sofa::helper::vector<Hexa>		        SeqHexahedra;
+    typedef sofa::type::vector<Edge> 		        SeqEdges;
+    typedef sofa::type::vector<Triangle>		    SeqTriangles;
+    typedef sofa::type::vector<Quad>		        SeqQuads;
+    typedef sofa::type::vector<Tetra>		        SeqTetrahedra;
+    typedef sofa::type::vector<Hexa>		        SeqHexahedra;
 
     /// @name Deprecated types, for backward-compatibility
     /// @{
@@ -58,12 +59,12 @@ public:
 
     /// fixed-size neighbors arrays
     /// @{
-    typedef sofa::helper::fixed_array<EdgeID,3>		EdgesInTriangle;
-    typedef sofa::helper::fixed_array<EdgeID,4>		EdgesInQuad;
-    typedef sofa::helper::fixed_array<TriangleID,4>	TrianglesInTetrahedron;
-    typedef sofa::helper::fixed_array<EdgeID,6>		EdgesInTetrahedron;
-    typedef sofa::helper::fixed_array<QuadID,6>		QuadsInHexahedron;
-    typedef sofa::helper::fixed_array<EdgeID,12>    EdgesInHexahedron;
+    typedef sofa::type::fixed_array<EdgeID,3>		EdgesInTriangle;
+    typedef sofa::type::fixed_array<EdgeID,4>		EdgesInQuad;
+    typedef sofa::type::fixed_array<TriangleID,4>	TrianglesInTetrahedron;
+    typedef sofa::type::fixed_array<EdgeID,6>		EdgesInTetrahedron;
+    typedef sofa::type::fixed_array<QuadID,6>		QuadsInHexahedron;
+    typedef sofa::type::fixed_array<EdgeID,12>    EdgesInHexahedron;
 
     static EdgesInTriangle        InvalidEdgesInTriangles;
     static EdgesInQuad            InvalidEdgesInQuad;
@@ -76,18 +77,18 @@ public:
 
     /// dynamic-size neighbors arrays
     /// @{
-    typedef sofa::helper::vector<PointID>		    VerticesAroundVertex;
-    typedef sofa::helper::vector<EdgeID>			EdgesAroundVertex;
-    typedef sofa::helper::vector<TriangleID>	    TrianglesAroundVertex;
-    typedef sofa::helper::vector<QuadID>			QuadsAroundVertex;
-    typedef sofa::helper::vector<TetraID>		    TetrahedraAroundVertex;
-    typedef sofa::helper::vector<HexaID>			HexahedraAroundVertex;
-    typedef sofa::helper::vector<TriangleID>	    TrianglesAroundEdge;
-    typedef sofa::helper::vector<QuadID>			QuadsAroundEdge;
-    typedef sofa::helper::vector<TetraID>		    TetrahedraAroundEdge;
-    typedef sofa::helper::vector<HexaID>			HexahedraAroundEdge;
-    typedef sofa::helper::vector<TetraID>		    TetrahedraAroundTriangle;
-    typedef sofa::helper::vector<HexaID>			HexahedraAroundQuad;
+    typedef sofa::type::vector<PointID>		    VerticesAroundVertex;
+    typedef sofa::type::vector<EdgeID>			EdgesAroundVertex;
+    typedef sofa::type::vector<TriangleID>	    TrianglesAroundVertex;
+    typedef sofa::type::vector<QuadID>			QuadsAroundVertex;
+    typedef sofa::type::vector<TetraID>		    TetrahedraAroundVertex;
+    typedef sofa::type::vector<HexaID>			HexahedraAroundVertex;
+    typedef sofa::type::vector<TriangleID>	    TrianglesAroundEdge;
+    typedef sofa::type::vector<QuadID>			QuadsAroundEdge;
+    typedef sofa::type::vector<TetraID>		    TetrahedraAroundEdge;
+    typedef sofa::type::vector<HexaID>			HexahedraAroundEdge;
+    typedef sofa::type::vector<TetraID>		    TetrahedraAroundTriangle;
+    typedef sofa::type::vector<HexaID>			HexahedraAroundQuad;
     /// @}
 protected:
     BaseMeshTopology()	;
@@ -183,9 +184,9 @@ public:
     /// Returns the set of vertices adjacent to a given vertex (i.e. sharing an edge)
     virtual const VerticesAroundVertex getVerticesAroundVertex(PointID i);
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const sofa::helper::vector<Index> getElementAroundElement(Index elem);
+    virtual const sofa::type::vector<Index> getElementAroundElement(Index elem);
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const sofa::helper::vector<Index> getElementAroundElements(sofa::helper::vector<Index> elems);
+    virtual const sofa::type::vector<Index> getElementAroundElements(sofa::type::vector<Index> elems);
     /// @}
 
 
@@ -274,7 +275,7 @@ public:
     /// Returns the number of connected component.
     virtual Size getNumberOfConnectedComponent() {return 0;}
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const sofa::helper::vector<Index> getConnectedElement(Index elem);
+    virtual const sofa::type::vector<Index> getConnectedElement(Index elem);
     /// @}
 
     /// Get the current revision of this mesh.
@@ -317,11 +318,11 @@ public:
     /// @}
 
     // functions returning border elements. To be moved in a mapping.
-    virtual const sofa::helper::vector <TriangleID>& getTrianglesOnBorder();
+    virtual const sofa::type::vector<TriangleID>& getTrianglesOnBorder();
 
-    virtual const sofa::helper::vector <EdgeID>& getEdgesOnBorder();
+    virtual const sofa::type::vector<EdgeID>& getEdgesOnBorder();
 
-    virtual const sofa::helper::vector <PointID>& getPointsOnBorder();
+    virtual const sofa::type::vector<PointID>& getPointsOnBorder();
 
 protected:
 

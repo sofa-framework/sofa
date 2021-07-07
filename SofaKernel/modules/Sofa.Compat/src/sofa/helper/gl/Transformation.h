@@ -21,14 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/visual/Transformation.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/visual/Transformation.h")
-
-SOFA_PRAGMA_WARNING("Transformation has been stripped of its OpenGL code, use sofa::gl::TransformationGL if you need its OpenGL implementation.")
-
-namespace sofa::helper::gl
-{
-    using Transformation = sofa::helper::visual::Transformation;
-
-} // namespace sofa::helper::gl
+SOFA_DISABLED_HEADER("v20.12 (PR#1649)", "v21.06", "sofa/helper/visual/Transformation.h")

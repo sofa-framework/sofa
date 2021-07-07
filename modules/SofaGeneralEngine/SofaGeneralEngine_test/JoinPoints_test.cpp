@@ -20,7 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaGeneralEngine/JoinPoints.h>
@@ -29,7 +31,7 @@ using sofa::component::engine::JoinPoints;
 namespace sofa
 {
 
-using defaulttype::Vector3;
+using type::Vector3;
 
 template <typename _DataTypes>
 class JoinPoints_test : public ::testing::Test, public JoinPoints<_DataTypes>
@@ -39,7 +41,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef sofa::helper::Quater<SReal> Quat;
+    typedef sofa::type::Quat<SReal> Quat;
 
     JoinPoints_test()
     {

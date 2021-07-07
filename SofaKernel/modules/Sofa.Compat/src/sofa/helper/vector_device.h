@@ -23,9 +23,7 @@
 
 #include <sofa/type/vector_device.h>
 
-// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
-// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/vector_device.h")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/vector_device.h")
 
 namespace sofa::helper
 {

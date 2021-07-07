@@ -38,7 +38,7 @@ namespace helper
 namespace io
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 using namespace sofa::topology;
 
 Creator<Mesh::FactoryMesh, MeshGmsh> MeshGmshClass("gmsh");
@@ -93,7 +93,7 @@ void MeshGmsh::init (std::string filename)
 }
 
 
-void MeshGmsh::addInGroup(helper::vector< sofa::helper::types::PrimitiveGroup>& group, int tag, std::size_t /*eid*/)
+void MeshGmsh::addInGroup(type::vector< sofa::type::PrimitiveGroup>& group, int tag, std::size_t /*eid*/)
 {
     for (std::size_t i = 0; i<group.size(); i++) {
         if (tag == group[i].p0) {
@@ -106,10 +106,10 @@ void MeshGmsh::addInGroup(helper::vector< sofa::helper::types::PrimitiveGroup>& 
     std::string s;
     ss << tag;
 
-    group.push_back(sofa::helper::types::PrimitiveGroup(tag, 1, s, s, -1));
+    group.push_back(sofa::type::PrimitiveGroup(tag, 1, s, s, -1));
 }
 
-void MeshGmsh::normalizeGroup(helper::vector< sofa::helper::types::PrimitiveGroup>& group)
+void MeshGmsh::normalizeGroup(type::vector< sofa::type::PrimitiveGroup>& group)
 {
     int start = 0;
     for (unsigned i = 0; i<group.size(); i++) {
@@ -139,7 +139,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
         int index = i;
         double x, y, z;
         file >> index >> x >> y >> z;
-        m_vertices.push_back(sofa::defaulttype::Vector3(x, y, z));
+        m_vertices.push_back(sofa::type::Vector3(x, y, z));
         if ((int)pmap.size() <= index) pmap.resize(index + 1);
         pmap[index] = i; // In case of hole or swit
     }
@@ -219,7 +219,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
             }
         }
 
-        helper::vector<unsigned int> nodes;
+        type::vector<unsigned int> nodes;
         nodes.resize(nnodes);
         const unsigned int edgesInQuadraticTriangle[3][2] = { { 0,1 },{ 1,2 },{ 2,0 } };
         const unsigned int edgesInQuadraticTetrahedron[6][2] = { { 0,1 },{ 1,2 },{ 0,2 },{ 0,3 },{ 2,3 },{ 1,3 } };

@@ -161,7 +161,7 @@ def createSceneAndController(root):
     body2.dofs.showObject=True
     body2.dofs.showObjectScale=1
     # collision model
-    body2.node.createObject("Sphere", group="1")
+    body2.node.createObject("SphereCollisionModel", group="1")
     # visual model
     body2.visualModel = body2.addVisualModel( "mesh/cube.obj" )
     body2.visualModel.model.setColor(0,1,0,1)

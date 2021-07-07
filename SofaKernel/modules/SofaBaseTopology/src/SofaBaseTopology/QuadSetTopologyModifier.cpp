@@ -46,14 +46,14 @@ void QuadSetTopologyModifier::init()
 }
 
 
-void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads)
+void QuadSetTopologyModifier::addQuads(const sofa::type::vector<Quad> &quads)
 {
     size_t nQuads = m_container->getNbQuads();
 
     /// effectively add triangles in the topology container
     addQuadsProcess(quads);
 
-    sofa::helper::vector<QuadID> quadsIndex;
+    sofa::type::vector<QuadID> quadsIndex;
     quadsIndex.reserve(quads.size());
 
     for (size_t i=0; i<quads.size(); ++i)
@@ -68,16 +68,16 @@ void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads)
 
 
 
-void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads,
-        const sofa::helper::vector<sofa::helper::vector<QuadID> > &ancestors,
-        const sofa::helper::vector<sofa::helper::vector<double> > &baryCoefs)
+void QuadSetTopologyModifier::addQuads(const sofa::type::vector<Quad> &quads,
+        const sofa::type::vector<sofa::type::vector<QuadID> > &ancestors,
+        const sofa::type::vector<sofa::type::vector<double> > &baryCoefs)
 {
     size_t nQuads = m_container->getNbQuads();
 
     /// effectively add triangles in the topology container
     addQuadsProcess(quads);
 
-    sofa::helper::vector<QuadID> quadsIndex;
+    sofa::type::vector<QuadID> quadsIndex;
     quadsIndex.reserve(quads.size());
 
     for (size_t i=0; i<quads.size(); ++i)
@@ -117,7 +117,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
 	}
 
     const QuadID quadIndex = (QuadID)m_container->getNumberOfQuads();
-    helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
+    helper::WriteAccessor< Data< sofa::type::vector<Quad> > > m_quad = m_container->d_quad;
 
     // update nbr point if needed
     unsigned int nbrP = m_container->getNbPoints();
@@ -134,7 +134,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
 
     for(PointID j=0; j<4; ++j)
     {
-        sofa::helper::vector< QuadID > &shell = m_container->m_quadsAroundVertex[t[j]];
+        sofa::type::vector< QuadID > &shell = m_container->m_quadsAroundVertex[t[j]];
         shell.push_back( quadIndex );
     }
 
@@ -150,11 +150,11 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
         if(edgeIndex == sofa::InvalidID)
         {
             // first create the edges
-            sofa::helper::vector< Edge > v(1);
+            sofa::type::vector< Edge > v(1);
             Edge e1 (t[(j+1)%4], t[(j+2)%4]);
             v[0] = e1;
 
-            addEdgesProcess((const sofa::helper::vector< Edge > &) v);
+            addEdgesProcess((const sofa::type::vector< Edge > &) v);
 
             edgeIndex = m_container->getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
             assert(edgeIndex != sofa::InvalidID);
@@ -164,7 +164,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
                 continue;
             }
 
-            sofa::helper::vector< EdgeID > edgeIndexList;
+            sofa::type::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back((EdgeID) edgeIndex);
             addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList);
         }
@@ -176,7 +176,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
         if(m_container->m_quadsAroundEdge.size() < m_container->getNbEdges())
             m_container->m_quadsAroundEdge.resize(m_container->getNbEdges());
 
-        sofa::helper::vector< QuadID > &shell = m_container->m_quadsAroundEdge[edgeIndex];
+        sofa::type::vector< QuadID > &shell = m_container->m_quadsAroundEdge[edgeIndex];
         shell.push_back( quadIndex );
     }
 
@@ -184,9 +184,9 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
 }
 
 
-void QuadSetTopologyModifier::addQuadsProcess(const sofa::helper::vector< Quad > &quads)
+void QuadSetTopologyModifier::addQuadsProcess(const sofa::type::vector< Quad > &quads)
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
+    helper::WriteAccessor< Data< sofa::type::vector<Quad> > > m_quad = m_container->d_quad;
     m_quad.reserve(m_quad.size() + quads.size());
 
     for(size_t i=0; i<quads.size(); ++i)
@@ -197,8 +197,8 @@ void QuadSetTopologyModifier::addQuadsProcess(const sofa::helper::vector< Quad >
 
 
 void QuadSetTopologyModifier::addQuadsWarning(const size_t nQuads,
-        const sofa::helper::vector< Quad >& quadsList,
-        const sofa::helper::vector< QuadID >& quadsIndexList)
+        const sofa::type::vector< Quad >& quadsList,
+        const sofa::type::vector< QuadID >& quadsIndexList)
 {
     m_container->setQuadTopologyToDirty();
     // Warning that quads just got created
@@ -208,10 +208,10 @@ void QuadSetTopologyModifier::addQuadsWarning(const size_t nQuads,
 
 
 void QuadSetTopologyModifier::addQuadsWarning(const size_t nQuads,
-        const sofa::helper::vector< Quad >& quadsList,
-        const sofa::helper::vector< QuadID >& quadsIndexList,
-        const sofa::helper::vector< sofa::helper::vector< QuadID > > & ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+        const sofa::type::vector< Quad >& quadsList,
+        const sofa::type::vector< QuadID >& quadsIndexList,
+        const sofa::type::vector< sofa::type::vector< QuadID > > & ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
 {
     m_container->setQuadTopologyToDirty();
     // Warning that quads just got created
@@ -220,7 +220,7 @@ void QuadSetTopologyModifier::addQuadsWarning(const size_t nQuads,
 }
 
 
-void QuadSetTopologyModifier::removeQuadsWarning( sofa::helper::vector<QuadID> &quads)
+void QuadSetTopologyModifier::removeQuadsWarning( sofa::type::vector<QuadID> &quads)
 {
     m_container->setQuadTopologyToDirty();
     /// sort vertices to remove in a descendent order
@@ -232,7 +232,7 @@ void QuadSetTopologyModifier::removeQuadsWarning( sofa::helper::vector<QuadID> &
 }
 
 
-void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<QuadID> &indices,
+void QuadSetTopologyModifier::removeQuadsProcess(const sofa::type::vector<QuadID> &indices,
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
@@ -257,9 +257,9 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
             m_container->createQuadsAroundVertexArray();
     }
 
-    sofa::helper::vector<EdgeID> edgeToBeRemoved;
-    sofa::helper::vector<PointID> vertexToBeRemoved;
-    helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
+    sofa::type::vector<EdgeID> edgeToBeRemoved;
+    sofa::type::vector<PointID> vertexToBeRemoved;
+    helper::WriteAccessor< Data< sofa::type::vector<Quad> > > m_quad = m_container->d_quad;
 
     size_t lastQuad = m_container->getNumberOfQuads() - 1;
     for(size_t i=0; i<indices.size(); ++i, --lastQuad)
@@ -272,7 +272,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
         {
             for(PointID v=0; v<4; ++v)
             {
-                sofa::helper::vector< QuadID > &shell = m_container->m_quadsAroundVertex[ t[v] ];
+                sofa::type::vector< QuadID > &shell = m_container->m_quadsAroundVertex[ t[v] ];
                 shell.erase(remove(shell.begin(), shell.end(), indices[i]), shell.end());
                 if(removeIsolatedPoints && shell.empty())
                     vertexToBeRemoved.push_back(t[v]);
@@ -283,7 +283,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
         {
             for(EdgeID e=0; e<4; ++e)
             {
-                sofa::helper::vector< QuadID > &shell = m_container->m_quadsAroundEdge[ m_container->m_edgesInQuad[indices[i]][e]];
+                sofa::type::vector< QuadID > &shell = m_container->m_quadsAroundEdge[ m_container->m_edgesInQuad[indices[i]][e]];
                 shell.erase(remove(shell.begin(), shell.end(), indices[i]), shell.end());
                 if(removeIsolatedEdges && shell.empty())
                     edgeToBeRemoved.push_back(m_container->m_edgesInQuad[indices[i]][e]);
@@ -297,7 +297,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
             {
                 for(PointID v=0; v<4; ++v)
                 {
-                    sofa::helper::vector< QuadID > &shell = m_container->m_quadsAroundVertex[ q[v] ];
+                    sofa::type::vector< QuadID > &shell = m_container->m_quadsAroundVertex[ q[v] ];
                     replace(shell.begin(), shell.end(), (QuadID)lastQuad, indices[i]);
                 }
             }
@@ -306,7 +306,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
             {
                 for(EdgeID e=0; e<4; ++e)
                 {
-                    sofa::helper::vector< QuadID > &shell =  m_container->m_quadsAroundEdge[ m_container->m_edgesInQuad[lastQuad][e]];
+                    sofa::type::vector< QuadID > &shell =  m_container->m_quadsAroundEdge[ m_container->m_edgesInQuad[lastQuad][e]];
                     replace(shell.begin(), shell.end(), (QuadID)lastQuad, indices[i]);
                 }
             }
@@ -352,7 +352,7 @@ void QuadSetTopologyModifier::addPointsProcess(const sofa::Size nPoints)
         m_container->m_quadsAroundVertex.resize( m_container->getNbPoints() );
 }
 
-void QuadSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
+void QuadSetTopologyModifier::addEdgesProcess(const sofa::type::vector< Edge > &edges)
 {
     // start by calling the parent's method.
     EdgeSetTopologyModifier::addEdgesProcess( edges );
@@ -361,7 +361,7 @@ void QuadSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge >
         m_container->m_quadsAroundEdge.resize( m_container->m_quadsAroundEdge.size() + edges.size() );
 }
 
-void QuadSetTopologyModifier::removePointsProcess(const sofa::helper::vector<PointID> &indices,
+void QuadSetTopologyModifier::removePointsProcess(const sofa::type::vector<PointID> &indices,
         const bool removeDOF)
 {
     if(m_container->hasQuads())
@@ -370,14 +370,14 @@ void QuadSetTopologyModifier::removePointsProcess(const sofa::helper::vector<Poi
             m_container->createQuadsAroundVertexArray();
 
         size_t lastPoint = m_container->getNbPoints() - 1;
-        helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
+        helper::WriteAccessor< Data< sofa::type::vector<Quad> > > m_quad = m_container->d_quad;
 
         for(size_t i=0; i<indices.size(); ++i, --lastPoint)
         {
             // updating the quads connected to the point replacing the removed one:
             // for all quads connected to the last point
 
-            sofa::helper::vector<QuadID> &shell = m_container->m_quadsAroundVertex[lastPoint];
+            sofa::type::vector<QuadID> &shell = m_container->m_quadsAroundVertex[lastPoint];
             for(size_t j=0; j<shell.size(); ++j)
             {
                 const QuadID q = shell[j];
@@ -400,7 +400,7 @@ void QuadSetTopologyModifier::removePointsProcess(const sofa::helper::vector<Poi
     EdgeSetTopologyModifier::removePointsProcess( indices, removeDOF );
 }
 
-void QuadSetTopologyModifier::removeEdgesProcess( const sofa::helper::vector<EdgeID> &indices,
+void QuadSetTopologyModifier::removeEdgesProcess( const sofa::type::vector<EdgeID> &indices,
         const bool removeIsolatedItems)
 {
     // Note: this does not check if an edge is removed from an existing quad (it should never happen)
@@ -415,7 +415,7 @@ void QuadSetTopologyModifier::removeEdgesProcess( const sofa::helper::vector<Edg
         {
             // updating the quads connected to the edge replacing the removed one:
             // for all quads connected to the last point
-            for(sofa::helper::vector<QuadID>::iterator itt = m_container->m_quadsAroundEdge[lastEdge].begin();
+            for(sofa::type::vector<QuadID>::iterator itt = m_container->m_quadsAroundEdge[lastEdge].begin();
                 itt != m_container->m_quadsAroundEdge[lastEdge].end(); ++itt)
             {
                 EdgeID edgeIndex = m_container->getEdgeIndexInQuad(m_container->m_edgesInQuad[*itt], (EdgeID)lastEdge);
@@ -433,17 +433,17 @@ void QuadSetTopologyModifier::removeEdgesProcess( const sofa::helper::vector<Edg
     EdgeSetTopologyModifier::removeEdgesProcess(indices, removeIsolatedItems);
 }
 
-void QuadSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<PointID> &index,
-        const sofa::helper::vector<PointID> &inv_index,
+void QuadSetTopologyModifier::renumberPointsProcess( const sofa::type::vector<PointID> &index,
+        const sofa::type::vector<PointID> &inv_index,
         const bool renumberDOF)
 {
     if(m_container->hasQuads())
     {
-        helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
+        helper::WriteAccessor< Data< sofa::type::vector<Quad> > > m_quad = m_container->d_quad;
 
         if(m_container->hasQuadsAroundVertex())
         {
-            sofa::helper::vector< sofa::helper::vector< QuadID > > quadsAroundVertex_cp = m_container->m_quadsAroundVertex;
+            sofa::type::vector< sofa::type::vector< QuadID > > quadsAroundVertex_cp = m_container->m_quadsAroundVertex;
             for(size_t i=0; i<index.size(); ++i)
             {
                 m_container->m_quadsAroundVertex[i] = quadsAroundVertex_cp[ index[i] ];
@@ -463,11 +463,11 @@ void QuadSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
     EdgeSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
 
-void QuadSetTopologyModifier::removeQuads(const sofa::helper::vector< QuadID >& quadIds,
+void QuadSetTopologyModifier::removeQuads(const sofa::type::vector< QuadID >& quadIds,
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
-    sofa::helper::vector<QuadID> quadIds_filtered;
+    sofa::type::vector<QuadID> quadIds_filtered;
     for (size_t i = 0; i < quadIds.size(); i++)
     {
         if( quadIds[i] >= m_container->getNumberOfQuads())
@@ -486,7 +486,7 @@ void QuadSetTopologyModifier::removeQuads(const sofa::helper::vector< QuadID >& 
     m_container->checkTopology();
 }
 
-void QuadSetTopologyModifier::removeItems(const sofa::helper::vector<QuadID> &items)
+void QuadSetTopologyModifier::removeItems(const sofa::type::vector<QuadID> &items)
 {
     removeQuads(items, true, true);
 }

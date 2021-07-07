@@ -28,7 +28,7 @@ namespace sofa::gui::qt
 {
 
 using sofa::helper::Creator;
-using sofa::helper::fixed_array;
+using sofa::type::fixed_array;
 using namespace sofa::defaulttype;
 
 Creator<DataWidgetFactory, SimpleDataWidget< RigidCoord<2,float> > > DWClass_RigidCoord2f("default",true);

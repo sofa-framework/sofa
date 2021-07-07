@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 
 #include <sofa/helper/BackTrace.h>
@@ -36,14 +36,14 @@ using sofa::simulation::graph::DAGSimulation;
 #include <SofaGeneralEngine/DilateEngine.h>
 using sofa::component::engine::DilateEngine ;
 
-using sofa::helper::vector;
+using sofa::type::vector;
 
 
 namespace sofa
 {
 
 template <typename _DataTypes>
-struct DilateEngine_test : public Sofa_test<typename _DataTypes::Real>,
+struct DilateEngine_test : public BaseSimulationTest,
         DilateEngine<_DataTypes>
 {
     typedef DilateEngine<_DataTypes> ThisClass ;
@@ -104,7 +104,7 @@ struct DilateEngine_test : public Sofa_test<typename _DataTypes::Real>,
 };
 
 using ::testing::Types;
-typedef Types<Vec3Types> DataTypes;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
 TYPED_TEST_SUITE(DilateEngine_test, DataTypes);
 TYPED_TEST(DilateEngine_test, NormalBehavior) {

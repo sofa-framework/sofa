@@ -163,7 +163,7 @@ public:
     /// Save the whole graphe
     void save(const std::string &fileName);
     /// Save components
-    void saveComponents(helper::vector<QTreeWidgetItem*> items, const std::string &file);
+    void saveComponents(type::vector<QTreeWidgetItem*> items, const std::string &file);
     /// Open the window to configure a component
     void openModifyObject(QTreeWidgetItem *);
     /// Add the component in the PropertyWidget

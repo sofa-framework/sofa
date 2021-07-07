@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralSimpleFem/config.h>
 
-#error "RadiusContainer has been removed in v21.06 (PR2099)."
+#include <sofa/config.h>
+
+SOFA_DISABLED_HEADER_NOT_REPLACED("v21.06 (PR#2099)","v21.06 (PR#2099)")

@@ -19,12 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
+#include <SofaExplicitOdeSolver_test/MassSpringSystemCreation.h>
+
 #include <SceneCreator/SceneCreator.h>
-
-
-
-
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -33,7 +35,7 @@
 
 // Including mechanical object
 #include <SofaBaseMechanics/MechanicalObject.h>
-typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
+using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 // Solvers
 #include <SofaGeneralExplicitOdeSolver/RungeKutta2Solver.h>
@@ -47,7 +49,7 @@ using namespace component;
 using namespace defaulttype;
 using namespace simulation;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 /**  Dynamic solver test.
 Test the dynamic behavior of solver: study a mass-spring system under gravity initialize with spring rest length it will oscillate around its equilibrium position if there is no damping.
@@ -59,7 +61,7 @@ Then it compares the effective mass position to the computed mass position every
 */
 
 template <typename _DataTypes>
-struct RungeKutta2ExplicitSolverDynamic_test : public Elasticity_test<_DataTypes>
+struct RungeKutta2ExplicitSolverDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -92,9 +94,9 @@ struct RungeKutta2ExplicitSolverDynamic_test : public Elasticity_test<_DataTypes
         RungeKutta2Solver::SPtr rungeKutta2Solver = addNew<RungeKutta2Solver> (root);
 
         CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
-        cgLinearSolver->f_maxIter=3000;
-        cgLinearSolver->f_tolerance =1e-9;
-        cgLinearSolver->f_smallDenominatorThreshold=1e-9;
+        cgLinearSolver->d_maxIter.setValue(3000);
+        cgLinearSolver->d_tolerance.setValue(1e-9);
+        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
 
         // Set initial positions and velocities of fixed point and mass
         MechanicalObject3::VecCoord xFixed(1);
@@ -107,7 +109,7 @@ struct RungeKutta2ExplicitSolverDynamic_test : public Elasticity_test<_DataTypes
         MechanicalObject3::DataTypes::set( vMass[0], 0., 0., 0.);
 
         // Mass spring system
-        root = this-> createMassSpringSystem(
+        root = sofa::createMassSpringSystem<DataTypes>(
                 root,   // add mass spring system to the node containing solver
                 K,      // stiffness
                 m,      // mass

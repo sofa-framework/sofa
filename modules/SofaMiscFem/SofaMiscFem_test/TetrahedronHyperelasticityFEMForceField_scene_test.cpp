@@ -23,13 +23,19 @@
 #define SOFA_STANDARDTEST_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD__TEST_CPP
 
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
+
+#include <SofaBase/initSofaBase.h>
+#include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
+#include <SofaBoundaryCondition/initSofaBoundaryCondition.h>
+#include <SofaMiscForceField/initSofaMiscForceField.h>
+#include <SofaEngine/initSofaEngine.h>
 
 #include <iostream>
 #include <fstream>
@@ -42,7 +48,7 @@ namespace sofa {
  *
  */
 template <typename _ForceFieldType>
-struct TetrahedronHyperelasticityFEMForceField_scene_test : public Sofa_test<typename _ForceFieldType::DataTypes::Real>
+struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulationTest
 {
     typedef _ForceFieldType ForceField;
     typedef typename ForceField::DataTypes DataTypes;
@@ -76,6 +82,14 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public Sofa_test<typ
     unsigned char flags; ///< testing options. (all by default). To be used with precaution.
     /// }
 
+    void SetUp() override
+    {
+        sofa::component::initSofaBase();
+        sofa::component::initSofaImplicitOdeSolver();
+        sofa::component::initSofaBoundaryCondition();
+        sofa::component::initSofaMiscForceField();
+        sofa::component::initSofaEngine();
+    }
 
     TetrahedronHyperelasticityFEMForceField_scene_test()
         : sceneFilename(std::string(SOFAMISCFEM_TEST_SCENES_DIR) + "/" + "TetrahedronHyperelasticityFEMForceField_test.scn")

@@ -27,7 +27,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 
 namespace sofa::component::mapping
@@ -77,7 +77,7 @@ public:
     void applyJT(const core::ConstraintParams *cparams, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in) override;
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
     void draw(const core::visual::VisualParams* vparams) override;
     void handleTopologyChange(core::topology::Topology* t) override;
 
@@ -88,7 +88,7 @@ public:
     }
 
 protected:
-    [[deprecated("Mapping::eigen_type has been removed in PR1664. Use sofa::linearsolver::EigenSparseMatrix<Mapping::In, Mapping::Out>, if not possible contact developpers.")]]
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1764)", "v21.06 (PR#1764)", "Use sofa::linearsolver::EigenSparseMatrix<Mapping::In, Mapping::Out> instead.")
     typedef void eigen_type;
 
     BarycentricMapping(core::State<In>* from, core::State<Out>* to,
@@ -100,7 +100,7 @@ protected:
     void updateForceMask() override;
 
     defaulttype::BaseMatrix *internalMatrix;        ///< internally store a matrix for getJ/Compliant
-    helper::vector< defaulttype::BaseMatrix* > js;
+    type::vector< defaulttype::BaseMatrix* > js;
 private:
     void createMapperFromTopology();
     void populateTopologies();

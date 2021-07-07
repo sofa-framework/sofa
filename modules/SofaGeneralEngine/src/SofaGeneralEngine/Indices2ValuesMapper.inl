@@ -62,12 +62,12 @@ void Indices2ValuesMapper<DataTypes>::reinit()
 template <class DataTypes>
 void Indices2ValuesMapper<DataTypes>::doUpdate()
 {
-    helper::ReadAccessor< Data< helper::vector<Real> > > inputValues = f_inputValues;
+    helper::ReadAccessor< Data< type::vector<Real> > > inputValues = f_inputValues;
 
-    helper::ReadAccessor< Data< helper::vector<Real> > > indices = f_indices;
-    helper::ReadAccessor< Data< helper::vector<Real> > > values = f_values;
+    helper::ReadAccessor< Data< type::vector<Real> > > indices = f_indices;
+    helper::ReadAccessor< Data< type::vector<Real> > > values = f_values;
 
-    helper::WriteAccessor< Data< helper::vector<Real> > > outputValues = f_outputValues;
+    helper::WriteAccessor< Data< type::vector<Real> > > outputValues = f_outputValues;
 
     const Real& defaultValue = p_defaultValue.getValue();
 

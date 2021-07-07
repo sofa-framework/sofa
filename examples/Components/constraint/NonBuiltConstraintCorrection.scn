@@ -11,7 +11,8 @@
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <FreeMotionAnimationLoop initial_guess="true" displayTime="1" maxIt="100" />
     <DefaultPipeline depth="8" verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.35" contactDistance="0.1" />
     <DefaultContactManager name="Response" response="FrictionContact" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000" build_lcp="false"/>

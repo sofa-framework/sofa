@@ -23,8 +23,8 @@
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::constraintset
 {
@@ -399,9 +399,9 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
     vparams->drawTool()->disableLighting();
     vparams->drawTool()->saveLastState();
 
-    std::vector<sofa::defaulttype::Vector3> redVertices;
-    std::vector<sofa::defaulttype::Vector3> otherVertices;
-    std::vector<sofa::helper::types::RGBAColor> otherColors;
+    std::vector<sofa::type::Vector3> redVertices;
+    std::vector<sofa::type::Vector3> otherVertices;
+    std::vector<sofa::type::RGBAColor> otherColors;
 
     for (unsigned int i=0; i<contacts.size(); i++)
     {
@@ -412,14 +412,14 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
 
         otherVertices.push_back(c.P);        
         otherVertices.push_back(c.P + c.norm);
-        otherColors.push_back(sofa::helper::types::RGBAColor::white());
+        otherColors.push_back(sofa::type::RGBAColor::white());
 
         otherVertices.push_back(c.Q);
         otherVertices.push_back(c.Q - c.norm);
-        otherColors.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
+        otherColors.push_back(sofa::type::RGBAColor(0,0.5,0.5,1));
 
     }
-    vparams->drawTool()->drawLines(redVertices, 5, sofa::helper::types::RGBAColor::red());
+    vparams->drawTool()->drawLines(redVertices, 5, sofa::type::RGBAColor::red());
     vparams->drawTool()->drawLines(otherVertices, 3, otherColors);
 
 

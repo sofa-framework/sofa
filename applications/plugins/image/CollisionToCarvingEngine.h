@@ -29,10 +29,10 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
@@ -77,9 +77,9 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    typedef helper::vector<double> ParamTypes;
+    typedef type::vector<double> ParamTypes;
 	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
-	typedef sofa::defaulttype::Vec<3,SReal> Vector3;
+	typedef sofa::type::Vec<3,SReal> Vector3;
 	// -------- Datas ----------------------------
 	Data< InImageTypes > inputImage;
     Data< TransformType > inputTransform;

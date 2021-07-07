@@ -22,9 +22,9 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/vector_algebra.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
 
@@ -78,7 +78,7 @@
 
 using namespace sofa;
 using namespace sofa::helper;
-using helper::vector;
+using type::vector;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 using namespace sofa::component::container;
@@ -178,7 +178,7 @@ typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="" )
 /// Create musculoskeletic system
 simulation::Node::SPtr createScene()
 {
-	using helper::vector;// The graph root node
+	using type::vector;// The graph root node
     Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
     root->setGravity( Coord3(0,-9.81,0) );
     root->setAnimate(false);
@@ -191,9 +191,9 @@ simulation::Node::SPtr createScene()
 	eulerImplicitSolver->f_rayleighStiffness.setValue(0.005);
 
     CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
-	cgLinearSolver->f_maxIter.setValue(1000);
-	cgLinearSolver->f_tolerance.setValue(1E-3);
-	cgLinearSolver->f_smallDenominatorThreshold.setValue(1E-3);
+        cgLinearSolver->d_maxIter.setValue(1000);
+        cgLinearSolver->d_tolerance.setValue(1E-3);
+        cgLinearSolver->d_smallDenominatorThreshold.setValue(1E-3);
 
     root->addObject(eulerImplicitSolver);
     root->addObject(cgLinearSolver);
@@ -272,7 +272,7 @@ simulation::Node::SPtr createScene()
 	// Mapping between bones and joint
     RigidRigidMappingRigid3d_to_Rigid3d::SPtr mapping = addNew<RigidRigidMappingRigid3d_to_Rigid3d>(jointNode,"mapping");
     mapping->setModels( rigid_dof.get(), mapped_rigid_dof.get() );
-	sofa::helper::vector<unsigned int> repartition;
+	sofa::type::vector<unsigned int> repartition;
 	repartition.resize(5);
 	repartition[0] = 1;
 	repartition[1] = 2;
@@ -414,7 +414,7 @@ simulation::Node::SPtr createScene()
 	// Mapping between bones and 
     RigidRigidMappingRigid3d_to_Rigid3d::SPtr originMapping = addNew<RigidRigidMappingRigid3d_to_Rigid3d>(originNode,"mapping");
     originMapping->setModels( rigid_dof.get(), originRigidDof.get() );
-	sofa::helper::vector<unsigned int> originRepartition;
+	sofa::type::vector<unsigned int> originRepartition;
 	originRepartition.resize(5);
 	originRepartition[0] = 1;
 	originRepartition[1] = 0;
@@ -465,7 +465,7 @@ simulation::Node::SPtr createScene()
 	// Mapping between bones and 
     RigidRigidMappingRigid3d_to_Rigid3d::SPtr insertionMapping = addNew<RigidRigidMappingRigid3d_to_Rigid3d>(insertionNode,"mapping");
     insertionMapping->setModels( rigid_dof.get(), insertionRigidDof.get() );
-	sofa::helper::vector<unsigned int> insertionRepartition;
+	sofa::type::vector<unsigned int> insertionRepartition;
 	insertionRepartition.resize(5);
 	insertionRepartition[0] = 0;
 	insertionRepartition[1] = 0;
@@ -519,7 +519,7 @@ simulation::Node::SPtr createScene()
     loader->load();
 	
 	// add rasterizer
-	sofa::helper::vector<double> vSize; vSize.push_back(0.001);
+	sofa::type::vector<double> vSize; vSize.push_back(0.001);
 	MeshToImageEngine_ImageUC::SPtr rasterizer = addNew< MeshToImageEngine_ImageUC >(rbicepmedNode, "rasterizer");
 	rasterizer->setSrc("",loader.get());
 	rasterizer->voxelSize.setValue(vSize);
@@ -624,8 +624,8 @@ simulation::Node::SPtr createScene()
 	EF->setModels(F.get(), E.get());
 
 	// Material property	
-	sofa::helper::vector<double> v_youngModulus; v_youngModulus.push_back(1.0E6);
-	sofa::helper::vector<double> v_poissonRatio; v_poissonRatio.push_back(0.499);
+	sofa::type::vector<double> v_youngModulus; v_youngModulus.push_back(1.0E6);
+	sofa::type::vector<double> v_poissonRatio; v_poissonRatio.push_back(0.499);
 	HookeForceField_E332::SPtr material = addNew<HookeForceField_E332>(ENode, "ff");
 	material->_youngModulus.setValue(v_youngModulus);
 	material->_poissonRatio.setValue(v_poissonRatio);

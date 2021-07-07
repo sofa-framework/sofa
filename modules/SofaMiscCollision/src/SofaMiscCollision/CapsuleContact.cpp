@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/CapsuleModel.h>
+#include <SofaMiscCollision/RigidCapsuleModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include <SofaMiscCollision/OBBContactMapper.h>
 #include <SofaMiscCollision/CapsuleContactMapper.h>
 #include <SofaMeshCollision/BarycentricPenalityContact.inl>

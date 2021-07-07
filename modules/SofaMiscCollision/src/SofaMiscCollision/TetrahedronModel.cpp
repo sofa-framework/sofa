@@ -40,12 +40,11 @@ namespace component
 namespace collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int TetrahedronCollisionModelClass = core::RegisterObject("collision model using a tetrahedral mesh, as described in BaseMeshTopology")
         .add< TetrahedronCollisionModel >()
-        .addAlias("Tetrahedron")
-        .addAlias("TetrahedronModel")
         ;
 
 TetrahedronCollisionModel::TetrahedronCollisionModel()
@@ -112,7 +111,7 @@ void TetrahedronCollisionModel::updateFromTopology()
 }
 
 
-void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector<sofa::defaulttype::Vector3>& tetraVertices, std::vector<sofa::defaulttype::Vector3>& normalVertices)
+void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector<sofa::type::Vector3>& tetraVertices, std::vector<sofa::type::Vector3>& normalVertices)
 {
     Coord p1 = t.p1();
     Coord p2 = t.p2();
@@ -157,14 +156,14 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, 
 {
     vparams->drawTool()->saveLastState();
 
-    std::vector<sofa::defaulttype::Vector3> tetraVertices;
-    std::vector<sofa::defaulttype::Vector3> normalVertices;
+    std::vector<sofa::type::Vector3> tetraVertices;
+    std::vector<sofa::type::Vector3> normalVertices;
 
     Tetrahedron t(this, index);
     this->addTetraToDraw(t, tetraVertices, normalVertices);
 
     const auto c = getColor4f();
-    vparams->drawTool()->drawTetrahedra(tetraVertices, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
+    vparams->drawTool()->drawTetrahedra(tetraVertices, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
     vparams->drawTool()->restoreLastState();
 }
@@ -180,11 +179,11 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->enableLighting();
 
         const auto c = getColor4f();
-        const auto color = sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]);
+        const auto color = sofa::type::RGBAColor(c[0], c[1], c[2], c[3]);
         vparams->drawTool()->setMaterial(color);
 
-        std::vector<sofa::defaulttype::Vector3> tetraVertices;
-        std::vector<sofa::defaulttype::Vector3> normalVertices;
+        std::vector<sofa::type::Vector3> tetraVertices;
+        std::vector<sofa::type::Vector3> normalVertices;
         for (std::size_t i = 0; i<size; i++)
         {
             Tetrahedron t(this, i);

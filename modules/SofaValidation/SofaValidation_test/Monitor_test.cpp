@@ -1,8 +1,32 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU General Public License as published by the Free  *
+* Software Foundation; either version 2 of the License, or (at your option)   *
+* any later version.                                                          *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+* more details.                                                               *
+*                                                                             *
+* You should have received a copy of the GNU General Public License along     *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
 #include <SofaValidation/Monitor.h>
 using sofa::component::misc::Monitor;
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::component::container::MechanicalObject;
-#include <SofaTest/Sofa_test.h>
+
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
@@ -14,6 +38,9 @@ using sofa::simulation::Node;
 using sofa::simulation::SceneLoaderXML;
 using sofa::core::ExecParams;
 
+#include <SofaBase/initSofaBase.h>
+#include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
+
 #include <fstream>
 #include <streambuf>
 #include <string>
@@ -21,6 +48,8 @@ using sofa::core::ExecParams;
 
 namespace sofa
 {
+using namespace sofa::defaulttype;
+
 struct MonitorTest : public Monitor<Rigid3Types>
 {
     void testInit(MechanicalObject<Rigid3Types>* mo)
@@ -36,7 +65,7 @@ struct MonitorTest : public Monitor<Rigid3Types>
 
     void testModif(MechanicalObject<Rigid3Types>* mo)
     {
-        helper::vector<unsigned int> idx = d_indices.getValue();
+        type::vector<unsigned int> idx = d_indices.getValue();
         const Rigid3Types::VecCoord& i1 = *m_X;
         const Rigid3Types::VecCoord& i2 = mo->x.getValue();
         const Rigid3Types::VecDeriv& f1 = *m_F;
@@ -53,7 +82,7 @@ struct MonitorTest : public Monitor<Rigid3Types>
     }
 };
 
-struct Monitor_test : public sofa::Sofa_test<>
+struct Monitor_test : public BaseSimulationTest
 {
     sofa::simulation::Node::SPtr root;
     sofa::simulation::SceneLoaderXML loader;
@@ -135,6 +164,9 @@ struct Monitor_test : public sofa::Sofa_test<>
     }
     void SetUp()
     {
+        sofa::component::initSofaBase();
+        sofa::component::initSofaImplicitOdeSolver();
+
         std::string scene =
                 "<Node name='root' gravity='0 -9.81 0'>"
                 "<DefaultAnimationLoop/>"

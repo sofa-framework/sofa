@@ -33,62 +33,53 @@ namespace sofa::component::linearsolver
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
-    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","Maximum number of iterations of the Conjugate Gradient solution") )
-    , f_tolerance( initData(&f_tolerance,(SReal)1e-5,"tolerance","Desired accuracy of the Conjugate Gradient solution (ratio of current residual norm over initial residual norm)") )
-    , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,(SReal)1e-5,"threshold","Minimum value of the denominator in the conjugate Gradient solution") )
-    , f_warmStart( initData(&f_warmStart,false,"warmStart","Use previous solution as initial solution") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
+    : d_maxIter( initData(&d_maxIter,(unsigned)25,"iterations","Maximum number of iterations of the Conjugate Gradient solution") )
+    , d_tolerance( initData(&d_tolerance,(SReal)1e-5,"tolerance","Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
+    , d_smallDenominatorThreshold( initData(&d_smallDenominatorThreshold,(SReal)1e-5,"threshold","Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution") )
+    , d_warmStart( initData(&d_warmStart,false,"warmStart","Use previous solution as initial solution") )
+    , d_graph( initData(&d_graph,"graph","Graph of residuals at each iteration") )
 {
-    f_graph.setWidget("graph");
-    f_maxIter.setRequired(true);
-    f_tolerance.setRequired(true);
-    f_smallDenominatorThreshold.setRequired(true);
+    d_graph.setWidget("graph");
+    d_maxIter.setRequired(true);
+    d_tolerance.setRequired(true);
+    d_smallDenominatorThreshold.setRequired(true);
 }
 
+/// Initialization function checking input Data
 template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::init()
 {
-    if(f_verbose.getValue())
-    {
-        this->f_printLog.setValue(true);
-    }
-
-    if(f_tolerance.getValue() < 0.0)
+    if(d_tolerance.getValue() < 0.0)
     {
         msg_warning() << "'tolerance' must be a positive value" << msgendl
                       << "default value used: 1e-5";
-        f_tolerance.setValue(1e-5);
+        d_tolerance.setValue(1e-5);
     }
-    if(f_smallDenominatorThreshold.getValue() < 0.0)
+    if(d_smallDenominatorThreshold.getValue() < 0.0)
     {
         msg_warning() << "'threshold' must be a positive value" << msgendl
                       << "default value used: 1e-5";
-        f_smallDenominatorThreshold.setValue(1e-5);
+        d_smallDenominatorThreshold.setValue(1e-5);
     }
 
     timeStepCount = 0;
     equilibriumReached = false;
 }
 
-template<class TMatrix, class TVector>
-void CGLinearSolver<TMatrix,TVector>::reinit()
-{
-    if(f_verbose.getValue())
-    {
-        this->f_printLog.setValue(true);
-    }
-}
-
+/// Clear graph and clean the RHS / LHS vectors
 template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::resetSystem()
 {
-    f_graph.beginEdit()->clear();
-    f_graph.endEdit();
+    d_graph.beginEdit()->clear();
+    d_graph.endEdit();
 
     Inherit::resetSystem();
 }
 
+/// For unbuilt approach (e.g. with GraphScattered types),
+/// it passes the coefficients multiplying the matrices M, B and K from the ODE to the LinearSolver (MechanicalOperations::setKFactor) and includes a resetSystem
+/// In other cases
+/// the global system matrix is setup (pass coefficients with MechanicalOperations::setKFactor) and built it by calling the addMBKToMatrix visitor
 template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
@@ -96,9 +87,9 @@ void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::Mecha
     Inherit::setSystemMBKMatrix(mparams);
 }
 
-/// Solve Mx=b
+/// Solve iteratively the linear system Ax=b following a conjugate gradient descent
 template<class TMatrix, class TVector>
-void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
+void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment("ConjugateGradient");
@@ -108,41 +99,41 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     simulation::Visitor::printNode("VectorAllocation");
 #endif
 
+    /// Allocate the required vectors for the iterative resolution
     const core::ExecParams* params = core::execparams::defaultInstance();
-    typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
-    Vector& p = *vtmp.createTempVector();
-    Vector& q = *vtmp.createTempVector();
-    Vector& r = *vtmp.createTempVector();
+    typename Inherit::TempVectorContainer vtmp(this, params, A, x, b);
+    Vector& p = *vtmp.createTempVector(); // orthogonal directions
+    Vector& q = *vtmp.createTempVector(); // temporary vector computing A*p
+    Vector& r = *vtmp.createTempVector(); // residual
 
-    const bool verbose  = f_verbose.getValue();
     double rho, rho_1=0, alpha, beta;
 
+    msg_info() << "b = " << b ;
 
-    msg_info_when(verbose) << "b = " << b ;
-
-
-    /// Compute the initial residual r
-    if( f_warmStart.getValue() )
+    /// Compute the initial residual r depending on the warmStart option
+    if( d_warmStart.getValue() )
     {
-        r = M * x;
+        r = A * x;
         r.eq( b, r, -1.0 );   // initial residual r = b - Ax;
     }
     else
     {
         x.clear();
-        r = b; // initial residual
+        r = b;                // initial residual r = b
     }
 
     /// Compute the norm of the right-hand-side vector b
     double normb = b.norm();
 
-
-    std::map < std::string, sofa::helper::vector<SReal> >& graph = *f_graph.beginEdit();
-    sofa::helper::vector<SReal>& graph_error = graph[std::string("Error")];
+    std::map < std::string, sofa::type::vector<SReal> >& graph = *d_graph.beginEdit();
+    sofa::type::vector<SReal>& graph_error = graph[std::string("Error")];
     graph_error.clear();
-    sofa::helper::vector<SReal>& graph_den = graph[std::string("Denominator")];
-    graph_den.clear();
     graph_error.push_back(1);
+
+    sofa::type::vector<SReal>& graph_den = graph[std::string("Denominator")];
+    graph_den.clear();
+
+
     unsigned nb_iter = 0;
     const char* endcond = "iterations";
 
@@ -152,9 +143,10 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     simulation::Visitor::printCloseNode("VectorAllocation");
 #endif
 
+    // Check if forces in the Left Hand Side (LHS) vector are non-zero
     if(normb != 0.0)
     {
-        for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
+        for( nb_iter = 1; nb_iter <= d_maxIter.getValue(); nb_iter++ )
         {
 #ifdef SOFA_DUMP_VISITOR_INFO
             std::ostringstream comment;
@@ -165,7 +157,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             }
 #endif
 
-            /// Compute p = r^2
+            /// Compute ρ = r²
             rho = r.dot(r);
 
             /// Compute the error from the norm of ρ and b
@@ -175,8 +167,8 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             graph_error.push_back(err);
 
 
-            /// Break condition = TOLERANCE criterion regarding the error err is reached
-            if (err <= f_tolerance.getValue())
+            /// Break condition = TOLERANCE criterion regarding the error err=|r|²/|b|² is reached
+            if (err <= d_tolerance.getValue())
             {
                 /// Tolerance met at first step, tolerance value might not be relevant
                 if(nb_iter == 1 && timeStepCount == 0)
@@ -197,10 +189,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                     }
 
                     endcond = "tolerance";
-                    if( verbose )
-                    {
-                        msg_info() << "error = " << err <<", tolerance = " << f_tolerance.getValue();
-                    }
+                    msg_info() << "error = " << err <<", tolerance = " << d_tolerance.getValue();
 
 #ifdef SOFA_DUMP_VISITOR_INFO
                     if (simulation::Visitor::isPrintActivated())
@@ -212,38 +201,39 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
 
             /// Compute the value of p, conjugate with x
-            if( nb_iter==1 )    // FIRST step
+            if( nb_iter==1 )    // FIRST step:      p = r
+            {
                 p = r;
-            else                // ALL other steps
+            }
+            else                // ALL other steps: p = r + beta * p
             {
                 beta = rho / rho_1;
 
-                /// Update p = p*beta + r;
+                /// Compute the next conjugate direction p for iteration "nb_iter"
+                /// p = r + p*beta
                 cgstep_beta(params, p,r,beta);
             }
 
-            if( verbose )
-            {
-                msg_info() << "p : " << p;
-            }
+            msg_info() << "p : " << p;
 
-            /// Compute the matrix-vector product : M p
-            q = M*p;
+            /// Compute the matrix-vector product A p to compute the denominator
+            /// This matrix-vector product depends on the type of matrix:
+            /// 1) The matrix is assembled (e.g. CompressedRowSparseMatrix): traditional matrix-vector product
+            /// 2) The matrix is not assembled (e.g. GraphScattered): visitors run and call addMBKdx on force
+            /// fields (usually force fields implement addDForce). This method performs the matrix-vector product and
+            /// store it in another vector without building explicitly the matrix. Projective constraints are also applied.
+            q = A*p;
+            msg_info() << "q = A p : " << q;
 
-            if( verbose )
-            {
-                msg_info() << "q = M p : " << q;
-            }
-
-            /// Compute the denominator : p M p
+            /// Compute the denominator : pT A p
             double den = p.dot(q);
 
             graph_den.push_back(den);
 
-            if(den != 0.0)
+            if(den != 0.0) // as a denominator, we need to check if not zero else division will return the infinite value
             {
-                /// Break condition = THRESHOLD criterion regarding the denominator is reached (but do at least one iteration)
-                if (fabs(den) <= f_smallDenominatorThreshold.getValue())
+                /// Break condition = THRESHOLD criterion regarding the denominator pT A p is reached (but do at least one iteration)
+                if (fabs(den) <= d_smallDenominatorThreshold.getValue())
                 {
                     /// Threshold met at first step, threshold value might not be relevant
                     if(nb_iter == 1 && timeStepCount == 0)
@@ -264,10 +254,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                         }
 
                         endcond = "threshold";
-                        if( verbose )
-                        {
-                            msg_info() << "den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue() <<", err = " << err;
-                        }
+                        msg_info() << "den = " << den <<", smallDenominatorThreshold = " << d_smallDenominatorThreshold.getValue() <<", err = " << err;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
                     if (simulation::Visitor::isPrintActivated())
@@ -281,13 +268,12 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                 /// Compute the coefficient α for the conjugate direction
                 alpha = rho/den;
 
-                /// End of the CG step : update x and r
+                /// End of the CG step by updating x and r
+                /// x = x + alpha p
+                /// r = r - alpha p
                 cgstep_alpha(params, x,r,p,q,alpha);
 
-                if( verbose )
-                {
-                    msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
-                }
+                msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
             }
             else
             {
@@ -312,12 +298,12 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         if( timeStepCount==0 )
         {
             p = r;
-            q = M*p;
+            q = A*p;
             double den = p.dot(q);
 
             if(den != 0.0)
             {
-                if (fabs(den) <= f_smallDenominatorThreshold.getValue())
+                if (fabs(den) <= d_smallDenominatorThreshold.getValue())
                 {
                     msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
                                   << "Check the 'threshold' data field, you might decrease it";
@@ -332,14 +318,15 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
     sofa::helper::AdvancedTimer::stepEnd("CG-Solve");
 
-    f_graph.endEdit();
+    d_graph.endEdit();
     timeStepCount ++;
 
     sofa::helper::AdvancedTimer::valSet("CG iterations", nb_iter);
 
-    dmsg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond;
-    dmsg_info_when( verbose ) <<"solve, solution = "<< x ;
+    msg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond;
+    msg_info() <<"solve, solution = "<< x ;
 
+    /// Delete all temporary vectors p, q and r
     vtmp.deleteTempVector(&p);
     vtmp.deleteTempVector(&q);
     vtmp.deleteTempVector(&r);

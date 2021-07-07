@@ -36,7 +36,7 @@ EvalSurfaceDistance<DataTypes>::EvalSurfaceDistance()
     , pointsCM(nullptr)
     , surfaceCM(nullptr)
     , intersection(nullptr)
-    , detection(nullptr)
+    , narrowPhaseDetection(nullptr)
 {
 }
 
@@ -71,16 +71,16 @@ void EvalSurfaceDistance<DataTypes>::init()
     this->addSlave(intersection);
     intersection->init();
 
-    detection = sofa::core::objectmodel::New<sofa::component::collision::BruteForceDetection>();
-    this->addSlave(detection);
-    detection->init();
+    narrowPhaseDetection = sofa::core::objectmodel::New<sofa::component::collision::BVHNarrowPhase>();
+    this->addSlave(narrowPhaseDetection);
+    narrowPhaseDetection->init();
 }
 
 //-------------------------------- eval------------------------------------
 template<class DataTypes>
 SReal EvalSurfaceDistance<DataTypes>::eval()
 {
-    if (!this->mstate1 || !this->mstate2 || !surfaceCM || !pointsCM || !intersection || !detection) return 0.0;
+    if (!this->mstate1 || !this->mstate2 || !surfaceCM || !pointsCM || !intersection || !narrowPhaseDetection) return 0.0;
 
     const VecCoord& x0 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
     const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
@@ -89,24 +89,24 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
     pointsCM->computeBoundingTree(6);
     intersection->setAlarmDistance(maxDist.getValue());
     intersection->setContactDistance(0.0);
-    detection->setInstance(this);
-    detection->setIntersectionMethod(intersection.get());
-    sofa::helper::vector<std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> > vectCMPair;
+    narrowPhaseDetection->setInstance(this);
+    narrowPhaseDetection->setIntersectionMethod(intersection.get());
+    sofa::type::vector<std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> > vectCMPair;
     vectCMPair.push_back(std::make_pair(surfaceCM->getFirst(), pointsCM->getFirst()));
 
-    detection->beginNarrowPhase();
+    narrowPhaseDetection->beginNarrowPhase();
     msg_info()<< "narrow phase detection between " <<surfaceCM->getClassName()<< " and " << pointsCM->getClassName();
-    detection->addCollisionPairs(vectCMPair);
-    detection->endNarrowPhase();
+    narrowPhaseDetection->addCollisionPairs(vectCMPair);
+    narrowPhaseDetection->endNarrowPhase();
 
     /// gets the pairs Triangle-Line detected in a radius lower than maxDist
-    const core::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = detection->getDetectionOutputs();
+    const core::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = narrowPhaseDetection->getDetectionOutputs();
 
     core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin();
     core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator itend = detectionOutputs.end();
 
     xproj = x1;
-    sofa::helper::vector<Real> dmin(xproj.size());
+    sofa::type::vector<Real> dmin(xproj.size());
     std::fill(dmin.begin(),dmin.end(),(Real)(2*maxDist.getValue()));
 
     while (it != itend)

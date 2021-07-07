@@ -49,7 +49,7 @@ protected:
 private:
 
     ///< if not empty, objects that do not intersect this bounding-box will be ignored
-    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box;
+    Data< type::fixed_array<sofa::type::Vector3,2> > box;
 
 public:
     void init() override;
@@ -99,7 +99,7 @@ protected:
     /// vector of accumulated CollisionModel's when the collision pipeline asks
     /// to add a CollisionModel in BruteForceBroadPhase::addCollisionModel
     /// This vector is emptied at each time step in BruteForceBroadPhase::beginBroadPhase
-    sofa::helper::vector<FirstLastCollisionModel> m_collisionModels;
+    sofa::type::vector<FirstLastCollisionModel> m_collisionModels;
 };
 
 }

@@ -23,7 +23,7 @@
 #include <SofaEigen2Solver/config.h>
 
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <Eigen/Dense>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -51,7 +51,7 @@ protected:
 public:
     typedef typename InDataTypes::VecDeriv InVecDeriv;
     enum { Nin=InDataTypes::deriv_total_size };
-    typedef defaulttype::Vec<Nin,Real> Block;
+    typedef type::Vec<Nin,Real> Block;
 
     VectorEigen& getVectorEigen() { return eigenVector; }
     const VectorEigen& getVectorEigen() const { return eigenVector; }

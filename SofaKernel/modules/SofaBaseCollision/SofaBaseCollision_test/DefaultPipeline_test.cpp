@@ -28,9 +28,6 @@ using std::string;
 #include <sofa/core/fwd.h>
 using sofa::core::execparams::defaultInstance;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
-
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
@@ -40,16 +37,20 @@ using sofa::component::collision::DefaultPipeline ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Simulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
 
-#include <SofaTest/TestMessageHandler.h>
-
 #include <sofa/helper/BackTrace.h>
-using sofa::helper::BackTrace ;
+using sofa::helper::BackTrace;
+
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
+
 
 namespace defaultpipeline_test
 {
@@ -62,14 +63,22 @@ int initMessage(){
 
 int messageInited = initMessage();
 
-class TestDefaultPipeLine : public Sofa_test<> {
+class TestDefaultPipeLine : public BaseTest {
 public:
+    Node::SPtr root;
+
     void checkDefaultPipelineWithNoAttributes();
     void checkDefaultPipelineWithMissingIntersection();
     void checkDefaultPipelineWithMissingBroadPhase();
     void checkDefaultPipelineWithMissingNarrowPhase();
     void checkDefaultPipelineWithMissingContactManager();
     int checkDefaultPipelineWithMonkeyValueForDepth(int value);
+
+    void TearDown() override
+    {
+        if (root)
+            Simulation::theSimulation->unload(root);
+    }
 };
 
 void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
@@ -87,7 +96,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
@@ -95,8 +104,6 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
 
     BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
-
-    clearSceneGraph();
 }
 
 void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
@@ -113,7 +120,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
              "  <DefaultContactManager/>                                                     \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
@@ -121,8 +128,6 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
 
     BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
-
-    clearSceneGraph();
 }
 
 void TestDefaultPipeLine::checkDefaultPipelineWithMissingBroadPhase()
@@ -139,7 +144,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingBroadPhase()
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
@@ -147,8 +152,6 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingBroadPhase()
 
     BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
-
-    clearSceneGraph();
 }
 void TestDefaultPipeLine::checkDefaultPipelineWithMissingNarrowPhase()
 {
@@ -164,7 +167,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingNarrowPhase()
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
@@ -172,8 +175,6 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingNarrowPhase()
 
     BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
-
-    clearSceneGraph();
 }
 void TestDefaultPipeLine::checkDefaultPipelineWithMissingContactManager()
 {
@@ -189,7 +190,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingContactManager()
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
@@ -198,7 +199,6 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingContactManager()
     BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 
-    clearSceneGraph();
 }
 
 int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
@@ -213,7 +213,7 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     //EXPECT_NE( (root.get()), nullptr) ;
@@ -224,7 +224,6 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
 
     int rv = clp->d_depth.getValue() ;
 
-    clearSceneGraph();
     return rv;
 }
 

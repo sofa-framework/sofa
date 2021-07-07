@@ -39,12 +39,12 @@ public:
 
     explicit Ray(const core::CollisionElementIterator& i);
 
-    const defaulttype::Vector3& origin() const;
-    const defaulttype::Vector3& direction() const;
+    const type::Vector3& origin() const;
+    const type::Vector3& direction() const;
     SReal l() const;
 
-    void setOrigin(const defaulttype::Vector3& newOrigin);
-    void setDirection(const defaulttype::Vector3& newDirection);
+    void setOrigin(const type::Vector3& newOrigin);
+    void setDirection(const type::Vector3& newDirection);
     void setL(SReal newL);
 };
 
@@ -74,7 +74,7 @@ public:
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
     // ----------------------------
-    int addRay(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, SReal length);
+    int addRay(const type::Vector3& origin, const type::Vector3& direction, SReal length);
     Ray getRay(int index) { return Ray(this, index); }
 
     int getNbRay() const { return size; }
@@ -88,8 +88,8 @@ public:
     virtual const std::set<BaseRayContact*> &getContacts() const { return contacts;}
 
 protected:
-    sofa::helper::vector<SReal> length;
-    sofa::helper::vector<defaulttype::Vector3> direction;
+    sofa::type::vector<SReal> length;
+    sofa::type::vector<type::Vector3> direction;
 
     Data<SReal> defaultLength; ///< TODO
 
@@ -107,7 +107,7 @@ inline Ray::Ray(const core::CollisionElementIterator& i)
 {
 }
 
-inline void Ray::setDirection(const defaulttype::Vector3& newDirection)
+inline void Ray::setDirection(const type::Vector3& newDirection)
 {
     model->direction[index] = newDirection;
 }
@@ -117,6 +117,4 @@ inline void Ray::setL(SReal newL)
     model->length[index] = newL;
 }
 
-using RayModel [[deprecated("The RayModel is now deprecated, please use RayCollisionModel instead. Compatibility stops at v20.06")]] = RayCollisionModel;
-
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision

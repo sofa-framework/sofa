@@ -342,7 +342,7 @@ void Node::notifyEndRemoveSlave(core::objectmodel::BaseObject* master, core::obj
 void Node::notifySleepChanged(Node* node) const
 {
     if (this->getFirstParent() == nullptr) {
-        for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
+        for (type::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
             (*it)->sleepChanged(node);
     }
     else {
@@ -353,7 +353,7 @@ void Node::notifySleepChanged(Node* node) const
 void Node::addListener(MutationListener* obj)
 {
     // make sure we don't add the same listener twice
-    helper::vector< MutationListener* >::iterator it = listener.begin();
+    type::vector< MutationListener* >::iterator it = listener.begin();
     while (it != listener.end() && (*it)!=obj)
         ++it;
     if (it == listener.end())
@@ -362,7 +362,7 @@ void Node::addListener(MutationListener* obj)
 
 void Node::removeListener(MutationListener* obj)
 {
-    helper::vector< MutationListener* >::iterator it = listener.begin();
+    type::vector< MutationListener* >::iterator it = listener.begin();
     while (it != listener.end() && (*it)!=obj)
         ++it;
     if (it != listener.end())

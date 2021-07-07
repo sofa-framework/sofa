@@ -22,7 +22,7 @@ template<class U>
 static bool use_dlog( ::sofa::defaulttype::RigidCoord<3, U>* ) { return false; }
 
 template<class U>
-static bool use_dlog( ::sofa::defaulttype::Vec<6, U>* ) { return true; }
+static bool use_dlog( ::sofa::type::Vec<6, U>* ) { return true; }
 
 // dispatch on output type
 template<class U, class V>
@@ -33,7 +33,7 @@ void fill( ::sofa::defaulttype::RigidCoord<3, U>& out,
 
 // use log coords for vec6
 template<class U, class V>
-void fill( ::sofa::defaulttype::Vec<6, U>& out,
+void fill( ::sofa::type::Vec<6, U>& out,
            const ::sofa::defaulttype::RigidCoord<3, V>& in) {
     
     typedef SE3<V> se3;
@@ -71,9 +71,9 @@ public:
 	SOFA_CLASS(SOFA_TEMPLATE2(RigidJointMultiMapping,TIn,TOut), 
 			   SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
 	
-	typedef defaulttype::Vec<2, unsigned> index_pair;
+	typedef type::Vec<2, unsigned> index_pair;
 
-    typedef helper::vector< index_pair > pairs_type;
+    typedef type::vector< index_pair > pairs_type;
 	Data< pairs_type > pairs; ///< index pairs (parent, child) for each joint
 
 	typedef typename TIn::Real in_real;
@@ -101,7 +101,7 @@ protected:
         {}
 	
 	void apply(typename self::out_pos_type& out,
-               const helper::vector< typename self::in_pos_type >& in ) override {
+               const type::vector< typename self::in_pos_type >& in ) override {
 
 		const pairs_type& p = pairs.getValue();
 		
@@ -122,7 +122,7 @@ protected:
 
 
 
-    void assemble_geometric(const helper::vector<typename self::const_in_coord_type>& in_pos,
+    void assemble_geometric(const type::vector<typename self::const_in_coord_type>& in_pos,
                             const typename self::const_out_deriv_type& out_force) override {
         // we're done lol
         if( true || ! geometricStiffness.getValue() ) return;
@@ -243,7 +243,7 @@ protected:
         
     }
 
-    void assemble(const helper::vector< typename self::in_pos_type >& in ) override {
+    void assemble(const type::vector< typename self::in_pos_type >& in ) override {
 		assert(this->getFrom()[0] != this->getFrom()[1]);
 
 		const pairs_type& p = pairs.getValue();

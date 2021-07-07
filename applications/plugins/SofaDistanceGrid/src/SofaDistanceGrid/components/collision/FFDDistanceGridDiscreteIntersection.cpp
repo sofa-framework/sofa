@@ -37,6 +37,7 @@ namespace component
 namespace collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
@@ -96,8 +97,8 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         if (grid2->inBBox( center2, margin + c1.radius ))
         {
             c1.updatePoints();
-            const sofa::helper::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
-            const sofa::helper::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
+            const sofa::type::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
+            const sofa::type::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
             bool first = true;
             for (unsigned int i=0; i<x1.size(); i++)
             {
@@ -260,8 +261,8 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         c1.updatePoints();
         c2.updateFaces();
         const SReal cubesize = c2.invDP.norm();
-        const sofa::helper::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
-        const sofa::helper::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
+        const sofa::type::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
+        const sofa::type::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
         bool first = true;
         for (unsigned int i=0; i<x1.size(); i++)
         {
@@ -344,8 +345,8 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         c2.updatePoints();
         c1.updateFaces();
         const SReal cubesize = c1.invDP.norm();
-        const sofa::helper::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
-        const sofa::helper::vector<DistanceGrid::Coord>& n2 = c2.deformedNormals;
+        const sofa::type::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
+        const sofa::type::vector<DistanceGrid::Coord>& n2 = c2.deformedNormals;
         bool first = true;
         for (unsigned int i=0; i<x2.size(); i++)
         {

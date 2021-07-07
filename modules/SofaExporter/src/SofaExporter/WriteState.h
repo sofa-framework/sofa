@@ -64,10 +64,10 @@ public:
     Data < bool > d_writeX0; ///< flag enabling output of X0 vector
     Data < bool > d_writeV; ///< flag enabling output of V vector
     Data < bool > d_writeF; ///< flag enabling output of F vector
-    Data < helper::vector<double> > d_time; ///< set time to write outputs
+    Data < type::vector<double> > d_time; ///< set time to write outputs
     Data < double > d_period; ///< period between outputs
-    Data < helper::vector<unsigned int> > d_DOFsX; ///< set the position DOFs to write
-    Data < helper::vector<unsigned int> > d_DOFsV; ///< set the velocity DOFs to write
+    Data < type::vector<unsigned int> > d_DOFsX; ///< set the position DOFs to write
+    Data < type::vector<unsigned int> > d_DOFsV; ///< set the velocity DOFs to write
     Data < double > d_stopAt; ///< stop the simulation when the given threshold is reached
     Data < double > d_keperiod; ///< set the period to measure the kinetic energy increase
 
@@ -131,11 +131,11 @@ public:
     void setCounter(int c) { counterWriteState = c; }
     const char* getClassName() const override { return "WriteStateCreator"; }
 
-    void setExportTimes(const helper::vector<double> times) { m_times = times; }
+    void setExportTimes(const type::vector<double> times) { m_times = times; }
 protected:
     std::string sceneName;
     std::string extension;
-    helper::vector<double> m_times;
+    type::vector<double> m_times;
 
     bool recordX,recordV,recordF;
     bool createInMapping;

@@ -23,7 +23,7 @@
 
 #include <SofaGeneralEngine/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -43,9 +43,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
     using Index = sofa::Index;
-    typedef typename sofa::helper::vector<Index>  VecIndices;
+    typedef typename sofa::type::vector<Index>  VecIndices;
 
 protected:
     MeshBarycentricMapperEngine();
@@ -71,8 +71,8 @@ public:
     Data< VecIndices> d_tableElements; ///< Output : Table that provides the element index to which each input point belongs
     Data<bool> d_bComputeLinearInterpolation; ///< if true, computes a linear interpolation (debug)
 
-    Data< sofa::helper::vector<sofa::helper::vector< Index > > > d_interpolationIndices; ///< Indices of a linear interpolation
-    Data< sofa::helper::vector<sofa::helper::vector< Real > > > d_interpolationValues; ///< Values of a linear interpolation
+    Data< sofa::type::vector<sofa::type::vector< Index > > > d_interpolationIndices; ///< Indices of a linear interpolation
+    Data< sofa::type::vector<sofa::type::vector< Real > > > d_interpolationValues; ///< Values of a linear interpolation
     
     SingleLink<MeshBarycentricMapperEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology; ///< Name and path of Input mesh Topology
 
@@ -87,8 +87,8 @@ public:
     }
 
 private:
-    sofa::helper::vector<sofa::helper::vector< Index > >* linearInterpolIndices;
-    sofa::helper::vector<sofa::helper::vector< Real > >* linearInterpolValues;
+    sofa::type::vector<sofa::type::vector< Index > >* linearInterpolIndices;
+    sofa::type::vector<sofa::type::vector< Real > >* linearInterpolValues;
 };
 
 

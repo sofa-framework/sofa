@@ -31,9 +31,6 @@ using namespace helper;
 
 int RigidCylinderCollisionModelClass = core::RegisterObject("Collision model which represents a set of rigid cylinders")
         .add<  CylinderCollisionModel<defaulttype::Rigid3Types> >()
-
-        .addAlias("Cylinder")
-        .addAlias("CylinderModel")
         ;
 
 template class SOFA_SOFABASECOLLISION_API TCylinder<defaulttype::Rigid3Types>;

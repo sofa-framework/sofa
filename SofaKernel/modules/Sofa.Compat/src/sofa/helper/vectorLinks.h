@@ -24,7 +24,7 @@
 
 #include <sofa/core/objectmodel/vectorLinks.h>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/core/objectmodel/vectorLinks.h")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/core/objectmodel/vectorLinks.h")
 
 namespace sofa::helper
 {

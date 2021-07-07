@@ -6,8 +6,8 @@
 #include "BulletOBBModel.h"
 #include "BulletConvexHullModel.h"
 #include "BulletCapsuleModel.h"
-#include <sofa/defaulttype/Vec.h>
-#include <SofaBaseCollision/IntrUtility3.h>
+#include <sofa/type/Vec.h>
+#include <SofaMiscCollision/IntrUtility3.h>
 
 namespace sofa{namespace component{namespace collision{
 

@@ -8,7 +8,7 @@
 #include <QResource>
 #include "QMainWindow_RegistrationRun.h"
 #include <sofa/helper/system/glut.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <string>
 #include <iostream>
 

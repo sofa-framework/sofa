@@ -25,7 +25,6 @@
 
 namespace sofa::defaulttype
 {
-    [[deprecated("sofa::defaulttype::RGBAColor is now part in sofa::type::RGBAColor. Please update your code.")]]
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1818)", "v21.12", "Use sofa::type::RGBAColor instead.")
     typedef sofa::type::RGBAColor RGBAColor;
-   
-} // namespace sofa::defaulttype
+}

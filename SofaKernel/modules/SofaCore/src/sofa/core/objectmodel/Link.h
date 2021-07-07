@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_LINK_H
 
 #include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/helper/stable_vector.h>
+#include <sofa/type/stable_vector.h>
 #include <sofa/core/PathResolver.h>
 #include <sofa/core/sptr.h>
 #include <sofa/core/fwd.h>
@@ -258,7 +258,7 @@ public:
     /// We use stable_vector to allow insertion/removal of elements
     /// while iterators are used (required to add/remove objects
     /// while visitors are in progress).
-    typedef sofa::helper::stable_vector<TValueType> T;
+    typedef sofa::type::stable_vector<TValueType> T;
     static void clear(T& c)
     {
         c.clear();
@@ -468,7 +468,7 @@ public:
         m_owner->addLink(this);
     }
 
-    [[deprecated("2021-01-01: CheckPath as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPath(Base*, BaseClass*, string).")]]
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1717)", "v21.12", "Use PathResolver::CheckPaths(Base*, BaseClass*, string) instead.")
     static bool CheckPath(const std::string& path, Base* context)
     {
         return PathResolver::CheckPath(context, sofa::core::objectmodel::base::GetClass<DestType>(), path);
@@ -611,7 +611,7 @@ public:
         return get(index);
     }
 
-    [[deprecated("2021-01-01: CheckPaths as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPaths(Base*, BaseClass*, string).")]]
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1717)", "v21.12", "Use PathResolver::CheckPaths(Base*, BaseClass*, string) instead.")
     static bool CheckPaths(const std::string& pathes, Base* context)
     {
         return PathResolver::CheckPaths(context, DestType::GetClass(), pathes);

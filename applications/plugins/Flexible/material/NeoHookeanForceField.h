@@ -52,8 +52,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulus; ///< stiffness
-    Data<helper::vector<Real> > _poissonRatio; ///< incompressibility ]-1,0.5[
+    Data<type::vector<Real> > _youngModulus; ///< stiffness
+    Data<type::vector<Real> > _poissonRatio; ///< incompressibility ]-1,0.5[
     Data<bool > f_PSDStabilization; ///< project stiffness matrix to its nearest symmetric, positive semi-definite matrix
     //@}
 
@@ -77,8 +77,8 @@ public:
 protected:
     NeoHookeanForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , _youngModulus(initData(&_youngModulus,helper::vector<Real>((int)1,(Real)1000),"youngModulus","stiffness"))
-        , _poissonRatio(initData(&_poissonRatio,helper::vector<Real>((int)1,(Real)0),"poissonRatio","incompressibility ]-1,0.5["))
+        , _youngModulus(initData(&_youngModulus,type::vector<Real>((int)1,(Real)1000),"youngModulus","stiffness"))
+        , _poissonRatio(initData(&_poissonRatio,type::vector<Real>((int)1,(Real)0),"poissonRatio","incompressibility ]-1,0.5["))
         , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
     {
     }

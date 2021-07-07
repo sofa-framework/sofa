@@ -601,7 +601,7 @@ void NewOmniDriver::init()
 
         for(int j=0; j<=VN_X; j++)
         {
-            sofa::helper::vector< sofa::defaulttype::Vec<3, SReal> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+            sofa::type::vector< sofa::type::Vec<3, SReal> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
             for(unsigned int i=0; i<scaleMapping.size(); i++)
                 scaleMapping[i] *= (float)(1.0*scale.getValue()/100.0);
             visualNode[j].mapping->points.endEdit();
@@ -734,7 +734,7 @@ void NewOmniDriver::draw()
             float rapport=((float)data.scale)/oldScale;
             for(int j = 0; j<NVISUALNODE ; j++)
             {
-                sofa::helper::vector< sofa::defaulttype::Vec<3,SReal> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+                sofa::type::vector< sofa::type::Vec<3,SReal> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
                 for(unsigned int i=0; i<scaleMapping.size(); i++)
                     scaleMapping[i]*=rapport;
                 visualNode[j].mapping->points.endEdit();
@@ -813,14 +813,14 @@ void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
         else if ((kpe->getKey()==21) && (modX || modY || modZ)) //down
         {
             Quat& orientB =(*orientationBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
+            sofa::type::Quat<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
             orientB*=quarter_transform;
             orientationBase.endEdit();
         }
         else if ((kpe->getKey()==19) && (modX || modY || modZ)) //up
         {
             Quat& orientB =(*orientationBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),M_PI/50);
+            sofa::type::Quat<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),M_PI/50);
             orientB*=quarter_transform;
             orientationBase.endEdit();
         }
@@ -921,7 +921,7 @@ void NewOmniDriver::onAnimateBeginEvent()
         sofa::defaulttype::SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
         sofa::defaulttype::SolidTypes<double>::Transform tampon = data.world_H_baseOmni;
 
-        sofa::helper::Quater<double> q;
+        sofa::type::Quat<double> q;
 #if 1
         //get position base
         posD[0].getCenter() =  tampon.getOrigin();
@@ -932,36 +932,36 @@ void NewOmniDriver::onAnimateBeginEvent()
         posD[1+VN_stylus] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 2
-        sofa::helper::Quater<double> quarter2(Vec3d(0.0,0.0,1.0),angle2[2]);
+        sofa::type::Quat<double> quarter2(Vec3d(0.0,0.0,1.0),angle2[2]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr2(Vec3d(0.0,0.0,0.0),quarter2);
         tampon*=transform_segr2;
         posD[1+VN_joint2] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 1
-        sofa::helper::Quater<double> quarter3(Vec3d(1.0,0.0,0.0),angle2[1]);
+        sofa::type::Quat<double> quarter3(Vec3d(1.0,0.0,0.0),angle2[1]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr3(Vec3d(0.0,0.0,0.0),quarter3);
         tampon*=transform_segr3;
         posD[1+VN_joint1] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos arm 2
-        sofa::helper::Quater<double> quarter4(Vec3d(0.0,1.0,0.0),-angle2[0]);
+        sofa::type::Quat<double> quarter4(Vec3d(0.0,1.0,0.0),-angle2[0]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr4(Vec3d(0.0,0.0,0.0),quarter4);
         tampon*=transform_segr4;
         posD[1+VN_arm2] = Coord(tampon.getOrigin(), tampon.getOrientation());
         //get pos arm 1
-        sofa::helper::Quater<double> quarter5(Vec3d(1.0,0.0,0.0),-(M_PI/2)+angle1[2]-angle1[1]);
+        sofa::type::Quat<double> quarter5(Vec3d(1.0,0.0,0.0),-(M_PI/2)+angle1[2]-angle1[1]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33*data.scale/100,0.0),quarter5);
         tampon*=transform_segr5;
         posD[1+VN_arm1] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 0
-        sofa::helper::Quater<double> quarter6(Vec3d(1.0,0.0,0.0),angle1[1]);
+        sofa::type::Quat<double> quarter6(Vec3d(1.0,0.0,0.0),angle1[1]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr6(Vec3d(0.0,13.33*data.scale/100,0.0),quarter6);
         tampon*=transform_segr6;
         posD[1+VN_joint0] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos base
-        sofa::helper::Quater<double> quarter7(Vec3d(0.0,0.0,1.0),angle1[0]);
+        sofa::type::Quat<double> quarter7(Vec3d(0.0,0.0,1.0),angle1[0]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr7(Vec3d(0.0,0.0,0.0),quarter7);
         tampon*=transform_segr7;
         posD[1+VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());

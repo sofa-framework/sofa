@@ -34,6 +34,7 @@ namespace sofa::component::topology
 {
 
 using namespace std;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int MultilevelHexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container")
@@ -127,12 +128,12 @@ void MultilevelHexahedronSetTopologyContainer::clear()
 }
 
 void MultilevelHexahedronSetTopologyContainer::getHexaNeighbors(const Index hexa,
-        helper::vector<Index> &neighbors)
+        type::vector<Index> &neighbors)
 {
     std::set<Index>	uniqueNeighbors;
     for(int vertexId=0; vertexId<8; ++vertexId)
     {
-        helper::vector<Index> vneighbors;
+        type::vector<Index> vneighbors;
 
         getHexaVertexNeighbors(hexa, vertexId, vneighbors);
 
@@ -147,7 +148,7 @@ void MultilevelHexahedronSetTopologyContainer::getHexaNeighbors(const Index hexa
 
 void MultilevelHexahedronSetTopologyContainer::getHexaFaceNeighbors(const Index hexa,
         const Index faceId,
-        helper::vector<Index> &neighbors)
+        type::vector<Index> &neighbors)
 {
     const QuadsInHexahedron &hexaQuads = getQuadsInHexahedron(hexa);
     const auto &quadShell = getHexahedraAroundQuad(hexaQuads[faceId]);
@@ -163,9 +164,9 @@ void MultilevelHexahedronSetTopologyContainer::getHexaFaceNeighbors(const Index 
 
 void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const Index hexa,
         const Index vertexId,
-        helper::vector<Index> &neighbors)
+        type::vector<Index> &neighbors)
 {
-    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     const auto &vertexShell = getHexahedraAroundVertex(m_hexahedron[hexa][vertexId]);
 
     neighbors.clear();
@@ -178,7 +179,7 @@ void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const Inde
 }
 
 bool MultilevelHexahedronSetTopologyContainer::getHexaContainsPosition(const Index hexaId,
-        const defaulttype::Vector3& baryC) const
+        const type::Vector3& baryC) const
 {
     const Component& comp = *_coarseComponents.getValue()[hexaId];
     const Vec3i& coarseVoxelId = comp.getVoxelId();
@@ -253,7 +254,7 @@ MultilevelHexahedronSetTopologyContainer::Index MultilevelHexahedronSetTopologyC
 
 typename MultilevelHexahedronSetTopologyContainer::Index
 MultilevelHexahedronSetTopologyContainer::getHexaChildren(const Index hexaId,
-        helper::vector<Index>& children) const
+        type::vector<Index>& children) const
 {
     std::list<Component*>	compList;
     compList.push_back(_coarseComponents.getValue()[hexaId]);

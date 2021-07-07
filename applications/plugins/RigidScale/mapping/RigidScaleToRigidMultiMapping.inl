@@ -12,7 +12,9 @@ namespace component
 {
 namespace mapping
 {
-    using namespace defaulttype;
+
+using namespace type;
+using namespace defaulttype;
 
 //*********************************************************************
 // ********************* Constructor / Destructor *********************
@@ -21,7 +23,7 @@ template <class I1, class I2, class O>
 RigidScaleToRigidMultiMapping
 <I1,I2,O>::RigidScaleToRigidMultiMapping():
 Inherit()
-, index(initData(&index, helper::vector<unsigned>(), "index", "list of couples (index in rigid DOF + index in scale with the type Vec3d)"))
+, index(initData(&index, type::vector<unsigned>(), "index", "list of couples (index in rigid DOF + index in scale with the type Vec3d)"))
 , useGeometricStiffness(initData(&useGeometricStiffness, false, "useGeometricStiffness", "To specify if the geometric stiffness is used or not."))
 , _Js(2)
 {
@@ -69,18 +71,18 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::reinit()
 //*******************************************************************
 template <class I1, class I2, class O>
 void RigidScaleToRigidMultiMapping<I1,I2,O>::apply(const core::MechanicalParams* /*mparams*/
-											   , const helper::vector<OutDataVecCoord*>& dataVecOutPos
-											   , const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos
-											   , const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos)
+											   , const type::vector<OutDataVecCoord*>& dataVecOutPos
+											   , const type::vector<const In1DataVecCoord*>& dataVecIn1Pos
+											   , const type::vector<const In2DataVecCoord*>& dataVecIn2Pos)
 {
 	// Index size
 	unsigned int ind0, ind1, ind2;
-    const helper::vector<unsigned>& index_const = this->index.getValue();
+    const type::vector<unsigned>& index_const = this->index.getValue();
 	unsigned int indexSize = (unsigned int)index_const.size() / 3;
 	
 	// Access to input position
-	helper::ReadAccessorVector<helper::vector<const In1DataVecCoord*> > in1(dataVecIn1Pos);
-	helper::ReadAccessorVector<helper::vector<const In2DataVecCoord*> > in2(dataVecIn2Pos);
+	helper::ReadAccessorVector<type::vector<const In1DataVecCoord*> > in1(dataVecIn1Pos);
+	helper::ReadAccessorVector<type::vector<const In2DataVecCoord*> > in2(dataVecIn2Pos);
 	helper::ReadAccessor<In1DataVecCoord> pIn1(*(in1[0]));
 	helper::ReadAccessor<In2DataVecCoord> pIn2(*(in2[0]));
 
@@ -107,9 +109,9 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::apply(const core::MechanicalParams*
 //*******************************************************************
 template <class I1, class I2, class O>
 void RigidScaleToRigidMultiMapping<I1,I2,O>::applyJ(const core::MechanicalParams* /*mparams*/
-												, const helper::vector<OutDataVecDeriv*>& dataVecOutVel
-												, const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel
-												, const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
+												, const type::vector<OutDataVecDeriv*>& dataVecOutVel
+												, const type::vector<const In1DataVecDeriv*>& dataVecIn1Vel
+												, const type::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
 {
 	_J1.mult(*dataVecOutVel[0], *dataVecIn1Vel[0]);
     _J2.addMult(*dataVecOutVel[0], *dataVecIn2Vel[0]);
@@ -122,9 +124,9 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::applyJ(const core::MechanicalParams
 //*******************************************************************
 template <class I1, class I2, class O>
 void RigidScaleToRigidMultiMapping<I1,I2,O>::applyJT(const core::MechanicalParams* /*mparams*/
-												, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force
-												, const helper::vector< In2DataVecDeriv*>& dataVecOut2Force
-												, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+												, const type::vector< In1DataVecDeriv*>& dataVecOut1Force
+												, const type::vector< In2DataVecDeriv*>& dataVecOut2Force
+												, const type::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
 	_J1.addMultTranspose(*dataVecOut1Force[0], *dataVecInForce[0]);
     _J2.addMultTranspose(*dataVecOut2Force[0], *dataVecInForce[0]);
@@ -132,22 +134,22 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::applyJT(const core::MechanicalParam
 
 template <class I1, class I2, class O>
 void RigidScaleToRigidMultiMapping<I1, I2, O>::applyJT(const core::ConstraintParams* /* cparams */
-												   , const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */
-												   , const helper::vector< In2DataMatrixDeriv*>&  /* dataMatOut2Const */
-												   , const helper::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */)
+												   , const type::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */
+												   , const type::vector< In2DataMatrixDeriv*>&  /* dataMatOut2Const */
+												   , const type::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */)
 {
 	return;
 }
 
 template <class I1, class I2, class O>
-void RigidScaleToRigidMultiMapping<I1,I2,O>::applyJT(const helper::vector< InMatrixDeriv1*>& /*outConstraint1*/
-												 , const helper::vector< InMatrixDeriv2*>& /*outConstraint2*/ 
-												 , const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/)
+void RigidScaleToRigidMultiMapping<I1,I2,O>::applyJT(const type::vector< InMatrixDeriv1*>& /*outConstraint1*/
+												 , const type::vector< InMatrixDeriv2*>& /*outConstraint2*/ 
+												 , const type::vector<const OutMatrixDeriv*>& /*inConstraint*/)
 {
-    std::cout<<"applyJT(const helper::vector< In1MatrixDeriv*>& /*outConstraint1*/ ,\
-            const helper::vector< In2MatrixDeriv*>& /*outConstraint2*/ ,\
-            const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/)\
-            NOT IMPLEMENTED BY " << core::objectmodel::BaseClass::decodeClassName(typeid(*this)) << std::endl;
+    std::cout<<"applyJT(const type::vector< In1MatrixDeriv*>& /*outConstraint1*/ ,\
+            const type::vector< In2MatrixDeriv*>& /*outConstraint2*/ ,\
+            const type::vector<const OutMatrixDeriv*>& /*inConstraint*/)\
+            NOT IMPLEMENTED BY " << helper::NameDecoder::decodeClassName(typeid(*this)) << std::endl;
 }
 
 template <class I1, class I2, class O>
@@ -166,11 +168,11 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::applyDJT(const core::MechanicalPara
 	
 template <class I1, class I2, class O>
 void RigidScaleToRigidMultiMapping<I1,I2,O>::computeAccFromMapping(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
-                                                                , const helper::vector< OutDataVecDeriv*>& /*dataVecOutAcc*/
-                                                                , const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/
-                                                                , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/
-                                                                , const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Acc*/
-                                                                , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Acc*/)
+                                                                , const type::vector< OutDataVecDeriv*>& /*dataVecOutAcc*/
+                                                                , const type::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/
+                                                                , const type::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/
+                                                                , const type::vector<const In1DataVecDeriv*>& /*dataVecIn1Acc*/
+                                                                , const type::vector<const In2DataVecDeriv*>& /*dataVecIn2Acc*/)
 { }
 
 template <class I1, class I2, class O>
@@ -190,7 +192,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateK( const core::MechanicalPara
 }
 
 template <class I1, class I2, class O>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidScaleToRigidMultiMapping<I1,I2,O>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* RigidScaleToRigidMultiMapping<I1,I2,O>::getJs()
 {
     return &_Js;
 
@@ -258,7 +260,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
                 typename BaseShapeFunction::Coord out_pos;
                 typename BaseShapeFunction::VRef ref;
                 typename BaseShapeFunction::VReal w;
-                helper::WriteOnlyAccessor<Data< helper::vector<unsigned> > > ra_index(this->index);
+                helper::WriteOnlyAccessor<Data< type::vector<unsigned> > > ra_index(this->index);
                 for (std::size_t ind0 = 0; ind0 < outSize; ++ind0) {
                     defaulttype::StdVectorTypes<typename BaseShapeFunction::Coord,typename BaseShapeFunction::Coord>::set( out_pos, xout_const[ind0][0] , xout_const[ind0][1] , xout_const[ind0][2]);
                     m_shapeFunction->computeShapeFunction(out_pos, ref, w, NULL, NULL);
@@ -283,7 +285,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
             }
         }
 
-        helper::vector<unsigned> const& index_const = this->index.getValue();
+        type::vector<unsigned> const& index_const = this->index.getValue();
 		// Check of the index pair size
 		if (index_const.size() % 3 != 0 || index_const.size() < 3)
 		{
@@ -334,7 +336,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateJ1(SparseJMatrixEigen1& _J, c
 
     // index
 	unsigned int ind0, ind1, ind2;
-    const helper::vector<unsigned>& index_const = this->index.getValue();
+    const type::vector<unsigned>& index_const = this->index.getValue();
 	unsigned int indexSize = (unsigned int)index_const.size() / 3;
     // Computation of the new jacobian matrix
 	for (unsigned int i = 0; i < indexSize; ++i)
@@ -366,7 +368,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateJ2(SparseJMatrixEigen2& _J, c
 
 	// index size
 	unsigned int ind0, ind1, ind2;
-    const helper::vector<unsigned>& index_const = this->index.getValue();
+    const type::vector<unsigned>& index_const = this->index.getValue();
 	unsigned int indexSize = (unsigned int)index_const.size() / 3;
 	for (unsigned int i = 0; i < indexSize; ++i)
 	{
@@ -403,10 +405,10 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateK1(SparseKMatrixEigen1& _K, c
 
     // index
     unsigned int ind0, ind1, ind2;
-    const helper::vector<unsigned>& index_const = this->index.getValue();
+    const type::vector<unsigned>& index_const = this->index.getValue();
     unsigned int indexSize = (unsigned int)index_const.size() / 3;
-    std::map< unsigned int, helper::vector<unsigned int> > in1_out;
-    std::map< unsigned int, helper::vector<unsigned int> >::iterator it;
+    std::map< unsigned int, type::vector<unsigned int> > in1_out;
+    std::map< unsigned int, type::vector<unsigned int> >::iterator it;
 
     // index map
     for (unsigned int i = 0; i < indexSize; ++i)
@@ -418,7 +420,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateK1(SparseKMatrixEigen1& _K, c
     // Computation of the new stiffness matrix
     for(it=in1_out.begin(); it!=in1_out.end(); ++it)
     {
-        defaulttype::Mat<3,3,Real> block;
+        type::Mat<3,3,Real> block;
         const unsigned int parentIdx = it->first;
 
         for(unsigned int j=0; j<it->second.size(); ++j)
@@ -438,7 +440,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateK1(SparseKMatrixEigen1& _K, c
             const typename OutDeriv::Vec3& St0 = S*this->relativeCoord[ind0].getCenter();
             const typename OutDeriv::Vec3& RSt0 = R.rotate(St0);
 
-            block += defaulttype::crossProductMatrix<Real>(f)*defaulttype::crossProductMatrix<Real>(RSt0);
+            block += type::crossProductMatrix<Real>(f)*type::crossProductMatrix<Real>(RSt0);
         }
 
         for(unsigned int j=0; j<3; ++j)

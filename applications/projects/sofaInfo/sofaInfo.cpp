@@ -49,7 +49,7 @@ int main(int /*argc*/, char** argv)
         groot = sofa::simulation::getSimulation()->createNewGraph("");
     }
 
-    sofa::helper::vector<sofa::core::objectmodel::Base*> objects;
+    sofa::type::vector<sofa::core::objectmodel::Base*> objects;
     std::set<std::string> classNames;
     std::set<std::string> targets;
 

@@ -22,7 +22,7 @@
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/CollisionModel.h>
@@ -62,9 +62,9 @@ Node::SPtr createCard(Node::SPtr  parent, const Coord3& position, const Coord3& 
     static int colorIdx=0;
 
     std::vector<std::string> modelTypes;
-    modelTypes.push_back("Triangle");
-    modelTypes.push_back("Line");
-    modelTypes.push_back("Point");
+    modelTypes.push_back("TriangleCollisionModel");
+    modelTypes.push_back("LineCollisionModel");
+    modelTypes.push_back("PointCollisionModel");
 
     Node::SPtr  card = sofa::modeling::createEulerSolverNode(parent,"Rigid","Implicit");
 
@@ -73,9 +73,9 @@ Node::SPtr createCard(Node::SPtr  parent, const Coord3& position, const Coord3& 
     odeSolver->f_rayleighMass.setValue(0.1);
 
     CGLinearSolverGraph *cgLinearSolver; card->get(cgLinearSolver);
-    cgLinearSolver->f_maxIter.setValue(15);
-    cgLinearSolver->f_tolerance.setValue(1e-5);
-    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+    cgLinearSolver->d_maxIter.setValue(15);
+    cgLinearSolver->d_tolerance.setValue(1e-5);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
 
     sofa::component::constraintset::LMConstraintSolver::SPtr constraintSolver = sofa::core::objectmodel::New<sofa::component::constraintset::LMConstraintSolver>();
@@ -229,7 +229,7 @@ int main(int argc, char** argv)
 
 
     const SReal contactFriction=sqrt(friction);
-    sofa::helper::vector< sofa::core::CollisionModel* > listCollisionModels;
+    sofa::type::vector< sofa::core::CollisionModel* > listCollisionModels;
     root->getTreeObjects<sofa::core::CollisionModel>(&listCollisionModels);
     for (unsigned int i=0; i<listCollisionModels.size(); ++i) listCollisionModels[i]->setContactFriction(contactFriction);
     root->setAnimate(false);

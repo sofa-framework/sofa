@@ -22,7 +22,7 @@
 
 #include "EnslavementForceFeedback.h"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -48,7 +48,7 @@ namespace controller
         Inherit2::init();
     }
 
-    void EnslavementForceFeedback::beginContact(const helper::vector<const helper::vector<core::collision::DetectionOutput>* >& contacts)
+    void EnslavementForceFeedback::beginContact(const type::vector<const type::vector<core::collision::DetectionOutput>* >& contacts)
     {
 
         ContactListener::ContactVectorsIterator vecIter;
@@ -62,11 +62,11 @@ namespace controller
             for(iter = (*vecIter)->begin(); iter != lastIter; ++iter)
             {
                 core::collision::DetectionOutput detectionOutput = (*iter);
-                sofa::defaulttype::Vec3d model1Coord = detectionOutput.point[0];
-                sofa::defaulttype::Vec3d model2Coord = detectionOutput.point[1];
+                sofa::type::Vec3d model1Coord = detectionOutput.point[0];
+                sofa::type::Vec3d model2Coord = detectionOutput.point[1];
 
-                sofa::defaulttype::Vec3d u = model2Coord - model1Coord;
-                sofa::defaulttype::Vec3d norm = detectionOutput.normal;
+                sofa::type::Vec3d u = model2Coord - model1Coord;
+                sofa::type::Vec3d norm = detectionOutput.normal;
                 double pen = u*norm;
 
                 pen = (pen - d_penOffset.getValue()) / d_contactScale.getValue();

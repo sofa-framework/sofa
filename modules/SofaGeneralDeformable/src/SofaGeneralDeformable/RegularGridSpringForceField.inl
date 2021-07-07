@@ -82,7 +82,7 @@ void RegularGridSpringForceField<DataTypes>::addForce(const core::MechanicalPara
     f1.resize(x1.size());
     f2.resize(x2.size());
     this->m_potentialEnergy = 0;
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)
     {
         if (topology != nullptr)
@@ -266,7 +266,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
     Real kFactor       =  (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
     Real bFactor       =  (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)
     {
         if (topology != nullptr)
@@ -432,6 +432,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalPar
 template<class DataTypes>
 void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
 
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
@@ -509,7 +510,7 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
         }
     }
 
-    vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor(0.5,0.5,0.5,1));
+    vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor(0.5,0.5,0.5,1));
     vparams->drawTool()->restoreLastState();
 }
 

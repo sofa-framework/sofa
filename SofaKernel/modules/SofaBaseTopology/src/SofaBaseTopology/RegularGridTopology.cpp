@@ -26,8 +26,9 @@
 namespace sofa::component::topology
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
-using helper::vector;
+using type::vector;
 
 /// To avoid duplicating the code in the different variants of the constructor
 /// this object is using the delegating constructor feature of c++ x11.

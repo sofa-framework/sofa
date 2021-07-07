@@ -72,8 +72,8 @@ public:
         NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size
     };
 
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vec;
+    typedef type::Mat<N,N,Real> Mat;
+    typedef type::Vec<N,Real> Vec;
 
     void init() override;
 

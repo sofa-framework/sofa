@@ -10,7 +10,8 @@
     <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
     <OmniDriver scale="0.1" orientation="-90 0 90" position="0 -4 0"/>
 	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
-	<BruteForceDetection name="detection" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager name="response" response="default" />
 	<MinProximityIntersection name="proximity" alarmDistance="0.03" contactDistance="0.03" />
 

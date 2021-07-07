@@ -24,9 +24,9 @@
 
 #include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include <sofa/simulation/Simulation.h>
 
@@ -53,7 +53,7 @@ public:
     enum {material_dimensions = OutDataTypes::spatial_dimensions};
     static const bool positionMapped=true; ///< tells if spatial positions are included in output state
     static const bool FMapped=false;        ///< tells if deformation gradients are included in output state
-    static defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real> getF(const typename OutDataTypes::Coord&)  { return defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real>(); }
+    static type::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real> getF(const typename OutDataTypes::Coord&)  { return type::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real>(); }
 };
 
 template< Size _spatial_dimensions,  Size _material_dimensions, int _order, typename _Real>
@@ -74,7 +74,7 @@ public:
     enum {material_dimensions = TCoord::spatial_dimensions};
     static const bool positionMapped=true;
     static const bool FMapped=false;
-    static defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
+    static type::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return type::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
 };
 
 namespace component
@@ -101,13 +101,13 @@ protected:
     BasePointMapper& operator=(const BasePointMapper& b);
 
 public:
-    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef type::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
 
     virtual void ForwardMapping(Coord& p,const Coord& p0)=0;      ///< returns spatial coord p in deformed configuration corresponding to the rest coord p0
     virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10)=0;     ///< iteratively approximate spatial coord p0 in rest configuration corresponding to the deformed coord p (warning! p0 need to be initialized in the object first, for instance using closest point matching)
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false)=0; ///< returns closest mapped point x from input point p, its rest pos x0, and its index
 
-    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
+    virtual void resizeOut(const type::vector<Coord>& position0, type::vector<type::vector<unsigned int> > index,type::vector<type::vector<Real> > w, type::vector<type::vector<type::Vec<spatial_dimensions,Real> > > dw, type::vector<type::vector<type::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, type::vector<type::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
 };
 
 
@@ -180,10 +180,10 @@ public:
 
     /** @name  Coord types    */
     //@{
-    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
-    typedef helper::vector<Coord> VecCoord;
-    typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;     ///< local liner transformation from material space to world space = deformation gradient type
-    typedef helper::vector<MaterialToSpatial> VMaterialToSpatial;
+    typedef type::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef type::vector<Coord> VecCoord;
+    typedef type::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;     ///< local liner transformation from material space to world space = deformation gradient type
+    typedef type::vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
     //@}
@@ -191,7 +191,7 @@ public:
     /** @name  Jacobian types    */
     //@{
     typedef JacobianBlockType BlockType;
-    typedef helper::vector<helper::vector<BlockType> >  SparseMatrix;
+    typedef type::vector<type::vector<BlockType> >  SparseMatrix;
 
     typedef typename BlockType::MatBlock  MatBlock;  ///< Jacobian block matrix
     typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
@@ -204,7 +204,7 @@ public:
 
     ///@brief Update \see f_index_parentToChild from \see f_index
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0) override; /// resizing given custom positions and weights
+    virtual void resizeOut(const type::vector<Coord>& position0, type::vector<type::vector<unsigned int> > index,type::vector<type::vector<Real> > w, type::vector<type::vector<type::Vec<spatial_dimensions,Real> > > dw, type::vector<type::vector<type::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, type::vector<type::Mat<spatial_dimensions,spatial_dimensions,Real> > F0) override; /// resizing given custom positions and weights
 
     /*!
      * \brief Resize all required data and initialize jacobian blocks
@@ -239,7 +239,7 @@ public:
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/) override;
 
     // Compliant plugin experimental API
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
     virtual const defaulttype::BaseMatrix* getK() override;
@@ -301,7 +301,7 @@ public:
     Data<VecVGradient >   f_dw;        ///< Influence weight gradients
     Data<VecVHessian >    f_ddw;       ///< Influence weight hessians
     Data<VMaterialToSpatial>    f_F0;       ///< initial value of deformation gradients
-    Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
+    Data< type::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
     Data<bool> assemble; ///< Assemble the matrices (Jacobian/Geometric Stiffness) or use optimized Jacobian/vector multiplications
@@ -338,14 +338,14 @@ protected :
     virtual void initJacobianBlocks(const InVecCoord& /*inCoord*/, const OutVecCoord& /*outCoord*/){ std::cout << "Only implemented in LinearMapping for now." << std::endl;}
 
     SparseMatrixEigen eigenJacobian/*, maskedEigenJacobian*/;  ///< Assembled Jacobian matrix
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ();
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
-    const helper::vector<component::visualmodel::VisualModelImpl::VisualTriangle> *extTriangles;
-    const helper::vector<component::visualmodel::VisualModelImpl::visual_index_type> *extvertPosIdx;
+    const type::vector<component::visualmodel::VisualModelImpl::VisualTriangle> *extTriangles;
+    const type::vector<component::visualmodel::VisualModelImpl::visual_index_type> *extvertPosIdx;
 
     void updateForceMask() override;
 

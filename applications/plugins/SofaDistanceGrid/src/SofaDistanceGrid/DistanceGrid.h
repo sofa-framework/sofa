@@ -54,7 +54,7 @@ namespace container
 namespace _distancegrid_
 {
 using sofa::helper::io::Mesh;
-using sofa::defaulttype::Vector3 ;
+using sofa::type::Vector3 ;
 typedef Vector3 Coord;
 
 class SOFA_SOFADISTANCEGRID_API DistanceGrid
@@ -62,8 +62,8 @@ class SOFA_SOFADISTANCEGRID_API DistanceGrid
 public:
     static SReal maxDist() { return std::numeric_limits<SReal>::max(); }
     typedef Vector3 Coord;
-    typedef helper::vector<SReal> VecSReal;
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<SReal> VecSReal;
+    typedef type::vector<Coord> VecCoord;
 
     DistanceGrid(int m_nx, int m_ny, int m_nz, Coord m_pmin, Coord m_pmax);
 
@@ -239,8 +239,8 @@ protected:
 
     /// Fast Marching Method Update
     enum Status { FMM_FRONT0 = 0, FMM_FAR = -1, FMM_KNOWN_OUT = -2, FMM_KNOWN_IN = -3 };
-    helper::vector<int> m_fmm_status;
-    helper::vector<int> m_fmm_heap;
+    type::vector<int> m_fmm_status;
+    type::vector<int> m_fmm_heap;
     int m_fmm_heap_size;
 
     int fmm_pop();

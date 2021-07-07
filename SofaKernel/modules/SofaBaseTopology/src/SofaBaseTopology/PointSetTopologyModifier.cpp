@@ -66,7 +66,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints, const 
 {
     m_container->setPointTopologyToDirty();
     const size_t startIndex = m_container->getNbPoints()-nPoints;
-    sofa::helper::vector <PointID> indices; indices.resize(nPoints);
+    sofa::type::vector<PointID> indices; indices.resize(nPoints);
     for(size_t i=0; i<nPoints; ++i)
         indices[i] = PointID(startIndex+i);
 
@@ -84,13 +84,13 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints, const 
 
 
 void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
-        const sofa::helper::vector< sofa::helper::vector< PointID > > &ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double       > >& coefs,
+        const sofa::type::vector< sofa::type::vector< PointID > > &ancestors,
+        const sofa::type::vector< sofa::type::vector< double       > >& coefs,
         const bool addDOF)
 {
     m_container->setPointTopologyToDirty();
     const size_t startIndex = m_container->getNbPoints()-nPoints;
-    sofa::helper::vector <PointID> indices; indices.resize(nPoints);
+    sofa::type::vector<PointID> indices; indices.resize(nPoints);
     for(size_t i=0; i<nPoints; ++i)
         indices[i] = PointID(startIndex+i);
 
@@ -108,7 +108,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
 
 
 void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
-        const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
+        const sofa::type::vector< core::topology::PointAncestorElem >& ancestorElems,
         const bool addDOF)
 {
     using namespace sofa::core::topology;
@@ -122,9 +122,9 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
 
     const size_t startIndex = m_container->getNbPoints() - nPoints;
 
-    helper::vector< PointID > newPointIndices;
-    helper::vector< helper::vector< PointID > > ancestorPointIndices;
-    helper::vector< helper::vector< double       > > baryCoefs;
+    type::vector< PointID > newPointIndices;
+    type::vector< type::vector< PointID > > ancestorPointIndices;
+    type::vector< type::vector< double       > > baryCoefs;
 
     newPointIndices.resize(nPoints);
     ancestorPointIndices.resize(nPoints);
@@ -275,8 +275,8 @@ void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
 }
 
 void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
-     const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-     const sofa::helper::vector< sofa::helper::vector< double> >& coefs,
+     const sofa::type::vector< sofa::type::vector< PointID > >& ancestors,
+     const sofa::type::vector< sofa::type::vector< double> >& coefs,
      const bool addDOF)
 {
     sofa::helper::AdvancedTimer::stepBegin("addPoints with ancestors");
@@ -295,7 +295,7 @@ void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
 }
 
 void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
-     const sofa::helper::vector< core::topology::PointAncestorElem >& srcElems,
+     const sofa::type::vector< core::topology::PointAncestorElem >& srcElems,
      const bool addDOF)
 {
     addPointsProcess(nPoints);
@@ -303,9 +303,9 @@ void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
     propagateTopologicalChanges();
 }
 
-void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <PointID>& id,
-        const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+void PointSetTopologyModifier::movePointsProcess (const sofa::type::vector<PointID>& id,
+        const sofa::type::vector< sofa::type::vector< PointID > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& coefs,
         const bool moveDOF)
 {
     m_container->setPointTopologyToDirty();
@@ -327,8 +327,8 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <Po
 
 
 
-void PointSetTopologyModifier::renumberPoints(const sofa::helper::vector< PointID >& index,
-    const sofa::helper::vector< PointID >& inv_index,
+void PointSetTopologyModifier::renumberPoints(const sofa::type::vector< PointID >& index,
+    const sofa::type::vector< PointID >& inv_index,
     const bool renumberDOF)
 {
     sofa::helper::AdvancedTimer::stepBegin("Renumber Points");
@@ -348,7 +348,7 @@ void PointSetTopologyModifier::renumberPoints(const sofa::helper::vector< PointI
 }
 
 
-void PointSetTopologyModifier::removePoints(sofa::helper::vector< PointID >& indices, const bool removeDOF)
+void PointSetTopologyModifier::removePoints(sofa::type::vector< PointID >& indices, const bool removeDOF)
 {
     sofa::helper::AdvancedTimer::stepBegin("Remove Points");
 
@@ -368,7 +368,7 @@ void PointSetTopologyModifier::removePoints(sofa::helper::vector< PointID >& ind
 
 
 
-void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID> &indices,
+void PointSetTopologyModifier::removePointsWarning(sofa::type::vector<PointID> &indices,
         const bool removeDOF)
 {
     sofa::helper::AdvancedTimer::stepBegin("removePointsWarning");
@@ -390,7 +390,7 @@ void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID>
 }
 
 
-void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<PointID> & indices,
+void PointSetTopologyModifier::removePointsProcess(const sofa::type::vector<PointID> & indices,
         const bool removeDOF)
 {
     sofa::helper::AdvancedTimer::stepBegin("removePointsProcess");
@@ -404,8 +404,8 @@ void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<Po
 }
 
 
-void PointSetTopologyModifier::renumberPointsWarning( const sofa::helper::vector<PointID> &index,
-        const sofa::helper::vector<PointID> &inv_index,
+void PointSetTopologyModifier::renumberPointsWarning( const sofa::type::vector<PointID> &index,
+        const sofa::type::vector<PointID> &inv_index,
         const bool renumberDOF)
 {
     // Warning that these vertices will be deleted
@@ -420,8 +420,8 @@ void PointSetTopologyModifier::renumberPointsWarning( const sofa::helper::vector
 }
 
 
-void PointSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<PointID> &/*index*/,
-        const sofa::helper::vector<PointID> &/*inv_index*/,
+void PointSetTopologyModifier::renumberPointsProcess( const sofa::type::vector<PointID> &/*index*/,
+        const sofa::type::vector<PointID> &/*inv_index*/,
         const bool renumberDOF)
 {
     if(renumberDOF)

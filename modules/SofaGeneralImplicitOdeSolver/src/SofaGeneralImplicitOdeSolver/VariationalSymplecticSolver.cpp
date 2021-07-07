@@ -56,7 +56,7 @@ void VariationalSymplecticSolver::init()
 {
     if (!this->getTags().empty())
     {
-        helper::vector<core::objectmodel::BaseObject*> objs;
+        type::vector<core::objectmodel::BaseObject*> objs;
         this->getContext()->get<core::objectmodel::BaseObject>(&objs,this->getTags(),sofa::core::objectmodel::BaseContext::SearchDown);
         std::stringstream tmp;
         for (unsigned int i=0;i<objs.size();++i)
@@ -205,7 +205,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 			mop.projectResponse(b);
 			// add left term : matrix=-K+4/h^(2)M, but with dampings rK and rM
             core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
-			matrix = MechanicalMatrix::K * (-1.0-4*rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+4*rM/h);
+            matrix.setSystemMBKMatrix(MechanicalMatrix::K * (-1.0-4*rK/h) +  MechanicalMatrix::M * (4.0/(h*h)+4*rM/h));
 
 			sofa::helper::AdvancedTimer::stepNext ("MBKBuild", "MBKSolve");
 
@@ -290,7 +290,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
             b.clear();
             core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
             // Mass matrix
-            matrix = MechanicalMatrix::M;
+            matrix.setSystemMBKMatrix(MechanicalMatrix::M);
 
             // resolution of matrix*b=newp
             matrix.solve(b,newp); // b = inv(matrix)*newp = Minv*newp

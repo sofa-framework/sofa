@@ -23,12 +23,12 @@
 #ifndef FLEXIBLE_PolynomialBasis_H
 #define FLEXIBLE_PolynomialBasis_H
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/MatSym.h>
 #include <set>
 #include <vector>
 
@@ -50,9 +50,9 @@ public:
     static const unsigned int N = _N;
     static const unsigned int dim = _dim;
     static const unsigned int order = _order;
-    typedef Vec<N,Real> T;
-    typedef Vec<dim,T> Gradient;
-    typedef MatSym<dim,T> Hessian;
+    typedef type::Vec<N,Real> T;
+    typedef type::Vec<dim,T> Gradient;
+    typedef type::MatSym<dim,T> Hessian;
 };
 
 /**
@@ -77,8 +77,8 @@ public:
     static const unsigned int bdim =  dim==1? order+1 : ( dim==2? (order+1)*(order+2)/2 : dim==3? (order+1)*(order+2)*(order+3)/6 : 0); ///< size of complete basis
     enum { total_size = bdim * N };  // number of entries
 
-    typedef Vec<bdim,T> CoeffVec;
-    typedef Vec<total_size,Real> TotalVec;
+    typedef type::Vec<bdim,T> CoeffVec;
+    typedef type::Vec<total_size,Real> TotalVec;
     typedef typename inherit::Gradient Gradient;
     typedef typename inherit::Hessian Hessian;
 
@@ -120,9 +120,9 @@ public:
 
 
 template<typename real>
-inline void getCompleteBasis(helper::vector<real>& basis, const Vec<3,real>& p,const unsigned int order)
+inline void getCompleteBasis(type::vector<real>& basis, const type::Vec<3,real>& p,const unsigned int order)
 {
-    typedef Vec<3,real> Coord;
+    typedef type::Vec<3,real> Coord;
 
     unsigned int j,k,dim=(order+1)*(order+2)*(order+3)/6;
 
@@ -186,9 +186,9 @@ inline void getCompleteBasis(helper::vector<real>& basis, const Vec<3,real>& p,c
   **/
 
 template<typename real>
-inline void getCompleteBasisIntegralInCube(helper::vector<real>& basis, const Vec<3,real>& p, const Vec<3,real>& l, const unsigned int order)
+inline void getCompleteBasisIntegralInCube(type::vector<real>& basis, const type::Vec<3,real>& p, const type::Vec<3,real>& l, const unsigned int order)
 {
-    typedef Vec<3,real> Coord;
+    typedef type::Vec<3,real> Coord;
 
     unsigned int j,dim=(order+1)*(order+2)*(order+3)/6;
 
@@ -254,9 +254,9 @@ inline void getCompleteBasisIntegralInCube(helper::vector<real>& basis, const Ve
 
 
 template<typename real>
-Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> getCompleteBasis_TranslationMatrix(const Vec<3,real>& t,const unsigned int order)
+Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> getCompleteBasis_TranslationMatrix(const type::Vec<3,real>& t,const unsigned int order)
 {
-//    typedef Vec<3,real> Coord;
+//    typedef type::Vec<3,real> Coord;
 
     unsigned int j,dim=(order+1)*(order+2)*(order+3)/6;
     Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> A(dim,dim);
@@ -267,7 +267,7 @@ Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> getCompleteBas
     if (count==dim) return A;
 
     // order 1
-    helper::vector<real> T; getCompleteBasis(T,t,order);
+    type::vector<real> T; getCompleteBasis(T,t,order);
     for (j=1;j<dim;j++) A(j,0)=T[j]; // fill first column
     count=4;
     if (count==dim) return A;
@@ -317,9 +317,9 @@ Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> getCompleteBas
 
 
 template<typename real>
-inline void getCompleteBasisGradient(helper::vector<Vec<3,real> >& basisDeriv, const Vec<3,real>& p,const unsigned int order)
+inline void getCompleteBasisGradient(type::vector<type::Vec<3,real> >& basisDeriv, const type::Vec<3,real>& p,const unsigned int order)
 {
-    typedef Vec<3,real> Coord;
+    typedef type::Vec<3,real> Coord;
 
     unsigned int j,k,dim=(order+1)*(order+2)*(order+3)/6;
 
@@ -391,9 +391,9 @@ inline void getCompleteBasisGradient(helper::vector<Vec<3,real> >& basisDeriv, c
 
 
 template<typename real>
-inline void getCompleteBasisHessian(helper::vector<MatSym<3,real> >& basisDeriv, const Vec<3,real>& p,const unsigned int order)
+inline void getCompleteBasisHessian(type::vector<type::MatSym<3,real> >& basisDeriv, const type::Vec<3,real>& p,const unsigned int order)
 {
-    typedef Vec<3,real> Coord;
+    typedef type::Vec<3,real> Coord;
 
     unsigned int j,k,dim=(order+1)*(order+2)*(order+3)/6;
 
@@ -465,9 +465,9 @@ inline void getCompleteBasisHessian(helper::vector<MatSym<3,real> >& basisDeriv,
 
 
 template<class Real>
-Vec<3,Real> getOrder1Factors(const helper::vector<Real>& v)
+type::Vec<3,Real> getOrder1Factors(const type::vector<Real>& v)
 {
-    Vec<3,Real> ret;
+    type::Vec<3,Real> ret;
     if(v.size()>=4)
     {
         ret(0)=v[1];
@@ -478,9 +478,9 @@ Vec<3,Real> getOrder1Factors(const helper::vector<Real>& v)
 }
 
 template<class Real>
-Vec<6,Real> getOrder2Factors(const helper::vector<Real>& v)
+type::Vec<6,Real> getOrder2Factors(const type::vector<Real>& v)
 {
-    Vec<6,Real> ret;
+    type::Vec<6,Real> ret;
     if(v.size()>=10)
     {
         ret(0)=v[4];    // x * x
@@ -498,9 +498,9 @@ Vec<6,Real> getOrder2Factors(const helper::vector<Real>& v)
 }
 
 template<class Real>
-Mat<3,6,Real> getOrder3Factors(const helper::vector<Real>& v)
+type::Mat<3,6,Real> getOrder3Factors(const type::vector<Real>& v)
 {
-    Mat<3,6,Real> ret;
+    type::Mat<3,6,Real> ret;
     if(v.size()>=20)
     {
         //  x^2             xy              y^2             xz              yz              z^2
@@ -512,9 +512,9 @@ Mat<3,6,Real> getOrder3Factors(const helper::vector<Real>& v)
 }
 
 template<class Real>
-MatSym<6,Real> getOrder4Factors(const helper::vector<Real>& v)
+type::MatSym<6,Real> getOrder4Factors(const type::vector<Real>& v)
 {
-    MatSym<6,Real> ret;
+    type::MatSym<6,Real> ret;
     if(v.size()>=35)
     {
         //  x^2             xy              y^2             xz              yz              z^2
@@ -539,7 +539,7 @@ MatSym<6,Real> getOrder4Factors(const helper::vector<Real>& v)
 */
 
 template<typename real>
-void getPolynomialFit_differential(  const helper::vector<real>& coeff, real& Val, Vec<3,real> *Gradient=NULL, Mat<3,3,real>* Hessian=NULL)
+void getPolynomialFit_differential(  const type::vector<real>& coeff, real& Val, type::Vec<3,real> *Gradient=NULL, type::Mat<3,3,real>* Hessian=NULL)
 {
     Val=coeff[0];
     if(Gradient && coeff.size()>3)  // = Coeff * CompleteBasisDeriv(0,0,0);
@@ -571,7 +571,7 @@ void getPolynomialFit_differential(  const helper::vector<real>& coeff, real& Va
 */
 
 template<typename real>
-void PolynomialFit(helper::vector<real>& coeff, const helper::vector<real>& val, const helper::vector<Vec<3,real> >& pos, const unsigned int order,const real MIN_COEFF=1E-5)
+void PolynomialFit(type::vector<real>& coeff, const type::vector<real>& val, const type::vector<type::Vec<3,real> >& pos, const unsigned int order,const real MIN_COEFF=1E-5)
 {
     typedef Eigen::Matrix<real,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>  Matrix;
     typedef Eigen::Matrix<real,Eigen::Dynamic,1>  Vector;
@@ -581,7 +581,7 @@ void PolynomialFit(helper::vector<real>& coeff, const helper::vector<real>& val,
 
     for (int i=0; i<nbp; i++)
     {
-        helper::vector<real> basis;
+        type::vector<real> basis;
         getCompleteBasis(basis,pos[i],order);
         memcpy(&X(i,0),&basis[0],dim*sizeof(real));
     }
@@ -597,7 +597,7 @@ void PolynomialFit(helper::vector<real>& coeff, const helper::vector<real>& val,
 
 // returns error \f$ sum_i ( val_i - coeff^T.(pos_i)~ )^2 \f$
 template<typename real>
-real getPolynomialFit_Error(const helper::vector<real>& coeff, const helper::vector<real>& val, const helper::vector<Vec<3,real> >& pos)
+real getPolynomialFit_Error(const type::vector<real>& coeff, const type::vector<real>& val, const type::vector<type::Vec<3,real> >& pos)
 {
     real error=0;
     for(unsigned int i=0; i<pos.size(); i++) error+=getPolynomialFit_Error(coeff, val[i], pos[i]);
@@ -605,12 +605,12 @@ real getPolynomialFit_Error(const helper::vector<real>& coeff, const helper::vec
 }
 
 template<typename real>
-real getPolynomialFit_Error(const helper::vector<real>& coeff, const real& val, const Vec<3,real>& pos)
+real getPolynomialFit_Error(const type::vector<real>& coeff, const real& val, const type::Vec<3,real>& pos)
 {
     int dim=coeff.size(),order;
     if(dim==1) order=0; else if(dim==4) order=1; else if(dim==10) order=2; else if(dim==20) order=3; else order=4;
     dim=(order+1)*(order+2)*(order+3)/6;
-    helper::vector<real> basis;
+    type::vector<real> basis;
     getCompleteBasis(basis,pos,order);
     real v=0; for (int i=0; i<dim; i++) v+=coeff[i]*basis[i];
     real error=(v-(real)val)*(v-(real)val);
@@ -637,7 +637,7 @@ struct PolynomialFitFactors
 
     unsigned int nb;                            // nb of voxels in the region
     std::set<unsigned int> voronoiIndices;      // value corresponding to the value in the voronoi image
-    Vec<3,real> center;                              // centroid
+    type::Vec<3,real> center;                              // centroid
     std::map<unsigned int , unsigned int> parentsToNodeIndex;    // map between indices of parents to node indices
     Vector vol;  // volume (and moments) of this region
 
@@ -658,11 +658,11 @@ struct PolynomialFitFactors
         vol=f.vol;
     }
 
-    void setParents(const helper::vector<unsigned int>& parents)     { parentsToNodeIndex.clear();  for(unsigned int i=0;i<parents.size();i++)  parentsToNodeIndex[parents[i]]=i; }
+    void setParents(const type::vector<unsigned int>& parents)     { parentsToNodeIndex.clear();  for(unsigned int i=0;i<parents.size();i++)  parentsToNodeIndex[parents[i]]=i; }
     void setParents(const std::set<unsigned int>& parents)     { parentsToNodeIndex.clear();  unsigned int i=0; for( std::set<unsigned int>::const_iterator it=parents.begin();it!=parents.end();it++)  parentsToNodeIndex[*it]=i++; }
 
     // compute factors. vals is a num_nodes x nbp matrix
-    void fill( const Matrix& val, const helper::vector<Vec<3,real> >& pos, const unsigned int order, const Vec<3,real>& voxelsize, const unsigned int volOrder)
+    void fill( const Matrix& val, const type::vector<type::Vec<3,real> >& pos, const unsigned int order, const type::Vec<3,real>& voxelsize, const unsigned int volOrder)
     {
         unsigned int num_nodes = val.rows(); if(!num_nodes) return;
 
@@ -675,7 +675,7 @@ struct PolynomialFitFactors
         Matrix X(nb,dim);
         for (unsigned int i=0;i<nb;i++)
         {
-            helper::vector<real> basis;
+            type::vector<real> basis;
             defaulttype::getCompleteBasis(basis,pos[i]-center,order); Eigen::Map<Vector> ebasis(&basis[0],dim); X.row(i) = ebasis;
             defaulttype::getCompleteBasisIntegralInCube(basis,pos[i]-center,voxelsize,volOrder); Eigen::Map<Vector> ebasis2(&basis[0],volDim); vol += ebasis2; // treat voxels as volume elements
             //defaulttype::getCompleteBasis(basis,pos[i]-center,volOrder); Eigen::Map<Vector> ebasis2(&basis[0],volDim); vol += ebasis2*voxelsize[0]*voxelsize[1]*voxelsize[2]; // treat voxels as points (simpler but less accurate)
@@ -686,7 +686,7 @@ struct PolynomialFitFactors
     }
 
     // direct solve of coeffs from point data
-    void directSolve( const Matrix& val, const helper::vector<Vec<3,real> >& pos, const unsigned int order,const real MIN_COEFF=1E-5)
+    void directSolve( const Matrix& val, const type::vector<type::Vec<3,real> >& pos, const unsigned int order,const real MIN_COEFF=1E-5)
     {
         unsigned int num_nodes = val.rows(); if(!num_nodes) return;
 
@@ -696,7 +696,7 @@ struct PolynomialFitFactors
         Matrix X(nb,dim);
         for (unsigned int i=0;i<nb;i++)
         {
-            helper::vector<real> basis; defaulttype::getCompleteBasis(basis,pos[i]-center,order); Eigen::Map<Vector> ebasis(&basis[0],dim); X.row(i) = ebasis;
+            type::vector<real> basis; defaulttype::getCompleteBasis(basis,pos[i]-center,order); Eigen::Map<Vector> ebasis(&basis[0],dim); X.row(i) = ebasis;
         }
 
         // jacobi svd
@@ -755,12 +755,12 @@ struct PolynomialFitFactors
     }
 
     // error computation at point p: \f$  ( val - coeff^T.(pos)~ )^2  \f$
-    real getError(const Vec<3,real>& p, const Vector& val) const
+    real getError(const type::Vec<3,real>& p, const Vector& val) const
     {
         unsigned int dim = coeff.cols(); if(!dim) return -1;
         unsigned int order=orderFromDim(dim);
 
-        helper::vector<real> basis; defaulttype::getCompleteBasis(basis,p-center,order); Eigen::Map<Vector> ebasis(&basis[0],dim);
+        type::vector<real> basis; defaulttype::getCompleteBasis(basis,p-center,order); Eigen::Map<Vector> ebasis(&basis[0],dim);
 
         int num_nodes = val.cols(); if(coeff.rows()!=num_nodes) return -1;
         real err = 0;
@@ -770,7 +770,7 @@ struct PolynomialFitFactors
 
 
     // get factors when all pos are translated by t
-    void setCenter(const Vec<3,real>& ctr)
+    void setCenter(const type::Vec<3,real>& ctr)
     {
         unsigned int dim = a.rows();
         if(dim)
@@ -824,7 +824,7 @@ struct PolynomialFitFactors
     }
 
     // returns differential coeffs for each parent
-    void getMapping(helper::vector<unsigned int>& index,helper::vector<real>& w, helper::vector<Vec<3,real> >& dw, helper::vector<Mat<3,3,real> >& ddw)
+    void getMapping(type::vector<unsigned int>& index,type::vector<real>& w, type::vector<type::Vec<3,real> >& dw, type::vector<type::Mat<3,3,real> >& ddw)
     {
         unsigned int num_nodes = b.rows(); if(!num_nodes) return;
         unsigned int dim = a.rows(); if(!dim) return;

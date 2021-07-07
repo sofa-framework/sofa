@@ -27,6 +27,7 @@
 namespace sofa::component::linearsolver
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 

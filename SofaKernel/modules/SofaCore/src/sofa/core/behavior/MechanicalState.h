@@ -35,9 +35,9 @@ namespace sofa::core::behavior
  *  \li \code Real \endcode : scalar values (float or double).
  *  \li \code Coord \endcode : position values.
  *  \li \code Deriv \endcode : derivative values (velocity, forces, displacements).
- *  \li \code VecReal \endcode : container of scalar values with the same API as sofa::helper::vector.
- *  \li \code VecCoord \endcode : container of Coord values with the same API as sofa::helper::vector.
- *  \li \code VecDeriv \endcode : container of Deriv values with the same API as sofa::helper::vector.
+ *  \li \code VecReal \endcode : container of scalar values with the same API as sofa::type::vector.
+ *  \li \code VecCoord \endcode : container of Coord values with the same API as sofa::type::vector.
+ *  \li \code VecDeriv \endcode : container of Deriv values with the same API as sofa::type::vector.
  *  \li \code MatrixDeriv \endcode : vector of constraints.
  *
  *  Other vectors can be allocated to store other temporary values.
@@ -61,11 +61,11 @@ public:
     typedef typename DataTypes::Coord Coord;
     /// Derivative values (velocity, forces, displacements).
     typedef typename DataTypes::Deriv Deriv;
-    /// Container of scalar values with the same API as sofa::helper::vector.
+    /// Container of scalar values with the same API as sofa::type::vector.
     typedef typename DataTypes::VecReal VecReal;
-    /// Container of Coord values with the same API as sofa::helper::vector.
+    /// Container of Coord values with the same API as sofa::type::vector.
     typedef typename DataTypes::VecCoord VecCoord;
-    /// Container of Deriv values with the same API as sofa::helper::vector.
+    /// Container of Deriv values with the same API as sofa::type::vector.
     typedef typename DataTypes::VecDeriv VecDeriv;
     /// Sparse matrix containing derivative values (constraints)
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -77,7 +77,7 @@ public:
     Size getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
 
     /// Get the indices of the particles located in the given bounding box
-    virtual void getIndicesInSpace(sofa::helper::vector<Index>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
+    virtual void getIndicesInSpace(sofa::type::vector<Index>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
 
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)

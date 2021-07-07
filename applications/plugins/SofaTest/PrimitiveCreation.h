@@ -2,13 +2,13 @@
 #include "InitPlugin_test.h"
 
 #include <SofaBaseTopology/MeshTopology.h>
-#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaMiscCollision/MeshIntTool.h>
 
 namespace sofa{
 
 namespace PrimitiveCreationTest{
 
-using sofa::defaulttype::Vec3;
+using sofa::type::Vec3;
 
 /**
   *\brief Makes up an OBBCollisionModel<sofa::defaulttype::Rigid3Types> containing just one OBB. angles and order are the rotations used to make up this OBB.

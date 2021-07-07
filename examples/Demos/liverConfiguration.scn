@@ -4,7 +4,8 @@
     <RequiredPlugin name="SofaGraphComponent"/>
     
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="default" />
     <DiscreteIntersection/>
 

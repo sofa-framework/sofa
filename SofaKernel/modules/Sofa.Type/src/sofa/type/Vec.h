@@ -432,20 +432,6 @@ public:
     }
 
     /// Cast into a const array of values.
-    /// CHANGE(Jeremie A.): removed it as it confuses some compilers. Use ptr() or data() instead
-    //operator const real*() const
-    //{
-    //    return this->elems;
-    //}
-
-    /// Cast into an array of values.
-    /// CHANGE(Jeremie A.): removed it as it confuses some compilers. Use ptr() or data() instead
-    //operator real*()
-    //{
-    //    return this->elems;
-    //}
-
-    /// Cast into a const array of values.
     const ValueType* ptr() const
     {
         return this->elems;

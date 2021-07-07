@@ -24,7 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/SolveVisitor.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -108,7 +107,7 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
 
-    std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
+    std::map < std::string, sofa::type::vector<double> >& graph = *f_graph.beginEdit();
 
     if (build_lcp.getValue())
     {
@@ -128,11 +127,11 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
                 MultigridConstraintsMerge();
                 sofa::helper::AdvancedTimer::stepEnd  ("ConstraintsMerge");
 
-                sofa::helper::vector<double>& graph_residuals = graph["Error"];
+                sofa::type::vector<double>& graph_residuals = graph["Error"];
                 graph_residuals.clear();
-                sofa::helper::vector<double>& graph_violations = graph["Violation"];
+                sofa::type::vector<double>& graph_violations = graph["Violation"];
                 graph_violations.clear();
-                sofa::helper::vector<double>& graph_levels = graph["Level"];
+                sofa::type::vector<double>& graph_levels = graph["Level"];
                 graph_levels.clear();
 
                 sofa::helper::AdvancedTimer::stepBegin("NLCP MultiGrid");
@@ -143,9 +142,9 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
             }
             else
             {
-                sofa::helper::vector<double>& graph_error = graph["Error"];
+                sofa::type::vector<double>& graph_error = graph["Error"];
                 graph_error.clear();
-                sofa::helper::vector<double>& graph_violations = graph["Violation"];
+                sofa::type::vector<double>& graph_violations = graph["Violation"];
                 graph_violations.clear();
                 sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel");
                 helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
@@ -155,7 +154,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
         }
         else
         {
-            sofa::helper::vector<double>& graph_error = graph["Error"];
+            sofa::type::vector<double>& graph_error = graph["Error"];
             graph_error.clear();
             sofa::helper::AdvancedTimer::stepBegin("LCP GaussSeidel");
             helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, _minW, _maxF, &graph_error);
@@ -166,7 +165,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
     else
     {
 
-        sofa::helper::vector<double>& graph_error = graph["Error"];
+        sofa::type::vector<double>& graph_error = graph["Error"];
         graph_error.clear();
         sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
         gaussseidel_unbuilt(_dFree->ptr(), _result->ptr(), &graph_error);
@@ -1315,8 +1314,8 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     if (showLevels > hierarchy_constraintBlockInfo.size()) showLevels = hierarchy_constraintBlockInfo.size();
     if (!showLevels) return;
     double showCellWidth = this->showCellWidth.getValue();
-    defaulttype::Vector3 showTranslation = this->showTranslation.getValue();
-    defaulttype::Vector3 showLevelTranslation = this->showLevelTranslation.getValue();
+    type::Vector3 showTranslation = this->showTranslation.getValue();
+    type::Vector3 showLevelTranslation = this->showLevelTranslation.getValue();
 
     const int merge_spatial_step = this->merge_spatial_step.getValue();
     const int merge_spatial_shift = 0; // merge_spatial_step/2
@@ -1371,7 +1370,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
                 ConstDeriv dirFineT2 = constraintDirections[info.offsetDirection + 3*c + 2];
                 ConstArea area = (info.hasArea) ? constraintAreas[info.offsetArea + c] : (ConstArea)(2*coordFact*coordFact*showCellWidth*showCellWidth);
 
-                defaulttype::Vector3 centerFine = showTranslation + showLevelTranslation*level;
+                type::Vector3 centerFine = showTranslation + showLevelTranslation*level;
                 for (int i=0; i<3; ++i) centerFine[i] += ((posFine[i]+0.5)*coordFact + coord0) * showCellWidth;
                 double radius = sqrt(area*0.5);
 
@@ -1380,7 +1379,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
                 vparams->drawTool()->drawArrow(
                     centerFine,centerFine+dirFineN*radius*2.0f,
                     (float)radius*2.0f*0.03f,
-                    sofa::helper::types::RGBAColor(
+                    sofa::type::RGBAColor(
                             (float)(color.b[0]) * (1.0f/255.0f),
                             (float)(color.b[1]) * (1.0f/255.0f),
                             (float)(color.b[2]) * (1.0f/255.0f),
@@ -1391,7 +1390,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
                     vparams->drawTool()->drawArrow(
                         centerFine-dirFineT1*radius*_mu,centerFine+dirFineT1*radius*_mu,
                         (float)(radius*_mu*0.03f),
-                        sofa::helper::types::RGBAColor(
+                        sofa::type::RGBAColor(
                                 (float)(color.b[0]) * (1.0f/255.0f),
                                 (float)(color.b[1]) * (1.0f/255.0f),
                                 (float)(color.b[2]) * (1.0f/255.0f),
@@ -1400,7 +1399,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
                     vparams->drawTool()->drawArrow(
                         centerFine-dirFineT2*radius*_mu,centerFine+dirFineT2*radius*_mu,
                         (float)(radius*_mu*0.03f),
-                        sofa::helper::types::RGBAColor(
+                        sofa::type::RGBAColor(
                                 color.b[0] * (1.0f/255.0f),
                                 color.b[1] * (1.0f/255.0f),
                                 color.b[2] * (1.0f/255.0f),

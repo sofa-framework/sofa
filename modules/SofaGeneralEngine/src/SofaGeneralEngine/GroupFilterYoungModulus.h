@@ -24,10 +24,10 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
+#include <sofa/type/PrimitiveGroup.h>
 
 namespace sofa::component::engine
 {
@@ -54,15 +54,15 @@ public:
     void doUpdate() override;
 
     //Input
-    Data<helper::vector<sofa::core::loader::PrimitiveGroup > > f_groups; ///< Groups
-    Data<helper::vector<unsigned int> > f_primitives; ///< not mandatory
-    Data<helper::vector<int > > f_elementsGroup; ///< Vector of groups (each element gives its group
+    Data<type::vector<sofa::type::PrimitiveGroup > > f_groups; ///< Groups
+    Data<type::vector<unsigned int> > f_primitives; ///< not mandatory
+    Data<type::vector<int > > f_elementsGroup; ///< Vector of groups (each element gives its group
     //Output
-    Data<helper::vector<Real> > f_youngModulus; ///< Vector of young modulus for each primitive
+    Data<type::vector<Real> > f_youngModulus; ///< Vector of young modulus for each primitive
     //Parameters
     Data<std::string> p_mapGroupModulus; ///< Mapping between groups and modulus
     Data<Real> p_defaultModulus; ///< Default value if the primitive is not in a group
-    Data<helper::vector<Real> > p_groupMod; ///< list of young modulus for each group
+    Data<type::vector<Real> > p_groupMod; ///< list of young modulus for each group
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP)

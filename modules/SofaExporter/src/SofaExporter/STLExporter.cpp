@@ -130,11 +130,11 @@ bool STLExporter::writeSTL(bool autonumbering)
         return false;
     }
 
-    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
-    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
-    helper::vector< BaseMeshTopology::Triangle > vecTri;
+    type::vector< BaseMeshTopology::Triangle > vecTri;
 
     if(positionIndices.empty())
     {
@@ -219,11 +219,11 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
         return false;
     }
 
-    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
-    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    helper::ReadAccessor< Data< type::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
     helper::ReadAccessor< Data< defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
-    helper::vector< BaseMeshTopology::Triangle > vecTri;
+    type::vector< BaseMeshTopology::Triangle > vecTri;
 
     if(positionIndices.empty())
     {
@@ -311,27 +311,6 @@ void STLExporter::handleEvent(Event *event)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
-
-    if (KeypressedEvent::checkEventType(event))
-    {
-        KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
-        switch(ev->getKey())
-        {
-
-        case 'E':
-        case 'e':
-            //todo(18.06) remove the behavior
-            msg_deprecated() << "Hard coded interaction behavior in component is now a deprecated behavior."
-                                "Scene specific interaction should be implement using an external controller or pythonScriptController."
-                                "Please update your scene because this behavior will be removed in Sofa 18.06";
-            if(d_binaryFormat.getValue())
-                writeSTLBinary(false);
-            else
-                writeSTL(false);
-            break;
-        }
-    }
-
 
     if (GUIEvent::checkEventType(event))
     {

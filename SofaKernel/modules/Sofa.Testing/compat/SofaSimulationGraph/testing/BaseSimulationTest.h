@@ -23,7 +23,7 @@
 
 #include <sofa/testing/BaseSimulationTest.h>
 
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/testing/BaseSimulationTest.h")
+//SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/testing/BaseSimulationTest.h")
 
 namespace sofa::helper
 {

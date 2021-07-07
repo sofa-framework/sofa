@@ -44,18 +44,19 @@ using sofa::component::loader::BaseVTKReader ;
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::BaseObject ;
-using sofa::defaulttype::Vector3 ;
-using sofa::defaulttype::Vec ;
+using sofa::type::Vector3 ;
+using sofa::type::Vec ;
 using std::istringstream;
 using std::istream;
 using std::ofstream;
 using std::string;
-using helper::vector;
+using type::vector;
 
 class LegacyVTKReader : public BaseVTKReader
 {
@@ -327,7 +328,7 @@ bool MeshVTKLoader::setInputsMesh()
 
         const int* dataT = (int*)(reader->inputCellTypes->getData());
 
-        helper::vector<int> numSubPolyLines;
+        type::vector<int> numSubPolyLines;
 
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0, 1}, {1, 2}, {2, 0}};
         const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0, 1}, {1, 2}, {0, 2}, {0, 3}, {1, 3}, {2, 3}};
@@ -712,7 +713,7 @@ bool LegacyVTKReader::readFile(const char* filename)
         else if (kw == "CELL_DATA" || kw == "POINT_DATA")
         {
             const bool cellData = (kw == "CELL_DATA");
-            helper::vector<BaseVTKDataIO*>& inputDataVector = cellData ? inputCellDataVector : inputPointDataVector;
+            type::vector<BaseVTKDataIO*>& inputDataVector = cellData ? inputCellDataVector : inputPointDataVector;
             int nb_ele;
             ln >> nb_ele;
             while (!inVTKFile.eof())

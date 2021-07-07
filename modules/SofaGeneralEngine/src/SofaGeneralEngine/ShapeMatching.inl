@@ -25,7 +25,7 @@
 #include <sofa/helper/decompose.h>
 #include <iostream>
 #include <sofa/helper/IndexOpenMP.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 #ifdef _OPENMP
     #include <omp.h>
@@ -34,26 +34,26 @@
 namespace sofa::component::engine
 {
 template<class Real>
-inline const defaulttype::Vec<3,Real>& center(const defaulttype::Vec<3,Real>& c)
+inline const type::Vec<3,Real>& center(const type::Vec<3,Real>& c)
 {
     return c;
 }
 
 template<class _Real>
-inline defaulttype::Vec<3,_Real>& center(defaulttype::Vec<3,_Real>& c)
+inline type::Vec<3,_Real>& center(type::Vec<3,_Real>& c)
 {
     return c;
 }
 
 
 template<class Real>
-inline const defaulttype::Vec<3,Real>& center(const defaulttype::RigidCoord<3,Real>& c)
+inline const type::Vec<3,Real>& center(const defaulttype::RigidCoord<3,Real>& c)
 {
     return c.getCenter();
 }
 
 template<class Real>
-inline defaulttype::Vec<3,Real>& center(defaulttype::RigidCoord<3,Real>& c)
+inline type::Vec<3,Real>& center(defaulttype::RigidCoord<3,Real>& c)
 {
     return c.getCenter();
 }
@@ -137,12 +137,12 @@ void ShapeMatching<DataTypes>::doUpdate()
                 Coord p0 = (*it<nbp)?restPositions[*it]:fixedPositions0[*it-nbp];
                 Real w = (*it<nbp)?(Real)1.0:this->fixedweight.getValue();
                 Xcm0[i] += p0*w;
-                Qxinv[i] += defaulttype::dyad(p0,p0)*w;
+                Qxinv[i] += type::dyad(p0,p0)*w;
                 W[i] += w;
                 if(*it<nbp) nbClust[*it]++;
             }
             Xcm0[i] /= W[i];
-            Qxinv[i] -= defaulttype::dyad(Xcm0[i],Xcm0[i])*W[i]; // sum wi.(X0-Xcm0)(X0-Xcm0)^T = sum wi.X0.X0^T - W.sum(X0).Xcm0^T
+            Qxinv[i] -= type::dyad(Xcm0[i],Xcm0[i])*W[i]; // sum wi.(X0-Xcm0)(X0-Xcm0)^T = sum wi.X0.X0^T - W.sum(X0).Xcm0^T
             Mat3x3 inv; inv.invert(Qxinv[i]);  Qxinv[i]=inv;
         }
         oldRestPositionSize = nbp+nbf;
@@ -167,10 +167,10 @@ void ShapeMatching<DataTypes>::doUpdate()
                 Coord p = (*it<nbp)?targetPos[*it]:fixedPositions[*it-nbp];
                 Real w = (*it<nbp)?(Real)1.0:this->fixedweight.getValue();
                 Xcm[i] += p*w;
-                T[i] += defaulttype::dyad(p,p0)*w;
+                T[i] += type::dyad(p,p0)*w;
             }
 
-            T[i] -= defaulttype::dyad(Xcm[i],Xcm0[i]); // sum wi.(X-Xcm)(X0-Xcm0)^T = sum wi.X.X0^T - sum(wi.X).Xcm0^T
+            T[i] -= type::dyad(Xcm[i],Xcm0[i]); // sum wi.(X-Xcm)(X0-Xcm0)^T = sum wi.X.X0^T - sum(wi.X).Xcm0^T
             Xcm[i] /= W[i];
             Mat3x3 R;
             if(affineRatio.getValue()!=(Real)1.0)

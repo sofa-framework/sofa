@@ -27,10 +27,10 @@
 
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <fstream>
 
@@ -77,7 +77,7 @@ public:
 
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
     using Index = sofa::Index;
 
 protected:
@@ -103,8 +103,8 @@ public:
         MOPointHandler(MechanicalObject<DataTypes>* _obj, sofa::component::topology::PointData<VecCoord>* _data) : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(_data), obj(_obj) {}
 
         void applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
-                const sofa::helper::vector< unsigned int > &ancestors,
-                const sofa::helper::vector< double > &coefs);
+                const sofa::type::vector< unsigned int > &ancestors,
+                const sofa::type::vector< double > &coefs);
 
         void applyDestroyFunction(unsigned int, Coord& );
 
@@ -112,7 +112,7 @@ public:
         MechanicalObject<DataTypes>* obj;
     };
 
-    //static void PointCreationFunction (int , void* , Coord &, const sofa::helper::vector< unsigned int > & ,   const sofa::helper::vector< double >&);
+    //static void PointCreationFunction (int , void* , Coord &, const sofa::type::vector< unsigned int > & ,   const sofa::type::vector< double >&);
 
     //static void PointDestroyFunction (int, void*, Coord&);
 
@@ -146,7 +146,7 @@ public:
     Data< bool >  showVectors; ///< Show velocity. (default=false)
     Data< float > showVectorsScale; ///< Scale for vectors display. (default=0.0001)
     Data< int > drawMode; ///< The way vectors will be drawn: - 0: Line - 1:Cylinder - 2: Arrow.  The DOFS will be drawn: - 0: point - >1: sphere. (default=0)
-    Data< helper::types::RGBAColor > d_color;  ///< drawing color
+    Data< type::RGBAColor > d_color;  ///< drawing color
 
     void init() override;
     void reinit() override;
@@ -207,16 +207,16 @@ public:
      * Result of this method is :
      * newValue[ i ] = oldValue[ index[i] ];
      */
-    void renumberValues( const sofa::helper::vector<Index> &index );
+    void renumberValues( const sofa::type::vector<Index> &index );
 
     /** \brief Replace the value at index by the sum of the ancestors values weithed by the coefs.
      *
      * Sum of the coefs should usually equal to 1.0
      */
-    void computeWeightedValue( const Index i, const sofa::helper::vector< sofa::Index >& ancestors, const sofa::helper::vector< double >& coefs);
+    void computeWeightedValue( const Index i, const sofa::type::vector< sofa::Index >& ancestors, const sofa::type::vector< double >& coefs);
 
     /// Force the position of a point (and force its velocity to zero value)
-    void forcePointPosition( const Index i, const sofa::helper::vector< double >& m_x);
+    void forcePointPosition( const Index i, const sofa::type::vector< double >& m_x);
 
     /// @name Initial transformations application methods.
     /// @{
@@ -227,14 +227,14 @@ public:
     /// Rotation using Euler Angles in degree.
     void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
 
-    void applyRotation (const defaulttype::Quat q) override;
+    void applyRotation (const type::Quat<SReal> q) override;
 
     void applyScale (const SReal sx, const SReal sy, const SReal sz) override;
 
     /// @}
 
     /// Get the indices of the particles located in the given bounding box
-    void getIndicesInSpace(sofa::helper::vector<Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const override;
+    void getIndicesInSpace(sofa::type::vector<Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const override;
 
     /// update the given bounding box, to include this
     bool addBBox(SReal* minBBox, SReal* maxBBox) override;
@@ -353,7 +353,7 @@ public:
 
     void getConstraintJacobian(const core::ConstraintParams* cparams, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
 
-    void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) override;
+    void buildIdentityBlocksInJacobian(const sofa::type::vector<unsigned int>& list_n, core::MatrixDerivId &mID) override;
     /// @}
 
     /// @name Debug
@@ -404,9 +404,9 @@ protected :
     /// @name Integration-related data
     /// @{
 
-    sofa::helper::vector< Data< VecCoord >		* > vectorsCoord;		///< Coordinates DOFs vectors table (static and dynamic allocated)
-    sofa::helper::vector< Data< VecDeriv >		* > vectorsDeriv;		///< Derivates DOFs vectors table (static and dynamic allocated)
-    sofa::helper::vector< Data< MatrixDeriv >	* > vectorsMatrixDeriv; ///< Constraint vectors table
+    sofa::type::vector< Data< VecCoord >		* > vectorsCoord;		///< Coordinates DOFs vectors table (static and dynamic allocated)
+    sofa::type::vector< Data< VecDeriv >		* > vectorsDeriv;		///< Derivates DOFs vectors table (static and dynamic allocated)
+    sofa::type::vector< Data< MatrixDeriv >	* > vectorsMatrixDeriv; ///< Constraint vectors table
 
     /**
      * @brief Inserts VecCoord DOF coordinates vector at index in the vectorsCoord container.
@@ -449,7 +449,7 @@ protected :
 };
 
 template<> SOFA_SOFABASEMECHANICS_API
-void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const defaulttype::Quat q);
+void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat<SReal> q);
 
 template<> SOFA_SOFABASEMECHANICS_API
 void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
