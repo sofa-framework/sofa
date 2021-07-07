@@ -90,6 +90,9 @@ protected:
                                type::Vec<8, Deriv>& OutF);
 
     void initTaskScheduler();
+
+private:
+    bool updateStiffnessMatrices; /// cache to avoid calling 'getValue' on f_updateStiffnessMatrix
 };
 
 #if  !defined(SOFA_MULTITHREADING_PARALLELHEXAHEDRONFEMFORCEFIELD_CPP)
@@ -118,6 +121,7 @@ public:
 
     AccumulateForceLargeTasks(sofa::simulation::CpuTask::Status* status,
                               ParallelHexahedronFEMForceField<DataTypes>* ff,
+                              const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& elementStiffnesses,
                               VecElement::const_iterator first, VecElement::const_iterator last,
                               RDataRefVecCoord& p,
                               sofa::Index startingElementId);
@@ -137,6 +141,7 @@ private:
 
 
     ParallelHexahedronFEMForceField<DataTypes>* m_ff;
+    const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& m_elementStiffnesses;
     RDataRefVecCoord& m_p;
     sofa::Index m_startingElementId;
 };
@@ -160,6 +165,7 @@ public:
 
     AddDForceTask(sofa::simulation::CpuTask::Status* status,
                   ParallelHexahedronFEMForceField<DataTypes>* ff,
+                  const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& elementStiffnesses,
                   VecElement::const_iterator first, VecElement::const_iterator last,
                   Real kFactor,
                   RDataRefVecCoord& dx,
@@ -177,6 +183,7 @@ private:
     std::vector<type::Vec<8, Deriv>> m_outDf;
 
     ParallelHexahedronFEMForceField<DataTypes>* m_ff;
+    const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& m_elementStiffnesses;
     sofa::Index m_startingElementId;
     RDataRefVecCoord& m_dx;
     Real m_kFactor;
