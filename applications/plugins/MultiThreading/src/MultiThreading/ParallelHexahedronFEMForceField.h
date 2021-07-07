@@ -41,7 +41,7 @@ class AddDForceTask;
  * This implementation is the most efficient when:
  * 1) the number of hexahedron is large (> 1000)
  * 2) the global system matrix is not assembled. It is usually the case with a CGLinearSolver templated with GraphScattered types.
- * 3) the method is 'large'. If the method is 'polar' or 'small', addForce is executed sequentially, but addDForce in parall.
+ * 3) the method is 'large'. If the method is 'polar' or 'small', addForce is executed sequentially, but addDForce in parallel.
  *
  * The following methods are executed in parallel:
  * - addForce for method 'large'.
@@ -70,7 +70,7 @@ public:
     typedef helper::WriteAccessor< Data< VecDeriv > > WDataRefVecDeriv;
     typedef core::topology::BaseMeshTopology::Hexa Element;
     typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
-    typedef defaulttype::Mat<24, 24, Real> ElementStiffness;
+    typedef type::Mat<24, 24, Real> ElementStiffness;
     typedef helper::vector<ElementStiffness> VecElementStiffness;
 
     void init() override;
@@ -87,7 +87,7 @@ protected:
     // code duplicated from HexahedronFEMForceField::accumulateForceLarge but adapted to be thread-safe
     void computeTaskForceLarge(RDataRefVecCoord& p, sofa::Index elementId, const Element& elem,
                                const VecElementStiffness& elementStiffnesses, SReal& OutPotentialEnery,
-                               defaulttype::Vec<8, Deriv>& OutF);
+                               type::Vec<8, Deriv>& OutF);
 
     void initTaskScheduler();
 };
@@ -127,13 +127,13 @@ public:
     VecElement::const_iterator m_last;
 
     SReal getPotentialEnergyOutput() const { return m_potentialEnergy; }
-    const std::vector<defaulttype::Vec<8, Deriv> >& getFOutput() const { return m_outF; }
+    const std::vector<type::Vec<8, Deriv> >& getFOutput() const { return m_outF; }
 
 private:
 
     //task output
     SReal m_potentialEnergy { 0 };
-    std::vector<defaulttype::Vec<8, Deriv> > m_outF;
+    std::vector<type::Vec<8, Deriv> > m_outF;
 
 
     ParallelHexahedronFEMForceField<DataTypes>* m_ff;
@@ -170,11 +170,11 @@ public:
     VecElement::const_iterator m_first;
     VecElement::const_iterator m_last;
 
-    const std::vector<defaulttype::Vec<8, Deriv>>& getDfOutput() const { return m_outDf; }
+    const std::vector<type::Vec<8, Deriv>>& getDfOutput() const { return m_outDf; }
 
 private:
 
-    std::vector<defaulttype::Vec<8, Deriv>> m_outDf;
+    std::vector<type::Vec<8, Deriv>> m_outDf;
 
     ParallelHexahedronFEMForceField<DataTypes>* m_ff;
     sofa::Index m_startingElementId;

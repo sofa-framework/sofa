@@ -145,9 +145,9 @@ void ParallelHexahedronFEMForceField<DataTypes>::computeTaskForceLarge(RDataRefV
                                                                       const Element& elem,
                                                                       const VecElementStiffness& elementStiffnesses,
                                                                       SReal& OutPotentialEnery,
-                                                                      defaulttype::Vec<8, Deriv>& OutF)
+                                                                      type::Vec<8, Deriv>& OutF)
 {
-    defaulttype::Vec<8,Coord> nodes;
+    type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
         nodes[w] = p[elem[w]];
 
@@ -160,13 +160,13 @@ void ParallelHexahedronFEMForceField<DataTypes>::computeTaskForceLarge(RDataRefV
     this->computeRotationLarge(this->_rotations[elementId], horizontal, vertical);
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    defaulttype::Vec<8,Coord> deformed;
+    type::Vec<8,Coord> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = this->_rotations[elementId] * nodes[w];
 
 
     // displacement
-    defaulttype::Vec<24, Real> D;
+    type::Vec<24, Real> D;
     for(int k=0 ; k<8 ; ++k )
     {
         int indice = k*3;
@@ -177,7 +177,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::computeTaskForceLarge(RDataRefV
     if(this->f_updateStiffnessMatrix.getValue())
         this->computeElementStiffness((*this->_elementStiffnesses.beginEdit())[elementId], this->_materialsStiffnesses[elementId], deformed, elementId, this->_sparseGrid ? this->_sparseGrid->getStiffnessCoef(elementId) : 1.0 );
 
-    defaulttype::Vec<24, Real> F; //forces
+    type::Vec<24, Real> F; //forces
     this->computeForce( F, D, elementStiffnesses[elementId] ); // compute force on element
 
     for(int w=0; w<8; ++w)
@@ -301,8 +301,8 @@ sofa::simulation::Task::MemoryAlloc AddDForceTask<DataTypes>::run()
     auto elementId = m_startingElementId;
     auto it = m_first;
 
-    defaulttype::Vec<24, Real> X; //displacement
-    defaulttype::Vec<24, Real> F; //force
+    type::Vec<24, Real> X; //displacement
+    type::Vec<24, Real> F; //force
 
     const auto& elementStiffnesses = m_ff->_elementStiffnesses.getValue();
 
