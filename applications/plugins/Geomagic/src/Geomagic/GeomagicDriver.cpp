@@ -35,6 +35,7 @@ namespace sofa::component::controller
 {
     
 using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 #if GEOMAGIC_HAVE_OPENHAPTICS
 // Method to get the first error on the deck and if logError is not set to false will pop up full error message before returning the error code.
