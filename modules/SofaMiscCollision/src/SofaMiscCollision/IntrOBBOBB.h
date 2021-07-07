@@ -51,8 +51,8 @@ public:
 
     // Dynamic test-intersection query.  The first time of contact (if any)
     // is computed, but not any information about the contact set.
-    virtual bool Test (Real tmax, const sofa::defaulttype::Vec<3,Real>& velocity0,
-        const sofa::defaulttype::Vec<3,Real>& velocity1);
+    virtual bool Test (Real tmax, const sofa::type::Vec<3,Real>& velocity0,
+        const sofa::type::Vec<3,Real>& velocity1);
 
     // Dynamic find-intersection query.  The contact set is computed.
     bool Find (Real dmax);

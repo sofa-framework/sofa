@@ -27,7 +27,7 @@ typedef sofa::component::container::MechanicalObject< sofa::defaulttype::Vec3Typ
 typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
 
 /// This function converts an PyObject into a sofa string.
-/// string that can be safely parsed in helper::vector<int> or helper::vector<double>
+/// string that can be safely parsed in type::vector<int> or type::vector<double>
 std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
 {
     /// String are just returned as string.

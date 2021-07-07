@@ -106,7 +106,7 @@ namespace mapping
             // J = [ I -OM^ ]
             //out[i] =  v - cross(rotatedPoints[i],omega);
             
-            defaulttype::Vec<N, typename In::Real> inpos = _mapping->points[i];
+            type::Vec<N, typename In::Real> inpos = _mapping->points[i];
             int in0 = helper::rfloor(inpos[0]);
             if (in0<0) 
             in0 = 0; 
@@ -160,7 +160,7 @@ namespace mapping
             //v += f;
             //omega += cross(rotatedPoints[i],f);
             
-            defaulttype::Vec<N, typename In::Real> inpos = _mapping->points[i];
+            type::Vec<N, typename In::Real> inpos = _mapping->points[i];
             int in0 = helper::rfloor(inpos[0]);
             if (in0<0) 
             in0 = 0; 

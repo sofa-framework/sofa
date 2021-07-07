@@ -22,7 +22,7 @@
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/CollisionModel.h>
@@ -229,7 +229,7 @@ int main(int argc, char** argv)
 
 
     const SReal contactFriction=sqrt(friction);
-    sofa::helper::vector< sofa::core::CollisionModel* > listCollisionModels;
+    sofa::type::vector< sofa::core::CollisionModel* > listCollisionModels;
     root->getTreeObjects<sofa::core::CollisionModel>(&listCollisionModels);
     for (unsigned int i=0; i<listCollisionModels.size(); ++i) listCollisionModels[i]->setContactFriction(contactFriction);
     root->setAnimate(false);

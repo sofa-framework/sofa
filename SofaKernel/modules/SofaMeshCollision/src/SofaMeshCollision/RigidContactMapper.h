@@ -126,7 +126,7 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
             RigidSphere e(this->model, index);
             const typename SphereCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes::Coord & rCenter = e.rigidCenter();
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
-            const defaulttype::Quaternion & ori = rCenter.getOrientation();
+            const type::Quat<SReal> & ori = rCenter.getOrientation();
 
             //r = e.r();
 
@@ -140,7 +140,7 @@ class ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3
         sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const defaulttype::Quaternion & ori = this->model->orientation(index);
+            const type::Quat<SReal> & ori = this->model->orientation(index);
 
             return RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }

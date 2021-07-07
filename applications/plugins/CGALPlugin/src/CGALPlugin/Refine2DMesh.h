@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -41,7 +41,7 @@ public:
     typedef typename DataTypes::Coord Point;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef sofa::helper::vector<Real> VecReal;
+    typedef sofa::type::vector<Real> VecReal;
 
     typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
@@ -81,8 +81,8 @@ public:
     Data<SeqEdges> d_newEdges;
     Data<VecReal> d_newEdgesData1;
     Data<VecReal> d_newEdgesData2;
-	Data<sofa::helper::vector<int> > d_trianglesRegion;
-    Data<sofa::helper::vector<PointID> > d_newBdPoints;
+	Data<sofa::type::vector<int> > d_trianglesRegion;
+    Data<sofa::type::vector<PointID> > d_newBdPoints;
 
     //Parameters
 	Data<double> p_shapeCriteria, p_sizeCriteria;

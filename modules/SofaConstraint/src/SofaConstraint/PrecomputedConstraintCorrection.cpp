@@ -50,14 +50,14 @@ SOFA_SOFACONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid
             Deriv& n = colIt.val();
             const unsigned int localRowNodeIdx = colIt.index();
 
-            sofa::defaulttype::Quat q;
+            sofa::type::Quat<SReal> q;
             if (m_restRotations.getValue())
                 q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
             else
                 q = x[localRowNodeIdx].getOrientation();
 
-            sofa::defaulttype::Vec3d n_i = q.inverseRotate(getVCenter(n));
-            sofa::defaulttype::Vec3d wn_i= q.inverseRotate(getVOrientation(n));
+            sofa::type::Vec3d n_i = q.inverseRotate(getVCenter(n));
+            sofa::type::Vec3d wn_i= q.inverseRotate(getVOrientation(n));
 
             if(back)
             {
@@ -92,7 +92,7 @@ SOFA_SOFACONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3
     {
         // on passe les deplacements du repere local (au repos) au repere global
         Deriv temp ;
-        sofa::defaulttype::Quat q;
+        sofa::type::Quat<SReal> q;
         if (m_restRotations.getValue())
             q = x[j].getOrientation() * x0[j].getOrientation().inverse();
         else

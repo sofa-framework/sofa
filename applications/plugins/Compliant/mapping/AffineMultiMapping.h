@@ -45,9 +45,9 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 	SOFA_CLASS(SOFA_TEMPLATE2(AffineMultiMapping,TIn,TOut), 
 			   SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
 	
-    typedef helper::vector< typename TIn::Real > matrix_type;
+    typedef type::vector< typename TIn::Real > matrix_type;
 	
-    typedef helper::vector< typename TOut::Real > value_type;
+    typedef type::vector< typename TOut::Real > value_type;
 
 	Data<matrix_type> matrix; ///< matrix for the mapping (row-major)
 	Data<value_type> value; ///< offset value
@@ -67,7 +67,7 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 	}
 
 
-    virtual void assemble( const helper::vector<typename self::in_pos_type>& in ) override {
+    virtual void assemble( const type::vector<typename self::in_pos_type>& in ) override {
 		// initialize jacobians
 
 		typedef typename self::jacobian_type::CompressedMatrix jack_type;
@@ -136,7 +136,7 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 
 
     virtual void apply(typename self::out_pos_type& out, 
-                       const helper::vector<typename self::in_pos_type>& in ) override {
+                       const type::vector<typename self::in_pos_type>& in ) override {
 		
 		// let's be paranoid
 		assert( out.size() == value.getValue().size() );

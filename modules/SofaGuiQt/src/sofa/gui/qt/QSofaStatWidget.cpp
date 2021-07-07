@@ -57,7 +57,7 @@ QSofaStatWidget::QSofaStatWidget(QWidget* parent)
 
 void QSofaStatWidget::CreateStats(Node* root)
 {
-    sofa::helper::vector< sofa::core::CollisionModel* > list_collisionModels;
+    sofa::type::vector< sofa::core::CollisionModel* > list_collisionModels;
     root->get< sofa::core::CollisionModel >( &list_collisionModels, BaseContext::SearchDown);
 
     if (items_stats.size() != 0)
@@ -77,7 +77,7 @@ void QSofaStatWidget::CreateStats(Node* root)
 
 }
 
-void QSofaStatWidget::addCollisionModelsStat(const sofa::helper::vector< sofa::core::CollisionModel* >& v)
+void QSofaStatWidget::addCollisionModelsStat(const sofa::type::vector< sofa::core::CollisionModel* >& v)
 {
     std::map< BaseContext*, QTreeWidgetItem* > listStats;
     for (unsigned int i=0; i<v.size(); i++)

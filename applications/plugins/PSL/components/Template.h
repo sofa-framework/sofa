@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <sofa/core/DataTracker.h>
 

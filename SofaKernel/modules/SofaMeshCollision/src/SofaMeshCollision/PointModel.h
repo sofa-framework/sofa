@@ -58,7 +58,7 @@ public:
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
 
-    bool testLMD(const sofa::defaulttype::Vector3 &, double &, double &);
+    bool testLMD(const sofa::type::Vector3 &, double &, double &);
 };
 using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
@@ -76,7 +76,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef TPoint<DataTypes> Element;
-    typedef helper::vector<Index> VecIndex;
+    typedef type::vector<Index> VecIndex;
 
     friend class TPoint<DataTypes>;
 protected:

@@ -29,7 +29,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -117,9 +117,9 @@ void Edge2QuadTopologicalMapping::init()
             QuadSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
 
-            const sofa::helper::vector<Edge> &edgeArray=fromModel->getEdges();
+            const sofa::type::vector<Edge> &edgeArray=fromModel->getEdges();
 
-            sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+            sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
             Loc2GlobVec.clear();
             In2OutMap.clear();
@@ -183,8 +183,8 @@ void Edge2QuadTopologicalMapping::init()
 
 
             // CREATION of the quads based on the circles
-            sofa::helper::vector< Quad > quads_to_create;
-            sofa::helper::vector< Index > quadsIndexList;
+            sofa::type::vector< Quad > quads_to_create;
+            sofa::type::vector< Index > quadsIndexList;
             if(d_edgeList.getValue().size()==0)
             {
 
@@ -196,7 +196,7 @@ void Edge2QuadTopologicalMapping::init()
                     unsigned int p0 = edgeArray[i][0];
                     unsigned int p1 = edgeArray[i][1];
 
-                    sofa::helper::vector<Index> out_info;
+                    sofa::type::vector<Index> out_info;
 
                     for(unsigned int j=0; j<N; ++j)
                     {
@@ -239,7 +239,7 @@ void Edge2QuadTopologicalMapping::init()
                     unsigned int p0 = edgeArray[i][0];
                     unsigned int p1 = edgeArray[i][1];
 
-                    sofa::helper::vector<Index> out_info;
+                    sofa::type::vector<Index> out_info;
 
                     for(unsigned int j=0; j<N; ++j)
                     {
@@ -300,7 +300,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
             std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
             std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
-            sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+            sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
             while( itBegin != itEnd )
             {
@@ -320,12 +320,12 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     if (fromModel)
                     {
 
-                        const sofa::helper::vector<Edge> &edgeArray=fromModel->getEdges();
+                        const sofa::type::vector<Edge> &edgeArray=fromModel->getEdges();
 
                         const auto &tab = ( static_cast< const EdgesAdded *>( *itBegin ) )->edgeIndexArray;
 
-                        sofa::helper::vector< Quad > quads_to_create;
-                        sofa::helper::vector< Index > quadsIndexList;
+                        sofa::type::vector< Quad > quads_to_create;
+                        sofa::type::vector< Index > quadsIndexList;
                         std::size_t nb_elems = toModel->getNbQuads();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
@@ -335,7 +335,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             unsigned int p0 = edgeArray[k][0];
                             unsigned int p1 = edgeArray[k][1];
 
-                            sofa::helper::vector<Index> out_info;
+                            sofa::type::vector<Index> out_info;
 
                             for(unsigned int j=0; j<N; ++j)
                             {
@@ -379,19 +379,19 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                         Index ind_tmp;
 
-                        sofa::helper::vector<Index> ind_real_last;
+                        sofa::type::vector<Index> ind_real_last;
                         Index ind_last = toModel->getNbQuads();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
                             unsigned int k = tab[i];
-                            sofa::helper::vector<Index> ind_k;
+                            sofa::type::vector<Index> ind_k;
 
                             auto iter_1 = In2OutMap.find(k);
                             if(iter_1 != In2OutMap.end())
                             {
 
-                                sofa::helper::vector<unsigned int> ind_list;
+                                sofa::type::vector<unsigned int> ind_list;
                                 for(unsigned int j=0; j<N; ++j)
                                 {
                                     ind_list.push_back(In2OutMap[k][j]);
@@ -437,7 +437,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                     In2OutMap.erase(In2OutMap.find(Loc2GlobVec[ind_last]));
                                     In2OutMap[Loc2GlobVec[ind_last]] = ind_k;
 
-                                    sofa::helper::vector<Index> out_info;
+                                    sofa::type::vector<Index> out_info;
                                     for(unsigned int j=0; j<N; ++j)
                                     {
                                         out_info.push_back(ind_last-j);
@@ -470,7 +470,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                                 Loc2GlobVec.resize( Loc2GlobVec.size() - N );
 
-                                sofa::helper::vector< Index > quads_to_remove;
+                                sofa::type::vector< Index > quads_to_remove;
                                 for(unsigned int j=0; j<N; ++j)
                                 {
                                     quads_to_remove.push_back(ind_list[j]);
@@ -496,8 +496,8 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     const auto &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
                     const auto &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-                    sofa::helper::vector<Index> indices;
-                    sofa::helper::vector<Index> inv_indices;
+                    sofa::type::vector<Index> indices;
+                    sofa::type::vector<Index> inv_indices;
 
                     for(unsigned int i = 0; i < tab.size(); ++i)
                     {
@@ -509,8 +509,8 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                         }
                     }
 
-                    sofa::helper::vector<Index>& tab_indices = indices;
-                    sofa::helper::vector<Index>& inv_tab_indices = inv_indices;
+                    sofa::type::vector<Index>& tab_indices = indices;
+                    sofa::type::vector<Index>& inv_tab_indices = inv_indices;
 
                     to_tstm->renumberPoints(tab_indices, inv_tab_indices, true);
                     break;
@@ -521,13 +521,13 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
 
                     unsigned int to_nVertices = (unsigned int)ta->getNbAddedVertices() * N;
-                    sofa::helper::vector< sofa::helper::vector< Index > > to_ancestorsList;
-                    sofa::helper::vector< sofa::helper::vector< double > > to_coefs;
+                    sofa::type::vector< sofa::type::vector< Index > > to_ancestorsList;
+                    sofa::type::vector< sofa::type::vector< double > > to_coefs;
 
                     for(unsigned int i =0; i < ta->getNbAddedVertices(); i++)
                     {
-                        sofa::helper::vector< Index > my_ancestors;
-                        sofa::helper::vector< double > my_coefs;
+                        sofa::type::vector< Index > my_ancestors;
+                        sofa::type::vector< double > my_coefs;
 
                         for(unsigned int j =0; j < N; j++)
                         {

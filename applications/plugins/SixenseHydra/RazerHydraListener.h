@@ -1,5 +1,5 @@
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 //#include <list>
 #include <iostream>

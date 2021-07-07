@@ -179,7 +179,7 @@ protected:
         // compute J
         deformationMapping->init();
 
-        const helper::vector<defaulttype::BaseMatrix*>* js = deformationMapping->getJs();
+        const type::vector<defaulttype::BaseMatrix*>* js = deformationMapping->getJs();
         if(!js) { serr<<SOFA_CLASS_METHOD<<"can't compute J : problem with mapping ?"<<sendl; return; }
 
         // compute mass

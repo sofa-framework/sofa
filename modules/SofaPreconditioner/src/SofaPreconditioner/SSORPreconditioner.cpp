@@ -42,7 +42,7 @@ int SSORPreconditionerClass = core::RegisterObject("Linear system solver / preco
 //.add< SSORPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
 // .add< SSORPreconditioner< SparseMatrix<double>, FullVector<double> > >()
         .add< SSORPreconditioner< CompressedRowSparseMatrix<double>, FullVector<double> > >(true)
-        .add< SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >, FullVector<double> > >()
+        .add< SSORPreconditioner< CompressedRowSparseMatrix< type::Mat<3,3,double> >, FullVector<double> > >()
 //.add< SSORPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
 //.add< SSORPreconditioner<NewMatMatrix,NewMatVector> >()
 // .add< SSORPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()

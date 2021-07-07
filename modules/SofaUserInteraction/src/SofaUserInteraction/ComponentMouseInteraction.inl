@@ -30,7 +30,7 @@
 
 #include <sofa/simulation/InitVisitor.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 

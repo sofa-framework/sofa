@@ -22,7 +22,7 @@
 #pragma once
 
 #include <CGALPlugin/MeshGenerationFromImage.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 
 using namespace sofa;
 
@@ -339,7 +339,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
                     if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
 
             Vector3 rotation = Vector3(image3.image()->rx, image3.image()->ry, image3.image()->rz);
-            defaulttype::Quaternion q = helper::Quater<Real>::createQuaterFromEuler(rotation*M_PI/180.0);
+            type::Quat<SReal> q = type::Quat<Real>::createQuaterFromEuler(rotation*M_PI/180.0);
             p= q.rotate(p);
 
             Vector3 translation = Vector3(image3.image()->tx, image3.image()->ty, image3.image()->tz);
@@ -377,11 +377,11 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
         for (int c=1; c<3; c++)
             if (bbmax[c]-bbmin[c] > bbmax[axis]-bbmin[axis]) axis=c;
         msg_info(this) << "Ordering along the " << (char)('X'+axis) << " axis.";
-        helper::vector< std::pair<float,int> > sortArray;
+        type::vector< std::pair<float,int> > sortArray;
         for (size_t i=0; i<nbp; ++i)
             sortArray.push_back(std::make_pair((float)newPoints[i][axis], i));
         std::sort(sortArray.begin(), sortArray.end(), compare_pair_first<float,int>);
-        helper::vector<int> old2newP;
+        type::vector<int> old2newP;
         old2newP.resize(nbp);
         VecCoord oldPoints = newPoints.ref();
         for (size_t i=0; i<nbp; ++i)
@@ -394,7 +394,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
             for (int i=0; i<4; i++)
                 tetrahedra[e][i] = old2newP[tetrahedra[e][i]];
         }
-        helper::vector< std::pair<int,int> > sortArray2;
+        type::vector< std::pair<int,int> > sortArray2;
         for (size_t e=0; e<nbe; ++e)
         {
             unsigned int p = tetrahedra[e][0];
@@ -415,11 +415,11 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::doUpdate()
     default: break;
     }
 
-    helper::WriteAccessor< Data<sofa::helper::vector<Real> > > data(d_outputCellData);
+    helper::WriteAccessor< Data<sofa::type::vector<Real> > > data(d_outputCellData);
     data.clear();
     if (d_label.getValue().size() != d_labelCellData.getValue().size())
     {
-        helper::WriteAccessor< Data<sofa::helper::vector<Real> > > labeldata(d_labelCellData);
+        helper::WriteAccessor< Data<sofa::type::vector<Real> > > labeldata(d_labelCellData);
         labeldata.resize(d_label.getValue().size());
         msg_error(this) << "ERROR : label and labelCellData must have the same size... otherwise 0.0 will be apply for all layers";
     }
@@ -445,7 +445,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::vis
         helper::ReadAccessor< Data< vector<int> > > tetraDomain = d_tetraDomain;
 
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector< std::vector<defaulttype::Vector3> > pointsDomains[4];
+        std::vector< std::vector<type::Vector3> > pointsDomains[4];
         for(unsigned int i=0; i<4; ++i)
             pointsDomains[i].resize(m_tetraDomainLabels.size());
         int domainLabel = 0;

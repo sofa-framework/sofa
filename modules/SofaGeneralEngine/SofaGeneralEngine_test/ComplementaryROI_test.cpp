@@ -39,7 +39,7 @@ using sofa::core::visual::VisualParams;
 #include <SofaGeneralEngine/ComplementaryROI.h>
 using sofa::component::engine::ComplementaryROI ;
 
-using sofa::helper::vector;
+using sofa::type::vector;
 
 namespace sofa
 {

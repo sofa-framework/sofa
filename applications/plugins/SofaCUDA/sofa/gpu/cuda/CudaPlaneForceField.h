@@ -37,7 +37,7 @@ namespace cuda
 template<class real>
 struct GPUPlane
 {
-    defaulttype::Vec<3,real> normal;
+    type::Vec<3,real> normal;
     real d;
     real stiffness;
     real damping;

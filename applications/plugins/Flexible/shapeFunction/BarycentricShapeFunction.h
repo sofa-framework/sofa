@@ -62,8 +62,8 @@ public:
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
-    typedef defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> Basis;
-    sofa::helper::vector<Basis> bases;
+    typedef type::Mat<spatial_dimensions,spatial_dimensions,Real> Basis;
+    sofa::type::vector<Basis> bases;
     Data< Real > f_tolerance; ///< minimum weight (allows for mapping outside elements)
     Cell cellIndex;  ///< used by external classes to retrieve the index of the cell where barycentric weights are computed from
 
@@ -144,7 +144,7 @@ protected:
 
         static void init( BarycentricShapeFunction<ShapeFunctionTypes_>* B )
         {
-            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<type::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) { B->serr<<"Parent nodes not found"<<B->sendl; return; }
 
             const Topo::SeqTetrahedra& tetrahedra = B->parentTopology->getTetrahedra();
@@ -231,7 +231,7 @@ protected:
             // get parent topology and nodes
             if(!B->parentTopology) return;
 
-            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<type::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) return;
 
             const Topo::SeqTetrahedra& tetrahedra = B->parentTopology->getTetrahedra();
@@ -424,7 +424,7 @@ protected:
 
         static void init( BarycentricShapeFunction<ShapeFunctionTypes_>* B )
         {
-            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<type::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) { B->serr<<"Parent nodes not found"<<B->sendl; return; }
 
             const Topo::SeqTriangles& triangles = B->parentTopology->getTriangles();
@@ -480,7 +480,7 @@ protected:
             // get parent topology and nodes
             if(!B->parentTopology) return;
 
-            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<type::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) return;
 
             const Topo::SeqTriangles& triangles = B->parentTopology->getTriangles();

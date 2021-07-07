@@ -25,7 +25,7 @@
 
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
@@ -284,7 +284,7 @@ Visitor::Result PythonExporterVisitor::processNodeTopDown(Node* node)
 
     m_variableIndex++;
 
-    sofa::helper::vector< core::objectmodel::BaseNode* > parents = node->getParents();
+    sofa::type::vector< core::objectmodel::BaseNode* > parents = node->getParents();
 
 
     std::string nodeName = node->getName();
@@ -319,7 +319,7 @@ Visitor::Result PythonExporterVisitor::processNodeTopDown(Node* node)
 
 void PythonExporterVisitor::processNodeBottomUp(Node* node)
 {
-    sofa::helper::vector< core::objectmodel::BaseNode* > parents = node->getParents();
+    sofa::type::vector< core::objectmodel::BaseNode* > parents = node->getParents();
 
     const std::string& nodeVariable = m_mapNodeVariable[node];
 

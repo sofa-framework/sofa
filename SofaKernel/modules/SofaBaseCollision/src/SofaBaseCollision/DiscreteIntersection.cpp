@@ -70,10 +70,10 @@ bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
         return cube1.getConeAngle() >= M_PI / 2;
     }
 
-    const defaulttype::Vector3& minVect1 = cube1.minVect();
-    const defaulttype::Vector3& minVect2 = cube2.minVect();
-    const defaulttype::Vector3& maxVect1 = cube1.maxVect();
-    const defaulttype::Vector3& maxVect2 = cube2.maxVect();
+    const type::Vector3& minVect1 = cube1.minVect();
+    const type::Vector3& minVect2 = cube2.minVect();
+    const type::Vector3& maxVect1 = cube1.maxVect();
+    const type::Vector3& maxVect2 = cube2.maxVect();
 
     for (int i = 0; i < 3; i++)
     {

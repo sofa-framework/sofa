@@ -37,7 +37,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVel
 namespace sofa::component::misc
 {
 
-using defaulttype::Vector3;
+using type::Vector3;
 
 ReadState::ReadState()
     : d_filename( initData(&d_filename, "filename", "output file name"))

@@ -22,7 +22,7 @@
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test ;
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <SofaDistanceGrid/DistanceGrid.h>
 using sofa::component::container::DistanceGrid ;
@@ -35,7 +35,7 @@ namespace container
 {
 namespace _distancegrid_
 {
-using sofa::defaulttype::Vector3 ;
+using sofa::type::Vector3 ;
 
 struct DistanceGrid_test : public Sofa_test<SReal>
 {

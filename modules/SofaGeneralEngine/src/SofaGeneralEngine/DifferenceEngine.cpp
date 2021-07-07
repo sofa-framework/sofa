@@ -25,7 +25,8 @@
 
 namespace sofa::component::engine
 {
-
+    
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int DifferenceEngineClass = core::RegisterObject("Computing the difference between two vector of dofs")

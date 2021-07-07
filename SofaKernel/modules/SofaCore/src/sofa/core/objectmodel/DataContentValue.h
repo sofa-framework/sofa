@@ -111,7 +111,7 @@ public:
 
     T* beginEdit()
     {
-        if(!ptr.unique())
+        if(!(ptr.use_count() == 1))
         {
             ptr.reset(new T(*ptr)); // a priori the Data will be modified -> copy
         }

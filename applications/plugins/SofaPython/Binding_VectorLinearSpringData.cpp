@@ -33,7 +33,7 @@ using sofa::defaulttype::AbstractTypeInfo ;
 #include "PythonToSofa.inl"
 
 typedef LinearSpring<SReal> MyLinearSpring;
-typedef sofa::helper::vector<MyLinearSpring> VectorLinearSpring;
+typedef sofa::type::vector<MyLinearSpring> VectorLinearSpring;
 typedef Data<VectorLinearSpring> DataBinding_VectorLinearSpring;
 
 

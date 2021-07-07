@@ -25,7 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include <cstring>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 
 namespace sofa
 {
@@ -39,6 +39,7 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
+using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
@@ -150,7 +151,7 @@ void Fluid3D::draw(const core::visual::VisualParams* vparams)
                     vec3 u = fluid->get(x,y,z)->u;
                     real r;
                     r = u[0]*s;
-                    if (rabs(r) > 0.001f)
+                    if (std::abs(r) > 0.001f)
                     {
                         if (r>0.9f) r=0.9f;
                         glColor4f(1,0,0,1);
@@ -158,7 +159,7 @@ void Fluid3D::draw(const core::visual::VisualParams* vparams)
                         glVertex3f((real)x-0.5f+r, (real)y, (real)z);
                     }
                     r = u[1]*s;
-                    if (rabs(r) > 0.001f)
+                    if (std::abs(r) > 0.001f)
                     {
                         if (r>0.9f) r=0.9f;
                         glColor4f(0,1,0,1);
@@ -166,7 +167,7 @@ void Fluid3D::draw(const core::visual::VisualParams* vparams)
                         glVertex3f((real)x, (real)y-0.5f+r, (real)z);
                     }
                     r = u[2]*s;
-                    if (rabs(r) > 0.001f)
+                    if (std::abs(r) > 0.001f)
                     {
                         if (r>1) r=1;
                         glColor4f(0,0,1,1);
@@ -182,7 +183,7 @@ void Fluid3D::draw(const core::visual::VisualParams* vparams)
                 for (int x=0; x<nx; x++)
                 {
                     real l = *fluid->getlevelset(x,y,z);
-                    if (rabs(l)>=5) continue;
+                    if (std::abs(l)>=5) continue;
                     if (l<0)
                     {
                         glColor4f(0,1+l/5,1+l/5,1);
@@ -471,7 +472,7 @@ void Fluid3D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
     {
         maxBBox[c] = minBBox[c]+size[c];
     }
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 } // namespace eulerianfluid

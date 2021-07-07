@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::engine
 {
@@ -49,24 +49,24 @@ public:
 
 protected:
 
-    typedef defaulttype::Vector3 Vector3;
-    typedef helper::fixed_array <unsigned int,3> MTriangle;
-    typedef helper::fixed_array <unsigned int,4> MQuad;
-    typedef helper::vector <unsigned int> MPolygon;
+    typedef type::Vector3 Vector3;
+    typedef type::fixed_array <unsigned int,3> MTriangle;
+    typedef type::fixed_array <unsigned int,4> MQuad;
+    typedef type::vector<unsigned int> MPolygon;
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Vec3 Vec3;
-    typedef defaulttype::Mat<3,3,Real> Mat3x3;
+    typedef type::Mat<3,3,Real> Mat3x3;
 
     /**
       * Data Fields
       */
     /// input
     Data< Real > m_density; ///< kg * m^-3
-    Data< helper::vector< Vector3 > > m_positions; ///< input: positions of the vertices
-    Data< helper::vector< MTriangle > > m_triangles; ///< input: triangles of the mesh
-    Data< helper::vector< MQuad > > m_quads; ///< input: quads of the mesh
-    Data< helper::vector< MPolygon > > m_polygons; ///< must be convex
+    Data< type::vector< Vector3 > > m_positions; ///< input: positions of the vertices
+    Data< type::vector< MTriangle > > m_triangles; ///< input: triangles of the mesh
+    Data< type::vector< MQuad > > m_quads; ///< input: quads of the mesh
+    Data< type::vector< MPolygon > > m_polygons; ///< must be convex
 
     /// output
     Data< MassType > rigidMass;
@@ -87,7 +87,7 @@ protected:
     /// generates the RigidMass from the mesh integral
     void generateRigid();
 
-    helper::fixed_array<SReal,10> afIntegral;
+    type::fixed_array<SReal,10> afIntegral;
 
 public:
     /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters

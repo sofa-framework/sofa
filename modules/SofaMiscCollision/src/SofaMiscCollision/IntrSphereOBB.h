@@ -40,7 +40,7 @@ public:
     typedef typename IntrSph::Real Real;
     typedef typename IntrSph::Coord Coord;
     typedef TOBB<TDataTypes2> Box;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
 
     TIntrSphereOBB (const IntrSph& sphere, const Box & box);
 

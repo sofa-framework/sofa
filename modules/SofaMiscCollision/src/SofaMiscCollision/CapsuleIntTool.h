@@ -33,7 +33,7 @@ namespace sofa::component::collision
 class SOFA_MISC_COLLISION_API CapsuleIntTool
 {
 public:
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
+    typedef sofa::type::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
     template <class DataTypes1,class DataTypes2>
     static int computeIntersection(TCapsule<DataTypes1>&, TCapsule<DataTypes2>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
@@ -58,6 +58,7 @@ bool CapsuleIntTool::shareSameVertex(const TCapsule<DataTypes1>&, const TCapsule
 
 template <class DataTypes1,class DataTypes2>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<DataTypes2> & sph,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
     Vector3 sph_center = sph.center();
     Vector3 cap_p1 = cap.point1();

@@ -22,7 +22,7 @@
 #include "BaseGUI.h"
 #include "BaseViewer.h"
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
@@ -111,7 +111,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
     //TODO: Video Recorder Configuration
 
     //Mouse Manager using ConfigurationSetting component...
-    sofa::helper::vector< sofa::component::configurationsetting::MouseButtonSetting*> mouseConfiguration;
+    sofa::type::vector< sofa::component::configurationsetting::MouseButtonSetting*> mouseConfiguration;
     groot->get<sofa::component::configurationsetting::MouseButtonSetting>(&mouseConfiguration, sofa::core::objectmodel::BaseContext::SearchRoot);
 
     for (unsigned int i=0; i<mouseConfiguration.size(); ++i)  setMouseButtonConfiguration(mouseConfiguration[i]);

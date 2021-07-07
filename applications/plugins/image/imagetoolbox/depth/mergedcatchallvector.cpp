@@ -46,8 +46,8 @@ int MergedCatchAllVectorClass = core::RegisterObject("MergedCatchAllVector")
         .add<MergedCatchAllVector<long > >()
         .add<MergedCatchAllVector<unsigned long > >()
         .add<MergedCatchAllVector<bool > >()
-        .add<MergedCatchAllVector<sofa::defaulttype::Vec3f> >()
-        .add<MergedCatchAllVector<sofa::defaulttype::Vec3d> >()
+        .add<MergedCatchAllVector<sofa::type::Vec3f> >()
+        .add<MergedCatchAllVector<sofa::type::Vec3d> >()
         ;
 
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<float >;
@@ -61,8 +61,8 @@ template class SOFA_IMAGE_GUI_API MergedCatchAllVector<double >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<long >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned long >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<bool >;
-template class SOFA_IMAGE_GUI_API MergedCatchAllVector<sofa::defaulttype::Vec3f >;
-template class SOFA_IMAGE_GUI_API MergedCatchAllVector<sofa::defaulttype::Vec3d >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<sofa::type::Vec3f >;
+template class SOFA_IMAGE_GUI_API MergedCatchAllVector<sofa::type::Vec3d >;
 
 
 

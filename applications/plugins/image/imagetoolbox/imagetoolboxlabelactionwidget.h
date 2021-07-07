@@ -28,14 +28,14 @@ Q_OBJECT
     QStackedWidget *stack;
     
     unsigned int currentAxis;
-    defaulttype::Vec3f currentImagePosition;
-    defaulttype::Vec3f current3DPosition;
+    type::Vec3f currentImagePosition;
+    type::Vec3f current3DPosition;
     QString currentVal;
     
     typedef sofa::component::engine::LabelImageToolBox Label;
     typedef sofa::gui::qt::LabelImageToolBoxAction LabelAction;
-    typedef helper::vector<Label*> VecLabel;
-    typedef helper::vector<LabelAction*> VecLabelAction;
+    typedef type::vector<Label*> VecLabel;
+    typedef type::vector<LabelAction*> VecLabelAction;
     
     VecLabelAction vecLabelAction;
 //    int currentLabel;
@@ -78,15 +78,15 @@ public:
     
     void connectCentralW(ImageToolBoxCentralWidget* cw)
     {
-        connect(cw,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
-        connect(cw,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(setValueOnPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        connect(cw,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
+        connect(cw,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(setValueOnPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
         
         connect(cw,SIGNAL(mousedoubleclickevent()),this,SLOT(graph_mousedoubleclickevent()));
         connect(cw,SIGNAL(mousepressevent()),this,SLOT(graph_mousepressevent()));
         connect(cw,SIGNAL(mousereleaseevent()),this,SLOT(graph_mousereleaseevent()));
         
-        connect(this,SIGNAL(labelChangeGui(sofa::defaulttype::Vec3i)),cw,SLOT(setSliders(sofa::defaulttype::Vec3i)));
-        connect(cw,SIGNAL(sliderChanged(sofa::defaulttype::Vec3i)),this,SIGNAL(optionChangeSection(sofa::defaulttype::Vec3i)));
+        connect(this,SIGNAL(labelChangeGui(sofa::type::Vec3i)),cw,SLOT(setSliders(sofa::type::Vec3i)));
+        connect(cw,SIGNAL(sliderChanged(sofa::type::Vec3i)),this,SIGNAL(optionChangeSection(sofa::type::Vec3i)));
 
         
     }
@@ -114,7 +114,7 @@ public:
     
     void setLabels(const VecLabel &vl)
     {
-        VecLabel& vecLabel = const_cast<helper::vector< sofa::component::engine::LabelImageToolBox*>& >(vl);
+        VecLabel& vecLabel = const_cast<type::vector< sofa::component::engine::LabelImageToolBox*>& >(vl);
         
         labelSelection->clear();
 
@@ -135,10 +135,10 @@ public:
 
             stack->addWidget(w);
             
-            connect(this,SIGNAL(mouseevent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
-            connect(this,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),la,SLOT(mouseMove(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
-            connect(la,SIGNAL(sectionChanged(sofa::defaulttype::Vec3i)),this,SIGNAL(labelChangeGui(sofa::defaulttype::Vec3i)));
-            connect(this,SIGNAL(optionChangeSection(sofa::defaulttype::Vec3i)),la,SLOT(optionChangeSection(sofa::defaulttype::Vec3i)));
+            connect(this,SIGNAL(mouseevent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),la,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
+            connect(this,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),la,SLOT(mouseMove(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
+            connect(la,SIGNAL(sectionChanged(sofa::type::Vec3i)),this,SIGNAL(labelChangeGui(sofa::type::Vec3i)));
+            connect(this,SIGNAL(optionChangeSection(sofa::type::Vec3i)),la,SLOT(optionChangeSection(sofa::type::Vec3i)));
             //connect(la,SIGNAL(updateImage()),this,SIGNAL(updateImage()));
 
             la->setGraphScene(GraphXY,GraphXZ,GraphZY);
@@ -151,7 +151,7 @@ public:
     }
     
 public slots:
-    void setValueOnPlane(unsigned int axis,sofa::defaulttype::Vec3d ip,sofa::defaulttype::Vec3d p ,QString val)
+    void setValueOnPlane(unsigned int axis,sofa::type::Vec3d ip,sofa::type::Vec3d p ,QString val)
     {
         //std::cout << "testOnPlane: axis=" << axis << " ; ip=" << ip << " ; p="<<p<< " ; val="<<val.toStdString()<<std::endl; 
         
@@ -232,14 +232,14 @@ public slots:
     }
     
 signals:
-    void mouseevent(int event,const unsigned int axis,const sofa::defaulttype::Vec3d& ip,const sofa::defaulttype::Vec3d& p,const QString& val);
+    void mouseevent(int event,const unsigned int axis,const sofa::type::Vec3d& ip,const sofa::type::Vec3d& p,const QString& val);
 
-    void onPlane(const unsigned int axis,const sofa::defaulttype::Vec3d& ip,const sofa::defaulttype::Vec3d& p,const QString& val);
+    void onPlane(const unsigned int axis,const sofa::type::Vec3d& ip,const sofa::type::Vec3d& p,const QString& val);
     
     void clickOnButton();
 
-    void labelChangeGui(sofa::defaulttype::Vec3i);
-    void optionChangeSection(sofa::defaulttype::Vec3i);
+    void labelChangeGui(sofa::type::Vec3i);
+    void optionChangeSection(sofa::type::Vec3i);
 
     //void updateImage();
 };

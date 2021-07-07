@@ -61,7 +61,7 @@ public:
     @param edges an array of pair of vertex indices describing the edge to be created
     *
     */
-    virtual void addEdges(const sofa::helper::vector< Edge >& edges) ;
+    virtual void addEdges(const sofa::type::vector< Edge >& edges) ;
 
     /** \brief add a set of edges
     @param edges an array of pair of vertex indices describing the edge to be created
@@ -69,9 +69,9 @@ public:
     @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
     *
     */
-    virtual void addEdges( const sofa::helper::vector< Edge >& edges,
-            const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs) ;
+    virtual void addEdges( const sofa::type::vector< Edge >& edges,
+            const sofa::type::vector< sofa::type::vector< EdgeID > > & ancestors,
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs) ;
     
     /** \brief add a set of edges
     @param edges an array of pair of vertex indices describing the edge to be created
@@ -79,8 +79,8 @@ public:
     @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
     *
     */
-    virtual void addEdges( const sofa::helper::vector< Edge >& edges,
-        const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems);
+    virtual void addEdges( const sofa::type::vector< Edge >& edges,
+        const sofa::type::vector< core::topology::EdgeAncestorElem >& ancestorElems);
 
 
     /** \brief Effectively add an edge.
@@ -91,58 +91,58 @@ public:
     /** \brief Swap the edges.
     *
     */
-    virtual void swapEdgesProcess(const sofa::helper::vector< sofa::helper::vector< EdgeID > >& edgesPairs);
+    virtual void swapEdgesProcess(const sofa::type::vector< sofa::type::vector< EdgeID > >& edgesPairs);
 
     /** \brief Fuse the edges.
     *
     * @param removeIsolatedItems if true isolated vertices are also removed
     */
-    virtual void fuseEdgesProcess(const sofa::helper::vector< sofa::helper::vector< EdgeID > >& edgesPairs, const bool removeIsolatedPoints = true);
+    virtual void fuseEdgesProcess(const sofa::type::vector< sofa::type::vector< EdgeID > >& edgesPairs, const bool removeIsolatedPoints = true);
 
     /** \brief Split the edges.
     *
     * @param removeIsolatedItems if true isolated vertices are also removed
     */
-    virtual void splitEdgesProcess(/*const*/ sofa::helper::vector<EdgeID> &indices,
+    virtual void splitEdgesProcess(/*const*/ sofa::type::vector<EdgeID> &indices,
             const bool removeIsolatedPoints = true);
 
     /** \brief Split the edges.
     *
     * @param removeIsolatedItems if true isolated vertices are also removed
     */
-    virtual void splitEdgesProcess(/*const*/ sofa::helper::vector<EdgeID> &indices,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs,
+    virtual void splitEdgesProcess(/*const*/ sofa::type::vector<EdgeID> &indices,
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs,
             const bool removeIsolatedPoints = true);
 
     /** \brief Remove a set of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
     *
     */
-    virtual void removeEdges(const sofa::helper::vector<EdgeID> &edgeIds,
+    virtual void removeEdges(const sofa::type::vector<EdgeID> &edgeIds,
             const bool removeIsolatedPoints = true);
 
     /** \brief Generic method to remove a list of items.
     */
-    void removeItems(const sofa::helper::vector<EdgeID> &items) override;
+    void removeItems(const sofa::type::vector<EdgeID> &items) override;
 
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
     *
     */
-    virtual void swapEdges(const sofa::helper::vector< sofa::helper::vector< EdgeID > >& edgesPairs);
+    virtual void swapEdges(const sofa::type::vector< sofa::type::vector< EdgeID > >& edgesPairs);
 
     /** \brief Fuse a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by one edge (p11, p22)
     *
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void fuseEdges(const sofa::helper::vector< sofa::helper::vector< EdgeID > >& edgesPairs, const bool removeIsolatedPoints = true);
+    virtual void fuseEdges(const sofa::type::vector< sofa::type::vector< EdgeID > >& edgesPairs, const bool removeIsolatedPoints = true);
 
     /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
     * On each edge, a vertex is created based on its barycentric coordinates
     *
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void splitEdges( sofa::helper::vector<EdgeID> &indices,
+    virtual void splitEdges( sofa::type::vector<EdgeID> &indices,
             const bool removeIsolatedPoints = true);
 
     /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
@@ -150,13 +150,13 @@ public:
     *
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void splitEdges( sofa::helper::vector<EdgeID> &indices,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs,
+    virtual void splitEdges( sofa::type::vector<EdgeID> &indices,
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs,
             const bool removeIsolatedPoints = true);
 
     /** \brief Gives the optimal vertex permutation according to the Reverse CuthillMckee algorithm (use BOOST GRAPH LIBRAIRY)
     */
-    virtual void resortCuthillMckee(sofa::helper::vector<int>& inverse_permutation);
+    virtual void resortCuthillMckee(sofa::type::vector<int>& inverse_permutation);
 
     /** \brief Given an element indice, it will remove all the connected component in which this element belongs to.
     *  Warning: if there is only one connected component in the model. All the object will be removed.
@@ -199,49 +199,49 @@ protected:
     * \sa addEdgesProcess
     */
     virtual void addEdgesWarning(const sofa::Size nEdges,
-        const sofa::helper::vector< Edge >& edgesList,
-        const sofa::helper::vector< EdgeID >& edgesIndexList);
+        const sofa::type::vector< Edge >& edgesList,
+        const sofa::type::vector< EdgeID >& edgesIndexList);
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *
     * \sa addEdgesProcess
     */
     virtual void addEdgesWarning(const sofa::Size nEdges,
-        const sofa::helper::vector< Edge >& edgesList,
-        const sofa::helper::vector< EdgeID >& edgesIndexList,
-        const sofa::helper::vector< sofa::helper::vector< EdgeID > >& ancestors);
+        const sofa::type::vector< Edge >& edgesList,
+        const sofa::type::vector< EdgeID >& edgesIndexList,
+        const sofa::type::vector< sofa::type::vector< EdgeID > >& ancestors);
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *
     * \sa addEdgesProcess
     */
     virtual void addEdgesWarning(const sofa::Size nEdges,
-        const sofa::helper::vector< Edge >& edgesList,
-        const sofa::helper::vector< EdgeID >& edgesIndexList,
-        const sofa::helper::vector< sofa::helper::vector< EdgeID > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs);
+        const sofa::type::vector< Edge >& edgesList,
+        const sofa::type::vector< EdgeID >& edgesIndexList,
+        const sofa::type::vector< sofa::type::vector< EdgeID > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs);
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *
     * \sa addEdgesProcess
     */
     virtual void addEdgesWarning(const sofa::Size nEdges,
-        const sofa::helper::vector< Edge >& edgesList,
-        const sofa::helper::vector< EdgeID >& edgesIndexList,
-        const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems);
+        const sofa::type::vector< Edge >& edgesList,
+        const sofa::type::vector< EdgeID >& edgesIndexList,
+        const sofa::type::vector< core::topology::EdgeAncestorElem >& ancestorElems);
 
     /** \brief Effectively add some edges to this topology.
     *
     * \sa addEdgesWarning
     */
-    virtual void addEdgesProcess(const sofa::helper::vector< Edge >& edges);
+    virtual void addEdgesProcess(const sofa::type::vector< Edge >& edges);
 
     /** \brief Sends a message to warn that some edges are about to be deleted.
     *
     * \sa removeEdgesProcess
     */
     // side effect : edges are sorted first
-    virtual void removeEdgesWarning(/*const*/ sofa::helper::vector<EdgeID>& edges);
+    virtual void removeEdgesWarning(/*const*/ sofa::type::vector<EdgeID>& edges);
 
     /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
     *
@@ -254,7 +254,7 @@ protected:
     *
     * @param removeIsolatedItems if true isolated vertices are also removed
     */
-    virtual void removeEdgesProcess(const sofa::helper::vector<EdgeID>& indices, const bool removeIsolatedItems = false);
+    virtual void removeEdgesProcess(const sofa::type::vector<EdgeID>& indices, const bool removeIsolatedItems = false);
 
 
 
@@ -272,7 +272,7 @@ protected:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors if (removeDOF == true)
     */
-    void removePointsProcess(const sofa::helper::vector<PointID>& indices,
+    void removePointsProcess(const sofa::type::vector<PointID>& indices,
         const bool removeDOF = true) override;
 
     /** \brief Move input points indices to input new coords.
@@ -283,9 +283,9 @@ protected:
      * @param coefs The barycoef to locate new coord relatively to ancestors.
      * @moveDOF bool allowing the move (default true)
      */
-    void movePointsProcess(const sofa::helper::vector <PointID>& id,
-        const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
+    void movePointsProcess(const sofa::type::vector<PointID>& id,
+        const sofa::type::vector< sofa::type::vector< PointID > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
         const bool moveDOF = true) override;
 
     /** \brief Reorder this topology.
@@ -293,8 +293,8 @@ protected:
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
-        const sofa::helper::vector<PointID>&/*inv_index*/,
+    void renumberPointsProcess(const sofa::type::vector<PointID>& index,
+        const sofa::type::vector<PointID>&/*inv_index*/,
         const bool renumberDOF = true) override;
 
 

@@ -38,7 +38,7 @@ public :
     typedef sofa::core::topology::Topology::Quad Quad;
     typedef sofa::core::topology::Topology::Tetrahedron Tetrahedron;
     typedef sofa::core::topology::Topology::Hexahedron Hexahedron;
-    typedef sofa::defaulttype::Vector3 Coord;
+    typedef sofa::type::Vector3 Coord;
 
 
 public :

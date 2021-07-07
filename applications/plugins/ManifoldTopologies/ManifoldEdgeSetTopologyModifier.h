@@ -67,19 +67,19 @@ public:
     *
     */
     // side effect: edges are sorted in removeEdgesWarning
-    virtual void removeEdges(/*const*/ sofa::helper::vector< Index >& edges,
+    virtual void removeEdges(/*const*/ sofa::type::vector< Index >& edges,
             const bool removeIsolatedPoints = true);
 
     using EdgeSetTopologyModifier::removeItems;
     /** \brief Generic method to remove a list of items.
      */
-    virtual void removeItems(/*const*/ sofa::helper::vector< EdgeID >& items);
+    virtual void removeItems(/*const*/ sofa::type::vector< EdgeID >& items);
 
     /** \brief add a set  of edges
     @param edges an array of pair of vertex indices describing the edge to be created
     *
     */
-    virtual void addEdges(const sofa::helper::vector< Edge >& edges) override;
+    virtual void addEdges(const sofa::type::vector< Edge >& edges) override;
 
     /** \brief add a set  of edges
     @param edges an array of pair of vertex indices describing the edge to be created
@@ -87,27 +87,27 @@ public:
     @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
     *
     */
-    virtual void addEdges(const sofa::helper::vector< Edge >& edges,
-            const sofa::helper::vector< sofa::helper::vector< Index > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) override;
+    virtual void addEdges(const sofa::type::vector< Edge >& edges,
+            const sofa::type::vector< sofa::type::vector< Index > > & ancestors,
+            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs) override;
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
     *
     */
-    virtual void swapEdges(const sofa::helper::vector< sofa::helper::vector< Index > >& edgesPairs) override;
+    virtual void swapEdges(const sofa::type::vector< sofa::type::vector< Index > >& edgesPairs) override;
 
     /** \brief Fuse a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by one edge (p11, p22)
     *
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void fuseEdges(const sofa::helper::vector< sofa::helper::vector< Index > >& edgesPairs, const bool removeIsolatedPoints = true) override;
+    virtual void fuseEdges(const sofa::type::vector< sofa::type::vector< Index > >& edgesPairs, const bool removeIsolatedPoints = true) override;
 
     /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
     * On each edge, a vertex is created based on its barycentric coordinates
     *
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void splitEdges( sofa::helper::vector<Index> &indices,
+    virtual void splitEdges( sofa::type::vector<Index> &indices,
             const bool removeIsolatedPoints = true) override;
 
     /** \brief Split an array of edges, replacing each edge (p1, p2) by two edges (p1, p3) and (p3, p2) where p3 is the new vertex
@@ -115,15 +115,15 @@ public:
     *
     * @param removeIsolatedPoints if true isolated vertices are also removed
     */
-    virtual void splitEdges( sofa::helper::vector<Index> &indices,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
+    virtual void splitEdges( sofa::type::vector<Index> &indices,
+            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs,
             const bool removeIsolatedPoints = true) override;
 protected:
     /** \brief Add some edges to this topology.
     *
     * \sa addEdgesWarning
     */
-    virtual void addEdgesProcess(const sofa::helper::vector< Edge >& edges) override;
+    virtual void addEdgesProcess(const sofa::type::vector< Edge >& edges) override;
 
     /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
     *
@@ -136,7 +136,7 @@ protected:
     *
     * @param removeIsolatedItems if true isolated vertices are also removed
     */
-    virtual void removeEdgesProcess(const sofa::helper::vector<Index>& indices, const bool removeIsolatedItems = false) override;
+    virtual void removeEdgesProcess(const sofa::type::vector<Index>& indices, const bool removeIsolatedItems = false) override;
 
 
 private:

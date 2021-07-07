@@ -40,6 +40,7 @@ using sofa::testing::NumericTest;
 namespace sofa {
 
 using namespace modeling;
+using namespace type;
 using namespace testing;
 using namespace defaulttype;
 using core::objectmodel::New;

@@ -110,17 +110,17 @@ public:
     Data<bool> unbuilt; ///< Compliance is not fully built
     Data<bool> d_multithreading; ///< Compliances built concurrently
     Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
-    Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors; ///< Sum of the constraints' errors at each iteration
-    Data<std::map < std::string, sofa::helper::vector<double> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
-    Data<std::map < std::string, sofa::helper::vector<double> > > graphForces; ///< Graph of each constraint's force at each step of the resolution
-    Data<std::map < std::string, sofa::helper::vector<double> > > graphViolations; ///< Graph of each constraint's violation at each step of the resolution
+    Data<std::map < std::string, sofa::type::vector<double> > > graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::type::vector<double> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::type::vector<double> > > graphForces; ///< Graph of each constraint's force at each step of the resolution
+    Data<std::map < std::string, sofa::type::vector<double> > > graphViolations; ///< Graph of each constraint's violation at each step of the resolution
 
     Data<int> currentNumConstraints; ///< OUTPUT: current number of constraints
     Data<int> currentNumConstraintGroups; ///< OUTPUT: current number of constraints
     Data<int> currentIterations; ///< OUTPUT: current number of constraint groups
     Data<double> currentError; ///< OUTPUT: current error
     Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
-    Data<helper::vector< double >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
+    Data<type::vector< double >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
 
     sofa::core::MultiVecDerivId getLambda() const override;
@@ -131,8 +131,8 @@ protected:
     void clearConstraintProblemLocks();
 
     enum { CP_BUFFER_SIZE = 10 };
-    sofa::helper::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
-    sofa::helper::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
+    sofa::type::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
+    sofa::type::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
     std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping

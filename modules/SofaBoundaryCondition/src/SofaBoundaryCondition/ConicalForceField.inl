@@ -23,8 +23,8 @@
 
 #include <SofaBoundaryCondition/ConicalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Quat.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/core/MechanicalParams.h>
 #include <cassert>
@@ -41,7 +41,7 @@ ConicalForceField<DataTypes>::ConicalForceField()
 
     , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
     , damping(initData(&damping, (Real)5, "damping", "force damping"))
-    , color(initData(&color, sofa::helper::types::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
+    , color(initData(&color, sofa::type::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
 {
 }
 
@@ -96,7 +96,7 @@ void ConicalForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
                     alpha = (Real)( acos(n_cp*n) - coneAngle.getValue()*M_PI/180 );
                     t = n.cross(cp) ;
                     t /= t.norm();
-                    defaulttype::Quat q(t, -alpha);
+                    type::Quat<SReal> q(t, -alpha);
                     cp_new = q.rotate(cp);
 
                     cp_new.normalize();
@@ -176,7 +176,7 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     vparams->drawTool()->enableBlending();
     vparams->drawTool()->enableLighting();
 
-    sofa::helper::types::RGBAColor rgbcolor(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
+    sofa::type::RGBAColor rgbcolor(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
 
     vparams->drawTool()->drawCone(c, c+height, 0, b, rgbcolor);
 

@@ -67,7 +67,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 
     odesolver = c->get<sofa::core::behavior::OdeSolver>() ;
 
-    const helper::vector<std::string>& solverNames = solverName.getValue();
+    const type::vector<std::string>& solverNames = solverName.getValue();
 
     linearsolvers.clear();
 

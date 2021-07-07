@@ -104,8 +104,8 @@ public:
     BaseVTKDataIO* inputCells;
     BaseVTKDataIO* inputCellOffsets;
     BaseVTKDataIO* inputCellTypes;
-    helper::vector<BaseVTKDataIO*> inputPointDataVector;
-    helper::vector<BaseVTKDataIO*> inputCellDataVector;
+    type::vector<BaseVTKDataIO*> inputPointDataVector;
+    type::vector<BaseVTKDataIO*> inputCellDataVector;
     bool isLittleEndian;
 
     int numberOfPoints, numberOfCells, numberOfLines;

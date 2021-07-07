@@ -79,29 +79,29 @@ public:
 
 
     void apply(
-        const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-        const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
-        const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos) override;
+        const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos,
+        const type::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
+        const type::vector<const In2DataVecCoord*>& dataVecIn2Pos) override;
     void applyJ(
-        const core::MechanicalParams* mparams, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
-        const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
-        const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel) override;
+        const core::MechanicalParams* mparams, const type::vector< OutDataVecDeriv*>& dataVecOutVel,
+        const type::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
+        const type::vector<const In2DataVecDeriv*>& dataVecIn2Vel) override;
     void applyJT(
-        const core::MechanicalParams* mparams, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
-        const helper::vector< In2DataVecDeriv*>& dataVecOut2Force,
-        const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override;
+        const core::MechanicalParams* mparams, const type::vector< In1DataVecDeriv*>& dataVecOut1Force,
+        const type::vector< In2DataVecDeriv*>& dataVecOut2Force,
+        const type::vector<const OutDataVecDeriv*>& dataVecInForce) override;
     void applyJT(
-        const core::ConstraintParams* /*cparams*/, const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
-        const helper::vector< In2DataMatrixDeriv*>&  /*dataMatOut2Const*/ ,
-        const helper::vector<const OutDataMatrixDeriv*>& /*dataMatInConst*/) override
+        const core::ConstraintParams* /*cparams*/, const type::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
+        const type::vector< In2DataMatrixDeriv*>&  /*dataMatOut2Const*/ ,
+        const type::vector<const OutDataMatrixDeriv*>& /*dataMatInConst*/) override
     {
         msg_warning() << "This object only support Direct Solving but an Indirect Solver in the scene is calling method applyJT(constraint) which is not implemented. This will produce un-expected behavior.";
     }
 
 
     //virtual void apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 );
-    //virtual void applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2);
-    //virtual void applyJT( const helper::vector<In1VecDeriv*>& outDeriv1 ,const helper::vector<In2VecDeriv*>& outDeriv2 , const helper::vector<const OutVecDeriv*>& inDeriv );
+    //virtual void applyJ(const type::vector< OutVecDeriv*>& outDeriv, const type::vector<const In1VecDeriv*>& inDeriv1, const type::vector<const In2VecDeriv*>& inDeriv2);
+    //virtual void applyJT( const type::vector<In1VecDeriv*>& outDeriv1 ,const type::vector<In2VecDeriv*>& outDeriv2 , const type::vector<const OutVecDeriv*>& inDeriv );
     void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
     void init() override;
@@ -116,15 +116,15 @@ protected:
     virtual ~CenterOfMassMulti2Mapping()
     {}
 
-    helper::vector<const core::behavior::BaseMass*> inputBaseMass1;
-    helper::vector<In1Coord> inputWeightedCOM1;
-    helper::vector<In1Deriv> inputWeightedForce1;
-    helper::vector<double> inputTotalMass1;
+    type::vector<const core::behavior::BaseMass*> inputBaseMass1;
+    type::vector<In1Coord> inputWeightedCOM1;
+    type::vector<In1Deriv> inputWeightedForce1;
+    type::vector<double> inputTotalMass1;
 
-    helper::vector<const core::behavior::BaseMass*> inputBaseMass2;
-    helper::vector<In2Coord> inputWeightedCOM2;
-    helper::vector<In2Deriv> inputWeightedForce2;
-    helper::vector<double> inputTotalMass2;
+    type::vector<const core::behavior::BaseMass*> inputBaseMass2;
+    type::vector<In2Coord> inputWeightedCOM2;
+    type::vector<In2Deriv> inputWeightedForce2;
+    type::vector<double> inputTotalMass2;
 
     double invTotalMass;
 };

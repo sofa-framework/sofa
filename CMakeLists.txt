@@ -5,7 +5,7 @@ include(CMakeDependentOption)
 
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 21)
-set(Sofa_VERSION_MINOR 06)
+set(Sofa_VERSION_MINOR 12)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -183,9 +183,13 @@ option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to Sofa
 add_subdirectory(extlibs)
 
 ### Main Sofa subdirectories
+option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders)." ON)
+if(SOFA_ENABLE_LEGACY_HEADERS)
+    message("Using legacy headers is enabled.")
+    message("Headers from v20.12 are usable, but it is advised to change your code to use the new headers introduced in v21.06.")
 
-# TODO: add an option once the sofa code has been converted
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
+endif()
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)

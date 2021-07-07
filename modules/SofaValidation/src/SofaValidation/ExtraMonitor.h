@@ -81,13 +81,13 @@ protected:
     std::ofstream* saveGnuplotWext;
 
     /// store the initial position on the considered coordinate for min computation
-    sofa::helper::vector< Real > initialMinPos;
+    sofa::type::vector< Real > initialMinPos;
     /// store the initial position on the considered coordinate for max computation
     /// the two versions are for the case we set minX != maxX
-    sofa::helper::vector< Real > initialMaxPos;
+    sofa::type::vector< Real > initialMaxPos;
 
     /// store the initial position on the considered coordinate for the monitored dofs
-    sofa::helper::vector< Real > initialPos;
+    sofa::type::vector< Real > initialPos;
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_EXTRAMONITOR_CPP)

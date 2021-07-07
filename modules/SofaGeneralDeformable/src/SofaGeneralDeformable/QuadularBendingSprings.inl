@@ -24,7 +24,7 @@
 #include <SofaGeneralDeformable/QuadularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/core/topology/TopologyChange.h>
@@ -37,7 +37,7 @@ typedef core::topology::BaseMeshTopology::EdgesInQuad			EdgesInQuad;
 
 template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(Index /*edgeIndex*/, EdgeInformation &ei, const core::topology::Edge &,
-        const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
+        const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
     if (ff)
     {
@@ -60,10 +60,10 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(Index
 
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const sofa::helper::vector<Index> &quadAdded,
-        const sofa::helper::vector<Quad> &,
-        const sofa::helper::vector<sofa::helper::vector<Index> > &,
-        const sofa::helper::vector<sofa::helper::vector<double> > &)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const sofa::type::vector<Index> &quadAdded,
+        const sofa::type::vector<Quad> &,
+        const sofa::type::vector<sofa::type::vector<Index> > &,
+        const sofa::type::vector<sofa::type::vector<double> > &)
 {
 
     if (ff)
@@ -78,7 +78,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const s
 
         const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-        helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
+        type::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<quadAdded.size(); ++i)
         {
@@ -172,7 +172,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const s
 }
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(const sofa::helper::vector<Index> &quadRemoved)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(const sofa::type::vector<Index> &quadRemoved)
 {
     if (ff)
     {
@@ -183,7 +183,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
         //unsigned int u,v;
 
         const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-        helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
+        type::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<quadRemoved.size(); ++i)
         {
@@ -294,9 +294,9 @@ template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const core::topology::QuadsAdded* e)
 {
     const auto &quadAdded = e->getIndexArray();
-    const sofa::helper::vector<Quad> &elems = e->getElementArray();
+    const sofa::type::vector<Quad> &elems = e->getElementArray();
     const auto & ancestors = e->ancestorsList;
-    const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
+    const sofa::type::vector<sofa::type::vector<double> > & coefs = e->coefs;
 
     applyQuadCreation(quadAdded, elems, ancestors, coefs);
 }
@@ -311,7 +311,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const
 
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(const sofa::helper::vector<Index> &tab)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(const sofa::type::vector<Index> &tab)
 {
     if(ff)
     {
@@ -320,9 +320,9 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
         unsigned int last = ff->m_topology->getNbPoints() -1;
         unsigned int i,j;
 
-        helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
+        type::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
 
-        sofa::helper::vector<Index> lastIndexVec;
+        sofa::type::vector<Index> lastIndexVec;
         for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
         {
 
@@ -436,11 +436,11 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
 
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointRenumbering(const sofa::helper::vector<Index> &tab)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointRenumbering(const sofa::type::vector<Index> &tab)
 {
     if(ff)
     {
-        helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
+        type::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
         for (unsigned  int i = 0; i < ff->m_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
@@ -524,26 +524,26 @@ void QuadularBendingSprings<DataTypes>::init()
     edgeInfo.registerTopologicalData();
 
     /// prepare to store info in the edge array
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(m_topology->getNbEdges());
 
     // set edge tensor to 0
     for (Index i=0; i<m_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::helper::vector< Index > )0,
-                (const sofa::helper::vector< double >)0);
+                m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
+                (const sofa::type::vector< double >)0);
     }
 
     // create edge tensor by calling the quad creation function
-    sofa::helper::vector<Index> quadAdded;
+    sofa::type::vector<Index> quadAdded;
     for (unsigned int i=0; i<m_topology->getNbQuads(); ++i)
         quadAdded.push_back(i);
 
     edgeHandler->applyQuadCreation(quadAdded,
-            (const sofa::helper::vector<Quad>)0,
-            (const sofa::helper::vector<sofa::helper::vector<Index> >)0,
-            (const sofa::helper::vector<sofa::helper::vector<double> >)0);
+            (const sofa::type::vector<Quad>)0,
+            (const sofa::type::vector<sofa::type::vector<Index> >)0,
+            (const sofa::type::vector<sofa::type::vector<double> >)0);
 
 
     edgeInfo.endEdit();
@@ -567,9 +567,9 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
 
     EdgeInformation *einfo;
 
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
-    //const helper::vector<Spring>& m_springs= this->springs.getValue();
+    //const type::vector<Spring>& m_springs= this->springs.getValue();
     //this->dfdx.resize(nbEdges); //m_springs.size()
     f.resize(x.size());
     m_potentialEnergy = 0;
@@ -691,10 +691,10 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
 
     const EdgeInformation *einfo;
 
-    const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
+    const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
     df.resize(dx.size());
-    //const helper::vector<Spring>& springs = this->springs.getValue();
+    //const type::vector<Spring>& springs = this->springs.getValue();
 
     for(unsigned int i=0; i<nbEdges; i++ )
     {
@@ -739,13 +739,13 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
 
     vparams->drawTool()->disableLighting();
 
-    const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
-    std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::helper::types::RGBAColor> colors;
-    sofa::helper::types::RGBAColor green_color = sofa::helper::types::RGBAColor::green();
-    sofa::helper::types::RGBAColor red_color   = sofa::helper::types::RGBAColor::red();
-    sofa::helper::types::RGBAColor color1 = sofa::helper::types::RGBAColor(1,0.5, 0,1);
-    sofa::helper::types::RGBAColor color2 = sofa::helper::types::RGBAColor(0,1,0.5,1);
+    const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
+    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colors;
+    sofa::type::RGBAColor green_color = sofa::type::RGBAColor::green();
+    sofa::type::RGBAColor red_color   = sofa::type::RGBAColor::red();
+    sofa::type::RGBAColor color1 = sofa::type::RGBAColor(1,0.5, 0,1);
+    sofa::type::RGBAColor color2 = sofa::type::RGBAColor(0,1,0.5,1);
 
     for(unsigned int i=0; i<edgeInf.size(); ++i)
     {
@@ -803,7 +803,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
         for(unsigned int j = 0 ; j<4 ; j++)
             vertices.push_back(x[m_topology->getQuad(i)[j]]);
     }
-    vparams->drawTool()->drawQuads(vertices, sofa::helper::types::RGBAColor::red());
+    vparams->drawTool()->drawQuads(vertices, sofa::type::RGBAColor::red());
 
     vparams->drawTool()->restoreLastState();
 }

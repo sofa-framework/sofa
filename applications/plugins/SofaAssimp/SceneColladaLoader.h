@@ -24,7 +24,7 @@
 
 #include <SofaAssimp/config.h>
 #include <sofa/core/loader/SceneLoader.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/SVector.h>
 #include <sofa/simulation/Node.h>
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 
@@ -131,7 +131,7 @@ protected:
 private:
 
     // build the joints and bones array used in the SkeletalMotionConstraint
-    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<projectiveconstraintset::SkeletonJoint<defaulttype::Rigid3Types> >& skeletonJoints, helper::vector<projectiveconstraintset::SkeletonBone>& skeletonBones) const;
+    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, type::vector<projectiveconstraintset::SkeletonJoint<defaulttype::Rigid3Types> >& skeletonJoints, type::vector<projectiveconstraintset::SkeletonBone>& skeletonBones) const;
 
     // clean the scene graph of its empty and useless intermediary nodes
     void removeEmptyNodes();

@@ -63,7 +63,7 @@ void QSofaTreeLibrary::filter(const FilterQuery &f)
     numComponents=0;
     unsigned int numComponentDisplayed=0;
     unsigned int indexPage=0;
-    helper::vector<QTreeWidgetItem*> categoryDisplayed;
+    type::vector<QTreeWidgetItem*> categoryDisplayed;
     //Look into all the categories
     for (unsigned int cat=0; cat<categories.size(); ++cat)
     {

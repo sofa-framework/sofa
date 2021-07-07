@@ -252,7 +252,7 @@ ${inlines}
       end
 
       attribute 148144 "diffuse"
-	public explicit_type "defaulttype::Vec4f"
+	public explicit_type "type::Vec4f"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -263,7 +263,7 @@ ${inlines}
       end
 
       attribute 148272 "ambient"
-	public explicit_type "defaulttype::Vec4f"
+	public explicit_type "type::Vec4f"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -274,7 +274,7 @@ ${inlines}
       end
 
       attribute 148400 "specular"
-	public explicit_type "defaulttype::Vec4f"
+	public explicit_type "type::Vec4f"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -285,7 +285,7 @@ ${inlines}
       end
 
       attribute 148528 "emissive"
-	public explicit_type "defaulttype::Vec4f"
+	public explicit_type "type::Vec4f"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -377,10 +377,10 @@ ${inlines}
 	float f[4] = { r, g, b, a };
 	for (int i=0;i<4;i++)
 	{
-		ambient = defaulttype::Vec4f(f[0]*0.2f,f[1]*0.2f,f[2]*0.2f,f[3]);
-		diffuse = defaulttype::Vec4f(f[0],f[1],f[2],f[3]);
-		specular = defaulttype::Vec4f(f[0],f[1],f[2],f[3]);
-		emissive = defaulttype::Vec4f(f[0],f[1],f[2],f[3]);
+		ambient = type::Vec4f(f[0]*0.2f,f[1]*0.2f,f[2]*0.2f,f[3]);
+		diffuse = type::Vec4f(f[0],f[1],f[2],f[3]);
+		specular = type::Vec4f(f[0],f[1],f[2],f[3]);
+		emissive = type::Vec4f(f[0],f[1],f[2],f[3]);
 	}
   };
 "
@@ -442,10 +442,10 @@ ${inlines}
 	cpp_inline public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {
-	  ambient =  defaulttype::Vec4f( 0.2f,0.2f,0.2f,1.0f);
-	  diffuse =  defaulttype::Vec4f( 0.75f,0.75f,0.75f,1.0f);
-	  specular =  defaulttype::Vec4f( 1.0f,1.0f,1.0f,1.0f);
-	  emissive =  defaulttype::Vec4f( 0.0f,0.0f,0.0f,0.0f);
+	  ambient =  type::Vec4f( 0.2f,0.2f,0.2f,1.0f);
+	  diffuse =  type::Vec4f( 0.75f,0.75f,0.75f,1.0f);
+	  specular =  type::Vec4f( 1.0f,1.0f,1.0f,1.0f);
+	  emissive =  type::Vec4f( 0.0f,0.0f,0.0f,0.0f);
 
 	  shininess =  45.0f;
 	  name = \"Default\";

@@ -26,8 +26,8 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/State.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <Flexible/config.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../shapeFunction/BaseShapeFunction.h"
@@ -78,15 +78,15 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef defaulttype::Mat<In::deriv_total_size, In::deriv_total_size,Real>  InBlock;
-    typedef defaulttype::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
+    typedef type::Mat<In::deriv_total_size, In::deriv_total_size,Real>  InBlock;
+    typedef type::Mat<Out::deriv_total_size, In::deriv_total_size,Real>  Block;
     typedef topology::TriangleSetTopologyContainer::SeqTriangles SeqTriangles;
 
 
 
-    Data< helper::vector<unsigned> > f_triangleIndices;  ///< For each node, indices of the adjacent triangles
-    Data< helper::vector<unsigned> > f_endIndices;   ///< For each node, index of the end of the list of triangle indices, in f_indices.
-    Data< helper::vector<Real> > f_weights;      ///< For each node, weight of the triangles in the average
+    Data< type::vector<unsigned> > f_triangleIndices;  ///< For each node, indices of the adjacent triangles
+    Data< type::vector<unsigned> > f_endIndices;   ///< For each node, index of the end of the list of triangle indices, in f_indices.
+    Data< type::vector<Real> > f_weights;      ///< For each node, weight of the triangles in the average
 
     virtual void init() override;
 
@@ -100,7 +100,7 @@ public:
 
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
 protected:
     TriangleStrainAverageMapping();
@@ -108,12 +108,12 @@ protected:
 
     topology::TriangleSetTopologyContainer::SPtr triangleContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
     /// Compute the product, used in apply and applyJ
     virtual void mult(Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
-    helper::vector<Real> diagMat; ///< diagonal matrix used to scale up node values based on the area they represent
+    type::vector<Real> diagMat; ///< diagonal matrix used to scale up node values based on the area they represent
 };
 
 

@@ -143,9 +143,9 @@ protected:
         }
     };
 
-    Data < sofa::helper::vector<CubeData> > planes;
-    typename sofa::helper::vector<CubeData>::iterator P0; /// Pointer to first plane
-    typename sofa::helper::vector<CubeData>::iterator P1; /// Pointer to second plane
+    Data < sofa::type::vector<CubeData> > planes;
+    typename sofa::type::vector<CubeData>::iterator P0; /// Pointer to first plane
+    typename sofa::type::vector<CubeData>::iterator P1; /// Pointer to second plane
 
     void newPlane();
 

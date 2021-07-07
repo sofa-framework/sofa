@@ -26,7 +26,7 @@
 #include <iostream>
 #include <typeinfo>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
@@ -127,14 +127,14 @@ bool Factory<TKey, TObject, TArgument, TPtr>::duplicateEntry( Key existing, Key 
 
     typename std::multimap<Key, Creator*>::const_iterator it = registry.lower_bound(existing);
     typename std::multimap<Key, Creator*>::const_iterator end = registry.upper_bound(existing);
-    helper::vector<Creator*> entries;
+    type::vector<Creator*> entries;
     while (it != end)
     {
         entries.push_back(it->second);
         ++it;
     }
 
-    typename helper::vector<Creator*>::const_iterator iter;
+    typename type::vector<Creator*>::const_iterator iter;
     for( iter = entries.begin(); iter != entries.end() ; ++iter)
     {
         registry.insert(std::make_pair(duplicate,*iter));

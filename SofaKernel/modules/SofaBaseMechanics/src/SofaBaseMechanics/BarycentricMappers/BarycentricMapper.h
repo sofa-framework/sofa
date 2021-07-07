@@ -53,7 +53,7 @@ public:
 
     enum { NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
     enum { NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size };
-    typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
+    typedef type::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     using Index = sofa::Index;

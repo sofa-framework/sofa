@@ -24,8 +24,8 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa::component::misc
@@ -37,7 +37,7 @@ class Monitor: public virtual core::objectmodel::BaseObject
 public:
     SOFA_CLASS(SOFA_TEMPLATE(Monitor, DataTypes), core::objectmodel::BaseObject);
 
-    typedef sofa::helper::types::RGBAColor RGBAColor;
+    typedef sofa::type::RGBAColor RGBAColor;
     typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -75,7 +75,7 @@ public:
     virtual void exportGnuplot ( Real time );
 
     /// Editable Data
-    Data< helper::vector<unsigned int> > d_indices;
+    Data< type::vector<unsigned int> > d_indices;
 
     Data< bool > d_saveXToGnuplot; ///< export Monitored positions as gnuplot file
     Data< bool > d_saveVToGnuplot; ///< export Monitored velocities as gnuplot file
@@ -111,7 +111,7 @@ protected:
 
     double m_internalDt; ///< use for trajectoriesPrecision (save value only if trajectoriesPrecision <= internalDt)
 
-    sofa::helper::vector < sofa::helper::vector<Coord> > m_savedPos; ///< store all the monitored positions, for trajectories display
+    sofa::type::vector< sofa::type::vector<Coord> > m_savedPos; ///< store all the monitored positions, for trajectories display
 };
 
 #if  !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)

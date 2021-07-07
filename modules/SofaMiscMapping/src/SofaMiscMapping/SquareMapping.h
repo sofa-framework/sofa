@@ -65,7 +65,7 @@ public:
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
+    typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS)
@@ -85,7 +85,7 @@ public:
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const defaulttype::BaseMatrix* getK() override;
@@ -97,7 +97,7 @@ protected:
     virtual ~SquareMapping();
 
     SparseMatrixEigen jacobian;                             ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                                   ///< Assembled geometric stiffness matrix
 
 };

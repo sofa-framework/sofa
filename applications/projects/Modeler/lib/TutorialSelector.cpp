@@ -25,7 +25,7 @@
 
 #include <iostream>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <QHeaderView>
 #include <QImage>
@@ -57,7 +57,7 @@ void TutorialSelector::init()
     openCategory(QString("All Sofa Tutorials"));
 
     //Store all the categories we have for the software
-    helper::vector< Category > allCategories;
+    type::vector< Category > allCategories;
     std::map< QTreeWidgetItem *, Category>::const_iterator itCategory;
     for (itCategory=itemToCategory.begin(); itCategory!=itemToCategory.end(); ++itCategory)
     {

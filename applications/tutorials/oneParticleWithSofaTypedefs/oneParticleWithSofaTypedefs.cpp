@@ -22,7 +22,7 @@
 
 // launch sofaTypedefs.exe to generate sofa.h
 #include <sofa/sofa.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
