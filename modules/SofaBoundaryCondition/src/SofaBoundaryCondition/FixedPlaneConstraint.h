@@ -64,7 +64,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<Index> SetIndexArray;
+    typedef type::vector<Index> SetIndexArray;
     typedef component::topology::PointSubsetData< SetIndexArray > SetIndex;
 public:
     Data<Coord> d_direction; ///< direction on which the constraint applied

@@ -136,7 +136,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 			return false;
 		}
 
-		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
+		sofa::type::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
 		
 		BezierTetrahedronPointLocation location; 
 		size_t elementIndex, elementOffset/*,localIndex*/;
@@ -202,7 +202,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		size_t i,j;	
 		BezierDegreeType degree=container->getDegree();
 
-		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
+		sofa::type::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
 		for ( i = 0; i<container->getNumberOfTetrahedra(); i++)
 		{
 			
@@ -233,14 +233,14 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		typename MechanicalObject::SPtr dofs = root->get<MechanicalObject>(std::string("BezierTetrahedronTopology/"));
 		typename MechanicalObject::WriteVecCoord coords = dofs->writePositions();
 		MeshMatrixMass *mass=root->get<MeshMatrixMass>(root->SearchDown);
-		const sofa::helper::vector<typename MeshMatrixMass::MassVector> & mv=mass->tetrahedronMassInfo.getValue();
-		const sofa::helper::vector<typename MeshMatrixMass::MassType> &ma =mass->vertexMassInfo.getValue();
+		const sofa::type::vector<typename MeshMatrixMass::MassVector> & mv=mass->tetrahedronMassInfo.getValue();
+		const sofa::type::vector<typename MeshMatrixMass::MassType> &ma =mass->vertexMassInfo.getValue();
 
 		size_t i,j,k,rank;	
 		BezierDegreeType degree=container->getDegree();
 		Real tetraVol1,tetraVol2,totalVol1,totalVol2;
 		
-		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
+		sofa::type::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
 		size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
 		totalVol1=0;
 		for ( i = 0; i<container->getNumberOfTetrahedra(); i++)

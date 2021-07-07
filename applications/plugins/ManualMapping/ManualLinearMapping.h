@@ -83,7 +83,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
     eigen_type eigen;
 
-    typedef helper::vector< defaulttype::BaseMatrix* > js_type;
+    typedef type::vector< defaulttype::BaseMatrix* > js_type;
     js_type js;
 
 

@@ -23,8 +23,8 @@
 #include <SofaGeneralEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Quat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -44,8 +44,8 @@ public:
     SOFA_CLASS(QuatToRigidEngine,sofa::core::DataEngine);
 
     typedef typename DataTypes::Real Real;
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
-    typedef sofa::helper::Quater<Real> Quat;
+    typedef sofa::type::Vec<3,Real> Vec3;
+    typedef sofa::type::Quat<Real> Quat;
     typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::Coord RigidVec3;
 protected:
     QuatToRigidEngine();
@@ -55,10 +55,10 @@ public:
     void init() override;
     void reinit() override;
 
-    Data<helper::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
-    Data<helper::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
-    Data<helper::vector<Vec3 > > f_colinearPositions; ///< Optional positions to restrict output to be colinear in the quaternion Z direction
-    Data<helper::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
+    Data<type::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
+    Data<type::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
+    Data<type::vector<Vec3 > > f_colinearPositions; ///< Optional positions to restrict output to be colinear in the quaternion Z direction
+    Data<type::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
 };
 
 #if  !defined(QUATTORIGIDENGINE_CPP)

@@ -1,4 +1,4 @@
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 
 namespace sofa

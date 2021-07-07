@@ -59,8 +59,8 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef sofa::component::topology::PointSubsetData< helper::vector<Index> > SetIndex;
-    typedef helper::vector<Index> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< type::vector<Index> > SetIndex;
+    typedef type::vector<Index> SetIndexArray;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
 
@@ -107,8 +107,8 @@ public:
         else return false;
     }
 
-    Data<helper::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
-    Data<helper::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
+    Data<type::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
+    Data<type::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
     SetIndex f_indices; ///< List of the index of particles to be fixed
     Data<float> showSizeAxis; ///< size of the vector used to display the constrained axis
 
@@ -116,7 +116,7 @@ public:
     SingleLink<DOFBlockerLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected :
-    sofa::helper::vector<SetIndexArray> idxEquations;
+    sofa::type::vector<SetIndexArray> idxEquations;
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)

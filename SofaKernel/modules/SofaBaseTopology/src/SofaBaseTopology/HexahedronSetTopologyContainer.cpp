@@ -49,7 +49,7 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
 
 void HexahedronSetTopologyContainer::addHexa(Index a, Index b, Index c, Index d, Index e, Index f, Index g, Index h )
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     m_hexahedron.push_back(Hexahedron(a,b,c,d,e,f,g,h));
     if (a >= getNbPoints()) setNbPoints(a+1);
     if (b >= getNbPoints()) setNbPoints(b+1);
@@ -64,7 +64,7 @@ void HexahedronSetTopologyContainer::addHexa(Index a, Index b, Index c, Index d,
 void HexahedronSetTopologyContainer::init()
 {
     d_hexahedron.updateIfDirty(); // make sure m_hexahedron is up to date
-    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
 
     // Todo (epernod 2019-03-12): optimise by removing this loop or at least create tetrahedronAV at the same time.
@@ -120,8 +120,8 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
 
     // create a temporary map to find redundant edges
     std::map<Edge,EdgeID> edgeMap;
-    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
     for(size_t i=0; i<m_hexahedron.size(); ++i)
@@ -156,7 +156,7 @@ void HexahedronSetTopologyContainer::createEdgesInHexahedronArray()
         return;
 
     m_edgesInHexahedron.resize( getNumberOfHexahedra());
-    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(size_t i=0; i<m_hexahedron.size(); ++i)
     {
@@ -187,8 +187,8 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
 
     // create a temporary map to find redundant quads
     std::map<Quad, QuadID> quadMap;
-    helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
-    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Quad> > > m_quad = d_quad;
+    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(size_t i=0; i<m_hexahedron.size(); ++i)
     {
@@ -369,7 +369,7 @@ void HexahedronSetTopologyContainer::createQuadsInHexahedronArray()
         return;
 
     m_quadsInHexahedron.resize( getNumberOfHexahedra());
-    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(size_t i = 0; i < getNumberOfHexahedra(); ++i)
     {
@@ -413,7 +413,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundVertexArray()
         this->setNbPoints(Size(d_initPoints.getValue().size()));
 
     m_hexahedraAroundVertex.resize( getNbPoints() );
-    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(size_t i=0; i<m_hexahedron.size(); ++i)
     {
@@ -462,7 +462,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundQuadArray()
     }
 }
 
-const sofa::helper::vector<HexahedronSetTopologyContainer::Hexahedron> &HexahedronSetTopologyContainer::getHexahedronArray()
+const sofa::type::vector<HexahedronSetTopologyContainer::Hexahedron> &HexahedronSetTopologyContainer::getHexahedronArray()
 {
     return d_hexahedron.getValue();
 }
@@ -475,14 +475,14 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
         return InvalidID;
     }
 
-    sofa::helper::vector<HexahedronID> set1 = getHexahedraAroundVertex(v1);
-    sofa::helper::vector<HexahedronID> set2 = getHexahedraAroundVertex(v2);
-    sofa::helper::vector<HexahedronID> set3 = getHexahedraAroundVertex(v3);
-    sofa::helper::vector<HexahedronID> set4 = getHexahedraAroundVertex(v4);
-    sofa::helper::vector<HexahedronID> set5 = getHexahedraAroundVertex(v5);
-    sofa::helper::vector<HexahedronID> set6 = getHexahedraAroundVertex(v6);
-    sofa::helper::vector<HexahedronID> set7 = getHexahedraAroundVertex(v7);
-    sofa::helper::vector<HexahedronID> set8 = getHexahedraAroundVertex(v8);
+    sofa::type::vector<HexahedronID> set1 = getHexahedraAroundVertex(v1);
+    sofa::type::vector<HexahedronID> set2 = getHexahedraAroundVertex(v2);
+    sofa::type::vector<HexahedronID> set3 = getHexahedraAroundVertex(v3);
+    sofa::type::vector<HexahedronID> set4 = getHexahedraAroundVertex(v4);
+    sofa::type::vector<HexahedronID> set5 = getHexahedraAroundVertex(v5);
+    sofa::type::vector<HexahedronID> set6 = getHexahedraAroundVertex(v6);
+    sofa::type::vector<HexahedronID> set7 = getHexahedraAroundVertex(v7);
+    sofa::type::vector<HexahedronID> set8 = getHexahedraAroundVertex(v8);
 
     sort(set1.begin(), set1.end());
     sort(set2.begin(), set2.end());
@@ -494,38 +494,38 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
     sort(set8.begin(), set8.end());
 
     // The destination vector must be large enough to contain the result.
-    sofa::helper::vector<HexahedronID> out1(set1.size()+set2.size());
-    sofa::helper::vector<HexahedronID>::iterator result1;
+    sofa::type::vector<HexahedronID> out1(set1.size()+set2.size());
+    sofa::type::vector<HexahedronID>::iterator result1;
     result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
     out1.erase(result1,out1.end());
 
-    sofa::helper::vector<HexahedronID> out2(set3.size()+out1.size());
-    sofa::helper::vector<HexahedronID>::iterator result2;
+    sofa::type::vector<HexahedronID> out2(set3.size()+out1.size());
+    sofa::type::vector<HexahedronID>::iterator result2;
     result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
     out2.erase(result2,out2.end());
 
-    sofa::helper::vector<HexahedronID> out3(set4.size()+out2.size());
-    sofa::helper::vector<HexahedronID>::iterator result3;
+    sofa::type::vector<HexahedronID> out3(set4.size()+out2.size());
+    sofa::type::vector<HexahedronID>::iterator result3;
     result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
     out3.erase(result3,out3.end());
 
-    sofa::helper::vector<HexahedronID> out4(set5.size()+out3.size());
-    sofa::helper::vector<HexahedronID>::iterator result4;
+    sofa::type::vector<HexahedronID> out4(set5.size()+out3.size());
+    sofa::type::vector<HexahedronID>::iterator result4;
     result4 = std::set_intersection(set5.begin(),set5.end(),out3.begin(),out3.end(),out4.begin());
     out4.erase(result4,out4.end());
 
-    sofa::helper::vector<HexahedronID> out5(set6.size()+out4.size());
-    sofa::helper::vector<HexahedronID>::iterator result5;
+    sofa::type::vector<HexahedronID> out5(set6.size()+out4.size());
+    sofa::type::vector<HexahedronID>::iterator result5;
     result5 = std::set_intersection(set6.begin(),set6.end(),out4.begin(),out4.end(),out5.begin());
     out5.erase(result5,out5.end());
 
-    sofa::helper::vector<HexahedronID> out6(set7.size()+out5.size());
-    sofa::helper::vector<HexahedronID>::iterator result6;
+    sofa::type::vector<HexahedronID> out6(set7.size()+out5.size());
+    sofa::type::vector<HexahedronID>::iterator result6;
     result6 = std::set_intersection(set7.begin(),set7.end(),out5.begin(),out5.end(),out6.begin());
     out6.erase(result6,out6.end());
 
-    sofa::helper::vector<HexahedronID> out7(set8.size()+out6.size());
-    sofa::helper::vector<HexahedronID>::iterator result7;
+    sofa::type::vector<HexahedronID> out7(set8.size()+out6.size());
+    sofa::type::vector<HexahedronID>::iterator result7;
     result7 = std::set_intersection(set8.begin(),set8.end(),out6.begin(),out6.end(),out7.begin());
     out7.erase(result7,out7.end());
 
@@ -559,22 +559,22 @@ Size HexahedronSetTopologyContainer::getNumberOfElements() const
 }
 
 
-const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundVertex > &HexahedronSetTopologyContainer::getHexahedraAroundVertexArray()
+const sofa::type::vector< HexahedronSetTopologyContainer::HexahedraAroundVertex > &HexahedronSetTopologyContainer::getHexahedraAroundVertexArray()
 {
     return m_hexahedraAroundVertex;
 }
 
-const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundEdge > &HexahedronSetTopologyContainer::getHexahedraAroundEdgeArray()
+const sofa::type::vector< HexahedronSetTopologyContainer::HexahedraAroundEdge > &HexahedronSetTopologyContainer::getHexahedraAroundEdgeArray()
 {
     return m_hexahedraAroundEdge;
 }
 
-const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundQuad > &HexahedronSetTopologyContainer::getHexahedraAroundQuadArray()
+const sofa::type::vector< HexahedronSetTopologyContainer::HexahedraAroundQuad > &HexahedronSetTopologyContainer::getHexahedraAroundQuadArray()
 {
     return m_hexahedraAroundQuad;
 }
 
-const sofa::helper::vector< HexahedronSetTopologyContainer::EdgesInHexahedron> &HexahedronSetTopologyContainer::getEdgesInHexahedronArray()
+const sofa::type::vector< HexahedronSetTopologyContainer::EdgesInHexahedron> &HexahedronSetTopologyContainer::getEdgesInHexahedronArray()
 {
     return m_edgesInHexahedron;
 }
@@ -649,7 +649,7 @@ QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacent
 }
 
 
-const sofa::helper::vector< QuadSetTopologyContainer::QuadsInHexahedron> &HexahedronSetTopologyContainer::getQuadsInHexahedronArray()
+const sofa::type::vector< QuadSetTopologyContainer::QuadsInHexahedron> &HexahedronSetTopologyContainer::getQuadsInHexahedronArray()
 {
     return m_quadsInHexahedron;
 }
@@ -816,12 +816,12 @@ bool HexahedronSetTopologyContainer::checkTopology() const
     }
 
 	bool ret = true;
-	helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+	helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 	if (hasHexahedraAroundVertex())
 	{
 		for (size_t i = 0; i < m_hexahedraAroundVertex.size(); ++i)
 		{
-			const sofa::helper::vector<HexahedronID> &tvs = m_hexahedraAroundVertex[i];
+			const sofa::type::vector<HexahedronID> &tvs = m_hexahedraAroundVertex[i];
 			for (size_t j = 0; j < tvs.size(); ++j)
 			{
 				bool check_hexa_vertex_shell = (m_hexahedron[tvs[j]][0] == i)
@@ -846,7 +846,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 	{
 		for (size_t i = 0; i < m_hexahedraAroundEdge.size(); ++i)
 		{
-			const sofa::helper::vector<HexahedronID> &tes = m_hexahedraAroundEdge[i];
+			const sofa::type::vector<HexahedronID> &tes = m_hexahedraAroundEdge[i];
 			for (size_t j = 0; j < tes.size(); ++j)
 			{
 				bool check_hexa_edge_shell = (m_edgesInHexahedron[tes[j]][0] == i)
@@ -874,7 +874,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 	{
 		for (size_t i = 0; i < m_hexahedraAroundQuad.size(); ++i)
 		{
-			const sofa::helper::vector<HexahedronID> &tes = m_hexahedraAroundQuad[i];
+			const sofa::type::vector<HexahedronID> &tes = m_hexahedraAroundQuad[i];
 			for (size_t j = 0; j < tes.size(); ++j)
 			{
 				bool check_hexa_quad_shell = (m_quadsInHexahedron[tes[j]][0] == i)
@@ -1146,7 +1146,7 @@ bool HexahedronSetTopologyContainer::hasHexahedraAroundQuad() const
 
 void HexahedronSetTopologyContainer::clearHexahedra()
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     m_hexahedron.clear();
 }
 

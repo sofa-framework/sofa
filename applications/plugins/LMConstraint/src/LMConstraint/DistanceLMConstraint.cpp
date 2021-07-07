@@ -30,6 +30,7 @@
 namespace sofa::component::constraintset
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
@@ -71,7 +72,7 @@ void DistanceLMConstraint<Rigid3Types>::draw(const core::visual::VisualParams* v
             points.push_back(x1[edges[i][0]].getCenter());
             points.push_back(x2[edges[i][1]].getCenter());
         }
-        vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::green());
+        vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::green());
     }
 }
 

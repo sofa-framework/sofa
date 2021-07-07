@@ -26,10 +26,10 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/fixed_array.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 
@@ -53,7 +53,7 @@ public:
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
 
-    typedef defaulttype::Mat<3,3,Real>       Mat3x3  ;
+    typedef type::Mat<3,3,Real>       Mat3x3  ;
 
     typedef enum
     {
@@ -105,14 +105,14 @@ protected:
         }
     };
 
-    topology::PointData<sofa::helper::vector<Mat3x3> > pointInfo; ///< Internal point data
-    topology::EdgeData<sofa::helper::vector<Mat3x3> > edgeInfo; ///< Internal edge data
-    topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
+    topology::PointData<sofa::type::vector<Mat3x3> > pointInfo; ///< Internal point data
+    topology::EdgeData<sofa::type::vector<Mat3x3> > edgeInfo; ///< Internal edge data
+    topology::TetrahedronData<sofa::type::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
 
     void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
         const core::topology::BaseMeshTopology::Tetrahedron&,
-        const sofa::helper::vector<Index>&,
-        const sofa::helper::vector<double>&);
+        const sofa::type::vector<Index>&,
+        const sofa::type::vector<double>&);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
     VecCoord  _initialPoints;///< the intial positions of the points
@@ -130,10 +130,10 @@ protected:
     Real mu;    /// second Lame coefficient
 
     Data<bool> f_drawing; ///<  draw the forcefield if true
-    Data<sofa::helper::types::RGBAColor> drawColor1; ///<  draw color for faces 1
-    Data<sofa::helper::types::RGBAColor> drawColor2; ///<  draw color for faces 2
-    Data<sofa::helper::types::RGBAColor> drawColor3; ///<  draw color for faces 3
-    Data<sofa::helper::types::RGBAColor> drawColor4; ///<  draw color for faces 4
+    Data<sofa::type::RGBAColor> drawColor1; ///<  draw color for faces 1
+    Data<sofa::type::RGBAColor> drawColor2; ///<  draw color for faces 2
+    Data<sofa::type::RGBAColor> drawColor3; ///<  draw color for faces 3
+    Data<sofa::type::RGBAColor> drawColor4; ///<  draw color for faces 4
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<FastTetrahedralCorotationalForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -184,7 +184,7 @@ public:
 protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
-    topology::EdgeData<sofa::helper::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
+    topology::EdgeData<sofa::type::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)

@@ -50,7 +50,7 @@ public:
     SOFA_CLASS(BaseContext, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
 
-    typedef defaulttype::Vector3 Vec3;
+    typedef type::Vector3 Vec3;
 
 protected:
     BaseContext();
@@ -175,7 +175,7 @@ public:
 
     /// Returns a list of object of type passed as a parameter.
     /// eg:
-    ///       sofa::helper::vector<VisualModel*> results;
+    ///       sofa::type::vector<VisualModel*> results;
     ///       context->getObjects(results) ;
     template<class Container>
     Container& getObjects(Container& result, SearchDirection dir = SearchUp){

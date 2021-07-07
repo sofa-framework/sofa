@@ -44,6 +44,11 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
     target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
 endif()
 
+if(WIN32)
+    # remove warnings about deprecation (CRT,etc)
+    target_compile_options(${PROJECT_NAME} PRIVATE "/wd4996")
+endif()
+
 include(SofaMacros)
 sofa_create_package_with_targets(
     PACKAGE_NAME MiniFlowVR

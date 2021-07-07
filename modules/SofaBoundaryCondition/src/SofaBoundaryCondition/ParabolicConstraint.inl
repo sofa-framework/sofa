@@ -24,7 +24,7 @@
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -101,8 +101,8 @@ void ParabolicConstraint<DataTypes>::init()
         az.normalize();
 
         
-        defaulttype::Mat<3,3,Real> Mrot(ax, ay, az);
-        defaulttype::Mat<3,3,Real> Mrot2;
+        type::Mat<3,3,Real> Mrot(ax, ay, az);
+        type::Mat<3,3,Real> Mrot2;
         Mrot2.transpose(Mrot);
         m_projection.fromMatrix(Mrot2);
         m_projection.normalize();
@@ -225,8 +225,8 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
     Real nbStep = t/dt;
 
     vparams->drawTool()->disableLighting();
-    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    std::vector<sofa::type::Vector3> vertices;
 
     for (unsigned int i=0 ; i< nbStep ; i++)
     {
@@ -238,7 +238,7 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
         Vec3R locPos( px , py, 0.0);
         Vec3R worldPos = m_P1.getValue() + m_projection.rotate(locPos);
 
-        vertices.push_back(sofa::defaulttype::Vector3(worldPos[0],worldPos[1],worldPos[2]));
+        vertices.push_back(sofa::type::Vector3(worldPos[0],worldPos[1],worldPos[2]));
 
         relativeTime = (i+1)/nbStep;
         px = m_locP3.x()*relativeTime;
@@ -247,7 +247,7 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
         worldPos = m_P1.getValue() + m_projection.rotate(locPos);
 
 
-        vertices.push_back(sofa::defaulttype::Vector3(worldPos[0],worldPos[1],worldPos[2]));
+        vertices.push_back(sofa::type::Vector3(worldPos[0],worldPos[1],worldPos[2]));
 
     }
     vparams->drawTool()->drawLines(vertices, 1.0, color);
@@ -257,9 +257,9 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
     const Vec3R& mp1 = m_P1.getValue();
     const Vec3R& mp2 = m_P2.getValue();
     const Vec3R& mp3 = m_P3.getValue();
-    vertices.push_back(sofa::defaulttype::Vector3(mp1[0],mp1[1],mp1[2]));
-    vertices.push_back(sofa::defaulttype::Vector3(mp2[0],mp2[1],mp2[2]));
-    vertices.push_back(sofa::defaulttype::Vector3(mp3[0],mp3[1],mp3[2]));
+    vertices.push_back(sofa::type::Vector3(mp1[0],mp1[1],mp1[2]));
+    vertices.push_back(sofa::type::Vector3(mp2[0],mp2[1],mp2[2]));
+    vertices.push_back(sofa::type::Vector3(mp3[0],mp3[1],mp3[2]));
 
     vparams->drawTool()->drawPoints(vertices, 5.0, color);
 

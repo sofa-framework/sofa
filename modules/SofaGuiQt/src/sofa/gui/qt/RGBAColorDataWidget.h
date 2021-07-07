@@ -35,14 +35,14 @@
 #include <QValidator>
 #include <QColorDialog>
 
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 #include "QRGBAColorPicker.h"
 #include "DataWidget.h"
 
 namespace sofa::gui::qt::rgbacolordatawidget_h
 {
-using sofa::helper::types::RGBAColor ;
+using sofa::type::RGBAColor ;
 using sofa::core::objectmodel::Data ;
 using sofa::gui::qt::QRGBAColorPicker ;
 

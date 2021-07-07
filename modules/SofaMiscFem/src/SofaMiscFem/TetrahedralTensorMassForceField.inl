@@ -23,7 +23,7 @@
 
 #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <SofaBaseTopology/TopologyData.inl>
@@ -40,7 +40,7 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::createEdgeRestInformation(Index, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
+void TetrahedralTensorMassForceField<DataTypes>::createEdgeRestInformation(Index, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
     unsigned int u,v;
     /// set to zero the stiffness matrix
@@ -57,10 +57,10 @@ void TetrahedralTensorMassForceField<DataTypes>::createEdgeRestInformation(Index
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const sofa::helper::vector<Index> &tetrahedronAdded,
-        const sofa::helper::vector<Tetrahedron> &,
-        const sofa::helper::vector<sofa::helper::vector<Index> > &,
-        const sofa::helper::vector<sofa::helper::vector<double> > &)
+void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const sofa::type::vector<Index> &tetrahedronAdded,
+        const sofa::type::vector<Tetrahedron> &,
+        const sofa::type::vector<sofa::type::vector<Index> > &,
+        const sofa::type::vector<sofa::type::vector<double> > &)
 {
     unsigned int i,j,k,l,u,v;
 
@@ -142,7 +142,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(const sofa::helper::vector<Index> &tetrahedronRemoved)
+void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(const sofa::type::vector<Index> &tetrahedronRemoved)
 {
     unsigned int i,j,k,l,u,v;
 
@@ -293,18 +293,18 @@ TetrahedralTensorMassForceField<DataTypes>::init()
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
         createEdgeRestInformation(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::helper::vector< Index > )0,
-                (const sofa::helper::vector< double >)0);
+                m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
+                (const sofa::type::vector< double >)0);
     }
     // create edge tensor by calling the tetrahedron creation function
-    sofa::helper::vector<Index> tetrahedronAdded;
+    sofa::type::vector<Index> tetrahedronAdded;
     for (i=0; i<m_topology->getNbTetrahedra(); ++i)
         tetrahedronAdded.push_back(i);
 
     edgeInfo.applyCreateFunction([this](Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge& edge,
-        const sofa::helper::vector< Index >& ancestors,
-        const sofa::helper::vector< double >& coefs)
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
     {
         createEdgeRestInformation(edgeIndex, ei, edge, ancestors, coefs);
     });
@@ -469,8 +469,8 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
-    sofa::helper::types::RGBAColor color(0,1,0,1);
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::type::RGBAColor color(0,1,0,1);
+    std::vector<sofa::type::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int nbTriangles=m_topology->getNbTriangles();
@@ -481,9 +481,9 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
         int b = m_topology->getTriangle(i)[1];
         int c = m_topology->getTriangle(i)[2];
 
-        vertices.push_back(sofa::defaulttype::Vector3(x[a]));
-        vertices.push_back(sofa::defaulttype::Vector3(x[b]));
-        vertices.push_back(sofa::defaulttype::Vector3(x[c]));
+        vertices.push_back(sofa::type::Vector3(x[a]));
+        vertices.push_back(sofa::type::Vector3(x[b]));
+        vertices.push_back(sofa::type::Vector3(x[c]));
     }
     vparams->drawTool()->drawTriangles(vertices,color);
     vparams->drawTool()->restoreLastState();

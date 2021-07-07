@@ -424,8 +424,8 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector<sofa::helper::types::RGBAColor> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colorVector;
+    std::vector<sofa::type::Vector3> vertices;
     if (d_debugGrid.getValue())
     {
         for (unsigned int i = 0; i < m_particles.size(); i++)
@@ -433,7 +433,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             Particle& Pi = m_particles[i];
             if (Pi.neighbors.size() != Pi.neighbors2.size())
             {
-                colorVector.push_back(sofa::helper::types::RGBAColor::red());
+                colorVector.push_back(sofa::type::RGBAColor::red());
                 for (unsigned int j = 0; j < Pi.neighbors.size(); j++)
                 {
                     int index = Pi.neighbors[j].first;
@@ -442,15 +442,15 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
                         ++j2;
                     if (j2 == Pi.neighbors2.size())
                     {
-                        vertices.push_back(sofa::defaulttype::Vector3(x[i]));
-                        vertices.push_back(sofa::defaulttype::Vector3(x[index]));
+                        vertices.push_back(sofa::type::Vector3(x[i]));
+                        vertices.push_back(sofa::type::Vector3(x[index]));
                     }
                 }
                 vparams->drawTool()->drawLines(vertices, 1, colorVector[0]);
                 vertices.clear();
                 colorVector.clear();
 
-                colorVector.push_back(sofa::helper::types::RGBAColor::magenta());
+                colorVector.push_back(sofa::type::RGBAColor::magenta());
                 for (unsigned int j = 0; j < Pi.neighbors2.size(); j++)
                 {
                     int index = Pi.neighbors2[j].first;
@@ -459,8 +459,8 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
                         ++j2;
                     if (j2 == Pi.neighbors.size())
                     {
-                        vertices.push_back(sofa::defaulttype::Vector3(x[i]));
-                        vertices.push_back(sofa::defaulttype::Vector3(x[index]));
+                        vertices.push_back(sofa::type::Vector3(x[i]));
+                        vertices.push_back(sofa::type::Vector3(x[index]));
                     }
                 }
                 vparams->drawTool()->drawLines(vertices, 1, colorVector[0]);
@@ -487,8 +487,8 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
                 {
                     colorVector.push_back({f - 1.0f, 0.0f, 2.0f - f, 1.0f - r_h});
                 }
-                vertices.push_back(sofa::defaulttype::Vector3(x[i]));
-                vertices.push_back(sofa::defaulttype::Vector3(x[j]));
+                vertices.push_back(sofa::type::Vector3(x[i]));
+                vertices.push_back(sofa::type::Vector3(x[j]));
             }
             vparams->drawTool()->drawLines(vertices, 1, colorVector);
             vertices.clear();
@@ -512,7 +512,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         {
             colorVector.push_back( { f - 1.0f, 0.0f, 2.0f - f, 1.0f});
         }
-        vertices.push_back(sofa::defaulttype::Vector3(x[i]));
+        vertices.push_back(sofa::type::Vector3(x[i]));
     }
 
     vparams->drawTool()->drawPoints(vertices,5,colorVector);

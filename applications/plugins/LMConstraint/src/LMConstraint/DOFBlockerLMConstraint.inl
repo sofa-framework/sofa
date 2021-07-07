@@ -23,8 +23,8 @@
 #include <LMConstraint/DOFBlockerLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/RGBAColor.h>
+#include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::constraintset
@@ -48,7 +48,7 @@ void DOFBlockerLMConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 
@@ -97,7 +97,7 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(const core::Constr
     helper::WriteAccessor<Data<MatrixDeriv> > c = *dC;
 
     const SetIndexArray &indices = f_indices.getValue();
-    const helper::vector<Deriv> &axis=BlockedAxis.getValue();
+    const type::vector<Deriv> &axis=BlockedAxis.getValue();
     idxEquations.resize(indices.size());
     unsigned int numParticle=0;
 
@@ -125,7 +125,7 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& l
         Order==core::ConstraintParams::POS) return;
 
     const SetIndexArray & indices = f_indices.getValue();
-    const helper::vector<SReal> &factor=factorAxis.getValue();
+    const type::vector<SReal> &factor=factorAxis.getValue();
 
     for (unsigned int numParticle=0; numParticle<indices.size(); ++numParticle)
     {
@@ -163,7 +163,7 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->saveLastState();
 
     const SetIndexArray & indices = f_indices.getValue();
-    sofa::helper::types::RGBAColor color = sofa::helper::types::RGBAColor::yellow();
+    sofa::type::RGBAColor color = sofa::type::RGBAColor::yellow();
 
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
@@ -171,12 +171,12 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     {
         Index index=(*it);
         Coord pos=x[index];
-        defaulttype::Vector3 position;
+        type::Vector3 position;
         DataTypes::get(position[0], position[1], position[2], pos);
-        const helper::vector<Deriv>& axis=BlockedAxis.getValue();
+        const type::vector<Deriv>& axis=BlockedAxis.getValue();
         for (unsigned int i=0; i<axis.size(); ++i)
         {
-            defaulttype::Vector3 direction;
+            type::Vector3 direction;
             DataTypes::get(direction[0], direction[1], direction[2],axis[i]);
             vparams->drawTool()->drawArrow(position, position+direction*showSizeAxis.getValue(),
                                            showSizeAxis.getValue()*0.03,color);

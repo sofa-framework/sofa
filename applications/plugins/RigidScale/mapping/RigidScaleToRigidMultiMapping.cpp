@@ -1,6 +1,6 @@
 #include <initRigidScale.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <Flexible/types/AffineTypes.h>
 

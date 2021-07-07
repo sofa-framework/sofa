@@ -58,6 +58,7 @@ namespace forcefield
 
 
 using namespace helper;
+using namespace type;
 
 template <class DataTypes>
 ClosestPointRegistrationForceField<DataTypes>::ClosestPointRegistrationForceField(core::behavior::MechanicalState<DataTypes> *mm )
@@ -124,7 +125,7 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void ClosestPointRegistrationForceField<DataTypes>::detectBorder(vector<bool> &border,const helper::vector< tri > &triangles)
+void ClosestPointRegistrationForceField<DataTypes>::detectBorder(type::vector<bool> &border,const type::vector< tri > &triangles)
 {
     unsigned int nbp=border.size();
     unsigned int nbt=triangles.size();
@@ -389,17 +390,18 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
     unsigned int nb = this->closestPos.size();
     if (vparams->displayFlags().getShowForceFields())
     {
-        std::vector< defaulttype::Vector3 > points;
+        std::vector< type::Vector3 > points;
         for (unsigned int i=0; i<nb; i++)
             if(!sourceIgnored[i])
             {
-                defaulttype::Vector3 point1 = DataTypes::getCPos(x[i]);
-                defaulttype::Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
+                type::Vector3 point1 = DataTypes::getCPos(x[i]);
+                type::Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
                 points.push_back(point1);
                 points.push_back(point2);
             }
 
         const type::RGBAColor c(0,1,0.5,1);
+
         if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)	vparams->drawTool()->drawLines(points, 1, c);
         else if (drawMode.getValue() == 1)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawCylinder(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
         else if (drawMode.getValue() == 2)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawArrow(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
@@ -412,8 +414,8 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
         for (unsigned int i=0; i<nb; i++)
             if(!sourceIgnored[i])
             {
-                defaulttype::Vector3 point1 = DataTypes::getCPos(x[i]);
-                defaulttype::Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
+                type::Vector3 point1 = DataTypes::getCPos(x[i]);
+                type::Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
                 dists[i]=(point2-point1).norm();
             }
         Real max=0; for (unsigned int i=0; i<dists.size(); i++) if(max<dists[i]) max=dists[i];
@@ -421,7 +423,7 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
         glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
         glDisable( GL_LIGHTING);
 
-        ReadAccessor< Data< helper::vector< tri > > > t(sourceTriangles);
+        ReadAccessor< Data< type::vector< tri > > > t(sourceTriangles);
         if(t.size()) // mesh visu
         {
             glBegin( GL_TRIANGLES);

@@ -2,7 +2,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa

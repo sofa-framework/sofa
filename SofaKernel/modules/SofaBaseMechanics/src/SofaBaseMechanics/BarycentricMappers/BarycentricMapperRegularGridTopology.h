@@ -82,7 +82,7 @@ protected:
                                          PointSetTopologyContainer* toTopology);
     void addMatrixContrib(MatrixType* m, int row, int col, Real value);
 
-    helper::vector<CubeData> m_map;
+    type::vector<CubeData> m_map;
     RegularGridTopology* m_fromTopology   {nullptr};
     MatrixType* m_matrixJ                 {nullptr};
     bool m_updateJ                        {false};

@@ -82,7 +82,7 @@ void StiffSpringForceField<DataTypes>::createSpringsFromInputs()
 
     msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
 
-    helper::vector<Spring>& _springs = *this->springs.beginEdit();
+    type::vector<Spring>& _springs = *this->springs.beginEdit();
     _springs.clear();
 
     const SetIndexArray & indices1 = d_indices1.getValue();
@@ -186,7 +186,7 @@ void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    const helper::vector<Spring>& springs= this->springs.getValue();
+    const type::vector<Spring>& springs= this->springs.getValue();
     this->dfdx.resize(springs.size());
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -209,7 +209,7 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
     Real kFactor       =  (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
     Real bFactor       =  (Real)sofa::core::mechanicalparams::bFactor(mparams);
 
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->springs.getValue();
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
@@ -233,7 +233,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate1);
         if (!mat) return;
-        const sofa::helper::vector<Spring >& ss = this->springs.getValue();
+        const sofa::type::vector<Spring >& ss = this->springs.getValue();
         const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
         for (sofa::Index e=0; e<n; e++)
         {
@@ -262,7 +262,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
         sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(this->mstate2, this->mstate1);
 
         if (!mat11 && !mat22 && !mat12 && !mat21) return;
-        const sofa::helper::vector<Spring >& ss = this->springs.getValue();
+        const sofa::type::vector<Spring >& ss = this->springs.getValue();
         const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
         for (sofa::Index e=0; e<n; e++)
         {

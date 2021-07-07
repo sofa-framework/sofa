@@ -84,8 +84,9 @@ public:
     typedef TMassType MassType;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
+
     typedef typename DataTypes::Real Real;
-    typedef typename helper::vector<MassType> VecMass;
+    typedef typename type::vector<MassType> VecMass;
     typedef DiagonalMass<TDataTypes, TMassType> TheDiagonalMass ;
 
     simulation::Simulation* simulation = nullptr;
@@ -698,7 +699,7 @@ public:
         EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
         EXPECT_NEAR(mass->getTotalMass(), 8, 1e-4);
         
-        sofa::helper::vector<sofa::Index> hexaIds = { 0 };        
+        sofa::type::vector<sofa::Index> hexaIds = { 0 };        
         // remove hexahedron id: 0
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 26);
@@ -771,7 +772,7 @@ public:
         EXPECT_NEAR(vMasses[0], refValue2, 1e-4);
         EXPECT_NEAR(mass->getTotalMass(), 8.0, 1e-4);
 
-        sofa::helper::vector<sofa::Index> tetraIds = { 0 };
+        sofa::type::vector<sofa::Index> tetraIds = { 0 };
         // remove tetrahedron id: 0
         modifier->removeTetrahedra(tetraIds); 
         EXPECT_EQ(vMasses.size(), 8);
@@ -838,7 +839,7 @@ public:
         EXPECT_NEAR(vMasses[1], refValue * 2, 1e-4);
         EXPECT_NEAR(initMass, 4, 1e-4);
 
-        sofa::helper::vector<sofa::Index> ids = { 0 };
+        sofa::type::vector<sofa::Index> ids = { 0 };
         // remove quad id: 0
         modifier->removeQuads(ids, true, true);
         EXPECT_EQ(vMasses.size(), 8);
@@ -902,7 +903,7 @@ public:
         EXPECT_NEAR(vMasses[1], refValue2, 1e-4);
         EXPECT_NEAR(initMass, 4, 1e-4);
 
-        sofa::helper::vector<sofa::Index> ids = { 0 };
+        sofa::type::vector<sofa::Index> ids = { 0 };
         // remove Triangle id: 0
         modifier->removeTriangles(ids, true, true);
         EXPECT_EQ(vMasses.size(), 9);
@@ -973,7 +974,7 @@ public:
         EXPECT_NEAR(vMasses[1], refValue, 1e-4);
         EXPECT_NEAR(initMass, 2, 1e-4);
 
-        sofa::helper::vector<sofa::Index> ids = { 0 };
+        sofa::type::vector<sofa::Index> ids = { 0 };
         // remove Edge id: 0
         modifier->removeEdges(ids, true);
         EXPECT_EQ(vMasses.size(), 3);

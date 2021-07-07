@@ -25,10 +25,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::projectiveconstraintset
@@ -81,7 +81,7 @@ void LinearMovementConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::removeIndex(Index index)
 {
-    sofa::helper::removeValue(*m_indices.beginEdit(),index);
+    sofa::type::removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
 }
 
@@ -263,8 +263,8 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
-    helper::Quater<Real> prevOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(prevM));
-    helper::Quater<Real> nextOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(nextM));
+    type::Quat<Real> prevOrientation = type::Quat<Real>::createQuaterFromEuler(getVOrientation(prevM));
+    type::Quat<Real> nextOrientation = type::Quat<Real>::createQuaterFromEuler(getVOrientation(nextM));
 
     //set the motion to the Dofs
     if (d_relativeMovements.getValue())
@@ -311,7 +311,7 @@ void LinearMovementConstraint<DataTypes>::findKeyTimes()
         nextT = *m_keyTimes.getValue().begin();
         prevT = nextT;
 
-        typename helper::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
+        typename type::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
         typename VecDeriv::const_iterator it_m = m_keyMovements.getValue().begin();
 
         //WARNING : we consider that the key-events are in chronological order
@@ -389,13 +389,13 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         return;
 
     vparams->drawTool()->saveLastState();
-    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {
         vparams->drawTool()->disableLighting();
 
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::type::Vector3> vertices;
 
         const SetIndexArray & indices = m_indices.getValue();
         const VecDeriv& keyMovements = m_keyMovements.getValue();
@@ -407,8 +407,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 {
                     auto tmp0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
                     auto tmp1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
-                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
-                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    sofa::type::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::type::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
                     vertices.push_back(v0);
                     vertices.push_back(v1);
                 }
@@ -422,8 +422,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 {
                     auto tmp0 = DataTypes::getDPos(keyMovements[i]);
                     auto tmp1 = DataTypes::getDPos(keyMovements[i + 1]);
-                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
-                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    sofa::type::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::type::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
                     vertices.push_back(v0);
                     vertices.push_back(v1);
                 }
@@ -435,8 +435,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-        sofa::helper::vector<defaulttype::Vector3> points;
-        defaulttype::Vector3 point;
+        sofa::type::vector<type::Vector3> points;
+        type::Vector3 point;
         const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {

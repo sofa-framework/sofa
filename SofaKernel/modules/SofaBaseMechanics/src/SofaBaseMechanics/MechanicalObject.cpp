@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
 #include <SofaBaseMechanics/MechanicalObject.inl>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 
 
@@ -56,7 +56,7 @@ template class SOFA_SOFABASEMECHANICS_API MechanicalObject<Rigid2Types>;
 
 
 template<>
-void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const defaulttype::Quat q)
+void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat<SReal> q)
 {
     helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::VecCoordId::position());
 
@@ -87,8 +87,8 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(
                 DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(i*coordDim+j));
             }
 
-            helper::Quater<double> q_src;
-            helper::Quater<double> q_dest;
+            type::Quat<double> q_src;
+            type::Quat<double> q_dest;
             for (unsigned int j=0; j<4; j++)
             {
                 Real tmp;
@@ -144,8 +144,8 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core:
                 DataTypeInfo<Coord>::setValue(vDest[i],j,tmp + src->element(offset + i * coordDim + j));
             }
 
-            helper::Quater<double> q_src;
-            helper::Quater<double> q_dest;
+            type::Quat<double> q_src;
+            type::Quat<double> q_dest;
             for (unsigned int j=0; j<4; j++)
             {
                 Real tmp;
@@ -215,30 +215,30 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
 
 			if (getContext()->isSleeping())
 			{
-				vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::gray());
+				vparams->drawTool()->drawFrame ( Vector3(), type::Quat<SReal>(), Vector3 ( 1,1,1 ), sofa::type::RGBAColor::gray());
 			}
 			else switch( drawMode.getValue() )
             {
                 case 1:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::green());
+                    vparams->drawTool()->drawFrame ( Vector3(), type::Quat<SReal>(), Vector3 ( 1,1,1 ), sofa::type::RGBAColor::green());
                     break;
                 case 2:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::red());
+                    vparams->drawTool()->drawFrame ( Vector3(), type::Quat<SReal>(), Vector3 ( 1,1,1 ), sofa::type::RGBAColor::red());
                     break;
                 case 3:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::blue());
+                    vparams->drawTool()->drawFrame ( Vector3(), type::Quat<SReal>(), Vector3 ( 1,1,1 ), sofa::type::RGBAColor::blue());
                     break;
                 case 4:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::yellow());
+                    vparams->drawTool()->drawFrame ( Vector3(), type::Quat<SReal>(), Vector3 ( 1,1,1 ), sofa::type::RGBAColor::yellow());
                     break;
                 case 5:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::magenta());
+                    vparams->drawTool()->drawFrame ( Vector3(), type::Quat<SReal>(), Vector3 ( 1,1,1 ), sofa::type::RGBAColor::magenta());
                     break;
                 case 6:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::cyan());
+                    vparams->drawTool()->drawFrame ( Vector3(), type::Quat<SReal>(), Vector3 ( 1,1,1 ), sofa::type::RGBAColor::cyan());
                     break;
                 default:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
+                    vparams->drawTool()->drawFrame ( Vector3(), type::Quat<SReal>(), Vector3 ( 1,1,1 ) );
             }
 
             vparams->drawTool()->popMatrix();

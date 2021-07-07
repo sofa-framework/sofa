@@ -33,8 +33,8 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-using helper::vector;
-using helper::fixed_array;
+using type::vector;
+using type::fixed_array;
 
 
 BaseMeshTopology::EdgesInTriangle BaseMeshTopology::InvalidEdgesInTriangles;
@@ -223,21 +223,21 @@ const vector<BaseMeshTopology::Index> BaseMeshTopology::getConnectedElement(Inde
 
 
 /// Returns the set of triangles on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
+const sofa::type::vector<BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
 {
     msg_error() << "getTrianglesOnBorder unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of edges on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
+const sofa::type::vector<BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
 {
     msg_error() << "getEdgesOnBorder unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of points on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
+const sofa::type::vector<BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
 {
     msg_error() << "getPointsOnBorder unsupported.";
     return InvalidSet;

@@ -19,15 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/SVector.h>
+#include <sofa/type/SVector.h>
 #include <gtest/gtest.h>
 #include <cstdlib>
 
-using sofa::helper::SVector;
+using sofa::type::SVector;
 
 
 /// testing SVector::read/write
-/// (other vector functions should be tested in helper::vector)
+/// (other vector functions should be tested in type::vector)
 template<class T>
 struct SVector_test : public ::testing::Test
 {

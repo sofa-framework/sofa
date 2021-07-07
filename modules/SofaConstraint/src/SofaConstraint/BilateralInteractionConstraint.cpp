@@ -53,8 +53,8 @@ public:
             wrest.resize(0);
         }
 
-        const helper::vector<int> &m1Indices = self.m1.getValue();
-        const helper::vector<int> &m2Indices = self.m2.getValue();
+        const type::vector<int> &m1Indices = self.m1.getValue();
+        const type::vector<int> &m2Indices = self.m2.getValue();
 
         unsigned minp = std::min(m1Indices.size(),m2Indices.size());
 
@@ -69,7 +69,7 @@ public:
             const typename BilateralInteractionConstraint<T>::Coord P = x1[m1Indices[pid]];
             const typename BilateralInteractionConstraint<T>::Coord Q = x2[m2Indices[pid]];
 
-            defaulttype::Quat qP, qQ, dQP, qQ2;
+            type::Quat<SReal> qP, qQ, dQP, qQ2;
             qP = P.getOrientation();
             qQ = Q.getOrientation();
             qP.normalize();
@@ -119,8 +119,8 @@ public:
                                       const typename BilateralInteractionConstraint<T>::DataVecCoord &/*x2*/)
     {
         SOFA_UNUSED(cParams) ;
-        const helper::vector<int> &m1Indices = self.m1.getValue();
-        const helper::vector<int> &m2Indices = self.m2.getValue();
+        const type::vector<int> &m1Indices = self.m1.getValue();
+        const type::vector<int> &m2Indices = self.m2.getValue();
 
         unsigned minp = std::min(m1Indices.size(),m2Indices.size());
         self.cid.resize(minp);
@@ -192,8 +192,8 @@ public:
                                 const  typename BilateralInteractionConstraint<T>::DataVecDeriv &/*v1*/,
                                 const  typename BilateralInteractionConstraint<T>::DataVecDeriv &/*v2*/)
     {
-        const helper::vector<int> &m1Indices = self.m1.getValue();
-        const helper::vector<int> &m2Indices = self.m2.getValue();
+        const type::vector<int> &m1Indices = self.m1.getValue();
+        const type::vector<int> &m2Indices = self.m2.getValue();
 
         unsigned min = std::min(m1Indices.size(), m2Indices.size());
         const  typename BilateralInteractionConstraint<T>::VecDeriv& restVector = self.restVector.getValue();
@@ -212,9 +212,9 @@ public:
                  const typename BilateralInteractionConstraint<T>::Coord dof1c = x1[m1Indices[pid]];
 
                  typename BilateralInteractionConstraint<T>::Coord corr=self.initialDifference[pid];
-                 defaulttype::Quat df = corr.getOrientation();
-                 defaulttype::Quat o1 = dof1c.getOrientation();
-                 defaulttype::Quat ro1 = o1 * df;
+                 type::Quat<SReal> df = corr.getOrientation();
+                 type::Quat<SReal> o1 = dof1c.getOrientation();
+                 type::Quat<SReal> ro1 = o1 * df;
 
                  dof1.getCenter() = dof1c.getCenter() + corr.getCenter();
                  dof1.getOrientation() = ro1;
@@ -241,8 +241,8 @@ public:
                            typename MyClass::Real /*contactDistance*/, int m1, int m2,
                            typename MyClass::Coord /*Pfree*/, typename MyClass::Coord /*Qfree*/, long /*id*/, typename MyClass::PersistentID /*localid*/)
     {
-        helper::WriteAccessor<Data<helper::vector<int> > > wm1 = self.m1;
-        helper::WriteAccessor<Data<helper::vector<int> > > wm2 = self.m2;
+        helper::WriteAccessor<Data<type::vector<int> > > wm1 = self.m1;
+        helper::WriteAccessor<Data<type::vector<int> > > wm2 = self.m2;
         helper::WriteAccessor<Data<typename MyClass::VecDeriv > > wrest = self.restVector;
         wm1.push_back(m1);
         wm2.push_back(m2);

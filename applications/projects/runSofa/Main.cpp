@@ -31,7 +31,6 @@ using std::vector;
 
 #include <runSofaValidation.h>
 
-#include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -457,7 +456,7 @@ int main(int argc, char** argv)
         sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
     }
 
-    const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
+    const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();
     Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName, false, sceneArgs);
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");

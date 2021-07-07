@@ -25,7 +25,7 @@
 #include <Flexible/config.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include "../shapeFunction/BaseShapeFunction.h"
-#include <sofa/helper/SVector.h>
+#include <sofa/type/SVector.h>
 
 
 namespace sofa
@@ -64,7 +64,7 @@ public:
     //@}
 
     Data< VTransform > d_inputTransforms;   ///< parent transforms from another GP sampler
-    Data< helper::vector<volumeIntegralType> > d_inputVolume;  ///< parent volumes from another GP sampler
+    Data< type::vector<volumeIntegralType> > d_inputVolume;  ///< parent volumes from another GP sampler
 
     Data<VecVRef > d_index;      ///< computed child to parent relationship using local shape function. index[i][j] is the index of the j-th parent influencing child i.
     Data<VecVReal > d_w;      ///< Influence weights
@@ -86,7 +86,7 @@ public:
 protected:
     GaussPointSmoother()    :   Inherited()
       , d_inputTransforms(initData(&d_inputTransforms,VTransform(),"inputTransforms","sample orientations"))
-      , d_inputVolume(initData(&d_inputVolume,helper::vector<volumeIntegralType>(),"inputVolume","sample volume"))
+      , d_inputVolume(initData(&d_inputVolume,type::vector<volumeIntegralType>(),"inputVolume","sample volume"))
       , d_index ( initData ( &d_index,"indices","parent indices for each child" ) )
       , d_w ( initData ( &d_w,"weights","influence weights" ) )
     {
@@ -105,7 +105,7 @@ protected:
         if( !_shapeFunction ) { serr<<"Shape function not found"<< sendl; return;}
 
         helper::ReadAccessor<Data< VTransform > > inputTransforms(this->d_inputTransforms);
-        helper::ReadAccessor< Data< helper::vector<volumeIntegralType> > > inputVolumes(this->d_inputVolume);
+        helper::ReadAccessor< Data< type::vector<volumeIntegralType> > > inputVolumes(this->d_inputVolume);
         const unsigned int volumeDim = inputVolumes[0].size();
 
         raPositions positions(this->f_position);

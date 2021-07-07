@@ -44,7 +44,7 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer()
 
 void TriangleSetTopologyContainer::addTriangle(Index a, Index b, Index c )
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    helper::WriteAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
     m_triangle.push_back(Triangle(a,b,c));
     if (a >= getNbPoints()) setNbPoints(a+1);
     if (b >= getNbPoints()) setNbPoints(b+1);
@@ -55,7 +55,7 @@ void TriangleSetTopologyContainer::init()
 {
     d_triangle.updateIfDirty(); // make sure m_triangle is up to date
 
-    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
     // Todo (epernod 2019-03-12): optimise by removing this loop or at least create AroundVertex buffer at the same time.
     if (!m_triangle.empty())
     {
@@ -107,7 +107,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray()
     if (hasTrianglesAroundVertex()) // created by upper topology
         return;
 
-    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
 
     if (m_triangle.empty())
     {
@@ -199,8 +199,8 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
 
     // create a temporary map to find redundant edges
     std::map<Edge, EdgeID> edgeMap;
-    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
 
     for (size_t i=0; i<m_triangle.size(); ++i)
     {
@@ -236,7 +236,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
     if (hasEdgesInTriangle()) // created by upper topology
         return;
 
-    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
 
 
     bool foundEdge = true;
@@ -244,7 +244,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
     if (hasEdges())
     {
         /// there are already existing edges : must use an inefficient method. Parse all triangles and find the edge that match each triangle edge
-        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+        helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
         const size_t numTriangles = getNumberOfTriangles();
         const size_t numEdges = getNumberOfEdges();
 
@@ -299,7 +299,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
 
         // create a temporary map to find redundant edges
         std::map<Edge, EdgeID> edgeMap;
-        helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+        helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
 
         for (size_t i=0; i<m_triangle.size(); ++i)
         {
@@ -354,7 +354,7 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
     bool newEdge = true;
     bool newPoint = true;
 
-    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
     for (size_t i = 0; i < nbrEdges; i++)
     {
         if (m_trianglesAroundEdge[i].size() == 1) // I.e this edge is on a border
@@ -435,7 +435,7 @@ void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
 }
 
 
-const sofa::helper::vector<TriangleSetTopologyContainer::Triangle> & TriangleSetTopologyContainer::getTriangleArray()
+const sofa::type::vector<TriangleSetTopologyContainer::Triangle> & TriangleSetTopologyContainer::getTriangleArray()
 {
     return d_triangle.getValue();
 }
@@ -458,21 +458,21 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
         return InvalidID;
     }
 
-    sofa::helper::vector<TriangleID> set1 = getTrianglesAroundVertex(v1);
-    sofa::helper::vector<TriangleID> set2 = getTrianglesAroundVertex(v2);
-    sofa::helper::vector<TriangleID> set3 = getTrianglesAroundVertex(v3);
+    sofa::type::vector<TriangleID> set1 = getTrianglesAroundVertex(v1);
+    sofa::type::vector<TriangleID> set2 = getTrianglesAroundVertex(v2);
+    sofa::type::vector<TriangleID> set3 = getTrianglesAroundVertex(v3);
 
     sort(set1.begin(), set1.end());
     sort(set2.begin(), set2.end());
     sort(set3.begin(), set3.end());
 
     // The destination vector must be large enough to contain the result.
-    sofa::helper::vector<TriangleID> out1(set1.size()+set2.size());
-    sofa::helper::vector<TriangleID>::iterator result1;
+    sofa::type::vector<TriangleID> out1(set1.size()+set2.size());
+    sofa::type::vector<TriangleID>::iterator result1;
     result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
     out1.erase(result1,out1.end());
-    sofa::helper::vector<TriangleID> out2(set3.size()+out1.size());
-    sofa::helper::vector<TriangleID>::iterator result2;
+    sofa::type::vector<TriangleID> out2(set3.size()+out1.size());
+    sofa::type::vector<TriangleID>::iterator result2;
     result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
     out2.erase(result2,out2.end());
     
@@ -494,17 +494,17 @@ Size TriangleSetTopologyContainer::getNumberOfElements() const
     return this->getNumberOfTriangles();
 }
 
-const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundVertex > &TriangleSetTopologyContainer::getTrianglesAroundVertexArray()
+const sofa::type::vector< TriangleSetTopologyContainer::TrianglesAroundVertex > &TriangleSetTopologyContainer::getTrianglesAroundVertexArray()
 {
     return m_trianglesAroundVertex;
 }
 
-const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundEdge > &TriangleSetTopologyContainer::getTrianglesAroundEdgeArray()
+const sofa::type::vector< TriangleSetTopologyContainer::TrianglesAroundEdge > &TriangleSetTopologyContainer::getTrianglesAroundEdgeArray()
 {
     return m_trianglesAroundEdge;
 }
 
-const sofa::helper::vector<TriangleSetTopologyContainer::EdgesInTriangle> &TriangleSetTopologyContainer::getEdgesInTriangleArray()
+const sofa::type::vector<TriangleSetTopologyContainer::EdgesInTriangle> &TriangleSetTopologyContainer::getEdgesInTriangleArray()
 {
     return m_edgesInTriangle;
 }
@@ -566,7 +566,7 @@ TriangleSetTopologyContainer::PointID TriangleSetTopologyContainer::getOtherPoin
 }
 
 
-const sofa::helper::vector <TriangleSetTopologyContainer::TriangleID>& TriangleSetTopologyContainer::getTrianglesOnBorder()
+const sofa::type::vector<TriangleSetTopologyContainer::TriangleID>& TriangleSetTopologyContainer::getTrianglesOnBorder()
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
@@ -578,7 +578,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::TriangleID>& TriangleS
 }
 
 
-const sofa::helper::vector <TriangleSetTopologyContainer::EdgeID>& TriangleSetTopologyContainer::getEdgesOnBorder()
+const sofa::type::vector<TriangleSetTopologyContainer::EdgeID>& TriangleSetTopologyContainer::getEdgesOnBorder()
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
@@ -590,7 +590,7 @@ const sofa::helper::vector <TriangleSetTopologyContainer::EdgeID>& TriangleSetTo
 }
 
 
-const sofa::helper::vector <TriangleSetTopologyContainer::PointID>& TriangleSetTopologyContainer::getPointsOnBorder()
+const sofa::type::vector<TriangleSetTopologyContainer::PointID>& TriangleSetTopologyContainer::getPointsOnBorder()
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
@@ -632,7 +632,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
         return true;
     
     bool ret = true;
-    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
 
     if (hasTrianglesAroundVertex())
     {
@@ -640,7 +640,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
 
         for (size_t i = 0; i < m_trianglesAroundVertex.size(); ++i)
         {
-            const sofa::helper::vector<TriangleID> &tvs = m_trianglesAroundVertex[i];
+            const sofa::type::vector<TriangleID> &tvs = m_trianglesAroundVertex[i];
             for (size_t j = 0; j < tvs.size(); ++j)
             {
                 const Triangle& triangle = m_triangle[tvs[j]];
@@ -666,7 +666,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
     if (hasTrianglesAroundEdge() && hasEdgesInTriangle())
     {
         // check first m_edgesInTriangle
-        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+        helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
 
         if (m_edgesInTriangle.size() != m_triangle.size())
         {
@@ -699,7 +699,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
         std::set <int> triangleSet;
         for (size_t i = 0; i < m_trianglesAroundEdge.size(); ++i)
         {
-            const sofa::helper::vector<TriangleID> &tes = m_trianglesAroundEdge[i];
+            const sofa::type::vector<TriangleID> &tes = m_trianglesAroundEdge[i];
             for (size_t j = 0; j < tes.size(); ++j)
             {
                 const EdgesInTriangle& eInTri = m_edgesInTriangle[tes[j]];
@@ -985,7 +985,7 @@ void TriangleSetTopologyContainer::clearEdgesInTriangle()
 
 void TriangleSetTopologyContainer::clearTriangles()
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    helper::WriteAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
     m_triangle.clear();
 
 }

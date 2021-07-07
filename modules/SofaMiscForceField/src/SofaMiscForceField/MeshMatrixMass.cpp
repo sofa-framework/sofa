@@ -27,6 +27,7 @@
 namespace sofa::component::mass
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 template <>

@@ -27,8 +27,8 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/RGBAColor.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/ConstraintParams.h>
 #include <algorithm> // for std::min
 
@@ -38,7 +38,7 @@ namespace sofa::component::constraintset::bilateralinteractionconstraint
 using sofa::core::objectmodel::KeypressedEvent ;
 using sofa::core::objectmodel::Event ;
 using sofa::helper::WriteAccessor ;
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 
 template<class DataTypes>
 BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
@@ -117,8 +117,8 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
     if (minp == 0)
         return;
 
-    const helper::vector<int> &m1Indices = m1.getValue();
-    const helper::vector<int> &m2Indices = m2.getValue();
+    const type::vector<int> &m1Indices = m1.getValue();
+    const type::vector<int> &m2Indices = m2.getValue();
 
     MatrixDeriv &c1 = *c1_d.beginEdit();
     MatrixDeriv &c2 = *c2_d.beginEdit();
@@ -134,7 +134,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             int tm1 = m1Indices[pid];
             int tm2 = m2Indices[pid];
 
-            const defaulttype::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+            const type::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
 
             cid[pid] = constraintId;
             constraintId += 3;
@@ -221,7 +221,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             }
             dfree[pid] = dfree_loc;
 
-            const defaulttype::Vec<3, Real> cx(1.0,0,0), cy(0,1.0,0), cz(0,0,1.0);
+            const type::Vec<3, Real> cx(1.0,0,0), cy(0,1.0,0), cz(0,0,1.0);
 
             cid[pid] = constraintId;
 
@@ -291,8 +291,8 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const Con
 {
     if (!activated) return;
 
-    const helper::vector<int> &m1Indices = m1.getValue();
-    const helper::vector<int> &m2Indices = m2.getValue();
+    const type::vector<int> &m1Indices = m1.getValue();
+    const type::vector<int> &m2Indices = m2.getValue();
 
     unsigned minp = std::min(m1Indices.size(), m2Indices.size());
 
@@ -355,8 +355,8 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
                                                                      const DataVecDeriv &d_v1,
                                                                      const DataVecDeriv &d_v2)
 {
-    const helper::vector<int> &m1Indices = m1.getValue();
-    const helper::vector<int> &m2Indices = m2.getValue();
+    const type::vector<int> &m1Indices = m1.getValue();
+    const type::vector<int> &m2Indices = m2.getValue();
 
     const VecCoord &x1 = d_x1.getValue();
     const VecCoord &x2 = d_x2.getValue();
@@ -458,8 +458,8 @@ void BilateralInteractionConstraint<DataTypes>::addContact(Deriv /*norm*/, Coord
                                                            Coord /*Pfree*/, Coord /*Qfree*/,
                                                            long /*id*/, PersistentID /*localid*/)
 {
-    WriteAccessor<Data<helper::vector<int> > > wm1 = this->m1;
-    WriteAccessor<Data<helper::vector<int> > > wm2 = this->m2;
+    WriteAccessor<Data<type::vector<int> > > wm1 = this->m1;
+    WriteAccessor<Data<type::vector<int> > > wm2 = this->m2;
     WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
     wm1.push_back(m1);
     wm2.push_back(m2);
@@ -495,8 +495,8 @@ void BilateralInteractionConstraint<DataTypes>::addContact(Deriv norm, Real cont
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::clear(int reserve)
 {
-    WriteAccessor<Data<helper::vector<int> > > wm1 = this->m1;
-    WriteAccessor<Data<helper::vector<int> > > wm2 = this->m2;
+    WriteAccessor<Data<type::vector<int> > > wm1 = this->m1;
+    WriteAccessor<Data<type::vector<int> > > wm2 = this->m2;
     WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
     wm1.clear();
     wm2.clear();
@@ -517,9 +517,9 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    sofa::helper::types::RGBAColor colorActive = sofa::helper::types::RGBAColor::magenta();
-    sofa::helper::types::RGBAColor colorNotActive = sofa::helper::types::RGBAColor::green();
-    std::vector< sofa::defaulttype::Vector3 > vertices;
+    sofa::type::RGBAColor colorActive = sofa::type::RGBAColor::magenta();
+    sofa::type::RGBAColor colorNotActive = sofa::type::RGBAColor::green();
+    std::vector< sofa::type::Vector3 > vertices;
 
     unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
     for (unsigned i=0; i<minp; i++)

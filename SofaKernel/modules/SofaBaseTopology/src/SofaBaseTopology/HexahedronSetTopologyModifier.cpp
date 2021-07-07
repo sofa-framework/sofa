@@ -44,14 +44,14 @@ void HexahedronSetTopologyModifier::init()
 }
 
 
-void HexahedronSetTopologyModifier::addHexahedra(const sofa::helper::vector<Hexahedron> &hexahedra)
+void HexahedronSetTopologyModifier::addHexahedra(const sofa::type::vector<Hexahedron> &hexahedra)
 {
     size_t nhexa = m_container->getNbHexahedra();
 
     /// effectively add triangles in the topology container
     addHexahedraProcess(hexahedra);
 
-    sofa::helper::vector<HexahedronID> hexahedraIndex;
+    sofa::type::vector<HexahedronID> hexahedraIndex;
     hexahedraIndex.reserve(hexahedra.size());
 
     for (size_t i=0; i<hexahedra.size(); ++i)
@@ -65,16 +65,16 @@ void HexahedronSetTopologyModifier::addHexahedra(const sofa::helper::vector<Hexa
 }
 
 
-void HexahedronSetTopologyModifier::addHexahedra(const sofa::helper::vector<Hexahedron> &hexahedra,
-        const sofa::helper::vector<sofa::helper::vector<HexahedronID> > &ancestors,
-        const sofa::helper::vector<sofa::helper::vector<double> > &baryCoefs)
+void HexahedronSetTopologyModifier::addHexahedra(const sofa::type::vector<Hexahedron> &hexahedra,
+        const sofa::type::vector<sofa::type::vector<HexahedronID> > &ancestors,
+        const sofa::type::vector<sofa::type::vector<double> > &baryCoefs)
 {
     size_t nhexa = m_container->getNbHexahedra();
 
     /// effectively add triangles in the topology container
     addHexahedraProcess(hexahedra);
 
-    sofa::helper::vector<HexahedronID> hexahedraIndex;
+    sofa::type::vector<HexahedronID> hexahedraIndex;
     hexahedraIndex.reserve(hexahedra.size());
 
     for (size_t i=0; i<hexahedra.size(); ++i)
@@ -106,7 +106,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         assert(m_container->getHexahedronIndex(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]) == sofa::InvalidID);
 	}
     const HexahedronID hexahedronIndex = (HexahedronID)m_container->getNumberOfHexahedra();
-    helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
 
     // update nbr point if needed
     auto nbrP = m_container->getNbPoints();
@@ -122,7 +122,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         m_container->m_hexahedraAroundVertex.resize(nbrP);
     for(PointID v=0; v<8; ++v)
     {
-        sofa::helper::vector< HexahedronID > &shell = m_container->m_hexahedraAroundVertex[t[v]];
+        sofa::type::vector< HexahedronID > &shell = m_container->m_hexahedraAroundVertex[t[v]];
         shell.push_back( hexahedronIndex );
     }
 
@@ -139,9 +139,9 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         if(quadIndex == sofa::InvalidID)
         {
             // first create the quad
-            sofa::helper::vector< Quad > v;
+            sofa::type::vector< Quad > v;
             v.push_back(q1);
-            addQuadsProcess((const sofa::helper::vector< Quad > &) v);
+            addQuadsProcess((const sofa::type::vector< Quad > &) v);
 
             quadIndex=m_container->getQuadIndex(q1[0], q1[1], q1[2], q1[3]);
             assert(quadIndex != sofa::InvalidID);
@@ -151,7 +151,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
                 continue;
             }
 
-            sofa::helper::vector< QuadID > quadIndexList;
+            sofa::type::vector< QuadID > quadIndexList;
             quadIndexList.push_back(quadIndex);
             addQuadsWarning(v.size(), v, quadIndexList);
         }
@@ -162,7 +162,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         // update m_hexahedraAroundQuad
         if (m_container->m_hexahedraAroundQuad.size() < m_container->getNbQuads())
             m_container->m_hexahedraAroundQuad.resize(m_container->getNbQuads());
-        sofa::helper::vector< HexahedronID > &shell = m_container->m_hexahedraAroundQuad[quadIndex];
+        sofa::type::vector< HexahedronID > &shell = m_container->m_hexahedraAroundQuad[quadIndex];
         shell.push_back( hexahedronIndex );
     }
 
@@ -181,11 +181,11 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         // we must create the edge
         if (edgeIndex == sofa::InvalidID)
         {
-            sofa::helper::vector< Edge > v;
+            sofa::type::vector< Edge > v;
             Edge e1(t[p0],t[p1]);
             v.push_back(e1);
 
-            addEdgesProcess((const sofa::helper::vector< Edge > &) v);
+            addEdgesProcess((const sofa::type::vector< Edge > &) v);
 
             edgeIndex = m_container->getEdgeIndex(t[p0],t[p1]);
             assert(edgeIndex != sofa::InvalidID);
@@ -195,7 +195,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
                 continue;
             }
 
-            sofa::helper::vector< EdgeID > edgeIndexList;
+            sofa::type::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back(edgeIndex);
             addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList);
         }
@@ -207,7 +207,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         if (m_container->m_hexahedraAroundEdge.size() < m_container->getNbEdges())
              m_container->m_hexahedraAroundEdge.resize(m_container->getNbEdges());
 
-        sofa::helper::vector< HexahedronID > &shell = m_container->m_hexahedraAroundEdge[edgeIndex];
+        sofa::type::vector< HexahedronID > &shell = m_container->m_hexahedraAroundEdge[edgeIndex];
         shell.push_back( hexahedronIndex );
     }
 
@@ -215,7 +215,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 }
 
 
-void HexahedronSetTopologyModifier::addHexahedraProcess(const sofa::helper::vector< Hexahedron > &hexahedra)
+void HexahedronSetTopologyModifier::addHexahedraProcess(const sofa::type::vector< Hexahedron > &hexahedra)
 {
     for(size_t i = 0; i < hexahedra.size(); ++i)
     {
@@ -225,8 +225,8 @@ void HexahedronSetTopologyModifier::addHexahedraProcess(const sofa::helper::vect
 
 
 void HexahedronSetTopologyModifier::addHexahedraWarning(const size_t nHexahedra,
-        const sofa::helper::vector< Hexahedron >& hexahedraList,
-        const sofa::helper::vector< HexahedronID >& hexahedraIndexList)
+        const sofa::type::vector< Hexahedron >& hexahedraList,
+        const sofa::type::vector< HexahedronID >& hexahedraIndexList)
 {
     m_container->setHexahedronTopologyToDirty();
     // Warning that hexahedra just got created
@@ -236,10 +236,10 @@ void HexahedronSetTopologyModifier::addHexahedraWarning(const size_t nHexahedra,
 
 
 void HexahedronSetTopologyModifier::addHexahedraWarning(const size_t nHexahedra,
-        const sofa::helper::vector< Hexahedron >& hexahedraList,
-        const sofa::helper::vector< HexahedronID >& hexahedraIndexList,
-        const sofa::helper::vector< sofa::helper::vector< HexahedronID > > & ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+        const sofa::type::vector< Hexahedron >& hexahedraList,
+        const sofa::type::vector< HexahedronID >& hexahedraIndexList,
+        const sofa::type::vector< sofa::type::vector< HexahedronID > > & ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
 {
     m_container->setHexahedronTopologyToDirty();
     // Warning that hexahedra just got created
@@ -248,7 +248,7 @@ void HexahedronSetTopologyModifier::addHexahedraWarning(const size_t nHexahedra,
 }
 
 
-void HexahedronSetTopologyModifier::removeHexahedraWarning( sofa::helper::vector<HexahedronID> &hexahedra )
+void HexahedronSetTopologyModifier::removeHexahedraWarning( sofa::type::vector<HexahedronID> &hexahedra )
 {
     m_container->setHexahedronTopologyToDirty();
     /// sort vertices to remove in a descendent order
@@ -260,7 +260,7 @@ void HexahedronSetTopologyModifier::removeHexahedraWarning( sofa::helper::vector
 }
 
 
-void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::vector<HexahedronID> &indices,
+void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::type::vector<HexahedronID> &indices,
         const bool removeIsolatedItems)
 {
     if(!m_container->hasHexahedra())
@@ -288,13 +288,13 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
             m_container->createHexahedraAroundQuadArray();
     }
 
-    sofa::helper::vector<QuadID> quadToBeRemoved;
-    sofa::helper::vector<EdgeID> edgeToBeRemoved;
-    sofa::helper::vector<PointID> vertexToBeRemoved;
+    sofa::type::vector<QuadID> quadToBeRemoved;
+    sofa::type::vector<EdgeID> edgeToBeRemoved;
+    sofa::type::vector<PointID> vertexToBeRemoved;
 
     HexahedronID lastHexahedron = (HexahedronID)m_container->getNumberOfHexahedra() - 1;
 
-    helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
+    helper::WriteAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
 
     for(size_t i=0; i<indices.size(); ++i, --lastHexahedron)
     {
@@ -305,7 +305,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
         {
             for(PointID v=0; v<8; ++v)
             {
-                sofa::helper::vector< HexahedronID > &shell = m_container->m_hexahedraAroundVertex[ t[v] ];
+                sofa::type::vector< HexahedronID > &shell = m_container->m_hexahedraAroundVertex[ t[v] ];
                 shell.erase(remove(shell.begin(), shell.end(), indices[i]), shell.end());
                 if(removeIsolatedVertices && shell.empty())
                     vertexToBeRemoved.push_back(t[v]);
@@ -316,7 +316,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
         {
             for(EdgeID e=0; e<12; ++e)
             {
-                sofa::helper::vector< HexahedronID > &shell = m_container->m_hexahedraAroundEdge[ m_container->m_edgesInHexahedron[indices[i]][e]];
+                sofa::type::vector< HexahedronID > &shell = m_container->m_hexahedraAroundEdge[ m_container->m_edgesInHexahedron[indices[i]][e]];
                 shell.erase(remove(shell.begin(), shell.end(), indices[i]), shell.end());
                 if(removeIsolatedEdges && shell.empty())
                     edgeToBeRemoved.push_back(m_container->m_edgesInHexahedron[indices[i]][e]);
@@ -327,7 +327,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
         {
             for(QuadID q=0; q<6; ++q)
             {
-                sofa::helper::vector< HexahedronID > &shell = m_container->m_hexahedraAroundQuad[ m_container->m_quadsInHexahedron[indices[i]][q]];
+                sofa::type::vector< HexahedronID > &shell = m_container->m_hexahedraAroundQuad[ m_container->m_quadsInHexahedron[indices[i]][q]];
                 shell.erase(remove(shell.begin(), shell.end(), indices[i]), shell.end());
                 if(removeIsolatedQuads && shell.empty())
                     quadToBeRemoved.push_back(m_container->m_quadsInHexahedron[indices[i]][q]);
@@ -341,7 +341,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
             {
                 for(PointID v=0; v<8; ++v)
                 {
-                    sofa::helper::vector< HexahedronID > &shell = m_container->m_hexahedraAroundVertex[ h[v] ];
+                    sofa::type::vector< HexahedronID > &shell = m_container->m_hexahedraAroundVertex[ h[v] ];
                     replace(shell.begin(), shell.end(), lastHexahedron, indices[i]);
                 }
             }
@@ -350,7 +350,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
             {
                 for(EdgeID e=0; e<12; ++e)
                 {
-                    sofa::helper::vector< HexahedronID > &shell =  m_container->m_hexahedraAroundEdge[ m_container->m_edgesInHexahedron[lastHexahedron][e]];
+                    sofa::type::vector< HexahedronID > &shell =  m_container->m_hexahedraAroundEdge[ m_container->m_edgesInHexahedron[lastHexahedron][e]];
                     replace(shell.begin(), shell.end(), lastHexahedron, indices[i]);
                 }
             }
@@ -359,7 +359,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
             {
                 for(QuadID q=0; q<6; ++q)
                 {
-                    sofa::helper::vector< HexahedronID > &shell =  m_container->m_hexahedraAroundQuad[ m_container->m_quadsInHexahedron[lastHexahedron][q]];
+                    sofa::type::vector< HexahedronID > &shell =  m_container->m_hexahedraAroundQuad[ m_container->m_quadsInHexahedron[lastHexahedron][q]];
                     replace(shell.begin(), shell.end(), lastHexahedron, indices[i]);
                 }
             }
@@ -430,7 +430,7 @@ void HexahedronSetTopologyModifier::addPointsProcess(const sofa::Size nPoints)
         m_container->m_hexahedraAroundVertex.resize( m_container->getNbPoints() );
 }
 
-void HexahedronSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
+void HexahedronSetTopologyModifier::addEdgesProcess(const sofa::type::vector< Edge > &edges)
 {
     // start by calling the parent's method.
     QuadSetTopologyModifier::addEdgesProcess( edges );
@@ -439,7 +439,7 @@ void HexahedronSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< 
         m_container->m_hexahedraAroundEdge.resize( m_container->getNumberOfEdges() );
 }
 
-void HexahedronSetTopologyModifier::addQuadsProcess(const sofa::helper::vector< Quad > &quads)
+void HexahedronSetTopologyModifier::addQuadsProcess(const sofa::type::vector< Quad > &quads)
 {
     // start by calling the parent's method.
     QuadSetTopologyModifier::addQuadsProcess( quads );
@@ -448,7 +448,7 @@ void HexahedronSetTopologyModifier::addQuadsProcess(const sofa::helper::vector< 
         m_container->m_hexahedraAroundQuad.resize( m_container->getNumberOfQuads() );
 }
 
-void HexahedronSetTopologyModifier::removePointsProcess(const sofa::helper::vector<PointID> &indices,
+void HexahedronSetTopologyModifier::removePointsProcess(const sofa::type::vector<PointID> &indices,
         const bool removeDOF)
 {
     if(m_container->hasHexahedra())
@@ -458,14 +458,14 @@ void HexahedronSetTopologyModifier::removePointsProcess(const sofa::helper::vect
             m_container->createHexahedraAroundVertexArray();
         }
 
-        helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
+        helper::WriteAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
 
         PointID lastPoint = (PointID)m_container->getNbPoints() - 1;
         for(size_t i = 0; i < indices.size(); ++i, --lastPoint)
         {
             // updating the edges connected to the point replacing the removed one:
             // for all edges connected to the last point
-            for(sofa::helper::vector<HexahedronID>::iterator itt=m_container->m_hexahedraAroundVertex[lastPoint].begin();
+            for(sofa::type::vector<HexahedronID>::iterator itt=m_container->m_hexahedraAroundVertex[lastPoint].begin();
                 itt!=m_container->m_hexahedraAroundVertex[lastPoint].end(); ++itt)
             {
                 PointID vertexIndex = m_container->getVertexIndexInHexahedron(m_hexahedron[*itt], lastPoint);
@@ -484,7 +484,7 @@ void HexahedronSetTopologyModifier::removePointsProcess(const sofa::helper::vect
     QuadSetTopologyModifier::removePointsProcess(  indices, removeDOF );
 }
 
-void HexahedronSetTopologyModifier::removeEdgesProcess( const sofa::helper::vector<EdgeID> &indices,
+void HexahedronSetTopologyModifier::removeEdgesProcess( const sofa::type::vector<EdgeID> &indices,
         const bool removeIsolatedItems)
 {
     if(!m_container->hasEdges()) // this method should only be called when edges exist
@@ -498,7 +498,7 @@ void HexahedronSetTopologyModifier::removeEdgesProcess( const sofa::helper::vect
         EdgeID lastEdge = (EdgeID)m_container->getNumberOfEdges() - 1;
         for(size_t i=0; i<indices.size(); ++i, --lastEdge)
         {
-            for(sofa::helper::vector<HexahedronID>::iterator itt=m_container->m_hexahedraAroundEdge[lastEdge].begin();
+            for(sofa::type::vector<HexahedronID>::iterator itt=m_container->m_hexahedraAroundEdge[lastEdge].begin();
                 itt!=m_container->m_hexahedraAroundEdge[lastEdge].end(); ++itt)
             {
                 EdgeID edgeIndex = m_container->getEdgeIndexInHexahedron(m_container->m_edgesInHexahedron[*itt], lastEdge);
@@ -516,7 +516,7 @@ void HexahedronSetTopologyModifier::removeEdgesProcess( const sofa::helper::vect
     QuadSetTopologyModifier::removeEdgesProcess(  indices, removeIsolatedItems );
 }
 
-void HexahedronSetTopologyModifier::removeQuadsProcess( const sofa::helper::vector<QuadID> &indices,
+void HexahedronSetTopologyModifier::removeQuadsProcess( const sofa::type::vector<QuadID> &indices,
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
@@ -531,7 +531,7 @@ void HexahedronSetTopologyModifier::removeQuadsProcess( const sofa::helper::vect
         QuadID lastQuad = (QuadID)m_container->getNumberOfQuads() - 1;
         for(size_t i=0; i<indices.size(); ++i, --lastQuad)
         {
-            for(sofa::helper::vector<HexahedronID>::iterator itt=m_container->m_hexahedraAroundQuad[lastQuad].begin();
+            for(sofa::type::vector<HexahedronID>::iterator itt=m_container->m_hexahedraAroundQuad[lastQuad].begin();
                 itt!=m_container->m_hexahedraAroundQuad[lastQuad].end(); ++itt)
             {
                 QuadID quadIndex=m_container->getQuadIndexInHexahedron(m_container->m_quadsInHexahedron[*itt],lastQuad);
@@ -548,20 +548,20 @@ void HexahedronSetTopologyModifier::removeQuadsProcess( const sofa::helper::vect
     QuadSetTopologyModifier::removeQuadsProcess( indices, removeIsolatedEdges, removeIsolatedPoints );
 }
 
-void HexahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<PointID> &index, const sofa::helper::vector<PointID> &inv_index, const bool renumberDOF)
+void HexahedronSetTopologyModifier::renumberPointsProcess( const sofa::type::vector<PointID> &index, const sofa::type::vector<PointID> &inv_index, const bool renumberDOF)
 {
     if(m_container->hasHexahedra())
     {
         if(m_container->hasHexahedraAroundVertex())
         {
-            sofa::helper::vector< sofa::helper::vector< HexahedronID > > hexahedraAroundVertex_cp = m_container->m_hexahedraAroundVertex;
+            sofa::type::vector< sofa::type::vector< HexahedronID > > hexahedraAroundVertex_cp = m_container->m_hexahedraAroundVertex;
             for(size_t i=0; i<index.size(); ++i)
             {
                 m_container->m_hexahedraAroundVertex[i] = hexahedraAroundVertex_cp[ index[i] ];
             }
         }
 
-        helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
+        helper::WriteAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
 
         for(size_t i=0; i<m_hexahedron.size(); ++i)
         {
@@ -580,9 +580,9 @@ void HexahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::v
     QuadSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
 
-void HexahedronSetTopologyModifier::removeHexahedra(const sofa::helper::vector< HexahedronID >& hexahedraIds)
+void HexahedronSetTopologyModifier::removeHexahedra(const sofa::type::vector< HexahedronID >& hexahedraIds)
 {
-    sofa::helper::vector<HexahedronID> hexahedraIds_filtered;
+    sofa::type::vector<HexahedronID> hexahedraIds_filtered;
     for (size_t i = 0; i < hexahedraIds.size(); i++)
     {
         if( hexahedraIds[i] >= m_container->getNumberOfHexahedra())
@@ -601,7 +601,7 @@ void HexahedronSetTopologyModifier::removeHexahedra(const sofa::helper::vector< 
     m_container->checkTopology();
 }
 
-void HexahedronSetTopologyModifier::removeItems(const sofa::helper::vector< HexahedronID >& items)
+void HexahedronSetTopologyModifier::removeItems(const sofa::type::vector< HexahedronID >& items)
 {
     removeHexahedra(items);
 }

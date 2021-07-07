@@ -23,7 +23,7 @@
 #include <fstream>
 #include <ctime>
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/PluginManager.h>
 
 #include <SofaBase/initSofaBase.h>

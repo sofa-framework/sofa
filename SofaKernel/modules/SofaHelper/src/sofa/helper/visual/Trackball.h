@@ -70,7 +70,8 @@
  */
 
 #pragma once
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 
 #include <sofa/helper/config.h>
 
@@ -86,8 +87,8 @@ public:
     ~Trackball();
 
     // Accessors
-    void SetQuaternion(sofa::defaulttype::Quaternion Q);
-    sofa::defaulttype::Quaternion GetQuaternion(void);
+    void SetQuaternion(sofa::type::Quat<SReal> Q);
+    sofa::type::Quat<SReal> GetQuaternion(void);
 
     // Pass the x and y coordinates of the last and current positions of
     // the mouse, scaled so they are from (-1.0 ... 1.0).
@@ -101,7 +102,7 @@ public:
     void AxisToQuat(double a[3], double phi, double q[4]);
 
 private:
-    sofa::defaulttype::Quaternion	_quat;
+    sofa::type::Quat<SReal>	_quat;
 };
 
 } // namespace sofa::helper::visual

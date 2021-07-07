@@ -27,8 +27,8 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "TriangularFEMForceField.h"
 #include <SofaBaseTopology/TopologyData.h>
 #include <newmat/newmat.h>
@@ -76,13 +76,13 @@ public:
 
     //Data<Real> f_poisson2;
     //Data<Real> f_young2; ///< Young modulus along transverse direction
-    Data<helper::vector<Real> > f_poisson2;
-    Data<helper::vector<Real> > f_young2; ///< Young modulus along transverse direction
+    Data<type::vector<Real> > f_poisson2;
+    Data<type::vector<Real> > f_young2; ///< Young modulus along transverse direction
     Data<Real> f_theta; ///< Fiber angle in global reference frame (in degrees)
     Data<VecCoord> f_fiberCenter; ///< Concentric fiber center in global reference frame
     Data<bool> showFiber; ///< Flag activating rendering of fiber directions within each triangle
     typedef typename TriangularAnisotropicFEMForceField::Deriv TriangleFiberDirection;
-    topology::TriangleData < sofa::helper::vector< TriangleFiberDirection > > localFiberDirection; ///< Computed fibers direction within each triangle
+    topology::TriangleData < sofa::type::vector< TriangleFiberDirection > > localFiberDirection; ///< Computed fibers direction within each triangle
 
     /// Link to be set to the topology container in the component graph.
     using Inherit1::l_topology;
@@ -90,8 +90,8 @@ public:
     void createTriangleInfo(Index triangleIndex,
         TriangleFiberDirection&,
         const core::topology::BaseMeshTopology::Triangle& t,
-        const sofa::helper::vector< unsigned int >&,
-        const sofa::helper::vector< double >&);
+        const sofa::type::vector< unsigned int >&,
+        const sofa::type::vector< double >&);
 
     /// Inherited member
     /// Bring inherited member in the current lookup context.

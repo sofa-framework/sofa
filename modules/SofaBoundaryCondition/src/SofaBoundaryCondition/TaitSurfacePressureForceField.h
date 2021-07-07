@@ -52,7 +52,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     enum { DerivSize = DataTypes::deriv_total_size };
-    typedef defaulttype::Mat<DerivSize, DerivSize, Real> MatBloc;
+    typedef type::Mat<DerivSize, DerivSize, Real> MatBloc;
 
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
@@ -90,7 +90,7 @@ public:
     Data< Real > m_currentSurfaceArea;  ///< OUT: Current surface area, as computed from the last surface position
 
     Data< Real > m_drawForceScale;  ///< DEBUG: scale used to render force vectors
-    Data< sofa::helper::types::RGBAColor > m_drawForceColor;  ///< DEBUG: color used to render force vectors
+    Data< sofa::type::RGBAColor > m_drawForceColor;  ///< DEBUG: color used to render force vectors
 
     Data< Real > m_volumeAfterTC;  ///< OUT: Volume after a topology change
     Data< Real > m_surfaceAreaAfterTC;  ///< OUT: Surface area after a topology change

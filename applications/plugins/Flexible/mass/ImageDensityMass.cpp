@@ -2,7 +2,7 @@
 
 #include "ImageDensityMass.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa

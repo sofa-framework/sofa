@@ -31,7 +31,8 @@ using sofa::simulation::Node;
 
 #include <array>
 
-using sofa::defaulttype::Vec3;
+using sofa::type::Quat;
+using sofa::type::Vec3;
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
@@ -72,7 +73,7 @@ inline sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid
     //creating an array of functions which are the rotation so as to perform the rotations in a for loop
     auto rot = [](double angle, Vec3& x, Vec3& y, Vec3& z, Vec3 axis)
     {
-        Quaternion rotx(axis, angle);
+        Quat<SReal> rotx(axis, angle);
         x = rotx.rotate(x); y = rotx.rotate(y); z = rotx.rotate(z);
     };
 
@@ -83,7 +84,7 @@ inline sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid
 
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = Rigid3Types::Coord(p, Quaternion::createQuaterFromFrame(x, y, z));
+    positions[0] = Rigid3Types::Coord(p, Quat<SReal>::createQuaterFromFrame(x, y, z));
 
     dpositions.endEdit();
 

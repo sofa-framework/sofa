@@ -57,7 +57,7 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef helper::vector<Index> SetIndexArray;
+    typedef type::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;

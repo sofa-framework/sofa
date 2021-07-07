@@ -51,7 +51,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
-    typedef helper::vector<Real> VecDensity;
+    typedef type::vector<Real> VecDensity;
 
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
@@ -172,7 +172,7 @@ public:
 public:
     Data< Coord > d_translation; ///< translation applied to center(s)
     Data< Real > d_scale; ///< scale applied to center(s)
-    Data< helper::vector<Coord> > d_center; ///< Source center(s)
+    Data< type::vector<Coord> > d_center; ///< Source center(s)
     Data< Coord > d_radius; ///< Source radius
     Data< Deriv > d_velocity; ///< Particle initial velocity
     Data< Real > d_delay; ///< Delay between particles creation

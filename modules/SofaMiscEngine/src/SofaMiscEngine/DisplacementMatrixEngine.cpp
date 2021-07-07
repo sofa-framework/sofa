@@ -28,6 +28,7 @@
 namespace sofa::component::engine
 {
 
+using namespace type;
 using namespace defaulttype;
 
 int DisplacementTransformEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement transforms.")
@@ -54,13 +55,13 @@ void DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>::mult( Rigid3Ty
 template <>
 void DisplacementTransformEngine<Rigid3Types,Mat4x4>::setInverse( Mat4x4& inv, const Coord& x0 )
 {
-    Rigid3Types::inverse(x0).toMatrix(inv);
+    Rigid3Types::inverse(x0).toHomogeneousMatrix(inv);
 }
 
 template <>
 void DisplacementTransformEngine<Rigid3Types,Mat4x4>::mult( Mat4x4& out, const Mat4x4& inv, const Coord& x )
 {
-    x.toMatrix(out);
+    x.toHomogeneousMatrix(out);
     out = out * inv;
 }
 

@@ -95,10 +95,10 @@ protected :
     Deriv getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
     void updateRestLength();
 
-    helper::vector<  unsigned int > registeredConstraints;
+    type::vector<  unsigned int > registeredConstraints;
 
     // rest length pre-computated
-    sofa::helper::vector< double > l0;
+    sofa::type::vector< double > l0;
 };
 
 template<>

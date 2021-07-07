@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa
 {
@@ -40,7 +40,7 @@ class OglGrid : public core::visual::VisualModel
 public:
     SOFA_CLASS(OglGrid, VisualModel);
 
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
 
     enum PLANE {PLANE_X, PLANE_Y, PLANE_Z};
 
@@ -50,7 +50,7 @@ public:
     Data<float> size; ///< Size of the squared grid
     Data<int> nbSubdiv; ///< Number of subdivisions
 
-    Data<sofa::helper::types::RGBAColor> color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
+    Data<sofa::type::RGBAColor> color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
     Data<float> thickness; ///< Thickness of the lines in the grid
     Data<bool> draw; ///< Display the grid or not
 

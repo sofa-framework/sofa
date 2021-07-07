@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec4d ;
+#include <sofa/type/Vec.h>
+using sofa::type::Vec4d ;
 
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data ;
 
-#include <sofa/helper/types/RGBAColor.h>
-using sofa::helper::types::RGBAColor ;
+#include <sofa/type/RGBAColor.h>
+using sofa::type::RGBAColor ;
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;
@@ -139,7 +139,7 @@ void Color_Test::checkCreateFromDouble()
 
 void Color_Test::checkConstructors()
 {
-    EXPECT_EQ( RGBAColor(sofa::defaulttype::Vec<4,float>(1,2,3,4)), RGBAColor(1,2,3,4) ) ;
+    EXPECT_EQ( RGBAColor(sofa::type::Vec<4,float>(1,2,3,4)), RGBAColor(1,2,3,4) ) ;
 }
 
 

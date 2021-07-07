@@ -69,7 +69,7 @@ public:
     typedef typename Inherit::Hessian Hessian;
     typedef typename Inherit::VHessian VHessian;
 
-    typedef defaulttype::StdVectorTypes<defaulttype::Vec<Inherit::spatial_dimensions,Real>,defaulttype::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
+    typedef defaulttype::StdVectorTypes<type::Vec<Inherit::spatial_dimensions,Real>,type::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
     typedef defaulttype::LinearJacobianBlock<TIn1,VecSpatialDimensionType> PointMapperType1;
     typedef defaulttype::LinearJacobianBlock<TIn2,VecSpatialDimensionType> PointMapperType2;
     typedef defaulttype::DefGradientTypes<Inherit::spatial_dimensions, Inherit::material_dimensions, 0, Real> FType;
@@ -98,8 +98,8 @@ protected:
         PointMapperType2 mapper2;
 
         // empty variables (not used in init)
-        typename PointMapperType1::OutCoord o(defaulttype::NOINIT);
-        typename PointMapperType2::MaterialToSpatial M0(defaulttype::NOINIT);
+        typename PointMapperType1::OutCoord o(type::NOINIT);
+        typename PointMapperType2::MaterialToSpatial M0(type::NOINIT);
         VGradient dw(1);
         VHessian ddw(1);
 

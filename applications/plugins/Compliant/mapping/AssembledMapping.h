@@ -19,7 +19,7 @@ namespace sofa {
 				typedef AssembledMapping self;
                 typedef typename core::Mapping<In, Out> base;
 	
-                typedef helper::vector<sofa::defaulttype::BaseMatrix*> js_type;
+                typedef type::vector<sofa::defaulttype::BaseMatrix*> js_type;
 				js_type js;
 
 
@@ -48,7 +48,7 @@ namespace sofa {
                         base::apply(core::mechanicalparams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
                 }
 	
-                const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override {
+                const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override {
 					assert( !js.empty() );
 					return &js;
 				}

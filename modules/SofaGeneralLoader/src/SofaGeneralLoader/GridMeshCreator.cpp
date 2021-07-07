@@ -26,10 +26,11 @@
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::core::loader;
-using helper::vector;
+using type::vector;
 
 int GridMeshCreatorClass = core::RegisterObject("Procedural creation of a two-dimensional mesh.")
         .add< GridMeshCreator >()
@@ -57,7 +58,7 @@ void GridMeshCreator::insertUniqueEdge( unsigned a, unsigned b )
 
 void GridMeshCreator::insertTriangle(unsigned a, unsigned b, unsigned c)
 {
-    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
+    type::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
 
     my_triangles.push_back(Triangle( a,b,c ) );
     insertUniqueEdge(a,b);
@@ -69,7 +70,7 @@ void GridMeshCreator::insertTriangle(unsigned a, unsigned b, unsigned c)
 
 void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
 {
-    helper::vector<Quad >& my_quads = *(d_quads.beginEdit());
+    type::vector<Quad >& my_quads = *(d_quads.beginEdit());
 
     my_quads.push_back( Quad( a,b,c,d ) );
     insertUniqueEdge(a,b);
@@ -141,7 +142,7 @@ bool GridMeshCreator::doLoad()
             }
         }
 
-    helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
+    type::vector<Edge >& my_edges = *(d_edges.beginEdit());
     for( std::set<Edge>::const_iterator it=uniqueEdges.begin(),itEnd=uniqueEdges.end(); it!=itEnd; ++it )
         my_edges.push_back( *it );
     d_edges.endEdit();

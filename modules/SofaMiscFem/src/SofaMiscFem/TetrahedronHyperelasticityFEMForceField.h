@@ -27,9 +27,9 @@
 #include <SofaMiscFem/HyperelasticMaterial.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/MatSym.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <string>
@@ -38,6 +38,7 @@
 namespace sofa::component::forcefield
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
@@ -68,8 +69,8 @@ class TetrahedronHyperelasticityFEMForceField : public core::behavior::ForceFiel
     typedef std::pair<Real,MatrixSym> MatrixCoeffPair;
 
 
-    typedef helper::vector<Real> SetParameterArray;
-    typedef helper::vector<Coord> SetAnisotropyDirectionArray;
+    typedef type::vector<Real> SetParameterArray;
+    typedef type::vector<Coord> SetAnisotropyDirectionArray;
 
 
     typedef core::topology::BaseMeshTopology::Index Index;
@@ -150,8 +151,8 @@ public :
     Data<SetParameterArray> d_parameterSet; ///< The global parameters specifying the material
     Data<SetAnisotropyDirectionArray> d_anisotropySet; ///< The global directions of anisotropy of the material
 
-    TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > m_tetrahedronInfo; ///< Internal tetrahedron data
-    EdgeData<sofa::helper::vector<EdgeInformation> > m_edgeInfo; ///< Internal edge data
+    TetrahedronData<sofa::type::vector<TetrahedronRestInformation> > m_tetrahedronInfo; ///< Internal tetrahedron data
+    EdgeData<sofa::type::vector<EdgeInformation> > m_edgeInfo; ///< Internal edge data
    
     /// Link to be set to the topology container in the component graph.
     SingleLink<TetrahedronHyperelasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -169,7 +170,7 @@ public:
     }
 
     void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t, const Tetrahedron&,
-        const sofa::helper::vector<Index>&, const sofa::helper::vector<double>&);
+        const sofa::type::vector<Index>&, const sofa::type::vector<double>&);
 
 protected:
    TetrahedronHyperelasticityFEMForceField();

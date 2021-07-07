@@ -27,7 +27,7 @@ public:
     {
         r = 0;
         const typename TVec3Types::Coord & cP = P - this->model->center();
-        const defaulttype::Quaternion & ori = this->model->orientation();
+        const type::Quat<SReal> & ori = this->model->orientation();
 
         return RigidContactMapper<BulletConvexHullModel,TVec3Types >::addPoint(ori.inverseRotate(cP),0,r);
     }

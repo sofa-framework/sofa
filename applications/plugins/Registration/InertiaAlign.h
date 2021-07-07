@@ -24,10 +24,10 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <Eigen/Dense>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -46,33 +46,33 @@ public:
 
     InertiaAlign();
     ~InertiaAlign() override;
-    typedef defaulttype::Mat<3,3> Mat3x3;
+    typedef type::Mat<3,3> Mat3x3;
 
     /**
       * Data Fields
       */
     /// input
-    Data <sofa::defaulttype::Vector3> targetC;
-    Data <sofa::defaulttype::Vector3> sourceC; ///< input: the gravity center of the source mesh
+    Data <sofa::type::Vector3> targetC;
+    Data <sofa::type::Vector3> sourceC; ///< input: the gravity center of the source mesh
 
     Data < Mat3x3 > targetInertiaMatrix; ///< input: the inertia matrix of the target mesh
     Data < Mat3x3 > sourceInertiaMatrix; ///< input: the inertia matrix of the source mesh
 
     /// input//output
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positiont;
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positions; ///< input: positions of the source vertices
-    helper::vector<sofa::defaulttype::Vec<3,SReal> > positionDistSource;
+    Data< type::vector<sofa::type::Vec<3,SReal> > > m_positiont;
+    Data< type::vector<sofa::type::Vec<3,SReal> > > m_positions; ///< input: positions of the source vertices
+    type::vector<sofa::type::Vec<3,SReal> > positionDistSource;
 
     /// Initialization method called at graph modification, during bottom-up traversal.
     void init() override;
 
 protected:
 
-    typedef defaulttype::Vector3 Vector3;
-    typedef defaulttype::Matrix4 Matrix4;
+    typedef type::Vector3 Vector3;
+    typedef type::Matrix4 Matrix4;
 
-    SReal computeDistances(helper::vector<sofa::defaulttype::Vec<3,SReal> >, helper::vector<sofa::defaulttype::Vec<3,SReal> >);
-    SReal distance(sofa::defaulttype::Vec<3,SReal>, helper::vector<sofa::defaulttype::Vec<3,SReal> >);
+    SReal computeDistances(type::vector<sofa::type::Vec<3,SReal> >, type::vector<sofa::type::Vec<3,SReal> >);
+    SReal distance(sofa::type::Vec<3,SReal>, type::vector<sofa::type::Vec<3,SReal> >);
     SReal abs(SReal);
 
     Matrix4 inverseTransform(Matrix4);

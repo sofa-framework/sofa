@@ -28,7 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 #include <sofa/helper/cast.h>
 
 namespace sofa::component::projectiveconstraintset
@@ -79,7 +79,7 @@ void PatchTestMovementConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*d_indices.beginEdit(),index);
+    sofa::type::removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();
 }
 
@@ -431,9 +431,9 @@ template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = d_indices.getValue();
-    std::vector< defaulttype::Vector3 > points;
+    std::vector< type::Vector3 > points;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    defaulttype::Vector3 point;
+    type::Vector3 point;
 
     if(d_drawConstrainedPoints.getValue())
     {
@@ -442,7 +442,7 @@ void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualPara
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
 }
 

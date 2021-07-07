@@ -50,8 +50,8 @@ private:
     void createGridCommands();
     //void createNormalCommands();
 
-    void lineTo(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition);
-    void moveTo(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition);
+    void lineTo(const unsigned int axis,const sofa::type::Vec3d& imageposition);
+    void moveTo(const unsigned int axis,const sofa::type::Vec3d& imageposition);
 
 
 public slots:
@@ -60,7 +60,7 @@ public slots:
     void updateColor() override;
 
 private slots:
-    void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
+    void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& value);
     
     void executeButtonClick();
     

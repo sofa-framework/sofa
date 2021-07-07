@@ -86,7 +86,7 @@ void PointSetGeometryAlgorithms< DataTypes >::reinit()
 template <class DataTypes>
 float PointSetGeometryAlgorithms< DataTypes >::getIndicesScale() const
 {
-    const sofa::defaulttype::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
+    const sofa::type::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
     float bbDiff = float((bbox.maxBBox() - bbox.minBBox()).norm());
     if (std::isinf(bbDiff))
         return d_showIndicesScale.getValue();
@@ -208,13 +208,13 @@ PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_
 
 
 template<class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const helper::vector< sofa::Index > &indices, const helper::vector< core::topology::PointAncestorElem > &ancestorElems
-    , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs )
+void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const type::vector< sofa::Index > &indices, const type::vector< core::topology::PointAncestorElem > &ancestorElems
+    , const type::vector< core::VecCoordId >& coordVecs, const type::vector< core::VecDerivId >& derivVecs )
 {
     using namespace sofa::core::topology;
 
-    helper::vector< VecCoord* > pointsAddedVecCoords;
-    helper::vector< VecDeriv* > pointsAddedVecDerivs;
+    type::vector< VecCoord* > pointsAddedVecCoords;
+    type::vector< VecDeriv* > pointsAddedVecDerivs;
 
     const size_t nbPointCoords = coordVecs.size();
     const size_t nbPointDerivs = derivVecs.size();
@@ -251,7 +251,7 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const helper::vector
 
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const core::topology::PointAncestorElem &ancestorElem
-    , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& /*derivVecs*/)
+    , const type::vector< VecCoord* >& coordVecs, const type::vector< VecDeriv* >& /*derivVecs*/)
 
 {
     using namespace sofa::core::topology;
@@ -269,20 +269,20 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 {
     if (d_showPointIndices.getValue())
     {
-        sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+        sofa::type::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
         sofa::simulation::Node* context = sofa::simulation::node::getNodeFrom(this->getContext());
-        const auto & color4 = sofa::helper::types::RGBAColor::white();
+        const auto & color4 = sofa::type::RGBAColor::white();
 
         sofa::simulation::getSimulation()->computeBBox(context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         float scale = getIndicesScale();
 
-        std::vector<defaulttype::Vector3> positions;
+        std::vector<type::Vector3> positions;
         for (unsigned int i =0; i<coords.size(); i++)
         {
-            defaulttype::Vector3 center; center = DataTypes::getCPos(coords[i]);
+            type::Vector3 center; center = DataTypes::getCPos(coords[i]);
             positions.push_back(center);
 
         }

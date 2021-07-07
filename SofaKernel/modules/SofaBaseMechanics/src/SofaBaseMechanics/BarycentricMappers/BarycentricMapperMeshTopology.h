@@ -80,7 +80,7 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
     const BaseMatrix* getJ(int outSize, int inSize) override;
 
-    sofa::helper::vector< MappingData3D > const* getMap3d() const { return &m_map3d; }
+    sofa::type::vector< MappingData3D > const* getMap3d() const { return &m_map3d; }
 
     template<class I, class O>
     friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<I, O> &b );
@@ -95,9 +95,9 @@ protected:
 
     void addMatrixContrib(MatrixType* m, int row, int col, Real value);
 
-    sofa::helper::vector< MappingData1D >  m_map1d;
-    sofa::helper::vector< MappingData2D >  m_map2d;
-    sofa::helper::vector< MappingData3D >  m_map3d;
+    sofa::type::vector< MappingData1D >  m_map1d;
+    sofa::type::vector< MappingData2D >  m_map2d;
+    sofa::type::vector< MappingData3D >  m_map3d;
 
     MatrixType* m_matrixJ {nullptr};
     bool        m_updateJ {false};

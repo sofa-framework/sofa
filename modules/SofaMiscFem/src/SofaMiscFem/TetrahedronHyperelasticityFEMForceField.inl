@@ -166,12 +166,12 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
         return;
     }
 
-    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
     /// prepare to store info in the triangle array
     tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
-    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    type::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
 
     edgeInf.resize(m_topology->getNbEdges());
     m_edgeInfo.createTopologyHandler(m_topology);
@@ -189,16 +189,16 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     for (Topology::TetrahedronID i=0;i<m_topology->getNbTetrahedra();++i)
     {
         createTetrahedronRestInformation(i, tetrahedronInf[i],
-            m_topology->getTetrahedron(i),  (const helper::vector< Index > )0,
-            (const helper::vector< double >)0);
+            m_topology->getTetrahedron(i),  (const type::vector< Index > )0,
+            (const type::vector< double >)0);
     }
 
     /// set the call back function upon creation of a tetrahedron
     m_tetrahedronInfo.createTopologyHandler(m_topology);
     m_tetrahedronInfo.applyCreateFunction([this](Index tetrahedronIndex, TetrahedronRestInformation& tetraInfo,
         const core::topology::BaseMeshTopology::Tetrahedron& tetra,
-        const sofa::helper::vector< Index >& ancestors,
-        const sofa::helper::vector< double >& coefs)
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
     {
         createTetrahedronRestInformation(tetrahedronIndex, tetraInfo, tetra, ancestors, coefs);
     });
@@ -211,11 +211,11 @@ template< class DataTypes >
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::createTetrahedronRestInformation(Index tetrahedronIndex,
     TetrahedronRestInformation& tinfo,
     const Tetrahedron&,
-    const sofa::helper::vector<Index>&,
-    const sofa::helper::vector<double>&)
+    const sofa::type::vector<Index>&,
+    const sofa::type::vector<double>&)
 {
 
-    const helper::vector< Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();
+    const type::vector< Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();
     const std::vector< Edge>& edgeArray = m_topology->getEdges();
     unsigned int j;
     //      int k;
@@ -273,7 +273,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
     unsigned int i=0,j=0,k=0,l=0;
     unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
 
     TetrahedronRestInformation *tetInfo;
@@ -351,10 +351,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
 {
     unsigned int i=0,j=0,k=0,l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
+    const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
 
-    helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
     EdgeInformation *einfo;
     TetrahedronRestInformation *tetInfo;
@@ -390,7 +390,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
             Matrix3  M, N;
             MatrixSym outputTensor;
             N.clear();
-            helper::vector<MatrixSym> inputTensor;
+            type::vector<MatrixSym> inputTensor;
             inputTensor.resize(3);
             //	MatrixSym input1,input2,input3,outputTensor;
             for(int m=0; m<3;m++){
@@ -440,9 +440,9 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
 
     unsigned int l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
+    const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
 
-    helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
 
     EdgeInformation *einfo;
 
@@ -497,8 +497,8 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
     }
 
     unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
-    helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
+    type::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
     EdgeInformation *einfo;
     unsigned int i,j,N0, N1, l;
         Index noeud0, noeud1;
@@ -529,7 +529,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
 template<class DataTypes>
 Mat<3,3,double> TetrahedronHyperelasticityFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
 {
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 	TetrahedronRestInformation *tetInfo;
 	tetInfo=&tetrahedronInf[TetrahedronIndex];
     return tetInfo->m_deformationGradient;
@@ -572,7 +572,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
     Real avgError=0.0;
     int count=0;
 
-    helper::vector<TetrahedronRestInformation> &tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation> &tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
     for (unsigned int moveIdx=0; moveIdx<pos.size(); moveIdx++)
     {
@@ -746,7 +746,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::computeBBox(const core:
         }
     }
 
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
@@ -798,59 +798,59 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
         points[3].push_back(pb);
     }
 
-    sofa::helper::types::RGBAColor color1;
-    sofa::helper::types::RGBAColor color2;
-    sofa::helper::types::RGBAColor color3;
-    sofa::helper::types::RGBAColor color4;
+    sofa::type::RGBAColor color1;
+    sofa::type::RGBAColor color2;
+    sofa::type::RGBAColor color3;
+    sofa::type::RGBAColor color4;
 
     std::string material = d_materialName.getValue();
     if (material=="ArrudaBoyce") {
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else if (material=="StVenantKirchhoff"){
-        color1 = sofa::helper::types::RGBAColor(1.0,0.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(1.0,0.0,0.5,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,0.5,1.0,1.0);
+        color1 = sofa::type::RGBAColor(1.0,0.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(1.0,0.0,0.5,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,0.5,1.0,1.0);
     }
     else if (material=="NeoHookean"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,0.0,1.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,0.0,1.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,0.5,1.0,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,1.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,0.0,1.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,0.0,1.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,0.5,1.0,1.0);
     }
     else if (material=="MooneyRivlin"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.0,1.0,0.5,1.0);
-        color3 = sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(0.5,1.0,1.0,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.0,1.0,0.5,1.0);
+        color3 = sofa::type::RGBAColor(0.0,1.0,1.0,1.0);
+        color4 = sofa::type::RGBAColor(0.5,1.0,1.0,1.0);
     }
     else if (material=="VerondaWestman"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else if (material=="Costa"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else if (material=="Ogden"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else {
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
 
 

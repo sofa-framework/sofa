@@ -23,7 +23,7 @@
 #include <LMConstraint/config.h>
 
 #include <LMConstraint/BaseLMConstraint.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::constraintset
 {

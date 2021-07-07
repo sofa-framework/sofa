@@ -34,10 +34,10 @@ using core::MechanicalParams;
 using core::behavior::MultiMatrixAccessor;
 using core::behavior::ForceField;
 using core::topology::BaseMeshTopology;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using defaulttype::Vector3;
-using defaulttype::Quat;
+using type::Vec;
+using type::Mat;
+using type::Vector3;
+using type::Quat;
 using topology::EdgeData;
 
 /** Compute Finite Element forces based on 6D beam elements.
@@ -61,7 +61,7 @@ public:
     using Index = sofa::Index;
 
     typedef BaseMeshTopology::Edge Element;
-    typedef helper::vector<BaseMeshTopology::Edge> VecElement;
+    typedef type::vector<BaseMeshTopology::Edge> VecElement;
     typedef Vec<3, Real> Vec3;
 
 protected:
@@ -87,7 +87,7 @@ protected:
         double _Asz; //_Asz is the z-direction effective shear area;
         StiffnessMatrix _k_loc;
 
-        defaulttype::Quat quat;
+        type::Quat<SReal> quat;
 
         void init(double E, double L, double nu, double r, double rInner);
 
@@ -134,12 +134,12 @@ protected:
    
     //just for draw forces
     VecDeriv m_forces;
-    EdgeData<helper::vector<BeamInfo> > m_beamsData; ///< Internal element data
+    EdgeData<type::vector<BeamInfo> > m_beamsData; ///< Internal element data
 
     void createBeamInfo(Index edgeIndex, BeamInfo&,
         const BaseMeshTopology::Edge& e,
-        const helper::vector<Index>&,
-        const helper::vector< double >&);
+        const type::vector<Index>&,
+        const type::vector< double >&);
 
 
     const VecElement *m_indexedElements;
@@ -161,7 +161,7 @@ public:
     bool m_assembling;
     double m_lastUpdatedStep;
 
-    Quat& beamQuat(int i);
+    Quat<SReal>& beamQuat(int i);
 
     BaseMeshTopology* m_topology;
 
@@ -194,7 +194,7 @@ protected:
     void computeStiffness(int i, Index a, Index b);
 
     /// Large displacements method
-    helper::vector<Transformation> _nodeRotations;
+    type::vector<Transformation> _nodeRotations;
     void initLarge(int i, Index a, Index b);
     void accumulateForceLarge( VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
     void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);

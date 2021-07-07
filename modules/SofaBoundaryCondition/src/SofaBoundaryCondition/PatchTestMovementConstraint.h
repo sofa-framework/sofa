@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <type_traits>
 #include <set>
@@ -61,7 +61,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
-    typedef helper::vector<Index> SetIndexArray;
+    typedef type::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     static const unsigned int CoordSize = Coord::total_size;

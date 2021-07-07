@@ -32,7 +32,7 @@ namespace sofa::component::collision{
 class SOFA_MISC_COLLISION_API OBBIntTool
 {
 public:
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
+    typedef sofa::type::vector<sofa::core::collision::DetectionOutput> OutputVector;
     typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
     static int computeIntersection(OBB&, OBB&,SReal alarmDist,SReal contactDist,OutputVector* contacts);

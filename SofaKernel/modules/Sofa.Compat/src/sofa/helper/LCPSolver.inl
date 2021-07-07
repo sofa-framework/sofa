@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalGetDimensionVisitor.h>
-
-namespace sofa::simulation::mechanicalvisitor
-{
-
-Visitor::Result MechanicalGetDimensionVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
-{
-    const std::size_t n = mm->getMatrixSize();
-    *ctx->nodeData += (SReal)n;
-    return RESULT_CONTINUE;
-}
-
-}
+#include <sofa/helper/LCPSolver.h>

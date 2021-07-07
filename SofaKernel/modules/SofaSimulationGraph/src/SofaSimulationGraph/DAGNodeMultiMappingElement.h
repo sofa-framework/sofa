@@ -37,9 +37,9 @@ public:
 protected:
     void updateSceneGraph(
         sofa::core::BaseMapping* multiMapping,
-        const helper::vector<simulation::Node*>& ancestorInputs,
-        helper::vector<simulation::Node*>& otherInputs,
-        helper::vector<simulation::Node*>& outputs)  override;
+        const type::vector<simulation::Node*>& ancestorInputs,
+        type::vector<simulation::Node*>& otherInputs,
+        type::vector<simulation::Node*>& outputs)  override;
 };
 
 

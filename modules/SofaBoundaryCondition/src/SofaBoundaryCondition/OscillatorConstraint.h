@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 
 namespace sofa::component::projectiveconstraintset
@@ -81,7 +81,7 @@ protected:
         }
     };
 
-    Data< helper::vector< Oscillator > > constraints; ///< constrained particles
+    Data< type::vector< Oscillator > > constraints; ///< constrained particles
 
 
 public:

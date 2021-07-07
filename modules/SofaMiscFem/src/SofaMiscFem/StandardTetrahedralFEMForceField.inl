@@ -90,8 +90,8 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
     tetrahedronInfo.createTopologyHandler(m_topology);
     tetrahedronInfo.applyCreateFunction([this](Index tetrahedronIndex, TetrahedronRestInformation& tetraInfo,
         const core::topology::BaseMeshTopology::Tetrahedron& tetra,
-        const sofa::helper::vector< Index >& ancestors,
-        const sofa::helper::vector< double >& coefs)
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
     {
         createTetrahedronRestInformation(tetrahedronIndex, tetraInfo, tetra, ancestors, coefs);
     });
@@ -182,7 +182,7 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
     /// initialize the data structure associated with each tetrahedron
     for (size_t i=0;i<m_topology->getNbTetrahedra();++i) {
         createTetrahedronRestInformation(i, tetrahedronInf[i], m_topology->getTetrahedron(i),  
-            (const helper::vector< Index > )0, (const helper::vector< double >)0);
+            (const type::vector< Index > )0, (const type::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
 
@@ -199,11 +199,11 @@ template< class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::createTetrahedronRestInformation(Index tetrahedronIndex,
     TetrahedronRestInformation& tinfo,
     const core::topology::BaseMeshTopology::Tetrahedron&,
-    const sofa::helper::vector<Index>&,
-    const sofa::helper::vector<double>&)
+    const sofa::type::vector<Index>&,
+    const sofa::type::vector<double>&)
 {
 
-    const helper::vector< core::topology::BaseMeshTopology::Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();
+    const type::vector< core::topology::BaseMeshTopology::Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();
     const std::vector< core::topology::BaseMeshTopology::Edge>& edgeArray = m_topology->getEdges();
     unsigned int j;
     /*int l*/;
@@ -277,9 +277,9 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
     unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
     tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
+    const type::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
     TetrahedronRestInformation *tetInfo;
     EdgeInformation *einfo;
 
@@ -459,9 +459,9 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
     unsigned int l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
+    const type::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
 
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 //	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     EdgeInformation *einfo;
@@ -545,12 +545,12 @@ template<class DataTypes>
 void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFact, unsigned int &offset)
 {
     unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
+    const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
     edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
     EdgeInformation *einfo;
     unsigned int i,j,N0, N1, l;
     Index noeud0, noeud1;
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,Real> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,Real> > * >(mat))
+    if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,Real> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,Real> > * >(mat))
     {
         int offd3 = offset/3;
 

@@ -182,7 +182,7 @@ namespace sofa
 		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid2dTypes >;
 
 		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec2fTypes >;
+		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::type::Vec2fTypes >;
 		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec1fTypes >;
 		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec6fTypes >;
 		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3fTypes >;

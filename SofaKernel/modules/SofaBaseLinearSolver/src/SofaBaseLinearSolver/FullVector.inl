@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseLinearSolver/FullVector.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>

@@ -64,8 +64,8 @@ public:
     Data< SeqPositions > f_inPosition; ///< input node positions
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
-    Data< helper::vector<unsigned int> > f_cell; ///< cell index associated with each sample
-    Data< helper::vector<unsigned int> > f_indices; ///< list of cells where sampling is performed (all by default)
+    Data< type::vector<unsigned int> > f_cell; ///< cell index associated with each sample
+    Data< type::vector<unsigned int> > f_indices; ///< list of cells where sampling is performed (all by default)
 
     typedef topology::TetrahedronSetGeometryAlgorithms<defaulttype::StdVectorTypes<Coord,Coord,Real> > TetraGeoAlg;
     TetraGeoAlg* tetraGeoAlgo;
@@ -77,7 +77,7 @@ public:
     Data< bool > f_useLocalOrientation; ///< tells if orientations are defined in the local basis on each cell
     //@}
 
-    Data< helper::vector<Real> > f_fineVolumes; ///< input cell volumes (typically computed from a fine model)
+    Data< type::vector<Real> > f_fineVolumes; ///< input cell volumes (typically computed from a fine model)
 
     void init() override
     {
@@ -143,7 +143,7 @@ protected:
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
         helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
-        helper::WriteOnlyAccessor<Data< helper::vector<unsigned int> > > cel(f_cell);
+        helper::WriteOnlyAccessor<Data< type::vector<unsigned int> > > cel(f_cell);
         pos.clear();
         vol.clear();
         transforms.clear();
@@ -361,10 +361,10 @@ protected:
     inline void getCubeVolumes(volumeIntegralType &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& p4, const unsigned int order)
     {
         Coord u=p2-p1,v=p3-p1,w=p4-p1;
-        defaulttype::Vec<3,Real> l;  for(unsigned int i=0; i<3; i++) l[i]=helper::rmax(helper::rmax(helper::rabs(u[i]),helper::rabs(v[i])),helper::rabs(w[i]));
-        defaulttype::Vec<3,Real> l2;  for(unsigned int i=0; i<3; i++) l2[i]=l[i]*l[i];
-        defaulttype::Vec<3,Real> l3;  for(unsigned int i=0; i<3; i++) l3[i]=l2[i]*l[i];
-        defaulttype::Vec<3,Real> l5;  for(unsigned int i=0; i<3; i++) l5[i]=l3[i]*l2[i];
+        type::Vec<3,Real> l;  for(unsigned int i=0; i<3; i++) l[i]=helper::rmax(helper::rmax(helper::rabs(u[i]),helper::rabs(v[i])),helper::rabs(w[i]));
+        type::Vec<3,Real> l2;  for(unsigned int i=0; i<3; i++) l2[i]=l[i]*l[i];
+        type::Vec<3,Real> l3;  for(unsigned int i=0; i<3; i++) l3[i]=l2[i]*l[i];
+        type::Vec<3,Real> l5;  for(unsigned int i=0; i<3; i++) l5[i]=l3[i]*l2[i];
 
 
         unsigned int dim=(order+1)*(order+2)*(order+3)/6;          V.resize(dim);
@@ -448,7 +448,7 @@ protected:
     Transform getUserOrientation(const unsigned int index) const
     {
         Coord orient; if(this->f_orientation.getValue().size()) orient=(this->f_orientation.getValue().size()>index)?this->f_orientation.getValue()[index]:this->f_orientation.getValue()[0];
-        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(orient * (Real)M_PI / (Real)180.0);
+        type::Quat<Real> q = type::Quat< Real >::createQuaterFromEuler(orient * (Real)M_PI / (Real)180.0);
         Transform R; q.toMatrix(R);
         return R;
     }

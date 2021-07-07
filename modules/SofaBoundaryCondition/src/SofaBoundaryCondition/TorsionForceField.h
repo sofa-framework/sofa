@@ -26,15 +26,15 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::forcefield
 {
 
-using sofa::defaulttype::Vec;
-using sofa::defaulttype::Mat;
+using sofa::type::Vec;
+using sofa::type::Mat;
 using sofa::core::behavior::ForceField;
 using sofa::core::MechanicalParams;
 
@@ -47,8 +47,8 @@ struct TorsionForceFieldTraits
 	typedef typename DataTypes::Real Real;
 	typedef typename DataTypes::Coord Coord;
 	typedef typename DataTypes::Deriv Deriv;
-	typedef helper::vector<Coord> VecCoord;
-	typedef helper::vector<Deriv> VecDeriv;
+	typedef type::vector<Coord> VecCoord;
+	typedef type::vector<Deriv> VecDeriv;
 	enum { deriv_total_size = Coord::total_size };
 	typedef Mat<deriv_total_size, deriv_total_size, Real> MatrixBlock;
 };
@@ -81,7 +81,7 @@ public:
 	typedef Data<VecDeriv> DataVecDeriv;
 
 	typedef unsigned int PointId;
-	typedef helper::vector<PointId> VecId;
+	typedef type::vector<PointId> VecId;
 	typedef Mat<3, 3, Real> Mat3;
 
 public:

@@ -66,7 +66,7 @@ public:
     Data < bool > f_writeContainers; ///< flag enabling output of common topology containers.
     Data < bool > f_writeShellContainers; ///< flag enabling output of specific shell topology containers.
     Data < double > f_interval; ///< time duration between outputs
-    Data < helper::vector<double> > f_time; ///< set time to write outputs
+    Data < type::vector<double> > f_time; ///< set time to write outputs
     Data < double > f_period; ///< period between outputs
 
     /// Link to be set to the topology container in the component graph.

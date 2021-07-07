@@ -87,7 +87,7 @@ void RegistrationContactForceField<DataTypes>::addForce(const core::MechanicalPa
 	VecDeriv&       f2 = *data_f2.beginEdit();
 	const VecCoord& x2 =  data_x2.getValue();
 	//const VecDeriv& v2 =  data_v2.getValue();
-    helper::vector<Contact>& cc = *contacts.beginEdit();
+    type::vector<Contact>& cc = *contacts.beginEdit();
 
 
 	f1.resize(x1.size());
@@ -122,7 +122,7 @@ void RegistrationContactForceField<DataTypes>::addDForce(const core::MechanicalP
 	const VecDeriv&  dx1 =  data_dx1.getValue();
 	const VecDeriv&  dx2 =  data_dx2.getValue();
     SReal kFactor = mparams->kFactor();
-    const helper::vector<Contact>& cc = contacts.getValue();
+    const type::vector<Contact>& cc = contacts.getValue();
 
 	df1.resize(dx1.size());
 	df2.resize(dx2.size());
@@ -160,11 +160,11 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 	if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
 	const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
 	const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    const helper::vector<Contact>& cc = contacts.getValue();
+    const type::vector<Contact>& cc = contacts.getValue();
 
     glDisable(GL_LIGHTING);
 
-    std::vector< defaulttype::Vector3 > points[4];
+    std::vector< type::Vector3 > points[4];
 
     for (unsigned int i=0; i<cc.size(); i++)
 	{
@@ -193,13 +193,13 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 				points[3].push_back(p2[c.m2]);
 			  }
 	}
-        vparams->drawTool()->drawLines(points[0], 1, type::RGBAColor::magenta());
-        vparams->drawTool()->drawLines(points[1], 1, type::RGBAColor::cyan());
-        vparams->drawTool()->drawLines(points[2], 1, type::RGBAColor::red());
-        vparams->drawTool()->drawLines(points[3], 1, type::RGBAColor::green());
 
+    vparams->drawTool()->drawLines(points[0], 1, type::RGBAColor::magenta());
+    vparams->drawTool()->drawLines(points[1], 1, type::RGBAColor::cyan());
+    vparams->drawTool()->drawLines(points[2], 1, type::RGBAColor::red());
+    vparams->drawTool()->drawLines(points[3], 1, type::RGBAColor::green());
 
-	std::vector< defaulttype::Vector3 > pointsN;
+	std::vector< type::Vector3 > pointsN;
 	if (vparams->displayFlags().getShowNormals())
 	{
         for (unsigned int i=0; i<cc.size(); i++)
@@ -214,7 +214,7 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 			pointsN.push_back(p2[c.m2]);
 			pointsN.push_back(p);
 		}
-                vparams->drawTool()->drawLines(pointsN, 1, type::RGBAColor::yellow());
+        vparams->drawTool()->drawLines(pointsN, 1, type::RGBAColor::yellow());
 	}
 #endif // REGISTRATION_HAVE_SOFA_GL == 1
 }
@@ -223,10 +223,10 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 template<class DataTypes>
     void RegistrationContactForceField<DataTypes>::grabPoint(
     const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
-    const helper::vector< unsigned int > &index,
-    helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
-    helper::vector< unsigned int > &triangle,
-    helper::vector< unsigned int > &index_point)
+    const type::vector< unsigned int > &index,
+    type::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,
+    type::vector< unsigned int > &triangle,
+    type::vector< unsigned int > &index_point)
 {
   if (static_cast< core::objectmodel::BaseObject *>(this->mstate1) == static_cast< const core::objectmodel::BaseObject *>(tool))
   {
@@ -271,7 +271,7 @@ template<class DataTypes>
 template<class DataTypes>
 void RegistrationContactForceField<DataTypes>::updateForceMask()
 {
-    const helper::vector<Contact>& cc = contacts.getValue();
+    const type::vector<Contact>& cc = contacts.getValue();
     for (unsigned int i=0; i<cc.size(); i++)
     {
         const Contact& c = cc[i];

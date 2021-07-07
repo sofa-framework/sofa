@@ -22,7 +22,7 @@
 #ifndef FLEXIBLE_BaseMaterial_H
 #define FLEXIBLE_BaseMaterial_H
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 
 // Hack to fix compilation of mixing types to remove once the macro for constants is setted up
@@ -48,7 +48,7 @@ public:
     typedef typename T::Real Real;
 
     typedef component::engine::BaseGaussPointSampler::volumeIntegralType volumeIntegralType;
-    typedef Mat<T::deriv_total_size,T::deriv_total_size,Real> MatBlock;  ///< stiffness or compliance matrix block
+    typedef type::Mat<T::deriv_total_size,T::deriv_total_size,Real> MatBlock;  ///< stiffness or compliance matrix block
 
     // quadrature data (from a GaussPointSampler)
     const volumeIntegralType* volume;

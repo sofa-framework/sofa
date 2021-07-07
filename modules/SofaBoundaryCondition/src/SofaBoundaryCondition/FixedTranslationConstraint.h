@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -54,7 +54,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<Index> SetIndexArray;
+    typedef type::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 protected:
     FixedTranslationConstraintInternalData<DataTypes> data;

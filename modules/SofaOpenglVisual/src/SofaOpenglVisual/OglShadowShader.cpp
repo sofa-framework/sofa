@@ -50,12 +50,12 @@ OglShadowShader::OglShadowShader()
 {
     passive.setValue(false);
     turnOn.setValue(true);
-    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
+    type::vector<std::string>& vertF = *vertFilename.beginEdit();
     vertF.resize(2);
     vertF[0] = PATH_TO_SHADOW_VERTEX_SHADERS;
     vertF[1] = PATH_TO_SHADOW_VERTEX_SHADERS;
     vertFilename.endEdit();
-    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
+    type::vector<std::string>& fragF = *fragFilename.beginEdit();
     fragF.resize(2);
     fragF[0] = PATH_TO_SHADOW_FRAGMENT_SHADERS;
     fragF[1] = PATH_TO_SHADOW_FRAGMENT_SHADERS;
@@ -81,12 +81,12 @@ void OglShadowShader::init()
 
 void OglShadowShader::initShaders(unsigned int /* numberOfLights */, bool softShadow)
 {
-    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
+    type::vector<std::string>& vertF = *vertFilename.beginEdit();
     vertF.resize(2);
     vertF[0] = (softShadow ? PATH_TO_SOFT_SHADOW_VERTEX_SHADERS : PATH_TO_SHADOW_VERTEX_SHADERS);
     vertF[1] = (softShadow ? PATH_TO_SOFT_SHADOW_VERTEX_SHADERS : PATH_TO_SHADOW_VERTEX_SHADERS);
     vertFilename.endEdit();
-    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
+    type::vector<std::string>& fragF = *fragFilename.beginEdit();
     fragF.resize(2);
     fragF[0] = (softShadow ? PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS : PATH_TO_SHADOW_FRAGMENT_SHADERS);
     fragF[1] = (softShadow ? PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS : PATH_TO_SHADOW_FRAGMENT_SHADERS);

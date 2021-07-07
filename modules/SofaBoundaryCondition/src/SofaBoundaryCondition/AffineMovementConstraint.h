@@ -25,9 +25,9 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Quat.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -61,16 +61,16 @@ public:
     typedef typename DataTypes::Real Real;
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
-    typedef helper::vector<Index> SetIndexArray;
+    typedef type::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
-    typedef defaulttype::Quat Quat;
-    typedef defaulttype::Vector3 Vector3;
+    typedef type::Quat<SReal> Quat;
+    typedef type::Vector3 Vector3;
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
     static const auto CoordSize = Coord::total_size;
-    typedef defaulttype::Mat<3,3,Real> RotationMatrix;
+    typedef type::Mat<3,3,Real> RotationMatrix;
 
 protected:
     AffineMovementConstraintInternalData<DataTypes> *data;

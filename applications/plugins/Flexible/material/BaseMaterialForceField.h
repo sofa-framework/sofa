@@ -82,7 +82,7 @@ public:
     /** @name  material types    */
     //@{
     typedef MaterialBlockType BlockType;  ///< Material block object
-    typedef helper::vector<BlockType >  SparseMatrix;
+    typedef type::vector<BlockType >  SparseMatrix;
 
     typedef typename BlockType::MatBlock  MatBlock;  ///< Material block matrix
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes>    SparseMatrixEigen;
@@ -141,7 +141,7 @@ public:
 
     //Pierre-Luc : Implementation in HookeForceField
     using Inherit::addForce;
-    virtual void addForce(DataVecDeriv& /*_f*/ , const DataVecCoord& /*_x*/ , const DataVecDeriv& /*_v*/, const helper::vector<SReal> /*_vol*/)
+    virtual void addForce(DataVecDeriv& /*_f*/ , const DataVecCoord& /*_x*/ , const DataVecDeriv& /*_v*/, const type::vector<SReal> /*_vol*/)
     {
         std::cout << "Do nothing" << std::endl;
     }

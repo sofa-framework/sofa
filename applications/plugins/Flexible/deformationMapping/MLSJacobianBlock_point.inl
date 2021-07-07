@@ -23,8 +23,8 @@
 #define FLEXIBLE_MLSJacobianBlock_point_INL
 
 #include "MLSJacobianBlock.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include "../types/DeformationGradientTypes.h"
 
@@ -58,11 +58,11 @@ public:
     enum { dim = Out::spatial_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:   \f$ p = w.t + w.(p0-t0)  \f$
@@ -137,13 +137,13 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -222,13 +222,13 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -307,13 +307,13 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -392,14 +392,14 @@ public:
     enum { mdim = Out::material_dimensions };
 
     typedef typename MLSInfo< dim, InInfo<In>::order, InReal >::basis Basis;
-    typedef Vec<dim,Basis> Gradient;
-    typedef Mat<dim,dim,Basis> Hessian;
+    typedef type::Vec<dim,Basis> Gradient;
+    typedef type::Mat<dim,dim,Basis> Hessian;
 
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
-    typedef Mat<dim,mdim,Real> mHessian;
+    typedef type::Vec<mdim,Real> mGradient;
+    typedef type::Mat<dim,mdim,Real> mHessian;
     /**
     Mapping:
         - \f$ F = grad p.M = (t+p0-t0).grad w.M + w.M  \f$
@@ -428,7 +428,7 @@ public:
         C.getF()=covMN(SPos-InPos,Ft);
         C.getF()+=F0*p[0];
 
-        Mat<dim,dim,Real> ddw;
+        type::Mat<dim,dim,Real> ddw;
         for (unsigned int i = 0; i < dim; ++i) for (unsigned int j = 0; j < dim; ++j) ddw(i,j)=ddP(i,j)[0];
         dFt=ddw.transposed()*F0;
         for (unsigned int k = 0; k < dim; ++k)

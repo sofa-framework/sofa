@@ -36,7 +36,7 @@
 #include <iostream>
 #include <cmath>
 
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 namespace sofa
 {
@@ -99,11 +99,11 @@ typename  WarpPreconditioner<TMatrix, TVector, ThreadManager >::Index
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sofa::core::MechanicalParams* mparams) {
     simulation::common::MechanicalOperations mops(mparams, this->getContext());
 
-    this->currentGroup->matrixAccessor.setGlobalMatrix(this->currentGroup->systemMatrix);
-    this->currentGroup->matrixAccessor.clear();
-    mops.getMatrixDimension(&(this->currentGroup->matrixAccessor));
-    this->currentGroup->matrixAccessor.setupMatrices();
-    return this->currentGroup->matrixAccessor.getGlobalDimension();
+    this->linearSystem.matrixAccessor.setGlobalMatrix(this->linearSystem.systemMatrix);
+    this->linearSystem.matrixAccessor.clear();
+    mops.getMatrixDimension(&(this->linearSystem.matrixAccessor));
+    this->linearSystem.matrixAccessor.setupMatrices();
+    return this->linearSystem.matrixAccessor.getGlobalDimension();
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
@@ -114,7 +114,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
     this->currentKFactor = mparams->kFactor();
     if (!this->frozen) {
         simulation::common::MechanicalOperations mops(mparams, this->getContext());
-        if (!this->currentGroup->systemMatrix) this->currentGroup->systemMatrix = this->createMatrix();
+        if (!this->linearSystem.systemMatrix) this->linearSystem.systemMatrix = this->createMatrix();
     }
 
     realSolver->setSystemMBKMatrix(mparams);
@@ -137,8 +137,8 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         rotationWork[indexwork]->resize(updateSystemSize,updateSystemSize);
         rotationFinders[f_useRotationFinder.getValue()]->getRotations(rotationWork[indexwork]);
 
-        this->currentGroup->systemMatrix->resize(updateSystemSize,updateSystemSize);
-        this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
+        this->linearSystem.systemMatrix->resize(updateSystemSize,updateSystemSize);
+        this->linearSystem.systemMatrix->setIdentity(); // identity rotationa after update
 
     } else if (realSolver->hasUpdatedMatrix()) {
         updateSystemSize = getSystemDimention(mparams);
@@ -151,17 +151,17 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
 
         if (realSolver->isAsyncSolver()) indexwork = (indexwork==0) ? 1 : 0;
 
-        this->currentGroup->systemMatrix->resize(updateSystemSize,updateSystemSize);
-        this->currentGroup->systemMatrix->setIdentity(); // identity rotationa after update
+        this->linearSystem.systemMatrix->resize(updateSystemSize,updateSystemSize);
+        this->linearSystem.systemMatrix->setIdentity(); // identity rotationa after update
     } else {
         currentSystemSize = getSystemDimention(sofa::core::mechanicalparams::defaultInstance());
 
 
-        this->currentGroup->systemMatrix->clear();
-        this->currentGroup->systemMatrix->resize(currentSystemSize,currentSystemSize);
-        rotationFinders[f_useRotationFinder.getValue()]->getRotations(this->currentGroup->systemMatrix);
+        this->linearSystem.systemMatrix->clear();
+        this->linearSystem.systemMatrix->resize(currentSystemSize,currentSystemSize);
+        rotationFinders[f_useRotationFinder.getValue()]->getRotations(this->linearSystem.systemMatrix);
 
-        this->currentGroup->systemMatrix->opMulTM(this->currentGroup->systemMatrix,rotationWork[indexwork]);
+        this->linearSystem.systemMatrix->opMulTM(this->linearSystem.systemMatrix,rotationWork[indexwork]);
     }
 }
 
@@ -189,14 +189,14 @@ template<class TMatrix, class TVector,class ThreadManager>
 bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) {
     if (J->rowSize()==0 || !realSolver) return true;
 
-    this->currentGroup->systemMatrix->rotateMatrix(&j_local,J);
+    this->linearSystem.systemMatrix->rotateMatrix(&j_local,J);
 
     return realSolver->addJMInvJt(result,&j_local,fact);
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
 bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) {
-    this->currentGroup->systemMatrix->rotateMatrix(&j_local,J);
+    this->linearSystem.systemMatrix->rotateMatrix(&j_local,J);
     return realSolver->addMInvJt(result,&j_local,fact);
 }
 

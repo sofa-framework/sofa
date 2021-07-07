@@ -24,9 +24,9 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/FixedTranslationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -69,7 +69,7 @@ void FixedTranslationConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::removeIndex(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 
@@ -109,7 +109,7 @@ static inline void clearPos(defaulttype::RigidDeriv<N,T>& v)
 }
 
 template<class T>
-static inline void clearPos(defaulttype::Vec<6,T>& v)
+static inline void clearPos(type::Vec<6,T>& v)
 {
     for (unsigned int i=0; i<3; ++i)
         v[i] = 0;
@@ -183,14 +183,14 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
-    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
+    std::vector<sofa::type::Vector3> vertices;
+    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (f_fixAll.getValue() == true)
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            sofa::defaulttype::Vector3 v;
+            sofa::type::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[i]);
             for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
@@ -202,7 +202,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            sofa::defaulttype::Vector3 v;
+            sofa::type::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[*it]);
             for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
