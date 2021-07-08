@@ -21,13 +21,15 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/fwd.h>
 #include <sofa/core/VecId.h>
-#include <sofa/core/objectmodel/Data.h>
+#include <memory>
+#include <map>
+#include <set>
 
 namespace sofa::core
 {
 
-class SOFA_CORE_API BaseState;
 template<class DataTypes> class State;
 
 /// Identify a vector of a given type stored in multiple State instances
@@ -44,11 +46,10 @@ struct StateVecAccessor<DataTypes, V_COORD, V_READ>
 {
 public:
     typedef TVecId<V_COORD, V_READ> MyVecId;
-    typedef Data<typename DataTypes::VecCoord> MyDataVec;
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
+    auto read()  const {  return state-> read(id);  }
 
 protected:
     const State<DataTypes>* state;
@@ -60,12 +61,11 @@ struct StateVecAccessor<DataTypes, V_COORD, V_WRITE>
 {
 public:
     typedef TVecId<V_COORD, V_WRITE> MyVecId;
-    typedef Data<typename DataTypes::VecCoord> MyDataVec;
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-    MyDataVec* write() const {  return state->write(id);  }
+    auto read()  const {  return state-> read(id);  }
+    auto write() const {  return state->write(id);  }
 
 protected:
     State<DataTypes>* state;
@@ -77,11 +77,10 @@ struct StateVecAccessor<DataTypes, V_DERIV, V_READ>
 {
 public:
     typedef TVecId<V_DERIV, V_READ> MyVecId;
-    typedef Data<typename DataTypes::VecDeriv> MyDataVec;
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
+    auto read()  const {  return state-> read(id);  }
 
 protected:
     const State<DataTypes>* state;
@@ -93,12 +92,11 @@ struct StateVecAccessor<DataTypes, V_DERIV, V_WRITE>
 {
 public:
     typedef TVecId<V_DERIV, V_WRITE> MyVecId;
-    typedef Data<typename DataTypes::VecDeriv> MyDataVec;
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-    MyDataVec* write() const {  return state->write(id);  }
+    auto read()  const {  return state-> read(id);  }
+    auto write() const {  return state->write(id);  }
 
 protected:
     State<DataTypes>* state;
@@ -110,11 +108,10 @@ struct StateVecAccessor<DataTypes, V_MATDERIV, V_READ>
 {
 public:
     typedef TVecId<V_MATDERIV, V_READ> MyVecId;
-    typedef Data<typename DataTypes::MatrixDeriv> MyDataVec;
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
+    auto read()  const {  return state-> read(id);  }
 
 protected:
     const State<DataTypes>* state;
@@ -126,12 +123,11 @@ struct StateVecAccessor<DataTypes, V_MATDERIV, V_WRITE>
 {
 public:
     typedef TVecId<V_MATDERIV, V_WRITE> MyVecId;
-    typedef Data<typename DataTypes::MatrixDeriv> MyDataVec;
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-    MyDataVec* write() const {  return state->write(id);  }
+    auto read()  const {  return state-> read(id);  }
+    auto write() const {  return state->write(id);  }
 
 protected:
     State<DataTypes>* state;
@@ -143,11 +139,9 @@ struct StateVecAccessor<DataTypes, V_ALL, V_READ>
 {
 public:
     typedef TVecId<V_ALL, V_READ> MyVecId;
-    //typedef BaseData MyDataVec;
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    //const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
     const State<DataTypes>* state;

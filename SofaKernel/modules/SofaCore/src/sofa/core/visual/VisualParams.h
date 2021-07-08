@@ -28,7 +28,7 @@
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/helper/visual/Transformation.h>
 #include <sofa/core/visual/DisplayFlags.h>
-
+#include <sofa/type/BoundingBox.h>
 
 namespace sofa::core::visual
 {
@@ -67,12 +67,12 @@ public:
 
     /// Read access to current position vector
     template<class S>
-    const Data<typename S::VecCoord>* readX(const S* state) const
+    auto readX(const S* state) const
     {   return m_x[state].read();    }
 
     /// Read access to current velocity vector
     template<class S>
-    const Data<typename S::VecDeriv>* readV(const S* state) const
+    auto readV(const S* state) const
     {   return m_v[state].read();    }
 
     /// @}
