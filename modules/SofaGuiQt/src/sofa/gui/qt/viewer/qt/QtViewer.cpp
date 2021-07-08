@@ -1043,12 +1043,16 @@ void QtViewer::paintGL()
     drawScene();
 
     if(!captureTimer.isActive())
+    {
         SofaViewer::captureEvent();
+    }
 
     if (_waitForRender)
+    {
         _waitForRender = false;
+    }
 
-    emit( redrawn());
+    emit redrawn();
 }
 
 void QtViewer::paintEvent(QPaintEvent* qpe)
