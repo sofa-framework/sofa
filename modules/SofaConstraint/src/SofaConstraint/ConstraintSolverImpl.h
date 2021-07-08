@@ -25,7 +25,6 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
-
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
 namespace sofa::component::constraintset

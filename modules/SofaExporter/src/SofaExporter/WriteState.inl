@@ -22,6 +22,8 @@
 #ifndef SOFA_COMPONENT_MISC_WRITESTATE_INL
 #define SOFA_COMPONENT_MISC_WRITESTATE_INL
 
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 #include <SofaExporter/WriteState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>

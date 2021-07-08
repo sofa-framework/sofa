@@ -25,9 +25,6 @@
 #include "EvalPointsDistance.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>

@@ -25,7 +25,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/type/vector.h>
