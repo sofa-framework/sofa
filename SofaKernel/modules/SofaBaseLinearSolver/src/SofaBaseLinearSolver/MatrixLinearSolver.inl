@@ -34,8 +34,103 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVi
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVisitor;
 
+#include <sofa/core/behavior/MultiVec.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/core/behavior/RotationMatrix.h>
 namespace sofa::component::linearsolver
 {
+
+template<class TVector>
+class MatrixLinearSolverInternalData
+{
+public:
+    typedef typename TVector::Real Real;
+    typedef SparseMatrix<Real> JMatrixType;
+    typedef defaulttype::BaseMatrix ResMatrixType;
+
+    template<typename MReal>
+    JMatrixType * copyJmatrix(SparseMatrix<MReal> * J)
+    {
+        J_local.clear();
+        J_local.resize(J->rowSize(),J->colSize());
+
+        for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LineConstIterator jit1 = J->begin(); jit1 != J->end(); jit1++)
+        {
+            auto l = jit1->first;
+            for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+            {
+                auto c = i1->first;
+                MReal val = i1->second;
+                J_local.set(l,c,val);
+            }
+        }
+        return &J_local;
+    }
+
+    void projectForceInConstraintSpace(defaulttype::BaseVector* r,const defaulttype::BaseVector* f) {
+        for (typename SparseMatrix<Real>::LineConstIterator jit = J_local.begin(), jitend = J_local.end(); jit != jitend; ++jit) {
+            auto row = jit->first;
+            double force = f->element(row);
+            for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2) {
+                auto col = i2->first;
+                double val = i2->second;
+                r->add(col,val * force);
+            }
+        }
+    }
+
+    JMatrixType * getLocalJ() {
+        return &J_local;
+    }
+
+    JMatrixType * getLocalJ(defaulttype::BaseMatrix * J);
+
+    ResMatrixType * getLocalRes(defaulttype::BaseMatrix * R)
+    {
+        return R;
+    }
+
+
+    void addLocalRes(defaulttype::BaseMatrix * /*R*/)
+    {
+        return ;
+    }
+
+private :
+    JMatrixType J_local;
+};
+
+template<class TVector>
+typename MatrixLinearSolverInternalData<TVector>::JMatrixType* MatrixLinearSolverInternalData<TVector>::getLocalJ(defaulttype::BaseMatrix * J)
+{
+    if (JMatrixType * j = dynamic_cast<JMatrixType *>(J))
+    {
+        return j;
+    }
+    else if (SparseMatrix<double> * j = dynamic_cast<SparseMatrix<double> *>(J))
+    {
+        return copyJmatrix(j);
+    }
+    else if (SparseMatrix<float> * j = dynamic_cast<SparseMatrix<float> *>(J))
+    {
+        return copyJmatrix(j);
+    }
+    else
+    {
+        J_local.clear();
+        J_local.resize(J->rowSize(),J->colSize());
+
+        for (typename JMatrixType::Index j=0; j<J->rowSize(); j++)
+        {
+            for (typename JMatrixType::Index i=0; i<J->colSize(); i++)
+            {
+                J_local.set(j,i,J->element(j,i));
+            }
+        }
+
+        return &J_local;
+    }
+}
 
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
@@ -300,10 +395,10 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* resu
 {
     if (J->rowSize()==0) return true;
 
-    JMatrixType * j_local = internalData.getLocalJ(J);
-    ResMatrixType * res_local = internalData.getLocalRes(result);
+    JMatrixType * j_local = internalData->getLocalJ(J);
+    ResMatrixType * res_local = internalData->getLocalRes(result);
     bool res = addJMInvJtLocal(linearSystem.systemMatrix, res_local, j_local, fact);
-    internalData.addLocalRes(result);
+    internalData->addLocalRes(result);
     return res;
 }
 
@@ -312,17 +407,17 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* resul
 {
     if (J->rowSize()==0) return true;
 
-    JMatrixType * j_local = internalData.getLocalJ(J);
-    ResMatrixType * res_local = internalData.getLocalRes(result);
+    JMatrixType * j_local = internalData->getLocalJ(J);
+    ResMatrixType * res_local = internalData->getLocalRes(result);
     bool res = addMInvJtLocal(linearSystem.systemMatrix, res_local, j_local, fact);
-    internalData.addLocalRes(result);
+    internalData->addLocalRes(result);
     return res;
 }
 
 template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact)
 {
-    JMatrixType * j_local = internalData.getLocalJ();
+    JMatrixType * j_local = internalData->getLocalJ();
     j_local->clear();
     j_local->resize(result->rowSize(), linearSystem.systemMatrix->colSize());
 
@@ -342,7 +437,7 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
     linearSystem.systemRHVector->clear();
     linearSystem.systemRHVector->resize(linearSystem.systemMatrix->colSize());
     /// rhs = J^t * f
-    internalData.projectForceInConstraintSpace(linearSystem.systemRHVector, f);
+    internalData->projectForceInConstraintSpace(linearSystem.systemRHVector, f);
     /// lhs = M^-1 * rhs
     this->solve(*linearSystem.systemMatrix, *linearSystem.systemLHVector, *linearSystem.systemRHVector);
 
@@ -355,7 +450,7 @@ void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* 
     linearSystem.systemRHVector->clear();
     linearSystem.systemRHVector->resize(linearSystem.systemMatrix->colSize());
 
-    internalData.projectForceInConstraintSpace(linearSystem.systemRHVector, f);
+    internalData->projectForceInConstraintSpace(linearSystem.systemRHVector, f);
 
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::core::behavior::MultiVecDeriv force(&vop, core::VecDerivId::force() );

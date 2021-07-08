@@ -23,6 +23,7 @@
 #include <SofaBaseLinearSolver/config.h>
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[GraphScatteredMatrix].h>
 #include <sofa/helper/map.h>
 
 namespace sofa::component::linearsolver

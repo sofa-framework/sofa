@@ -5,6 +5,7 @@ set(SOFABASELINEARSOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/config.h.in
+    ${SOFABASELINEARSOLVER_SRC}/fwd.h
     ${SOFABASELINEARSOLVER_SRC}/initSofaBaseLinearSolver.h
     ${SOFABASELINEARSOLVER_SRC}/BlocMatrixWriter.h
     ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.h
@@ -20,6 +21,7 @@ set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixExpr.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.h
+    ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[GraphScatteredMatrix].h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.inl
     ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.h
     ${SOFABASELINEARSOLVER_SRC}/SparseMatrix.h
@@ -34,6 +36,7 @@ set(SOURCE_FILES
     ${SOFABASELINEARSOLVER_SRC}/FullVector.cpp
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.cpp
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.cpp
+    ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[GraphScatteredMatrix].cpp
     ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.cpp
 )
 

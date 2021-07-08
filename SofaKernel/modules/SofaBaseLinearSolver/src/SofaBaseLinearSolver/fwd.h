@@ -20,24 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-namespace sofa::core::behavior
-{
-    class BaseAnimationLoop;
-    class BaseConstraint;
-    class BaseConstraintCorrection;
-    class BaseController;
-    class BaseForceField;
-    class BaseInteractionConstraint;
-    class BaseInteractionForceField;
-    class BaseInteractionProjectiveConstraintSet;
-    class BaseMass;
-    class BaseMechanicalState;
-    class MultiMatrixAccessor;
-}
+#include <SofaBaseLinearSolver/config.h>
 
 namespace sofa::component::linearsolver
 {
-    template<class TReal> class RotationMatrix;
-}
 
+template<typename T> class SOFA_SOFABASELINEARSOLVER_API FullMatrix;
+template<typename T> class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix;
+
+template<typename T> class SOFA_SOFABASELINEARSOLVER_API SparseMatrix ;
+
+} // namespace sofa::component::linearsolver
