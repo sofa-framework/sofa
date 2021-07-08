@@ -164,6 +164,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MechanicalParams.cpp
     ${SRC_ROOT}/Multi2Mapping.cpp
     ${SRC_ROOT}/MultiMapping.cpp
+    ${SRC_ROOT}/MultiVecId.cpp
     ${SRC_ROOT}/ObjectFactory.cpp
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp

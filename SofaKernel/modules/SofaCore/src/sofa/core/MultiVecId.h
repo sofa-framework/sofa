@@ -19,15 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MULTIVECID_H
-#define SOFA_CORE_MULTIVECID_H
+#pragma once
 
 #include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/Data.h>
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 class SOFA_CORE_API BaseState;
@@ -375,38 +372,7 @@ public:
         return defaultId;
     }
 
-    std::string getName() const
-    {
-        if (!hasIdMap())
-            return defaultId.getName();
-        else
-        {
-            std::ostringstream out;
-            out << '{';
-            out << defaultId.getName() << "[*";
-            const IdMap& map = getIdMap();
-            MyVecId prev = defaultId;
-            for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
-            {
-                if (it->second != prev) // new id
-                {
-                    out << "],";
-                    if (it->second.getType() == defaultId.getType())
-                        out << it->second.getIndex();
-                    else
-                        out << it->second.getName();
-                    out << '[';
-                    prev = it->second;
-                }
-                else out << ',';
-                if (it->first == nullptr) out << "nullptr";
-                else
-                    out << it->first->getName();
-            }
-            out << "]}";
-            return out.str();
-        }
-    }
+    std::string getName() const;
 
     friend inline std::ostream& operator << ( std::ostream& out, const TMultiVecId<vtype, vaccess>& v )
     {
@@ -605,38 +571,7 @@ public:
         return defaultId;
     }
 
-    std::string getName() const
-    {
-        if (!hasIdMap())
-            return defaultId.getName();
-        else
-        {
-            std::ostringstream out;
-            out << '{';
-            out << defaultId.getName() << "[*";
-            const IdMap& map = getIdMap();
-            MyVecId prev = defaultId;
-            for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
-            {
-                if (it->second != prev) // new id
-                {
-                    out << "],";
-                    if (it->second.getType() == defaultId.getType())
-                        out << it->second.getIndex();
-                    else
-                        out << it->second.getName();
-                    out << '[';
-                    prev = it->second;
-                }
-                else out << ',';
-                if (it->first == nullptr) out << "nullptr";
-                else
-                    out << it->first->getName();
-            }
-            out << "]}";
-            return out.str();
-        }
-    }
+    std::string getName() const;
 
     friend inline std::ostream& operator << ( std::ostream& out, const TMultiVecId<V_ALL, vaccess>& v )
     {
@@ -668,7 +603,6 @@ public:
 
 };
 
-
 typedef TMultiVecId<V_COORD, V_READ> ConstMultiVecCoordId;
 typedef TMultiVecId<V_COORD, V_WRITE>     MultiVecCoordId;
 typedef TMultiVecId<V_DERIV, V_READ> ConstMultiVecDerivId;
@@ -678,8 +612,16 @@ typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiMatrixDerivId;
 typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
 typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
 
-} // namespace core
+//#if (SOFA_CORE_MULTIVECID_SKIP_EXTERN_TEMPLATE_DECLARATION == 1)
+extern template class TMultiVecId<V_COORD, V_READ>;
+extern template class TMultiVecId<V_COORD, V_WRITE>;
+extern template class TMultiVecId<V_DERIV, V_READ>;
+extern template class TMultiVecId<V_DERIV, V_WRITE>;
+extern template class TMultiVecId<V_MATDERIV, V_READ>;
+extern template class TMultiVecId<V_MATDERIV, V_WRITE>;
+extern template class TMultiVecId<V_ALL, V_READ>;
+extern template class TMultiVecId<V_ALL, V_WRITE>;
+//#endif
 
-} // namespace sofa
+} // namespace sofa::core
 
-#endif
