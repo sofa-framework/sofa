@@ -31,7 +31,6 @@
 #include <sofa/simulation/BaseMechanicalVisitor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa::simulation

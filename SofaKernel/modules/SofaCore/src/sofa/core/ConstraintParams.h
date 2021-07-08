@@ -154,8 +154,6 @@ public:
     {
         return m_dx[state.get(this)].read();
     }
-
-
     /// @}
 
     /// @name Setup methods

@@ -23,7 +23,7 @@
 #include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/ConstraintSolver.h>
-
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 

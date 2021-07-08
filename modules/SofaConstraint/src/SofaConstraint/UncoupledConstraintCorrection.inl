@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <SofaConstraint/UncoupledConstraintCorrection.h>
-
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/BaseMatrix.h>

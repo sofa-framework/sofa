@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaConstraint/LinearSolverConstraintCorrection.h>
-
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>

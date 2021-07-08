@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SofaGeneralAnimationLoop/config.h>
-
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/MixedInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
