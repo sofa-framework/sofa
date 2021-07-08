@@ -23,6 +23,7 @@
 #include <sofa/gui/PickHandler.h>
 #include "BaseGUI.h"
 
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/Factory.inl>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
@@ -65,7 +66,7 @@ void BaseViewer::setSceneFileName(const std::string &f)
     sceneFileName = f;
 }
 
-void BaseViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filename /* = nullptr */, bool /* = false */)
+void BaseViewer::setScene(sofa::simulation::NodeSPtr scene, const char* filename /* = nullptr */, bool /* = false */)
 {
     std::string prefix = "";
     if (filename)
