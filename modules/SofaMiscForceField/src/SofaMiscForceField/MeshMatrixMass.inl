@@ -97,6 +97,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyCreateFunction(I
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyDestroyFunction(Index id, MassType& VertexMass)
 {
+    SOFA_UNUSED(id);
     helper::WriteAccessor<Data<Real> > totalMass(this->m->d_totalMass);
     totalMass -= VertexMass;
 }
@@ -105,6 +106,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyDestroyFunctio
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyDestroyFunction(Index id, MassType& EdgeMass)
 {
+    SOFA_UNUSED(id);
     helper::WriteAccessor<Data<Real> > totalMass(this->m->d_totalMass);
     totalMass -= EdgeMass;
 }
