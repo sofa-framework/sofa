@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>

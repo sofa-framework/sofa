@@ -38,6 +38,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVi
 using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVisitor;
 
 #include <sofa/core/behavior/MultiVec.h>
+#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 #include <sofa/core/behavior/RotationMatrix.h>

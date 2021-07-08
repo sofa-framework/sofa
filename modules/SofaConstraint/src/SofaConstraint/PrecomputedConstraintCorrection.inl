@@ -25,11 +25,8 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-
-#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <SofaSimpleFem/TetrahedronFEMForceField.inl>
