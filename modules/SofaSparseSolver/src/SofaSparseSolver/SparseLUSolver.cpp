@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <SofaSparseSolver/SparseLUSolver.inl>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 
 namespace sofa
 {

@@ -21,6 +21,9 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/simulation/VectorOperations.h>
+#include <sofa/simulation/MechanicalOperations.h>
+
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
 

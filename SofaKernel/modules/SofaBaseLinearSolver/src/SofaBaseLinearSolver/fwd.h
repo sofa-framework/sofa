@@ -21,13 +21,22 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
-
+#include <sofa/type/vector.h>
 namespace sofa::component::linearsolver
 {
-
 template<typename T> class SOFA_SOFABASELINEARSOLVER_API FullMatrix;
 template<typename T> class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix;
 
 template<typename T> class SOFA_SOFABASELINEARSOLVER_API SparseMatrix ;
+template<typename T> class SOFA_SOFABASELINEARSOLVER_API DiagonalMatrix;
+
+template<std::size_t LC, typename T = double>
+class SOFA_SOFABASELINEARSOLVER_API BlockDiagonalMatrix;
+
+template<typename T> class SOFA_SOFABASELINEARSOLVER_API FullMatrix;
+template<typename T> class SOFA_SOFABASELINEARSOLVER_API FullVector;
+
+template<typename TBloc, typename TVecBloc = type::vector<TBloc>, typename TVecIndex = type::vector<sofa::Index>>
+class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix;
 
 } // namespace sofa::component::linearsolver

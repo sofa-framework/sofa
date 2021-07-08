@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_CPP
 #include <SofaGeneralLinearSolver/MinResLinearSolver.inl>
-
+#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver

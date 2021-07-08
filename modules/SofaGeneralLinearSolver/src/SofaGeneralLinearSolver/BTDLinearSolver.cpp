@@ -21,8 +21,9 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP
 
-#include <SofaGeneralLinearSolver/BTDLinearSolver.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <SofaGeneralLinearSolver/BTDLinearSolver.inl>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
 namespace sofa::component::linearsolver

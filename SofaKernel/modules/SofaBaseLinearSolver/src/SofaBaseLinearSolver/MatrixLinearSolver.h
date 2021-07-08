@@ -22,16 +22,13 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
+#include <sofa/simulation/fwd.h>
 #include <sofa/core/behavior/fwd.h>    // Because this is where is RotationMatrix
 #include <SofaBaseLinearSolver/fwd.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/DiagonalMatrix.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 
 namespace sofa::component::linearsolver
 {
@@ -113,25 +110,25 @@ public:
     void setSystemLHVector(core::MultiVecDerivId v) override;
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    Matrix* getSystemMatrix() override { return linearSystem.systemMatrix; }
+    Matrix* getSystemMatrix() override;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemRHVector() { return linearSystem.systemRHVector; }
+    Vector* getSystemRHVector();
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    Vector* getSystemLHVector() { return linearSystem.systemLHVector; }
+    Vector* getSystemLHVector();
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    defaulttype::BaseMatrix* getSystemBaseMatrix() override { return linearSystem.systemMatrix; }
+    defaulttype::BaseMatrix* getSystemBaseMatrix() override;
 
     /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
-    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override { return &linearSystem.matrixAccessor; }
+    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    defaulttype::BaseVector* getSystemRHBaseVector() override { return linearSystem.systemRHVector; }
+    defaulttype::BaseVector* getSystemRHBaseVector() override;
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    defaulttype::BaseVector* getSystemLHBaseVector() override { return linearSystem.systemLHVector; }
+    defaulttype::BaseVector* getSystemLHBaseVector() override;
 
     /// Solve the system as constructed using the previous methods
     void solveSystem() override;
@@ -139,15 +136,8 @@ public:
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     void invertSystem() override;
 
-    void prepareVisitor(simulation::Visitor* v)
-    {
-        v->setTags(this->getTags());
-    }
-
-    void prepareVisitor(simulation::BaseMechanicalVisitor* v)
-    {
-        prepareVisitor(static_cast<simulation::Visitor*>(v));
-    }
+    void prepareVisitor(simulation::Visitor* v);
+    void prepareVisitor(simulation::BaseMechanicalVisitor* v);
 
     template<class T>
     void executeVisitor(T v)
@@ -228,33 +218,8 @@ protected:
 
     virtual MatrixInvertData * createInvertData();
 
-    struct LinearSystemData
-    {
-        bool needInvert;
-        Matrix* systemMatrix;
-        Vector* systemRHVector;
-        Vector* systemLHVector;
-        core::MultiVecDerivId solutionVecId;
-
-#ifdef SOFA_SUPPORT_CRS_MATRIX
-        CRSMultiMatrixAccessor matrixAccessor;
-#else
-        DefaultMultiMatrixAccessor matrixAccessor;
-#endif
-
-        LinearSystemData()
-                : needInvert(true), systemMatrix(nullptr), systemRHVector(nullptr), systemLHVector(nullptr),
-                  solutionVecId(core::MultiVecDerivId::null())
-        {}
-        ~LinearSystemData()
-        {
-            if (systemMatrix) deleteMatrix(systemMatrix);
-            if (systemRHVector) deletePersistentVector(systemRHVector);
-            if (systemLHVector) deletePersistentVector(systemLHVector);
-        }
-    };
-
-    LinearSystemData linearSystem;
+    struct LinearSystemData;
+    std::unique_ptr<LinearSystemData> linearSystem;
 
     double currentMFactor, currentBFactor, currentKFactor;
 };

@@ -46,6 +46,8 @@ namespace sofa::simulation
     class LocalStorage;
     class MutationListener;
     class Visitor;
+
+    class BaseMechanicalVisitor;
 }
 
 namespace sofa::simulation::node
