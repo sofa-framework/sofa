@@ -312,7 +312,7 @@ protected:
     void initSVD(Index i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
-    /// Specialized addKToMatrix implementation for CRS matrices
+    /// Specialized addKToMatrix implementation for CRS 3x3 bloc matrices
     template<class BlocReal>
     void addKToBlocMatrix(
             sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,BlocReal>,  type::vector<type::Mat<3,3,BlocReal> >, type::vector<sofa::Index> > *crsmat,
