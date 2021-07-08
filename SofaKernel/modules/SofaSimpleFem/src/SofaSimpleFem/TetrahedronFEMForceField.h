@@ -312,7 +312,7 @@ protected:
     void handleTopologyChange() override { needUpdateTopology = true; }
 
     void computeVonMisesStress();
-    const bool isComputeVonMisesStressMethodSet();
+    bool isComputeVonMisesStressMethodSet();
     void handleEvent(core::objectmodel::Event *event) override;
 };
 
