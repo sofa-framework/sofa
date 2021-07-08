@@ -116,25 +116,7 @@ public:
 
     bool fixAllDOFs() const { return f_fixAll.getValue(); }
 
-    class FCPointHandler : public component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename ProjectToPointConstraint<DataTypes>::SetIndexArray SetIndexArray;
-        typedef sofa::core::topology::Point Point;
-        FCPointHandler(ProjectToPointConstraint<DataTypes>* _fc, SetIndex* _data)
-            : component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-        using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >::applyDestroyFunction;
-        void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
-
-    protected:
-        ProjectToPointConstraint<DataTypes> *fc;
-    };
-
 protected :
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
     /// Matrix used in getJ
 //    linearsolver::EigenBaseSparseMatrix<SReal> jacobian;

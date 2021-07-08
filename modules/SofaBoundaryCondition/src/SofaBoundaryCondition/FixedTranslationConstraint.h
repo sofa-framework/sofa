@@ -89,28 +89,9 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename FixedTranslationConstraint<DataTypes>::SetIndexArray SetIndexArray;
-        typedef sofa::core::topology::Point Point;
-        FCPointHandler(FixedTranslationConstraint<DataTypes>* _fc, SetIndex* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-    protected:
-        FixedTranslationConstraint<DataTypes> *fc;
-    };
-
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
-
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
 };
 
