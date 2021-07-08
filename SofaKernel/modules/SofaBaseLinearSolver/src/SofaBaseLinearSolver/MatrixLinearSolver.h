@@ -27,7 +27,6 @@
 #include <SofaBaseLinearSolver/fwd.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 
 namespace sofa::component::linearsolver
