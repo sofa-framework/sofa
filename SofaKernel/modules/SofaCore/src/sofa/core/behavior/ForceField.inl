@@ -27,13 +27,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 
@@ -45,9 +39,7 @@ ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)
 }
 
 template<class DataTypes>
-ForceField<DataTypes>::~ForceField()
-{
-}
+ForceField<DataTypes>::~ForceField() = default;
 
 template<class DataTypes>
 void ForceField<DataTypes>::init()
@@ -129,8 +121,12 @@ template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
 {
     static int i=0;
-    if (i < 10) {
-        msg_error() << "addKToMatrix not implemented.";
+    if (i < 10)
+    {
+        // This function is called for implicit time integration where stiffness matrix assembly is expected
+        msg_warning() << "This force field does not support stiffness matrix assembly. "
+                         "Therefore, the forces are integrated explicitly. "
+                         "To support stiffness matrix assembly, addKToMatrix must be implemented.";
         i++;
     }
 }
@@ -188,10 +184,6 @@ void ForceField<DataTypes>::updateForceMask()
 }
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior
 
 #endif

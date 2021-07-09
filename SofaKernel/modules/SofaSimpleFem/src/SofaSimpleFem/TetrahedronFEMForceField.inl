@@ -2078,29 +2078,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
             else
                 computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
-            // find index of node 1
-            for (n1=0; n1<4; n1++)
-            {
-                noeud1 = (*it)[n1];
-
-                for(i=0; i<3; i++)
-                {
-                    ROW = offset+3*noeud1+i;
-                    row = 3*n1+i;
-                    // find index of node 2
-                    for (n2=0; n2<4; n2++)
-                    {
-                        noeud2 = (*it)[n2];
-
-                        for (j=0; j<3; j++)
-                        {
-                            COLUMN = offset+3*noeud2+j;
-                            column = 3*n2+j;
-                            mat->add(ROW, COLUMN, - tmp[row][column]*k);
-                        }
-                    }
-                }
-            }
+            Inherit1::addToMatrix(mat, offset, *it, tmp, -k);
         }
 
     }
