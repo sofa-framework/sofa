@@ -34,7 +34,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/MechanicalParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging

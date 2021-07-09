@@ -27,7 +27,6 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaBaseVisual/BaseCamera.h>

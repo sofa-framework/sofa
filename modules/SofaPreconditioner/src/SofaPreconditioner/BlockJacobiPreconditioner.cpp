@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaPreconditioner/BlockJacobiPreconditioner.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {

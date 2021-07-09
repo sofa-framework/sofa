@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaBaseCollision/CylinderModel.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/visual/DrawTool.h>
 

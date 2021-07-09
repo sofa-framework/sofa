@@ -24,7 +24,6 @@
 
 #include <set>
 #include <sstream>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::engine

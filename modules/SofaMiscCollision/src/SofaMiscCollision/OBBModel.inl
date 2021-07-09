@@ -24,7 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision
 {

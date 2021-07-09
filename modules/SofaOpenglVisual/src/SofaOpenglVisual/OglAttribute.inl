@@ -25,7 +25,6 @@
 #include <SofaOpenglVisual/OglAttribute.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/core/ObjectFactory.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa

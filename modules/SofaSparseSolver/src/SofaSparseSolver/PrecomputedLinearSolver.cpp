@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_PRECOMPUTEDLINEARSOLVER_CPP
 
 #include <SofaSparseSolver/PrecomputedLinearSolver.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {

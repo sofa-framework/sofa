@@ -24,9 +24,8 @@
 
 #include <sofa/gui/qt/viewer/SofaViewer.h>
 #include <sofa/gui/qt/viewer/VisualModelPolicy.h>
-
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/visual/DrawTool.h>
-
 namespace sofa::gui::qt::viewer
 {
 	

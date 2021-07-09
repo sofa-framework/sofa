@@ -21,8 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/qt/config.h>
-#include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/fwd.h>
 namespace sofa::gui::qt::viewer
 {
 
