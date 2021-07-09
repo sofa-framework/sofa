@@ -58,7 +58,7 @@ public:
     std::vector< ConstraintCorrections > cclist_elems;
 
 
-    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
+    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), unbuilt(false), sor(1.0)
       , sceneTime(0.0), currentError(0.0), currentIterations(0)
       , change_sequence(false) {}
     ~GenericConstraintProblem() override { freeConstraintResolutions(); }
@@ -77,7 +77,6 @@ public:
 class SOFA_SOFACONSTRAINT_API GenericConstraintSolver : public ConstraintSolverImpl
 {
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
-    typedef std::vector<list_cc> VecListcc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 public:
@@ -170,7 +169,7 @@ private:
         }
 
     private:
-        core::behavior::BaseConstraintCorrection* cc;
+        core::behavior::BaseConstraintCorrection* cc { nullptr };
         sofa::component::linearsolver::LPtrFullMatrix<double> W;
         core::ConstraintParams cparams;
         friend class GenericConstraintSolver;

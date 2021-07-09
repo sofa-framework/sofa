@@ -146,7 +146,7 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
             !(x[1].getOrientation() == target1.getOrientation()) )
         {
             succeed = false;
-            ADD_FAILURE() << "Rotation of constrained bones is wrong: "<<x[0].getOrientation()<<", "<<x[1].getOrientation();;
+            ADD_FAILURE() << "Rotation of constrained bones is wrong: "<<x[0].getOrientation()<<", "<<x[1].getOrientation();
         }
 
         return succeed;

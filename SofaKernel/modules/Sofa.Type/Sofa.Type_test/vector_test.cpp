@@ -44,7 +44,6 @@ class vector_test : public NumericTest<>,
 {
 public:
     void checkVector(const std::vector<std::string>& params) ;
-    void benchmark(const std::vector<std::string>& params) ;
 };
 
 template<class T>

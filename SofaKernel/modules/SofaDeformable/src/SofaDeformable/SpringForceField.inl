@@ -303,7 +303,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
 
                 default:
                     break;
-                }; // switch( changeType )
+                } // switch( changeType )
 
                 ++itBegin;
             } // while( changeIt != last; )
@@ -361,7 +361,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
 
                 default:
                     break;
-                }; // switch( changeType )
+                } // switch( changeType )
 
                 ++changeIt;
             } // while( changeIt != last; )

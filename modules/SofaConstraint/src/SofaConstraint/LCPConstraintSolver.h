@@ -242,7 +242,6 @@ public:
     type::vector< double > unbuilt_d;
 
     type::vector< double > unbuilt_W11;
-    type::vector< double > unbuilt_invW11;
 
     bool isActive;
 };

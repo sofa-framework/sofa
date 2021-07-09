@@ -22,22 +22,12 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaSparseSolver/SparseLUSolver.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library")
         .add< SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
         ;
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver
 

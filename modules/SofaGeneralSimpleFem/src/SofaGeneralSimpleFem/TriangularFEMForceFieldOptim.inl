@@ -88,8 +88,8 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
 template <class DataTypes>
 TriangularFEMForceFieldOptim<DataTypes>::~TriangularFEMForceFieldOptim()
 {
-    if(triangleInfoHandler) delete triangleInfoHandler;
-    if(triangleStateHandler) delete triangleStateHandler;
+    delete triangleInfoHandler;
+    delete triangleStateHandler;
 }
 
 
@@ -582,9 +582,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
             {
                 Real maxs = std::min(stresses[i],stresses2[i]);
                 Triangle t = triangles[i];
-                for (unsigned int j=0;j<t.size();++j)
+                for (const auto p : t)
                 {
-                    unsigned int p = t[j];
                     pstresses[p].first += 1;
                     pstresses[p].second += helper::rabs(maxs);
                 }

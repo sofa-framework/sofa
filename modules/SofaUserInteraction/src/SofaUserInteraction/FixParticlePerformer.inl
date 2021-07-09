@@ -80,7 +80,7 @@ void FixParticlePerformer<DataTypes>::start()
 template <class DataTypes>
 void FixParticlePerformer<DataTypes>::execute()
 {
-};
+}
 
 
 
