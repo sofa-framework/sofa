@@ -195,13 +195,13 @@ protected:
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M,
                                           const type::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice,
-                                          double stiffnessFactor=1.0);
-    Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1,
+                                          double stiffnessFactor=1.0) const;
+    static Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1,
                               const Real u, const Real v, const Real w, const Mat33& J_1  );
 
     void computeMaterialStiffness(sofa::Index i);
 
-    void computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
+    static void computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
 
 
     ////////////// large displacements method
@@ -209,7 +209,7 @@ protected:
     type::vector<Transformation> _rotations;
     type::vector<Transformation> _initialrotations;
     void initLarge(int i, const Element&elem);
-    void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
+    static void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
     virtual void accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     ////////////// polar decomposition method
