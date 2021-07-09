@@ -97,7 +97,6 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
 void TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler)
 {
     m_TopologyHandlerList.push_back(_TopologyHandler);
-    m_TopologyHandlerList.back()->m_changeList.setParent(&this->m_changeList);
     this->updateTopologyHandlerGraph();
 }
 
@@ -120,16 +119,6 @@ std::list<const TopologyChange *>::const_iterator TopologyContainer::endStateCha
 std::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateChange() const
 {
     return (m_stateChangeList.getValue()).begin();
-}
-
-std::list<TopologyHandler *>::const_iterator TopologyContainer::endTopologyHandler() const
-{
-    return m_TopologyHandlerList.end();
-}
-
-std::list<TopologyHandler *>::const_iterator TopologyContainer::beginTopologyHandler() const
-{
-    return m_TopologyHandlerList.begin();
 }
 
 void TopologyContainer::resetTopologyChangeList()

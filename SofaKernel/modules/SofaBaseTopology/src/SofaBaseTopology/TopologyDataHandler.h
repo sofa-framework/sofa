@@ -80,10 +80,6 @@ public:
 
     void handleTopologyChange() override;
 
-    bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology) override;
-
-    bool registerTopology() override;
-
     void registerTopologicalData(t_topologicalData *topologicalData) {m_topologyData = topologicalData;}
 
 
@@ -143,20 +139,20 @@ public:
         applyCreateFunction(i, t, e, ancestors, coefs);
     }
 
-    virtual bool applyTestCreateFunction(Index /*index*/,
-        const sofa::type::vector< Index >& /*ancestors*/,
-        const sofa::type::vector< double >& /*coefs*/) {
-        return false;
-    }
+
 
     // update the default value used during creation
     void setDefaultValue(const value_type& v) {
         m_defaultValue = v;
     }
 
+
+    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2171)", "v21.06 (PR#2171)", "This method has been removed as it has never been used and is not needed. Use applyCreateFunction to add a callback.")
+    bool applyTestCreateFunction(Index /*index*/, const sofa::type::vector< Index >& /*ancestors*/, const sofa::type::vector< double >& /*coefs*/) = delete;
+
 protected:
     t_topologicalData* m_topologyData;
-    sofa::core::topology::TopologyContainer* m_topology;
     value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
 
 

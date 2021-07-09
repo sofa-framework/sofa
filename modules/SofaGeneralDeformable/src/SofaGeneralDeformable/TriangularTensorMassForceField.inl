@@ -338,7 +338,6 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
 
     edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.linkToTriangleDataArray();
-    edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 }
 
