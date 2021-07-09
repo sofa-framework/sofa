@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/helper/config.h>
-
+#include <string>
 namespace sofa::helper
 {
 class StateMask;
@@ -30,8 +30,25 @@ class ColorMap;
 
 namespace advancedtimer
 {
+SOFA_HELPER_API void begin(const char* idStr);
+SOFA_HELPER_API void end(const char* idStr);
+SOFA_HELPER_API void step(const char* idStr);
+
+SOFA_HELPER_API void valSet(const char* idStr, double val);
+SOFA_HELPER_API void valAdd(const char* idStr, double val);
+
+SOFA_HELPER_API void setEnabled(const char *id, bool val);
+
 SOFA_HELPER_API void stepBegin(const char* idStr);
 SOFA_HELPER_API void stepEnd(const char* idStr);
+SOFA_HELPER_API void stepNext(const char* idStr, const char*idStrp);
+
+SOFA_HELPER_API void stepBegin(const std::string& idStr,const std::string& extra);
+SOFA_HELPER_API void stepEnd(const std::string& idStr, const std::string& extra);
+
+SOFA_HELPER_API void stepBegin(const std::string& idStr);
+SOFA_HELPER_API void stepEnd(const std::string& idStr);
+SOFA_HELPER_API void stepNext(const std::string& idStr, const std::string& idStrp);
 }
 }
 

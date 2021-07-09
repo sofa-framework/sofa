@@ -24,6 +24,38 @@
 #include <sofa/helper/AdvancedTimer.h>
 namespace sofa::helper::advancedtimer
 {
+
+
+void begin(const char* idStr)
+{
+    AdvancedTimer::begin(idStr);
+}
+
+void end(const char* idStr)
+{
+    AdvancedTimer::end(idStr);
+}
+
+void step(const char* idStr)
+{
+    AdvancedTimer::step(idStr);
+}
+
+void valSet(const char* idStr, double val)
+{
+    AdvancedTimer::valSet(idStr, val);
+}
+
+void valAdd(const char* idStr, double val)
+{
+    AdvancedTimer::valAdd(idStr, val);
+}
+
+void setEnabled(const char* id, bool val)
+{
+    AdvancedTimer::setEnabled(id, val);
+}
+
 void stepBegin(const char* idStr)
 {
     AdvancedTimer::stepBegin(idStr);
@@ -32,6 +64,36 @@ void stepBegin(const char* idStr)
 void stepEnd(const char* idStr)
 {
     AdvancedTimer::stepEnd(idStr);
+}
+
+void stepNext(const char* prevIdStr, const char* nextIdStr)
+{
+    AdvancedTimer::stepNext(prevIdStr, nextIdStr);
+}
+
+void stepBegin(const std::string& idStr)
+{
+    AdvancedTimer::stepBegin(idStr);
+}
+
+void stepEnd(const std::string& idStr)
+{
+    AdvancedTimer::stepEnd(idStr);
+}
+
+void stepNext(const std::string& prevIdStr, const std::string& nextIdStr)
+{
+    AdvancedTimer::stepNext(prevIdStr, nextIdStr);
+}
+
+void stepBegin(const std::string& idStr,const std::string& extra)
+{
+    AdvancedTimer::stepBegin(idStr, extra);
+}
+
+void stepEnd(const std::string& idStr, const std::string& extra)
+{
+    AdvancedTimer::stepEnd(idStr, extra);
 }
 
 }
