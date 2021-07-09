@@ -22,6 +22,8 @@
 #pragma once
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer ;

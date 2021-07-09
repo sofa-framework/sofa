@@ -185,6 +185,13 @@ template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver() = default;
 
 template<class Matrix, class Vector>
+std::string MatrixLinearSolver<Matrix, Vector>::GetCustomTemplateName()
+{
+    return ThreadManager::Name() + Matrix::Name();
+}
+
+
+template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::prepareVisitor(simulation::Visitor* v)
 {
     v->setTags(this->getTags());

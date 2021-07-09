@@ -154,10 +154,7 @@ public:
 
     /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
-    static std::string GetCustomTemplateName()
-    {
-        return ThreadManager::Name()+Matrix::Name();
-    }
+    static std::string GetCustomTemplateName();
 
     bool isAsyncSolver() override
     {
