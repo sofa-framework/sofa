@@ -25,6 +25,9 @@
 #include <iosfwd>
 namespace sofa::component::topology
 {
+class RegularGridTopology;
+class SparseGridTopology;
+
 class TetrahedronSetTopologyContainer;
 SOFA_SOFABASETOPOLOGY_API std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
 SOFA_SOFABASETOPOLOGY_API std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);

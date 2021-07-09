@@ -25,6 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/type/fixed_array.h>
 #include <SofaBaseTopology/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/core/loader/VoxelLoader.h>
@@ -37,7 +38,6 @@ using std::pair;
 using sofa::core::loader::VoxelLoader;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
 namespace sofa::component::topology
 {
@@ -47,6 +47,10 @@ int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
         .add< SparseGridTopology >()
         ;
 
+SparseGridTopology::~SparseGridTopology()
+{
+
+}
 
 const float SparseGridTopology::WEIGHT27[8][27] =
 {
@@ -601,12 +605,12 @@ void SparseGridTopology::updateMesh()
 
     //Configuration of the Marching Cubes algorithm
 
-    marchingCubes.setDataResolution(Vec3i(dataResolution.getValue()[0],
+    marchingCubes->setDataResolution(Vec3i(dataResolution.getValue()[0],
             dataResolution.getValue()[1],
             dataResolution.getValue()[2]));
-    marchingCubes.setDataVoxelSize(voxelSize.getValue());
-    marchingCubes.setStep(marchingCubeStep.getValue());
-    marchingCubes.setConvolutionSize(convolutionSize.getValue()); //apply Smoothing if convolutionSize > 0
+    marchingCubes->setDataVoxelSize(voxelSize.getValue());
+    marchingCubes->setStep(marchingCubeStep.getValue());
+    marchingCubes->setConvolutionSize(convolutionSize.getValue()); //apply Smoothing if convolutionSize > 0
 
     constructCollisionModels(list_mesh, list_X);
 }
@@ -617,7 +621,7 @@ void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
     if (!dataVoxels.getValue().empty())
     {
         type::vector<unsigned char> * datas = dataVoxels.beginEdit();
-        marchingCubes.run(&(*datas)[0], 0.5f, m);
+        marchingCubes->run(&(*datas)[0], 0.5f, m);
         dataVoxels.endEdit();
     }
 }
@@ -631,7 +635,7 @@ void SparseGridTopology::constructCollisionModels(const sofa::type::vector< sofa
     vector< Vector3 >		vertices;
 
     type::vector<unsigned char> * datas = dataVoxels.beginEdit();
-    marchingCubes.run(&(*datas)[0], 0.5f, triangles, vertices);
+    marchingCubes->run(&(*datas)[0], 0.5f, triangles, vertices);
     dataVoxels.endEdit();
 
     for (unsigned int i=0; i<list_mesh.size(); ++i)
