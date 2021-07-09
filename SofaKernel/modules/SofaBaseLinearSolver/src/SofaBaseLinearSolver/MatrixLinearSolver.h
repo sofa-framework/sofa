@@ -26,13 +26,18 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 #include <sofa/core/behavior/RotationMatrix.h>
+
+#ifdef SOFA_SUPPORT_CRS_MATRIX
+#include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
+#else
+#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
+#endif
 
 namespace sofa::component::linearsolver
 {
