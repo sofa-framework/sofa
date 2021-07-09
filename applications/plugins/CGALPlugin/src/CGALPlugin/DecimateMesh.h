@@ -67,7 +67,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename Coord::value_type Real;
-    typedef Vec<3,Real> Vec3;
+    typedef sofa::type::Vec<3,Real> Vec3;
 
 public:
     DecimateMesh();
