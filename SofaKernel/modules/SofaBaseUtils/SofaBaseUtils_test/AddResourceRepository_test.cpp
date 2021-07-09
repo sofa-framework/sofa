@@ -22,8 +22,6 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <sofa/helper/BackTrace.h>
-
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>

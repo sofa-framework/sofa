@@ -22,7 +22,6 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::component::container::MechanicalObject ;
 

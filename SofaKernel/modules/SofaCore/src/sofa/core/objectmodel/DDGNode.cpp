@@ -23,7 +23,6 @@
 #include <iostream>
 #include <cassert>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include <sofa/helper/BackTrace.h>
 namespace sofa::core::objectmodel
 {
 

@@ -25,7 +25,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/helper/BackTrace.h>
 #include <sofa/helper/logging/Messaging.h>
 
 #include <sstream>

@@ -32,7 +32,6 @@ using ::testing::Types;
 
 using sofa::core::execparams::defaultInstance; 
 
-#include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::core::objectmodel::ComponentState;
 using namespace sofa::type;

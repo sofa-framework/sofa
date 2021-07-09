@@ -24,7 +24,6 @@
 #include <string>
 using std::string ;
 
-#include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using namespace sofa::defaulttype ;
 
