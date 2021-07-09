@@ -23,7 +23,7 @@
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>
-
+#include <sofa/helper/system/thread/CTime.h>
 namespace sofa::component::collision
 {
 
