@@ -439,39 +439,6 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
     sofa::helper::AdvancedTimer::stepEnd("restShapePolynomialSpringAddKToMatrix");
 }
 
-
-template<class DataTypes>
-void PolynomialRestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::MechanicalParams* mparams,
-                                                                      const sofa::core::behavior::MultiMatrixAccessor* matrix,
-                                                                      const type::vector<sofa::Index> & addSubIndex )
-{
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
-    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-
-    sofa::Index curIndex = 0;
-    const sofa::Size Dimension = Coord::total_size;
-
-    for (sofa::Index index = 0; index < m_indices.size(); index++)
-    {
-        curIndex = m_indices[index];
-        const JacobianVector& jacobVector = m_differential[index];
-        bool contains = false;
-        for (sofa::Index s = 0; s < addSubIndex.size() && !contains; s++) {
-            if (curIndex == addSubIndex[s]) contains = true;
-        }
-        if (!contains) continue;
-
-        for(sofa::Size i = 0; i < Dimension; i++)
-        {
-            mat->add(offset + Dimension * curIndex + i, offset + Dimension * curIndex + i, -kFact * jacobVector[i]);
-        }
-    }
-}
-
-
-
 template<class DataTypes>
 double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialValue(unsigned int springIndex, double strainValue)
 {

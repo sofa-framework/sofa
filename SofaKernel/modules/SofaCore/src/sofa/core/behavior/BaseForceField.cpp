@@ -56,23 +56,6 @@ void BaseForceField::addMBKToMatrix(const MechanicalParams* mparams, const sofa:
         addBToMatrix(mparams, matrix);
 }
 
-void BaseForceField::addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> subMatrixIndex)
-{
-    if (sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue()) != 0.0 )
-        addSubKToMatrix(mparams, matrix,subMatrixIndex);
-    if (sofa::core::mechanicalparams::bFactor(mparams) != 0.0)
-        addSubBToMatrix(mparams, matrix,subMatrixIndex);
-}
-
-void BaseForceField::addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> & /*subMatrixIndex*/) {
-    addKToMatrix(mparams,matrix);
-}
-
-void BaseForceField::addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> & /*subMatrixIndex*/) {
-    addBToMatrix(mparams,matrix);
-}
-
-
 bool BaseForceField::insertInNode( objectmodel::BaseNode* node )
 {
     node->addForceField(this);

@@ -259,9 +259,6 @@ public:
     void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
     void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
-    void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const type::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
-
-
     void draw(const core::visual::VisualParams* vparams) override;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;

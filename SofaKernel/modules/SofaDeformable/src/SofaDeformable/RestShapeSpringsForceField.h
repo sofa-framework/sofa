@@ -103,8 +103,6 @@ public:
     /// Brings ForceField contribution to the global system stiffness matrix.
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<sofa::Index> & addSubIndex ) override;
-
     void draw(const core::visual::VisualParams* vparams) override;
 
 
