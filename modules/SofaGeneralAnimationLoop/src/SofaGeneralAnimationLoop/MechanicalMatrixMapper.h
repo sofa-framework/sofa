@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -78,7 +78,6 @@ protected:
 };
 
 using sofa::core::objectmodel::BaseObject ;
-using sofa::component::linearsolver::CompressedRowSparseMatrix ;
 using sofa::core::behavior::MixedInteractionForceField ;
 using sofa::core::behavior::BaseForceField ;
 using sofa::core::behavior::BaseMass ;

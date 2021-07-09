@@ -31,6 +31,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+using sofa::component::linearsolver::CompressedRowSparseMatrix;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
