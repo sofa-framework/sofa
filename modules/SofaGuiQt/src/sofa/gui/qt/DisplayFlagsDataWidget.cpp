@@ -25,11 +25,7 @@
 #include <QVBoxLayout>
 #include <QLayout>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 using namespace sofa::core::objectmodel;
 using namespace sofa::core::visual;
@@ -132,7 +128,7 @@ void DisplayFlagWidget::setTreeWidgetNodeCheckable(QTreeWidgetItem* w, const cha
 {
     w->setText(0, name);
     w->setExpanded(true);
-    w->setFlags(w->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsTristate);
+    w->setFlags(w->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsAutoTristate);
 
 }
 
@@ -217,10 +213,4 @@ void DisplayFlagsDataWidget::writeToData()
 
 }
 
-
-
-
-}
-}
-}
-
+} // namespace sofa::gui::qt

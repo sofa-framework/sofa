@@ -30,13 +30,7 @@
 
 #include <sstream>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 BaseLink::BaseLink(LinkFlags flags)
@@ -97,14 +91,26 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
 {
     if (text.empty())
     {
-        if (owner) msg_error(owner) << "Parsing Link \""<<text<<"\": empty path.";
-        else msg_error("BaseLink") << "ParseString: \""<<text<<"\": empty path.";
+        if (owner)
+        {
+            msg_error(owner) << "Parsing Link \"" << text << "\": empty path.";
+        }
+        else
+        {
+            msg_error("BaseLink") << "ParseString: \"" << text << "\": empty path.";
+        }
         return false;
     }
     if (text[0] != '@')
     {
-        if (owner) msg_error(owner) << "ERROR parsing Link \""<<text<<"\": first character should be '@'.";
-        else msg_error("BaseLink") << "ParseString: \""<<text<<"\": first character should be '@'.";
+        if (owner)
+        {
+            msg_error(owner) << "ERROR parsing Link \""<<text<<"\": first character should be '@'.";
+        }
+        else
+        {
+            msg_error("BaseLink") << "ParseString: \""<<text<<"\": first character should be '@'.";
+        }
         return false;
     }
     std::size_t posPath = text.rfind('/');
@@ -115,15 +121,29 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
     if (posDot == text.size()-1 && (text[posDot-1] == '/' || posDot == 1)) posDot = std::string::npos; // a single dot is allowed at the end of the path, although it is better to end it with '/' instead in order to remove any ambiguity
     if (!data && posDot != std::string::npos)
     {
-        if (owner) msg_error(owner) << "Parsing Link \""<<text<<"\": a Data field name is specified while an object was expected.";
-        else msg_error("BaseLink") << "ParseString: \""<<text<<"\": a Data field name is specified while an object was expected.";
+        if (owner)
+        {
+            msg_error(owner) << "Parsing Link \"" << text
+                             << "\": a Data field name is specified while an object was expected.";
+        }
+        else
+        {
+            msg_error("BaseLink") << "ParseString: \"" << text
+                                  << "\": a Data field name is specified while an object was expected.";
+        }
         return false;
     }
 
     if (data && data->empty() && posDot == std::string::npos)
     {
-        if (owner) msg_error(owner) << "Parsing Link \""<<text<<"\": a Data field name is required." ;
-        else msg_error("BaseLink") << "ParseString: \""<<text<<"\": a Data field name is required.";
+        if (owner)
+        {
+            msg_error(owner) << "Parsing Link \"" << text << "\": a Data field name is required.";
+        }
+        else
+        {
+            msg_error("BaseLink") << "ParseString: \"" << text << "\": a Data field name is required.";
+        }
         return false;
     }
 
@@ -142,14 +162,29 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
     {
         if ((*path)[0] == '[' && (*path)[path->size()-1] != ']')
         {
-            if (owner) msg_error(owner) << "Parsing Link \""<<text<<"\": missing closing bracket ']'." ;
-            else msg_error("BaseLink") << "ParseString: \""<<text<<"\": missing closing bracket ']'.";
+            if (owner)
+            {
+                msg_error(owner) << "Parsing Link \"" << text << "\": missing closing bracket ']'.";
+            }
+            else
+            {
+                msg_error("BaseLink") << "ParseString: \"" << text << "\": missing closing bracket ']'.";
+            }
             return false;
         }
         if ((*path)[0] == '[' && (*path)[1] != '-' && (*path)[1] != ']')
         {
-            if (owner) msg_error(owner) << "Parsing Link \""<<text<<"\": bracket syntax can only be used for self-reference or preceding objects with a negative index." << owner->sendl;
-            else msg_error("BaseLink") << "ParseString: \""<<text<<"\": bracket syntax can only be used for self-reference or preceding objects with a negative index.";
+            if (owner)
+            {
+                msg_error(owner) << "Parsing Link \"" << text
+                                 << "\": bracket syntax can only be used for self-reference or preceding objects with a negative index."
+                                 << owner->sendl;
+            }
+            else
+            {
+                msg_error("BaseLink") << "ParseString: \"" << text
+                                      << "\": bracket syntax can only be used for self-reference or preceding objects with a negative index.";
+            }
             return false;
         }
     }
@@ -185,7 +220,7 @@ std::string BaseLink::CreateStringPath(Base* dest, Base* from)
         BaseObject* master = o->getMaster();
         while (master)
         {
-            objectPath = master->getName() + std::string("/") + objectPath;
+            objectPath.append( master->getName() + std::string("/") + objectPath );
             master = master->getMaster();
         }
         BaseNode* n = o->getContext()->toBaseNode();
@@ -224,22 +259,131 @@ std::string BaseLink::CreateString(Base* object, BaseData* data, Base* from)
     return CreateString(CreateStringPath(object,from),CreateStringData(data));
 }
 
+/// Returns false if:
+///     -  one or multiple string entries fails to be read. In this case the valid
+///        link address are initialized.
+///     -  the owner is invalid
+/// Returns true if:
+///     - string is empty
+///     - all the linkpath are leading to a valid object or not available there.
+bool BaseLink::read( const std::string& str )
+{
+    if (str.empty())
+        return true;
+
+    auto owner = getOwner();
+    if (owner == nullptr)
+        return false;
+
+    std::istringstream istr(str);
+    std::string path;
+
+    /// Find the target of each path, and stores each targets in
+    /// a temporary vector of (pointer, path) pairs.
+    /// A boolean is used to indicates if one of the target has been
+    /// found but is of invalid type.
+    bool ok = true;
+    std::vector< std::pair<Base*, std::string> > entries;
+
+    /// Cut the path using space as a separator. This has several
+    /// questionnable consequence among which space are not allowed in part of a path (so no name containing space)
+    /// tokenizing the path using '@' as a separator would solve  the issue.
+    while (istr >> path)
+    {
+        if (path[0] != '@')
+        {
+            msg_error(owner) << "Parsing Link \"" << path <<"\": first character should be '@'.";
+            ok = false;
+        }
+        else
+        {
+            /// Check if the path is pointing to any object of Base type.
+            Base* ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), path);
+
+            /// We found either a valid Base object or none.
+            /// ptr can be nullptr, as the destination can be added later in the graph
+            /// instead, we will check for failed links after init is completed
+            entries.emplace_back(ptr, path);
+        }
+    }
+
+    /// Check for the case where multiple link has been read while we are a single multilink.
+    /// In that case we return false to indicate the parsing error and keep only one of the link.
+    if(entries.size() > 1 && !getFlag(BaseLink::FLAG_MULTILINK))
+    {
+        ok = false;
+        entries.resize(1);
+    }
+
+    /// Add the detected objects that are not already present to the container of this Link
+    clear();
+    for (const auto& [base, path] : entries)
+    {
+        ok = add(base, path) && ok;
+    }
+    return ok;
+}
+
+std::string BaseLink::getLinkedPath(const std::size_t index) const
+{
+    if(index >= getSize())
+        return "";
+
+    std::string path = _doGetLinkedPath_(index);
+    if(path.empty() && getLinkedBase(index))
+        return CreateString(getLinkedBase(index), getOwner());
+    return path;
+}
+
+/// Update pointers in case the pointed-to objects have appeared
+/// @return false if there are broken links
+bool BaseLink::updateLinks()
+{
+    if (!getOwner())
+        return false;
+
+    bool ok = true;
+    std::size_t n = getSize();
+    for (std::size_t i = 0; i<n; ++i)
+    {
+        Base* ptr;
+        std::string path = getLinkedPath(i);
+        /// Search for path and if any returns the pointer to the proper object.
+        /// Search for path and if any returns the pointer to the proper object.
+        if(!getLinkedBase() && !path.empty())
+        {
+            ptr = PathResolver::FindBaseFromClassAndPath(getOwner(), getDestClass(), path);
+            if(!ptr)
+                ok = false;
+            set(ptr,i);
+        }
+    }
+    return ok;
+}
+
+
 void BaseLink::setLinkedBase(Base* link)
 {
     auto owner = getOwnerBase();
     BaseNode* n = dynamic_cast<BaseNode*>(link);
     BaseObject* o = dynamic_cast<BaseObject*>(link);
+    if (!n && !o)
+    {
+        read("@");
+        return;
+    }
     auto pathname = n != nullptr ? n->getPathName() : o->getPathName();
     if (!this->read("@" + pathname))
     {
         if (!owner)
-            msg_error("BaseLink (" + getName() + ")") << "Could not read link from" << pathname;
-        else msg_error(owner) << "Could not read link from" << pathname;
+        {
+            msg_error("BaseLink (" + getName() + ")") << "Could not read link from '" << pathname << "'";
+        }
+        else
+        {
+            msg_error(owner) << "Could not read link from '" << pathname << "'";
+        }
     }
 }
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

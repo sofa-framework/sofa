@@ -22,7 +22,6 @@
 #include "SceneCreator.h"
 #include "SceneUtils.h"
 
-#include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
@@ -30,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.inl>
 typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
 #include <sofa/helper/system/FileRepository.h>
@@ -49,7 +48,7 @@ using sofa::defaulttype::Vec3Types;
 using namespace sofa::defaulttype ;
 typedef component::linearsolver::FullVector<SReal> FullVector ;
 
-using helper::vector;
+using type::vector;
 
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;
@@ -69,7 +68,7 @@ Vector getVector( core::ConstVecId id, bool indep )
     else
         size = getSizeVisitor.velocitySize();
     FullVector v(size);
-    GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), &v, id);
+    GetVectorVisitor getVec( sofa::core::mechanicalparams::castToExecParams(core::mechanicalparams::defaultInstance()), &v, id);
     getVec.setIndependentOnly(indep);
     sofa::modeling::getRoot()->execute(getVec);
 

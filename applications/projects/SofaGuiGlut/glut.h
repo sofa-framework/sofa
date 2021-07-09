@@ -22,9 +22,7 @@
 #ifndef SOFA_HELPER_SYSTEM_GLUT_H
 #define SOFA_HELPER_SYSTEM_GLUT_H
 
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #if defined (__APPLE__)
 #include <GLUT/glut.h>
 #else
@@ -35,5 +33,3 @@
 #include <GL/glut.h>
 #endif
 #endif
-
-#endif /* SOFA_NO_OPENGL */

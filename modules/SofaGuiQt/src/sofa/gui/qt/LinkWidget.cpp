@@ -29,15 +29,7 @@
 
 #define SIZE_TEXT     60
 
-namespace sofa
-{
-
-using namespace core::objectmodel;
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 LinkWidget *LinkWidget::CreateLinkWidget(const LinkWidget::CreatorArgument &/*dwarg*/)
@@ -58,7 +50,7 @@ QDisplayLinkInfoWidget::QDisplayLinkInfoWidget(QWidget* parent, const std::strin
     std::string final_str;
     formatHelperString(helper,final_str);
     
-	const core::objectmodel::BaseClass* ownerClass=link->getOwnerClass();
+    const core::objectmodel::BaseClass* ownerClass=link->getOwnerClass();
     std::string ownerClassName;
 	if (ownerClass) ownerClassName = ownerClass->className;
 	
@@ -124,8 +116,4 @@ unsigned int QDisplayLinkInfoWidget::numLines(const std::string& str)
     return numlines;
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

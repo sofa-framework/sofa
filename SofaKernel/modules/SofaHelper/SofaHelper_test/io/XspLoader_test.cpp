@@ -19,8 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/config.h>
+
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 #include <sofa/helper/system/FileRepository.h>
 
@@ -28,8 +30,8 @@ using sofa::helper::testing::BaseTest ;
 using sofa::helper::io::XspLoader;
 using sofa::helper::io::XspLoaderDataHook;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3;
+#include <sofa/type/Vec.h>
+using sofa::type::Vec3;
 
 namespace
 {
@@ -85,11 +87,11 @@ protected:
 
     void SetUp() override
     {
-        sofa::helper::system::DataRepository.addFirstPath(FRAMEWORK_TEST_RESOURCES_DIR);
+        sofa::helper::system::DataRepository.addFirstPath(SOFA_TESTING_RESOURCES_DIR);
     }
     void TearDown() override
     {
-        sofa::helper::system::DataRepository.removePath(FRAMEWORK_TEST_RESOURCES_DIR);
+        sofa::helper::system::DataRepository.removePath(SOFA_TESTING_RESOURCES_DIR);
     }
 
     void loadFile(const std::string& filename, bool hasXtra)

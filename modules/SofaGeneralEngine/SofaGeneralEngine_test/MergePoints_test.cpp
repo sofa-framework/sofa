@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -37,7 +38,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct MergePoints_test : public Sofa_test<typename _DataTypes::Real>,
+struct MergePoints_test : public BaseSimulationTest,
         MergePoints<_DataTypes>
 {
     typedef MergePoints<_DataTypes> ThisClass;
@@ -125,10 +126,10 @@ struct MergePoints_test : public Sofa_test<typename _DataTypes::Real>,
 
 };
 
-using testing::Types;
-typedef Types<Vec3Types> DataTypes;
+using ::testing::Types;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(MergePoints_test, DataTypes);
+TYPED_TEST_SUITE(MergePoints_test, DataTypes);
 
 TYPED_TEST(MergePoints_test, initTest ) {
     ASSERT_NO_THROW(this->initTest());

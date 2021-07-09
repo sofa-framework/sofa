@@ -21,24 +21,12 @@
 ******************************************************************************/
 #include "VTKExporter.h"
 
-#include <sstream>
-
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::_vtkexporter_
 {
 
 int VTKExporterClass = core::RegisterObject("Save State vectors from file at each timestep")
@@ -91,8 +79,8 @@ void VTKExporter::init()
 
     nbFiles = 0;
 
-    const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
-    const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
+    const type::vector<std::string>& pointsData = dPointsDataFields.getValue();
+    const type::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
     if (!pointsData.empty())
     {
@@ -105,7 +93,7 @@ void VTKExporter::init()
 
 }
 
-void VTKExporter::fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields, helper::vector<std::string>& names)
+void VTKExporter::fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names)
 {
     for (unsigned int i=0 ; i<strData.size() ; i++)
     {
@@ -138,7 +126,7 @@ void VTKExporter::fetchDataFields(const helper::vector<std::string>& strData, he
     }
 }
 
-void VTKExporter::writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names)
+void VTKExporter::writeData(const type::vector<std::string>& objects, const type::vector<std::string>& fields, const type::vector<std::string>& names)
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
@@ -167,22 +155,22 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
             //Scalars
             std::string line;
             unsigned int sizeSeg=0;
-            if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<float> >* >(field))
+            if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<float> >* >(field))
             {
                 line = "float 1";
                 sizeSeg = 1;
             }
-            if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector<double> >* >(field))
+            if (dynamic_cast<sofa::core::objectmodel::Data<type::vector<double> >* >(field))
             {
                 line = "double 1";
                 sizeSeg = 1;
             }
-            if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec2f > >* > (field))
+            if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec2f > >* > (field))
             {
                 line = "float 2";
                 sizeSeg = 2;
             }
-            if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec2d > >* >(field))
+            if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec2d > >* >(field))
             {
                 line = "double 2";
                 sizeSeg = 2;
@@ -198,12 +186,12 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
             else
             {
                 //Vectors
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec3f > >* > (field))
                 {
                     line = "float";
                     sizeSeg = 3;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec3d > >* >(field))
                 {
                     line = "double";
                     sizeSeg = 3;
@@ -220,7 +208,7 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
     }
 }
 
-void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names)
+void VTKExporter::writeDataArray(const type::vector<std::string>& objects, const type::vector<std::string>& fields, const type::vector<std::string>& names)
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
@@ -249,22 +237,22 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
             //Scalars
             std::string type;
             unsigned int sizeSeg=0;
-            if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<int> >* >(field))
+            if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<int> >* >(field))
             {
                 type = "Int32";
                 sizeSeg = 1;
             }
-            if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<unsigned int> >* >(field))
+            if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<unsigned int> >* >(field))
             {
                 type = "UInt32";
                 sizeSeg = 1;
             }
-            if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<float> >* >(field))
+            if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<float> >* >(field))
             {
                 type = "Float32";
                 sizeSeg = 1;
             }
-            if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector<double> >* >(field))
+            if (dynamic_cast<sofa::core::objectmodel::Data<type::vector<double> >* >(field))
             {
                 type = "Float64";
                 sizeSeg = 1;
@@ -273,34 +261,34 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
             //Vectors
             if (type.empty())
             {
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec1f> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec1f> >* >(field))
                 {
                     type = "Float32";
                     sizeSeg = 1;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec1d> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec1d> >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 1;
                 }
 
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec2f> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec2f> >* >(field))
                 {
                     type = "Float32";
                     sizeSeg = 2;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec2d> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec2d> >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 2;
                 }
 
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec3f > >* > (field))
                 {
                     type = "Float32";
                     sizeSeg = 3;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec3d > >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 3;
@@ -393,8 +381,8 @@ void VTKExporter::writeVTKSimple()
         return;
     }
 
-    const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
-    const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
+    const type::vector<std::string>& pointsData = dPointsDataFields.getValue();
+    const type::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = position;
 
@@ -565,8 +553,8 @@ void VTKExporter::writeVTKXML()
         outfile = nullptr;
         return;
     }
-    const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
-    const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
+    const type::vector<std::string>& pointsData = dPointsDataFields.getValue();
+    const type::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = position;
 
@@ -773,8 +761,8 @@ void VTKExporter::writeParallelFile()
     *outfile << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
     *outfile << "  <PUnstructuredGrid GhostLevel=\"0\">" << std::endl;
 
-    const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
-    const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
+    const type::vector<std::string>& pointsData = dPointsDataFields.getValue();
+    const type::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
     //write type of the data
     sofa::core::objectmodel::BaseContext* context = this->getContext();
@@ -805,22 +793,22 @@ void VTKExporter::writeParallelFile()
                 //Scalars
                 std::string type;
                 unsigned int sizeSeg=0;
-                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<int> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<int> >* >(field))
                 {
                     type = "Int32";
                     sizeSeg = 1;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<unsigned int> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<unsigned int> >* >(field))
                 {
                     type = "UInt32";
                     sizeSeg = 1;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<float> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<float> >* >(field))
                 {
                     type = "Float32";
                     sizeSeg = 1;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector<double> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector<double> >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 1;
@@ -829,12 +817,12 @@ void VTKExporter::writeParallelFile()
                 //Vectors
                 if (type.empty())
                 {
-                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                    if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec3f > >* > (field))
                     {
                         type = "Float32";
                         sizeSeg = 3;
                     }
-                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                    if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec3d > >* >(field))
                     {
                         type = "Float64";
                         sizeSeg = 3;
@@ -867,7 +855,7 @@ void VTKExporter::writeParallelFile()
                 if (!obj)
                     msg_error() << "VTKExporter : error while fetching data field '"
                          << cellsDataField[i] << "' of object '" << cellsDataObject[i]
-                         << "', check object name" << sendl;
+                            << "', check object name" << sendl;
                 else if (!field)
                     msg_error() << "VTKExporter : error while fetching data field '" << msgendl
                                 << cellsDataField[i] << "' of object '" << cellsDataObject[i] << msgendl
@@ -878,22 +866,22 @@ void VTKExporter::writeParallelFile()
                 //Scalars
                 std::string type;
                 unsigned int sizeSeg=0;
-                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<int> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<int> >* >(field))
                 {
                     type = "Int32";
                     sizeSeg = 1;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<unsigned int> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<unsigned int> >* >(field))
                 {
                     type = "UInt32";
                     sizeSeg = 1;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<float> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data< type::vector<float> >* >(field))
                 {
                     type = "Float32";
                     sizeSeg = 1;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector<double> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::Data<type::vector<double> >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 1;
@@ -902,12 +890,12 @@ void VTKExporter::writeParallelFile()
                 //Vectors
                 if (type.empty())
                 {
-                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                    if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec3f > >* > (field))
                     {
                         type = "Float32";
                         sizeSeg = 3;
                     }
-                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                    if (dynamic_cast<sofa::core::objectmodel::Data<type::vector< type::Vec3d > >* >(field))
                     {
                         type = "Float64";
                         sizeSeg = 3;
@@ -1000,8 +988,4 @@ void VTKExporter::bwdInit()
         (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
 }
 
-}
-
-}
-
-}
+} // namespace sofa::component::_vtkexporter_

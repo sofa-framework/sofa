@@ -27,6 +27,7 @@
 #include <sofa/core/State.inl>
 #include <SofaBaseMechanics/MechanicalObject.inl>
 
+
 #include <sofa/defaulttype/TemplatesAliases.h>
 using sofa::defaulttype::RegisterTemplateAlias;
 

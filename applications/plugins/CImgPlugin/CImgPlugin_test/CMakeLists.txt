@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 project(CImgPlugin_test)
 
-find_package(CImgPlugin REQUIRED)
+sofa_find_package(CImgPlugin REQUIRED)
 
 set(SOURCE_FILES
     ImageCImg_test.cpp
@@ -11,6 +11,6 @@ set(SOURCE_FILES
 add_definitions("-DCIMGPLUGIN_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/images\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} CImgPlugin SofaCore SofaGTestMain)
+target_link_libraries(${PROJECT_NAME} CImgPlugin SofaCore Sofa.Testing)
 
 

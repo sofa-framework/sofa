@@ -19,17 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/core/ExecParams.h>
+#include <SofaExplicitOdeSolver_test/MassSpringSystemCreation.h>
 
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
-typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 
 // Solvers
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
@@ -37,13 +40,14 @@ typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject
 
 #include <sofa/defaulttype/VecTypes.h>
 
+
 namespace sofa {
 
 using namespace component;
 using namespace defaulttype;
 using namespace simulation;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 /**  Dynamic solver test.
 Test the dynamic behavior of solver: study a mass-spring system under gravity initialize with spring rest length it will oscillate around its equilibrium position if there is no damping.
@@ -55,7 +59,7 @@ Then it compares the effective mass position to the computed mass position every
 */
 
 template <typename _DataTypes>
-struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
+struct EulerImplicitDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -90,9 +94,9 @@ struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
         eulerSolver->f_rayleighMass.setValue(rm);
 
         CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver>   (root);
-        cgLinearSolver->f_maxIter=3000;
-        cgLinearSolver->f_tolerance =1e-9;
-        cgLinearSolver->f_smallDenominatorThreshold=1e-9;
+        cgLinearSolver->d_maxIter.setValue(3000);
+        cgLinearSolver->d_tolerance.setValue(1e-9);
+        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
 
         // Set initial positions and velocities of fixed point and mass
         MechanicalObject3::VecCoord xFixed(1);
@@ -105,7 +109,7 @@ struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
         MechanicalObject3::DataTypes::set( vFixed[0], 0.,0.,0.);
 
         // Add mass spring system
-        root = this-> createMassSpringSystem(
+        root =  sofa::createMassSpringSystem<DataTypes>(
                 root,   // add mass spring system to the node containing solver
                 K,      // stiffness
                 m,      // mass
@@ -191,13 +195,13 @@ struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(EulerImplicitDynamic_test, DataTypes);
+TYPED_TEST_SUITE(EulerImplicitDynamic_test, DataTypes);
 
 // Test case: h=0.1 k=100 m =10 rm=0 rk=0
 TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_without_damping)

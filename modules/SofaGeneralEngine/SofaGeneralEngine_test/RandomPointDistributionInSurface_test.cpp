@@ -20,7 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <thread>
 
@@ -30,7 +32,7 @@ using sofa::component::engine::RandomPointDistributionInSurface;
 namespace sofa
 {
 
-using defaulttype::Vector3;
+using type::Vector3;
 
 template <typename _DataTypes>
 class RandomPointDistributionInSurface_test : public ::testing::Test
@@ -40,10 +42,10 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef sofa::helper::Quater<SReal> Quat;
+    typedef sofa::type::Quat<SReal> Quat;
 
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef helper::vector<Triangle> VecTriangle;
+    typedef type::vector<Triangle> VecTriangle;
 
     typename RandomPointDistributionInSurface<_DataTypes>::SPtr m_randomEngine;
 
@@ -98,13 +100,13 @@ namespace
 {
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     defaulttype::Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(RandomPointDistributionInSurface_test, DataTypes);
+TYPED_TEST_SUITE(RandomPointDistributionInSurface_test, DataTypes);
 
 // test data setup
 TYPED_TEST(RandomPointDistributionInSurface_test, data_setup)

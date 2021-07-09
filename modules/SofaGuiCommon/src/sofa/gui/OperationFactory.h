@@ -19,20 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_OPERATIONFACTORY_H
-#define SOFA_GUI_OPERATIONFACTORY_H
+#pragma once
 #include <sofa/gui/config.h>
 #include <sofa/gui/MouseOperations.h>
 
 #include <iostream>
 #include <map>
 
-namespace sofa
+namespace sofa::gui
 {
-
-namespace gui
-{
-
 
 class OperationCreator
 {
@@ -113,7 +108,4 @@ public:
 };
 
 
-}
-}
-
-#endif
+} // namespace sofa::gui

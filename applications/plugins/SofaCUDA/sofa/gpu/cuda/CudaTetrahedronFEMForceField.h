@@ -49,8 +49,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-
 template <class TCoord, class TDeriv, class TReal>
 class TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
@@ -67,9 +65,8 @@ public:
 
     typedef typename Main::Element Element;
     typedef typename Main::VecElement VecElement;
-    typedef typename Main::Index Index;
-    typedef Mat<6, 6, Real> MaterialStiffness;
-    typedef Mat<12, 6, Real> StrainDisplacement;
+    typedef type::Mat<6, 6, Real> MaterialStiffness;
+    typedef type::Mat<12, 6, Real> StrainDisplacement;
 
     typedef gpu::cuda::CudaKernelsTetrahedronFEMForceField<DataTypes> Kernels;
 
@@ -194,7 +191,7 @@ public:
     /// Varying data associated with each element
     struct GPUElementForce
     {
-        Vec<4,Real> fA,fB,fC,fD;
+        type::Vec<4, Real> fA, fB, fC, fD;
     };
 
     gpu::cuda::CudaVector<GPUElementState> initState;
@@ -245,13 +242,6 @@ public:
 
     void setE(int i, const Element& indices, const Coord& /*a*/, const Coord& b, const Coord& c, const Coord& d, const MaterialStiffness& K, const StrainDisplacement& /*J*/)
     {
-        /*sout << "CPU Info:\n a = "<<a<<"\n b = "<<b<<"\n c = "<<c<<"\n d = "<<d<<"\n K = "
-            <<K[0]<<"\n     "<<K[1]<<"\n     "<<K[2]<<"\n     "
-            <<K[3]<<"\n     "<<K[4]<<"\n     "<<K[5]<<"\n J="
-            <<J[0]<<"\n     "<<J[1]<<"\n     "<<J[2]<<"\n     "
-            <<J[3]<<"\n     "<<J[4]<<"\n     "<<J[5]<<"\n     "
-            <<J[6]<<"\n     "<<J[7]<<"\n     "<<J[8]<<"\n     "
-            <<J[9]<<"\n     "<<J[10]<<"\n     "<<J[11]<<sendl;*/
         GPUElement& e = elems[i/BSIZE]; i = i%BSIZE;
         e.ia[i] = indices[0] - vertex0;
         e.ib[i] = indices[1] - vertex0;
@@ -266,38 +256,13 @@ public:
         e.Jbx_bx[i] = (e.cy[i] * e.dz[i]) / e.bx[i];
         e.Jby_bx[i] = (-e.cx[i] * e.dz[i]) / e.bx[i];
         e.Jbz_bx[i] = (e.cx[i]*e.dy[i] - e.cy[i]*e.dx[i]) / e.bx[i];
-        //e.dummy[i] = 0;
-        /*sout << "GPU Info:\n b = "<<e.bx<<"\n c = "<<e.cx<<" "<<e.cy<<"\n d = "<<e.dx<<" "<<e.dy<<" "<<e.dz<<"\n K = "
-            <<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "
-            <<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "
-            <<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2+e.mu2_bx2)/bx2<<" 0 0 0\n     "
-
-            <<"0 0 0 "<<(e.mu2_bx2/2)/bx2<<" 0 0\n     "
-            <<"0 0 0 0 "<<(e.mu2_bx2/2)/bx2<<" 0\n     "
-            <<"0 0 0 0 0 "<<(e.mu2_bx2/2)/bx2<<"\n J = "
-
-            <<(-e.Jbx_bx)*e.bx<<" 0 0 "<<(-e.Jby_bx-e.dz)*e.bx<<" 0 "<<(-e.Jbz_bx+e.dy-e.cy)*e.bx<<"\n     "
-            <<"0 "<<(-e.Jby_bx-e.dz)*e.bx<<" 0 "<<(-e.Jbx_bx)*e.bx<<" "<<(-e.Jbz_bx+e.dy-e.cy)*e.bx<<" 0\n     "
-            <<"0 0 "<<(-e.Jbz_bx+e.dy-e.cy)*e.bx<<" 0 "<<(-e.Jby_bx-e.dz)*e.bx<<" "<<(-e.Jbx_bx)*e.bx<<"\n     "
-
-            <<(e.Jbx_bx)*e.bx<<" 0 0 "<<(e.Jby_bx)*e.bx<<" 0 "<<(e.Jbz_bx)*e.bx<<"\n     "
-            <<"0 "<<(e.Jby_bx)*e.bx<<" 0 "<<(e.Jbx_bx)*e.bx<<" "<<(e.Jbz_bx)*e.bx<<" 0\n     "
-            <<"0 0 "<<(e.Jbz_bx)*e.bx<<" 0 "<<(e.Jby_bx)*e.bx<<" "<<(e.Jbx_bx)*e.bx<<"\n     "
-
-            <<(0)*e.bx<<" 0 0 "<<(e.dz)*e.bx<<" 0 "<<(-e.dy)*e.bx<<"\n     "
-            <<"0 "<<(e.dz)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(-e.dy)*e.bx<<" 0\n     "
-            <<"0 0 "<<(-e.dy)*e.bx<<" 0 "<<(e.dz)*e.bx<<" "<<(0)*e.bx<<"\n     "
-
-            <<(0)*e.bx<<" 0 0 "<<(0)*e.bx<<" 0 "<<(e.cy)*e.bx<<"\n     "
-            <<"0 "<<(0)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(e.cy)*e.bx<<" 0\n     "
-            <<"0 0 "<<(e.cy)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(0)*e.bx<<sendl;*/
     }
 
     static void reinit(Main* m);
     static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
     static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, SReal kFactor, SReal bFactor);
     static void addKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset);
-    static void addSubKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset);
+    static void addSubKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, const type::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset);
     static void getRotations(Main* m, VecReal& rotations);
     static void getRotations(Main* m, defaulttype::BaseMatrix * rotations,int offset);
 
@@ -305,10 +270,6 @@ public:
 
     void initPtrData(Main* m)
     {
-//       m->_gatherPt = NULL;
-//       //new Data<int>(core::objectmodel::BaseObject::initData(m->_gatherPt,8,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"));
-//       m->_gatherBsize = NULL;
-//       //new Data<int>(core::objectmodel::BaseObject::initData(m->_gatherBsize,256,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"));
         m->_gatherPt.beginEdit()->setNames(3,"1","4","8");
         m->_gatherPt.beginEdit()->setSelectedItem("8");
         m->_gatherPt.endEdit();
@@ -331,7 +292,7 @@ public:
     template<> void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * vecR,int offset); \
     template<> void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx); \
     template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset); \
-    template<> void TetrahedronFEMForceField< T >::addSubKToMatrix(sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset);
+    template<> void TetrahedronFEMForceField< T >::addSubKToMatrix(sofa::defaulttype::BaseMatrix* mat, const type::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset);
 
 
 CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);

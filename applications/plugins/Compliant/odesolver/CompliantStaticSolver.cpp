@@ -1,5 +1,5 @@
 #include "CompliantStaticSolver.h"
-
+#include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <boost/math/tools/minima.hpp>

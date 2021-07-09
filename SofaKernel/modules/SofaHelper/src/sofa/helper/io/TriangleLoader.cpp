@@ -22,12 +22,13 @@
 #include <sofa/helper/io/TriangleLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sstream>
 #include <cstring>
 
@@ -43,7 +44,7 @@ namespace helper
 namespace io
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 bool TriangleLoader::load(const char *filename)
 {

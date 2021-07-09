@@ -85,7 +85,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;
     typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
-    typedef typename defaulttype::Vec<3,Real> Vec3;
+    typedef typename type::Vec<3,Real> Vec3;
 
 
 
@@ -114,6 +114,7 @@ public:
     virtual void addMDx( const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor ) override;
     /// @}
 
+    bool isDiagonal() const override { return false; }
 
 
     // Data fields will automatically appear in qt-based GUI and in read/write XML scene files

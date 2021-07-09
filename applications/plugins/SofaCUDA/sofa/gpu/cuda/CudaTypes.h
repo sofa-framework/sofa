@@ -22,22 +22,19 @@
 #ifndef SOFA_GPU_CUDA_CUDATYPES_H
 #define SOFA_GPU_CUDA_CUDATYPES_H
 
-//#include "host_runtime.h" // CUDA
 #include "CudaCommon.h"
 #include "mycuda.h"
-#include <sofa/helper/system/gl.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/gl/gl.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/accessor.h>
-//#include <sofa/helper/BackTrace.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
-//#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <iostream>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
-#include <sofa/helper/vector_device.h>
+#include <sofa/type/vector_device.h>
 
 namespace sofa
 {
@@ -48,17 +45,30 @@ namespace gpu
 namespace cuda
 {
 
+template<typename T>
+struct DataTypeInfoManager
+{
+    template<class T2> struct rebind
+    {
+        typedef DataTypeInfoManager<T2> other;
+    };
+
+    static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
+    static const bool SimpleCopy = sofa::defaulttype::DataTypeInfo<T>::SimpleCopy;
+};
+
 template<class T>
-class CudaVector : public helper::vector<T,CudaMemoryManager<T> >
+class CudaVector : public type::vector_device<T,CudaMemoryManager<T>, DataTypeInfoManager<T> >
 {
 public :
-    typedef size_t size_type;
+    using Inherit = type::vector_device<T, CudaMemoryManager<T>, DataTypeInfoManager<T> >;
+    typedef size_t Size;
 
-    CudaVector() : helper::vector<T,CudaMemoryManager<T> >() {}
+    CudaVector() : Inherit() {}
 
-    CudaVector(size_type n) : helper::vector<T,CudaMemoryManager<T> >(n) {}
+    CudaVector(Size n) : Inherit(n) {}
 
-    CudaVector(const helper::vector<T,CudaMemoryManager< T > >& v) : helper::vector<T,CudaMemoryManager<T> >(v) {}
+    CudaVector(const Inherit& v) : Inherit(v) {}
 
 };
 
@@ -182,7 +192,7 @@ public:
     }
 
     template<class C>
-    static C interpolate(const helper::vector< C > & ancestors, const helper::vector< Real > & coefs)
+    static C interpolate(const type::vector< C > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -199,20 +209,20 @@ public:
     static const char* Name();
 };
 
-typedef sofa::defaulttype::Vec3f Vec3f;
-typedef sofa::defaulttype::Vec1f Vec1f;
-typedef sofa::defaulttype::Vec2f Vec2f;
-typedef sofa::defaulttype::Vec6f Vec6f;
+typedef sofa::type::Vec3f Vec3f;
+typedef sofa::type::Vec1f Vec1f;
+typedef sofa::type::Vec2f Vec2f;
+typedef sofa::type::Vec6f Vec6f;
 
-using defaulttype::Vec;
-using defaulttype::NoInit;
-using defaulttype::NOINIT;
+using type::Vec;
+using type::NoInit;
+using type::NOINIT;
 
 template<class Real>
-class Vec3r1 : public sofa::defaulttype::Vec<3,Real>
+class Vec3r1 : public sofa::type::Vec<3,Real>
 {
 public:
-    typedef sofa::defaulttype::Vec<3,Real> Inherit;
+    typedef sofa::type::Vec<3,Real> Inherit;
     typedef Real real;
     enum { N=3 };
     Vec3r1() : dummy((Real) 0.0) {}
@@ -540,7 +550,7 @@ public:
         c[2] += (Real) z;
     }
 
-    static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
+    static Coord interpolate(const type::vector< Coord > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -552,11 +562,11 @@ public:
             c.getCenter() += ancestors[i].getCenter() * coefs[i];
 
             // Angle extraction from the orientation quaternion.
-            helper::Quater<Real> q = ancestors[i].getOrientation();
+            type::Quat<Real> q = ancestors[i].getOrientation();
             Real angle = acos(q[3]) * 2;
 
             // Axis extraction from the orientation quaternion.
-            defaulttype::Vec<3,Real> v(q[0], q[1], q[2]);
+            type::Vec<3,Real> v(q[0], q[1], q[2]);
             Real norm = v.norm();
             if (norm > 0.0005)
             {
@@ -578,7 +588,7 @@ public:
         return c;
     }
 
-    static Deriv interpolate(const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs)
+    static Deriv interpolate(const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -615,10 +625,10 @@ inline const char* CudaRigid3fTypes::Name()
 //#define SOFA_GPU_CUDA_DOUBLE
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec1d;
-using sofa::defaulttype::Vec2d;
-using sofa::defaulttype::Vec6d;
+using sofa::type::Vec3d;
+using sofa::type::Vec1d;
+using sofa::type::Vec2d;
+using sofa::type::Vec6d;
 typedef Vec3r1<double> Vec3d1;
 
 typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;
@@ -679,7 +689,7 @@ inline const char* CudaRigid3dTypes::Name()
 
 
 template<class real, class real2>
-inline real operator*(const sofa::defaulttype::Vec<3,real>& v1, const sofa::gpu::cuda::Vec3r1<real2>& v2)
+inline real operator*(const sofa::type::Vec<3,real>& v1, const sofa::gpu::cuda::Vec3r1<real2>& v2)
 {
     real r = (real)(v1[0]*v2[0]);
     for (int i=1; i<3; i++)
@@ -688,7 +698,7 @@ inline real operator*(const sofa::defaulttype::Vec<3,real>& v1, const sofa::gpu:
 }
 
 template<class real, class real2>
-inline real operator*(const sofa::gpu::cuda::Vec3r1<real>& v1, const sofa::defaulttype::Vec<3,real2>& v2)
+inline real operator*(const sofa::gpu::cuda::Vec3r1<real>& v1, const sofa::type::Vec<3,real2>& v2)
 {
     real r = (real)(v1[0]*v2[0]);
     for (int i=1; i<3; i++)
@@ -706,11 +716,11 @@ namespace helper
 {
 
 template<class T>
-class ReadAccessor< gpu::cuda::CudaVector<T> >
+class ReadAccessorVector< gpu::cuda::CudaVector<T>>
 {
 public:
     typedef gpu::cuda::CudaVector<T> container_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -721,31 +731,26 @@ protected:
     const container_type& vref;
     const value_type* data;
 public:
-    ReadAccessor(const container_type& container) : vref(container), data(container.hostRead()) {}
-    ~ReadAccessor() {}
+    ReadAccessorVector(const container_type& container) : vref(container), data(container.hostRead()) {}
+    ~ReadAccessorVector() {}
 
-    size_type size() const { return vref.size(); }
+    Size size() const { return vref.size(); }
     bool empty() const { return vref.empty(); }
 
     const container_type& ref() const { return vref; }
 
-    const_reference operator[](size_type i) const { return data[i]; }
+    const_reference operator[](Size i) const { return data[i]; }
 
     const_iterator begin() const { return data; }
     const_iterator end() const { return data+vref.size(); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<container_type>& vec )
-    {
-        return os << vec.vref;
-    }
 };
 
 template<class T>
-class WriteAccessor< gpu::cuda::CudaVector<T> >
+class WriteAccessorVector< gpu::cuda::CudaVector<T> >
 {
 public:
     typedef gpu::cuda::CudaVector<T> container_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -757,14 +762,14 @@ protected:
     T* data;
 
 public:
-    WriteAccessor(container_type& container) : vref(container), data(container.hostWrite()) {}
-    ~WriteAccessor() {}
+    WriteAccessorVector(container_type& container) : vref(container), data(container.hostWrite()) {}
+    ~WriteAccessorVector() {}
 
-    size_type size() const { return vref.size(); }
+    Size size() const { return vref.size(); }
     bool empty() const { return vref.empty(); }
 
-    const_reference operator[](size_type i) const { return data[i]; }
-    reference operator[](size_type i) { return data[i]; }
+    const_reference operator[](Size i) const { return data[i]; }
+    reference operator[](Size i) { return data[i]; }
 
     const container_type& ref() const { return vref; }
     container_type& wref() { return vref; }
@@ -775,21 +780,12 @@ public:
     iterator end() { return data+vref.size(); }
 
     void clear() { vref.clear(); }
-    void resize(size_type s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); data = vref.hostWrite(); }
-    void reserve(size_type s) { vref.reserve(s); data = vref.hostWrite(); }
+    void resize(Size s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); data = vref.hostWrite(); }
+    void reserve(Size s) { vref.reserve(s); data = vref.hostWrite(); }
     void push_back(const_reference v) { vref.push_back(v); data = vref.hostWrite(); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<container_type>& vec )
-    {
-        return os << vec.vref;
-    }
-
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<container_type>& vec )
-    {
-        return in >> vec.vref;
-    }
-
 };
+
+
 
 
 }

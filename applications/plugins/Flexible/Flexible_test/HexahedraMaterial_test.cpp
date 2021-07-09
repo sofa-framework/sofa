@@ -40,7 +40,7 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 const double pressureArray[] = {0.6, 0.2};
 const size_t sizePressureArray = sizeof(pressureArray)/sizeof(pressureArray[0]);
@@ -288,15 +288,15 @@ const std::string HexaMaterialTest332Type::sceneName= "HexahedraTractionTest.scn
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     HexaMaterialTest331Type,
     HexaMaterialTest332Type
 
 > DataTypes; 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(HexahedraMaterial_test, DataTypes);
+TYPED_TEST_SUITE(HexahedraMaterial_test, DataTypes);
 
 // Test traction cylinder
 TYPED_TEST( HexahedraMaterial_test , test_Hooke_Hexahedra_InTraction )

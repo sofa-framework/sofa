@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <fstream>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 
 namespace sofa
 {
@@ -37,19 +37,17 @@ namespace cuda
 
 int CudaPointCollisionModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
         .add< CudaPointCollisionModel >()
-        .addAlias("CudaPoint")
-        .addAlias("CudaPointModel")
         ;
 
 using namespace defaulttype;
 
 CudaPointCollisionModel::CudaPointCollisionModel()
-    : groupSize( initData( &groupSize, (int)BSIZE, "groupSize", "number of point per collision element" ) )
+    : groupSize( initData( &groupSize, (std::size_t)BSIZE, "groupSize", "number of point per collision element" ) )
     , mstate(NULL)
 {
 }
 
-void CudaPointCollisionModel::resize(int size)
+void CudaPointCollisionModel::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
 }
@@ -65,32 +63,32 @@ void CudaPointCollisionModel::init()
         return;
     }
 
-    const int npoints = mstate->getSize();
-    int gsize = groupSize.getValue();
-    int nelems = (npoints + gsize-1)/gsize;
+    const std::size_t npoints = mstate->getSize();
+    std::size_t gsize = groupSize.getValue();
+    std::size_t nelems = (npoints + gsize-1)/gsize;
     resize(nelems);
 }
 
-void CudaPointCollisionModel::draw(const core::visual::VisualParams* ,int index)
+void CudaPointCollisionModel::draw(const core::visual::VisualParams* , Index index)
 {
-#ifndef SOFA_NO_OPENGL
+#if SOFACUDA_HAVE_SOFA_GL == 1
     const int gsize = groupSize.getValue();
     CudaPoint t(this,index);
     glBegin(GL_POINTS);
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-    int i0 = index*gsize;
-    int n = (index==size-1) ? x.size()-i0 : gsize;
-    for (int p=0; p<n; p++)
+    auto i0 = index*gsize;
+    auto n = (index==size-1) ? x.size()-i0 : gsize;
+    for (auto p=0; p<n; p++)
     {
         glVertex3fv(x[i0+p].ptr());
     }
     glEnd();
-#endif // SOFA_NO_OPENGL
+#endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
 void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+#if SOFACUDA_HAVE_SOFA_GL == 1
     if (isActive() && vparams->displayFlags().getShowCollisionModels())
     {
         if (vparams->displayFlags().getShowWireFrame())
@@ -113,7 +111,7 @@ void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
     }
     if (isActive() && getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
-#endif // SOFA_NO_OPENGL
+#endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
 using sofa::component::collision::CubeCollisionModel;

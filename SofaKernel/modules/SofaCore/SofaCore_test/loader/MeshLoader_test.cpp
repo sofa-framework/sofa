@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/core/loader/MeshLoader.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 namespace sofa {
 
@@ -34,9 +34,9 @@ class MeshTestLoader : public MeshLoader
 {
 public:
     friend class MeshLoader_test;
-    typedef helper::WriteAccessor< Data<helper::vector<sofa::defaulttype::Vector3> > > waPositions;
-    typedef helper::WriteAccessor< Data< helper::vector< Triangle > > > waTtriangles;
-    typedef helper::WriteAccessor< Data< helper::vector< Tetrahedron > > > waTetrahedra;
+    typedef helper::WriteAccessor< Data<type::vector<sofa::type::Vector3> > > waPositions;
+    typedef helper::WriteAccessor< Data< type::vector< Triangle > > > waTtriangles;
+    typedef helper::WriteAccessor< Data< type::vector< Tetrahedron > > > waTetrahedra;
 
     bool doLoad() override
     {
@@ -63,16 +63,16 @@ protected:
     void populateMesh_1triangle_1tetra()
     {
         MeshTestLoader::waPositions my_positions(meshLoader.d_positions);
-        meshLoader.addPosition(&(my_positions.wref()), 0.,0.,0.);
-        meshLoader.addPosition(&(my_positions.wref()), 1.,0.,0.);
-        meshLoader.addPosition(&(my_positions.wref()), 0.,1.,0.);
-        meshLoader.addPosition(&(my_positions.wref()), 0.,0.,1.);
+        meshLoader.addPosition((my_positions.wref()), 0.,0.,0.);
+        meshLoader.addPosition((my_positions.wref()), 1.,0.,0.);
+        meshLoader.addPosition((my_positions.wref()), 0.,1.,0.);
+        meshLoader.addPosition((my_positions.wref()), 0.,0.,1.);
 
         MeshTestLoader::waTtriangles my_triangles(meshLoader.d_triangles);
-        meshLoader.addTriangle(&(my_triangles.wref()), MeshLoader::Triangle(0,1,2));
+        meshLoader.addTriangle((my_triangles.wref()), MeshLoader::Triangle(0,1,2));
 
         MeshTestLoader::waTetrahedra my_tetrahedra(meshLoader.d_tetrahedra);
-        meshLoader.addTetrahedron(&(my_tetrahedra.wref()), MeshLoader::Tetrahedron(0,1,2,3) );
+        meshLoader.addTetrahedron((my_tetrahedra.wref()), MeshLoader::Tetrahedron(0,1,2,3) );
 
     }
 

@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_DATAFILENAME_H
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/SVector.h>
 
 namespace sofa
 {
@@ -87,23 +87,6 @@ public:
     {
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]    
-    void endEdit(const core::ExecParams*)
-    {
-        endEdit();
-    }
-
-    void endEdit()
-    {
-        updatePath();
-        Inherit::endEdit();
-    }
-
-    void setValue(const std::string& v)
-    {
-        *beginEdit()=v;
-        endEdit();
-    }
 
     void setPathType(PathType pathType)
     {
@@ -115,9 +98,14 @@ public:
         return m_pathType;
     }
 
-    virtual void virtualEndEdit() { endEdit(); }
-    virtual void virtualSetValue(const std::string& v) { setValue(v); }
-    virtual bool read(const std::string& s );
+    bool read(const std::string& s ) override;
+
+    void endEdit() override
+    {
+        updatePath();
+        Data::notifyEndEdit();
+    }
+
 
     virtual const std::string& getRelativePath() const
     {
@@ -141,14 +129,12 @@ public:
         return m_extension;
     }
 
-    virtual void update()
+    void doOnUpdate() override
     {
-        this->Inherit::update();
-        this->updatePath();
+        updatePath();
     }
 
 protected:
-
     void updatePath();
 
     std::string m_fullpath;
@@ -163,10 +149,10 @@ private:
 
 
 
-class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< sofa::helper::SVector<std::string> >
+class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< sofa::type::SVector<std::string> >
 {
 public:
-    typedef sofa::core::objectmodel::Data<sofa::helper::SVector<std::string> > Inherit;
+    typedef sofa::core::objectmodel::Data<sofa::type::SVector<std::string> > Inherit;
 
     DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Inherit(helpMsg, isDisplayed, isReadOnly),
@@ -174,7 +160,7 @@ public:
     {
     }
 
-    DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
+    DataFileNameVector( const sofa::type::vector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly),
           m_pathType(PathType::FILE)
     {
@@ -200,45 +186,31 @@ public:
         updatePath();
     }
 
-    virtual ~DataFileNameVector();
+    ~DataFileNameVector() override;
 
-    void endEdit()
+    void endEdit() override
     {
         updatePath();
         Inherit::endEdit();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]    
-    void endEdit(const core::ExecParams*)
-    {
-        endEdit();
-    }
-
-    void setValue(const sofa::helper::vector<std::string>& v)
-    {
-        *beginEdit() = v;
-        endEdit();
-    }
-    virtual void virtualEndEdit() { endEdit(); }
-
     void addPath(const std::string& v, bool clear = false)
     {
-        sofa::helper::vector<std::string>& val = *beginEdit();
+        sofa::type::vector<std::string>& val = *beginEdit();
         if(clear) val.clear();
         val.push_back(v);
         endEdit();
     }
     void setValueAsString(const std::string& v)
     {
-        sofa::helper::SVector<std::string>& val = *beginEdit();
+        sofa::type::SVector<std::string>& val = *beginEdit();
         val.clear();
         std::istringstream ss( v );
         ss >> val;
         endEdit();
     }
-    virtual void virtualSetValueAsString(const std::string& v) { setValueAsString(v); }
 
-    virtual bool read(const std::string& s )
+    bool read(const std::string& s ) override
     {
         bool ret = Inherit::read(s);
         if (ret || m_fullpath.empty()) updatePath();
@@ -257,9 +229,8 @@ public:
         return m_fullpath[i];
     }
 
-    virtual void update()
+    void doOnUpdate() override
     {
-        this->Inherit::update();
         this->updatePath();
     }
 
@@ -276,7 +247,7 @@ public:
 protected:
     void updatePath();
 
-    sofa::helper::vector<std::string> m_fullpath;
+    sofa::type::vector<std::string> m_fullpath;
     PathType m_pathType; //< used to determine how file dialogs should be opened
 
 private:

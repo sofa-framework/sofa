@@ -32,8 +32,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -59,7 +58,7 @@ public:
     typedef SReal Real;
 
     Data< Real > isoValue; ///< pixel value to extract isosurface
-    Data< defaulttype::Vec<3,unsigned int> > subdiv; ///< number of subdividions in x,y,z directions (use image dimension if =0)
+    Data< type::Vec<3,unsigned int> > subdiv; ///< number of subdividions in x,y,z directions (use image dimension if =0)
     Data< bool > invertNormals; ///< invert triangle vertex order
     Data< bool > showMesh; ///< show reconstructed mesh
 
@@ -74,7 +73,7 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef type::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position; ///< output positions
@@ -87,7 +86,7 @@ public:
 
     MarchingCubesEngine()    :   Inherited()
         , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
-        , subdiv(initData(&subdiv,defaulttype::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
+        , subdiv(initData(&subdiv,type::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
         , invertNormals(initData(&invertNormals,true,"invertNormals","invert triangle vertex order"))
         , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
         , image(initData(&image,ImageTypes(),"image",""))
@@ -125,7 +124,7 @@ protected:
         const cimg_library::CImg<T>& img = in->getCImg(this->time);
 
         // get subdivision
-        defaulttype::Vec<3,int> r((int)this->subdiv.getValue()[0],(int)this->subdiv.getValue()[1],(int)this->subdiv.getValue()[2]);
+        type::Vec<3,int> r((int)this->subdiv.getValue()[0],(int)this->subdiv.getValue()[1],(int)this->subdiv.getValue()[2]);
         for(unsigned int i=0; i<3; i++) if(!r[i]) r[i]=-100;
 
         // get isovalue
@@ -170,47 +169,45 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!this->showMesh.getValue()) return;
+
+        vparams->drawTool()->saveLastState();
 
         bool wireframe=vparams->displayFlags().getShowWireFrame();
 
         raPositions pos(this->position);
         raTriangles tri(this->triangles);
-        raImage in(this->image);
 
-        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
+        const sofa::type::RGBAColor color(0.5,0.5,0.5,0.5);
+        vparams->drawTool()->setMaterial(color);
+        vparams->drawTool()->enableLighting();
 
-        float color[]= {0.5,0.5,0.5,0.}, specular[]= {0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
-        glColor4fv(color);
+        std::size_t size = tri.size();
+        std::vector<type::Vector3> points;
+        std::vector<type::Vector3> normals;
+        std::vector<sofa::type::RGBAColor> colors;
+        points.resize(3*size);
+        normals.resize(size);
+        colors.resize(size);
 
-        glEnable( GL_LIGHTING);
-
-
-        if(!wireframe) glBegin(GL_TRIANGLES);
-        for (unsigned int i=0; i<tri.size(); ++i)
+        for (std::size_t i=0; i<size; ++i)
         {
-            if(wireframe) glBegin(GL_LINE_LOOP);
-            const defaulttype::Vec<3,Real>& a = pos[ tri[i][0] ];
-            const defaulttype::Vec<3,Real>& b = pos[ tri[i][1] ];
-            const defaulttype::Vec<3,Real>& c = pos[ tri[i][2] ];
-            defaulttype::Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
-            glNormal3d(n[0],n[1],n[2]);
-
-
-            glVertex3d(a[0],a[1],a[2]);
-            glVertex3d(b[0],b[1],b[2]);
-            glVertex3d(c[0],c[1],c[2]);
-            if(wireframe)  glEnd();
+            points[3*i] = pos[ tri[i][0] ];
+            points[3*i+1] = pos[ tri[i][1] ];
+            points[3*i+2] = pos[ tri[i][2] ];
+            normals[i] = cross((points[3*i]-points[3*i+1]),(points[3*i]-points[3*i+2]));
+            normals[i].normalize();
+            colors[i] = color;
         }
-        if(!wireframe) glEnd();
+        // Draw triangles
+        if(!wireframe)
+            vparams->drawTool()->drawTriangles(points,normals,colors);
+        // Wireframe mode: draw line loop
+        else
+            vparams->drawTool()->drawLineLoop(points,1.0,color);
 
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
     }
 };
 

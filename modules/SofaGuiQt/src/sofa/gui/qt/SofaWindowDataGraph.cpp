@@ -34,13 +34,7 @@
 #include <sofa/core/ComponentLibrary.h>
 
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 using namespace sofa::helper;
 
@@ -273,8 +267,4 @@ void SofaWindowDataGraph::connectNodeData()
     }    
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

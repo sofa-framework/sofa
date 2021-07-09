@@ -25,7 +25,7 @@
 #include <image/image_gui/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <sofa/helper/OptionsGroup.h>
 
@@ -64,7 +64,7 @@ public:
     {
     }
 
-    Data< helper::vector<Type> > _data; ///< data
+    Data< type::vector<Type> > _data; ///< data
 
 protected:
 

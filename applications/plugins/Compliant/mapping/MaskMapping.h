@@ -31,7 +31,7 @@ public:
 	typedef typename TOut::Real out_real;
 
 	// should only be used with vector dofs
-    typedef helper::vector< typename TIn::Coord > dofs_type;
+    typedef type::vector< typename TIn::Coord > dofs_type;
 	Data< dofs_type > dofs;
 
     typedef ConstantAssembledMapping<TIn, TOut> base;
@@ -47,7 +47,7 @@ public:
 	
 protected:
 	
-	std::vector< std::pair<unsigned, unsigned> > index;
+    std::vector< std::pair<Index, Index> > index;
 	
     virtual void assemble( const typename self::in_pos_type& in) override {
 		// note: index is filled in @apply

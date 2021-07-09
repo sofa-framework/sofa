@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaBaseTopology_test)
 
-find_package(SofaCommon QUIET)
-find_package(SofaGeneral QUIET)
+set(HEADER_FILES
+    fake_TopologyScene.h
+    RegularGridNodeCreation.h
+)
 
 set(SOURCE_FILES
-    fake_TopologyScene.h
     fake_TopologyScene.cpp
 
     PointSetTopology_test.cpp
@@ -22,23 +23,15 @@ set(SOURCE_FILES
     SparseGridTopology_test.cpp
     TetrahedronNumericalIntegration_test.cpp
     TriangleNumericalIntegration_test.cpp
- )
- if(SofaCommon_FOUND)
-    add_definitions("-DSOFABASETOPOLOGY_TEST_WITH_COMMON_LOADERS")
- endif()
-  if(SofaGeneral_FOUND)
-    add_definitions("-DSOFABASETOPOLOGY_TEST_WITH_GENERAL_LOADERS")
- endif()
+    )
 
 add_definitions("-DSOFABASETOPOLOGY_TEST_RESOURCES_DIR=\"${CMAKE_SOURCE_DIR}/share\"")
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
- if(SofaCommon_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaLoader)
- endif()
-  if(SofaGeneral_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaGeneralLoader)
- endif()
+
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Testing SofaBaseTopology SofaLoader SofaGeneralLoader SofaBase)
+
+# allow use RegularGridNodeCreation to other tests
+target_include_directories(${PROJECT_NAME} PUBLIC ..)
 
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

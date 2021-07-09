@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaBaseUtils)
+project(SofaBaseUtils LANGUAGES CXX)
 
-find_package(SofaFramework REQUIRED)
-
-set(SOFABASEUTILS_SRC .)
+set(SOFABASEUTILS_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    config.h
-    initBaseUtils.h
+    ${SOFABASEUTILS_SRC}/config.h.in
+    ${SOFABASEUTILS_SRC}/initSofaBaseUtils.h
     ${SOFABASEUTILS_SRC}/messageHandlerComponent.h
     ${SOFABASEUTILS_SRC}/MakeAliasComponent.h
     ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.h
@@ -17,7 +15,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    initBaseUtils.cpp
+    ${SOFABASEUTILS_SRC}/initSofaBaseUtils.cpp
     ${SOFABASEUTILS_SRC}/messageHandlerComponent.cpp
     ${SOFABASEUTILS_SRC}/MakeAliasComponent.cpp
     ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.cpp
@@ -26,18 +24,23 @@ set(SOURCE_FILES
     ${SOFABASEUTILS_SRC}/AddResourceRepository.cpp
 )
 
+sofa_find_package(SofaFramework REQUIRED) # SofaCore
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaBase
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    )
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-# cmake_dependent_option(SOFABASEUTILS_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-# if(SOFABASEUTILS_BUILD_TESTS)
-#     enable_testing()
-#     add_subdirectory(SofaBase_test)
-# endif()
+cmake_dependent_option(SOFABASEUTILS_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFABASEUTILS_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(SofaBaseUtils_test)
+endif()

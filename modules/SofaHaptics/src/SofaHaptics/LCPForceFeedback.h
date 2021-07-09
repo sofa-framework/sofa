@@ -72,6 +72,8 @@ public:
 
     Data< double > solverTimeout; ///< max time to spend solving constraints.
 
+    Data< int > d_solverMaxIt; ///< max iteration to spend solving constraints.
+
     // deriv (or not) the rotations when updating the violations
     Data <bool> d_derivRotations; ///< if true, deriv the rotations when updating the violations
 

@@ -19,26 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_ANIMATEACTION_H
-#define SOFA_SIMULATION_ANIMATEACTION_H
+#pragma once
 
 #include <sofa/simulation/config.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/core/VecId.h>
+#include <sofa/core/behavior/fwd.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/ExecParams.h>
-#include <sofa/core/MechanicalParams.h>
+
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/collision/Pipeline.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SIMULATION_CORE_API AnimateVisitor : public Visitor
@@ -47,20 +42,17 @@ class SOFA_SIMULATION_CORE_API AnimateVisitor : public Visitor
 protected :
     SReal dt;
     bool firstNodeVisited;
+
 public:
-    AnimateVisitor(const core::ExecParams* params = core::ExecParams::defaultInstance());
     AnimateVisitor(const core::ExecParams* params, SReal dt);
 
     void setDt(SReal v) { dt = v; }
     SReal getDt() const { return dt; }
 
     virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
-    virtual void processBehaviorModel(simulation::Node* node, core::BehaviorModel* obj);
     virtual void fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* obj);
-    virtual void processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
-    //virtual void processNodeBottomUp(simulation::Node* node);
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override { return true; }
@@ -69,10 +61,12 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getCategoryName() const override { return "animate"; }
     const char* getClassName() const override { return "AnimateVisitor"; }
+
+    // Deprecated functions because they are not used
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#2194)", "v21.12", "This was not used in SOFA codebase. If you need it, contact SOFA Consortium.")
+    virtual void processBehaviorModel(simulation::Node* node, core::BehaviorModel* obj);
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#2194)", "v21.12", "This was not used in SOFA codebase. If you need it, contact SOFA Consortium.")
+    virtual void processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj);
 };
 
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation

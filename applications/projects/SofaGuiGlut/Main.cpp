@@ -33,7 +33,7 @@ using std::vector;
 
 #include "SimpleGUI.h"
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -46,7 +46,6 @@ using sofa::simulation::Node;
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaGeneralLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
@@ -61,8 +60,7 @@ using sofa::gui::GUIManager;
 
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BaseGUI.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/atomic.h>
+#include <sofa/gl/gl.h>
 
 using sofa::core::ExecParams ;
 
@@ -183,8 +181,7 @@ int main(int argc, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
-
+    
     glutInit(&argc, argv);
 
     sofa::simulation::setSimulation(new DAGSimulation());

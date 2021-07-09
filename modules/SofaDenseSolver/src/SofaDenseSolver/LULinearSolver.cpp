@@ -23,8 +23,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaDenseSolver/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
 
 namespace sofa::component::linearsolver
 {
@@ -89,7 +87,7 @@ void LULinearSolver<Matrix,Vector>::computeMinv()
         if (solver)
             Minv = solver->i();
         else
-            Minv = this->currentGroup->systemMatrix->i();
+            Minv = this->linearSystem.systemMatrix->i();
         computedMinv = true;
     }
 }
@@ -106,7 +104,7 @@ bool LULinearSolver<Matrix, Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
 {
     const unsigned int Jrows = J.rowSize();
     const unsigned int Jcols = J.colSize();
-    if (Jcols != (unsigned int)this->currentGroup->systemMatrix->rowSize())
+    if (Jcols != (unsigned int)this->linearSystem.systemMatrix->rowSize())
     {
         msg_error() << "AddJMInvJt ERROR: incompatible J matrix size.";
         return false;

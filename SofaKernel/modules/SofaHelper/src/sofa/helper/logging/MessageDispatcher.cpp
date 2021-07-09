@@ -59,12 +59,7 @@ namespace helper
 namespace logging
 {
 
-#if(SOFA_WITH_THREADING==1)
-   #define MUTEX_IF_THREADING lock_guard<mutex> guard(getMainInstance()->getMutex()) ;
-#else
-   #define MUTEX_IF_THREADING
-#endif
-
+#define PUBLIC_API_ENTRY_POINT_MUTEX lock_guard<mutex> guard(getMainInstance()->getMutex()) ;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Threading issues...
@@ -126,39 +121,34 @@ public:
     }
 };
 
-
-MessageDispatcherImpl* s_messagedispatcher = nullptr ;
-
 MessageDispatcherImpl* getMainInstance(){
-    if(s_messagedispatcher==nullptr){
-        s_messagedispatcher = new MessageDispatcherImpl();
-    }
-    return s_messagedispatcher;
+    static MessageDispatcherImpl s_messagedispatcher;
+    return &s_messagedispatcher;
 }
 
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
-    MUTEX_IF_THREADING ;
+    PUBLIC_API_ENTRY_POINT_MUTEX ;
     return getMainInstance()->getHandlers();
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
-    MUTEX_IF_THREADING ;
+    PUBLIC_API_ENTRY_POINT_MUTEX ;
     return getMainInstance()->addHandler(o);
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
-    MUTEX_IF_THREADING ;
+    PUBLIC_API_ENTRY_POINT_MUTEX ;
     return getMainInstance()->rmHandler(o);
 }
 
 void MessageDispatcher::clearHandlers(){
-    MUTEX_IF_THREADING ;
+    PUBLIC_API_ENTRY_POINT_MUTEX ;
     getMainInstance()->clearHandlers();
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
-    MUTEX_IF_THREADING ;
+    PUBLIC_API_ENTRY_POINT_MUTEX ;
     getMainInstance()->process(m);
 }
 

@@ -20,7 +20,7 @@ def insert_point(node, name, position, mass = 1.0):
     res.createObject('UniformMass',
                      mass = mass)
 
-    res.createObject('SphereModel', radius = 0.1)
+    res.createObject('SphereCollisionModel', radius = 0.1)
     
     return res
 
@@ -50,6 +50,8 @@ def createScene(node):
 
     node.gravity = '0 0 0'
     node.dt = 1e-2
+    
+    node.createObject('RequiredPlugin', pluginName="SofaLoader")
     
     num = node.createObject('MinresSolver',
                             name = 'num',

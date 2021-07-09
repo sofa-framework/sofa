@@ -22,16 +22,17 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/helper/StringUtils.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/DataTracker.h>
+#include <sofa/core/objectmodel/Link.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <list>
 #include <sofa/core/sptr.h>
 
 #include <deque>
+#include <atomic>
 
 #include <sofa/core/objectmodel/ComponentState.h>
 #include <sofa/core/DataTracker.h>
@@ -39,8 +40,7 @@
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
 // it is not super elegant, but it is way more efficient than dynamic_cast
-namespace sofa {
-namespace core {
+namespace sofa::core {
     class BaseState;
     class BaseMapping;
     class BehaviorModel;
@@ -69,7 +69,6 @@ namespace behavior {
     class BaseInteractionProjectiveConstraintSet;
     class BaseConstraintSet;
     class BaseConstraint;
-    class BaseLMConstraint;
 } // namespace behavior
 namespace visual {
     class VisualModel;
@@ -89,30 +88,19 @@ namespace collision {
     class Intersection;
     class Pipeline;
 } // namespace collision
-namespace loader
-{
+namespace loader {
     class BaseLoader;
 } // namespace loader
-} // namespace core
-} // namespace sofa
+} // namespace sofa::core
 
 // VisitorScheduler
-
-// Empty class to be used to highlight deprecated objects at compilation time.
-class DeprecatedAndRemoved {};
 
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
 virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -133,12 +121,6 @@ public:
     using MyClass = TClass< Base, void >;
     static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
-
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* b)
-    {
-        ptr = dynamic_cast<T*>(b);
-    }
 
 protected:
     /// Constructor cannot be called directly
@@ -331,10 +313,10 @@ public:
     void addAlias( BaseLink* link, const char* alias);
 
 
-    typedef helper::vector<BaseData*> VecData;
+    typedef type::vector<BaseData*> VecData;
     typedef std::multimap<std::string, BaseData*> MapData;
 
-    typedef helper::vector<BaseLink*> VecLink;
+    typedef type::vector<BaseLink*> VecLink;
     typedef std::multimap<std::string, BaseLink*> MapLink;
 
 
@@ -349,12 +331,12 @@ public:
     const MapLink& getLinkAliases() const { return m_aliasLink; }
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
-    virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
+    virtual Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
     template<class T>
     bool findLinkDest(T*& ptr, const std::string& path, const BaseLink* link)
     {
-        void* result = findLinkDestClass(T::GetClass(), path, link);
-        ptr = reinterpret_cast<T*>(result);
+        Base* result = findLinkDestClass(T::GetClass(), path, link);
+        ptr = dynamic_cast<T*>(result);
         return (result != nullptr);
     }
 
@@ -393,13 +375,6 @@ public:
     mutable helper::system::SofaOStream<helper::logging::Message::Info> sout;
     /// runs the stream processing
     mutable helper::system::SofaEndl<Base> sendl;
-
-    ////////////// DEPRECATED /////////////////////////////////////////////////////////////////////////////
-    const std::string getWarnings() const;  /// use getLoggedMessageAsString() or getLoggedMessage instead.
-    const std::string getOutputs() const;   /// use getLoggedMessageAsString() or getLoggedMessage instead.
-    void clearWarnings();                   /// use clearLoggedMessages() instead
-    void clearOutputs();                    /// use clearLoggedMessages() instead
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void processStream(std::ostream& out);
 
@@ -441,13 +416,8 @@ public:
     /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
-    static std::string typeName(const T* ptr = nullptr)
-    {
-        SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
-    }
+    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
+    static std::string typeName(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the class name of a type derived from this class
     ///
@@ -455,13 +425,8 @@ public:
     /// \code  std::string type = Base::className<B>(); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
-    static std::string className(const T* ptr = nullptr)
-    {
-        SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::decodeClassName(typeid(T));
-    }
+    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
+    static std::string className(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the namespace name of a type derived from this class
     ///
@@ -469,13 +434,8 @@ public:
     /// \code  std::string type = Base::namespaceName<T>(); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
-    static std::string namespaceName(const T* ptr = nullptr)
-    {
-        SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::decodeNamespaceName(typeid(T));
-    }
+    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
+    static std::string namespaceName(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the template name of a type derived from this class
     ///
@@ -483,13 +443,8 @@ public:
     /// \code  std::string type = Base::templateName<B>); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
-    static std::string templateName(const T* ptr = nullptr)
-    {
-        SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::decodeTemplateName(typeid(T));
-    }
+    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
+    static std::string templateName(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the shortname of a type derived from this class.
     /// The default implementation return the class name.
@@ -509,7 +464,7 @@ public:
     /// @{
 
     ComponentState getComponentState() const { return d_componentState.getValue() ; }
-    bool isComponentStateValid() const { return d_componentState == ComponentState::Valid; }
+    bool isComponentStateValid() const { return d_componentState.getValue() == ComponentState::Valid; }
 
     ///@}
 
@@ -534,16 +489,15 @@ public:
 
     Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
 
-    Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
+    Data< sofa::type::BoundingBox > f_bbox; ///< this object bounding box
 
     Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
 
-    [[deprecated("m_componentstate was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
+    SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE("To fix your code, use d_componentState")
     DeprecatedAndRemoved m_componentstate;
 
-    [[deprecated("d_componentState was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
+    SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE("To fix your code, use d_componentState")
     DeprecatedAndRemoved d_componentstate;
-
 
     std::string m_definitionSourceFileName        {""};
     int         m_definitionSourceFilePos         {-1};
@@ -590,7 +544,6 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionProjectiveConstraintSet )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet                      )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint                         )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLMConstraint                       )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                            )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualManager                          )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                             )
@@ -610,44 +563,37 @@ public:
     /// @}
 };
 
+} // namespace sofa::core::objectmodel
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
 
 /// This allow Base object to interact with the messaging system.
-namespace sofa
+namespace sofa::helper::logging
 {
-namespace helper
-{
-namespace logging
-{
-    inline bool notMuted(const sofa::core::objectmodel::Base* t){ return t->notMuted(); }
-    inline bool notMuted(sofa::core::objectmodel::Base* t){ return t->notMuted(); }
 
-    class SOFA_CORE_API SofaComponentInfo : public ComponentInfo
+inline bool notMuted(const sofa::core::objectmodel::Base* t){ return t->notMuted(); }
+inline bool notMuted(sofa::core::objectmodel::Base* t){ return t->notMuted(); }
+
+class SOFA_CORE_API SofaComponentInfo : public ComponentInfo
+{
+public:
+    const sofa::core::objectmodel::Base* m_component ;
+    std::string                          m_name;
+
+    SofaComponentInfo(const sofa::core::objectmodel::Base* c);
+    const std::string& name() const { return m_name; }
+    std::ostream& toStream(std::ostream &out) const
     {
-    public:
-        const sofa::core::objectmodel::Base* m_component ;
-        std::string                          m_name;
-
-        SofaComponentInfo(const sofa::core::objectmodel::Base* c);
-        const std::string& name() const { return m_name; }
-        std::ostream& toStream(std::ostream &out) const
-        {
-            out << m_sender << "(" << m_name << ")" ;
-            return out ;
-        }
-    };
-
-    /// This construct a new ComponentInfo object from a Base object.
-    inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base* t)
-    {
-        return ComponentInfo::SPtr( new SofaComponentInfo(t) ) ;
+        out << m_sender << "(" << m_name << ")" ;
+        return out ;
     }
-} // logging
-} // helper
-} // sofa
+};
+
+/// This construct a new ComponentInfo object from a Base object.
+inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base* t)
+{
+    return ComponentInfo::SPtr( new SofaComponentInfo(t) ) ;
+}
+
+} // namespace sofa::helper::logging
+
 #endif

@@ -17,7 +17,7 @@ Interactor::Interactor(const PickedPoint& picked)
 
 Interactor::~Interactor()
 {
-    _interactionNode->execute<simulation::DeleteVisitor>(core::ExecParams::defaultInstance());
+    _interactionNode->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
 }
 
 void Interactor::attach(SofaScene *scene)

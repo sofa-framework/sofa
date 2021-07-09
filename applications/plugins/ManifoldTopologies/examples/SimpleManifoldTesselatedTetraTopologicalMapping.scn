@@ -2,7 +2,8 @@
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels hideMappings showForceFields"/>
     <RequiredPlugin name="ManifoldTopologies"/>
 	<DefaultPipeline verbose="0" name="CollisionPipeline"/>
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager response="default" name="collision response"/>
 	<Node name="TetraTopology1">
 		<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -10,7 +11,6 @@
 		<MeshGmshLoader name="meshLoader0" filename="mesh/liver.msh" />
 		<ManifoldTetrahedronSetTopologyContainer name="Container1" src="@meshLoader0" />
 		<TetrahedronSetTopologyModifier/>
-		<TetrahedronSetTopologyAlgorithms template="Vec3d" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" />
 		<MechanicalObject name="dofs" />
                 <FixedConstraint name="FixedConstraint" indices="3 39 64" />
@@ -19,7 +19,6 @@
 		<Node name="TetraTopology2">
 			<ManifoldTetrahedronSetTopologyContainer name="Container2"/>
 			<TetrahedronSetTopologyModifier/>
-			<TetrahedronSetTopologyAlgorithms template="Vec3d" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" />
 			<SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container2"/>
 			<MechanicalObject/>

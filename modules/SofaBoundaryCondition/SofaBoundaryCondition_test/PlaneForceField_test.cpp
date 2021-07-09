@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -31,7 +31,7 @@ using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
-using sofa::core::ExecParams ;
+using sofa::core::execparams::defaultInstance; 
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -56,6 +56,7 @@ namespace sofa {
 
 namespace {
 using namespace component;
+using namespace type;
 using namespace defaulttype;
 using namespace core::objectmodel;
 
@@ -86,7 +87,7 @@ struct TypeTuple
 
 
 template <typename TTypeTuple>
-struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Real>
+struct PlaneForceField_test : public BaseSimulationTest
 {
     typedef typename TTypeTuple::DataType DataTypes ;
     typedef typename TTypeTuple::MassType MassType ;
@@ -133,9 +134,9 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 
         typename CGLinearSolverType::SPtr cgLinearSolver = New<CGLinearSolverType>();
         m_root->addObject(cgLinearSolver);
-        cgLinearSolver->f_maxIter.setValue(25);
-        cgLinearSolver->f_tolerance.setValue(1e-5);
-        cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+        cgLinearSolver->d_maxIter.setValue(25);
+        cgLinearSolver->d_tolerance.setValue(1e-5);
+        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
         m_mechanicalObj = New<MechanicalObjectType>();
         m_root->addObject(m_mechanicalObj);
@@ -208,7 +209,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* planeff = root->getTreeNode("Level 1")->getObject("myPlaneForceField") ;
         EXPECT_NE(planeff, nullptr) ;
@@ -245,7 +246,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                                                               scene.str().c_str(),
                                                               scene.str().size()) ;
             EXPECT_NE(root.get(), nullptr) ;
-            root->init(ExecParams::defaultInstance()) ;
+            root->init(sofa::core::execparams::defaultInstance()) ;
 
             BaseObject* planeff = root->getTreeNode("Level 1")->getObject("myPlaneForceField") ;
             EXPECT_NE(planeff, nullptr) ;
@@ -280,7 +281,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* planeff = root->getTreeNode("Level 1")->getObject("myPlaneForceField") ;
         EXPECT_NE(planeff, nullptr) ;
@@ -314,7 +315,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                                                           scene.str().size()) ;
 
         EXPECT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         return true;
     }
@@ -342,7 +343,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
               TypeTuple<Rigid3Types, Rigid3Mass>
               ,TypeTuple<Vec1dTypes, double>
@@ -354,7 +355,7 @@ typedef Types<
 > DataTypes;
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(PlaneForceField_test, DataTypes);// first test case
+TYPED_TEST_SUITE(PlaneForceField_test, DataTypes);// first test case
 TYPED_TEST( PlaneForceField_test , testPlaneForceField )
 {
     this->setupDefaultScene();

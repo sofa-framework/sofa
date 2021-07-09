@@ -33,7 +33,7 @@ namespace sofa {
             this->errorMax = this->deltaRange.second;
             this->errorFactorDJ = 10;
 
-            defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
+            type::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
 
             // create a deformation gradient
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
@@ -42,8 +42,8 @@ namespace sofa {
                     strain[i][j] = (i+1)*2+j*0.3; 
                 }
             }
-//                defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( strain );
-                defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> C;
+//                type::Mat<In::material_dimensions,In::material_dimensions,Real> defo( strain );
+                type::Mat<In::material_dimensions,In::material_dimensions,Real> C;
                 C = (strain.transposed())*strain;
                 
                 // Invariants
@@ -89,7 +89,7 @@ namespace sofa {
     > InvariantDataTypes; // the types to instanciate.
 
     // Test suite for all the instanciations
-    TYPED_TEST_CASE(InvariantMappingTest, InvariantDataTypes);
+    TYPED_TEST_SUITE(InvariantMappingTest, InvariantDataTypes);
     // first test case
     TYPED_TEST( InvariantMappingTest , test_auto )
     {

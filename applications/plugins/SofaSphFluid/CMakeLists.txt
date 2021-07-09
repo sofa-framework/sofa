@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaSphFluid VERSION 1.0)
 
-find_package(SofaBase REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaMeshCollision REQUIRED)
 sofa_find_package(SofaOpenglVisual QUIET)
+sofa_find_package(Sofa.GL QUIET)
  
 set(PLUGIN_SPH_SRC_DIR src/SofaSphFluid)
 set(HEADER_FILES
@@ -20,8 +22,7 @@ set(HEADER_FILES
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.inl
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.h
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.inl
-    ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.h
-    ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.inl
+    ${PLUGIN_SPH_SRC_DIR}/SpatialGridPointModel.h
 )
 
 set(SOURCE_FILES
@@ -32,8 +33,19 @@ set(SOURCE_FILES
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidForceField.cpp
     ${PLUGIN_SPH_SRC_DIR}/SPHFluidSurfaceMapping.cpp
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridContainer.cpp
-    ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.cpp
+    ${PLUGIN_SPH_SRC_DIR}/SpatialGridPointModel.cpp
 )
+
+if(SofaOpenglVisual_FOUND)
+    list(APPEND HEADER_FILES
+            ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.h
+            ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.inl
+        )
+
+    list(APPEND SOURCE_FILES
+            ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.cpp
+        )
+endif()
 
 set(README_FILES
     README.md
@@ -46,13 +58,11 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SPH_FLUID")
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics)
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics SofaMeshCollision)
 
 if(SofaOpenglVisual_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
 endif()
-
-
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

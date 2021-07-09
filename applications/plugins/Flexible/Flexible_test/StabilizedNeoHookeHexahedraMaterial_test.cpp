@@ -40,7 +40,7 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 const size_t sizePressureArray = 8;
 
@@ -261,14 +261,14 @@ const std::string TypePrincipalStretchesStabilizedNHHexaTest::sceneName= "Assemb
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     TypePrincipalStretchesStabilizedNHHexaTest
 > DataTypes; 
 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(StabilizedNeoHookeHexahedraMaterial_test, DataTypes);
+TYPED_TEST_SUITE(StabilizedNeoHookeHexahedraMaterial_test, DataTypes);
 
 // Test NeoHooke with principal stretches mapping
 TYPED_TEST( StabilizedNeoHookeHexahedraMaterial_test , test_StabilizedNeoHooke_Hexahedra_InTraction )

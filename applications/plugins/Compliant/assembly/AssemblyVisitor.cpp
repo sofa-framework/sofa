@@ -1,8 +1,10 @@
 #include "AssemblyVisitor.h"
 
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/helper/cast.h>
 #include "../utils/scoped.h"
@@ -61,7 +63,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
 	if( !node->mechanicalMapping ) return res;
 
-	using helper::vector;
+    using type::vector;
 
 	assert( node->mechanicalMapping->getTo().size() == 1 &&
 	        "only n -> 1 mappings are handled");

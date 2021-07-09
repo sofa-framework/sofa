@@ -60,8 +60,8 @@
 
 	    <Node 	name="visual"   >
 		<MeshObjLoader name="meshLoader_0" filename="../data/mesh/T.obj" scale3d="10 10 10" handleSeams="1" />
-		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.8 0.6 0.5" />
-	    	<LinearMapping template="Affine,ExtVec3f"/>
+		<OglModel template="Vec3d" name="Visual" src="@meshLoader_0" color="0.8 0.6 0.5" />
+	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
     </Node>
 

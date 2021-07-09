@@ -22,33 +22,36 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/Simulation.h>
 
-
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 Visitor::Visitor(const core::ExecParams* p)
     : canAccessSleepingNode(true)
     , params(p)
 {
-    //params = core::MechanicalParams::defaultInstance();
 #ifdef SOFA_DUMP_VISITOR_INFO
     enteringBase=nullptr; infoPrinted=false;
 #endif
 }
 
-Visitor::~Visitor()
-{
-}
+Visitor::~Visitor() = default;
 
 void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool precomputedOrder)
 {
     c->executeVisitor(this, precomputedOrder);
 }
+
+//method to compare the tags of the objet with the ones of the visitor
+// return true if the object has all the tags of the visitor
+// or if no tag is set to the visitor
+bool Visitor::testTags(core::objectmodel::BaseObject* obj)
+{
+    if(subsetsToManage.empty())
+        return true;
+    return obj->getTags().includes(subsetsToManage); // all tags in subsetsToManage must be included in the list of tags of the object
+}
+
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 Visitor::ctime_t Visitor::initDumpTime;
@@ -231,8 +234,7 @@ void Visitor::printCloseNode(const char* type)
 }
 
 #endif
-/// Optional helper method to call before handling an object if not using the for_each method.
-/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+
 simulation::Visitor::ctime_t Visitor::begin(simulation::Node* /*node*/, core::objectmodel::BaseObject*
 #ifdef SOFA_DUMP_VISITOR_INFO
         obj
@@ -269,33 +271,34 @@ void Visitor::end(simulation::Node* /*node*/, core::objectmodel::BaseObject* /*o
 #endif
 }
 
-/// Optional helper method to call before handling an object if not using the for_each method.
-/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
 simulation::Visitor::ctime_t Visitor::begin(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj, const std::string &info)
 {
     return begin(vc->node, obj, info);
 }
 
-/// Optional helper method to call after handling an object if not using the for_each method.
-/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
 void Visitor::end(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj, ctime_t t0)
 {
     end(vc->node, obj, t0);
 }
 
-#ifdef SOFA_VERBOSE_TRAVERSAL
 void Visitor::debug_write_state_before( core::objectmodel::BaseObject* obj )
 {
     if( dynamic_cast<VisualVisitor*>(this) ) return;
     std::stringstream tmp;
-    tmp<<"Visitor "<<getClassName()<<" enter component "<<obj->getName();
-    using core::behavior::BaseMechanicalState;
-    if( BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
+    tmp << "Visitor " << getClassName() << " enter component " << obj->getName();
+    if( core::behavior::BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
-        tmp<<", state:\nx= "; dof->writeX(tmp);
-        tmp<<"\nv= ";        dof->writeV(tmp);
-        tmp<<"\ndx= ";       dof->writeDx(tmp);
-        tmp<<"\nf= ";        dof->writeF(tmp);
+        tmp<<", state:\nx= ";
+        dof->writeVec(core::VecId::position(), tmp);
+
+        tmp<<"\nv= ";
+        dof->writeVec(core::VecId::velocity(), tmp);
+
+        tmp<<"\ndx= ";
+        dof->writeVec(core::VecId::dx(), tmp);
+
+        tmp<<"\nf= ";
+        dof->writeVec(core::VecId::force(), tmp);
     }
     dmsg_info("Visitor(debug)") << tmp.str() ;
 }
@@ -304,20 +307,23 @@ void Visitor::debug_write_state_after( core::objectmodel::BaseObject* obj )
 {
     if( dynamic_cast<VisualVisitor*>(this) ) return;
     std::stringstream tmp ;
-    tmp<<"Visitor "<<getClassName()<<" leave component "<<obj->getName();
-    using core::behavior::BaseMechanicalState;
-    if( BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
+    tmp << "Visitor " << getClassName() << " leave component " << obj->getName();
+    if( core::behavior::BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
-        tmp<<", state:\nx= "; dof->writeX(tmp);
-        tmp<<"\nv= ";        dof->writeV(tmp);
-        tmp<<"\ndx= ";       dof->writeDx(tmp);
-        tmp<<"\nf= ";        dof->writeF(tmp);
+        tmp<<", state:\nx= ";
+        dof->writeVec(core::VecId::position(), tmp);
+
+        tmp<<"\nv= ";
+        dof->writeVec(core::VecId::velocity(), tmp);
+
+        tmp<<"\ndx= ";
+        dof->writeVec(core::VecId::dx(), tmp);
+
+        tmp<<"\nf= ";
+        dof->writeVec(core::VecId::force(), tmp);
     }
-    dmsg_info() << tmp.str() ;
+    dmsg_info("Visitor(debug)") << tmp.str() ;
 }
-#endif
 
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::simulation
 

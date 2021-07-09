@@ -1,6 +1,11 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="-1.8 0 100" dt="0.1">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaDeformable'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/>
     <Node name="Reference">
         <MeshObjLoader name="meshLoader_3" filename="mesh/truthcylinder1-bent.obj" scale="0.95" handleSeams="1" />
         <OglModel src="@meshLoader_3" dx="0" dy="-1" dz="0" color="green" />

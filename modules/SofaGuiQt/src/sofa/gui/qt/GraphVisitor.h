@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GRAPHVISITOR_H
-#define SOFA_GRAPHVISITOR_H
-
+#pragma once
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QDrag>
@@ -30,8 +28,8 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/Node.h>
 
-#include "WindowVisitor.h"
-#include "PieWidget.h"
+#include <sofa/gui/qt/WindowVisitor.h>
+#include <sofa/gui/qt/PieWidget.h>
 
 #include <tinyxml.h>
 #include <tinystr.h>
@@ -39,13 +37,7 @@
 #include <iostream>
 #include <set>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 class GraphVisitor
@@ -92,8 +84,5 @@ protected:
 
     bool initSize;
 };
-}
-}
-}
 
-#endif
+} // namespace sofa::gui::qt

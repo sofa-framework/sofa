@@ -19,7 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
@@ -27,8 +31,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
-
-#include <SofaTest/TestMessageHandler.h>
 
 
 namespace sofa {
@@ -42,7 +44,7 @@ using namespace defaulttype;
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _DataTypes>
-struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -60,7 +62,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
-    helper::SVector<SkeletonJoint> joints;        ///< skeletal joint
+    type::SVector<SkeletonJoint> joints;        ///< skeletal joint
     typename SkeletalMotionConstraint::SPtr projection;
     typename MechanicalObject::SPtr dofs;
 
@@ -113,7 +115,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
         joints[1].setRestPosition(x[1]);
         joints[1].mParentIndex = 0;
 
-        helper::vector<int> bones(2,0); bones[1] = 1;
+        type::vector<int> bones(2,0); bones[1] = 1;
         projection->setSkeletalMotion(joints, bones);
 
         /// Init
@@ -127,14 +129,14 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     bool test_projectPosition()
     {
-        projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()));
+        projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()));
         typename MechanicalObject::ReadVecCoord x = dofs->readPositions();
         Coord target0(CPos(0.5,0.5,0.5), CRot(0, 0.19509, 0, 0.980785));
         Coord target1(CPos(0.5,1.5,0.5), CRot(0.69352, 0.13795, -0.13795, 0.69352));
 
         bool succeed = true;
-         if( !Sofa_test<typename _DataTypes::Real>::isSmall((x[0].getCenter() - target0.getCenter()).norm(),100) ||
-            !Sofa_test<typename _DataTypes::Real>::isSmall((x[1].getCenter() - target1.getCenter()).norm(),100) )
+         if( !this->isSmall((x[0].getCenter() - target0.getCenter()).norm(),100) ||
+            !this->isSmall((x[1].getCenter() - target1.getCenter()).norm(),100) )
         {
              succeed = false;
              ADD_FAILURE() << "Position of constrained bones is wrong: "<<x[0].getCenter()<<", "<<x[1].getCenter();
@@ -152,7 +154,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     bool test_projectVelocity()
     {
-        projection->projectVelocity(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()));
+        projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()));
         typename MechanicalObject::ReadVecDeriv x = dofs->readVelocities();
         bool succeed = true;
         Deriv target(CPos(1,1,1), typename Deriv::Rot(0,0.785397,0));
@@ -177,13 +179,13 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Rigid3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(SkeletalMotionConstraint_test, DataTypes);
+TYPED_TEST_SUITE(SkeletalMotionConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( SkeletalMotionConstraint_test , twoConstrainedBones )
 {

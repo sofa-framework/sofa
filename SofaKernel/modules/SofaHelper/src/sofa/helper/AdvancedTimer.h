@@ -19,21 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_ADVANCEDTIMER_H
-#define SOFA_HELPER_ADVANCEDTIMER_H
+#pragma once
 #include <sofa/helper/config.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
+#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/type/vector.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
-#include <iostream>
+#include <ostream>
+#include <istream>
 #include <string>
-#include <vector>
+#include <map>
 
-
-namespace sofa
+namespace sofa::simulation
 {
+    class Node;
+}
 
-namespace helper
+namespace sofa::helper
 {
 
 /**
@@ -158,7 +161,7 @@ public:
     {
     public:
         /** Internal class used to generate IDs. */
-        class SOFA_HELPER_API IdFactory : public Base
+        class IdFactory : public Base
         {
         protected:
 
@@ -327,10 +330,11 @@ public:
     /**
      * @brief getTimeAnalysis Return the result of the AdvancedTimer
      * @param id IdTimer, id of the timer
-     * @param node Node*, pointeur on a node to get the scene simulation context
+     * @param time double, current time (from the context)
+     * @param time dt, current delta time or dt (from the context)
      * @return The timer value in JSON
      */
-    static std::string getTimeAnalysis(IdTimer id, simulation::Node* node);
+    static std::string getTimeAnalysis(IdTimer id, double time, double dt);
 
     /**
      * @brief getSteps Return the vector of IDStep of the AdvancedTimer given execution
@@ -338,7 +342,7 @@ public:
      * @param processData bool, if true, will force timer data to be processed
      * @return The timer steps iterator inside a vector
      */
-    static helper::vector<AdvancedTimer::IdStep> getSteps(IdTimer id, bool processData = false);
+    static type::vector<AdvancedTimer::IdStep> getSteps(IdTimer id, bool processData = false);
 
     /**
      * @brief getStepData Return the map of StepData of the AdvancedTimer given execution
@@ -353,7 +357,7 @@ public:
      * @param id IdTimer, id of the timer
      * @return The timer full records inside a vector of Record
      */
-    static helper::vector<Record> getRecords(IdTimer id);
+    static type::vector<Record> getRecords(IdTimer id);
 
     /**
      * @brief clearDatato clear a specific Timer Data
@@ -370,10 +374,20 @@ public:
     /**
      * @brief end Ovveride fo the end method in which you can use JSON or old format
      * @param id IdTimer, the id of the used timer
-     * @param node Node*, node used to get the scene cotext
+     * @param time double, current time (from the context)
+     * @param time dt, current delta time or dt (from the context)
      * @return std::string, the output if JSON format is set
      */
-    static std::string end(IdTimer id, simulation::Node* node);
+    static std::string end(IdTimer id, double time, double dt);
+
+    /**
+     * @brief end Deleted version with a node Pointer ; will throw an error at compile-time if called.
+     * @param id IdTimer, the id of the used timer
+     * @param node simulation::Node* 
+     * @return std::string, the output if JSON format is set
+     */
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1770)", "v21.12", "Use end(id, node->getTime(), node->getDt()) instead.")
+    static std::string end(IdTimer id, simulation::Node* node) = delete;
 
     static bool isActive();
 
@@ -510,33 +524,5 @@ extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 #endif
 
-
-/// Scoped (RAII) AdvancedTimer to simplify a basic usage
-struct ScopedAdvancedTimer {
-
-    const char* message;
-
-    ScopedAdvancedTimer(const std::string& message)
-        : ScopedAdvancedTimer(message.c_str())
-    {
-
-    }
-
-    ScopedAdvancedTimer( const char* message )
-    : message( message )
-    {
-        AdvancedTimer::stepBegin( message );
-    }
-
-    ~ScopedAdvancedTimer()
-    {
-        AdvancedTimer::stepEnd( message );
-    }
-};
-
-
 }
 
-}
-
-#endif

@@ -68,7 +68,7 @@ void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
 
 
 template <class TIn, class TOut>
-int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::type::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
 //	std::cout << "PersistentContactRigidMapping::addContactPointFromInputMapping()\n";
 
@@ -148,12 +148,12 @@ void PersistentContactRigidMapping<TIn, TOut>::bwdInit()
 
     if (parentNode)
     {
-        helper::vector< Inherit* > inherits;
+        type::vector< Inherit* > inherits;
 
-        parentNode->getTreeObjects< Inherit, helper::vector< Inherit* > >(&inherits);
+        parentNode->getTreeObjects< Inherit, type::vector< Inherit* > >(&inherits);
 
-        typename helper::vector< Inherit* >::const_iterator it = inherits.begin();
-        typename helper::vector< Inherit* >::const_iterator itEnd = inherits.end();
+        typename type::vector< Inherit* >::const_iterator it = inherits.begin();
+        typename type::vector< Inherit* >::const_iterator itEnd = inherits.end();
 
         while (it != itEnd)
         {
@@ -168,9 +168,9 @@ void PersistentContactRigidMapping<TIn, TOut>::bwdInit()
     }
 
     if (!m_inputMapping)
-        serr << "WARNING : can not found the input mapping" << sendl;
+        msg_warning() << "Can not found the input mapping";
     else
-        sout << "Input mapping named " << m_inputMapping->getName() << " is found" << sendl;
+        msg_info() << "Input mapping named " << m_inputMapping->getName() << " is found";
 }
 
 

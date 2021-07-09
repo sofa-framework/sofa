@@ -64,12 +64,12 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(HEMLStVKForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef typename Inherit1::Real Real;
-    typedef defaulttype::StdVectorTypes<defaulttype::Vec<3,Real>,defaulttype::Vec<3,Real>,Real> DataTypes3;
+    typedef defaulttype::StdVectorTypes<type::Vec<3,Real>,type::Vec<3,Real>,Real> DataTypes3;
 
-    typedef defaulttype::Mat<3,3,Real> Mat33;
-    typedef defaulttype::Mat<6,6,Real> Mat66;
+    typedef type::Mat<3,3,Real> Mat33;
+    typedef type::Mat<6,6,Real> Mat66;
     typedef typename DataTypes3::Deriv Vec3;
-    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef type::Vec<6,Real> Vec6;
     typedef typename DataTypes3::VecCoord VecCoord3;
 
     typedef typename Inherit1::VecCoord VecCoord;
@@ -148,17 +148,17 @@ public:
 
 
             Vec6 vtr;
-            defaulttype::Mat<6,6,Real> Mtr;
+            type::Mat<6,6,Real> Mtr;
 
             for( int i=0 ; i<6 ; ++i )
             {
-                vtr[i] = trace(C[i]);
-                Mtr[i][i] = trace( C[i]*C[i] ); // TODO no need for computing the entire matrice product
+                vtr[i] = type::trace(C[i]);
+                Mtr[i][i] = type::trace( C[i]*C[i] ); // TODO no need for computing the entire matrice product
                 for( int j=i+1 ; j<6 ; ++j )
-                    Mtr[i][j] = Mtr[j][i] = trace( C[i]*C[j] ); // TODO no need for computing the entire matrice product
+                    Mtr[i][j] = Mtr[j][i] = type::trace( C[i]*C[j] ); // TODO no need for computing the entire matrice product
             }
 
-            Mat66 M = lambda/8.0*( defaulttype::tensorProduct( vtr, vtr ) ) + mu/4.0*Mtr;
+            Mat66 M = lambda/8.0*( type::tensorProduct( vtr, vtr ) ) + mu/4.0*Mtr;
             M *= std::abs( dot(edge0,cross(edge1,edge2)) / 6.0 ); // vol   TODO get volume from a Gauss point sampler
 
             const core::topology::BaseMeshTopology::EdgesInTetrahedron& edges = topology->getEdgesInTetrahedron(t);
@@ -214,7 +214,7 @@ public:
     // df += -2 M dx == K dx
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override
     {
-        m_K.addMult( df, dx, mparams->kFactor()  );
+        m_K.addMult( df, dx, sofa::core::mechanicalparams::kFactor(mparams)  );
     }
 
 

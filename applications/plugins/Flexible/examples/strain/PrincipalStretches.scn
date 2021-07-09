@@ -46,7 +46,7 @@
     <Node name="Visual"  >
       <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
       <OglModel src="@meshLoader_1" color="1 .4 0.5 1"/>
-      <LinearMapping template="Vec3d,ExtVec3f"/>
+      <LinearMapping template="Vec3d,Vec3d"/>
     </Node>
   </Node>
 
@@ -92,7 +92,7 @@
     <Node name="Visual"  >
       <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
       <OglModel src="@meshLoader_0" />
-      <LinearMapping template="Vec3d,ExtVec3f"/>
+      <LinearMapping template="Vec3d,Vec3d"/>
     </Node>
   </Node>
 
@@ -104,7 +104,7 @@
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-    <BarycentricShapeFunction template="ShapeFunctiond"  />
+    <BarycentricShapeFunction template="ShapeFunction3d"  />
     <BoxConstraint box="5.9 -1 -1    6.1 1 6 " />
     <UniformMass  name="mass" totalMass="1"/>
 
@@ -134,7 +134,7 @@
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-    <BarycentricShapeFunction template="ShapeFunctiond"  />
+    <BarycentricShapeFunction template="ShapeFunction3d"  />
     <BoxConstraint box="5.9 -1 -1    6.1 1 6 " />
     <UniformMass  name="mass" totalMass="1"/>
 

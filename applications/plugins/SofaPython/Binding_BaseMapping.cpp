@@ -24,6 +24,7 @@
 #include "Binding_BaseObject.h"
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
+#include <sofa/defaulttype/BaseMatrix.h>
 
 using namespace sofa;
 using namespace sofa::core;
@@ -38,7 +39,7 @@ static PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    helper::vector<BaseState*> from = mapping->getFrom();
+    type::vector<BaseState*> from = mapping->getFrom();
 
     PyObject *list = PyList_New(from.size());
 
@@ -52,7 +53,7 @@ static PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    helper::vector<BaseState*> to = mapping->getTo();
+    type::vector<BaseState*> to = mapping->getTo();
 
     PyObject *list = PyList_New(to.size());
 
@@ -111,7 +112,7 @@ static PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    mapping->apply(MechanicalParams::defaultInstance(),VecCoordId::position(),ConstVecCoordId::position());
+    mapping->apply(sofa::core::mechanicalparams::defaultInstance(),VecCoordId::position(),ConstVecCoordId::position());
 
     Py_RETURN_NONE;
 }
@@ -120,7 +121,7 @@ static PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    mapping->applyJ(MechanicalParams::defaultInstance(),VecDerivId::velocity(),ConstVecDerivId::velocity());
+    mapping->applyJ(sofa::core::mechanicalparams::defaultInstance(),VecDerivId::velocity(),ConstVecDerivId::velocity());
 
     Py_RETURN_NONE;
 }
@@ -130,7 +131,7 @@ static PyObject * BaseMapping_applyJT(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
 
-    mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
+    mapping->applyJT(sofa::core::mechanicalparams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
 
     Py_RETURN_NONE;
 }
@@ -141,7 +142,7 @@ static PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
     BaseMapping* mapping  = get_basemapping( self );
 
     // note: the position delta must be set in dx beforehand
-    mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
+    mapping->applyJT(sofa::core::mechanicalparams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
 
     Py_RETURN_NONE;
 }
@@ -151,7 +152,7 @@ static PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
 static PyObject * BaseMapping_getJs(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
-    const helper::vector<sofa::defaulttype::BaseMatrix*>* Js = mapping->getJs();
+    const type::vector<sofa::defaulttype::BaseMatrix*>* Js = mapping->getJs();
 
     PyObject* Jspython = PyList_New(Js->size());
     for( size_t i=0 ; i<Js->size() ; ++i )

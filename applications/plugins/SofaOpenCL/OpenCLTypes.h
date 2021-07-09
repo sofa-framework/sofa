@@ -22,9 +22,9 @@
 #ifndef SOFAOPENCL_OPENCLTYPES_H
 #define SOFAOPENCL_OPENCLTYPES_H
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vector.h>
+#include <sofa/gl/gl.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -41,17 +41,30 @@ namespace gpu
 namespace opencl
 {
 
+template<typename T>
+struct DataTypeInfoManager
+{
+    template<class T2> struct rebind
+    {
+        typedef DataTypeInfoManager<T2> other;
+    };
+
+    static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
+    static const bool SimpleCopy = sofa::defaulttype::DataTypeInfo<T>::SimpleCopy;
+};
+
 template<class T>
-class OpenCLVector : public helper::vector<T,OpenCLMemoryManager<T> >
+class OpenCLVector : public helper::vector_device<T,OpenCLMemoryManager<T>, DataTypeInfoManager<T> >
 {
 public :
+    using Inherit = helper::vector_device<T, OpenCLMemoryManager<T>, DataTypeInfoManager<T> >;
     typedef size_t size_type;
 
-    OpenCLVector() : helper::vector<T,OpenCLMemoryManager<T> >() {}
+    OpenCLVector() : Inherit() {}
 
-    OpenCLVector(size_type n) : helper::vector<T,OpenCLMemoryManager<T> >(n) {}
+    OpenCLVector(size_type n) : Inherit(n) {}
 
-    OpenCLVector(const helper::vector<T,OpenCLMemoryManager< T > >& v) : helper::vector<T,OpenCLMemoryManager<T> >(v) {}
+    OpenCLVector(const Inherit& v) : Inherit(v) {}
 
 };
 
@@ -110,7 +123,7 @@ public:
     }
 
     template<class C>
-    static C interpolate(const helper::vector< C > & ancestors, const helper::vector< Real > & coefs)
+    static C interpolate(const type::vector< C > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -127,18 +140,18 @@ public:
     static const char* Name();
 };
 
-typedef sofa::defaulttype::Vec3f Vec3f;
+typedef sofa::type::Vec3f Vec3f;
 typedef sofa::defaulttype::Vec2f Vec2f;
 
-using defaulttype::Vec;
+using type::Vec;
 using defaulttype::NoInit;
-using defaulttype::NOINIT;
+using type::NOINIT;
 
 template<class Real>
-class Vec3r1 : public sofa::defaulttype::Vec<3,Real>
+class Vec3r1 : public sofa::type::Vec<3,Real>
 {
 public:
-    typedef sofa::defaulttype::Vec<3,Real> Inherit;
+    typedef sofa::type::Vec<3,Real> Inherit;
     typedef Real real;
     enum { N=3 };
     Vec3r1() : dummy(0.0f) {}
@@ -458,7 +471,7 @@ public:
             c[2] += (Real) z;
     }
 
-    static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)
+    static Coord interpolate(const type::vector< Coord > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -470,11 +483,11 @@ public:
             c.getCenter() += ancestors[i].getCenter() * coefs[i];
 
             // Angle extraction from the orientation quaternion.
-            helper::Quater<Real> q = ancestors[i].getOrientation();
+            type::Quat<Real> q = ancestors[i].getOrientation();
             Real angle = acos(q[3]) * 2;
 
             // Axis extraction from the orientation quaternion.
-            defaulttype::Vec<3,Real> v(q[0], q[1], q[2]);
+            type::Vec<3,Real> v(q[0], q[1], q[2]);
             Real norm = v.norm();
             if (norm > 0.0005)
             {
@@ -496,7 +509,7 @@ public:
         return c;
     }
 
-    static Deriv interpolate(const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs)
+    static Deriv interpolate(const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -568,7 +581,7 @@ inline const char* OpenCLRigid3dTypes::Name()
 
 
 template<class real, class real2>
-inline real operator*(const sofa::defaulttype::Vec<3,real>& v1, const sofa::gpu::opencl::Vec3r1<real2>& v2)
+inline real operator*(const sofa::type::Vec<3,real>& v1, const sofa::gpu::opencl::Vec3r1<real2>& v2)
 {
     real r = (real)(v1[0]*v2[0]);
     for (int i=1; i<3; i++)
@@ -577,7 +590,7 @@ inline real operator*(const sofa::defaulttype::Vec<3,real>& v1, const sofa::gpu:
 }
 
 template<class real, class real2>
-inline real operator*(const sofa::gpu::opencl::Vec3r1<real>& v1, const sofa::defaulttype::Vec<3,real2>& v2)
+inline real operator*(const sofa::gpu::opencl::Vec3r1<real>& v1, const sofa::type::Vec<3,real2>& v2)
 {
     real r = (real)(v1[0]*v2[0]);
     for (int i=1; i<3; i++)

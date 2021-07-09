@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/MouseEvent.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 SOFA_EVENT_CPP( MouseEvent )
@@ -59,8 +53,4 @@ MouseEvent::~MouseEvent()
 
 }
 
-} // namespace tree
-
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

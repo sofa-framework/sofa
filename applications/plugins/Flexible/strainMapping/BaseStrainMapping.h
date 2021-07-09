@@ -24,10 +24,10 @@
 
 #include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <sofa/simulation/Simulation.h>
-
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/Mapping.h>
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -99,7 +99,7 @@ public:
     /** @name  Jacobian types    */
     //@{
     typedef JacobianBlockType BlockType;
-    typedef helper::vector<BlockType>  SparseMatrix;
+    typedef type::vector<BlockType>  SparseMatrix;
 
     typedef typename BlockType::MatBlock  MatBlock;  ///< Jacobian block matrix
     typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
@@ -122,7 +122,7 @@ public:
     }
 
     //Pierre-Luc : I added this function to be able to use the mapping functionnalities without using the whole component
-    virtual void initJacobianBlock( helper::vector<BlockType>& /*jacobianBlock*/)
+    virtual void initJacobianBlock( type::vector<BlockType>& /*jacobianBlock*/)
     {
         std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;
     }
@@ -162,7 +162,7 @@ public:
     }
 
     //Pierre-Luc : I added these function to be able to use the mapping functionnalities without using the whole component
-    virtual void applyBlock(Data<OutVecCoord>& /*dOut*/, const Data<InVecCoord>& /*dIn*/, helper::vector<BlockType>& /*jacobianBlock*/)
+    virtual void applyBlock(Data<OutVecCoord>& /*dOut*/, const Data<InVecCoord>& /*dIn*/, type::vector<BlockType>& /*jacobianBlock*/)
     {
         std::cout << SOFA_CLASS_METHOD << " : do nothing" << std::endl;
     }
@@ -173,7 +173,7 @@ public:
 
         const InVecCoord&  in = dIn.getValue();
 
-        helper::vector< BlockType > jacobianBlock;
+        type::vector< BlockType > jacobianBlock;
         jacobianBlock.resize(in.size());
         initJacobianBlock(jacobianBlock);
         applyBlock(dOut, dIn, jacobianBlock);
@@ -185,7 +185,7 @@ public:
 
         const InVecDeriv&  in = dIn.getValue();
 
-        helper::vector< BlockType > jacobianBlock;
+        type::vector< BlockType > jacobianBlock;
         jacobianBlock.resize(in.size());
         initJacobianBlock(jacobianBlock);
 
@@ -276,7 +276,7 @@ public:
     {
         if(BlockType::constant) return;
 
-        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get()].write();
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
         const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
 
@@ -288,12 +288,12 @@ public:
         {
             if( K.compressedMatrix.nonZeros() )
             {
-                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+                K.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
             }
             else // force local assembly
             {
                 updateK( mparams, childForceId );
-                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+                K.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
                 K.resize(0,0); // forgot about this matrix
             }
         }
@@ -304,7 +304,7 @@ public:
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
-                jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
             }
         }
     }
@@ -320,7 +320,7 @@ public:
     }
 
     // Compliant plugin API
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override
     {
         if(!this->assemble.getValue()/* || !BlockType::constant*/)  // J should have been updated in apply() that is call before (when assemble==1)
         {
@@ -332,9 +332,10 @@ public:
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override
     {
+        SOFA_UNUSED(mparams);
         if( BlockType::constant /*|| !assemble.getValue()*/ ) { K.resize(0,0); return; }
 
-        const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
+        const OutVecDeriv& childForce = childForceId[this->toModel.get()].read()->getValue();
 
         unsigned int size = this->fromModel->getSize();
         K.resizeBlocks(size,size);
@@ -381,7 +382,7 @@ protected:
     helper::StateMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ()
     {
         unsigned int insize = this->fromModel->getSize();

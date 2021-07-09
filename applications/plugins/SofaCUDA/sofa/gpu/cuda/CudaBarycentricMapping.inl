@@ -110,14 +110,15 @@ using namespace gpu::cuda;
 
 
 template <typename VecIn, typename VecOut>
-void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(int reserve)
+void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(std::size_t reserve)
 {
     map.clear();
     if (reserve>0) map.reserve(reserve);
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(const int cubeIndex, const SReal* baryCoords)
+typename BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(const Index cubeIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     CubeData& data = map[map.size()-1];
@@ -139,14 +140,14 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
     clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
     {
-        defaulttype::Vector3 coefs;
-        int cube = topology->findCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+        type::Vector3 coefs;
+        int cube = topology->findCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         if (cube==-1)
         {
             ++outside;
-            cube = topology->findNearestCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+            cube = topology->findNearestCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
-        defaulttype::Vec<3,SReal> baryCoords = coefs;
+        type::Vec<3,SReal> baryCoords = coefs;
         addPointInCube(cube, baryCoords.ptr());
     }
 }
@@ -156,16 +157,16 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
 {
     if (!map.empty() && maxNOut == 0)
     {
-        const unsigned int insize = topology->getNbPoints();
+        const Index insize = topology->getNbPoints();
         const unsigned int gridsize[3] = { (unsigned int)topology->getNx(), (unsigned int)topology->getNy(), (unsigned int)topology->getNz() };
         // compute mapT
         const int nx = gridsize[0];
         const int nxny = gridsize[0]*gridsize[1];
         const int shift[8] = { 0, 1, nx, 1+nx, nxny, 1+nxny, nx+nxny, 1+nx+nxny };
         std::vector<int> nout(insize);
-        for (unsigned int i=0; i<map.size(); i++)
+        for (std::size_t i=0; i<map.size(); i++)
         {
-            int index0 = map[i].in_index;
+            Index index0 = map[i].in_index;
             for (int j=0; j<8; j++)
                 nout[index0+shift[j]]++;
         }
@@ -180,7 +181,7 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
         nout.resize(insize);
         for (unsigned int i=0; i<map.size(); i++)
         {
-            int index0 = map[i].in_index;
+            Index index0 = map[i].in_index;
             for (int j=0; j<8; j++)
             {
                 int index = index0+shift[j];
@@ -208,7 +209,7 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
 
 
 template <typename VecIn, typename VecOut>
-void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(int reserve)
+void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(std::size_t reserve)
 {
     map.clear();
     bHexa = true;
@@ -217,7 +218,8 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(const int cubeIndex, const SReal* baryCoords)
+typename BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(const Index cubeIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     CubeData& data = map[map.size()-1];
@@ -239,14 +241,14 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
     clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
     {
-        defaulttype::Vector3 coefs;
-        int cube = topology->findCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+        type::Vector3 coefs;
+        int cube = topology->findCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         if (cube==-1)
         {
             ++outside;
-            cube = topology->findNearestCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+            cube = topology->findNearestCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
-        defaulttype::Vec<3,SReal> baryCoords = coefs;
+        type::Vec<3,SReal> baryCoords = coefs;
         addPointInCube(cube, baryCoords.ptr());
     }
 
@@ -342,7 +344,7 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
 
 
 template <typename VecIn, typename VecOut>
-void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::resizeMap(int size2, int maxNIn2)
+void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::resizeMap(std::size_t size2, std::size_t maxNIn2)
 {
     if (maxNIn2 < maxNIn) maxNIn2 = maxNIn;
     map.resize(((size2+BSIZE-1)/BSIZE)*maxNIn2);
@@ -367,7 +369,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
 }
 
 template <typename VecIn, typename VecOut>
-void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::setMap(int outIndex, int j, int inIndex, Real val)
+void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::setMap(Index outIndex, Index j, Index inIndex, Real val)
 {
     int b    = outIndex / BSIZE;
     outIndex = outIndex % BSIZE;
@@ -376,7 +378,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
 }
 
 template <typename VecIn, typename VecOut>
-float BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::getMapValue(int outIndex, int j)
+float BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::getMapValue(Index outIndex, Index j)
 {
     int b    = outIndex / BSIZE;
     outIndex = outIndex % BSIZE;
@@ -384,7 +386,8 @@ float BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::getMapIndex(int outIndex, int j)
+typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::getMapIndex(Index outIndex, Index j)
 {
     int b    = outIndex / BSIZE;
     outIndex = outIndex % BSIZE;
@@ -392,14 +395,15 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 }
 
 template <typename VecIn, typename VecOut>
-void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(int reserve)
+void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(std::size_t reserve)
 {
     map.clear(); if (reserve>0) map.reserve((reserve+BSIZE-1)/BSIZE*maxNIn);
     size = 0;
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInLine(const int lineIndex, const SReal* baryCoords)
+typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInLine(const Index lineIndex, const SReal* baryCoords)
 {
     unsigned int i0 = size;
     resizeMap(i0+1,2);
@@ -410,7 +414,8 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInTriangle(const int triangleIndex, const SReal* baryCoords)
+typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInTriangle(const Index triangleIndex, const SReal* baryCoords)
 {
     unsigned int i0 = size;
     resizeMap(i0+1,3);
@@ -422,7 +427,8 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInQuad(const int quadIndex, const SReal* baryCoords)
+typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInQuad(const Index quadIndex, const SReal* baryCoords)
 {
     unsigned int i0 = size;
     resizeMap(i0+1,4);
@@ -435,7 +441,8 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInTetra(const int tetraIndex, const SReal* baryCoords)
+typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInTetra(const Index tetraIndex, const SReal* baryCoords)
 {
     unsigned int i0 = size;
     resizeMap(i0+1,4);
@@ -448,7 +455,8 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(const int cubeIndex, const SReal* baryCoords)
+typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(const Index cubeIndex, const SReal* baryCoords)
 {
     unsigned int i0 = size;
     resizeMap(i0+1,8);
@@ -468,7 +476,8 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points)
+typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::createPointInLine(const typename Out::Coord& p, Index lineIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[1];
     const topology::MeshTopology::Line& elem = topology->getLine(lineIndex);
@@ -480,7 +489,8 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points)
+typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::createPointInTriangle(const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[2];
     const topology::MeshTopology::Triangle& elem = topology->getTriangle(triangleIndex);
@@ -498,7 +508,8 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points)
+typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, float>, gpu::cuda::CudaVectorTypes<VecOut, VecOut, float> >::Index
+BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::createPointInQuad(const typename Out::Coord& p, Index quadIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[2];
     const topology::MeshTopology::Quad& elem = topology->getQuad(quadIndex);
@@ -506,7 +517,7 @@ int BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>,
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     const typename In::Coord pB = (*points)[elem[3]] - p0;
     typename In::Coord pos = p - p0;
-    defaulttype::Mat<3,3,typename In::Real> m,mt,base;
+    type::Mat<3,3,typename In::Real> m,mt,base;
     m[0] = pA;
     m[1] = pB;
     m[2] = cross(pA, pB);
@@ -530,8 +541,8 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
 
     const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
     const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-    sofa::helper::vector<defaulttype::Matrix3> bases;
-    sofa::helper::vector<defaulttype::Vector3> centers;
+    sofa::type::vector<type::Matrix3> bases;
+    sofa::type::vector<type::Vector3> centers;
     clear(out.size()); // reserve space for mapping
     if (tetras.empty() && cubes.empty())
     {
@@ -541,7 +552,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         centers.resize(triangles.size()+quads.size());
         for (unsigned int t = 0; t < triangles.size(); t++)
         {
-            defaulttype::Mat3x3d m,mt;
+            type::Mat3x3d m,mt;
             m[0] = in[triangles[t][1]]-in[triangles[t][0]];
             m[1] = in[triangles[t][2]]-in[triangles[t][0]];
             m[2] = cross(m[0],m[1]);
@@ -551,7 +562,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         }
         for (unsigned int c = 0; c < quads.size(); c++)
         {
-            defaulttype::Mat3x3d m,mt;
+            type::Mat3x3d m,mt;
             m[0] = in[quads[c][1]]-in[quads[c][0]];
             m[1] = in[quads[c][3]]-in[quads[c][0]];
             m[2] = cross(m[0],m[1]);
@@ -561,20 +572,20 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         }
         for (unsigned int i=0; i<out.size(); i++)
         {
-            defaulttype::Vector3 pos = out[i];
-            defaulttype::Vector3 coefs;
+            type::Vector3 pos = out[i];
+            type::Vector3 coefs;
             int index = -1;
             double distance = 1e10;
             for (unsigned int t = 0; t < triangles.size(); t++)
             {
-                defaulttype::Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
+                type::Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max((v[2]<0?-v[2]:v[2])-0.01,v[0]+v[1]-1));
                 if (d>0) d = (pos-centers[t]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = t; }
             }
             for (unsigned int c = 0; c < quads.size(); c++)
             {
-                defaulttype::Vec3d v = bases[c0+c] * (pos - in[quads[c][0]]);
+                type::Vec3d v = bases[c0+c] * (pos - in[quads[c][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(v[1]-1,v[0]-1),std::max(v[2]-0.01,-v[2]-0.01)));
                 if (d>0) d = (pos-centers[c0+c]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = c0+c; }
@@ -596,7 +607,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         centers.resize(tetras.size()+cubes.size());
         for (unsigned int t = 0; t < tetras.size(); t++)
         {
-            defaulttype::Mat3x3d m,mt;
+            type::Mat3x3d m,mt;
             m[0] = in[tetras[t][1]]-in[tetras[t][0]];
             m[1] = in[tetras[t][2]]-in[tetras[t][0]];
             m[2] = in[tetras[t][3]]-in[tetras[t][0]];
@@ -607,7 +618,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         }
         for (unsigned int c = 0; c < cubes.size(); c++)
         {
-            defaulttype::Mat3x3d m,mt;
+            type::Mat3x3d m,mt;
             m[0] = in[cubes[c][1]]-in[cubes[c][0]];
             m[1] = in[cubes[c][3]]-in[cubes[c][0]];
             m[2] = in[cubes[c][4]]-in[cubes[c][0]];
@@ -617,20 +628,20 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         }
         for (unsigned int i=0; i<out.size(); i++)
         {
-            defaulttype::Vector3 pos = out[i];
-            defaulttype::Vector3 coefs;
+            type::Vector3 pos = out[i];
+            type::Vector3 coefs;
             int index = -1;
             double distance = 1e10;
             for (unsigned int t = 0; t < tetras.size(); t++)
             {
-                defaulttype::Vector3 v = bases[t] * (pos - in[tetras[t][0]]);
+                type::Vector3 v = bases[t] * (pos - in[tetras[t][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max(-v[2],v[0]+v[1]+v[2]-1));
                 if (d>0) d = (pos-centers[t]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = t; }
             }
             for (unsigned int c = 0; c < cubes.size(); c++)
             {
-                defaulttype::Vector3 v = bases[c0+c] * (pos - in[cubes[c][0]]);
+                type::Vector3 v = bases[c0+c] * (pos - in[cubes[c][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(-v[2],v[0]-1),std::max(v[1]-1,v[2]-1)));
                 if (d>0) d = (pos-centers[c0+c]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = c0+c; }

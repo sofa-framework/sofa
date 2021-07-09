@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.12)
 
 project(Flexible_test)
 
+find_package(SofaTest REQUIRED)
+sofa_find_package(SofaPython QUIET)
+
 set(HEADER_FILES
     StrainMapping_test.h
 )
@@ -36,8 +39,6 @@ if(WIN32)
     list(APPEND SOURCE_FILES "stdafx.cpp")
 endif()
 
-find_package(SofaPython QUIET)
-
 if(SofaPython_FOUND)
     list(APPEND SOURCE_FILES python_test_list.cpp)
     add_definitions("-DFLEXIBLE_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
@@ -57,10 +58,18 @@ endif()
 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain CImgPlugin)
+target_link_libraries(${PROJECT_NAME} Flexible SofaTest Sofa.Testing CImgPlugin)
+
+if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
+endif()
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC "FLEXIBLE_TEST_WITH_IMAGE")
+endif()
+if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
 
 

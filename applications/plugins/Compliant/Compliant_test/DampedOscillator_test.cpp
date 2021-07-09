@@ -13,7 +13,7 @@ namespace sofa
 
 using namespace component;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 
 /**
@@ -281,7 +281,7 @@ TEST_F(DampedOscillator_test, compliance_second_degree )
     MechanicalObject1::SPtr constraintDOF = addNew<MechanicalObject1>(constraint,"DOF");
     constraintDOF->resize(1);
 
-    typedef component::mapping::IdentityMapping<defaulttype::StdVectorTypes<defaulttype::Vec<1, SReal>, defaulttype::Vec<1, SReal>, SReal>,defaulttype::StdVectorTypes<defaulttype::Vec<1, SReal>, defaulttype::Vec<1, SReal>, SReal> > IdentityMapping11;
+    typedef component::mapping::IdentityMapping<defaulttype::StdVectorTypes<type::Vec<1, SReal>, type::Vec<1, SReal>, SReal>,defaulttype::StdVectorTypes<type::Vec<1, SReal>, type::Vec<1, SReal>, SReal> > IdentityMapping11;
     IdentityMapping11::SPtr mapping = addNew< IdentityMapping11 >(constraint,"mapping");
     mapping->setModels(DOF.get(), constraintDOF.get());
     compliance = addNew<UniformCompliance1>(constraint,"compliance");

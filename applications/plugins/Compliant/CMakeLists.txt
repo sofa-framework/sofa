@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.12)
 project(Compliant VERSION 0.1)
 
-find_package(SofaMisc REQUIRED)
+sofa_find_package(SofaSimulationGraph REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
-find_package(SofaGui QUIET)
+find_package(SofaGuiQt QUIET)
 sofa_find_package(SofaPython QUIET)
+sofa_find_package(Sofa.GL QUIET)
 
 # Previous Eigen versions have a critical bug (v.noalias()+=w does not work in some situations)
 find_package(Eigen3 3.2.5 REQUIRED)
@@ -58,6 +60,7 @@ set(HEADER_FILES
     mapping/ContactMapping.h
     mapping/ConstantAssembledMapping.h
     mapping/ConstantAssembledMultiMapping.h
+    mapping/ContactMultiMapping.h
     mapping/DifferenceFromTargetMapping.h
     mapping/DifferenceMapping.h
     mapping/DotProductMapping.h
@@ -73,6 +76,7 @@ set(HEADER_FILES
     mapping/RigidJointMultiMapping.h
     mapping/RigidJointFromTargetMapping.h
     mapping/SafeDistanceMapping.h
+    mapping/WinchMultiMapping.h
     misc/CompliantAttachButtonSetting.h
     misc/CompliantSolverMerger.h
     misc/FailNode.h
@@ -171,6 +175,7 @@ set(SOURCE_FILES
     mapping/AffineMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
     mapping/ContactMapping.cpp
+    mapping/ContactMultiMapping.cpp
     mapping/DifferenceFromTargetMapping.cpp
     mapping/DifferenceMapping.cpp
     mapping/DotProductMapping.cpp
@@ -186,6 +191,7 @@ set(SOURCE_FILES
     mapping/RigidJointMultiMapping.cpp
     mapping/RigidJointFromTargetMapping.cpp
     mapping/SafeDistanceMapping.cpp
+    mapping/WinchMultiMapping.cpp
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
     misc/FailNode.cpp
@@ -260,7 +266,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_${PROJECT_NAME}")
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver SofaUserInteraction SofaMisc SofaSimulationGraph SofaMiscCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver SofaUserInteraction SofaMiscMapping SofaSimulationGraph SofaMiscCollision)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # linking explicitly with rt looks necessary on some posix (e.g. CentOS)
@@ -272,6 +278,10 @@ if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaPython)
 endif()
 
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
+endif()
+
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
     if(SofaTest_FOUND)
@@ -279,7 +289,7 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
-if(SofaGui_FOUND AND SOFAGUI_HAVE_SOFAGUIQT)
+if(SofaGuiQt_FOUND)
     add_subdirectory(Compliant_gui)
 endif()
 

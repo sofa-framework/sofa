@@ -26,17 +26,16 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/helper/system/SetDirectory.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 
+#include <SofaGui/initSofaGui.h>
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/cast.h>
-
+#include <sofa/simulation/Simulation.h>
 
 #define MAX_RECENTLY_OPENED 10
 
@@ -471,7 +470,7 @@ void SofaModeler::updateViewerList()
     listActionGUI.clear();
 
     //Register all GUIs
-    sofa::gui::initMain();
+    sofa::gui::initSofaGui();
 
     //Set the different available GUI
     std::vector<std::string> listGUI = sofa::gui::GUIManager::ListSupportedGUI();
@@ -614,7 +613,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
         else if (response == QMessageBox::Ok)
         {
             if (mod->getFilename().empty()) fileSaveAs();
-            else simulation::tree::getSimulation()->exportXML(mod->getRoot(), mod->getFilename().c_str());
+            else simulation::getSimulation()->exportXML(mod->getRoot(), mod->getFilename().c_str());
         }
     }
     //If the scene has been launch in Sofa
@@ -1095,7 +1094,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 
 
     std::string filename=path + std::string("temp") + (++count) + std::string(".scn");
-    simulation::tree::getSimulation()->exportXML(root,filename.c_str());
+    simulation::getSimulation()->exportXML(root,filename.c_str());
 
     //Make a copy of the .view if it exists for the current viewer
     const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(sceneFilename.c_str());

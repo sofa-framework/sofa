@@ -114,7 +114,7 @@
 
     <MeshTopology name="mesh" position="3 0 0    4 0 0     3.5 0 1" edges="0 1 1 2 2 0" triangles="0 1 2" />
     <MechanicalObject name="defoDOF" template="Vec3d"   />
-    <BarycentricShapeFunction template="ShapeFunctiond"  />
+    <BarycentricShapeFunction template="ShapeFunction3d"  />
 
     <FixedConstraint indices="0 1" />
 
@@ -155,7 +155,7 @@
 
     <MeshTopology name="mesh" position="5 0 0    6 0 0     5.5 0 1" edges="0 1 1 2 2 0" triangles="0 1 2" />
     <MechanicalObject name="defoDOF" template="Vec3d"   />
-    <BarycentricShapeFunction template="ShapeFunctiond"  />
+    <BarycentricShapeFunction template="ShapeFunction3d"  />
 
     <FixedConstraint indices="0 1" />
 

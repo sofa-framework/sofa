@@ -89,7 +89,7 @@ void OglTexture::init()
             // "Procedural" texture (actually inline texture data inside the scene file).
             unsigned int height = proceduralTextureHeight.getValue();
             unsigned int width = proceduralTextureWidth.getValue();
-            helper::vector<unsigned int> textureData = proceduralTextureData.getValue();
+            type::vector<unsigned int> textureData = proceduralTextureData.getValue();
             unsigned int nbb = proceduralTextureNbBits.getValue();
 
             if (height > 0 && width > 0 && !textureData.empty() )
@@ -102,7 +102,7 @@ void OglTexture::init()
                 //Make texture
                 unsigned char* data = img->getPixels();
 
-                for(std::size_t i=0 ; i<textureData.size() && i < height*width*(nbb/8); i++)
+                for(Size i=0 ; i<textureData.size() && i < height*width*(nbb/8); i++)
                     data[i] = (unsigned char)textureData[i];
 
                 for (std::size_t i=textureData.size() ; i<height*width*(nbb/8) ; i++)
@@ -195,7 +195,7 @@ void OglTexture::init()
             //Make texture
             unsigned char* data = img->getPixels();
 
-            for(std::size_t i=0 ; i < dummyHeight*dummyWidth*(dummyNbb/8); i++)
+            for(Size i=0 ; i < dummyHeight*dummyWidth*(dummyNbb/8); i++)
                 data[i] = (unsigned char)128;
         }
     }
@@ -218,7 +218,7 @@ void OglTexture::initVisual()
     }
 
     if (texture) delete texture;
-    texture = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),
+    texture = new sofa::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),
             generateMipmaps.getValue(), srgbColorspace.getValue(),
             minLod.getValue(), maxLod.getValue());
     texture->init();

@@ -25,6 +25,7 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa
@@ -36,7 +37,7 @@ namespace component
 namespace visualmodel
 {
 
-using namespace helper::gl;
+using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 

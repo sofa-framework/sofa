@@ -23,7 +23,6 @@
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-
 namespace sofa
 {
 
@@ -34,8 +33,8 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-using helper::vector;
-using helper::fixed_array;
+using type::vector;
+using type::fixed_array;
 
 
 BaseMeshTopology::EdgesInTriangle BaseMeshTopology::InvalidEdgesInTriangles;
@@ -47,12 +46,12 @@ BaseMeshTopology::EdgesInHexahedron BaseMeshTopology::InvalidEdgesInHexahedron;
 
 int initStaticStructures()
 {
-    BaseMeshTopology::InvalidEdgesInTriangles.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidEdgesInQuad.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidTrianglesInTetrahedron.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidEdgesInTetrahedron.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidQuadsInHexahedron.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidEdgesInHexahedron.assign(Topology::InvalidID);
+    BaseMeshTopology::InvalidEdgesInTriangles.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidEdgesInQuad.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidTrianglesInTetrahedron.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidEdgesInTetrahedron.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidQuadsInHexahedron.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidEdgesInHexahedron.assign(sofa::InvalidID);
     return 0;
 }
 
@@ -190,7 +189,7 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
     const EdgesAroundVertex& shell = getEdgesAroundVertex(i);
     VerticesAroundVertex adjacentVertices;
 
-    for (std::size_t j = 0; j<shell.size(); j++)
+    for (Size j = 0; j<shell.size(); j++)
     {
         Edge theEdge = edges[ shell[j] ];
         if ( theEdge[0] == i )
@@ -204,41 +203,41 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
 
 
 /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElement(index_type)
+const vector<BaseMeshTopology::Index> BaseMeshTopology::getElementAroundElement(Index)
 {
     return InvalidSet;
 }
 
 
 /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElements(vector<index_type>)
+const vector<BaseMeshTopology::Index> BaseMeshTopology::getElementAroundElements(vector<Index>)
 {
     return InvalidSet;
 }
 
 /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-const vector<BaseMeshTopology::index_type> BaseMeshTopology::getConnectedElement(index_type)
+const vector<BaseMeshTopology::Index> BaseMeshTopology::getConnectedElement(Index)
 {
     return InvalidSet;
 }
 
 
 /// Returns the set of triangles on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
+const sofa::type::vector<BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
 {
     msg_error() << "getTrianglesOnBorder unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of edges on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
+const sofa::type::vector<BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
 {
     msg_error() << "getEdgesOnBorder unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of points on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
+const sofa::type::vector<BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
 {
     msg_error() << "getPointsOnBorder unsupported.";
     return InvalidSet;
@@ -262,23 +261,23 @@ public:
     {
         dest->addPoint(px,py,pz);
     }
-    void addLine(int p1, int p2) override
+    void addLine(Index p1, Index p2) override
     {
         dest->addEdge(p1,p2);
     }
-    void addTriangle(int p1, int p2, int p3) override
+    void addTriangle(Index p1, Index p2, Index p3) override
     {
         dest->addTriangle(p1,p2,p3);
     }
-    void addQuad(int p1, int p2, int p3, int p4) override
+    void addQuad(Index p1, Index p2, Index p3, Index p4) override
     {
         dest->addQuad(p1,p2,p3,p4);
     }
-    void addTetra(int p1, int p2, int p3, int p4) override
+    void addTetra(Index p1, Index p2, Index p3, Index p4) override
     {
         dest->addTetra(p1,p2,p3,p4);
     }
-    void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8) override
+    void addCube(Index p1, Index p2, Index p3, Index p4, Index p5, Index p6, Index p7, Index p8) override
     {
         dest->addHexa(p1,p2,p3,p4,p5,p6,p7,p8);
     }
@@ -314,27 +313,27 @@ void BaseMeshTopology::addPoint(SReal, SReal, SReal)
     msg_error() << "addPoint() not supported.";
 }
 
-void BaseMeshTopology::addEdge(int, int)
+void BaseMeshTopology::addEdge(Index, Index)
 {
     msg_error() << "addEdge() not supported.";
 }
 
-void BaseMeshTopology::addTriangle(int, int, int)
+void BaseMeshTopology::addTriangle(Index, Index, Index)
 {
     msg_error() << "addTriangle() not supported.";
 }
 
-void BaseMeshTopology::addQuad(int, int, int, int)
+void BaseMeshTopology::addQuad(Index, Index, Index, Index)
 {
     msg_error() << "addQuad() not supported.";
 }
 
-void BaseMeshTopology::addTetra(int, int, int, int)
+void BaseMeshTopology::addTetra(Index, Index, Index, Index)
 {
     msg_error() << "addTetra() not supported.";
 }
 
-void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
+void BaseMeshTopology::addHexa(Index, Index, Index, Index, Index, Index, Index, Index)
 {
     msg_error() << "addHexa() not supported.";
 }
@@ -373,25 +372,25 @@ std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChan
 }
 
 
-std::list<TopologyEngine *>::const_iterator BaseMeshTopology::beginTopologyEngine() const
+std::list<TopologyHandler *>::const_iterator BaseMeshTopology::beginTopologyHandler() const
 {
-    msg_error() << "beginTopologyEngine() not supported.";
-    std::list<TopologyEngine *>::const_iterator l;
+    msg_error() << "beginTopologyHandler() not supported.";
+    std::list<TopologyHandler *>::const_iterator l;
     return l;
 }
 
 
-std::list<TopologyEngine *>::const_iterator BaseMeshTopology::endTopologyEngine() const
+std::list<TopologyHandler *>::const_iterator BaseMeshTopology::endTopologyHandler() const
 {
-    msg_error() << "endTopologyEngine() not supported.";
-    std::list<TopologyEngine *>::const_iterator l;
+    msg_error() << "endTopologyHandler() not supported.";
+    std::list<TopologyHandler *>::const_iterator l;
     return l;
 }
 
-void BaseMeshTopology::addTopologyEngine(TopologyEngine* _topologyEngine)
+void BaseMeshTopology::addTopologyHandler(TopologyHandler* _TopologyHandler)
 {
-    msg_error() << "addTopologyEngine() not supported.";
-    (void)_topologyEngine;
+    msg_error() << "addTopologyHandler() not supported.";
+    (void)_TopologyHandler;
 }
 
 Topology::EdgeID BaseMeshTopology::getEdgeIndex(PointID, PointID)

@@ -25,22 +25,20 @@
 #include "ModifyObject.h"
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 #include <QToolTip>
 
 #define SIZE_TEXT     60
 
-
-namespace sofa
-{
-namespace helper
+namespace sofa::helper
 {
 template class SOFA_SOFAGUIQT_API Factory<std::string, sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument>;
-}
+} // namespace sofa::helper
 
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 using namespace core::objectmodel;
@@ -200,7 +198,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
 
     std::string final_str;
     formatHelperString(helper,final_str);
-    std::string ownerClass=data->getOwnerClass();
+    std::string ownerClass=data->getOwner()->getName();
     if (modifiable)
     {
         QPushButton *helper_button = new QPushButton(this);
@@ -307,11 +305,4 @@ void QPushButtonUpdater::setDisplayed(bool b)
 
 }
 
-
-
-
-
-
-}//qt
-}//gui
-}//sofa
+} // namespace sofa::gui::qt

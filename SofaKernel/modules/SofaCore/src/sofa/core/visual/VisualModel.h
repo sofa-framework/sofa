@@ -23,7 +23,8 @@
 #define SOFA_CORE_VISUAL_VISUALMODEL_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
+#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa
 {
@@ -150,7 +151,7 @@ public:
     /// Rotate the positions
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyRotation(const defaulttype::Quat /*q*/)
+    virtual void applyRotation(const type::Quat<SReal> /*q*/)
     {
     }
 
@@ -167,7 +168,8 @@ public:
      *  The number of vertices position, normal, and texture coordinates already written is given as parameters.
      *  This method should update them.
      */
-    virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, int& /*vindex*/, int& /*nindex*/, int& /*tindex*/, int& /*count*/)
+    virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, 
+        sofa::Index& /*vindex*/, sofa::Index& /*nindex*/, sofa::Index& /*tindex*/, int& /*count*/)
     {
     }
 

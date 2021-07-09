@@ -6,9 +6,10 @@
 
 #include "../shapeFunction/BaseShapeFunction.h"
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 namespace sofa
 {
@@ -21,6 +22,7 @@ namespace mass
 
 using namespace	sofa::component::topology;
 using namespace core::topology;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 
@@ -51,7 +53,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
     if( !m_shapeFunction )  this->getContext()->get( m_shapeFunction, core::objectmodel::BaseContext::SearchUp );
     if( !m_shapeFunction )
     {
-        serr << "ShapeFunction<"<<ShapeFunctionTypes::Name()<<"> component not found" << sendl;
+        msg_error() << "ShapeFunction<"<<ShapeFunctionTypes::Name()<<"> component not found";
         return;
     }
 
@@ -59,9 +61,9 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 
     if( f_printMassMatrix.getValue() )
     {
-        sout<<m_massMatrix<<sendl;
-        sout<<"Total Volume = "<<m_totalVolume<<" ("<<pow((double)m_totalVolume,1.0/3.0)<<")"<<sendl;
-        sout<<"Total Mass = "<<m_totalMass<<sendl;
+        msg_info()<<m_massMatrix<<msgendl
+                 <<"Total Volume = "<<m_totalVolume<<" ("<<pow((double)m_totalVolume,1.0/3.0)<<")"<<msgendl
+                 <<"Total Mass = "<<m_totalMass;
     }
 }
 
@@ -368,10 +370,10 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addGravityToV(
         VecDeriv& v = *d_v.beginEdit();
 
         // gravity
-        Vec3d g ( this->getContext()->getGravity() * (mparams->dt()) );
+        Vec3d g ( this->getContext()->getGravity() * sofa::core::mechanicalparams::dt(mparams) );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * (mparams->dt());
+        Deriv hg = theGravity * sofa::core::mechanicalparams::dt(mparams);
 
         // add weight force
         for (unsigned int i=0; i<v.size(); i++)
@@ -409,7 +411,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(c
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     BaseMatrix* m = r.matrix;
 
-    Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+    Real mFactor = (Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
 
     for (unsigned int xi = 0; xi < m_massMatrix.getRowIndex().size(); ++xi)
     {
@@ -427,7 +429,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(c
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass( unsigned int index, defaulttype::BaseMatrix *m ) const
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass(sofa::Index index, defaulttype::BaseMatrix *m ) const
 {
     // warning the mass needs to be diagonal-lumped per dof
 
@@ -442,11 +444,11 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
     //    for( unsigned i=0 ; i<dimension; ++i )
     //        m->set( i,i,1);
 
-    int i = index;
-    int bi = 0;
+    BaseMatrix::Index i = index;
+    BaseMatrix::Index bi = 0;
     m_massMatrix.split_row_index( i, bi );
 
-    int rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
+    BaseMatrix::Index rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
     if( m_massMatrix.sortedFind( m_massMatrix.getRowIndex(), i, rowId ) )
     {
         typename MassMatrix::Range rowRange( m_massMatrix.getRowBegin()[rowId], m_massMatrix.getRowBegin()[rowId+1] );

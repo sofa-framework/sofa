@@ -5,7 +5,8 @@
     <VisualStyle displayFlags="showVisual" /> <!--showBehaviorModels showCollisionModels-->
 
     <DefaultPipeline depth="15" verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<NewProximityIntersection name="Proximity" alarmDistance="1" contactDistance="1" useLineLine="true" />
     <DefaultContactManager name="Response" response="default" />  <!-- response="FrictionContact" /> -->
 	

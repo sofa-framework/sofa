@@ -23,13 +23,12 @@
 #include <fstream>
 #include <ctime>
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/PluginManager.h>
 
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -56,7 +55,7 @@ class MyCfExportVisitor : public sofa::simulation::Visitor
 {
 public:
 	// type def
-	typedef helper::vector<sofa::core::objectmodel::BaseData*> VecData;
+	typedef type::vector<sofa::core::objectmodel::BaseData*> VecData;
 
     MyCfExportVisitor(const sofa::core::ExecParams* params)
         : Visitor(params)
@@ -125,7 +124,6 @@ int main(int argc, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
 
     // --- Parameter initialisation ---
     std::vector<std::string> files; // filename

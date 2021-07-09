@@ -24,7 +24,6 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/helper/FnDispatcher.h>
 
 namespace sofa
 {
@@ -55,7 +54,7 @@ public:
         return static_cast<sofa::core::collision::TDetectionOutputVector<Model1,Model2>*>(contacts);
     }
 
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
+    typedef sofa::type::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
     int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
     {

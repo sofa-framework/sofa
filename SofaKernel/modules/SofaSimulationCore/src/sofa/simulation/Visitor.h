@@ -19,27 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_VISITOR_H
-#define SOFA_SIMULATION_VISITOR_H
+#pragma once
 
 #include <sofa/simulation/config.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/LocalStorage.h>
-
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/ExecParams.h>
-
-#include <sofa/helper/set.h>
-#include <iostream>
-
-#ifdef SOFA_DUMP_VISITOR_INFO
+#include <sofa/simulation/fwd.h>
+#include <sofa/core/fwd.h>
+#include <sofa/core/objectmodel/Tag.h>
 #include <sofa/helper/system/thread/CTime.h>
+
+#include <string>
+#ifdef SOFA_DUMP_VISITOR_INFO
+#include <sofa/core/VecId.h>
 #endif
 
-namespace sofa
-{
 
-namespace simulation
+namespace sofa::simulation
 {
 
 class LocalStorage;
@@ -61,10 +55,10 @@ public:
     typedef sofa::helper::system::thread::CTime CTime;
 #endif
 
-    Visitor(const core::ExecParams* params);
+    explicit Visitor(const sofa::core::ExecParams* params);
     virtual ~Visitor();
 
-    const core::ExecParams* execParams() const { return params; }
+    const sofa::core::ExecParams* execParams() const { return params; }
 
     enum Result { RESULT_CONTINUE, RESULT_PRUNE };
 
@@ -96,78 +90,69 @@ public:
     /// Only used for debugging / profiling purposes
     virtual std::string getInfos() const { return ""; }
 
-#ifdef SOFA_VERBOSE_TRAVERSAL
-    void debug_write_state_before( core::objectmodel::BaseObject* obj ) ;
-    void debug_write_state_after( core::objectmodel::BaseObject* obj ) ;
-#else
-    inline void debug_write_state_before( core::objectmodel::BaseObject*  ) {}
-    inline void debug_write_state_after( core::objectmodel::BaseObject*  ) {}
-#endif
+protected:
+    void debug_write_state_before( sofa::core::objectmodel::BaseObject* obj ) ;
+    void debug_write_state_after( sofa::core::objectmodel::BaseObject* obj ) ;
 
-    /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Visit, class VContext, class Container, class Object >
-    void for_each(Visit* visitor, VContext* ctx, const Container& list, void (Visit::*fn)(VContext*, Object*))
-    {
-        for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
-        {
-            typename Container::pointed_type* ptr = &*(*it);
-            if(testTags(ptr))
-            {
-                debug_write_state_before(ptr);
-                ctime_t t=begin(ctx, ptr);
-                (visitor->*fn)(ctx, ptr);
-                end(ctx, ptr, t);
-                debug_write_state_after(ptr);
-            }
-        }
-    }
+    /// Function to be called when a visitor executes a main task
+    /// It surrounds the task function with debug information
+    template< class VisitorType, class VContext, class ObjectType>
+    void runVisitorTask(VisitorType *visitor,
+                               VContext *ctx,
+                               void (VisitorType::*task)(VContext *, ObjectType *),
+                               ObjectType *ptr,
+                               const std::string &typeInfo = std::string("type"));
 
-    /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Visit, class VContext, class Container, class Object >
-    Visitor::Result for_each_r(Visit* visitor, VContext* ctx, const Container& list, Visitor::Result (Visit::*fn)(VContext*, Object*))
-    {
-        Visitor::Result res = Visitor::RESULT_CONTINUE;
-        for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
-        {
-            typename Container::pointed_type* ptr = &*(*it);
-            if(testTags(ptr))
-            {
-                debug_write_state_before(ptr);
-                ctime_t t=begin(ctx, ptr);
-                res = (visitor->*fn)(ctx, ptr);
-                end(ctx, ptr, t);
-                debug_write_state_after(ptr);
-            }
-        }
-        return res;
+    /// Function to be called when a visitor executes a main task
+    /// It surrounds the task function with debug information
+    template< class VisitorType, class VContext, class ObjectType>
+    Result runVisitorTask(VisitorType *visitor,
+                                 VContext *ctx,
+                                 Result (VisitorType::*task)(VContext *, ObjectType *),
+                                 ObjectType *ptr,
+                                 const std::string &typeInfo = std::string("type"));
 
-    }
+    template < class Visit, class VContext, class Container, typename PointedType = typename Container::pointed_type >
+    void for_each(Visit* visitor,
+                         VContext* ctx,
+                         const Container& list,
+                         void (Visit::*task)(VContext*, PointedType*),
+                         const std::string &typeInfo = std::string("type"));
 
+    template < class Visit, class VContext, class Container, typename PointedType = typename Container::pointed_type>
+    Visitor::Result for_each(Visit* visitor,
+                                    VContext* ctx,
+                                    const Container& list,
+                                    Visitor::Result (Visit::*task)(VContext*, PointedType*),
+                                    const std::string &typeInfo = std::string("type"));
+
+public:
 
     //method to compare the tags of the objet with the ones of the visitor
     // return true if the object has all the tags of the visitor
     // or if no tag is set to the visitor
-    bool testTags(core::objectmodel::BaseObject* obj)
-    {
-        if(subsetsToManage.empty())
-            return true;
-        if (obj->getTags().includes(subsetsToManage)) // all tags in subsetsToManage must be included in the list of tags of the object
-            return true;
-        return false;
-    }
+    bool testTags(sofa::core::objectmodel::BaseObject* obj);
 
     /// Alias for context->executeVisitor(this)
-    virtual void execute(core::objectmodel::BaseContext* node, bool precomputedOrder=false);
+    virtual void execute(sofa::core::objectmodel::BaseContext* node, bool precomputedOrder=false);
 
-    virtual ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj
-            , const std::string &typeInfo=std::string("type")
-                         );
+    /// Optional helper method to call before handling an object if not using the for_each method.
+    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+    virtual ctime_t begin(simulation::Node *node, sofa::core::objectmodel::BaseObject *obj,
+                          const std::string &typeInfo = std::string("type"));
 
-    virtual void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
-    ctime_t begin(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj
-            , const std::string &typeInfo=std::string("type")
-                 );
-    void end(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj, ctime_t t0);
+    /// Optional helper method to call after handling an object if not using the for_each method.
+    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+    virtual void end(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0);
+
+    /// Optional helper method to call before handling an object if not using the for_each method.
+    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+    virtual ctime_t begin(simulation::Visitor::VisitorContext *node, sofa::core::objectmodel::BaseObject *obj,
+                  const std::string &typeInfo = std::string("type"));
+
+    /// Optional helper method to call after handling an object if not using the for_each method.
+    /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+    virtual void end(simulation::Visitor::VisitorContext* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0);
 
     /// Specify whether this visitor can be parallelized.
     virtual bool isThreadSafe() const { return false; }
@@ -194,7 +179,7 @@ public:
 	bool canAccessSleepingNode;
 
 protected:
-    const core::ExecParams* params;
+    const sofa::core::ExecParams* params;
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -244,8 +229,77 @@ private:
     static void dumpInfo( const std::string &info);
 #endif
 };
-} // namespace simulation
 
-} // namespace sofa
-
+template< class VisitorType, class VContext, class ObjectType>
+void Visitor::runVisitorTask(VisitorType *visitor,
+                             VContext *ctx,
+                             void (VisitorType::*task)(VContext *, ObjectType *),
+                             ObjectType *ptr,
+                             const std::string &typeInfo)
+{
+    if(this->testTags(ptr))
+    {
+#ifdef SOFA_VERBOSE_TRAVERSAL
+        visitor->debug_write_state_before(ptr);
 #endif
+        auto t = this->begin(ctx, ptr, typeInfo);
+        (visitor->*task)(ctx, ptr);
+        this->end(ctx, ptr, t);
+#ifdef SOFA_VERBOSE_TRAVERSAL
+        visitor->debug_write_state_after(ptr);
+#endif
+    }
+}
+
+template< class VisitorType, class VContext, class ObjectType>
+Visitor::Result Visitor::runVisitorTask(VisitorType *visitor,
+                                        VContext *ctx,
+                                        Result (VisitorType::*task)(VContext *, ObjectType *),
+                                        ObjectType *ptr,
+                                        const std::string &typeInfo)
+{
+    Result res = Result::RESULT_CONTINUE;
+    if(this->testTags(ptr))
+    {
+#ifdef SOFA_VERBOSE_TRAVERSAL
+        visitor->debug_write_state_before(ptr);
+#endif
+        auto t = this->begin(ctx, ptr, typeInfo);
+        res = (visitor->*task)(ctx, ptr);
+        this->end(ctx, ptr, t);
+#ifdef SOFA_VERBOSE_TRAVERSAL
+        visitor->debug_write_state_after(ptr);
+#endif
+    }
+    return res;
+}
+
+template < class VisitorType, class VContext, class Container, typename PointedType >
+void Visitor::for_each(VisitorType *visitor,
+                       VContext *ctx,
+                       const Container &list,
+                       void (VisitorType::*task)(VContext *, PointedType *),
+                       const std::string &typeInfo)
+{
+    for (const auto& element : list)
+    {
+        runVisitorTask(visitor, ctx, task, &*element, typeInfo);
+    }
+}
+
+template < class VisitorType, class VContext, class Container, typename PointedType >
+Visitor::Result Visitor::for_each(VisitorType *visitor,
+                                  VContext *ctx,
+                                  const Container &list,
+                                  Visitor::Result (VisitorType::*task)(VContext *, PointedType *),
+                                  const std::string &typeInfo)
+{
+    Visitor::Result res = Visitor::RESULT_CONTINUE;
+    for (const auto& element : list)
+    {
+        res = runVisitorTask(visitor, ctx, task, &*element, typeInfo);
+    }
+    return res;
+}
+
+} // namespace sofa::simulation

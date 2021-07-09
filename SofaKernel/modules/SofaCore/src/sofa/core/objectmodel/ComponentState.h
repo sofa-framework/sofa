@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <iostream>
+#include <iosfwd>
 
 namespace sofa
 {

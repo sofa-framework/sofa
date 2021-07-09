@@ -98,8 +98,8 @@ struct MassFromDensitySpecialization<DataTypes, defaulttype::Image<T>>
         This->Me.makeCompressed();
 
         // output some information
-        This->sout<<"Total Volume = "<<voxelVol*nb<<" ("<<pow((double)voxelVol*nb,1.0/3.0)<<")"<<This->sendl;
-        This->sout<<"Total Mass = "<<totalMass<<This->sendl;
+        msg_info(This)<<"Total Volume = "<<voxelVol*nb<<" ("<<pow((double)voxelVol*nb,1.0/3.0)<<")"<<msgendl
+                      <<"Total Mass = "<<totalMass<<This->sendl;
     }
 };
 
@@ -179,7 +179,7 @@ protected:
         // compute J
         deformationMapping->init();
 
-        const helper::vector<defaulttype::BaseMatrix*>* js = deformationMapping->getJs();
+        const type::vector<defaulttype::BaseMatrix*>* js = deformationMapping->getJs();
         if(!js) { serr<<SOFA_CLASS_METHOD<<"can't compute J : problem with mapping ?"<<sendl; return; }
 
         // compute mass

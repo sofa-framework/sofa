@@ -20,9 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
-#include <SofaTest/ForceField_test.h>
-
-#include <SofaTest/TestMessageHandler.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::core::objectmodel::ComponentState ;
@@ -32,7 +29,10 @@ using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-using sofa::core::ExecParams ;
+
+#include "ForceFieldTestCreation.h"
+
+using sofa::core::execparams::defaultInstance; 
 
 namespace sofa {
 
@@ -53,7 +53,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
 
     typedef ForceType Spring;
     typedef component::container::MechanicalObject<DataTypes> DOF;
@@ -91,7 +91,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
 
         // Set force parameters
         Inherited::force->_poissonRatio.setValue(0);
-        helper::vector<Real> youngModulusVec;youngModulusVec.push_back(40);
+        type::vector<Real> youngModulusVec;youngModulusVec.push_back(40);
         Inherited::force->_youngModulus.setValue(youngModulusVec);
         Inherited::force->f_method.setValue("small");
 
@@ -108,7 +108,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
 
     void checkGracefullHandlingWhenTopologyIsMissing()
     {
-        this->clearSceneGraph();
+        modeling::clearScene();
 
         // This is a RAII message.
         EXPECT_MSG_EMIT(Error) ;
@@ -116,7 +116,6 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root'>                                \n"
-                 "  <VisualStyle displayFlags='showForceFields'/>       \n"
                  "  <Node name='FEMnode'>                               \n"
                  "    <MechanicalObject/>                               \n"
                  "    <TetrahedronFEMForceField name='fem' youngModulus='5000' poissonRatio='0.07'/>\n"
@@ -126,7 +125,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* fem = root->getTreeNode("FEMnode")->getObject("fem") ;
         EXPECT_NE(fem, nullptr) ;
@@ -136,8 +135,8 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
 };
 
 // ========= Define the list of types to instanciate.
-//using testing::Types;
-typedef testing::Types<
+//using ::testing::Types;
+typedef ::testing::Types<
 component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3Types>
 > TestTypes; // the types to instanciate.
 
@@ -146,7 +145,7 @@ component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3Types>
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(TetrahedronFEMForceField_test, TestTypes);
+TYPED_TEST_SUITE(TetrahedronFEMForceField_test, TestTypes);
 
 
 

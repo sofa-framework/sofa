@@ -19,30 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GLBACKEND_H
-#define SOFA_GLBACKEND_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <sofa/gui/qt/viewer/EngineBackend.h>
 #include <sofa/gui/PickHandler.h>
 #include <SofaGraphComponent/ViewerSetting.h>
 
-#include <sofa/helper/gl/Capture.h>
-#include <sofa/helper/gl/Texture.h>
-#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+#include <sofa/gl/Capture.h>
+#include <sofa/gl/Texture.h>
+#include <sofa/gl/VideoRecorderFFMPEG.h>
 
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
+namespace sofa::gui::qt::viewer
 {
 
 class SOFA_SOFAGUIQT_API GLBackend : public EngineBackend
@@ -63,17 +52,9 @@ public:
     void addFrameRecorder();
 
 private:
-    sofa::helper::gl::Capture m_capture;
-    sofa::helper::gl::Texture* m_texLogo;
-    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
+    gl::Capture m_capture;
+    gl::Texture* m_texLogo;
+    gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
 };
 
-} // namespace viewer
-
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_GLBACKEND_H
+} // namespace sofa::gui::qt::viewer

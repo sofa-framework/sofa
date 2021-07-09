@@ -44,15 +44,7 @@
 #include <QHBoxLayout>
 
 
-using namespace sofa::simulation;
-using namespace sofa::component::misc;
-using namespace sofa::helper::system;
-using namespace sofa::core::objectmodel;
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+using namespace sofa::gui::qt
 {
 
 QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)

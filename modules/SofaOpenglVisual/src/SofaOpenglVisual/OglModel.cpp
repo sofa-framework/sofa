@@ -23,13 +23,13 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/RAII.h>
-#include <sofa/helper/vector.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/RAII.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <cstring>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 //#define DEBUG_DRAW
 namespace sofa
@@ -41,15 +41,16 @@ namespace component
 namespace visualmodel
 {
 
-using sofa::helper::types::RGBAColor;
+using sofa::type::RGBAColor;
+using sofa::type::Material;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
-using namespace sofa::core::loader;
 
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
     .add< sofa::component::visualmodel::OglModel >();
 
 template<class T>
-const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
+const T* getData(const sofa::type::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
@@ -142,7 +143,7 @@ void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     if (arg->getAttribute("isToPrint")!=nullptr)
     {
-        msg_deprecated() << "The 'isToPrint' data field has been deprecated in Sofa 19.06 due to lack of consistency in how it should work." << msgendl
+        msg_deprecated() << "The 'isToPrint' data field has been deprecated in SOFA v19.06 due to lack of consistency in how it should work." << msgendl
                             "Please contact sofa-dev team in case you need similar.";
     }
     Inherit1::parse(arg);
@@ -155,9 +156,9 @@ void OglModel::drawGroup(int ig, bool transparent)
 {
     glEnable(GL_NORMALIZE);
 
-    const Inherit::VecEdge& edges = this->getEdges();
-    const Inherit::VecTriangle& triangles = this->getTriangles();
-    const Inherit::VecQuad& quads = this->getQuads();
+    const Inherit::VecVisualEdge& edges = this->getEdges();
+    const Inherit::VecVisualTriangle& triangles = this->getTriangles();
+    const Inherit::VecVisualQuad& quads = this->getQuads();
 
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& vnormals = this->getVnormals();
@@ -243,7 +244,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     }
     if (g.nbe > 0 && !drawPoints)
     {
-        const Edge* indices = nullptr;
+        const VisualEdge* indices = nullptr;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
 
@@ -267,7 +268,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     }
     if (g.nbt > 0 && !drawPoints)
     {
-        const Triangle* indices = nullptr;
+        const VisualTriangle* indices = nullptr;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
 
@@ -290,7 +291,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     }
     if (g.nbq > 0 && !drawPoints)
     {
-        const Quad* indices = nullptr;
+        const VisualQuad* indices = nullptr;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
 
@@ -327,7 +328,7 @@ void OglModel::drawGroup(int ig, bool transparent)
 
 void OglModel::drawGroups(bool transparent)
 {
-    helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
+    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
 
     if (groups.empty())
     {
@@ -624,7 +625,7 @@ bool OglModel::loadTexture(const std::string& filename)
     helper::io::Image *img = helper::io::Image::Create(filename);
     if (!img)
         return false;
-    tex = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
+    tex = new sofa::gl::Texture(img, true, true, false, srgbTexturing.getValue());
     return true;
 }
 
@@ -666,7 +667,7 @@ bool OglModel::loadTextures()
             result = false;
             continue;
         }
-        helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
+        sofa::gl::Texture * text = new sofa::gl::Texture(img, true, true, false, srgbTexturing.getValue());
         materialTextureIdMap.insert(std::pair<int, int>(*i,textures.size()));
         textures.push_back( text );
     }
@@ -816,7 +817,7 @@ void OglModel::initVertexBuffer()
 
 void OglModel::initEdgesIndicesBuffer()
 {
-    const Inherit::VecEdge& edges = this->getEdges();
+    const Inherit::VecVisualEdge& edges = this->getEdges();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(edges.size()*sizeof(edges[0])), nullptr, GL_DYNAMIC_DRAW);
@@ -827,7 +828,7 @@ void OglModel::initEdgesIndicesBuffer()
 
 void OglModel::initTrianglesIndicesBuffer()
 {
-    const Inherit::VecTriangle& triangles = this->getTriangles();
+    const Inherit::VecVisualTriangle& triangles = this->getTriangles();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(triangles.size()*sizeof(triangles[0])), nullptr, GL_DYNAMIC_DRAW);
@@ -838,7 +839,7 @@ void OglModel::initTrianglesIndicesBuffer()
 
 void OglModel::initQuadsIndicesBuffer()
 {
-    const Inherit::VecQuad& quads = this->getQuads();
+    const Inherit::VecVisualQuad& quads = this->getQuads();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(quads.size()*sizeof(quads[0])), nullptr, GL_DYNAMIC_DRAW);
@@ -928,7 +929,7 @@ void OglModel::updateVertexBuffer()
 
 void OglModel::updateEdgesIndicesBuffer()
 {
-    const VecEdge& edges = this->getEdges();
+    const VecVisualEdge& edges = this->getEdges();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(edges.size()*sizeof(edges[0])), &edges[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -936,7 +937,7 @@ void OglModel::updateEdgesIndicesBuffer()
 
 void OglModel::updateTrianglesIndicesBuffer()
 {
-    const VecTriangle& triangles = this->getTriangles();
+    const VecVisualTriangle& triangles = this->getTriangles();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(triangles.size()*sizeof(triangles[0])), &triangles[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -944,16 +945,16 @@ void OglModel::updateTrianglesIndicesBuffer()
 
 void OglModel::updateQuadsIndicesBuffer()
 {
-    const VecQuad& quads = this->getQuads();
+    const VecVisualQuad& quads = this->getQuads();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(quads.size()*sizeof(quads[0])), &quads[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 void OglModel::updateBuffers()
 {
-    const Inherit::VecEdge& edges = this->getEdges();
-    const Inherit::VecTriangle& triangles = this->getTriangles();
-    const Inherit::VecQuad& quads = this->getQuads();
+    const Inherit::VecVisualEdge& edges = this->getEdges();
+    const Inherit::VecVisualTriangle& triangles = this->getTriangles();
+    const Inherit::VecVisualQuad& quads = this->getQuads();
 
     const VecCoord& vertices = this->getVertices();
     const VecDeriv& normals = this->getVnormals();

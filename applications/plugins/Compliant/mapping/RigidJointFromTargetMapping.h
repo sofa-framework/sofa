@@ -45,7 +45,7 @@ public:
 
     typedef typename TIn::Real Real;
 
-    typedef helper::vector< coord_type > targets_type;
+    typedef type::vector< coord_type > targets_type;
     Data< targets_type > targets; ///< target positions which who computes deltas
 
     Data< bool > rotation; ///< compute relative rotation
@@ -74,7 +74,7 @@ protected:
 
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
-        const helper::vector< coord_type >& targets = this->targets.getValue();
+        const type::vector< coord_type >& targets = this->targets.getValue();
         bool exact_dlog = this->exact_dlog.getValue();
 
         assert( in_pos.size() == targets.size() );
@@ -147,7 +147,7 @@ protected:
 
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
-        const helper::vector< coord_type >& targets = this->targets.getValue();
+        const type::vector< coord_type >& targets = this->targets.getValue();
 
         for(unsigned i = 0, n = in.size(); i < n; ++i) {
             coord_type parent = targets[i];

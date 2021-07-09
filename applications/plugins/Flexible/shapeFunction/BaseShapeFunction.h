@@ -26,11 +26,11 @@
 #include <Flexible/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/MatSym.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/MatSym.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/SVector.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
 
@@ -65,7 +65,7 @@ public:
 
     typedef TShapeFunctionTypes ShapeFunctionTypes;
     typedef typename ShapeFunctionTypes::Real Real;
-	static const unsigned int spatial_dimensions=ShapeFunctionTypes::spatial_dimensions;
+    static const std::size_t spatial_dimensions=ShapeFunctionTypes::spatial_dimensions;
 
     /** @name types */
     //@{
@@ -117,11 +117,11 @@ public:
     }
 
     //Pierre-Luc : I added these two functions to fill indices, weights and derivatives from an external component. I also wanted to make a difference between gauss points and mesh vertices.
-    virtual void fillWithMeshQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< VReal >& /*w*/,
-                                    sofa::helper::vector< VGradient >& /*dw*/, sofa::helper::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
+    virtual void fillWithMeshQuery( sofa::type::vector< VRef >& /*index*/, sofa::type::vector< VReal >& /*w*/,
+                                    sofa::type::vector< VGradient >& /*dw*/, sofa::type::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
 
-    virtual void fillWithGaussQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< VReal >& /*w*/,
-                                     sofa::helper::vector< VGradient >& /*dw*/, sofa::helper::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
+    virtual void fillWithGaussQuery( sofa::type::vector< VRef >& /*index*/, sofa::type::vector< VReal >& /*w*/,
+                                     sofa::type::vector< VGradient >& /*dw*/, sofa::type::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
 
     /// interpolate shape function values (and their first and second derivatives) at a given child position
     /// 'cell' might be used to target a specific element/voxel in case of overlapping elements/voxels.
@@ -131,43 +131,43 @@ public:
     /// wrappers
     virtual void computeShapeFunction(const VCoord& childPosition, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
     {
-		unsigned int nb=childPosition.size();
+        std::size_t nb=childPosition.size();
         ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
+        for(std::size_t i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
 	}
 
     virtual void computeShapeFunction(const VCoord& childPosition, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw,  const VCell& cells)
     {
-        unsigned int nb=childPosition.size();
+        std::size_t nb=childPosition.size();
         ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
+        for(std::size_t i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
     }
 
     /// used to make a partition of unity: $sum_i w_i(x)=1$ and adjust derivatives accordingly
     void normalize(VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
-        unsigned int nbRef=w.size();
+        std::size_t nbRef=w.size();
         Real sum_w=0;
         Gradient sum_dw;
         Hessian sum_ddw;
 
         // Compute norm
-        for (unsigned int j = 0; j < nbRef; j++) sum_w += w[j];
+        for (std::size_t j = 0; j < nbRef; j++) sum_w += w[j];
         if(dw)
         {
-            for (unsigned int j = 0; j < nbRef; j++) sum_dw += (*dw)[j];
-            if(ddw) for (unsigned int j = 0; j < nbRef; j++) sum_ddw += (*ddw)[j];
+            for (std::size_t j = 0; j < nbRef; j++) sum_dw += (*dw)[j];
+            if(ddw) for (std::size_t j = 0; j < nbRef; j++) sum_ddw += (*ddw)[j];
         }
 
         // Normalize
         if(sum_w)
-            for (unsigned int j = 0; j < nbRef; j++)
+            for (std::size_t j = 0; j < nbRef; j++)
             {
                 Real wn=w[j]/sum_w;
                 if(dw)
                 {
                     Gradient dwn=((*dw)[j] - sum_dw*wn)/sum_w;
-                    if(ddw) for(int o=0; o<Hessian::nbLines; o++) for(int p=0; p<Hessian::nbCols; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
+                    if(ddw) for(std::size_t o=0; o<Hessian::nbLines; o++) for(std::size_t p=0; p<Hessian::nbCols; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
                     (*dw)[j]=dwn;
                 }
                 w[j]=wn;
@@ -188,27 +188,27 @@ protected:
 };
 
 
-template <int spatial_dimensions_, class Real_>
+template <std::size_t spatial_dimensions_, class Real_>
 struct ShapeFunctionTypes
 {
     typedef Real_ Real;
-    typedef helper::vector<unsigned int> VRef;
-    typedef helper::vector<Real> VReal;
-    typedef defaulttype::Vec<spatial_dimensions_,Real> Coord;                          ///< Spatial coordinates in world space
-    typedef helper::vector<Coord> VCoord;
-    typedef defaulttype::Vec<spatial_dimensions_,Real> Gradient;                       ///< Gradient of a scalar value in world space
-    typedef helper::vector<Gradient> VGradient;
-    typedef defaulttype::Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
-    typedef helper::vector<Hessian> VHessian;
+    typedef type::vector<unsigned int> VRef;
+    typedef type::vector<Real> VReal;
+    typedef type::Vec<spatial_dimensions_,Real> Coord;                          ///< Spatial coordinates in world space
+    typedef type::vector<Coord> VCoord;
+    typedef type::Vec<spatial_dimensions_,Real> Gradient;                       ///< Gradient of a scalar value in world space
+    typedef type::vector<Gradient> VGradient;
+    typedef type::Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
+    typedef type::vector<Hessian> VHessian;
 	typedef int Cell;
-    typedef helper::vector<Cell> VCell;
+    typedef type::vector<Cell> VCell;
 
-    typedef helper::vector< helper::SVector<unsigned int> > VecVRef;
-    typedef helper::vector< helper::SVector<Real> > VecVReal;
-    typedef helper::vector< helper::SVector<Gradient> > VecVGradient;
-    typedef helper::vector< helper::SVector<Hessian> > VecVHessian;
+    typedef type::vector< type::SVector<unsigned int> > VecVRef;
+    typedef type::vector< type::SVector<Real> > VecVReal;
+    typedef type::vector< type::SVector<Gradient> > VecVGradient;
+    typedef type::vector< type::SVector<Hessian> > VecVHessian;
 
-    static const int spatial_dimensions=spatial_dimensions_ ;
+    static const std::size_t spatial_dimensions=spatial_dimensions_ ;
     static const char* Name();
 };
 

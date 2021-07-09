@@ -32,7 +32,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-
+#include <sofa/simulation/Node.h>
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/cast.h>
@@ -41,7 +41,7 @@
 #include <SofaPython/PythonEnvironment.h>
 
 /// This function converts an PyObject into a sofa string.
-/// string that can be safely parsed in helper::vector<int> or helper::vector<double>
+/// string that can be safely parsed in type::vector<int> or type::vector<double>
 SOFA_SOFAPYTHON_API std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out) ;
 
 // =============================================================================
@@ -400,11 +400,11 @@ SOFA_SOFAPYTHON_API void handle_python_error(const char* message);
         PyObject_HasAttrString(m_ScriptControllerInstance,#funcName ) ) { \
             m_Func_##funcName = PyObject_GetAttrString(m_ScriptControllerInstance,#funcName); \
             if (!PyCallable_Check(m_Func_##funcName)) \
-                {m_Func_##funcName=0; sout<<#funcName<<" not callable"<<sendl;} \
+                {m_Func_##funcName=0; msg_info()<<#funcName<<" not callable";} \
             else \
-                {sout<<#funcName<<" found"<<sendl;} \
+                {msg_info()<<#funcName<<" found";} \
     }else{ \
-        m_Func_##funcName=0; sout<<#funcName<<" not found"<<sendl; } \
+        m_Func_##funcName=0; msg_info()<<#funcName<<" not found"; } \
     }
 
 
@@ -421,11 +421,11 @@ SOFA_SOFAPYTHON_API void handle_python_error(const char* message);
         PyObject_HasAttrString(m_ScriptDataEngineInstance,#funcName ) ) { \
             m_Func_##funcName = PyObject_GetAttrString(m_ScriptDataEngineInstance,#funcName); \
             if (!PyCallable_Check(m_Func_##funcName)) \
-                {m_Func_##funcName=0; sout<<#funcName<<" not callable"<<sendl;} \
+                {m_Func_##funcName=0; msg_info()<<#funcName<<" not callable";} \
             else \
-                {sout<<#funcName<<" found"<<sendl;} \
+                {msg_info()<<#funcName<<" found";} \
     }else{ \
-        m_Func_##funcName=0; sout<<#funcName<<" not found"<<sendl; } \
+        m_Func_##funcName=0; msg_info()<<#funcName<<" not found"; } \
     }
 
 // =============================================================================

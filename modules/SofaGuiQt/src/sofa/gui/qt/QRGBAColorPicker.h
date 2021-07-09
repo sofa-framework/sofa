@@ -19,11 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef QRGBACOLORPICKER_H
-#define QRGBACOLORPICKER_H
+#pragma once
 #include "DataWidget.h"
-#include <sofa/core/loader/Material.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Material.h>
+#include <sofa/type/Vec.h>
 
 #include <QColorDialog>
 #include <QPainter>
@@ -40,16 +39,11 @@
 #include <QValidator>
 #include <QColorDialog>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
 /// Private namespace
-namespace qrgbacolorpicker_h
+namespace sofa::gui::qt::qrgbacolorpicker_h
 {
-using sofa::defaulttype::Vec4f ;
+
+using sofa::type::Vec4f ;
 
 /**
     @class QRGBAColorPicker
@@ -81,13 +75,9 @@ protected slots:
     void raiseQColorDialog();
 };
 
-} /// namespace qrgbacolorpicker_h
+} // namespace sofa::gui::qt::qrgbacolorpicker_h
 
-using qrgbacolorpicker_h::QRGBAColorPicker ;
-
-} /// namespace qt
-} /// namespace gui
-} /// namespace sofa
-
-#endif //QRGBACOLORPICKER
-
+namespace sofa::gui::qt
+{
+    using sofa::gui::qt::qrgbacolorpicker_h::QRGBAColorPicker;
+} // namespace sofa::gui::qt

@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Mapping_test.h>
 #include <SofaMiscMapping/DistanceMapping.h>
 
+#include <SofaBaseMechanics_test/MappingTestCreation.h>
 
 namespace sofa {
 namespace {
@@ -34,7 +34,7 @@ namespace {
  * @author Matthieu Nesme
   */
 template <typename DistanceMapping>
-struct DistanceMappingTest : public Mapping_test<DistanceMapping>
+struct DistanceMappingTest : public sofa::mapping_test::Mapping_test<DistanceMapping>
 {
     typedef typename DistanceMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
@@ -61,7 +61,7 @@ struct DistanceMappingTest : public Mapping_test<DistanceMapping>
 
         // expected child positions
         OutVecCoord expectedoutcoord;
-        expectedoutcoord.push_back( defaulttype::Vector1( std::sqrt(3.0) ) );
+        expectedoutcoord.push_back( type::Vector1( std::sqrt(3.0) ) );
 
         return this->runTest( incoord, expectedoutcoord );
     }
@@ -70,14 +70,14 @@ struct DistanceMappingTest : public Mapping_test<DistanceMapping>
 
 
 // Define the list of types to instanciate.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 component::mapping::DistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>,
 component::mapping::DistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE( DistanceMappingTest, DataTypes );
+TYPED_TEST_SUITE( DistanceMappingTest, DataTypes );
 
 // test case
 TYPED_TEST( DistanceMappingTest , test )

@@ -37,22 +37,24 @@ namespace io
 class SOFA_HELPER_API MeshTopologyLoader
 {
 public:
+    using Index = sofa::Index;
+
     MeshTopologyLoader():m_mesh(nullptr) {}
     virtual ~MeshTopologyLoader() {}
     bool load(const char *filename);
-    virtual void setNbPoints(int /*n*/) {}
-    virtual void setNbLines(int /*n*/) {}
-    virtual void setNbEdges(int /*n*/) {}
-    virtual void setNbTriangles(int /*n*/) {}
-    virtual void setNbQuads(int /*n*/) {}
-    virtual void setNbTetrahedra(int /*n*/) {}
-    virtual void setNbCubes(int /*n*/) {}
+    virtual void setNbPoints(Index /*n*/) {}
+    virtual void setNbLines(Index /*n*/) {}
+    virtual void setNbEdges(Index /*n*/) {}
+    virtual void setNbTriangles(Index /*n*/) {}
+    virtual void setNbQuads(Index /*n*/) {}
+    virtual void setNbTetrahedra(Index /*n*/) {}
+    virtual void setNbCubes(Index /*n*/) {}
     virtual void addPoint(SReal /*px*/, SReal /*py*/, SReal /*pz*/) {}
-    virtual void addLine(int /*p1*/, int /*p2*/) {}
-    virtual void addTriangle(int /*p1*/, int /*p2*/, int /*p3*/) {}
-    virtual void addQuad(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addTetra(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addCube(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/, int /*p5*/, int /*p6*/, int /*p7*/, int /*p8*/) {}
+    virtual void addLine(Index /*p1*/, Index /*p2*/) {}
+    virtual void addTriangle(Index /*p1*/, Index /*p2*/, Index /*p3*/) {}
+    virtual void addQuad(Index /*p1*/, Index /*p2*/, Index /*p3*/, Index /*p4*/) {}
+    virtual void addTetra(Index /*p1*/, Index /*p2*/, Index /*p3*/, Index /*p4*/) {}
+    virtual void addCube(Index /*p1*/, Index /*p2*/, Index /*p3*/, Index /*p4*/, Index /*p5*/, Index /*p6*/, Index /*p7*/, Index /*p8*/) {}
 private:
     /// method will create a MeshObj which will parse the file. Then data are loaded into the current topology
     bool loadObj(const char *filename);

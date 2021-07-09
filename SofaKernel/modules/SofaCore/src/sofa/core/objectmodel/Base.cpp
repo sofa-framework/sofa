@@ -23,6 +23,9 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/PathResolver.h>
+using sofa::core::PathResolver;
+
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
@@ -34,13 +37,7 @@ using sofa::helper::logging::Message ;
 
 #define ERROR_LOG_SIZE 100
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 using std::string;
@@ -56,16 +53,11 @@ Base::Base()
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
     , d_componentState(initData(&d_componentState, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
 {
-    name.setOwnerClass("Base");
     name.setAutoLink(false);
     d_componentState.setAutoLink(false);
     d_componentState.setReadOnly(true);
-    d_componentState.setOwnerClass("Base");
-    f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
-    f_tags.setOwnerClass("Base");
     f_tags.setAutoLink(false);
-    f_bbox.setOwnerClass("Base");
     f_bbox.setReadOnly(true);
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
@@ -159,10 +151,13 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     res.helpMsg = help;
     res.dataFlags = dataFlags;
 
-    uint32_t prefix = *reinterpret_cast<const uint32_t*>(name);
+    if (strlen(name) >= 3)
+    {
+        uint32_t prefix = *reinterpret_cast<const uint32_t*>(name);
 
-    if (prefix == draw_prefix || prefix == show_prefix)
-        res.group = "Visualization";
+        if (prefix == draw_prefix || prefix == show_prefix)
+            res.group = "Visualization";
+    }
 }
 
 /// Add a data field.
@@ -356,6 +351,7 @@ BaseData* Base::findData( const std::string &name ) const
     else return nullptr;
 }
 
+
 /// Find fields given a name: several can be found as we look into the alias map
 std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 {
@@ -418,7 +414,7 @@ bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseL
     return (ptr != nullptr);
 }
 
-void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
+Base* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
 {
     msg_error() << "Base: calling unimplemented findLinkDest method" ;
     return nullptr;
@@ -444,14 +440,15 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
 
     for (unsigned int d=0; d<dataVec.size(); ++d)
     {
-        // test if data is a link and can be linked
+        /// test if data is a link and can be linked
         if (value.length() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
         {
             if (!dataVec[d]->setParent(value))
             {
                 BaseData* data = nullptr;
-                BaseLink* bl = nullptr;
-                dataVec[d]->findDataLinkDest(data, value, bl);
+
+                PathResolver::FindBaseDataFromPath(dataVec[d] , value);
+
                 if (data != nullptr && dynamic_cast<EmptyData*>(data) != nullptr)
                 {
                     Base* owner = data->getOwner();
@@ -500,9 +497,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             std::stringstream tmp;
             tmp << "  " << linkVec[l]->getLinkedPath(i) << " = ";
             Base* b = linkVec[l]->getLinkedBase(i);
-            BaseData* d = linkVec[l]->getLinkedData(i);
             if (b) tmp << b->getTypeName() << " " << b->getName();
-            if (d) tmp << " . " << d->getValueTypeString() << " " << d->getName();
             msg_info() << tmp.str();
         }
     }
@@ -641,58 +636,6 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////// DEPRECATED SECTION ///////////////////////////////////////////////////
-/// Everything below this point is deprecated and will be removed soon !
-/// Do not use it anymore. For each function a replacement is suggested.
-
-const std::string Base::getWarnings() const
-{
-    dmsg_deprecated(this) << " getWarning() is deprecated."
-                             " Using deprecated code may result in lower performances or un-expected behavior."
-                             " To remove this warning you need to use getLoggedMessage() instead. ";
-
-    std::stringstream tmpstr ;
-    for(Message& m : m_messageslog){
-        if(m.type()==Message::Error || m.type()==Message::Warning || m.type()==Message::Fatal)
-        {
-            tmpstr << m.messageAsString() ;
-        }
-    }
-    return tmpstr.str();
-}
-
-const std::string Base::getOutputs() const
-{
-    dmsg_deprecated(this) <<  " getOutputs() is deprecated."
-                              " Using deprecated code may result in lower performances or un-expected behavior."
-                              " To remove this warning you need to use getLoggedMessage() instead. ";
-
-    std::stringstream tmpstr ;
-    for(Message& m : m_messageslog){
-        if(m.type()==Message::Info || m.type()==Message::Advice || m.type()==Message::Deprecated){
-            tmpstr << m.messageAsString() ;
-        }
-    }
-    return tmpstr.str();
-}
-
-void Base::clearWarnings()
-{
-    dmsg_deprecated(this) <<  " clearWarnings() is deprecated."
-                              " Using deprecated code may result in lower performances or un-expected behavior."
-                              " To remove this warning you need to use clearLoggedMessages() instead. ";
-    clearLoggedMessages();
-}
-
-void Base::clearOutputs()
-{
-    dmsg_deprecated(this) <<  " clearOutput() is deprecated."
-                              " Using deprecated code may result in lower performances or un-expected behavior."
-                              " To remove this warning you need to use clearLoggedMessages() instead. ";
-    clearLoggedMessages();
-}
-
 /// Set the source filename (where the component is implemented)
 void Base::setDefinitionSourceFileName(const std::string& sourceFileName)
 {
@@ -745,16 +688,10 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
+} // namespace sofa::core::objectmodel
 
 
-
-} // namespace objectmodel
-
-} // namespace core
-
-namespace helper
-{
-namespace logging
+namespace sofa::helper::logging
 {
 
 SofaComponentInfo::SofaComponentInfo(const sofa::core::objectmodel::Base* c)
@@ -765,6 +702,4 @@ SofaComponentInfo::SofaComponentInfo(const sofa::core::objectmodel::Base* c)
     m_name = c->getName() ;
 }
 
-} // namespace logging
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper::logging

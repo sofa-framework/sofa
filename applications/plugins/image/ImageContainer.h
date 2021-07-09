@@ -25,17 +25,16 @@
 #include <image/config.h>
 #include "ImageTypes.h"
 #include <climits>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -123,9 +122,9 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
                 for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]= (Real)translation[i];
 
-                defaulttype::Mat<3,3,Real> R;
+                type::Mat<3,3,Real> R;
                 R = container->RotVec3DToRotMat3D(rotation);
-                helper::Quater< float > q; q.fromMatrix(R);
+                type::Quat< float > q; q.fromMatrix(R);
                 wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
             }
             //			Real t0 = wtransform->getRotation()[0];
@@ -134,6 +133,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
 
         }
         else
+        {
 #endif // IMAGE_HAVE_ZLIB
             if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
                     || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
@@ -147,8 +147,8 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 {
                     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
                     for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-                    defaulttype::Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
-                    helper::Quater< Real > q; q.fromMatrix(R);
+                    type::Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
+                    type::Quat< Real > q; q.fromMatrix(R);
                     wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
                     wtransform->getOffsetT()=(Real)offsetT;
                     wtransform->getScaleT()=(Real)scaleT;
@@ -163,11 +163,11 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 if (!fileStream.is_open()) { container->serr << "Cannot open " << fname << container->sendl; return false; }
                 std::string str;
                 fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
-                defaulttype::Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
+                type::Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
                 if (!container->transformIsSet)
                 {
-                    defaulttype::Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-                    defaulttype::Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+                    type::Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+                    type::Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
                 }
                 fileStream.close();
 
@@ -175,11 +175,17 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 wimage->getCImgList().push_back(cimg_library::CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
             }
             else if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
+            {
                 wimage->getCImgList().load_cimg(fname.c_str());
+            }
             else if(fname.find(".par")!=std::string::npos || fname.find(".rec")!=std::string::npos)
+            {
                 wimage->getCImgList().load_parrec(fname.c_str());
+            }
             else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
+            {
                 wimage->getCImgList().load_ffmpeg_external(fname.c_str());
+            }
             else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
             {
                 float voxsize[3];
@@ -195,45 +201,18 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 if (!container->transformIsSet)
                     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
             }
-            else wimage->getCImgList().push_back(cimg_library::CImg<T>().load(fname.c_str()));
+            else
+            {
+                wimage->getCImgList().push_back(cimg_library::CImg<T>().load(fname.c_str()));
+            }
+#if IMAGE_HAVE_ZLIB
+        }
+#endif // IMAGE_HAVE_ZLIB
 
-        if(!wimage->isEmpty()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
-        else return false;
-
-        return true;
+        const bool isImageEmpty = wimage->isEmpty();
+        msg_info_when(!isImageEmpty, container) << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")";
+        return !isImageEmpty;
     }
-
-    //    static bool load( ImageContainerT* container, std::FILE* const file, std::string fname)
-    //    {
-    //        typedef typename ImageContainerT::Real Real;
-
-    //        typename ImageContainerT::waImage wimage(container->image);
-    //        typename ImageContainerT::waTransform wtransform(container->transform);
-
-    //        if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
-    //            wimage->getCImgList().load_cimg(file);
-    //        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
-    //        {
-    //            float voxsize[3];
-    //            wimage->getCImgList().push_back(CImg<T>().load_analyze(file,voxsize));
-    //            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-    //        }
-    //        else if (fname.find(".inr")!=std::string::npos)
-    //        {
-    //            float voxsize[3];
-    //            wimage->getCImgList().push_back(CImg<T>().load_inr(file,voxsize));
-    //            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-    //        }
-    //        else
-    //        {
-    //            container->serr << "Error (ImageContainer): Compression is not supported for container filetype: " << fname << container->sendl;
-    //        }
-
-    //        if(wimage->getCImg()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
-    //        else return false;
-
-    //        return true;
-    //    }
 
     static bool loadCamera( ImageContainerT* container )
     {
@@ -287,7 +266,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
             Real c = (Real)data.c;
             Real d = (Real)data.d;
             Real a = sqrt(1.0 - (b*b+c*c+d*d));
-            helper::Quater<Real> q(a,b,c,d);
+            type::Quat<Real> q(a,b,c,d);
 
             if (!container->transformIsSet)
             {
@@ -396,13 +375,23 @@ public:
         Inherited::parse(arg);
 
         this->transformIsSet = false;
-        if (this->transform.isSet()) this->transformIsSet = true;
-        if (!this->transformIsSet) this->transform.unset();
+        if (this->transform.isSet())
+        {
+            this->transformIsSet = true;
+        }
+        if (!this->transformIsSet)
+        {
+            this->transform.unset();
+        }
 
         if (this->transformIsSet)
-            sout << "Transform is set" << sendl;
+        {
+            msg_info() << "Transform is set";
+        }
         else
-            sout << "Transform is NOT set" << sendl;
+        {
+            msg_info() << "Transform is NOT set";
+        }
 
         ImageContainerSpecialization<ImageTypes>::parse( this, arg );
     }
@@ -423,9 +412,9 @@ public:
 protected:
 
 
-    defaulttype::Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
+    type::Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
     {
-        defaulttype::Mat<3,3,Real> rotMatrix;
+        type::Mat<3,3,Real> rotMatrix;
         float c, s, k1, k2;
         float TH_TINY = 0.00001f;
 
@@ -507,20 +496,20 @@ protected:
     }
 
 
-    void getCorners(defaulttype::Vec<8,defaulttype::Vector3> &c) // get image corners
+    void getCorners(type::Vec<8,type::Vector3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        defaulttype::Vec<8,defaulttype::Vector3> p;
-        p[0]=defaulttype::Vector3(-0.5,-0.5,-0.5);
-        p[1]=defaulttype::Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=defaulttype::Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=defaulttype::Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=defaulttype::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=defaulttype::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        type::Vec<8,type::Vector3> p;
+        p[0]=type::Vector3(-0.5,-0.5,-0.5);
+        p[1]=type::Vector3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=type::Vector3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=type::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=type::Vector3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=type::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=type::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=type::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -532,7 +521,7 @@ protected:
 
         if( onlyVisible && !drawBB.getValue()) return;
 
-        defaulttype::Vec<8,defaulttype::Vector3> c;
+        type::Vec<8,type::Vector3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -542,41 +531,30 @@ protected:
                 if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
                 if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
             }
-        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
+        this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(bbmin,bbmax));
     }
 
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
         // draw bounding box
-
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!drawBB.getValue()) return;
 
-        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT );
-        glPushMatrix();
+        vparams->drawTool()->saveLastState();
 
-        const float color[]={1.,0.5,0.5,0.}, specular[]={0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
-        glColor4fv(color);
-        glLineWidth(2.0);
+        const sofa::type::RGBAColor color(1.,0.5,0.5,0.5);
+        vparams->drawTool()->setMaterial(color);
 
-        defaulttype::Vec<8,defaulttype::Vector3> c;
+        std::vector<type::Vector3> corners;
+        type::Vec<8,type::Vector3> c;
+        corners.resize(8);
         getCorners(c);
+        for(unsigned int i=0;i<8;i++)
+            corners[i]=c[i];
 
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[2][0],c[2][1],c[2][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);  glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[4][0],c[4][1],c[4][2]); glVertex3d(c[6][0],c[6][1],c[6][2]); glVertex3d(c[2][0],c[2][1],c[2][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[5][0],c[5][1],c[5][2]); glVertex3d(c[4][0],c[4][1],c[4][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[5][0],c[5][1],c[5][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[5][0],c[5][1],c[5][2]); glVertex3d(c[4][0],c[4][1],c[4][2]); glVertex3d(c[6][0],c[6][1],c[6][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[2][0],c[2][1],c[2][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[6][0],c[6][1],c[6][2]);	glEnd ();
+        vparams->drawTool()->drawLineLoop(corners,2.0,color);
 
-
-        glPopMatrix ();
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
     }
 
     /*

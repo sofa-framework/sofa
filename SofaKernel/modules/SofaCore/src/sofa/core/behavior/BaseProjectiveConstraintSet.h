@@ -23,7 +23,12 @@
 #define SOFA_CORE_BEHAVIOR_BASEPROJECTIVECONSTRAINTSET_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/MultiVecId.h>
+
+namespace sofa::defaulttype { class BaseMatrix; }
+namespace sofa::core { class MechanicalParams; }
+namespace sofa::core::behavior { class MultiMatrixAccessor; }
+
 
 namespace sofa
 {
@@ -70,7 +75,7 @@ public:
 
 
     /// Return the lists of models this constraint applies to. 
-    virtual helper::vector< core::BaseState* > getModels() = 0;
+    virtual type::vector< core::BaseState* > getModels() = 0;
 
     /// @name Vector operations
     /// @{

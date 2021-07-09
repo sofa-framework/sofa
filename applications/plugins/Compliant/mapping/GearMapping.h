@@ -4,7 +4,7 @@
 #include <Compliant/config.h>
 
 #include "AssembledMultiMapping.h"
-
+#include <sofa/helper/StateMask.h>
 namespace sofa
 {
 	
@@ -52,8 +52,8 @@ namespace mapping
         typedef typename In::VecDeriv InVecDeriv;
         typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
 
-        typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
-        typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
+        typedef typename type::vector <const InVecCoord*> vecConstInVecCoord;
+        typedef typename type::vector<OutVecCoord*> vecOutVecCoord;
 
         enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
@@ -66,7 +66,7 @@ namespace mapping
 
 
         virtual void apply(typename Inherit::out_pos_type& /*out*/,
-                           const helper::vector<typename Inherit::in_pos_type>& in) override {
+                           const type::vector<typename Inherit::in_pos_type>& in) override {
             // macro_trace;
             assert( in.size() == 2 );
             assert( this->Nout == 1 );
@@ -74,9 +74,9 @@ namespace mapping
             (void) in;
         }
 
-        typedef defaulttype::Vec<2, unsigned> index_type;
-        typedef defaulttype::Vec<2, index_type> index_pair;
-        typedef helper::vector< index_pair > pairs_type;
+        typedef type::Vec<2, unsigned> Index;
+        typedef type::Vec<2, Index> index_pair;
+        typedef type::vector< index_pair > pairs_type;
 
         Data< pairs_type > d_pairs; ///< index pairs for computing deltas, 4 values per pair (dofindex0,kinematicdofindex0,dofindex1,kinematicdofindex1) 
         Data< Real > d_ratio; ///< a different ratio for each pair
@@ -88,7 +88,7 @@ namespace mapping
             , d_ratio( initData(&d_ratio, (Real)1, "ratio", "gear link ratio (can be negative)") )
         {}
 
-        void assemble(const helper::vector<typename Inherit::in_pos_type>& in ) override {
+        void assemble(const type::vector<typename Inherit::in_pos_type>& in ) override {
 
             const Real& ratio = d_ratio.getValue();
 
@@ -106,7 +106,7 @@ namespace mapping
 
                 for(unsigned k = 0, n = p.size(); k < n; ++k) {
 
-                    const index_type& index = p[k][i];
+                    const Index& index = p[k][i];
 
                     unsigned c = index[0] * Nin + index[1];
 

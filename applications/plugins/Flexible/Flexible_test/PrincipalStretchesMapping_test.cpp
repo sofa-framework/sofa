@@ -144,15 +144,15 @@ namespace sofa {
             this->errorMax = this->deltaRange.second;
             this->errorFactorDJ = 10;
 
-            defaulttype::Mat<3,3,Real> rotation;
-            defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; // stretch only
+            type::Mat<3,3,Real> rotation;
+            type::Mat<In::material_dimensions,In::material_dimensions,Real> strain; // stretch only
 
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
             {
                 strain[i][i] = (i+1)*2; // todo randomize it being careful not to obtain negative (even too small) eigenvalues
             }
 
-            helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation);
+            type::Quat<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation);
 
             OutVecCoord expectedChildCoords(1);
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
@@ -173,7 +173,7 @@ namespace sofa {
     > PrincipalStretchesDataTypes; // the types to instanciate.
 
     // Test suite for all the instanciations
-    TYPED_TEST_CASE(PrincipalStretchesMappingTest, PrincipalStretchesDataTypes);
+    TYPED_TEST_SUITE(PrincipalStretchesMappingTest, PrincipalStretchesDataTypes);
     // first test case
     TYPED_TEST( PrincipalStretchesMappingTest , test_auto )
     {

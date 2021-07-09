@@ -41,12 +41,12 @@ public:
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override;
+    Index findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override;
 // 				virtual int findCube(const Vector3 &pos);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override;
+    Index findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override;
 // 				virtual int findNearestCube(const Vector3& pos);
 
 
@@ -55,7 +55,7 @@ public:
 
 
     /// when linking similar particules between neighbors, propagate changes to all the sames particles
-    void changeIndices(unsigned oldidx,unsigned newidx);
+    void changeIndices(Index oldidx, Index newidx);
 
 
     /// surcharge of functions defined in SparseGridTopology
@@ -68,7 +68,7 @@ public:
     /// Once the finest connectivity is computed, some nodes can be dobled
     void buildRamifiedFinestLevel();
     /// do 2 neighbors cubes share triangles ?
-    bool sharingTriangle(helper::io::Mesh* mesh, int cubeIdx, int neighborIdx, unsigned where);
+    bool sharingTriangle(helper::io::Mesh* mesh, Index cubeIdx, Index neighborIdx, unsigned where);
 
     /// debug printings
     void printNeighborhood();
@@ -89,7 +89,7 @@ public:
     {
         Connexion():_parent(nullptr), _coarsestParent(0), _hexaIdx(0), _nonRamifiedHexaIdx(0), _tmp(0) {};
 
-        helper::fixed_array< std::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
+        type::fixed_array< std::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
 
         typedef std::pair<unsigned,Connexion*> Children; // the unsigned indicates the fine place 0->7 in the coarse element
         std::list<Children> _children;	// the hierarchical graph to finer level
@@ -97,13 +97,13 @@ public:
 
         unsigned int _coarsestParent; //in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
 
-        unsigned int _hexaIdx; // idx of the corresponding hexa in the resulting Topology::seqHexahedra
-        unsigned int _nonRamifiedHexaIdx; // idx of the corresponding hexa in the initial, regular list SparseGrid::hexahedra
+        Index _hexaIdx; // idx of the corresponding hexa in the resulting Topology::seqHexahedra
+        Index _nonRamifiedHexaIdx; // idx of the corresponding hexa in the initial, regular list SparseGrid::hexahedra
 
         int _tmp; // warning: useful to several algos (as a temporary variable) but it is not an identification number
 
         /// each similar connexion will have a number (saved in _tmp), this number must be given to all connected connexions)
-        void propagateConnexionNumberToNeighbors( int connexionNumber, const helper::vector<Connexion*>& allFineConnexions )
+        void propagateConnexionNumberToNeighbors( int connexionNumber, const type::vector<Connexion*>& allFineConnexions )
         {
             if (_tmp!=-1) return; // already in an existing connexion number
 
@@ -117,19 +117,19 @@ public:
 
 protected:
 
-    helper::vector<helper::vector<Connexion*> > _connexions; // for each initial, regular SparseGrid::hexa -> a list of independant connexion
+    type::vector<type::vector<Connexion*> > _connexions; // for each initial, regular SparseGrid::hexa -> a list of independant connexion
 
 
-    std::map<int, std::pair<helper::vector<Connexion*>,int> > _mapHexa_Connexion; // a hexa idx -> the corresponding connexion
+    std::map<int, std::pair<type::vector<Connexion*>,int> > _mapHexa_Connexion; // a hexa idx -> the corresponding connexion
 
     bool intersectionSegmentTriangle(Vector3 s0, Vector3 s1, Vector3 t0, Vector3 t1, Vector3 t2);
 
 public :
 
-    helper::vector<helper::vector<Connexion*> >* getConnexions() {return &_connexions;}
+    type::vector<type::vector<Connexion*> >* getConnexions() {return &_connexions;}
 
 
-    typedef std::vector<helper::fixed_array<helper::vector<int>,8> > HierarchicalCubeMapRamification; ///< a cube indice -> corresponding child indices (possible more than 8 for Ramification)
+    typedef std::vector<type::fixed_array<type::vector<Index>,8> > HierarchicalCubeMapRamification; ///< a cube indice -> corresponding child indices (possible more than 8 for Ramification)
     HierarchicalCubeMapRamification _hierarchicalCubeMapRamification;
 
 

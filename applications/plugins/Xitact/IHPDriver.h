@@ -29,7 +29,7 @@
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include "XiTrocarInterface.h"
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <SofaHaptics/MechanicalStateForceFeedback.h>
@@ -37,7 +37,6 @@
 #include <sofa/simulation/Node.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaRigid/RigidMapping.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include "PaceMaker.h"

@@ -22,23 +22,19 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 #define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 
-
+#include <sofa/core/fwd.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 #include <sofa/helper/StateMask.h>
-
-
+#include <sofa/defaulttype/fwd.h> /// For BaseMatrix
 
 namespace sofa
 {
 
 namespace core
 {
-
-class ConstraintParams;
 
 namespace behavior
 {
@@ -74,7 +70,9 @@ class SOFA_CORE_API BaseMechanicalState : public virtual BaseState
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState)
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState);
+
+    using Index = sofa::Index;
 protected:
     BaseMechanicalState();
 
@@ -86,9 +84,9 @@ private:
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
     /// @{
-    virtual SReal getPX(size_t /*i*/) const { return 0.0; }
-    virtual SReal getPY(size_t /*i*/) const { return 0.0; }
-    virtual SReal getPZ(size_t /*i*/) const { return 0.0; }
+    virtual SReal getPX(Index /*i*/) const { return 0.0; }
+    virtual SReal getPY(Index /*i*/) const { return 0.0; }
+    virtual SReal getPZ(Index /*i*/) const { return 0.0; }
 
     /// @}
 
@@ -135,14 +133,18 @@ public:
     /// \li v = a
     /// \li v = a + b
     /// \li v = b * f
-    virtual void vOp(const ExecParams* params, VecId v, ConstVecId a = ConstVecId::null(), ConstVecId b = ConstVecId::null(), SReal f = 1.0 ) = 0;
+    virtual void vOp(const ExecParams* params, VecId v,
+                     ConstVecId a = ConstVecId::null(),
+                     ConstVecId b = ConstVecId::null(),
+                     SReal f = 1.0 ) = 0;
+
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
-    class VMultiOpEntry : public std::pair< MultiVecId, helper::vector< std::pair< ConstMultiVecId, SReal > > >
+    class VMultiOpEntry : public std::pair< MultiVecId, type::vector< std::pair< ConstMultiVecId, SReal > > >
     {
     public:
         typedef std::pair< ConstMultiVecId, SReal > Fact;
-        typedef helper::vector< Fact > VecFact;
+        typedef type::vector< Fact > VecFact;
         typedef std::pair< MultiVecId, VecFact > Inherit;
         VMultiOpEntry() : Inherit(MultiVecId::null(), VecFact()) {}
         VMultiOpEntry(MultiVecId v) : Inherit(v, VecFact()) {}
@@ -154,7 +156,7 @@ public:
         { this->second.push_back(Fact(a, af));  this->second.push_back(Fact(b, bf)); }
     };
 
-    typedef helper::vector< VMultiOpEntry > VMultiOp;
+    typedef type::vector< VMultiOpEntry > VMultiOp;
 
     /// \brief Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
     ///
@@ -173,7 +175,7 @@ public:
     virtual SReal vMax(const ExecParams* params, ConstVecId a) = 0;
 
     /// Get vector size
-    virtual size_t vSize( const ExecParams* params, ConstVecId v ) = 0;
+    virtual Size vSize( const ExecParams* params, ConstVecId v ) = 0;
 
 
     /// Apply a threshold (lower bound) to all entries
@@ -223,7 +225,7 @@ public:
     virtual void getConstraintJacobian(const ConstraintParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) = 0;
 
     /// fill the jacobian matrix (of the constraints) with identity blocks on the provided list of nodes(dofs)
-    virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) = 0;
+    virtual void buildIdentityBlocksInJacobian(const sofa::type::vector<unsigned int>& list_n, core::MatrixDerivId &mID) = 0;
 
     class ConstraintBlock
     {
@@ -256,11 +258,11 @@ public:
     /// @{
 
     /// Handle state Changes
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleStateChange() {}
 
     /// Handle state Changes from a given Topology
-    /// @deprecated topological changes now rely on TopologyEngine
+    /// @deprecated topological changes now rely on TopologyHandler
     virtual void handleStateChange(core::topology::Topology* t);
 
     ///@}
@@ -271,8 +273,8 @@ public:
     /// Write current state to the given output stream
     virtual void writeState( std::ostream& out );
 
-    virtual size_t getCoordDimension() const { return 0; }
-    virtual size_t getDerivDimension() const { return 0; }
+    virtual Size getCoordDimension() const { return 0; }
+    virtual Size getDerivDimension() const { return 0; }
 
     /// Translate the current state
     virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz)=0;
@@ -283,12 +285,12 @@ public:
     virtual void applyRotation (const SReal /*rx*/, const SReal /*ry*/, const SReal /*rz*/) {}
 
     /// Rotate the current state
-    virtual void applyRotation(const defaulttype::Quat q)=0;
+    virtual void applyRotation(const type::Quat<SReal> q)=0;
 
     /// Scale the current state
     virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)=0;
 
-    virtual defaulttype::Vector3 getScale() const { return defaulttype::Vector3(1.0,1.0,1.0); }
+    virtual type::Vector3 getScale() const { return type::Vector3(1.0,1.0,1.0); }
 
     virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {
@@ -325,12 +327,12 @@ public:
     /// \brief Get the number of scalars per Deriv value, as necessary to build mechanical matrices and vectors.
     ///
     /// If not all Derivs have the same number of scalars, then return 1 here and overload the getMatrixSize() method.
-    virtual size_t getMatrixBlockSize() const { return getDerivDimension(); }
+    virtual Size getMatrixBlockSize() const { return getDerivDimension(); }
 
     /// \brief Get the number of rows necessary to build mechanical matrices and vectors.
     ///
     /// In most cases this is equivalent to getSize() * getMatrixBlockSize().
-    virtual size_t getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
+    virtual Size getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
 
     /// \brief Copy data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns

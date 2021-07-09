@@ -23,33 +23,21 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <SofaBaseTopology/PointSetTopologyAlgorithms.h>
-#include <SofaBaseTopology/PointSetTopologyAlgorithms.inl>
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/EdgeSetTopologyAlgorithms.h>
-#include <SofaBaseTopology/EdgeSetTopologyAlgorithms.inl>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.inl>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/QuadSetTopologyAlgorithms.h>
-#include <SofaBaseTopology/QuadSetTopologyAlgorithms.inl>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyAlgorithms.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyAlgorithms.inl>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
 
-#include <SofaBaseTopology/HexahedronSetTopologyAlgorithms.h>
-#include <SofaBaseTopology/HexahedronSetTopologyAlgorithms.inl>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 
@@ -90,21 +78,6 @@ inline real tripleProduct(const Vec3r1<real>& a, const Vec3r1<real>& b,const Vec
 ////////     Point      ////////
 ////////////////////////////////
 
-int CudaPointSetTopologyAlgorithmsClass = core::RegisterObject("")
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< PointSetTopologyAlgorithms<CudaVec3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        .add< PointSetTopologyAlgorithms<CudaVec3fTypes> >()
-        .add< PointSetTopologyAlgorithms<CudaVec3f1Types> >()
-        ;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API PointSetTopologyAlgorithms<CudaVec3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API PointSetTopologyAlgorithms<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API PointSetTopologyAlgorithms<CudaVec3f1Types>;
-
-
 int CudaPointSetGeometryAlgorithmsClass = core::RegisterObject("")
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< PointSetGeometryAlgorithms<CudaVec3dTypes> >()
@@ -123,21 +96,6 @@ template class SOFA_GPU_CUDA_API PointSetGeometryAlgorithms<CudaVec3f1Types>;
 ////////////////////////////////
 ////////      Edge      ////////
 ////////////////////////////////
-
-int CudaEdgeSetTopologyAlgorithmsClass = core::RegisterObject("")
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< EdgeSetTopologyAlgorithms<CudaVec3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        .add< EdgeSetTopologyAlgorithms<CudaVec3fTypes> >()
-        .add< EdgeSetTopologyAlgorithms<CudaVec3f1Types> >()
-        ;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API EdgeSetTopologyAlgorithms<CudaVec3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API EdgeSetTopologyAlgorithms<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API EdgeSetTopologyAlgorithms<CudaVec3f1Types>;
-
 
 int CudaEdgeSetGeometryAlgorithmsClass = core::RegisterObject("")
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -158,21 +116,6 @@ template class SOFA_GPU_CUDA_API EdgeSetGeometryAlgorithms<CudaVec3f1Types>;
 ////////    Triangle    ////////
 ////////////////////////////////
 
-int CudaTriangleSetTopologyAlgorithmsClass = core::RegisterObject("")
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< TriangleSetTopologyAlgorithms<CudaVec3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        .add< TriangleSetTopologyAlgorithms<CudaVec3fTypes> >()
-        .add< TriangleSetTopologyAlgorithms<CudaVec3f1Types> >()
-        ;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API TriangleSetTopologyAlgorithms<CudaVec3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API TriangleSetTopologyAlgorithms<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TriangleSetTopologyAlgorithms<CudaVec3f1Types>;
-
-
 int CudaTriangleSetGeometryAlgorithmsClass = core::RegisterObject("")
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< TriangleSetGeometryAlgorithms<CudaVec3dTypes> >()
@@ -191,21 +134,6 @@ template class SOFA_GPU_CUDA_API TriangleSetGeometryAlgorithms<CudaVec3f1Types>;
 ////////////////////////////////
 ////////   Quad   ////////
 ////////////////////////////////
-
-int CudaQuadSetTopologyAlgorithmsClass = core::RegisterObject("")
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< QuadSetTopologyAlgorithms<CudaVec3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        .add< QuadSetTopologyAlgorithms<CudaVec3fTypes> >()
-        .add< QuadSetTopologyAlgorithms<CudaVec3f1Types> >()
-        ;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API QuadSetTopologyAlgorithms<CudaVec3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API QuadSetTopologyAlgorithms<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API QuadSetTopologyAlgorithms<CudaVec3f1Types>;
-
 
 int CudaQuadSetGeometryAlgorithmsClass = core::RegisterObject("")
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -226,21 +154,6 @@ template class SOFA_GPU_CUDA_API QuadSetGeometryAlgorithms<CudaVec3f1Types>;
 ////////   Tetrahedron  ////////
 ////////////////////////////////
 
-int CudaTetrahedronSetTopologyAlgorithmsClass = core::RegisterObject("")
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< TetrahedronSetTopologyAlgorithms<CudaVec3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        .add< TetrahedronSetTopologyAlgorithms<CudaVec3fTypes> >()
-        .add< TetrahedronSetTopologyAlgorithms<CudaVec3f1Types> >()
-        ;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API TetrahedronSetTopologyAlgorithms<CudaVec3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API TetrahedronSetTopologyAlgorithms<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TetrahedronSetTopologyAlgorithms<CudaVec3f1Types>;
-
-
 int CudaTetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("")
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< TetrahedronSetGeometryAlgorithms<CudaVec3dTypes> >()
@@ -259,21 +172,6 @@ template class SOFA_GPU_CUDA_API TetrahedronSetGeometryAlgorithms<CudaVec3f1Type
 ////////////////////////////////
 ////////   Hexahedron   ////////
 ////////////////////////////////
-
-int CudaHexahedronSetTopologyAlgorithmsClass = core::RegisterObject("")
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< HexahedronSetTopologyAlgorithms<CudaVec3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        .add< HexahedronSetTopologyAlgorithms<CudaVec3fTypes> >()
-        .add< HexahedronSetTopologyAlgorithms<CudaVec3f1Types> >()
-        ;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API HexahedronSetTopologyAlgorithms<CudaVec3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API HexahedronSetTopologyAlgorithms<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API HexahedronSetTopologyAlgorithms<CudaVec3f1Types>;
-
 
 int CudaHexahedronSetGeometryAlgorithmsClass = core::RegisterObject("")
 #ifdef SOFA_GPU_CUDA_DOUBLE

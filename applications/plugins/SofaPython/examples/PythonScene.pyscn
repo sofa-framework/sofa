@@ -11,7 +11,7 @@ def createArmadillo(parentNode,name,x,y,z,color):
 	object = node.createObject('MechanicalObject',name='mObject',dx=x,dy=y,dz=z)
 	mass = node.createObject('UniformMass',name='mass',totalmass='10')
 	node.createObject('SparseGridTopology', n='4 4 4', fileTopology='mesh/Armadillo_verysimplified.obj')
-	node.createObject('HexahedronFEMForceField', youngModulus='100')
+	node.createObject('HexahedronFEMForceField', youngModulus='100', poissonRatio='0.45')
 	
 	VisuNode = node.createChild('Visu')
 	VisuNode.createObject('OglModel',name='Visual',filename='mesh/Armadillo_simplified.obj', color=color)
@@ -56,7 +56,8 @@ def createScene(rootNode):
 	# scene global stuff
 	rootNode.createObject('VisualStyle', displayFlags='hideBehaviorModels hideCollisionModels hideMappings hideForceFields')
 	rootNode.createObject('CollisionPipeline', verbose=0, depth=10, draw=0)
-	rootNode.createObject('BruteForceDetection', name='N2')
+	rootNode.createObject('BruteForceBroadPhase', name='N2')
+    rootNode.createObject('BVHNarrowPhase')
 	rootNode.createObject('MinProximityIntersection', name='Proximity', alarmDistance=0.5, contactDistance=0.33)
 	rootNode.createObject('CollisionResponse', name='Response', response='default')
 	rootNode.createObject('CollisionGroup', name='Group')

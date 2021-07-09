@@ -2,7 +2,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.1" />
     <DefaultCollisionGroupManager />
@@ -21,7 +22,6 @@
 
             <TetrahedronSetTopologyContainer name="tetras" src="@loader"/>
             <TetrahedronSetTopologyModifier   name="Modifier" />
-            <TetrahedronSetTopologyAlgorithms name="TopoAlgo"  template="Vec3d" />
             <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />
 
             <MechanicalObject name="meca"/>

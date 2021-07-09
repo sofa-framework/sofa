@@ -27,7 +27,7 @@
 #include <cstdarg>
 #include <sstream>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/config.h>
 
 namespace sofa
@@ -105,7 +105,7 @@ public :
 
 protected:
 
-    helper::vector<std::string> textItems    ;
+    type::vector<std::string> textItems    ;
     unsigned int                selectedItem ;
 
 public:

@@ -19,11 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
-
-
-#include <sofa/core/ExecParams.h>
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -49,7 +46,7 @@ This test compares siumlated mass position to analytic mass position during 2s e
 */
 
 template <typename _DataTypes>
-struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
+struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -121,13 +118,13 @@ struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     defaulttype::Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(SpringSolverDynamic_test, DataTypes);
+TYPED_TEST_SUITE(SpringSolverDynamic_test, DataTypes);
 
 // Test case EulerImplicit Solver
 TYPED_TEST( SpringSolverDynamic_test , EulerImplicitSolverDynamicTest )
@@ -135,13 +132,6 @@ TYPED_TEST( SpringSolverDynamic_test , EulerImplicitSolverDynamicTest )
    EXPECT_MSG_NOEMIT(Error) ;
    this->loadScene("EulerImplicitSpringDynamicTest.xml");
    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(0.01));
-}
-
-// Test case NewmarkImplicit Solver
-TYPED_TEST( SpringSolverDynamic_test , NewmarkImplicitSolverDynamicTest )
-{
-   this->loadScene("NewmarkSpringDynamicTest.xml");
-   ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(0.004));
 }
 
 } // namespace sofa

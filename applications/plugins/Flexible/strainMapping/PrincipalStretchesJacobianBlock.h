@@ -23,8 +23,8 @@
 #define FLEXIBLE_PrincipalStretchesJacobianBlock_H
 
 #include "../BaseJacobian.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
 
@@ -49,7 +49,7 @@ class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
 //////////////////////////////////////////////////////////////////////////////////
 
 /** Template class used to implement one jacobian block for PrincipalStretchesMapping*/
-template<class InReal, class OutReal, int MaterialDimension>
+template<class InReal, class OutReal, Size MaterialDimension>
 class PrincipalStretchesJacobianBlock< DefGradientTypes<3,MaterialDimension,0,InReal>, PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> >
            : public BaseJacobianBlock< DefGradientTypes<3,MaterialDimension,0,InReal>, PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> >
 {
@@ -74,8 +74,8 @@ public:
     enum { strain_size = Out::strain_size };
     enum { frame_size = spatial_dimensions*material_dimensions };
 
-    typedef Mat<material_dimensions,material_dimensions,Real> MaterialMaterialMat;
-    typedef Mat<spatial_dimensions,material_dimensions,Real> SpatialMaterialMat;
+    typedef type::Mat<material_dimensions,material_dimensions,Real> MaterialMaterialMat;
+    typedef type::Mat<spatial_dimensions,material_dimensions,Real> SpatialMaterialMat;
 
     /**
     Mapping:   \f$ E = Ut.F.V\f$
@@ -92,8 +92,8 @@ public:
 
     MatBlock _J;
 
-    Mat<frame_size,frame_size,Real> _dUOverdF;
-    Mat<material_dimensions*material_dimensions,frame_size,Real> _dVOverdF;
+    type::Mat<frame_size,frame_size,Real> _dUOverdF;
+    type::Mat<material_dimensions*material_dimensions,frame_size,Real> _dVOverdF;
 
     bool _degenerated;
 
@@ -119,12 +119,12 @@ public:
 
         if( _asStrain )
         {
-            for( int i=0 ; i<material_dimensions ; ++i )
+            for( Size i=0 ; i<material_dimensions ; ++i )
                 result.getStrain()[i] += S[i] - (Real)1; // principal stretches - 1 = diagonalized lagrangian strain
         }
         else
         {
-            for( int i=0 ; i<material_dimensions ; ++i )
+            for( Size i=0 ; i<material_dimensions ; ++i )
             {
                 if( S[i]<_threshold) S[i]=_threshold; // common hack to ensure stability (J=detF=S[0]*S[1]*S[2] not too small)
                 result.getStrain()[i] += S[i];
@@ -136,25 +136,25 @@ public:
 
     void addmult( OutDeriv& result, const InDeriv& data )
     {
-        for( int i=0 ; i<spatial_dimensions ; ++i )
-            for( int j=0 ; j<material_dimensions ; ++j )
-                for( int k=0 ; k<material_dimensions ; ++k )
+        for( Size i=0 ; i<spatial_dimensions ; ++i )
+            for( Size j=0 ; j<material_dimensions ; ++j )
+                for( Size k=0 ; k<material_dimensions ; ++k )
                     result.getStrain()[k] += _J[k][i*material_dimensions+j] * data.getF()[i][j];
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        for( int i=0 ; i<spatial_dimensions ; ++i )
-            for( int j=0 ; j<material_dimensions ; ++j )
-                for( int k=0 ; k<material_dimensions ; ++k )
+        for( Size i=0 ; i<spatial_dimensions ; ++i )
+            for( Size j=0 ; j<material_dimensions ; ++j )
+                for( Size k=0 ; k<material_dimensions ; ++k )
                     result.getF()[i][j] += _J[k][i*material_dimensions+j] * data.getStrain()[k];
     }
 
     void computeJ()
     {
-        for( int i=0 ; i<spatial_dimensions ; ++i )
-            for( int j=0 ; j<material_dimensions ; ++j )
-                for( int k=0 ; k<material_dimensions ; ++k )
+        for( Size i=0 ; i<spatial_dimensions ; ++i )
+            for( Size j=0 ; j<material_dimensions ; ++j )
+                for( Size k=0 ; k<material_dimensions ; ++k )
                     _J[k][i*material_dimensions+j] = _U[i][k]*_V[j][k];
     }
 
@@ -190,14 +190,14 @@ public:
             SpatialMaterialMat dU;
             MaterialMaterialMat dV;
 
-            for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
-                for( int l=0 ; l<material_dimensions ; ++l ) // col of df
-                    for( int j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
+            for( Size k=0 ; k<spatial_dimensions ; ++k ) // line of df
+                for( Size l=0 ; l<material_dimensions ; ++l ) // col of df
+                    for( Size j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
                     {
-                        for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dU
+                        for( Size i=0 ; i<spatial_dimensions ; ++i ) // line of dU
                             dU[i][j] += _dUOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
 
-                        for( int i=0 ; i<material_dimensions ; ++i ) // line of dV
+                        for( Size i=0 ; i<material_dimensions ; ++i ) // line of dV
                             dV[i][j] += _dVOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
                     }
 
@@ -210,7 +210,7 @@ public:
 
     /// @ todo find a general algorithm to compute K for any dimensions
     // see the maple file doc/principalStretches_geometricStiffnessMatrix.mw
-    void compute_K( Mat<9,9,Real>& K, const OutDeriv& childForce ) // for spatial=3 material=3
+    void compute_K( type::Mat<9,9,Real>& K, const OutDeriv& childForce ) // for spatial=3 material=3
     {
         K[0][0] = _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][0] + _dUOverdF[2][0] * childForce.getStrain()[2] * _V[2][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][0] + _U[0][2] * childForce.getStrain()[2] * _dVOverdF[6][0];
         K[0][1] = _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][1] + _dUOverdF[2][0] * childForce.getStrain()[2] * _V[2][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[4][0] + _U[0][2] * childForce.getStrain()[2] * _dVOverdF[7][0];
@@ -305,7 +305,7 @@ public:
     }
 
 
-    void compute_K( Mat<6,6,Real>& K, const OutDeriv& childForce )  // for spatial=3 material=2
+    void compute_K( type::Mat<6,6,Real>& K, const OutDeriv& childForce )  // for spatial=3 material=2
     {
         K[0][0] =  _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][0] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][0] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[0][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[2][0];
         K[0][1] =  _dUOverdF[0][0] * childForce.getStrain()[0] * _V[0][1] + _dUOverdF[1][0] * childForce.getStrain()[1] * _V[1][1] + _U[0][0] * childForce.getStrain()[0] * _dVOverdF[1][0] + _U[0][1] * childForce.getStrain()[1] * _dVOverdF[3][0];

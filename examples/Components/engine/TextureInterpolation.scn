@@ -1,8 +1,12 @@
 <Node name="Root" gravity="0 0 0" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaGeneralEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
-    <BruteForceDetection name="Detection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
@@ -21,7 +25,7 @@
         </Node>
         <Node name="visu" gravity="0 0 0">
             <TextureInterpolation template="Vec1d" name="EngineInterpolation" input_states="@../ElecNode/ElecObj.position" input_coordinates="@../mecaObj.position" min_value="0.0" max_value="10.0" manual_scale="1" drawPotentiels="1" />
-            <OglModel template="ExtVec3f" name="oglPotentiel" texcoords="@EngineInterpolation.output_coordinates" texturename="textures/heatColor.bmp" useVBO="0" />
+            <OglModel template="Vec3d" name="oglPotentiel" texcoords="@EngineInterpolation.output_coordinates" texturename="textures/heatColor.bmp" />
         </Node>
     </Node>
 </Node>

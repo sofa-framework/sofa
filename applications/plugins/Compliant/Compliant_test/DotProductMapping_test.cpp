@@ -37,7 +37,7 @@ struct DotProductMappingTest : public Mapping_test<Mapping>
     typedef DotProductMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 
@@ -79,13 +79,13 @@ struct DotProductMappingTest : public Mapping_test<Mapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     component::mapping::DotProductMapping<defaulttype::Vec3Types, defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(DotProductMappingTest, DataTypes);
+TYPED_TEST_SUITE(DotProductMappingTest, DataTypes);
 
 TYPED_TEST( DotProductMappingTest, test )
 {
@@ -125,7 +125,7 @@ struct DotProductMultiMappingTest : public MultiMapping_test<Mapping>
         this->setupScene(NP); // NP parents, 1 child
 
         // parent positions
-        helper::vector< typename self::InVecCoord > incoords(NP);
+        type::vector< typename self::InVecCoord > incoords(NP);
         for( int i=0; i<NP; i++ )
         {
             incoords[i].resize(2);
@@ -152,7 +152,7 @@ typedef Types<
 > DataTypes2; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(DotProductMultiMappingTest, DataTypes2);
+TYPED_TEST_SUITE(DotProductMultiMappingTest, DataTypes2);
 
 TYPED_TEST( DotProductMultiMappingTest, test )
 {
@@ -172,7 +172,7 @@ struct DotProductFromTargetMappingTest : public Mapping_test<Mapping>
     typedef DotProductFromTargetMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
 
     Mapping* mapping;
 
@@ -200,7 +200,7 @@ struct DotProductFromTargetMappingTest : public Mapping_test<Mapping>
         expected[2] = typename self::OutCoord(15);
 
         // mapping parameters
-        helper::vector<unsigned> indices(3);
+        type::vector<unsigned> indices(3);
         indices[0] = 0;
         indices[1] = 1;
         indices[2] = 2;
@@ -224,7 +224,7 @@ typedef Types<
 > DataTypes3; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(DotProductFromTargetMappingTest, DataTypes3);
+TYPED_TEST_SUITE(DotProductFromTargetMappingTest, DataTypes3);
 
 TYPED_TEST( DotProductFromTargetMappingTest, test )
 {

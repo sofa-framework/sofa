@@ -22,12 +22,13 @@
 #ifndef SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
 #define SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
 
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/simulation/fwd.h>
 #include <string>
 #include <iostream>
-
+#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa
 {
@@ -53,9 +54,9 @@ public:
 
 protected:
     int ID;
-    int vindex;
-    int nindex;
-    int tindex;
+    sofa::Index vindex;
+    sofa::Index nindex;
+    sofa::Index tindex;
     int count;
 };
 

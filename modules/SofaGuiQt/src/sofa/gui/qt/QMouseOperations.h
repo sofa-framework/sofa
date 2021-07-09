@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QMOUSEOPERATIONS_H
-#define SOFA_GUI_QT_QMOUSEOPERATIONS_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 #include <sofa/gui/MouseOperations.h>
 #include "SofaMouseManager.h"
@@ -38,13 +36,7 @@
 
 #include <iostream>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 class DataWidget;
 
@@ -195,8 +187,4 @@ protected:
     QLineEdit *damping;
 };
 
-}
-}
-}
-
-#endif
+} // namespace sofa::gui::qt

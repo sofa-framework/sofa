@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_SOFA_GUI_QT_QVISITORCONTROLPANEL_H
-#define SOFA_GUI_QT_SOFA_GUI_QT_QVISITORCONTROLPANEL_H
-
-#include <sofa/simulation/Node.h>
+#pragma once
 
 #include <QWidget>
 
 #include "WDoubleLineEdit.h"
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class QVisitorControlPanel : public QWidget
@@ -58,9 +51,4 @@ protected:
 };
 
 
-} // qt
-} // gui
-} //sofa
-
-#endif // SOFA_GUI_QT_QVISITORCONTROLPANEL_H
-
+} //namespace sofa::gui::qt

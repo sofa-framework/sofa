@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaExporter/WriteTopology.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {

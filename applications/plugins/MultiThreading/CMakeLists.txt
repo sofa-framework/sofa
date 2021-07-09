@@ -12,6 +12,8 @@ set(HEADER_FILES
     src/MultiThreading/DataExchange.inl
     src/MultiThreading/MeanComputation.h
     src/MultiThreading/MeanComputation.inl
+    src/MultiThreading/ParallelBruteForceBroadPhase.h
+    src/MultiThreading/ParallelBVHNarrowPhase.h
     )
 
 set(SOURCE_FILES
@@ -21,12 +23,15 @@ set(SOURCE_FILES
     src/MultiThreading/BeamLinearMapping_mt.cpp
     src/MultiThreading/DataExchange.cpp
     src/MultiThreading/MeanComputation.cpp
+    src/MultiThreading/ParallelBruteForceBroadPhase.cpp
+    src/MultiThreading/ParallelBVHNarrowPhase.cpp
     )
 
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
+find_package(SofaSimulationCommon REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping SofaConstraint)
+target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping SofaConstraint SofaSimulationCommon)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_MULTITHREADING_PLUGIN")
 
 

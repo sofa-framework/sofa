@@ -33,7 +33,8 @@ def setup(node, **kwargs):
     style = node.createObject('VisualStyle', **kwargs)
     
     node.createObject('DefaultPipeline', name = 'pipeline')
-    node.createObject('BruteForceDetection', name = 'detection')
+    node.createObject('BruteForceBroadPhase', name='N2')
+    node.createObject('BVHNarrowPhase')
 
     proximity = node.createObject('NewProximityIntersection',
                                   name = 'proximity' )
@@ -81,7 +82,7 @@ def createScene( node ):
     condyles = femur.dofs.map_vec3('condyles', vec( w, h, 0,
                                                     -w, h, 0) )
 
-    condyles.createObject('SphereModel', radius = radius)
+    condyles.createObject('SphereCollisionModel', radius = radius)
 
     tibia = rigid.Body(scene, 'tibia', draw = True)
     tibia.length = 0.6

@@ -7,13 +7,11 @@
 #include <SofaBaseCollision/BaseContactMapper.h>
 
 #include <Compliant/config.h>
-
+#include <sofa/simulation/Node.h>
 #include "../mapping/DifferenceMapping.h"
 
 #include "../constraint/Restitution.h"
 #include "../constraint/HolonomicConstraintValue.h"
-
-//#include <sofa/simulation/DeactivatedNodeVisitor.h>
 
 #include <sofa/helper/cast.h>
 
@@ -129,7 +127,7 @@ public:
         {
             // should only be called when keepAlive
             delta_node->setActive( false );
-//            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), false);
+//            simulation::DeactivationVisitor v(sofa::core::execparams::defaultInstance(), false);
 //            node->executeVisitor(&v);
             return; // keeping contact alive imposes a call with a null DetectionOutput
         }
@@ -211,7 +209,7 @@ public:
             create_node();
         } else {
             delta_node->setActive( true );
-//            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), true);
+//            simulation::DeactivationVisitor v(sofa::core::execparams::defaultInstance(), true);
 //            node->executeVisitor(&v);
          	update_node();
         }
@@ -257,7 +255,7 @@ protected:
 
     // the node that will hold all the stuff
     typedef sofa::simulation::Node node_type;
-    node_type::SPtr delta_node;
+    sofa::core::sptr<node_type> delta_node;
 
     // TODO correct real type
     typedef container::MechanicalObject<ResponseDataTypes> delta_dofs_type;
@@ -352,7 +350,7 @@ protected:
     /// insert a ConstraintValue component in the given graph depending on restitution/damping values
     /// return possible pointer to the activated constraint mask
     template<class contact_dofs_type>
-    helper::vector<bool>* addConstraintValue( node_type* node, contact_dofs_type* dofs/*, real damping*/, real restitution=0 )
+    type::vector<bool>* addConstraintValue( node_type* node, contact_dofs_type* dofs/*, real damping*/, real restitution=0 )
     {
         assert( restitution>=0 && restitution<=1 );
 
@@ -439,7 +437,7 @@ protected:
 //    }
 
     /// @internal copying the contact normals to the given vector
-    typedef helper::vector< defaulttype::Vec<3, real> > normal_type;
+    typedef type::vector< type::Vec<3, real> > normal_type;
     void copyNormals( normal_type& res ) const {
         const unsigned size = mappedContacts.size();
         assert( size );
@@ -454,7 +452,7 @@ protected:
 
     /// @internal copying the contact penetrations to the given vector
     template< class Coord >
-    void copyPenetrations( helper::vector<Coord>& res ) const {
+    void copyPenetrations( type::vector<Coord>& res ) const {
         const unsigned size = mappedContacts.size();
         assert( size );
         assert( size == contacts->size() );
@@ -466,7 +464,7 @@ protected:
     }
 
     /// @internal copying the contact pair indices to the given vector
-    void copyPairs( helper::vector< defaulttype::Vec<2, unsigned> >& res ) const {
+    void copyPairs( type::vector< type::Vec<2, unsigned> >& res ) const {
         const unsigned size = mappedContacts.size();
         assert( size );
         assert( size == contacts->size() );

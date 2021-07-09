@@ -1,5 +1,13 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="1" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
+    <RequiredPlugin pluginName='SofaMiscForceField'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/>
+
     <GenerateGrid template="Vec3d" name="Slab" max="0.5 1.5 1" resolution="5 3 4" />
     <Node name="Tetra">
         <CGLinearSolver iterations="3000" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" /> 

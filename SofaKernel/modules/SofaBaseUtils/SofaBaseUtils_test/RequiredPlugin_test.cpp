@@ -1,16 +1,17 @@
-#include <SofaTest/Sofa_test.h>
-#include <SceneCreator/SceneCreator.h>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
+#include <sofa/simulation/Node.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 
-using sofa::core::ExecParams;
+using sofa::core::execparams::defaultInstance; 
 
 namespace sofa
 {
 
-struct RequiredPlugin_test : public Sofa_test<>
+struct RequiredPlugin_test : public BaseTest
 {
     void testNotExistingPlugin()
     {
@@ -27,7 +28,7 @@ struct RequiredPlugin_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 
     void testNoParameter()
@@ -45,7 +46,7 @@ struct RequiredPlugin_test : public Sofa_test<>
                                                           scene.str().size()) ;
 
         ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
+        root->init(sofa::core::execparams::defaultInstance()) ;
     }
 };
 

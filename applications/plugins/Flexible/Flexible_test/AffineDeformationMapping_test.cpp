@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "stdafx.h"
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 // Including component
 #include "../deformationMapping/LinearMapping.h"
@@ -54,13 +54,13 @@ namespace sofa {
         typedef typename Out::Frame OutFrame;
         typedef component::container::MechanicalObject<In> InDOFs;
         typedef component::container::MechanicalObject<Out> OutDOFs;
-        typedef defaulttype::Quat Quat;
-        typedef defaulttype::Vector3 Vec3;
+        typedef type::Quat<SReal> Quat;
+        typedef type::Vector3 Vec3;
 
         /// Tested quaternion: random quaternion
         Quat testedQuaternion;
         /// Tested Rotation: matrix from testedQuaternion 
-        defaulttype::Mat<3,3,Real> testedRotation; 
+        type::Mat<3,3,Real> testedRotation; 
         /// Tested Translation: random translation
         Vec3 testedTranslation;
 
@@ -75,9 +75,9 @@ namespace sofa {
         void SetRandomAffineTransform ()
         {
             // Matrix 3*3
-            for( int j=0; j<testedRotation.nbCols; j++)
+            for(size_t j=0; j<testedRotation.nbCols; j++)
             {
-                for( int i=0; i<testedRotation.nbLines; i++)
+                for(size_t i=0; i<testedRotation.nbLines; i++)
                 {
                     // random value between -1 and 1
                     testedRotation(i,j)=helper::drand(1);
@@ -145,14 +145,14 @@ namespace sofa {
     };
 
       // Define the list of DataTypes to instantiate
-    using testing::Types;
-    typedef testing::Types<
+    using ::testing::Types;
+    typedef ::testing::Types<
         LinearMapping<Affine3Types, F331Types>,
         LinearMapping<Affine3Types, F332Types>
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(AffineLinearDeformationMappings_test, DataTypes);
+    TYPED_TEST_SUITE(AffineLinearDeformationMappings_test, DataTypes);
 
     // test case: polarcorotationalStrainMapping 
     TYPED_TEST( AffineLinearDeformationMappings_test , AffineStrainDeformationPatchTest)

@@ -21,10 +21,10 @@
 ******************************************************************************/
 
 #include "Binding_Vector.h"
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include "PythonToSofa.inl"
 
-using sofa::defaulttype::Vector3 ;
+using sofa::type::Vector3 ;
 
 static inline Vector3* get_vector3(PyObject* obj) {
     return sofa::py::unwrap<Vector3>(obj);

@@ -23,13 +23,9 @@
 #define SOFA_CORE_BEHAVIOR_LINEARSOLVER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/BaseMatrix.h>
-
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/core/ConstraintParams.h>
-
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa
 {
@@ -108,7 +104,7 @@ public:
     virtual void init_partial_solve() { msg_warning() << "partial_solve is not implemented yet."; }
 
     ///
-    virtual void partial_solve(std::list<int>& /*I_last_Disp*/, std::list<int>& /*I_last_Dforce*/, bool /*NewIn*/) { msg_warning() << "partial_solve is not implemented yet"; }
+    virtual void partial_solve(std::list<defaulttype::BaseMatrix::Index>& /*I_last_Disp*/, std::list<defaulttype::BaseMatrix::Index>& /*I_last_Dforce*/, bool /*NewIn*/) { msg_warning() << "partial_solve is not implemented yet"; }
 
     /// Invert the system, this method is optional because it's called when solveSystem() is called for the first time
     virtual void invertSystem() {}

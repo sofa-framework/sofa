@@ -24,12 +24,11 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaOpenglVisual/OglColorMap.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa
 {
@@ -48,8 +47,8 @@ public:
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::Quad     Quad;
 
-    typedef helper::vector<Real> VecPointData;
-    typedef helper::vector<Real> VecCellData;
+    typedef type::vector<Real> VecPointData;
+    typedef type::vector<Real> VecCellData;
 
 public:
     Data<bool> f_maximalRange; ///< Keep the maximal range through all timesteps
@@ -58,11 +57,12 @@ public:
     Data<VecCellData> f_quadData; ///< Data associated with quads
     Data<VecPointData> f_pointTriangleData; ///< Data associated with nodes per triangle
     Data<VecPointData> f_pointQuadData; ///< Data associated with nodes per quad
-    Data<sofa::helper::types::RGBAColor> f_colorNaN; ///< Color for NaNs
-    Data<defaulttype::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
+    Data<sofa::type::RGBAColor> f_colorNaN; ///< Color for NaNs
+    Data<type::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
     Data<Real> d_currentMin; ///< Current min range
     Data<Real> d_currentMax; ///< Current max range
     Data<float> d_shininess; ///< Shininess for rendering point-based data [0,128].  <0 means no specularity
+    Data<Real> d_transparency; ///< Add transparency when we draw triangles (this allows to see inside the volume).
 
     visualmodel::OglColorMap *colorMap;
     core::State<DataTypes> *state;
@@ -82,7 +82,7 @@ public:
 
 protected:
     void computeNormals();
-    helper::vector<defaulttype::Vec3f> m_normals;
+    type::vector<type::Vec3f> m_normals;
 
     DataDisplay();
 };

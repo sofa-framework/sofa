@@ -19,6 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/******************************************************************************
+*  Contributors:
+*  - damien.marchal@univ-lille.fr
+*  - olivier.goury@inria.fr
+******************************************************************************/
+
 
 #include <sofa/core/ObjectFactory.h>
 #include "ScalarField.h"
@@ -36,8 +42,8 @@ namespace _scalarfield_
 
 Vec3d ScalarField::getGradientByFinitDifference(Vec3d& pos, int& i)
 {
-    double epsilon=0.0001;
     Vec3d Result;
+    double epsilon = d_epsilon.getValue();
     pos[0] += epsilon;
     Result[0] = getValue(pos, i);
     pos[0] -= epsilon;
@@ -67,6 +73,42 @@ void ScalarField::getValueAndGradient(Vec3d& pos, double &value, Vec3d& grad, in
   grad = getGradient(pos,domain);
 }
 
+void ScalarField::getHessianByCentralFiniteDifference(const Vec3d& x, const double dx,
+                                                       Mat3x3& hessian)
+{
+    /// Centrale Finite difference using only function's value
+    /// implemented from https://v8doc.sas.com/sashtml/ormp/chap5/sect28.htm
+    /// Second-order derivatives based on function calls only (Abramowitz and Stegun 1972, p. 884):
+    Vec3d e[3] = {Vec3d{dx,0.0,0.0},
+                  Vec3d{0.0,dx,0.0},
+                  Vec3d{0.0,0.0,dx}};
+    double invTerm = 1.0 / (4.0 * dx * dx);
+    Vec3d tmpX;
+    for(unsigned int i=0;i<3;i++)
+    {
+        for(unsigned int j=0;j<3;j++)
+        {
+            tmpX = x + e[i] + e[j] ;
+            double p1 = this->getValue(tmpX);
+
+            tmpX = x + e[i] - e[j];
+            double p2 = -this->getValue(tmpX);
+
+            tmpX = x - e[i] + e[j];
+            double p3 = - this->getValue(tmpX);
+
+            tmpX = x - e[i] - e[j];
+            double p4 = +this->getValue(tmpX);
+            hessian[i][j] = (p1 + p2 + p3 + p4) * invTerm;
+        }
+    }
+}
+
+
+void ScalarField::getHessian(Vec3d &Pos, Mat3x3& h)
+{
+    getHessianByCentralFiniteDifference(Pos, d_epsilon.getValue(), h);
+}
 
 bool ScalarField::computeSegIntersection(Vec3d& posInside, Vec3d& posOutside, Vec3d& intersecPos, int i)
 {

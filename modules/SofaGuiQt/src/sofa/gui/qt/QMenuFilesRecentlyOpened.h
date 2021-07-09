@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_VIEWER_QT_QMENUFILESRECENTLYOPENED_H
-#define SOFA_GUI_VIEWER_QT_QMENUFILESRECENTLYOPENED_H
-
+#pragma once
 #include <sofa/gui/FilesRecentlyOpenedManager.h>
 #include <sofa/gui/qt/config.h>
 
 #include <QMenu>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class SOFA_SOFAGUIQT_API QMenuFilesRecentlyOpened: public FilesRecentlyOpenedManager
@@ -52,8 +46,4 @@ protected:
 };
 
 
-}
-}
-}
-
-#endif
+} // namespace sofa::gui::qt

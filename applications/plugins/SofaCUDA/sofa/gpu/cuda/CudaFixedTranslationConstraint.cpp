@@ -27,7 +27,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 namespace sofa
 {
@@ -49,7 +49,7 @@ void FixedTranslationConstraint<gpu::cuda::CudaVec6dTypes>::draw(const core::vis
 template <>
 void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::CudaVec6fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+#if SOFACUDA_HAVE_SOFA_GL == 1
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
@@ -62,18 +62,18 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            helper::gl::glVertexT(defaulttype::Vec<3,float>(x[i][0], x[i][1], x[i][2]));
+            sofa::gl::glVertexT(type::Vec<3,float>(x[i][0], x[i][1], x[i][2]));
         }
     }
     else
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            helper::gl::glVertexT(defaulttype::Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
+            sofa::gl::glVertexT(type::Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
         }
     }
     glEnd();
-#endif //   SOFA_NO_OPENGL
+#endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -92,14 +92,14 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            helper::gl::glVertexT(defaulttype::Vec<3,float>(x[i][0], x[i][1], x[i][2]));
+            sofa::gl::glVertexT(type::Vec<3,float>(x[i][0], x[i][1], x[i][2]));
         }
     }
     else
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            helper::gl::glVertexT(defaulttype::Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
+            sofa::gl::glVertexT(type::Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
         }
     }
     glEnd();

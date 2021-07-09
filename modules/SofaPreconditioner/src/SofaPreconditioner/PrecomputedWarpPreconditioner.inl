@@ -40,7 +40,7 @@
 #include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
@@ -51,6 +51,8 @@
 #else
 #include <SofaGeneralLinearSolver/CholeskySolver.h>
 #endif
+
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa
@@ -85,13 +87,13 @@ void PrecomputedWarpPreconditioner<TDataTypes>::setSystemMBKMatrix(const core::M
     {
         first = false;
         init_mFact = mparams->mFactor();
-        init_bFact = mparams->bFactor();
+        init_bFact = sofa::core::mechanicalparams::bFactor(mparams);
         init_kFact = mparams->kFactor();
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->currentGroup->systemMatrix);
+        loadMatrix(*this->linearSystem.systemMatrix);
     }
 
-    this->currentGroup->needInvert = usePrecond;
+    this->linearSystem.needInvert = usePrecond;
 }
 
 //Solve x = R * M^-1 * R^t * b
@@ -162,7 +164,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
     if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (defaulttype::BaseMatrix::Index)systemSize)
     {
-        msg_info("PrecomputedWarpPreconditioner") << "shared matrix : " << fname << " is already built." ;
+        msg_info() << "shared matrix : " << fname << " is already built." ;
     }
     else
     {
@@ -172,13 +174,13 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
         if(compFileIn.good() && use_file.getValue())
         {
-            msg_info("PrecomputedWarpPreconditioner") << "file open : " << fname << " compliance being loaded" ;
+            msg_info() << "file open : " << fname << " compliance being loaded" ;
             internalData.readMinvFomFile(compFileIn);
             compFileIn.close();
         }
         else
         {
-            msg_info("PrecomputedWarpPreconditioner") << "Precompute : " << fname << " compliance." ;
+            msg_info() << "Precompute : " << fname << " compliance." ;
             if (solverName.getValue().empty()) loadMatrixWithCSparse(M);
             else loadMatrixWithSolver();
 
@@ -211,7 +213,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {
-    msg_info("PrecomputedWarpPreconditioner") << "Compute the initial invert matrix with CS_PARSE" ;
+    msg_info() << "Compute the initial invert matrix with CS_PARSE" ;
 
     FullVector<Real> r;
     FullVector<Real> b;
@@ -222,8 +224,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
 
     SparseCholeskySolver<CompressedRowSparseMatrix<Real>, FullVector<Real> > solver;
 
-    msg_info("PrecomputedWarpPreconditioner") << "Precomputing constraint correction LU decomposition " ;
+    msg_info() << "Precomputing constraint correction LU decomposition " ;
     solver.invert(M);
+
+    std::stringstream tmpStr;
 
     for (unsigned int j=0; j<nb_dofs; j++)
     {
@@ -232,9 +236,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
 
         for (unsigned d=0; d<dof_on_node; d++)
         {
-            sout.precision(2);
-            sout << "Precomputing constraint correction : " << std::fixed << (float)(j*dof_on_node+d)*100.0f/(float)(nb_dofs*dof_on_node) << " %   " << '\xd';
-            sout << sendl;
+            tmpStr.precision(2);
+            tmpStr << "Precomputing constraint correction : " << std::fixed << (float)(j*dof_on_node+d)*100.0f/(float)(nb_dofs*dof_on_node) << " %   " << '\xd'
+                   << sendl;
 
             b.set(pid_j*dof_on_node+d,1.0);
             solver.solve(M,r,b);
@@ -255,7 +259,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
         }
     }
 
-    sout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" << sendl;
+    tmpStr << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" ;
+    msg_info() << tmpStr.str();
 }
 #else
 template<class TDataTypes>
@@ -271,7 +276,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 {
     usePrecond = false;//Don'Use precond during precomputing
 
-    msg_info("PrecomputedWarpPreconditioner") << "Compute the initial invert matrix with solver" ;
+    msg_info() << "Compute the initial invert matrix with solver" ;
 
     if (mstate==nullptr)
     {
@@ -288,8 +293,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     this->getContext()->get(EulerSolver);
 
     // for the initial computation, the gravity has to be put at 0
-    const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
-    const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
+    const sofa::type::Vec3d gravity = this->getContext()->getGravity();
+    const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
     this->getContext()->setGravity(gravity_zero);
 
     CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
@@ -308,16 +313,13 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         linearSolver = ptr->toLinearSolver();
     }
 
-    if(EulerSolver && CGlinearSolver)
-        sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
-    else if(EulerSolver && linearSolver)
-        sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
-    else if(EulerSolver)
-    {
-        sout << "use EulerImplicitSolver" << sendl;
-    }
-    else
-    {
+    if(EulerSolver && CGlinearSolver) {
+        msg_info() << "use EulerImplicitSolver &  CGLinearSolver";
+    } else if(EulerSolver && linearSolver) {
+        msg_info() << "use EulerImplicitSolver &  LinearSolver";
+    } else if(EulerSolver) {
+        msg_info() << "use EulerImplicitSolver";
+    } else {
         msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation";
         return;
     }
@@ -325,14 +327,14 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     sofa::core::VecDerivId rhId = core::VecDerivId::force();
 
 
-    mstate->vAvail(core::ExecParams::defaultInstance(), lhId);
-    mstate->vAlloc(core::ExecParams::defaultInstance(), lhId);
-    mstate->vAvail(core::ExecParams::defaultInstance(), rhId);
-    mstate->vAlloc(core::ExecParams::defaultInstance(), rhId);
-    msg_info("PrecomputedWarpPreconditioner") << "System: (" << init_mFact << " * M + " << init_bFact << " * B + " << init_kFact << " * K) " << lhId << " = " << rhId ;
+    mstate->vAvail(core::execparams::defaultInstance(), lhId);
+    mstate->vAlloc(core::execparams::defaultInstance(), lhId);
+    mstate->vAvail(core::execparams::defaultInstance(), rhId);
+    mstate->vAlloc(core::execparams::defaultInstance(), rhId);
+    msg_info() << "System: (" << init_mFact << " * M + " << init_bFact << " * B + " << init_kFact << " * K) " << lhId << " = " << rhId ;
     if (linearSolver)
     {
-        msg_info("PrecomputedWarpPreconditioner") << "System Init Solver: " << linearSolver->getName() << " (" << linearSolver->getClassName() << ")" ;
+        msg_info() << "System Init Solver: " << linearSolver->getName() << " (" << linearSolver->getClassName() << ")" ;
         core::MechanicalParams mparams;
         mparams.setMFactor(init_mFact);
         mparams.setBFactor(init_bFact);
@@ -351,12 +353,12 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     int buf_maxIter=0;
     if(CGlinearSolver)
     {
-        buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
-        buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
-        buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
-        CGlinearSolver->f_tolerance.setValue(1e-35);
-        CGlinearSolver->f_maxIter.setValue(5000);
-        CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-25);
+        buf_tolerance = (double) CGlinearSolver->d_tolerance.getValue();
+        buf_maxIter   = (int) CGlinearSolver->d_maxIter.getValue();
+        buf_threshold = (double) CGlinearSolver->d_smallDenominatorThreshold.getValue();
+        CGlinearSolver->d_tolerance.setValue(1e-35);
+        CGlinearSolver->d_maxIter.setValue(5000);
+        CGlinearSolver->d_smallDenominatorThreshold.setValue(1e-25);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -380,7 +382,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
             std::stringstream tmp;
             tmp.precision(2);
             tmp << "Precomputing constraint correction : " << std::fixed << (float)(j*dof_on_node+d)*100.0f/(float)(nb_dofs*dof_on_node) << " %   " << '\xd';
-            msg_info("PrecomputedWarpPreconditioner") << tmp.str() ;
+            msg_info() << tmp.str() ;
 
             unitary_force.clear();
             unitary_force[d]=1.0;
@@ -426,7 +428,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         unitary_force.clear();
         force[pid_j] = unitary_force;
     }
-    msg_info("PrecomputedWarpPreconditioner") << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" ;
+    msg_info() << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" ;
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     if (linearSolver) linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
@@ -437,9 +439,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
     if(CGlinearSolver)
     {
-        CGlinearSolver->f_tolerance.setValue(buf_tolerance);
-        CGlinearSolver->f_maxIter.setValue(buf_maxIter);
-        CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+        CGlinearSolver->d_tolerance.setValue(buf_tolerance);
+        CGlinearSolver->d_maxIter.setValue(buf_maxIter);
+        CGlinearSolver->d_smallDenominatorThreshold.setValue(buf_threshold);
     }
 
     //Reset the velocity
@@ -447,8 +449,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     //Reset the position
     for (unsigned int i=0; i<pos0.size(); i++) pos[i]=pos0[i];
 
-    mstate->vFree(core::ExecParams::defaultInstance(), lhId);
-    mstate->vFree(core::ExecParams::defaultInstance(), rhId);
+    mstate->vFree(core::execparams::defaultInstance(), lhId);
+    mstate->vFree(core::execparams::defaultInstance(), rhId);
 
     usePrecond = true;
 }
@@ -480,9 +482,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
         if (forceField == nullptr)
         {
             rotationFinder = node->get< sofa::core::behavior::RotationFinder<TDataTypes> > ();
-            if (rotationFinder == nullptr)
-                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
 
+            msg_info_when(rotationFinder == nullptr) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
         }
     }
 
@@ -506,7 +507,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
     }
     else if (rotationFinder != nullptr)
     {
-        const helper::vector<defaulttype::Mat<3,3,Real> > & rotations = rotationFinder->getRotations();
+        const type::vector<type::Mat<3,3,Real> > & rotations = rotationFinder->getRotations();
         for(unsigned int k = 0; k < nb_dofs; k++)
         {
             int pid;
@@ -690,7 +691,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
     for (unsigned int i=0; i< nb_dofs; i++)
     {
-        sofa::defaulttype::Matrix3 RotMat;
+        sofa::type::Matrix3 RotMat;
 
         for (int a=0; a<3; a++)
         {
@@ -702,9 +703,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
         int pid = i;
 
-        sofa::defaulttype::Quat q;
+        sofa::type::Quat<SReal> q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::defaulttype::Vector3(scale,scale,scale));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vector3(scale,scale,scale));
     }
     vparams->drawTool()->restoreLastState();
 }

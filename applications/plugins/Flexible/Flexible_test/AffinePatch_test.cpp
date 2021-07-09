@@ -23,7 +23,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -61,15 +61,15 @@ namespace sofa {
         typedef typename DataTypes::Real Real;
         typedef projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
         typedef container::MechanicalObject<DataTypes> MechanicalObject;
-        typedef defaulttype::Quat Quat;
-        typedef defaulttype::Vector3 Vec3;
+        typedef type::Quat<SReal> Quat;
+        typedef type::Vector3 Vec3;
 
         /// Root of the scene graph
         simulation::Node::SPtr root;      
         /// Simulation
         simulation::Simulation* simulation; 
         /// Tested Rotation: random rotation matrix
-        defaulttype::Mat<3,3,Real> testedRotation;
+        type::Mat<3,3,Real> testedRotation;
         /// Tested Translation: random translation
         Vec3 testedTranslation;
 
@@ -93,9 +93,9 @@ namespace sofa {
         void SetRandomAffineTransform ()
         {
             // Random Matrix 3*3
-            for( int j=0; j<testedRotation.nbCols; j++)
+            for(size_t j=0; j<testedRotation.nbCols; j++)
             {
-                for( int i=0; i<testedRotation.nbLines; i++)
+                for(size_t i=0; i<testedRotation.nbLines; i++)
                 {
                     testedRotation(i,j)=helper::drand(1);
                 }
@@ -187,13 +187,13 @@ namespace sofa {
     };
 
       // Define the list of DataTypes to instantiate
-    using testing::Types;
+    using ::testing::Types;
     typedef Types<
         Vec3Types
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(AffinePatch_test, DataTypes);
+    TYPED_TEST_SUITE(AffinePatch_test, DataTypes);
 
     // test case: polarcorotationalStrainMapping 
     TYPED_TEST( AffinePatch_test , PolarCorotationalAffinePatchTest)

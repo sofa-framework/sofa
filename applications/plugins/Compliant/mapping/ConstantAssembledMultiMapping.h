@@ -38,7 +38,7 @@ class ConstantAssembledMultiMapping : public AssembledMultiMapping<TIn, TOut>
             this->alloc();
 
             const size_t n = this->getFrom().size();
-            helper::vector<in_pos_type> in_vec; in_vec.reserve(n);
+            type::vector<in_pos_type> in_vec; in_vec.reserve(n);
             for( unsigned i = 0; i < n; ++i ) {
                 in_vec.push_back( this->getFromModels()[i]->readPositions() );
             }
@@ -55,15 +55,15 @@ class ConstantAssembledMultiMapping : public AssembledMultiMapping<TIn, TOut>
     typedef typename Inherit1::InDataVecCoord InDataVecCoord;
 	
     virtual void apply(const core::MechanicalParams* mparams,
-	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-                       const helper::vector<const InDataVecCoord*>& dataVecInPos) override {
+	                   const type::vector<OutDataVecCoord*>& dataVecOutPos,
+                       const type::vector<const InDataVecCoord*>& dataVecInPos) override {
         if( !d_constant.getValue() )
             return Inherit1::apply( mparams, dataVecOutPos, dataVecInPos );
 	
 
 		const unsigned n = this->getFrom().size();
 
-        helper::vector<in_pos_type> in_vec; in_vec.reserve(n);
+        type::vector<in_pos_type> in_vec; in_vec.reserve(n);
 
 		for( unsigned i = 0; i < n; ++i ) {
 			in_vec.push_back( in_pos_type(dataVecInPos[i]) );
@@ -79,7 +79,7 @@ class ConstantAssembledMultiMapping : public AssembledMultiMapping<TIn, TOut>
 
         const unsigned n = this->getFrom().size();
 
-        helper::vector<const_in_coord_type> in_vec; in_vec.reserve(n);
+        type::vector<const_in_coord_type> in_vec; in_vec.reserve(n);
 
         core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
 
@@ -111,7 +111,7 @@ protected:
 
 
     // to remove some warnings
-    virtual void apply( out_pos_type& out, const helper::vector<in_pos_type>& in ) override = 0;
+    virtual void apply( out_pos_type& out, const type::vector<in_pos_type>& in ) override = 0;
 
 
     /// The Hessian can be constant, while geometric stiffness is not:
@@ -119,7 +119,7 @@ protected:
     /// In a constant mapping, the Hessian can be precomputed during 'init'
     /// and then be used in 'assemble_geometric' to perform Hessian * out_force.
     /// The best data structure to store the Hessian depends on the mapping.
-    virtual void assemble_hessian( const helper::vector<const_in_coord_type>& /*in*/ ) {}
+    virtual void assemble_hessian( const type::vector<const_in_coord_type>& /*in*/ ) {}
 };
 
 

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 
 #include <sofa/helper/BackTrace.h>
@@ -50,7 +50,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct PlaneROI_test : public Sofa_test<typename _DataTypes::Real>,
+struct PlaneROI_test : public BaseSimulationTest,
         PlaneROI<_DataTypes>
 {
     typedef PlaneROI<_DataTypes> ThisClass;
@@ -166,10 +166,10 @@ struct PlaneROI_test : public Sofa_test<typename _DataTypes::Real>,
     }
 };
 
-using testing::Types;
-typedef Types<Vec3Types> DataTypes;
+using ::testing::Types;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(PlaneROI_test, DataTypes);
+TYPED_TEST_SUITE(PlaneROI_test, DataTypes);
 
 TYPED_TEST(PlaneROI_test, attributesTests) {
     EXPECT_MSG_NOEMIT(Error) ;

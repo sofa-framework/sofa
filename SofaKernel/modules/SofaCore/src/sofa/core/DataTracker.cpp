@@ -25,12 +25,8 @@
 
 namespace sofa
 {
-
 namespace core
 {
-
-
-
 
 
 void DataTracker::trackData( const objectmodel::BaseData& data )
@@ -38,14 +34,16 @@ void DataTracker::trackData( const objectmodel::BaseData& data )
     m_dataTrackers[&data] = data.getCounter();
 }
 
-bool DataTracker::hasChanged( const objectmodel::BaseData& data )
+bool DataTracker::hasChanged( const objectmodel::BaseData& data ) const
 {
-    return m_dataTrackers[&data] != data.getCounter();
+    if (m_dataTrackers.find(&data) != m_dataTrackers.end())
+        return m_dataTrackers.at(&data) != data.getCounter();
+    return false;
 }
 
-bool DataTracker::hasChanged()
+bool DataTracker::hasChanged() const
 {
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
+    for( DataTrackers::const_iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
         if( it->second != it->first->getCounter() ) return true;
     return false;
 }
@@ -60,8 +58,6 @@ void DataTracker::clean()
     for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
         it->second = it->first->getCounter();
 }
-
-
 
 ////////////////////
 void DataTrackerDDGNode::addInputs(std::initializer_list<sofa::core::objectmodel::BaseData*> datas)
@@ -111,29 +107,6 @@ void DataTrackerCallback::update()
         m_owner->d_componentState.setValue(cs); // but what if the state of the component was invalid for a reason that doesn't depend on this update?
     cleanDirty();
 }
-
-
-void DataTrackerEngine::addCallback( std::function<sofa::core::objectmodel::ComponentState(void)> f)
-{
-    m_callbacks.push_back(f);
-}
-
-/// Each callback in the engine is called, setting its owner's component state to the value returned by the last callback.
-/// Because each callback overwrites the state of the same component, it is important that within a component, all
-/// callbacks perform the same checks to determine the value of the ComponentState.
-void DataTrackerEngine::update()
-{
-    updateAllInputsIfDirty();
-    core::objectmodel::ComponentState cs = core::objectmodel::ComponentState::Valid;
-
-    for(auto& callback : m_callbacks)
-        cs = callback();
-
-    if (m_owner)
-        m_owner->d_componentState.setValue(cs);
-    cleanDirty();
-}
-
 
 
 }

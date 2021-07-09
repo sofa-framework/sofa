@@ -19,31 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
-#define SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
+#pragma once
 
+#include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
 
-
-
-namespace sofa
+namespace sofa::simulation
 {
-
-namespace simulation
-{
-class Visitor;
+    class Visitor;
 }
 
-namespace core
+namespace sofa::core::objectmodel
 {
-
-// forward declaration of classes accessible from the context
-
-namespace objectmodel
-{
-class BaseObject;
-class Event;
 
 /**
  *  \brief Base class for Context classes, storing shared variables and parameters.
@@ -62,7 +50,7 @@ public:
     SOFA_CLASS(BaseContext, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
 
-    typedef defaulttype::Vector3 Vec3;
+    typedef type::Vector3 Vec3;
 
 protected:
     BaseContext();
@@ -187,7 +175,7 @@ public:
 
     /// Returns a list of object of type passed as a parameter.
     /// eg:
-    ///       sofa::helper::vector<VisualModel*> results;
+    ///       sofa::type::vector<VisualModel*> results;
     ///       context->getObjects(results) ;
     template<class Container>
     Container& getObjects(Container& result, SearchDirection dir = SearchUp){
@@ -418,12 +406,4 @@ public:
     friend std::ostream SOFA_CORE_API & operator << (std::ostream& out, const BaseContext& c );
 };
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::core::objectmodel

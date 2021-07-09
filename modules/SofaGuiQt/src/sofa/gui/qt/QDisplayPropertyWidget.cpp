@@ -32,13 +32,7 @@
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 QDisplayTreeItemWidget::QDisplayTreeItemWidget(QWidget* parent, QTreeWidgetItem* item) : QWidget(parent)
@@ -468,7 +462,11 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
         QPushButton* clearButton = new QPushButton("Clear output", clearWidget);
         clearButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         clearButton->setFixedHeight(200);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
         clearButton->setProperty("base", qVariantFromValue((void*) base));
+#else
+        clearButton->setProperty("base", QVariant::fromValue((void*) base));
+#endif
         clearLayout->addWidget(clearButton);
 
         clearWidget->setContentsMargins(0, 0, 0, 0);
@@ -515,7 +513,11 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
         QPushButton* clearButton = new QPushButton("Clear warning", clearWidget);
         clearButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         clearButton->setFixedHeight(200);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
         clearButton->setProperty("base", qVariantFromValue((void*) base));
+#else
+        clearButton->setProperty("base", QVariant::fromValue((void*) base));
+#endif
         clearLayout->addWidget(clearButton);
 
         clearWidget->setContentsMargins(0, 0, 0, 0);
@@ -575,7 +577,7 @@ void QDisplayPropertyWidget::updateListViewItem()
         core::objectmodel::Base* object = objectIterator->second.first;
         QTreeWidgetItem* item = objectIterator->second.second;
 
-        if (/*simulation::Node *node=*/dynamic_cast< simulation::Node *>(object))
+        if (sofa::simulation::node::getNodeFrom(object))
         {
             item->setText(0, QString::fromStdString(object->getName()));
             //emit nodeNameModification(node);
@@ -606,7 +608,7 @@ void QDisplayPropertyWidget::clearComponentOutput()
     QVariant variant = signalEmitter->property("base");
     sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
     if(base)
-        base->clearOutputs();
+        base->clearLoggedMessages();
 }
 
 void QDisplayPropertyWidget::clearComponentWarning()
@@ -618,7 +620,7 @@ void QDisplayPropertyWidget::clearComponentWarning()
     QVariant variant = signalEmitter->property("base");
     sofa::core::objectmodel::Base* base = static_cast<sofa::core::objectmodel::Base*>(variant.value<void*>());
     if(base)
-        base->clearWarnings();
+        base->clearLoggedMessages();
 }
 
 QTreeWidgetItem* QDisplayPropertyWidget::findComponent(const QString& component) const
@@ -695,8 +697,4 @@ Qt::DropActions QDisplayPropertyWidget::supportedDropActions() const
     return Qt::CopyAction | Qt::MoveAction;
 }*/
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

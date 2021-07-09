@@ -23,6 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_BASEINTERACTIONPROJECTIVECONSTRAINTSET_H
 
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {
@@ -57,9 +58,9 @@ public:
     virtual BaseMechanicalState* getMechModel2() = 0;
 
 
-    virtual helper::vector< core::BaseState* > getModels() override
+    virtual type::vector< core::BaseState* > getModels() override
     {
-        helper::vector< core::BaseState* > models;
+        type::vector< core::BaseState* > models;
         models.push_back( getMechModel1() );
         models.push_back( getMechModel2() );
         return models;

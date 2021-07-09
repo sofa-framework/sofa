@@ -1,5 +1,8 @@
 <?xml version="1.0" ?>
 <Node name="Root" gravity="0 0 0" time="0" animate="0">
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaRigid'/> 
     <VisualStyle displayFlags="showBehaviorModels showMapping" />
     <Node name="parent node with independent DOFs">
         <!-- 		<EulerImplicitSolver name="ODE solver" printLog="0" verbose="0" rayleighStiffness="0.0" rayleighMass="0"/> -->
@@ -7,7 +10,7 @@
         <CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" printLog="0" verbose="0" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid3d" />
         <PartialFixedConstraint fixedDirections="1 1 1 0 0 0" />
-        <UniformMass template="Rigid3d" name="mass" />
+        <UniformMass template="Rigid3d,RigidMass<3u,double>" name="mass" />
         <Node name="child node with DOFs mapped from the parent">
             <MechanicalObject template="Rigid3d" name="endpoint coordinates" position="1 0 0 0 0 0 1"  />
             <RigidRigidMapping name="angle-coord mapping" input="@.." output="@." index="0" />

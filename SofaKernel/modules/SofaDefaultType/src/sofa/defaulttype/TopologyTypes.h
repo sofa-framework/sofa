@@ -22,21 +22,18 @@
 #ifndef SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 #define SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 
+#include <sofa/config.h>
 #include <climits>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
-typedef unsigned int index_type;
-constexpr index_type InvalidID = UINT_MAX;
+SOFA_ATTRIBUTE_DISABLED("v20.12 (PR#1515)", "v21.06", "Use sofa::Index instead of sofa::defaulttype::index_type")
+typedef DeprecatedAndRemoved index_type;
 
+SOFA_ATTRIBUTE_DISABLED("v20.12 (PR#1515)", "v21.06", "Use sofa::InvalidID instead of sofa::defaulttype::InvalidID")
+typedef DeprecatedAndRemoved InvalidID;
 
-} // namespace defaulttype
-
-} // namespace sofa
-
+} // namespace sofa::defaulttype
 
 #endif //SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
-

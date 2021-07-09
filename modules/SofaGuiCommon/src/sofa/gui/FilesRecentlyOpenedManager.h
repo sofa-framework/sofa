@@ -19,18 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_VIEWER_FILESRECENTLYOPENEDMANAGER_H
-#define SOFA_GUI_VIEWER_FILESRECENTLYOPENEDMANAGER_H
+#pragma once
+#include <sofa/gui/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <string>
 
-#include <sofa/gui/config.h>
 
-namespace sofa
-{
-namespace gui
+namespace sofa::gui
 {
 class SOFA_SOFAGUICOMMON_API FilesRecentlyOpenedManager
 {
@@ -50,19 +47,16 @@ public:
     const std::string &getPath() const {return path;}
     void setPath(const std::string &p);
 
-    const sofa::helper::vector< std::string >& getFiles() const {return files;}
-    void setFiles(const helper::vector< std::string > &f) {files=f; writeFiles();}
+    const sofa::type::vector< std::string >& getFiles() const {return files;}
+    void setFiles(const type::vector< std::string > &f) {files=f; writeFiles();}
 
 protected:
     void writeFiles() const;
 
     const unsigned int max_num_files;
-    sofa::helper::vector< std::string > files;
+    sofa::type::vector< std::string > files;
     std::string path;
 };
 
 
-}
-}
-
-#endif
+} // namespace sofa::gui

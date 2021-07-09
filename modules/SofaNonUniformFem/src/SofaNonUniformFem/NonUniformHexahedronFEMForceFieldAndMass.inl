@@ -122,7 +122,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
     for (unsigned int i=0; i<this->getIndexedElements()->size(); ++i)
     {
-        sofa::defaulttype::Vec<8,Coord> nodes;
+        sofa::type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
             nodes[w] = this->_initialPoints.getValue()[(*this->getIndexedElements())[i][w]];
 
@@ -157,7 +157,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         int i=0;
         for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
-            sofa::defaulttype::Vec<8,Coord> nodes;
+            sofa::type::Vec<8,Coord> nodes;
             for(int w=0; w<8; ++w)
                 nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
 
@@ -243,7 +243,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         computeClassicalMechanicalMatrices(K,M,elementIndice,this->_sparseGrid->getNbVirtualFinerLevels()-level);
     else
     {
-        helper::fixed_array<int,8> finerChildren;
+        type::fixed_array<int,8> finerChildren;
         if (level == 0)
         {
             finerChildren = this->_sparseGrid->_hierarchicalCubeMap[elementIndice];
@@ -271,12 +271,12 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatrices( ElementStiffness &K, ElementMass &M, const int elementIndice, int level)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatrices( ElementStiffness &K, ElementMass &M, const Index elementIndice, int level)
 {
     //Get the 8 indices of the coarser Hexa
-    const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[level]->getHexahedra()[elementIndice];
+    const auto& points = this->_sparseGrid->_virtualFinerLevels[level]->getHexahedra()[elementIndice];
     //Get the 8 points of the coarser Hexa
-    helper::fixed_array<Coord,8> nodes;
+    type::fixed_array<Coord,8> nodes;
 
     //           for (unsigned int k=0;k<8;++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]);
     for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]).linearProduct(this->mstate->getScale());
@@ -299,7 +299,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
 
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addFineToCoarse( ElementStiffness& coarse, const ElementStiffness& fine, int indice )
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addFineToCoarse( ElementStiffness& coarse, const ElementStiffness& fine, Index indice )
 {
     ElementStiffness A;
     for(int i=0; i<24; i++)
@@ -463,7 +463,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(const core::Mech
             const SReal* g = this->getContext()->getGravity().ptr();
             Deriv theGravity;
             T::set( theGravity, (Real)g[0], (Real)g[1], (Real)g[2]);
-            Deriv hg = theGravity * (mparams->dt());
+            Deriv hg = theGravity * (sofa::core::mechanicalparams::dt(mparams));
             for (unsigned int i=0; i<v.size(); i++)
             {
                 v[i] += hg;

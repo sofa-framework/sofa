@@ -28,7 +28,6 @@
 #include "VectorVis.h"
 
 #include <sofa/helper/io/Image.h>
-#include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -38,10 +37,14 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/helper/system/glu.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
+
+#if IMAGE_HAVE_SOFA_GL == 1
+#include <sofa/gl/Texture.h>
+#include <sofa/gl/glu.h>
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
 namespace sofa
 {
@@ -123,9 +126,9 @@ public:
 
     // @name Vector of 3D points for navigation
     /**@{*/
-    typedef helper::ReadAccessor <core::objectmodel::Data<helper::vector<Coord> > >raPoints;
-    typedef helper::WriteOnlyAccessor<core::objectmodel::Data<helper::vector<Coord> > >waPoints;
-    Data< helper::vector<Coord> > points;
+    typedef helper::ReadAccessor <core::objectmodel::Data<type::vector<Coord> > >raPoints;
+    typedef helper::WriteOnlyAccessor<core::objectmodel::Data<type::vector<Coord> > >waPoints;
+    Data< type::vector<Coord> > points;
     /**@}*/
     
     // @name Vector visualization
@@ -146,7 +149,7 @@ public:
       , histo(initData(&histo, HistogramType(256,256,false),"histo",""))
       , transform(initData(&transform, TransformType(), "transform" , ""))
       , plane ( initData ( &plane, ImagePlaneType(), "plane" , "" ) )
-      , points ( initData ( &points, helper::vector<Coord> (), "points" , "" ) )
+      , points ( initData ( &points, type::vector<Coord> (), "points" , "" ) )
       , vectorVisualization ( initData (&vectorVisualization, defaulttype::VectorVis(), "vectorvis", ""))
       , scroll( initData (&scroll, int(0), "scrollDirection", "0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right"))
       , display( initData(&display, true, "display", "true if image is displayed, false otherwise"))
@@ -169,17 +172,17 @@ public:
         
         vectorVisualization.setWidget("vectorvis");
 
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         for(unsigned int i=0;i<3;i++)	cutplane_tex[i]=NULL;
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
     
     
     ~ImageViewer() override
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         for(unsigned int i=0;i<3;i++)	if(cutplane_tex[i]) delete cutplane_tex[i];
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
     
     void init() override
@@ -321,7 +324,7 @@ public:
     
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         if (!vparams->displayFlags().getShowVisualModels() || display.getValue()==false) return;
 
         bool initialized=true;
@@ -330,7 +333,7 @@ public:
         {
             for(unsigned int i=0;i<3;i++)
             {
-                cutplane_tex[i]= new helper::gl::Texture(new helper::io::Image,false);
+                cutplane_tex[i]= new sofa::gl::Texture(new helper::io::Image,false);
                 cutplane_tex[i]->getImage()->init(cutplane_res,cutplane_res,32);
             }
             updateTextures();
@@ -397,24 +400,24 @@ public:
         glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
         drawCutplanes();
         glPopAttrib();
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
 
-    void getCorners(defaulttype::Vec<8,defaulttype::Vector3> &c) // get image corners
+    void getCorners(type::Vec<8,type::Vector3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        defaulttype::Vec<8,defaulttype::Vector3> p;
-        p[0]=defaulttype::Vector3(-0.5,-0.5,-0.5);
-        p[1]=defaulttype::Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=defaulttype::Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=defaulttype::Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=defaulttype::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=defaulttype::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        type::Vec<8,type::Vector3> p;
+        p[0]=type::Vector3(-0.5,-0.5,-0.5);
+        p[1]=type::Vector3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=type::Vector3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=type::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=type::Vector3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=type::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=type::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=type::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -426,7 +429,7 @@ public:
         SOFA_UNUSED(onlyVisible);
         //if( onlyVisible) return;
 
-        defaulttype::Vec<8,defaulttype::Vector3> c;
+        type::Vec<8,type::Vector3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -436,7 +439,7 @@ public:
                 if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
                 if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
             }
-        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
+        this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(bbmin,bbmax));
     }
     
     
@@ -444,9 +447,9 @@ protected:
     
     static const unsigned cutplane_res=1024;
 
-#ifndef SOFA_NO_OPENGL
-    helper::gl::Texture* cutplane_tex[3];
-#endif //SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
+    sofa::gl::Texture* cutplane_tex[3];
+#endif // IMAGE_HAVE_SOFA_GL == 1
 
     //Draw vectors as arrows
     void drawArrows(const core::visual::VisualParams* vparams)
@@ -458,8 +461,9 @@ protected:
 
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
-        defaulttype::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
-        defaulttype::Vec4f colour(1.0,0.5,0.5,1.0);
+
+        type::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+        type::RGBAColor colour(1.0,0.5,0.5,1.0);
 
         unsigned int x,y,z;
         for (z=0;z<3;z++)
@@ -483,7 +487,7 @@ protected:
     //Draw tensors as ellipsoids
     void drawEllipsoid()
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         raImage rimage(this->image);
         raPlane rplane(this->plane);
         raTransform rtransform(this->transform);
@@ -491,7 +495,7 @@ protected:
 
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
-        defaulttype::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+        type::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
 
         int counter=0;
 
@@ -583,7 +587,7 @@ protected:
 
                     }
         }
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
     cimg_library::CImg<T> computeTensorFromLowerTriRowMajorVector(cimg_library::CImg<T> vector)
@@ -627,7 +631,7 @@ protected:
     //Draw the boxes around the slices
     void drawCutplanes()
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         raPlane rplane(this->plane);
         if (!rplane->getDimensions()[0]) return;
 
@@ -647,8 +651,8 @@ protected:
                     if(i==1 || rplane->getDimensions()[1]>1)
                         if(i==2 || rplane->getDimensions()[2]>1)
                         {
-                            defaulttype::Vec<4,defaulttype::Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
-                            defaulttype::Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
+                            type::Vec<4,type::Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
+                            type::Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
 
                             glEnable( GL_TEXTURE_2D );
                             glDisable( GL_LIGHTING);
@@ -675,14 +679,14 @@ protected:
                             glEnd ();
 
                         }
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
 
     //Update and draw the slices
     void updateTextures()
     {
-#ifndef SOFA_NO_OPENGL
+#if IMAGE_HAVE_SOFA_GL == 1
         raPlane rplane(this->plane);
         if (!rplane->getDimensions()[0]) return;
 
@@ -728,7 +732,7 @@ protected:
                 cutplane_tex[i]->update();
             }
         }
-#endif //SOFA_NO_OPENGL
+#endif // IMAGE_HAVE_SOFA_GL == 1
     }
 
 };

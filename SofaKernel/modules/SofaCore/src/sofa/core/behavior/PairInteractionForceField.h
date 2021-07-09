@@ -24,7 +24,7 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-
+#include <sofa/core/behavior/MechanicalState.h>
 
 
 namespace sofa

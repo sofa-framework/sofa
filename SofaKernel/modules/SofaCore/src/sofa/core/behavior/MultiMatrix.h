@@ -19,70 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MULTIMATRIX_H
-#define SOFA_CORE_BEHAVIOR_MULTIMATRIX_H
+#pragma once
 
 #include <sofa/core/MultiVecId.h>
+#include <sofa/core/behavior/MechanicalMatrix.h>
 
-namespace sofa
+namespace sofa::core::behavior
 {
-
-namespace core
-{
-
-namespace behavior
-{
-
-/// Helper class allowing to construct mechanical expressions
-///
-class SOFA_CORE_API MechanicalMatrix
-{
-protected:
-    enum { MFACT = 0, BFACT = 1, KFACT = 2 };
-    defaulttype::Vec<3,SReal> factors;
-public:
-    MechanicalMatrix(SReal m, SReal b, SReal k) : factors(m,b,k) {}
-    explicit MechanicalMatrix(const defaulttype::Vec<3,SReal>& f) : factors(f) {}
-
-    static const MechanicalMatrix M;
-    static const MechanicalMatrix B;
-    static const MechanicalMatrix K;
-
-    SReal getMFact() const { return factors[MFACT]; }
-    SReal getBFact() const { return factors[BFACT]; }
-    SReal getKFact() const { return factors[KFACT]; }
-
-    MechanicalMatrix operator + (const MechanicalMatrix& m2) const { return MechanicalMatrix(factors + m2.factors); }
-    MechanicalMatrix operator - (const MechanicalMatrix& m2) const { return MechanicalMatrix(factors - m2.factors); }
-    MechanicalMatrix operator - () const { return MechanicalMatrix(- factors); }
-    MechanicalMatrix operator * (SReal f) const { return MechanicalMatrix(factors * f); }
-    //friend MechanicalMatrix operator * (SReal f, const MechanicalMatrix& m1) { return MechanicalMatrix(m1.factors * f); }
-    MechanicalMatrix operator / (SReal f) const { return MechanicalMatrix(factors / f); }
-    friend std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
-    {
-        out << '(';
-        bool first = true;
-        for (unsigned int i=0; i<m.factors.size(); ++i)
-        {
-            SReal f = m.factors[i];
-            if (f!=0.0)
-            {
-                if (!first) out << ' ';
-                if (f == -1.0) out << '-';
-                else if (f < 0) out << f << ' ';
-                else
-                {
-                    if (!first) out << '+';
-                    if (f != 1.0) out << f << ' ';
-                }
-                out << ("MBK")[i];
-                first = false;
-            }
-        }
-        out << ')';
-        return out;
-    }
-};
 
 /// Helper class providing a high-level view of underlying linear system matrices.
 ///
@@ -93,22 +36,20 @@ class MultiMatrix
 public:
     typedef sofa::core::VecId VecId;
 
+    /// Copy-constructor is forbidden
+    MultiMatrix(const MultiMatrix<Parent>&) = delete;
+
 protected:
     /// Solver who is using this matrix
-    Parent* parent;
-
-    /// Copy-constructor is forbidden
-    MultiMatrix(const MultiMatrix<Parent>&);
+    Parent* parent { nullptr };
 
 public:
 
-    MultiMatrix(Parent* parent) : parent(parent)
+    explicit MultiMatrix(Parent* parent) : parent(parent)
     {
     }
 
-    ~MultiMatrix()
-    {
-    }
+    ~MultiMatrix() = default;
 
     /// m = 0
     void clear()
@@ -122,8 +63,13 @@ public:
         parent->m_resetSystem();
     }
 
-    /// m = m*M+b*B+k*K
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#2167)", "v21.12", "Use setSystemMBKMatrix instead.")
     void operator=(const MechanicalMatrix& m)
+    {
+        setSystemMBKMatrix(m);
+    }
+
+    void setSystemMBKMatrix(const MechanicalMatrix& m)
     {
         parent->m_setSystemMBKMatrix(m.getMFact(), m.getBFact(), m.getKFact());
     }
@@ -142,10 +88,4 @@ public:
     }
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} /// namespace sofa::core::behavior

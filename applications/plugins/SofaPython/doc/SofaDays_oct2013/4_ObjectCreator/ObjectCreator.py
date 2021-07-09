@@ -25,9 +25,9 @@ def createDragon(parentNode,name,x,y,z,color):
 	SurfNode.createObject('MeshObjLoader', name="loader", filename="mesh/dragon.obj")
 	SurfNode.createObject('Mesh', src="@loader")
 	SurfNode.createObject('MechanicalObject', src="@loader", dx=x, dy=y, dz=z)
-	SurfNode.createObject('Triangle')
-	SurfNode.createObject('Line')
-	SurfNode.createObject('Point')
+	SurfNode.createObject('TriangleCollisionModel')
+	SurfNode.createObject('LineCollisionModel')
+	SurfNode.createObject('PointCollisionModel')
 	SurfNode.createObject('BarycentricMapping')
 
 	return node
@@ -61,9 +61,9 @@ def createArmadillo(parentNode,name,x,y,z,color):
 	SurfNode.createObject('MeshObjLoader', name="loader", filename="mesh/Armadillo_verysimplified.obj")
 	SurfNode.createObject('Mesh', src="@loader")
 	SurfNode.createObject('MechanicalObject', src="@loader", dx=x, dy=y, dz=z)
-	SurfNode.createObject('Triangle')
-	SurfNode.createObject('Line')
-	SurfNode.createObject('Point')
+	SurfNode.createObject('TriangleCollisionModel')
+	SurfNode.createObject('LineCollisionModel')
+	SurfNode.createObject('PointCollisionModel')
 	SurfNode.createObject('BarycentricMapping')
 
 	return node

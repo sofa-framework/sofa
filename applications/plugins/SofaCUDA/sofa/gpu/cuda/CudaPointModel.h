@@ -31,13 +31,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 using namespace sofa::defaulttype;
@@ -47,10 +41,10 @@ class CudaPointCollisionModel;
 class CudaPoint : public core::TCollisionElementIterator<CudaPointCollisionModel>
 {
 public:
-    CudaPoint(CudaPointCollisionModel* model, int index);
+    CudaPoint(CudaPointCollisionModel* model, Index index);
 
-    int i0();
-    int getSize();
+    Index i0();
+    std::size_t getSize();
 
     explicit CudaPoint(const core::CollisionElementIterator& i);
 };
@@ -68,7 +62,7 @@ public:
     typedef CudaPoint Element;
     friend class CudaPoint;
 
-    Data<int> groupSize; ///< number of point per collision element
+    Data<std::size_t> groupSize; ///< number of point per collision element
 
     CudaPointCollisionModel();
 
@@ -76,13 +70,13 @@ public:
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    virtual void resize(Size size) override;
 
     virtual void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
 
-    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams*,Index index) override;
 
     void draw(const core::visual::VisualParams*) override;
 
@@ -93,7 +87,7 @@ protected:
     core::behavior::MechanicalState<InDataTypes>* mstate;
 };
 
-inline CudaPoint::CudaPoint(CudaPointCollisionModel* model, int index)
+inline CudaPoint::CudaPoint(CudaPointCollisionModel* model, Index index)
     : core::TCollisionElementIterator<CudaPointCollisionModel>(model, index)
 {}
 
@@ -102,12 +96,12 @@ inline CudaPoint::CudaPoint(const core::CollisionElementIterator& i)
 {
 }
 
-inline int CudaPoint::i0()
+inline CudaPoint::Index CudaPoint::i0()
 {
     return model->groupSize.getValue()*index;
 }
 
-inline int CudaPoint::getSize()
+inline std::size_t CudaPoint::getSize()
 {
     if (index == model->getSize()-1)
         return model->getMechanicalState()->getSize();
@@ -115,13 +109,6 @@ inline int CudaPoint::getSize()
         return model->groupSize.getValue();
 }
 
-using CudaPointModel [[deprecated("The CudaPointModel is now deprecated, please use CudaPointCollisionModel instead. Compatibility stops at v20.06")]] = CudaPointCollisionModel;
-
-
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda
 
 #endif

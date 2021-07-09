@@ -21,12 +21,12 @@
 ******************************************************************************/
 #include <SofaEulerianFluid/Fluid2D.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include <cstring>
 #include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 
 namespace sofa
 {
@@ -101,7 +101,7 @@ void Fluid2D::updatePosition(SReal dt)
 void Fluid2D::draw(const core::visual::VisualParams* vparams)
 {
     using namespace sofa::helper;
-#ifndef SOFA_NO_OPENGL
+
     updateVisual();
     glPushMatrix();
     const int& nx = f_nx.getValue();
@@ -209,7 +209,6 @@ void Fluid2D::draw(const core::visual::VisualParams* vparams)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     glPopMatrix();
-#endif /* SOFA_NO_OPENGL */
 }
 
 void Fluid2D::updateVisual()
@@ -402,7 +401,7 @@ void Fluid2D::updateVisual()
 
     for (unsigned int i=0; i<facets.size(); i++)
     {
-        sofa::defaulttype::Vec3f n = cross(points[facets[i].p[1]].p-points[facets[i].p[0]].p,points[facets[i].p[2]].p-points[facets[i].p[0]].p);
+        sofa::type::Vec3f n = cross(points[facets[i].p[1]].p-points[facets[i].p[0]].p,points[facets[i].p[2]].p-points[facets[i].p[0]].p);
         n.normalize();
         points[facets[i].p[0]].n += n;
         points[facets[i].p[1]].n += n;
@@ -429,7 +428,7 @@ void Fluid2D::computeBBox(const core::ExecParams*  params , bool onlyVisible)
     {
         maxBBox[c] = minBBox[c]+size[c];
     }
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 
 }
 

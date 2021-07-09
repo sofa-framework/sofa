@@ -298,7 +298,7 @@ public:
 
             _strainJacobianBlocks[i].addmult( E, F );
 
-            _materialBlocks[i].addDForce( PE, E, mparams->kFactor(), mparams->bFactor() );
+            _materialBlocks[i].addDForce( PE, E, sofa::core::mechanicalparams::kFactor(mparams), sofa::core::mechanicalparams::bFactor(mparams) );
 
             _strainJacobianBlocks[i].addMultTranspose( PF, PE );
 
@@ -310,17 +310,17 @@ public:
                 {
                     case QR:
                     {
-                        _strainJacobianBlocks[i].addDForce_qr( PF, F, _stresses[i], mparams->kFactor() );
+                        _strainJacobianBlocks[i].addDForce_qr( PF, F, _stresses[i], sofa::core::mechanicalparams::kFactor(mparams) );
                         break;
                     }
                     case POLAR:
                     {
-                        _strainJacobianBlocks[i].addDForce_polar( PF, F, _stresses[i], mparams->kFactor() );
+                        _strainJacobianBlocks[i].addDForce_polar( PF, F, _stresses[i], sofa::core::mechanicalparams::kFactor(mparams) );
                         break;
                     }
                     case SVD:
                     {
-                        _strainJacobianBlocks[i].addDForce_svd( PF, F, _stresses[i], mparams->kFactor() );
+                        _strainJacobianBlocks[i].addDForce_svd( PF, F, _stresses[i], sofa::core::mechanicalparams::kFactor(mparams) );
                         break;
                     }
                     default:
@@ -359,12 +359,12 @@ public:
 
 
     typedef defaulttype::CorotationalStrainJacobianBlock< defaulttype::F331Types, defaulttype::E331Types > StrainJacobianBlock;
-    typedef helper::vector< StrainJacobianBlock >  StrainJacobianBlocks;
+    typedef type::vector< StrainJacobianBlock >  StrainJacobianBlocks;
     StrainJacobianBlocks _strainJacobianBlocks;
 
 	typedef defaulttype::IsotropicHookeLaw<typename defaulttype::E331Types::Real, defaulttype::E331Types::material_dimensions, defaulttype::E331Types::strain_size> LawType;
     typedef defaulttype::HookeMaterialBlock< defaulttype::E331Types, LawType > MaterialBlock;
-    typedef helper::vector< MaterialBlock >  MaterialBlocks;
+    typedef type::vector< MaterialBlock >  MaterialBlocks;
     MaterialBlocks _materialBlocks;
 
 

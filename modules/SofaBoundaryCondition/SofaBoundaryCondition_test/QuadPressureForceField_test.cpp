@@ -19,13 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Base class
-#include <SofaTest/ForceField_test.h>
+
 //Force field
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 
-#include <SofaTest/TestMessageHandler.h>
+#include <SofaSimpleFem_test/ForceFieldTestCreation.h>
 
 
 namespace sofa {
@@ -44,7 +43,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
 
     VecCoord x;
     VecDeriv v,f;
@@ -107,14 +106,14 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 };
 
 // Types to instantiate.
-typedef testing::Types<
+typedef ::testing::Types<
     component::forcefield::QuadPressureForceField<defaulttype::Vec3Types>
 > TestTypes;
 
 
 
 // Tests to run for each instantiated type
-TYPED_TEST_CASE(QuadPressureForceField_test, TestTypes);
+TYPED_TEST_SUITE(QuadPressureForceField_test, TestTypes);
 
 // first test case: test force value
 TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)

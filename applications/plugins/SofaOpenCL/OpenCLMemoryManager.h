@@ -114,14 +114,14 @@ public:
     static void memcpyHostToDevice(int d, device_pointer dDestPointer,const host_pointer hSrcPointer, size_t n)
     {
         DEBUG_TEXT("OpenCLMemoryManager::memcpyHostToDevice");
-        if (myopenclVerboseLevel>=LOG_TRACE) std::cout << "OPENCL: CPU->GPU copy of "<<sofa::core::objectmodel::BaseClass::decodeTypeName ( typeid ( *hSrcPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
+        if (myopenclVerboseLevel>=LOG_TRACE) std::cout << "OPENCL: CPU->GPU copy of "<<sofa::helper::NameDecoder::decodeTypeName ( typeid ( *hSrcPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
         myopenclEnqueueWriteBuffer(d,(dDestPointer).m,(dDestPointer).offset,hSrcPointer,n);
     }
 
     static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const device_pointer dSrcPointer, size_t n)
     {
         DEBUG_TEXT("OpenCLMemoryManager::memcpyDeviceToHost");
-        if (myopenclVerboseLevel>=LOG_TRACE) std::cout << "OPENCL: GPU->CPU copy of "<<sofa::core::objectmodel::BaseClass::decodeTypeName ( typeid ( *hDestPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
+        if (myopenclVerboseLevel>=LOG_TRACE) std::cout << "OPENCL: GPU->CPU copy of "<<sofa::helper::NameDecoder::decodeTypeName ( typeid ( *hDestPointer ) ) <<": "<<n*sizeof(T) <<" B"<<std::endl;
         myopenclEnqueueReadBuffer(d,hDestPointer,(dSrcPointer).m,(dSrcPointer).offset,n);
     }
 
@@ -143,7 +143,7 @@ public:
         return 0;
     }
 
-    static bool bufferAlloc(gl_buffer* /*bId*/, int/* n*/)
+    static bool bufferAlloc(gl_buffer* /*bId*/, int/* n*/,  bool createBuffer = true)
     {
         DEBUG_TEXT("OpenCLMemoryManager::bufferAlloc");
         return false;

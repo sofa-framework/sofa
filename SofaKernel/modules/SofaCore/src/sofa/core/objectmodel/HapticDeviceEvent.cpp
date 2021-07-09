@@ -21,18 +21,12 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 SOFA_EVENT_CPP( HapticDeviceEvent )
 
-HapticDeviceEvent::HapticDeviceEvent(const unsigned int id, const sofa::defaulttype::Vector3& position, const sofa::defaulttype::Quat& orientation, const unsigned char button)
+HapticDeviceEvent::HapticDeviceEvent(const unsigned int id, const sofa::type::Vector3& position, const sofa::type::Quat<SReal>& orientation, const unsigned char button)
     : sofa::core::objectmodel::Event()
     , m_deviceId(id)
     , m_position(position)
@@ -45,8 +39,4 @@ HapticDeviceEvent::~HapticDeviceEvent()
 
 }
 
-} // namespace tree
-
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

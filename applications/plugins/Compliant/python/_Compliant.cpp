@@ -153,10 +153,10 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
         SP_MESSAGE_WARNING( "_Compliant_getConstraintForce: allocating lambda vector for mstate "<<mstate->getPathName() )
 
         VecDerivId id(VecDerivId::V_FIRST_DYNAMIC_INDEX);
-        mstate->vAvail( ExecParams::defaultInstance(), id );
+        mstate->vAvail( execparams::defaultInstance(), id );
         solver->lagrange.id().setId(mstate, id);
 
-        mstate->vAlloc(ExecParams::defaultInstance(),id);
+        mstate->vAlloc(sofa::core::execparams::defaultInstance(),id);
 
         data = mstate->baseWrite(id);
     } else {

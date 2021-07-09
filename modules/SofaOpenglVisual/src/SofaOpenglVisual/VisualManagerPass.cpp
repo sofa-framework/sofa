@@ -23,13 +23,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/FileRepository.h>
-
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/Data.h>
-
-#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -40,7 +33,7 @@ namespace component
 namespace visualmodel
 {
 
-using namespace helper::gl;
+using namespace sofa::gl;
 using namespace simulation;
 using namespace core::visual;
 
@@ -99,7 +92,7 @@ void VisualManagerPass::initVisual()
     passWidth = (GLint) ((float)viewport[2]*factor.getValue());
     passHeight = (GLint)((float)viewport[3] * factor.getValue());
 
-    fbo = std::unique_ptr<helper::gl::FrameBufferObject>(
+    fbo = std::unique_ptr<sofa::gl::FrameBufferObject>(
                 new FrameBufferObject(true, true, true, true));
     fbo->init(passWidth, passHeight);
 }

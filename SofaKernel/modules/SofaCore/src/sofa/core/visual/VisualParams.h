@@ -23,31 +23,15 @@
 #ifndef SOFA_CORE_VISUAL_VISUALPARAMS_H
 #define SOFA_CORE_VISUAL_VISUALPARAMS_H
 
+#include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/visual/DrawTool.h>
+#include <sofa/helper/visual/DrawTool.h>
+#include <sofa/helper/visual/Transformation.h>
 #include <sofa/core/visual/DisplayFlags.h>
-#include <sofa/helper/gl/Transformation.h>
 
 
-
-namespace sofa
+namespace sofa::core::visual
 {
-
-namespace helper
-{
-namespace gl
-{
-class FrameBufferObject;
-} // namespace gl
-} // namespace helper
-
-namespace core
-{
-namespace visual
-{
-
-class DrawTool;
-
 /// The enumeration used to describe potentially supported graphics API.
 enum
 {
@@ -61,7 +45,7 @@ enum
 class SOFA_CORE_API VisualParams : public ExecParams
 {
 public:
-	typedef sofa::helper::fixed_array<int, 4> Viewport;
+	typedef sofa::type::fixed_array<int, 4> Viewport;
 
     /// The enumeration used to describe each step of the rendering.
     enum Pass
@@ -135,17 +119,14 @@ public:
     const Pass& pass() const { return m_pass; }
     Pass& pass() { return m_pass; }
 
-    DrawTool*& drawTool() { return m_drawTool; }
-    DrawTool*& drawTool() const { return m_drawTool; }
-
-    helper::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
-    helper::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
+    helper::visual::DrawTool*& drawTool() { return m_drawTool; }
+    helper::visual::DrawTool*& drawTool() const { return m_drawTool; }
 
     DisplayFlags& displayFlags() { return m_displayFlags; }
     const DisplayFlags& displayFlags() const { return m_displayFlags; }
 
-    sofa::defaulttype::BoundingBox&  sceneBBox()    { return m_sceneBoundingBox; }
-    const sofa::defaulttype::BoundingBox&  sceneBBox() const   { return m_sceneBoundingBox; }
+    sofa::type::BoundingBox&  sceneBBox()    { return m_sceneBoundingBox; }
+    const sofa::type::BoundingBox&  sceneBBox() const   { return m_sceneBoundingBox; }
 
     /// Store the ModelView matrix used to draw the scene. This OpenGL matrix defines the world coordinate system with respect to the camera.
     void setModelViewMatrix( const double m[16] ) { for(unsigned i=0; i<16; i++) m_modelViewMatrix[i] = m[i]; }
@@ -159,10 +140,17 @@ public:
     /// Get the projection matrix used to draw the scene. This OpenGL matrix defines the camera coordinate system with respect to the viewport, including perspective if any.
     void getProjectionMatrix( double m[16] ) const { for(unsigned i=0; i<16; i++) m[i] = m_projectionMatrix[i]; }
 
-    /// @todo clarify what this is with respect to ModelView and Perspective matrices
-    sofa::helper::gl::Transformation& sceneTransform() { return m_sceneTransform; }
-    const sofa::helper::gl::Transformation& sceneTransform() const { return m_sceneTransform; }
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1649)", "v21.12", "Use with the ModelView and Perspective Matrices instead.")
+    helper::visual::Transformation& sceneTransform() { return m_sceneTransform; }
+    
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1649)", "v21.12", "Use with the ModelView and Perspective Matrices instead.")
+    const helper::visual::Transformation& sceneTransform() const { return m_sceneTransform; }
 
+    //SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1649)", "v21.12", "Use your rendering API instead.")
+    //sofa::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
+
+    //SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1649)", "v21.12", "Use your rendering API instead.")
+    //sofa::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
 
     bool isSupported(unsigned int api) const
     {
@@ -178,16 +166,16 @@ public:
     }
 
 protected:
-    sofa::defaulttype::BoundingBox      m_sceneBoundingBox;
-    helper::gl::Transformation          m_sceneTransform;
+    sofa::type::BoundingBox      m_sceneBoundingBox;
+    helper::visual::Transformation          m_sceneTransform;
     Viewport                            m_viewport;
     SReal                              m_zNear;
     SReal                              m_zFar;
     CameraType                          m_cameraType;
     Pass                                m_pass;
     DisplayFlags                        m_displayFlags;
-    mutable DrawTool*                   m_drawTool;
-    mutable helper::gl::FrameBufferObject*	m_boundFrameBuffer;
+    mutable helper::visual::DrawTool*   m_drawTool;
+    //mutable sofa::gl::FrameBufferObject*	m_boundFrameBuffer;
     /// Ids of position vector
     ConstMultiVecCoordId m_x;
     /// Ids of velocity vector
@@ -199,8 +187,7 @@ protected:
     SReal m_projectionMatrix[16]; ///< projection matrix.
 };
 
-} // namespace visual
-} // namespace core
-} // namespace sofa
+} // namespace sofa::core::visual
+
 
 #endif // SOFA_CORE_VISUAL_VISUALPARAMS_H

@@ -1,7 +1,3 @@
-#ifndef IMAGETOOLBOX_H
-#define IMAGETOOLBOX_H
-
-
 /******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
@@ -23,21 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#ifndef IMAGETOOLBOX_H
+#define IMAGETOOLBOX_H
 
 #include <image/image_gui/config.h>
 #include <image/ImageTypes.h>
 #include <image/VectorVis.h>
 
 #include <sofa/helper/io/Image.h>
-#include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/CollisionModel.h>
 
 #include "imagetoolboxdata.h"
@@ -52,8 +48,8 @@ namespace misc
 {
 
 using namespace cimg_library;
-using defaulttype::Vec;
-using defaulttype::Vector3;
+using type::Vec;
+using type::Vector3;
 
 
 template<class _ImageTypes>
@@ -119,7 +115,7 @@ public:
     typedef component::visualmodel::VisualModelImpl VisuModelType;
     
      typedef sofa::component::engine::LabelImageToolBox Label;
-    typedef helper::vector<Label*> VecLabel;
+    typedef type::vector<Label*> VecLabel;
 
     ImageToolBox() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))

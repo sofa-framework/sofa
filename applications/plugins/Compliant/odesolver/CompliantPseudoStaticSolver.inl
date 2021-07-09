@@ -4,6 +4,11 @@
 
 #include <sofa/helper/rmath.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
 namespace sofa {
 namespace component {
@@ -13,20 +18,20 @@ namespace odesolver {
 template< typename CompliantOdeSolver >
 CompliantPseudoStaticSolver<CompliantOdeSolver>::CompliantPseudoStaticSolver()
     : d_threshold(initData(&d_threshold,
-                   (SReal) 1.0e-6,
-                   "threshold",
-                   "stop criterion: min difference between 2 iterations"))
+                           (SReal) 1.0e-6,
+                           "threshold",
+                           "stop criterion: min difference between 2 iterations"))
     , d_iterations(initData(&d_iterations,
-                     (unsigned) 1000,
-                     "iterations",
-                     "maximum number of iterations"))
+                            (unsigned) 1000,
+                            "iterations",
+                            "maximum number of iterations"))
     , d_velocityFactor(initData(&d_velocityFactor,
-                   (SReal) 0.5,
-                   "velocityFactor",
-                   "amount of kept velocity at each iteration (0=fully damped, 1=fully dynamics)"))
+                                (SReal) 0.5,
+                                "velocityFactor",
+                                "amount of kept velocity at each iteration (0=fully damped, 1=fully dynamics)"))
     , d_lastVelocity(initData(&d_lastVelocity,
-                   "lastVelocity",
-                   "(output) last velocity square norm"))
+                              "lastVelocity",
+                              "(output) last velocity square norm"))
 {
     d_lastVelocity.setReadOnly(true);
     this->addAlias( &d_threshold, "precision" );
@@ -44,22 +49,23 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::init()
 
 template< typename CompliantOdeSolver >
 void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecParams* params,
-                         SReal dt,
-                         core::MultiVecCoordId posId,
-                         core::MultiVecDerivId velId)
+                                                            SReal dt,
+                                                            core::MultiVecCoordId posId,
+                                                            core::MultiVecDerivId velId)
 {
     typename CompliantOdeSolver::SolverOperations sop( params, this->getContext(), this->alpha.getValue(), this->beta.getValue(), dt, posId, velId, true );
 
     const SReal& threshold = d_threshold.getValue();
     const SReal& velocityFactor = d_velocityFactor.getValue();
-    bool printLog = this->f_printLog.getValue();
+    bool doInfoString = this->notMuted();
 
     SReal lastVelocity = 0;
 
-    simulation::MechanicalProjectPositionAndVelocityVisitor projectPositionAndVelocityVisitor( sofa::core::MechanicalParams::defaultInstance() );
-    simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor propagatePositionAndVelocityVisitor( sofa::core::MechanicalParams::defaultInstance() );
+    MechanicalProjectPositionAndVelocityVisitor projectPositionAndVelocityVisitor( sofa::core::mechanicalparams::defaultInstance() );
+    MechanicalPropagateOnlyPositionAndVelocityVisitor propagatePositionAndVelocityVisitor( sofa::core::mechanicalparams::defaultInstance() );
 
     unsigned i=0;
+    std::stringstream tmpStr;
     for( const unsigned imax=d_iterations.getValue() ; i<imax ; ++i )
     {
         // dynamics integation
@@ -72,8 +78,8 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
         // damp velocity
         sop.vop.v_teq( velId, velocityFactor );
 
-        if( printLog )
-            sout<<"velocity norm: "<<sqrt(lastVelocity)<<sendl;
+        if(doInfoString)
+            tmpStr <<"velocity norm: "<<sqrt(lastVelocity) << msgendl;
 
         if( lastVelocity < threshold*threshold || i==imax-1 ) break;
 
@@ -85,8 +91,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 
     d_lastVelocity.setValue(lastVelocity);
 
-    if( printLog ) sout<<i+1<<" iterations"<<sendl;
-
+    msg_info() << tmpStr.str() << i+1 << " iterastions";
 }
 
 

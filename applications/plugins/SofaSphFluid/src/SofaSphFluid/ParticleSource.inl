@@ -83,7 +83,7 @@ void ParticleSource<DataTypes>::init()
     if (_topology != nullptr)
     {
         m_pointHandler = new PSPointHandler(this, &m_lastparticles);
-        m_lastparticles.createTopologicalEngine(_topology, m_pointHandler);
+        m_lastparticles.createTopologyHandler(_topology, m_pointHandler);
         m_lastparticles.registerTopologicalData();
     }
 
@@ -150,7 +150,7 @@ void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalPara
     VecCoord& x = *xData.beginEdit();
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
     helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;    
-    msg_info() << "projectPosition: " << _lastparticles;
+    msg_info() << "projectPosition: " << _lastparticles.ref();
     for (unsigned int s = 0; s < _lastparticles.size(); s++)
     {
         x[_lastparticles[s]] = m_lastpos[s];
@@ -221,8 +221,8 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         msg_info() << "nbParticlesToCreate: " << nbParticlesToCreate << " m_maxdist: " << m_maxdist;
         helper::WriteAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles; ///< lastparticles indices
 
-        helper::vector< Coord > newX;
-        helper::vector< Deriv > newV;
+        type::vector< Coord > newX;
+        type::vector< Deriv > newV;
 
         newX.reserve(nbParticlesToCreate * m_numberParticles);
         newV.reserve(nbParticlesToCreate * m_numberParticles);
@@ -257,7 +257,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
                     p[c] += d_radius.getValue()[c] * rrand();
                
                 m_lastpos.push_back(p);
-                _lastparticles.push_back((unsigned int)(i0 + newX.size()));
+                _lastparticles.push_back((Index)(i0 + newX.size()));
                 newX.push_back(p + v0 * (time - m_lastTime)); // account for particle initial motion
                 newV.push_back(v0);
             }
@@ -329,14 +329,14 @@ void ParticleSource<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
 
-    std::vector< sofa::defaulttype::Vector3 > pointsInit;
+    std::vector< sofa::type::Vector3 > pointsInit;
     for (unsigned int s = 0; s < m_lastpos.size(); s++)
     {
-        sofa::defaulttype::Vector3 point;
+        sofa::type::Vector3 point;
         point = DataTypes::getCPos(m_lastpos[s] + dpos);
         pointsInit.push_back(point);
     }
-    vparams->drawTool()->drawPoints(pointsInit, 10, sofa::defaulttype::Vec<4, float>(1, 0.5, 0.5, 1));
+    vparams->drawTool()->drawPoints(pointsInit, 10, sofa::type::RGBAColor(1., 0.5, 0.5, 1.));
 }
 
 } // namespace misc

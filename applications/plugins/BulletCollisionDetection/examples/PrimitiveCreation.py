@@ -31,7 +31,7 @@ def createRigidCapsule(parentNode,name,x,y,z,*args):
 	meca = node.createObject('MechanicalObject',name='rigidDOF',template='Rigid',position=str(x)+' '+str(y)+' '+str(z)+' 0 0 0 1',velocity='0 0 '+str(falling_speed)+' 0 0 0 1')
 	mass = node.createObject('UniformMass',name='mass',totalMass=1)
 
-	node.createObject('TCapsuleModel',template='Rigid',name='capsule_model',radii=str(radius),heights=str(height))
+	node.createObject('CapsuleCollisionModel',template='Rigid',name='capsule_model',radii=str(radius),heights=str(height))
 
 	return 0
 
@@ -96,7 +96,7 @@ def createFlexCapsule(parentNode,name,x,y,z,*args):
 	node.createObject('MechanicalObject',template='Vec3d',name='falling_particle',position=str(x + x_rand)+' '+str(y + y_rand)+' '+str(z + z_rand + capsule_height)+' '+str(x - x_rand)+' '+str(y - y_rand)+' '+str(z - z_rand),velocity='0 0 '+str(falling_speed))
 	mass = node.createObject('UniformMass',name='mass')
 	node.createObject('MeshTopology', name='meshTopology34',edges='0 1',drawEdges='1')
-	node.createObject('TCapsuleModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
+	node.createObject('CapsuleCollisionModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
 
 	return 0
 
@@ -161,7 +161,7 @@ def createCapsuleChain(parentNode,name,length,x,y,z):
 	node.createObject('StiffSpringForceField',template='Vec3d',name='springforcefield',stiffness='100',damping='1',spring=springs)
 	mass = node.createObject('UniformMass',name='mass')
 	node.createObject('MeshTopology', name='meshTopology34',edges=topo_edges,drawEdges='1')
-	node.createObject('TCapsuleModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
+	node.createObject('CapsuleCollisionModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
 
 	return 0
 
@@ -184,7 +184,7 @@ def createOBB(parentNode,name,x,y,z,*args):
 	meca = node.createObject('MechanicalObject',name='rigidDOF',template='Rigid',position=str(x)+' '+str(y)+' '+str(z)+' 0 0 0 1',velocity='0 0 '+str(falling_speed)+' 0 0 0 1')
 	mass = node.createObject('UniformMass',name='mass',totalMass=1)
 
-	node.createObject('TOBBModel',template='Rigid',name='OBB_model',extents=str(a)+' '+str(b)+' '+str(c))
+	node.createObject('OBBCollisionModel',template='Rigid',name='OBB_model',extents=str(a)+' '+str(b)+' '+str(c))
 
 	return 0
 

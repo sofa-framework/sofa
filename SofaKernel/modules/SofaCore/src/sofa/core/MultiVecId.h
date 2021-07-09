@@ -23,7 +23,7 @@
 #define SOFA_CORE_MULTIVECID_H
 
 #include <sofa/core/VecId.h>
-
+#include <sofa/core/objectmodel/Data.h>
 namespace sofa
 {
 
@@ -194,7 +194,7 @@ protected:
     {
         if (!idMap_ptr)
             idMap_ptr.reset(new IdMap());
-        else if(!idMap_ptr.unique())
+        else if(!(idMap_ptr.use_count() == 1))
             idMap_ptr.reset(new IdMap(*idMap_ptr));
         return *idMap_ptr;
     }

@@ -27,10 +27,8 @@ using sofa::core::visual::VisualParams ;
 
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 #include <SofaOpenglVisual/OglTexture.h>
 using sofa::component::visualmodel::OglTexture ;
@@ -38,9 +36,9 @@ using sofa::component::visualmodel::OglTexture ;
 using sofa::core::objectmodel::BaseContext ;
 using sofa::core::RegisterObject ;
 
-using sofa::defaulttype::Mat ;
+using sofa::type::Mat ;
 
-using sofa::helper::types::RGBAColor ;
+using sofa::type::RGBAColor ;
 
 namespace sofa
 {
@@ -77,7 +75,7 @@ LightManager::~LightManager()
 void LightManager::init()
 {
     BaseContext* context = this->getContext();
-    context->get<OglShadowShader, helper::vector<OglShadowShader::SPtr> >(&m_shadowShaders, BaseContext::SearchRoot);
+    context->get<OglShadowShader, type::vector<OglShadowShader::SPtr> >(&m_shadowShaders, BaseContext::SearchRoot);
 
     if (m_shadowShaders.empty() && d_shadowsEnabled.getValue())
     {
@@ -108,8 +106,8 @@ void LightManager::initVisual()
 
     ///TODO: keep trace of all active textures at the same time, with a static factory
     ///or something like that to avoid conflics with color texture declared in the scene file.
-    helper::vector<OglTexture::SPtr> sceneTextures;
-    this->getContext()->get<OglTexture, helper::vector<OglTexture::SPtr> >(&sceneTextures, BaseContext::SearchRoot);
+    type::vector<OglTexture::SPtr> sceneTextures;
+    this->getContext()->get<OglTexture, type::vector<OglTexture::SPtr> >(&sceneTextures, BaseContext::SearchRoot);
 
     GLint maxTextureUnits;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextureUnits);
@@ -514,7 +512,7 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
                     this->updateVisual();
                 }
 
-                sout << "Shadows : "<<(d_shadowsEnabled.getValue()?"ENABLED":"DISABLED")<<sendl;
+                msg_info() << "Shadows : "<<(d_shadowsEnabled.getValue()?"ENABLED":"DISABLED");
             }
             break;
         }

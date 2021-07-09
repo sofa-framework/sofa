@@ -161,11 +161,11 @@
        <property name="insertPolicy">
         <enum>QComboBox::InsertAtTop</enum>
        </property>
-       <property name="autoCompletion">
-        <bool>true</bool>
-       </property>
        <property name="duplicatesEnabled">
         <bool>false</bool>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
        </property>
        <item>
         <property name="text">

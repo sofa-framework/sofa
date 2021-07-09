@@ -19,31 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Mapping_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+#include <SofaBaseMechanics_test/MappingTestCreation.h>
+
+#include <SofaComponentAll/initSofaComponentAll.h>
 
 namespace sofa {
   namespace {
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
-using defaulttype::Mat;
+using type::Vec;
+using type::Mat;
 
 
 /**  Test suite for RigidMapping.
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _RigidMapping>
-struct RigidMappingTest : public Mapping_test<_RigidMapping>
+struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
 {
 
     typedef _RigidMapping RigidMapping;
-    typedef Mapping_test<RigidMapping> Inherit;
+    typedef sofa::mapping_test::Mapping_test<RigidMapping> Inherit;
 
     typedef typename RigidMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
@@ -70,6 +75,11 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
     typedef typename OutMechanicalObject::WriteVecDeriv WriteOutVecDeriv;
     typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
     typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
+
+    void SetUp() override
+    {
+        sofa::component::initSofaComponentAll(); 
+    }
 
 
     RigidMapping* rigidMapping;
@@ -189,14 +199,14 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 mapping::RigidMapping<defaulttype::Rigid2Types,defaulttype::Vec2Types>,
 mapping::RigidMapping<defaulttype::Rigid3Types,defaulttype::Vec3Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(RigidMappingTest, DataTypes);
+TYPED_TEST_SUITE(RigidMappingTest, DataTypes);
 // first test case
 TYPED_TEST( RigidMappingTest , oneRigid_fourParticles_localCoords )
 {

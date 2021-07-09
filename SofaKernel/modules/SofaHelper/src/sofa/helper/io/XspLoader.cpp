@@ -22,10 +22,11 @@
 #include <sofa/helper/io/XspLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vector3;
+#include <sofa/type/Vec.h>
+#include <sofa/helper/rmath.h>
+#include <sofa/helper/logging/Messaging.h>
+using sofa::type::Vector3;
 
-#include <sofa/core/objectmodel/Base.h>
 #include <cstdio>
 #include <iostream>
 #include <fstream>

@@ -20,24 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_PIEWIDGET_H
-#define SOFA_PIEWIDGET_H
-
+#pragma once
 #include <QWidget>
 #include <QPainter>
 #include <QTableWidget>
 
 
 #include <vector>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 struct  dataTime
@@ -67,8 +59,8 @@ public:
 
     void setChart( std::vector< dataTime >& value, unsigned int s);
     void clear();
-    static defaulttype::Vec<3,int> getColor(int i);
-    static std::vector< defaulttype::Vec<3,int> > colorArray;
+    static type::Vec<3,int> getColor(int i);
+    static std::vector< type::Vec<3,int> > colorArray;
 protected:
     std::vector< dataTime > data;
 
@@ -93,7 +85,4 @@ protected:
 };
 
 
-}
-}
-}
-#endif
+} // namespace sofa::gui::qt

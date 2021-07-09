@@ -1,7 +1,6 @@
 <Node name="Group"> 
   <QuadSetTopologyContainer  name="Container" src="@" tags=" " />
   <QuadSetTopologyModifier   name="Modifier" />
-  <QuadSetTopologyAlgorithms name="TopoAlgo"  template="Vec3d" />
   <QuadSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />
 </Node>
 <!-- 

@@ -1,12 +1,13 @@
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+#include <sofa/testing/BaseTest.h>
+
+using sofa::testing::BaseTest;
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 
 using sofa::core::objectmodel::New;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 struct RegularGridTopology_test : public BaseTest,
                                   public ::testing::WithParamInterface<std::vector<int>>
@@ -116,8 +117,8 @@ bool RegularGridTopology_test::regularGridPosition()
     regGrid->init();
 
     // Check first circle with
-    sofa::defaulttype::Vector3 p0 = regGrid->getPoint(0);
-    sofa::defaulttype::Vector3 p1 = regGrid->getPoint(nx - 1);
+    sofa::type::Vector3 p0 = regGrid->getPoint(0);
+    sofa::type::Vector3 p1 = regGrid->getPoint(nx - 1);
     // Check first point
     EXPECT_LE(p0[0], 0.0001);
     EXPECT_EQ(p0[0], p0[1]);
@@ -130,13 +131,13 @@ bool RegularGridTopology_test::regularGridPosition()
     EXPECT_EQ(p0[2], 0);
 
     // check last point of first level
-    sofa::defaulttype::Vector3 p1Last = regGrid->getPoint(nx * ny - 1);
+    sofa::type::Vector3 p1Last = regGrid->getPoint(nx * ny - 1);
     EXPECT_LE(p1Last[0], 0.0001);
     EXPECT_EQ(p1[0], p1Last[0]);
     EXPECT_EQ(p1[1], -p1Last[1]);
 
     // Check first point of last level of the regular
-    sofa::defaulttype::Vector3 p0Last = regGrid->getPoint(nx * ny * (nz - 1));
+    sofa::type::Vector3 p0Last = regGrid->getPoint(nx * ny * (nz - 1));
     EXPECT_EQ(p0Last[0], p0[0]);
     EXPECT_EQ(p0Last[1], p0[1]);
 
@@ -147,7 +148,7 @@ bool RegularGridTopology_test::regularGridFindPoint()
 {
     using Dimension = RegularGridTopology::Vec3i;
     using BoundingBox = RegularGridTopology::BoundingBox;
-    using Coordinates = sofa::defaulttype::Vector3;
+    using Coordinates = sofa::type::Vector3;
     using Epsilon = float;
 
     // 3D grid with 3x3x3=27 cells, each of dimension 1x1x1,  starting at {1,1,1}
@@ -158,19 +159,19 @@ bool RegularGridTopology_test::regularGridFindPoint()
                 );
     grid->init();
 
-    EXPECT_EQ(grid->findPoint(Coordinates{ .4, .4, .4 }), -1);
+    EXPECT_EQ(grid->findPoint(Coordinates{ .4, .4, .4 }), sofa::InvalidID);
     // No margin set means anything position rounded to a valid
     // node will be returned
     EXPECT_EQ(grid->findPoint(Coordinates{ .51, .51, .51 }), 0);
-    EXPECT_EQ(grid->findPoint(Coordinates{ .51, .51, .51 }, Epsilon(0.01)), -1);
+    EXPECT_EQ(grid->findPoint(Coordinates{ .51, .51, .51 }, Epsilon(0.01)), sofa::InvalidID);
     // Margin set means anything within a radius of 0.01*cell_size
     // will be returned
     EXPECT_EQ(grid->findPoint(Coordinates{ 1., 1., 1. }), 0); // First node of the grid
     EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4., 4. }), 63); // Last node of the grid
     EXPECT_EQ(grid->findPoint(Coordinates{ 4.49, 4.49, 4.49 }), 63);
-    EXPECT_EQ(grid->findPoint(Coordinates{ 4.51, 4, 4 }), -1);
-    EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4.51, 4 }), -1);
-    EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4, 4.51 }), -1);
+    EXPECT_EQ(grid->findPoint(Coordinates{ 4.51, 4, 4 }), sofa::InvalidID);
+    EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4.51, 4 }),sofa::InvalidID);
+    EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4, 4.51 }),sofa::InvalidID);
     return true;
 }
 
@@ -259,6 +260,6 @@ TEST_P(RegularGridTopology_test, regularGridSize)
     }
 }
 
-INSTANTIATE_TEST_CASE_P(regularGridSize3D,
+INSTANTIATE_TEST_SUITE_P(regularGridSize3D,
                         RegularGridTopology_test,
                         ::testing::ValuesIn(dimvalues));

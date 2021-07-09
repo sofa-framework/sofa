@@ -24,7 +24,7 @@
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/core/collision/Contact.h>
 
@@ -91,27 +91,6 @@ protected:
 
     void create_node() override
     {
-
-//        simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor bob( sofa::core::MechanicalParams::defaultInstance() );
-//        this->mstate1->getContext()->getRootContext()->executeVisitor( &bob );
-//        this->mstate2->getContext()->getRootContext()->executeVisitor( &bob );
-//        this->mstate1->getContext()->executeVisitor( &bob );
-//        this->mstate2->getContext()->executeVisitor( &bob );
-
-
-//        typedef sofa::core::TMultiVecId<core::V_DERIV,core::V_READ> DestMultiVecId;
-//        typedef sofa::core::TVecId<core::V_DERIV,core::V_READ> MyVecId;
-
-//        DestMultiVecId v(core::VecDerivId::velocity());
-//        MyVecId vid = v.getId(this->mstate1.get());
-
-//        std::cerr<<SOFA_CLASS_METHOD<<"dof1 "<<this->mstate1->getName()<<"  ";this->mstate1->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
-
-//        MyVecId vid2 = v.getId(this->mstate2.get());
-//        std::cerr<<SOFA_CLASS_METHOD<<"dof2 "<<this->mstate2->getName()<<"  ";this->mstate2->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
-
-
-
         const unsigned size = this->mappedContacts.size();
 
         this->make_delta();
@@ -160,7 +139,7 @@ protected:
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
 
         // constraint value + keep an eye on violated contacts
-        helper::vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        type::vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         // projector
         projector = sofa::core::objectmodel::New<projector_type>();
@@ -181,7 +160,7 @@ protected:
 
 
     // viscous friction
-    void create_friction_node( SReal frictionCoefficient, size_t size, helper::vector<bool>* cvmask )
+    void create_friction_node( SReal frictionCoefficient, size_t size, type::vector<bool>* cvmask )
     {
         friction_node = node_type::create( this->getName() + "_contact_tangents" );
 
@@ -269,7 +248,7 @@ protected:
 
         // updating constraint value
         contact_node->removeObject( this->baseConstraintValue ) ;
-        helper::vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        type::vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         if( restitutionCoefficient ) projector->mask = cvmask; // for restitution, only activate violated constraints
         else projector->mask = NULL;

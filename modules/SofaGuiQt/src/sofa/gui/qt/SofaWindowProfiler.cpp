@@ -21,20 +21,15 @@
 ******************************************************************************/
 #include "SofaWindowProfiler.h"
 
+#include <stack>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <QGridLayout>
 #include <QDebug>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 using namespace sofa::helper;
 using namespace QtCharts;
@@ -198,7 +193,7 @@ SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, const std::st
 
 bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idString)
 {
-    helper::vector<Record> _records = sofa::helper::AdvancedTimer::getRecords(idString);
+    type::vector<Record> _records = sofa::helper::AdvancedTimer::getRecords(idString);
 
     //AnimationSubStepData* currentSubStep = nullptr;
     std::stack<AnimationSubStepData*> processStack;
@@ -415,6 +410,21 @@ void SofaWindowProfiler::createTreeView()
     columnNames << "Hierarchy Step Name" << "Total (%)" << "Self (%)" << "Time (ms)" << "Self (ms)";
     tree_steps->setHeaderLabels(columnNames);
 
+    tree_steps->headerItem()->setToolTip(1, QString("Percentage of duration of this step compared to the duration of the root step"));
+    tree_steps->headerItem()->setToolTip(2,
+                                         QString("- If the step has child steps: percentage of the duration "
+                                                 "of this step minus the sum of durations of its children, compared to "
+                                                 "the duration of the root step.\n"
+                                                 "- If the step has no child step: percentage of the average duration "
+                                                 "of this step in case of multiple calls of this step during this time step, "
+                                                 "compared to the duration of the root step."));
+    tree_steps->headerItem()->setToolTip(3, QString("Duration in milliseconds of this step"));
+    tree_steps->headerItem()->setToolTip(4,
+                                         QString("- If the step has child steps: duration in milliseconds of "
+                                                 "this step minus the sum of durations of its children.\n"
+                                                 "- If the step has no child step: average duration in milliseconds of "
+                                                 "this step in case of multiple calls of this step during this time step."));
+
     // set column properties
     tree_steps->header()->setStretchLastSection(false);
     tree_steps->header()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -587,8 +597,4 @@ void SofaWindowProfiler::onStepSelected(QTreeWidgetItem *item, int /*column*/)
 }
 
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

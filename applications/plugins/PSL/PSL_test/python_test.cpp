@@ -26,7 +26,7 @@
 
 #include <vector>
 
-#include <SofaTest/Python_test.h>
+#include <SofaPython/Python_test.h>
 using sofa::Python_test ;
 using sofa::Python_test_list ;
 
@@ -63,7 +63,7 @@ static struct Tests : public Python_test_list
 
 
 /// run test list
-INSTANTIATE_TEST_CASE_P(Batch,
+INSTANTIATE_TEST_SUITE_P(Batch,
                         Python_test,
                         ::testing::ValuesIn(python_tests.list));
 

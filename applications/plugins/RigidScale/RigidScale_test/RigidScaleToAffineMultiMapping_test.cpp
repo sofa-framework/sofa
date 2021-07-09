@@ -30,7 +30,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -53,9 +53,9 @@ using std::cerr;
 using std::endl;
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using sofa::helper::vector;
+using type::Vec;
+using type::Mat;
+using sofa::type::vector;
 typedef std::size_t Index;
 
 /**
@@ -139,11 +139,11 @@ struct RigidScaleToAffineMultiMappingTest  : public Multi2Mapping_test<_MultiMap
 };
 
 // Define the list of types to instantiate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<mapping::RigidScaleToAffineMultiMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types, defaulttype::Affine3Types> > DataTypes; // the types to instantiate.
 
 // Test suite for all the instantiations
-TYPED_TEST_CASE(RigidScaleToAffineMultiMappingTest, DataTypes);
+TYPED_TEST_SUITE(RigidScaleToAffineMultiMappingTest, DataTypes);
 // first test case
 TYPED_TEST( RigidScaleToAffineMultiMappingTest , two_parents_one_child )
 {

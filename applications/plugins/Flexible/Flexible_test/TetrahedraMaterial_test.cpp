@@ -40,7 +40,7 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 const double pressureArray[] = {0.6, 0.2};
 const size_t sizePressureArray = sizeof(pressureArray)/sizeof(pressureArray[0]);
@@ -288,15 +288,15 @@ const std::string TetraMaterialTest332Type::sceneName= "TetrahedraTractionTest.s
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     TetraMaterialTest331Type,
     TetraMaterialTest332Type
 
 > DataTypes; 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(TetrahedraMaterial_test, DataTypes);
+TYPED_TEST_SUITE(TetrahedraMaterial_test, DataTypes);
 
 // Test traction cylinder
 TYPED_TEST( TetrahedraMaterial_test , test_Hooke_Tetrahedra_InTraction )

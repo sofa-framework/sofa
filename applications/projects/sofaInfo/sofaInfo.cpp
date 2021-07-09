@@ -19,12 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 #include <sofa/core/ObjectFactory.h>
 
 // ---------------------------------------------------------------------
@@ -36,7 +33,6 @@ int main(int /*argc*/, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
 
     if (argv[1] == NULL)
     {
@@ -53,7 +49,7 @@ int main(int /*argc*/, char** argv)
         groot = sofa::simulation::getSimulation()->createNewGraph("");
     }
 
-    sofa::helper::vector<sofa::core::objectmodel::Base*> objects;
+    sofa::type::vector<sofa::core::objectmodel::Base*> objects;
     std::set<std::string> classNames;
     std::set<std::string> targets;
 

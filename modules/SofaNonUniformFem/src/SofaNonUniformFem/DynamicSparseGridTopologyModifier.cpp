@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaNonUniformFem/DynamicSparseGridTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/TopologyChange.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
 #include <algorithm>
 #include <functional>
@@ -49,20 +48,20 @@ void DynamicSparseGridTopologyModifier::init()
 
 //TODO// find a solution for this case !!!! Modifier can not access to the DOF and can not compute the indices of the added hexahedra.
 // We have to find a way to automaticaly compute the indices of the added hexahedra to update the map 'm_m_DynContainer->idInRegularGrid2Hexa'
-void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra )
+void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::type::vector< Hexahedron > &hexahedra )
 {
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
-    msg_error() << "addHexahedraProcess( const sofa::helper::vector< Hexahedron > &hexahedra ). You must not use this method. To add some voxels to the topology, you must use addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices ) because, for the moment, indices maps can not be updated !";
+    msg_error() << "addHexahedraProcess( const sofa::type::vector< Hexahedron > &hexahedra ). You must not use this method. To add some voxels to the topology, you must use addHexahedraProcess ( const sofa::type::vector< Hexahedron > &hexahedra, const sofa::type::vector< unsigned int> &indices ) because, for the moment, indices maps can not be updated !";
 }
 
 
-void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices )
+void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::type::vector< Hexahedron > &hexahedra, const sofa::type::vector< unsigned int> &indices )
 {
     assert( hexahedra.size() == indices.size());
 
     unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
-    helper::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
+    type::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
 
     std::map< unsigned int, core::topology::BaseMeshTopology::HexaID> &idrg2topo=*m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
     for ( unsigned int i = 0; i < hexahedra.size(); i++ )  // For each element
@@ -77,7 +76,7 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper
 }
 
 
-void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems)
+void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::type::vector<Index> &indices, const bool removeIsolatedItems)
 {
     if( !everRenumbered) renumberAttributes( indices);
     everRenumbered = false;
@@ -86,14 +85,14 @@ void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::help
 }
 
 
-void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::vector<unsigned int> &hexahedra )
+void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::type::vector<Index> &hexahedra )
 {
-    helper::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
+    type::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
 
     // Update the data
     unsigned int nbElt = iirg.size();
     std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regularG2Topo = *m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
-    for ( sofa::helper::vector<unsigned int>::const_iterator it = hexahedra.begin(); it != hexahedra.end(); ++it )
+    for ( auto it = hexahedra.begin(); it != hexahedra.end(); ++it )
     {
         nbElt--;
 

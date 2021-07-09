@@ -12,7 +12,9 @@ namespace component
 {
 namespace mapping
 {
-    using namespace defaulttype;
+
+using namespace type;
+using namespace defaulttype;
 
 //*********************************************************************
 // ********************* Constructor / Destructor *********************
@@ -20,7 +22,7 @@ namespace mapping
 template <class I1, class I2, class O>
 RigidScaleToAffineMultiMapping<I1,I2,O>::RigidScaleToAffineMultiMapping():
 Inherit()
-, index(initData(&index, helper::vector<unsigned>(), "index", "list of couples (index in rigid DOF + index in scale with the type Vec3d)"))
+, index(initData(&index, type::vector<unsigned>(), "index", "list of couples (index in rigid DOF + index in scale with the type Vec3d)"))
 , automaticInit(initData(&automaticInit, false, "autoInit", "Init the scale and affine mechanical state, and the index data."))
 , useGeometricStiffness(initData(&useGeometricStiffness, false, "useGeometricStiffness", "To specify if the geometric stiffness is used or not."))
 , _Js(2)
@@ -75,18 +77,18 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::reinit()
 //*******************************************************************
 template <class I1, class I2, class O>
 void RigidScaleToAffineMultiMapping<I1,I2,O>::apply(const core::MechanicalParams* /*mparams*/
-											   , const helper::vector<OutDataVecCoord*>& dataVecOutPos
-											   , const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos
-											   , const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos)
+											   , const type::vector<OutDataVecCoord*>& dataVecOutPos
+											   , const type::vector<const In1DataVecCoord*>& dataVecIn1Pos
+											   , const type::vector<const In2DataVecCoord*>& dataVecIn2Pos)
 {
 	// Index size
 	unsigned int ind0, ind1, ind2;
-    const helper::vector<unsigned>& index_const = this->index.getValue();
+    const type::vector<unsigned>& index_const = this->index.getValue();
 	unsigned int indexSize = (unsigned int)index_const.size() / 3;
 	
 	// Access to input position
-	helper::ReadAccessorVector<helper::vector<const In1DataVecCoord*> > in1(dataVecIn1Pos);
-	helper::ReadAccessorVector<helper::vector<const In2DataVecCoord*> > in2(dataVecIn2Pos);
+	helper::ReadAccessorVector<type::vector<const In1DataVecCoord*> > in1(dataVecIn1Pos);
+	helper::ReadAccessorVector<type::vector<const In2DataVecCoord*> > in2(dataVecIn2Pos);
 	helper::ReadAccessor<In1DataVecCoord> pIn1(*(in1[0]));
 	helper::ReadAccessor<In2DataVecCoord> pIn2(*(in2[0]));
 
@@ -113,9 +115,9 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::apply(const core::MechanicalParams
 //*******************************************************************
 template <class I1, class I2, class O>
 void RigidScaleToAffineMultiMapping<I1,I2,O>::applyJ(const core::MechanicalParams* /*mparams*/
-												, const helper::vector<OutDataVecDeriv*>& dataVecOutVel
-												, const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel
-												, const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
+												, const type::vector<OutDataVecDeriv*>& dataVecOutVel
+												, const type::vector<const In1DataVecDeriv*>& dataVecIn1Vel
+												, const type::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
 {	
 	_J1.mult(*dataVecOutVel[0], *dataVecIn1Vel[0]);
 	_J2.addMult(*dataVecOutVel[0], *dataVecIn2Vel[0]);
@@ -128,9 +130,9 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::applyJ(const core::MechanicalParam
 //*******************************************************************
 template <class I1, class I2, class O>
 void RigidScaleToAffineMultiMapping<I1,I2,O>::applyJT(const core::MechanicalParams* /*mparams*/
-												, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force
-												, const helper::vector< In2DataVecDeriv*>& dataVecOut2Force
-												, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+												, const type::vector< In1DataVecDeriv*>& dataVecOut1Force
+												, const type::vector< In2DataVecDeriv*>& dataVecOut2Force
+												, const type::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
 	_J1.addMultTranspose(*dataVecOut1Force[0], *dataVecInForce[0]);
 	_J2.addMultTranspose(*dataVecOut2Force[0], *dataVecInForce[0]);
@@ -138,22 +140,22 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::applyJT(const core::MechanicalPara
 
 template <class I1, class I2, class O>
 void RigidScaleToAffineMultiMapping<I1, I2, O>::applyJT(const core::ConstraintParams* /* cparams */
-												   , const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */
-												   , const helper::vector< In2DataMatrixDeriv*>&  /* dataMatOut2Const */
-												   , const helper::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */)
+												   , const type::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */
+												   , const type::vector< In2DataMatrixDeriv*>&  /* dataMatOut2Const */
+												   , const type::vector<const OutDataMatrixDeriv*>& /* dataMatInConst */)
 {
 	return;
 }
 
 template <class I1, class I2, class O>
-void RigidScaleToAffineMultiMapping<I1,I2,O>::applyJT(const helper::vector< InMatrixDeriv1*>& /*outConstraint1*/
-												 , const helper::vector< InMatrixDeriv2*>& /*outConstraint2*/ 
-												 , const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/)
+void RigidScaleToAffineMultiMapping<I1,I2,O>::applyJT(const type::vector< InMatrixDeriv1*>& /*outConstraint1*/
+												 , const type::vector< InMatrixDeriv2*>& /*outConstraint2*/ 
+												 , const type::vector<const OutMatrixDeriv*>& /*inConstraint*/)
 {
-    std::cout<<"applyJT(const helper::vector< In1MatrixDeriv*>& /*outConstraint1*/ ,\
-            const helper::vector< In2MatrixDeriv*>& /*outConstraint2*/ ,\
-            const helper::vector<const OutMatrixDeriv*>& /*inConstraint*/)\
-            NOT IMPLEMENTED BY " << core::objectmodel::BaseClass::decodeClassName(typeid(*this)) << std::endl;
+    std::cout<<"applyJT(const type::vector< In1MatrixDeriv*>& /*outConstraint1*/ ,\
+            const type::vector< In2MatrixDeriv*>& /*outConstraint2*/ ,\
+            const type::vector<const OutMatrixDeriv*>& /*inConstraint*/)\
+            NOT IMPLEMENTED BY " << helper::NameDecoder::decodeClassName(typeid(*this)) << std::endl;
 }
 
 template <class I1, class I2, class O>
@@ -163,11 +165,11 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::applyDJT(const core::MechanicalPar
 	
 template <class I1, class I2, class O>
 void RigidScaleToAffineMultiMapping<I1,I2,O>::computeAccFromMapping(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */
-                                                                , const helper::vector< OutDataVecDeriv*>& /*dataVecOutAcc*/
-                                                                , const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/
-                                                                , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/
-                                                                , const helper::vector<const In1DataVecDeriv*>& /*dataVecIn1Acc*/
-                                                                , const helper::vector<const In2DataVecDeriv*>& /*dataVecIn2Acc*/)
+                                                                , const type::vector< OutDataVecDeriv*>& /*dataVecOutAcc*/
+                                                                , const type::vector<const In1DataVecDeriv*>& /*dataVecIn1Vel*/
+                                                                , const type::vector<const In2DataVecDeriv*>& /*dataVecIn2Vel*/
+                                                                , const type::vector<const In1DataVecDeriv*>& /*dataVecIn1Acc*/
+                                                                , const type::vector<const In2DataVecDeriv*>& /*dataVecIn2Acc*/)
 { }
 
 template <class I1, class I2, class O>
@@ -177,7 +179,7 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::computeAccFromMapping(const core::
 }
 
 template <class I1, class I2, class O>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidScaleToAffineMultiMapping<I1,I2,O>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* RigidScaleToAffineMultiMapping<I1,I2,O>::getJs()
 {
     return &_Js;
 
@@ -214,7 +216,7 @@ void RigidScaleToAffineMultiMapping<I1, I2, O>::autoInit()
 		// Variables
 		InVecCoord2 _x2;
 		OutVecCoord _xout;
-        helper::vector<unsigned> _index;
+        type::vector<unsigned> _index;
 
 		// Get the position of the inputs
 		const InVecCoord1& x1_const = this->stateIn1->read(sofa::core::ConstVecCoordId::position())->getValue();
@@ -258,7 +260,7 @@ void RigidScaleToAffineMultiMapping<I1, I2, O>::setup()
 	if ((this->stateIn1 && this->stateIn2) && this->stateOut)
 	{
 		// Get the inputs
-        const helper::vector<unsigned>& index_const = this->index.getValue();
+        const type::vector<unsigned>& index_const = this->index.getValue();
 		const InVecCoord1& x1_const = this->stateIn1->read(sofa::core::ConstVecCoordId::position())->getValue();
 		const InVecCoord2& x2_const = this->stateIn2->read(sofa::core::ConstVecCoordId::position())->getValue();
 		const OutVecCoord& xout_const = this->stateOut->read(sofa::core::ConstVecCoordId::position())->getValue();
@@ -363,7 +365,7 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::updateJ1(SparseJMatrixEigen1& _J, 
 
 	// index size
 	unsigned int ind0, ind1, ind2;
-    const helper::vector<unsigned>& index_const = this->index.getValue();
+    const type::vector<unsigned>& index_const = this->index.getValue();
 	unsigned int indexSize = (unsigned int)index_const.size() / 3;
 	for (unsigned int i = 0; i < indexSize; ++i)
 	{
@@ -395,7 +397,7 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::updateJ2(SparseJMatrixEigen2& _J, 
 
 	// index size
 	unsigned int ind0, ind1, ind2;
-    const helper::vector<unsigned>& index_const = this->index.getValue();
+    const type::vector<unsigned>& index_const = this->index.getValue();
 	unsigned int indexSize = (unsigned int)index_const.size() / 3;
 	for (unsigned int i = 0; i < indexSize; ++i)
 	{

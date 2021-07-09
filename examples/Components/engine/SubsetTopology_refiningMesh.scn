@@ -1,8 +1,17 @@
 <Node name="root" gravity="-9.81 0 0" dt="0.05">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaDeformable'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/>
+    <RequiredPlugin pluginName='SofaTopologyMapping'/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
-    <BruteForceDetection name="Detection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="3" contactDistance="2" />
     <DefaultContactManager name="Response" response="default" />
     <Node name="SquareGravity">
@@ -14,7 +23,6 @@
             <MechanicalObject template="Vec3d" name="mecaObj1" position="@../Subset.pointsInROI" />
             <TetrahedronSetTopologyContainer name="Container" position="@mecaObj1.position" tetrahedra="@../Subset.tetrahedraInROI" />
             <TetrahedronSetTopologyModifier name="Modifier" />
-            <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="0" />
             <UniformMass totalMass="15" />
             <TetrahedronFEMForceField name="FEM" youngModulus="300" poissonRatio="0.49" />
@@ -23,7 +31,6 @@
             <Node>
                 <TriangleSetTopologyContainer name="ContainerTri" />
                 <TriangleSetTopologyModifier name="Modifier" />
-                <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@ContainerTri" />
                 <OglModel name="Visual" color="red" dx="60" />
@@ -38,14 +45,12 @@
             <Node name="tetra">
                 <TetrahedronSetTopologyContainer name="Container" position="@../../Subset.pointsOutROI" tetrahedra="@../../Subset.tetrahedraOutROI" />
                 <TetrahedronSetTopologyModifier name="Modifier" />
-                <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="0" />
                 <MechanicalObject name="mecaObj3" />
                 <BarycentricMapping input="@.." output="@." />
                 <Node>
                     <TriangleSetTopologyContainer name="ContainerTri" />
                     <TriangleSetTopologyModifier name="Modifier" />
-                    <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                     <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
                     <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@ContainerTri" />
                     <TriangleCollisionModel template="Vec3d" name="default7" />

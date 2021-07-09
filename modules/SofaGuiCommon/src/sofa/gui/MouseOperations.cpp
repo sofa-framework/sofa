@@ -43,8 +43,9 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePe
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3Types> >  RemovePrimitivePerformerVec3Class("RemovePrimitive",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3Types> >  SuturePointPerformerVec3Class("SuturePoints",true);
 #endif
+} // namespace sofa
 
-namespace gui
+namespace sofa::gui
 {
 
 //*******************************************************************************************
@@ -320,5 +321,4 @@ void AddSutureOperation::configurePerformer(sofa::component::collision::Interact
     }
 }
 
-}
-}
+} // namespace sofa::gui

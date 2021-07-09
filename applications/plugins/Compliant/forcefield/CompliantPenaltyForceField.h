@@ -3,7 +3,7 @@
 
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include "../utils/edit.h"
@@ -92,8 +92,8 @@ public:
         const VecDeriv& _dx = dx.getValue();
         VecDeriv& _df = *df.beginEdit();
 
-        const SReal k = d_stiffness.getValue() * (SReal)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-        const SReal b = d_damping.getValue() * (SReal)mparams->bFactor();
+        const SReal k = d_stiffness.getValue() * (SReal)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
+        const SReal b = d_damping.getValue() * (SReal)sofa::core::mechanicalparams::bFactor(mparams);
 
 
         for( unsigned int i=0 ; i<_dx.size() ; ++i )
@@ -156,7 +156,7 @@ protected:
         this->isCompliance.setValue(false);
     }
 
-    helper::vector<bool> m_violated;
+    type::vector<bool> m_violated;
 
 };
 

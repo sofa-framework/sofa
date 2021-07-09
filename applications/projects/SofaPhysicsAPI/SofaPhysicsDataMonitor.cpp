@@ -76,6 +76,7 @@ ID SofaPhysicsDataMonitor::Impl::getID() ///< unique ID of this object
 
 const char* SofaPhysicsDataMonitor::Impl::getValue() ///< Get the value of the associated variable
 {
-    if (!sObj) return nullptr;
-    return sObj->getValue();
+    if (!sObj) return "";
+    m_internalValue = sObj->getValue();
+    return m_internalValue.c_str();
 }

@@ -1,30 +1,33 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaGeneralVisual)
+project(SofaGeneralVisual LANGUAGES CXX)
+
+sofa_find_package(SofaBase REQUIRED)
+
+set(SOFAGENERALVISUAL_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    config.h
-    initGeneralVisual.h
+    ${SOFAGENERALVISUAL_SRC}/config.h.in
+    ${SOFAGENERALVISUAL_SRC}/initSofaGeneralVisual.h
+    ${SOFAGENERALVISUAL_SRC}/RecordedCamera.h
+    ${SOFAGENERALVISUAL_SRC}/VisualTransform.h
+    ${SOFAGENERALVISUAL_SRC}/Visual3DText.h
     )
 
 set(SOURCE_FILES
-    initGeneralVisual.cpp
-    )
-
-list(APPEND HEADER_FILES
-    RecordedCamera.h
-    VisualTransform.h
-    Visual3DText.h
-    )
-list(APPEND SOURCE_FILES
-    RecordedCamera.cpp
-    VisualTransform.cpp
-    Visual3DText.cpp
+    ${SOFAGENERALVISUAL_SRC}/initSofaGeneralVisual.cpp
+    ${SOFAGENERALVISUAL_SRC}/RecordedCamera.cpp
+    ${SOFAGENERALVISUAL_SRC}/VisualTransform.cpp
+    ${SOFAGENERALVISUAL_SRC}/Visual3DText.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseVisual)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaGeneral
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    )
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)

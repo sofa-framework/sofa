@@ -1,11 +1,15 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include "../utils/sparse.h"
 
 #include <Compliant/config.h>
-
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/OwnershipSPtr.h>
 

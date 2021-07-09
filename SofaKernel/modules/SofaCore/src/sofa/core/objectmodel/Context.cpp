@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/Context.h>
-// #include <sofa/simulation/Visitor.h>
 
 namespace sofa
 {

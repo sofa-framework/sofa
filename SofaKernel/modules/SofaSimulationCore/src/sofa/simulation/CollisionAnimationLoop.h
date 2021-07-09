@@ -25,9 +25,8 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/ExecParams.h>
+
 #include <sofa/simulation/config.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Visitor.h>
 
@@ -82,8 +81,15 @@ protected:
     /// They are implemented by executing Visitors in the subtree of the scene-graph below this solver.
     /// @{
 
+    /// Function meant to be called before the actual collision computation
+    virtual void preCollisionComputation(const core::ExecParams* params = core::execparams::defaultInstance());
+    /// Function performing the actual collision computation
+    virtual void internalCollisionComputation(const core::ExecParams* params = core::execparams::defaultInstance());
+    /// Function meant to be called after the actual collision computation
+    virtual void postCollisionComputation(const core::ExecParams* params = core::execparams::defaultInstance());
+
     /// Activate collision pipeline
-    virtual void computeCollision(const core::ExecParams* params = core::ExecParams::defaultInstance());
+    virtual void computeCollision(const core::ExecParams* params = core::execparams::defaultInstance());
 
     /// Activate OdeSolvers
     virtual void integrate(const core::ExecParams* params, SReal dt);

@@ -22,17 +22,13 @@
 
 // launch sofaTypedefs.exe to generate sofa.h
 #include <sofa/sofa.h>
-#include <sofa/helper/ArgumentParser.h>
-#include <SofaSimulationTree/config.h>
-#include <SofaSimulationTree/GNode.h>
-#include <SofaSimulationTree/TreeSimulation.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 using namespace sofa::simulation::tree;
 using namespace sofa::component::odesolver;
@@ -77,7 +73,6 @@ int main(int argc, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 

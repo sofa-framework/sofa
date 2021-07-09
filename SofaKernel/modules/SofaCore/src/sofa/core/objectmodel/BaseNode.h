@@ -30,21 +30,6 @@ namespace sofa
 namespace core
 {
 
-// forward declaration of classes accessible from the node
-namespace behavior
-{
-class BaseAnimationLoop;
-class OdeSolver;
-}
-namespace collision
-{
-class Pipeline;
-}
-namespace visual
-{
-class VisualLoop;
-}
-
 namespace objectmodel
 {
 
@@ -75,11 +60,11 @@ public:
     /// @name Scene hierarchy
     /// @{
 
-    typedef sofa::helper::vector< BaseNode* > Children;
+    typedef sofa::type::vector< BaseNode* > Children;
     /// Get a list of child node
     virtual Children getChildren() const = 0;
 
-    typedef sofa::helper::vector< BaseNode* > Parents;
+    typedef sofa::type::vector< BaseNode* > Parents;
     /// Get a list of parent node
     /// @warning a temporary is created, this can be really inefficient
     virtual Parents getParents() const = 0;
@@ -136,7 +121,7 @@ public:
     /// Return the path from this node to the root node
     virtual std::string getRootPath() const;
 
-    void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override = 0;
+    Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override = 0;
 
     /// @}
 

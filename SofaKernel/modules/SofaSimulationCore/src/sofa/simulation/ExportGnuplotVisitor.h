@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_TREE_EXPORTGNUPLOTACTION_H
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/ExecParams.h>
+
 
 namespace sofa
 {

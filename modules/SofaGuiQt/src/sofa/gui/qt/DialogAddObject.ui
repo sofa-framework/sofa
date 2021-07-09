@@ -229,4 +229,7 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>fileOpen()</slot>
+ </slots>
 </ui>

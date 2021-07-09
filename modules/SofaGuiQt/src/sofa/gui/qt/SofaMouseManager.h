@@ -21,20 +21,14 @@
 ******************************************************************************/
 
 
-#ifndef SOFA_GUI_QT_MOUSEMANAGER_H
-#define SOFA_GUI_QT_MOUSEMANAGER_H
-
+#pragma once
 #include <sofa/gui/PickHandler.h>
 #include <QDialog>
 #include <memory>
 
 class Ui_MouseManager;
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 
@@ -68,12 +62,8 @@ protected:
     PickHandler *pickHandler;
     std::map< int, std::string > mapIndexOperation;
 
-    helper::fixed_array< std::string,NONE > usedOperations;
+    type::fixed_array< std::string,NONE > usedOperations;
 };
 
 
-}
-}
-}
-
-#endif
+} // namespace sofa::gui::qt

@@ -24,7 +24,7 @@
 
 /** Helpers to apply Eigen matrix methods to the Mat sofa type */
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <Eigen/Dense>
 #include <iostream>
 
@@ -35,40 +35,40 @@ namespace sofa
 namespace helper
 {
 
-template <int NumRows, int NumCols, class Real>
-Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const defaulttype::Mat< NumRows, NumCols, Real>& mat )
+template <Size NumRows, Size NumCols, class Real>
+Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const type::Mat< NumRows, NumCols, Real>& mat )
 {
     Eigen::Matrix<Real, NumRows, NumCols> emat;
-    for(int i=0; i<NumRows; i++)
-        for(int j=0; j<NumCols; j++)
+    for(Size i=0; i<NumRows; i++)
+        for(Size j=0; j<NumCols; j++)
             emat(i,j) = mat[i][j];
     return emat;
 }
 
-template <int NumRows, int NumCols, class Real>
-defaulttype::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
+template <Size NumRows, Size NumCols, class Real>
+type::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
 {
-    defaulttype::Mat<NumRows, NumCols, Real> mat;
-    for(int i=0; i<NumRows; i++)
-        for(int j=0; j<NumCols; j++)
+    type::Mat<NumRows, NumCols, Real> mat;
+    for(Size i=0; i<NumRows; i++)
+        for(Size j=0; j<NumCols; j++)
             mat[i][j] = emat(i,j);
     return mat;
 }
 
-template <int NumRows, class Real>
-defaulttype::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
+template <Size NumRows, class Real>
+type::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
 {
-    defaulttype::Vec<NumRows, Real> vec;
-    for(int i=0; i<NumRows; i++)
+    type::Vec<NumRows, Real> vec;
+    for(Size i=0; i<NumRows; i++)
         vec[i] = evec(i);
     return vec;
 }
 
-template <int NumRows, class Real>
-Eigen::Matrix<Real, NumRows, 1>  eigenVec( const defaulttype::Vec<NumRows, Real>& vec )
+template <Size NumRows, class Real>
+Eigen::Matrix<Real, NumRows, 1>  eigenVec( const type::Vec<NumRows, Real>& vec )
 {
     Eigen::Matrix<Real, NumRows, 1> evec;
-    for(int i=0; i<NumRows; i++)
+    for(Size i=0; i<NumRows; i++)
         evec(i)  = vec[i];
     return evec;
 }

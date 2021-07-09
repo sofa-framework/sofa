@@ -25,14 +25,17 @@
 using sofa::helper::system::FileRepository;
 using sofa::helper::Utils;
 
-namespace sofa
-{
-namespace gui
+namespace sofa::gui
 {
 
-FileRepository GuiDataRepository("GUI_DATA_PATH", 0, {
-                                     { Utils::getSofaPathTo("etc/SofaGuiQt.ini").c_str(), {"RESOURCES_DIR"} }
-                                 });
+FileRepository GuiDataRepository(
+        "GUI_DATA_PATH",
+        {
+            Utils::getSofaPathTo("share/sofa/gui/qt")
+        },
+        {
+            { Utils::getSofaPathTo("etc/SofaGuiQt.ini").c_str(), {"RESOURCES_DIR"} }
+        }
+);
 
-}
-}
+} // namespace sofa::gui

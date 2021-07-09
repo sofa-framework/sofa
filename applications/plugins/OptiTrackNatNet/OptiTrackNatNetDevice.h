@@ -89,8 +89,8 @@ public:
     sofa::core::objectmodel::SingleLink<OptiTrackNatNetDevice,sofa::core::behavior::MechanicalState<DataTypes>,sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK> mstate;
     sofa::core::objectmodel::DataFileName inMarkersMeshFile;
     sofa::core::objectmodel::DataFileName simMarkersMeshFile;
-    sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > inLocalMarkers;
-    sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > simLocalMarkers;
+    sofa::core::objectmodel::Data<sofa::type::vector<CPos> > inLocalMarkers;
+    sofa::core::objectmodel::Data<sofa::type::vector<CPos> > simLocalMarkers;
     sofa::core::objectmodel::Data<bool> tracked; ///< Output: true when this device is visible and tracked by the cameras
     sofa::core::objectmodel::Data<Coord> trackedFrame; ///< Output: rigid frame, as given by OptiTrack
     sofa::core::objectmodel::Data<Coord> frame; ///< Output: rigid frame
@@ -100,12 +100,12 @@ public:
     sofa::core::objectmodel::Data<Coord> inGlobalFrame; ///< Input: world position and orientation of the reference point in the real (camera) space
     sofa::core::objectmodel::Data<Coord> simLocalFrame; ///< Input: position and orientation of the center of the simulated object in the simulation
     sofa::core::objectmodel::Data<Coord> inLocalFrame; ///< Input: position and orientation of the center of the simulated object in the real (camera) space
-    sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > markers; ///< Output: markers as tracked by the cameras
-    sofa::core::objectmodel::Data<sofa::helper::vector<int> > markersID; ///< Output: markers IDs
-    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > markersSize; ///< Output: markers sizes
+    sofa::core::objectmodel::Data<sofa::type::vector<CPos> > markers; ///< Output: markers as tracked by the cameras
+    sofa::core::objectmodel::Data<sofa::type::vector<int> > markersID; ///< Output: markers IDs
+    sofa::core::objectmodel::Data<sofa::type::vector<Real> > markersSize; ///< Output: markers sizes
 
-    sofa::core::objectmodel::Data<sofa::helper::fixed_array<int,2> > distanceMarkersID; ///< Input: ID of markers ID used to measure distance (for articulated instruments)
-    sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > distanceMarkersPos; ///< Output: Positions of markers used to measure distance (for articulated instruments)
+    sofa::core::objectmodel::Data<sofa::type::fixed_array<int,2> > distanceMarkersID; ///< Input: ID of markers ID used to measure distance (for articulated instruments)
+    sofa::core::objectmodel::Data<sofa::type::vector<CPos> > distanceMarkersPos; ///< Output: Positions of markers used to measure distance (for articulated instruments)
     sofa::core::objectmodel::Data<Real> openDistance; ///< Input: Distance considered as open
     sofa::core::objectmodel::Data<Real> closedDistance; ///< Input: Distance considered as closed
     sofa::core::objectmodel::Data<Real> distance; ///< Output: Measured distance
@@ -119,10 +119,10 @@ public:
     sofa::core::objectmodel::Data<Real> jointClosedAngle; ///< Input: rotation angle when closed (for articulated instruments)
 
 
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec3f> drawAxisSize; ///< Size of displayed axis
+    sofa::core::objectmodel::Data<sofa::type::Vec3f> drawAxisSize; ///< Size of displayed axis
     sofa::core::objectmodel::Data<float> drawMarkersSize; ///< Size of displayed markers
     sofa::core::objectmodel::Data<float> drawMarkersIDSize; ///< Size of displayed markers ID
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawMarkersColor; ///< Color of displayed markers
+    sofa::core::objectmodel::Data<sofa::type::RGBAColor> drawMarkersColor; ///< Color of displayed markers
 
 protected:
     int writeInMarkersMesh;

@@ -51,7 +51,7 @@ public:
     //@}
 
     Data< unsigned int > f_volumeDim; ///< dimension of quadrature weight vectors
-    Data< helper::vector<Real> > f_inputVolume; ///< weighted volumes (=quadrature weights)
+    Data< type::vector<Real> > f_inputVolume; ///< weighted volumes (=quadrature weights)
 
     void init() override
     {
@@ -78,7 +78,7 @@ protected:
 
     void doUpdate() override
     {
-        helper::ReadAccessor< Data< helper::vector<Real> > > invol(f_inputVolume);
+        helper::ReadAccessor< Data< type::vector<Real> > > invol(f_inputVolume);
         if(!invol.size()) serr<<"no volume provided -> use unit default volume"<<sendl;
         waVolume vol(this->f_volume);
         unsigned int dim = this->f_volumeDim.getValue();

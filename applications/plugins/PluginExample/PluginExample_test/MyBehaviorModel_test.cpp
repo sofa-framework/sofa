@@ -24,10 +24,10 @@ using std::vector;
 
 #include <PluginExample/MyBehaviorModel.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
-using testing::Types;
+using ::testing::Types;
 
 namespace {
 
@@ -52,7 +52,7 @@ public:
         m_behaviorModel->d_regularUnsignedData.setValue(param);
         auto regularUnsignedDataFromBehaviorModel = sofa::helper::getReadAccessor(m_behaviorModel->d_regularUnsignedData);
 
-        EXPECT_EQ(regularUnsignedDataFromBehaviorModel, param);
+        EXPECT_EQ(regularUnsignedDataFromBehaviorModel.ref(), param);
     }
 
 private:
@@ -60,11 +60,7 @@ private:
 
 };
 
-std::vector<unsigned> params = {
-    { 1 },
-    { 2 },
-    { 3 }
-};
+std::vector<unsigned> params = { 1, 2, 3};
 
 /// run the tests
 TEST_P(MyBehaviorModel_test, dummyTest) {

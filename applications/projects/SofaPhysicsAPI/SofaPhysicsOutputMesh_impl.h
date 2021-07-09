@@ -70,13 +70,13 @@ public:
     typedef SofaOutputMesh::Coord Coord;
     typedef SofaOutputMesh::Deriv Deriv;
     typedef SofaOutputMesh::TexCoord TexCoord;
-    typedef SofaOutputMesh::Triangle Triangle;
-    typedef SofaOutputMesh::Quad Quad;
+    typedef SofaOutputMesh::VisualTriangle Triangle;
+    typedef SofaOutputMesh::VisualQuad Quad;
     typedef sofa::core::visual::ShaderElement SofaVAttribute;
 
 protected:
     SofaOutputMesh::SPtr sObj;
-    sofa::helper::vector<SofaVAttribute::SPtr> sVA;
+    sofa::type::vector<SofaVAttribute::SPtr> sVA;
 
 public:
     SofaOutputMesh* getObject() { return sObj.get(); }

@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QDATADESCRIPTIONWIDGET_H
-#define SOFA_GUI_QT_QDATADESCRIPTIONWIDGET_H
-
+#pragma once
 #include <sofa/core/objectmodel/Base.h>
 
 #include <QWidget>
@@ -31,11 +29,7 @@
 
 
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 struct ModifyObjectFlags;
@@ -50,9 +44,4 @@ public:
 };
 
 
-} // qt
-} // gui
-} //sofa
-
-#endif // SOFA_GUI_QT_QDATADESCRIPTIONWIDGET_H
-
+} //namespace sofa::gui::qt

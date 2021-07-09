@@ -47,7 +47,7 @@ public :
     //have to be changed according of the type of device
     typedef void* device_pointer;
 
-    typedef unsigned int gl_buffer;
+    typedef unsigned int buffer_id_type;
 
     enum { MAX_DEVICES = 0 };
     enum { BSIZE = 32 };
@@ -68,13 +68,13 @@ public :
 
     static int getBufferDevice();
 
-    static bool bufferAlloc(gl_buffer* /*bId*/, int /*n*/) { return false; }
-    static void bufferFree(const gl_buffer /*bId*/) {}
+    static bool bufferAlloc(buffer_id_type* /*bId*/, int /*n*/, bool /* createBuffer = true */) { return false; }
+    static void bufferFree(const buffer_id_type /*bId*/) {}
 
-    static bool bufferRegister(const gl_buffer /*bId*/) { return false; }
-    static void bufferUnregister(const gl_buffer /*bId*/) {}
-    static bool bufferMapToDevice(device_pointer* /*dDestPointer*/, const gl_buffer /*bSrcId*/) { return false; }
-    static void bufferUnmapToDevice(device_pointer* /*dDestPointer*/, const gl_buffer /*bSrcId*/) {}
+    static bool bufferRegister(const buffer_id_type /*bId*/) { return false; }
+    static void bufferUnregister(const buffer_id_type /*bId*/) {}
+    static bool bufferMapToDevice(device_pointer* /*dDestPointer*/, const buffer_id_type /*bSrcId*/) { return false; }
+    static void bufferUnmapToDevice(device_pointer* /*dDestPointer*/, const buffer_id_type /*bSrcId*/) {}
 
     static device_pointer deviceOffset(device_pointer dPointer,size_t offset) {return (T*)dPointer+offset;}
 

@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/helper/testing/BaseTest.h>
-#include <SofaBaseTopology/SofaBaseTopology_test/fake_TopologyScene.h>
+#include <sofa/testing/BaseTest.h>
+#include "fake_TopologyScene.h"
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
 
 
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 
 class EdgeSetTopology_test : public BaseTest
@@ -61,7 +61,7 @@ bool EdgeSetTopology_test::testEmptyContainer()
 
 bool EdgeSetTopology_test::testEdgeBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyObjectType::EDGE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -81,12 +81,12 @@ bool EdgeSetTopology_test::testEdgeBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     //// The first 2 edges in this file should be :
-    sofa::helper::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth0(12, 17);
-    sofa::helper::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth1(4, 12);
+    sofa::type::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth0(12, 17);
+    sofa::type::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth1(4, 12);
 
 
     //// check edge buffer
-    const sofa::helper::vector<EdgeSetTopologyContainer::Edge>& edges = topoCon->getEdgeArray();
+    const sofa::type::vector<EdgeSetTopologyContainer::Edge>& edges = topoCon->getEdgeArray();
     if (edges.empty())
         return false;
     
@@ -114,7 +114,7 @@ bool EdgeSetTopology_test::testEdgeBuffers()
 
     const EdgeSetTopologyContainer::Edge& edge2 = topoCon->getEdge(1000);
     for (int i = 0; i<2; ++i)
-        EXPECT_EQ(edge2[i], -1);
+        EXPECT_EQ(edge2[i], sofa::InvalidID);
 
 
     if(scene != nullptr)
@@ -126,7 +126,7 @@ bool EdgeSetTopology_test::testEdgeBuffers()
 
 bool EdgeSetTopology_test::testVertexBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyObjectType::EDGE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -137,7 +137,7 @@ bool EdgeSetTopology_test::testVertexBuffers()
     }
 
     // create and check vertex buffer
-    const sofa::helper::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = topoCon->getEdgesAroundVertexArray();
+    const sofa::type::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = topoCon->getEdgesAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);
@@ -166,7 +166,7 @@ bool EdgeSetTopology_test::testVertexBuffers()
 
 bool EdgeSetTopology_test::checkTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyObjectType::EDGE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
     EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)

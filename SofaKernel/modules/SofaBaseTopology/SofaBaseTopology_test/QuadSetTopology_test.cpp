@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaBaseTopology/SofaBaseTopology_test/fake_TopologyScene.h>
-#include <sofa/helper/testing/BaseTest.h>
+#include "fake_TopologyScene.h"
+#include <sofa/testing/BaseTest.h>
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
 
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 
 class QuadSetTopology_test : public BaseTest
@@ -68,7 +68,7 @@ bool QuadSetTopology_test::testEmptyContainer()
 
 bool QuadSetTopology_test::testQuadBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -93,12 +93,12 @@ bool QuadSetTopology_test::testQuadBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
-    sofa::helper::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth0(3, 11, 5, 4);
-    sofa::helper::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth1(11, 8, 6, 5);
+    sofa::type::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth0(3, 11, 5, 4);
+    sofa::type::fixed_array<QuadSetTopologyContainer::PointID, 4> elemTruth1(11, 8, 6, 5);
 
 
     // check topology element buffer
-    const sofa::helper::vector<QuadSetTopologyContainer::Quad>& elements = topoCon->getQuadArray();
+    const sofa::type::vector<QuadSetTopologyContainer::Quad>& elements = topoCon->getQuadArray();
     if (elements.empty())
         return false;
     
@@ -125,7 +125,7 @@ bool QuadSetTopology_test::testQuadBuffers()
 
     const QuadSetTopologyContainer::Quad& elem2 = topoCon->getQuad(1000);
     for (int i = 0; i<elemSize; ++i)
-        EXPECT_EQ(elem2[i], -1);
+        EXPECT_EQ(elem2[i], sofa::InvalidID);
 
 
     if(scene != nullptr)
@@ -137,7 +137,7 @@ bool QuadSetTopology_test::testQuadBuffers()
 
 bool QuadSetTopology_test::testEdgeBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -148,7 +148,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
     }
 
     // create and check edges
-    const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundEdge >& elemAroundEdges = topoCon->getQuadsAroundEdgeArray();
+    const sofa::type::vector< QuadSetTopologyContainer::QuadsAroundEdge >& elemAroundEdges = topoCon->getQuadsAroundEdgeArray();
         
     // check only the edge buffer size: Full test on edges are done in EdgeSetTopology_test
     EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
@@ -176,7 +176,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
 
 
     // check EdgesInQuad buffer acces
-    const sofa::helper::vector< QuadSetTopologyContainer::EdgesInQuad > & edgeInQuads = topoCon->getEdgesInQuadArray();
+    const sofa::type::vector< QuadSetTopologyContainer::EdgesInQuad > & edgeInQuads = topoCon->getEdgesInQuadArray();
     EXPECT_EQ(edgeInQuads.size(), nbrQuad);
 
     const QuadSetTopologyContainer::EdgesInQuad& edgeInElem = edgeInQuads[2];
@@ -186,7 +186,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
 
-    sofa::helper::fixed_array<int, 4> edgeInElemTruth(7, 8, 4, 9);
+    sofa::type::fixed_array<int, 4> edgeInElemTruth(7, 8, 4, 9);
     for (int i = 0; i<4; ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
@@ -232,7 +232,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
 
 bool QuadSetTopology_test::testVertexBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -243,7 +243,7 @@ bool QuadSetTopology_test::testVertexBuffers()
     }
 
     // create and check vertex buffer
-    const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundVertex >& elemAroundVertices = topoCon->getQuadsAroundVertexArray();
+    const sofa::type::vector< QuadSetTopologyContainer::QuadsAroundVertex >& elemAroundVertices = topoCon->getQuadsAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);
@@ -279,7 +279,7 @@ bool QuadSetTopology_test::testVertexBuffers()
 
 bool QuadSetTopology_test::checkTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)

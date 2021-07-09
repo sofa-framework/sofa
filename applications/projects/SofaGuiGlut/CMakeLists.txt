@@ -4,6 +4,7 @@ project(SofaGuiGlut)
 find_package(SofaSimulation REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(Boost COMPONENTS thread chrono )
+find_package(Sofa.GL REQUIRED)
 
 set(HEADER_FILES
     SimpleGUI.h)
@@ -13,8 +14,6 @@ set(SOURCE_FILES
 
 
 list(APPEND SOURCE_FILES Main.cpp)
-
-find_package(GLUT REQUIRED)
 
 if(NOT APPLE)
 	set(GLUT_ACTUAL_LIBRARIES  ${GLUT_glut_LIBRARY} )
@@ -37,6 +36,9 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES}  )
 target_link_libraries(${PROJECT_NAME} SofaGuiCommon SofaSimulationGraph ${GLUT_ACTUAL_LIBRARIES} )
 if(Boost_FOUND)
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+endif()
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
 
 sofa_install_targets(SofaGui SofaGuiGlut "")

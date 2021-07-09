@@ -22,31 +22,52 @@
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsSimulation.h"
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <sofa/helper/io/Image.h>
-#include <sofa/helper/gl/RAII.h>
+#include <sofa/gl/RAII.h>
 
-#include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneral/initSofaGeneral.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 
+#include <SofaSimulationGraph/DAGSimulation.h>
+
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 #include <sofa/helper/init.h>
 
 #include <sofa/gui/BaseGUI.h>
 #include "fakegui.h"
 
+#include <sofa/type/Vec.h>
+
 #include <cmath>
 #include <iostream>
 
 #include <SceneCreator/SceneCreator.h>
+
+#include <SofaBoundaryCondition/initSofaBoundaryCondition.h>
+#include <SofaConstraint/initSofaConstraint.h>
+#include <SofaGeneralAnimationLoop/initSofaGeneralAnimationLoop.h>
+#include <SofaGeneralDeformable/initSofaGeneralDeformable.h>
+#include <SofaGeneralEngine/initSofaGeneralEngine.h>
+#include <SofaGeneralExplicitOdeSolver/initSofaGeneralExplicitOdeSolver.h>
+#include <SofaGeneralImplicitOdeSolver/initSofaGeneralImplicitOdeSolver.h>
+#include <SofaGeneralLinearSolver/initSofaGeneralLinearSolver.h>
+#include <SofaGeneralLoader/initSofaGeneralLoader.h>
+#include <SofaGeneralMeshCollision/initSofaGeneralMeshCollision.h>
+#include <SofaGeneralObjectInteraction/initSofaGeneralObjectInteraction.h>
+#include <SofaGeneralRigid/initSofaGeneralRigid.h>
+#include <SofaGeneralSimpleFem/initSofaGeneralSimpleFem.h>
+#include <SofaGeneralTopology/initSofaGeneralTopology.h>
+#include <SofaGeneralVisual/initSofaGeneralVisual.h>
+#include <SofaGraphComponent/initSofaGraphComponent.h>
+#include <SofaTopologyMapping/initSofaTopologyMapping.h>
+#include <SofaUserInteraction/initSofaUserInteraction.h>
 
 SofaPhysicsAPI::SofaPhysicsAPI(bool useGUI, int GUIFramerate)
     : impl(new SofaPhysicsSimulation(useGUI, GUIFramerate))
@@ -198,7 +219,7 @@ SofaPhysicsDataController** SofaPhysicsAPI::getDataControllers()
 ////////////////////////////////////////
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
+using namespace sofa::gl;
 using namespace sofa::core::objectmodel;
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
@@ -218,7 +239,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
         }
         else
         {
-          sofa::gui::initMain();
+          sofa::gui::initSofaGui();
 
           char* argv[]= { const_cast<char*>("a") };
 
@@ -241,10 +262,27 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     lastH = 0;
     vparams = sofa::core::visual::VisualParams::defaultInstance();
 
-    m_Simulation = new sofa::simulation::tree::TreeSimulation();
+    m_Simulation = new sofa::simulation::graph::DAGSimulation();
     sofa::simulation::setSimulation(m_Simulation);
 
-    sofa::component::initSofaGeneral();
+    sofa::component::initSofaBoundaryCondition();
+    sofa::component::initSofaConstraint();
+    sofa::component::initSofaGeneralAnimationLoop();
+    sofa::component::initSofaGeneralDeformable();
+    sofa::component::initSofaGeneralEngine();
+    sofa::component::initSofaGeneralExplicitOdeSolver();
+    sofa::component::initSofaGeneralImplicitOdeSolver();
+    sofa::component::initSofaGeneralLinearSolver();
+    sofa::component::initSofaGeneralLoader();
+    sofa::component::initSofaGeneralMeshCollision();
+    sofa::component::initSofaGeneralObjectInteraction();
+    sofa::component::initSofaGeneralRigid();
+    sofa::component::initSofaGeneralSimpleFem();
+    sofa::component::initSofaGeneralTopology();
+    sofa::component::initSofaGeneralVisual();
+    sofa::component::initSofaGraphComponent();
+    sofa::component::initSofaTopologyMapping();
+    sofa::component::initSofaUserInteraction();
 
     sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
             &classVisualModel);
@@ -322,7 +360,7 @@ void SofaPhysicsSimulation::createScene()
     m_RootNode = sofa::modeling::createRootWithCollisionPipeline();
     if (m_RootNode.get())
     {
-        m_RootNode->setGravity( Vec3d(0,-9.8,0) );
+        m_RootNode->setGravity({ 0,-9.8,0 });
         this->createScene_impl();
 
         m_Simulation->init(m_RootNode.get());
@@ -401,7 +439,7 @@ double *SofaPhysicsSimulation::getGravity() const
 
     if (getScene())
     {
-        const Vec3d& g = getScene()->getContext()->getGravity();
+        const auto& g = getScene()->getContext()->getGravity();
         gravityVec[0] = g.x();
         gravityVec[1] = g.y();
         gravityVec[2] = g.z();
@@ -412,7 +450,7 @@ double *SofaPhysicsSimulation::getGravity() const
 
 void SofaPhysicsSimulation::setGravity(double* gravity)
 {
-    Vec3d g = Vec3d(gravity[0], gravity[1], gravity[2]);
+    const auto& g = sofa::type::Vec3d(gravity[0], gravity[1], gravity[2]);
     getScene()->getContext()->setGravity(g);
 }
 
@@ -656,7 +694,7 @@ void SofaPhysicsSimulation::drawGL()
             }
 
             sofa::helper::io::Image* image = sofa::helper::io::Image::FactoryImage::getInstance()->createObject("bmp", sofa::helper::system::DataRepository.getFile(imageFileName));
-            texLogo = new sofa::helper::gl::Texture(image);
+            texLogo = new sofa::gl::Texture(image);
             texLogo->init();
         }
         
@@ -789,7 +827,7 @@ void SofaPhysicsSimulation::drawGL()
 
         vparams->sceneBBox() = groot->f_bbox.getValue();
 
-        vparams->viewport() = sofa::helper::make_array(viewport[0], viewport[1], viewport[2], viewport[3]);
+        vparams->viewport() = sofa::type::make_array(viewport[0], viewport[1], viewport[2], viewport[3]);
 
         if (vWidth != lastW || vHeight != lastH)
         {
@@ -839,7 +877,7 @@ void SofaPhysicsSimulation::calcProjection()
     double offset;
     double xForeground, yForeground, zForeground, xBackground, yBackground,
            zBackground;
-    Vector3 center;
+    sofa::type::Vector3 center;
 
     /// Camera part
     if (!currentCamera)
@@ -877,7 +915,7 @@ void SofaPhysicsSimulation::calcProjection()
             yFactor = 1.0;
         }
     }
-    vparams->viewport() = sofa::helper::make_array(0,0,width,height);
+    vparams->viewport() = sofa::type::make_array(0,0,width,height);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -895,7 +933,7 @@ void SofaPhysicsSimulation::calcProjection()
     else
     {
         double ratio = vparams->zFar() / (vparams->zNear() * 20);
-        Vector3 tcenter = vparams->sceneTransform() * center;
+        auto tcenter = vparams->sceneTransform() * center;
         if (tcenter[2] < 0.0)
         {
             ratio = -300 * (tcenter.norm2()) / tcenter[2];

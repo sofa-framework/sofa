@@ -262,9 +262,9 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
     {
 
         //Get the 8 indices of the coarser Hexa
-        const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[0]->getHexahedra()[elementIndice];
+        const type::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[0]->getHexahedra()[elementIndice];
         //Get the 8 points of the coarser Hexa
-        helper::fixed_array<Coord,8> nodes;
+        type::fixed_array<Coord,8> nodes;
 #ifndef SOFA_NEW_HEXA
         for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[0]->getPointPos(points[this->_indices[k]]);
 #else
@@ -290,7 +290,6 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
             {
                 grayScale = 1+10*exp(1-256/((float)(voxels[(int)(factor[2]*coordinates[2])][(int)(factor[0]*coordinates[0])][(int)(factor[1]*coordinates[1])])));
             }
-            //       sout << grayScale << " "<<sendl;
         }
         computeMaterialStiffness(mat,  this->f_youngModulus.getValue()*grayScale,this->f_poissonRatio.getValue());
 
@@ -301,7 +300,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
     }
     else
     {
-        helper::fixed_array<int,8> finerChildren;
+        type::fixed_array<int,8> finerChildren;
         if (level == 0)
         {
             finerChildren = this->_sparseGrid->_hierarchicalCubeMap[elementIndice];
@@ -311,7 +310,6 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
             finerChildren = this->_sparseGrid->_virtualFinerLevels[this->_nbVirtualFinerLevels.getValue()-level]->_hierarchicalCubeMap[elementIndice];
         }
 
-        //     serr<<finerChildren<<""<<sendl;
         //Get the 8 points of the coarser Hexa
         for ( int i=0; i<8; ++i)
         {

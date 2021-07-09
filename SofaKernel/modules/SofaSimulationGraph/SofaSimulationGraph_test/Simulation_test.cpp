@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/testing/NumericTest.h>
-using sofa::helper::testing::NumericTest ;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest ;
 
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
@@ -29,7 +29,6 @@ using sofa::defaulttype::Vec3Types ;
 typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>
@@ -89,11 +88,11 @@ struct Scene_test: public NumericTest<SReal>
         root->addObject(DOF);
         DOF->resize(4);
         MechanicalObject3::WriteVecCoord x = DOF->writePositions();
-        x[0] = defaulttype::Vector3(0,0,0);
-        x[1] = defaulttype::Vector3(1,0,0);
-        x[2] = defaulttype::Vector3(0,1,0);
-        x[3] = defaulttype::Vector3(0,0,1);
-        defaulttype::Vector3 expectedMin(0,0,0), expectedMax(1,1,1);
+        x[0] = type::Vector3(0,0,0);
+        x[1] = type::Vector3(1,0,0);
+        x[2] = type::Vector3(0,1,0);
+        x[3] = type::Vector3(0,0,1);
+        type::Vector3 expectedMin(0,0,0), expectedMax(1,1,1);
         DOF->showObject.setValue(true); // bbox is updated only for drawn MO
 
         // end create scene
@@ -101,7 +100,7 @@ struct Scene_test: public NumericTest<SReal>
         initScene(root);
         //*********
 
-        defaulttype::Vector3 sceneMinBBox, sceneMaxBBox;
+        type::Vector3 sceneMinBBox, sceneMaxBBox;
         simulation->computeBBox(root.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         if( vectorMaxDiff(sceneMinBBox,expectedMin)>this->epsilon() || vectorMaxDiff(sceneMaxBBox,expectedMax)>this->epsilon() )
@@ -178,7 +177,7 @@ struct Scene_test: public NumericTest<SReal>
         {
             simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);
             nodeToRemove->detachFromGraph();
-            nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+            nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         }
 
         simulation->animate(root.get());

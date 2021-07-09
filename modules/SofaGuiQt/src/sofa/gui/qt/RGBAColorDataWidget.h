@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef RGBACOLORDATAWIDGET_H
-#define RGBACOLORDATAWIDGET_H
+#pragma once
 #include <QColorDialog>
 #include <QPainter>
 #include <QStyle>
@@ -36,21 +35,14 @@
 #include <QValidator>
 #include <QColorDialog>
 
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 #include "QRGBAColorPicker.h"
 #include "DataWidget.h"
 
-namespace sofa
+namespace sofa::gui::qt::rgbacolordatawidget_h
 {
-namespace gui
-{
-namespace qt
-{
-namespace rgbacolordatawidget_h
-{
-
-using sofa::helper::types::RGBAColor ;
+using sofa::type::RGBAColor ;
 using sofa::core::objectmodel::Data ;
 using sofa::gui::qt::QRGBAColorPicker ;
 
@@ -75,13 +67,9 @@ protected:
     QRGBAColorPicker* m_colorPicker;
 };
 
-} /// namespae rgbacolordatawidget_h
+} // namespace sofa::gui::qt::rgbacolordatawidget_h
 
-using sofa::gui::qt::rgbacolordatawidget_h::RGBAColorDataWidget ;
-
-} /// namespace qt
-} /// namespace gui
-} /// namespace sofa
-
-#endif
-
+namespace sofa::gui::qt
+{
+    using sofa::gui::qt::rgbacolordatawidget_h::RGBAColorDataWidget;
+} // namespace sofa::gui::qt

@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_GUI_QT_VIDEORECORDERMANAGER_H
-#define SOFA_GUI_QT_VIDEORECORDERMANAGER_H
-
+#pragma once
 #include <ui_VideoRecorderManager.h>
 #include <sofa/gui/qt/config.h>
 
@@ -33,11 +31,7 @@
 #include <QLabel>
 #include <QCheckBox>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class CaptureOptionsWidget : public QWidget
@@ -113,8 +107,4 @@ protected:
     QWidget* screenshotsOptionsWidget;
 };
 
-}
-}
-}
-
-#endif //SOFA_GUI_QT_VIDEORECORDERMANAGER_H
+} // namespace sofa::gui::qt

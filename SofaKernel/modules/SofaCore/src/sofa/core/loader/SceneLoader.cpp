@@ -44,8 +44,7 @@ void SceneLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
     if (canLoad())
         load(/*m_filename.getFullPath().c_str()*/);
     else
-        sout << "Doing nothing" << sendl;
-
+        msg_info("SceneLoader") << "Doing nothing";
 }
 
 void SceneLoader::reinit()

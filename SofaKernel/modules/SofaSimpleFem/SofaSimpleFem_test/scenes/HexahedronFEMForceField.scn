@@ -10,7 +10,6 @@
   
 <!--<TetrahedronSetTopologyContainer name="TetraContainer" tetrahedra="@tetra.tetrahedra"/>
 <TetrahedronSetTopologyModifier />
-<TetrahedronSetTopologyAlgorithms template="Vec3d" />
 <TetrahedronSetGeometryAlgorithms template="Vec3d" />-->
 <!--<TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="svd" />-->
 

@@ -33,13 +33,9 @@
 #include <condition_variable>
 #include <memory>
 #include <map>
-#include <deque>
 #include <string> 
 #include <mutex>
 
-
-// workerthread
-#include <sofa/simulation/Locks.h>
 
 
 namespace sofa  {
@@ -66,98 +62,7 @@ namespace sofa  {
         
         class DefaultTaskScheduler;
         class WorkerThread;
-        
-        
-        class SOFA_SIMULATION_CORE_API WorkerThread
-        {
-        public:
-            
-            WorkerThread(DefaultTaskScheduler* const& taskScheduler, const int index, const std::string& name = "Worker");
-            
-            ~WorkerThread();
-            
-            static WorkerThread* getCurrent();
-            
-            // queue task if there is space, and run it otherwise
-            bool addTask(Task* pTask);
-            
-            void workUntilDone(Task::Status* status);
-            
-            const Task::Status* getCurrentStatus() const { return m_currentStatus; }
-            
-            const char* getName() const { return m_name.c_str(); }
-            
-            int getType() const { return m_type; }
-            
-            const std::thread::id getId();
-            
-            const std::deque<Task*>* getTasksQueue() { return &m_tasks; }
-            
-            std::uint64_t getTaskCount() { return m_tasks.size(); }
-            
-            int GetWorkerIndex();
-            
-            void* allocate();
-            
-            void free(void* ptr);
-            
-            
-        private:
-            
-            bool start(DefaultTaskScheduler* const& taskScheduler);
-            
-            std::thread* create_and_attach(DefaultTaskScheduler* const& taskScheduler);
-            
-            void runTask(Task* task);
-            
-            // queue task if there is space (or do nothing)
-            bool pushTask(Task* pTask);
-            
-            // pop task from queue
-            bool popTask(Task** ppTask);
-            
-            // steal and queue some task from another thread
-            bool stealTask(Task** task);
-            
-            void doWork(Task::Status* status);
-            
-            // boost thread main loop
-            void run(void);
-            
-            //void	ThreadProc(void);
-            void	Idle(void);
-            
-            bool isFinished();
-            
-        private:
-            
-            enum
-            {
-                Max_TasksPerThread = 256
-            };
-            
-            const std::string m_name;
-            
-            const int m_type;
-            
-            simulation::SpinLock m_taskMutex;
-            
-            std::deque<Task*> m_tasks;
-            
-            std::thread  m_stdThread;
-            
-            Task::Status*	m_currentStatus;
-            
-            DefaultTaskScheduler*     m_taskScheduler;
-            
-            // The following members may be accessed by _multiple_ threads at the same time:
-            std::atomic<bool>	m_finished;
-            
-            friend class DefaultTaskScheduler;
-        };
-        
-        
-        
+
         class SOFA_SIMULATION_CORE_API DefaultTaskScheduler : public TaskScheduler
         {
             enum
@@ -169,8 +74,16 @@ namespace sofa  {
         public:
             
             // interface
-            
+
+            /**
+             * Call stop() and start() if not already initialized
+             * @param nbThread
+             */
             virtual void init(const unsigned int nbThread = 0) final;
+
+            /**
+             * Wait and destroy worker threads
+             */
             virtual void stop(void) final;
             virtual unsigned int getThreadCount(void)  const final { return m_threadCount; }
             virtual const char* getCurrentThreadName() override final;
@@ -199,7 +112,10 @@ namespace sofa  {
             void	WaitForWorkersToBeReady();
             
             void	wakeUpWorkers();
-            
+
+            /**
+             * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
+             */
             static unsigned GetHardwareThreadsCount();
             
             WorkerThread* getCurrentThread();
@@ -228,14 +144,21 @@ namespace sofa  {
             DefaultTaskScheduler(const DefaultTaskScheduler&) {}
             
             ~DefaultTaskScheduler() override;
-            
+
+            /**
+             * Create worker threads
+             * If the number of required threads is 0, the number of threads will be equal to the
+             * result of GetHardwareThreadsCount()
+             *
+             * @param NbThread
+             */
             void start(unsigned int NbThread);
             
             bool m_isInitialized;
             
             unsigned m_workerThreadCount;
             
-            bool m_workerThreadsIdle;
+            volatile bool m_workerThreadsIdle;
             
             bool m_isClosing;
             

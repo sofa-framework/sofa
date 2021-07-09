@@ -20,23 +20,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_HELPER_ADVANCEDTIMER_CPP
+
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/type/vector.h>
+#include <json.h>
 
-#include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/map.h>
-#include "../../extlibs/json/json.h"
-
-
+#include <iomanip>
 #include <cmath>
 #include <cstdlib>
 #include <stack>
 #include <algorithm>
 #include <cctype>
+#include <iostream>
+#include <atomic>
 
 #define DEFAULT_INTERVAL 100
 
-using namespace sofa::core::objectmodel;
 using json = sofa::helper::json;
 
 
@@ -57,14 +57,14 @@ class TimerData
 {
 public:
     AdvancedTimer::IdTimer id;
-    helper::vector<Record> records;
+    type::vector<Record> records;
     int nbIter;
     int interval;
     int defaultInterval;
     AdvancedTimer::outputType timerOutputType;
 
     std::map<AdvancedTimer::IdStep, StepData> stepData;
-    helper::vector<AdvancedTimer::IdStep> steps;
+    type::vector<AdvancedTimer::IdStep> steps;
 
     class ValData
     {
@@ -80,7 +80,7 @@ public:
     };
 
     std::map<AdvancedTimer::IdVal, ValData> valData;
-    helper::vector<AdvancedTimer::IdVal> vals;
+    type::vector<AdvancedTimer::IdVal> vals;
 
     TimerData()
         : nbIter(0), interval(0), defaultInterval(DEFAULT_INTERVAL), timerOutputType(AdvancedTimer::STDOUT)
@@ -114,7 +114,7 @@ std::map< AdvancedTimer::IdTimer, TimerData > timers;
 
 std::atomic<int> activeTimers;
 SOFA_THREAD_SPECIFIC_PTR(std::stack<AdvancedTimer::IdTimer>, curTimerThread);
-SOFA_THREAD_SPECIFIC_PTR(helper::vector<Record>, curRecordsThread);
+SOFA_THREAD_SPECIFIC_PTR(type::vector<Record>, curRecordsThread);
 
 std::stack<AdvancedTimer::IdTimer>& getCurTimer()
 {
@@ -127,15 +127,15 @@ std::stack<AdvancedTimer::IdTimer>& getCurTimer()
     return *ptr;
 }
 
-helper::vector<Record>* getCurRecords()
+type::vector<Record>* getCurRecords()
 {
     if (!activeTimers) return nullptr;
     return curRecordsThread;
 }
 
-void setCurRecords(helper::vector<Record>* ptr)
+void setCurRecords(type::vector<Record>* ptr)
 {
-    helper::vector<Record>* prev = curRecordsThread;
+    type::vector<Record>* prev = curRecordsThread;
     curRecordsThread = ptr;
     if (ptr && !prev) ++activeTimers;
     else if (!ptr && prev) --activeTimers;
@@ -223,7 +223,7 @@ void AdvancedTimer::begin(IdTimer id)
         setCurRecords(nullptr);
         return;
     }
-    helper::vector<Record>* curRecords = &(data.records);
+    type::vector<Record>* curRecords = &(data.records);
     setCurRecords(curRecords);
     curRecords->clear();
     if (syncCallBack) (*syncCallBack)(syncCallBackData);
@@ -248,7 +248,7 @@ void AdvancedTimer::end(IdTimer id, std::ostream& result)
         msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
         return;
     }
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (curRecords)
     {
         if (syncCallBack) (*syncCallBack)(syncCallBackData);
@@ -300,7 +300,7 @@ void AdvancedTimer::end(IdTimer id)
         return;
     }
 
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (curRecords)
     {
         if (syncCallBack) (*syncCallBack)(syncCallBackData);
@@ -330,7 +330,7 @@ void AdvancedTimer::end(IdTimer id)
     }
 }
 
-std::string AdvancedTimer::end(IdTimer id, simulation::Node* node)
+std::string AdvancedTimer::end(IdTimer id, double time, double dt)
 {
     TimerData& data = timers[id];
     if(!data.id)
@@ -340,8 +340,8 @@ std::string AdvancedTimer::end(IdTimer id, simulation::Node* node)
 
     switch(data.timerOutputType)
     {
-        case JSON   : return getTimeAnalysis(id, node);
-        case LJSON  : return getTimeAnalysis(id, node);
+        case JSON   : return getTimeAnalysis(id, time, dt);
+        case LJSON  : return getTimeAnalysis(id, time, dt);
         case GUI    : return std::string("");
         case STDOUT : end(id);
                       return std::string("");
@@ -352,14 +352,14 @@ std::string AdvancedTimer::end(IdTimer id, simulation::Node* node)
 
 bool AdvancedTimer::isActive()
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return false;
     return true;
 }
 
 void AdvancedTimer::stepBegin(IdStep id)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     Record r;
     r.time = CTime::getTime();
@@ -370,7 +370,7 @@ void AdvancedTimer::stepBegin(IdStep id)
 
 void AdvancedTimer::stepBegin(IdStep id, IdObj obj)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     Record r;
     r.time = CTime::getTime();
@@ -382,7 +382,7 @@ void AdvancedTimer::stepBegin(IdStep id, IdObj obj)
 
 void AdvancedTimer::stepEnd  (IdStep id)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     if (syncCallBack) (*syncCallBack)(syncCallBackData);
     Record r;
@@ -394,7 +394,7 @@ void AdvancedTimer::stepEnd  (IdStep id)
 
 void AdvancedTimer::stepEnd  (IdStep id, IdObj obj)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     Record r;
     r.time = CTime::getTime();
@@ -406,7 +406,7 @@ void AdvancedTimer::stepEnd  (IdStep id, IdObj obj)
 
 void AdvancedTimer::stepNext (IdStep prevId, IdStep nextId)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     Record r;
     if (syncCallBack) (*syncCallBack)(syncCallBackData);
@@ -421,7 +421,7 @@ void AdvancedTimer::stepNext (IdStep prevId, IdStep nextId)
 
 void AdvancedTimer::step     (IdStep id)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     if (syncCallBack) (*syncCallBack)(syncCallBackData);
     Record r;
@@ -433,7 +433,7 @@ void AdvancedTimer::step     (IdStep id)
 
 void AdvancedTimer::step     (IdStep id, IdObj obj)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     if (syncCallBack) (*syncCallBack)(syncCallBackData);
     Record r;
@@ -446,7 +446,7 @@ void AdvancedTimer::step     (IdStep id, IdObj obj)
 
 void AdvancedTimer::valSet(IdVal id, double val)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     Record r;
     r.time = CTime::getTime();
@@ -458,7 +458,7 @@ void AdvancedTimer::valSet(IdVal id, double val)
 
 void AdvancedTimer::valAdd(IdVal id, double val)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     Record r;
     r.time = CTime::getTime();
@@ -482,84 +482,84 @@ void AdvancedTimer::end(const char* idStr)
 
 void AdvancedTimer::stepBegin(const char* idStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     stepBegin(IdStep(idStr));
 }
 
 void AdvancedTimer::stepBegin(const char* idStr, const char* objStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     stepBegin(IdStep(idStr), IdObj(objStr));
 }
 
 void AdvancedTimer::stepBegin(const char* idStr, const std::string& objStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     stepBegin(IdStep(idStr), IdObj(objStr));
 }
 
 void AdvancedTimer::stepEnd  (const char* idStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     stepEnd  (IdStep(idStr));
 }
 
 void AdvancedTimer::stepEnd  (const char* idStr, const char* objStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     stepEnd  (IdStep(idStr), IdObj(objStr));
 }
 
 void AdvancedTimer::stepEnd  (const char* idStr, const std::string& objStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     stepEnd  (IdStep(idStr), IdObj(objStr));
 }
 
 void AdvancedTimer::stepNext (const char* prevIdStr, const char* nextIdStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     stepNext (IdStep(prevIdStr), IdStep(nextIdStr));
 }
 
 void AdvancedTimer::step     (const char* idStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     step     (IdStep(idStr));
 }
 
 void AdvancedTimer::step     (const char* idStr, const char* objStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     step     (IdStep(idStr), IdObj(objStr));
 }
 
 void AdvancedTimer::step     (const char* idStr, const std::string& objStr)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     step     (IdStep(idStr), IdObj(objStr));
 }
 
 void AdvancedTimer::valSet(const char* idStr, double val)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     valSet(IdVal(idStr),val);
 }
 
 void AdvancedTimer::valAdd(const char* idStr, double val)
 {
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (!curRecords) return;
     valAdd(IdVal(idStr),val);
 }
@@ -1387,7 +1387,7 @@ json TimerData::getLightJson(std::string stepNumber)
 }
 
 
-helper::vector<AdvancedTimer::IdStep> AdvancedTimer::getSteps(IdTimer id, bool processData)
+type::vector<AdvancedTimer::IdStep> AdvancedTimer::getSteps(IdTimer id, bool processData)
 {
     TimerData& data = timers[id];
     if (processData)
@@ -1403,7 +1403,7 @@ std::map<AdvancedTimer::IdStep, StepData> AdvancedTimer::getStepData(IdTimer id,
     return data.stepData;
 }
 
-helper::vector<Record> AdvancedTimer::getRecords(IdTimer id)
+type::vector<Record> AdvancedTimer::getRecords(IdTimer id)
 {
     TimerData& data = timers[id];
     for (Record & r : data.records) {
@@ -1442,11 +1442,9 @@ void AdvancedTimer::clearData(IdTimer id)
     data.clear();
 }
 
-std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
+std::string AdvancedTimer::getTimeAnalysis(IdTimer id, double time, double deltaTime)
 {
     // Get simulation context and find the actual simulation step
-    double time = node->getContext()->getTime();
-    double deltaTime = node->getContext()->getDt();
     std::stringstream tempStepNumber;
     std::string stepNumber;
     json outputJson;
@@ -1469,7 +1467,7 @@ std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
         msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
         return nullptr;
     }
-    helper::vector<Record>* curRecords = getCurRecords();
+    type::vector<Record>* curRecords = getCurRecords();
     if (curRecords)
     {
         if (syncCallBack) (*syncCallBack)(syncCallBackData);

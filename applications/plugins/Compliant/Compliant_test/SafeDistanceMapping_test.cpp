@@ -37,7 +37,7 @@ struct SafeDistanceMappingTest : public Mapping_test<Mapping>
     typedef SafeDistanceMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 
@@ -58,7 +58,7 @@ struct SafeDistanceMappingTest : public Mapping_test<Mapping>
         pairs[2][0] = 0; pairs[2][1] = 2;
         mapping->d_pairs.setValue(pairs);
 
-        helper::vector<SReal> restLengths(3);
+        type::vector<SReal> restLengths(3);
         restLengths[0] = 0;
         restLengths[1] = 0;
         restLengths[2] = 1;
@@ -87,13 +87,13 @@ struct SafeDistanceMappingTest : public Mapping_test<Mapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     component::mapping::SafeDistanceMapping<defaulttype::Vec3Types, defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(SafeDistanceMappingTest, DataTypes);
+TYPED_TEST_SUITE(SafeDistanceMappingTest, DataTypes);
 
 TYPED_TEST( SafeDistanceMappingTest, test )
 {
@@ -116,7 +116,7 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
     typedef SafeDistanceFromTargetMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
 
     Mapping* mapping;
 
@@ -131,7 +131,7 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
         this->errorMax *= 300;
 
         // mapping parameters
-        helper::vector<unsigned> indices(3);
+        type::vector<unsigned> indices(3);
         indices[0] = 0;
         indices[1] = 1;
         indices[2] = 1;
@@ -143,7 +143,7 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
         targets[2] = typename self::InCoord(0,0,0);
         mapping->d_targetPositions.setValue(targets);
 
-        helper::vector<SReal> restLengths(3);
+        type::vector<SReal> restLengths(3);
         restLengths[0] = 0;
         restLengths[1] = 0;
         restLengths[2] = 1;
@@ -174,7 +174,7 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
         this->errorMax *= 300;
 
         // mapping parameters
-        helper::vector<unsigned> indices(3);
+        type::vector<unsigned> indices(3);
         indices[0] = 0;
         indices[1] = 1;
         indices[2] = 1;
@@ -186,16 +186,16 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
         targets[2] = typename self::InCoord(0,0,0);
         mapping->d_targetPositions.setValue(targets);
 
-        helper::vector<SReal> restLengths(3);
+        type::vector<SReal> restLengths(3);
         restLengths[0] = 0;
         restLengths[1] = 0;
         restLengths[2] = 1;
         mapping->d_restLengths.setValue(restLengths);
 
-        helper::vector<defaulttype::Vector3> directions(3);
-        directions[0] = defaulttype::Vector3(325,23,-54);
-        directions[1] = defaulttype::Vector3(1,0,0);
-        directions[2] = defaulttype::Vector3(1,0,0);
+        type::vector<type::Vector3> directions(3);
+        directions[0] = type::Vector3(325,23,-54);
+        directions[1] = type::Vector3(1,0,0);
+        directions[2] = type::Vector3(1,0,0);
         mapping->d_directions.setValue(directions);
 
         mapping->d_geometricStiffness.setValue(1); // exact
@@ -218,13 +218,13 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     component::mapping::SafeDistanceFromTargetMapping<defaulttype::Vec3Types, defaulttype::Vec1Types>
 > DataTypes2; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(SafeDistanceFromTargetMappingTest, DataTypes2);
+TYPED_TEST_SUITE(SafeDistanceFromTargetMappingTest, DataTypes2);
 
 TYPED_TEST( SafeDistanceFromTargetMappingTest, test_differencefailsafe )
 {

@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/config.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 namespace sofa {
 namespace core {
@@ -80,7 +80,7 @@ public:
     template<class T>
     static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        simulation::Node* gnode = getNodeFromContext(context);
         typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
         if (context) context->addObject(obj);
         if (arg) obj->parse(arg);
@@ -88,7 +88,7 @@ public:
     }
 
 protected:
-
+    static simulation::Node* getNodeFromContext(BaseContext*);
     simulation::Node* gRoot;
 };
 

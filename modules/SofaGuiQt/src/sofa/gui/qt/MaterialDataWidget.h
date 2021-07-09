@@ -19,11 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MATERIAL_DATAWIDGET_H
-#define MATERIAL_DATAWIDGET_H
+#pragma once
 #include "DataWidget.h"
-#include <sofa/core/loader/Material.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Material.h>
+#include <sofa/type/Vec.h>
 
 #include <QColorDialog>
 #include <QPainter>
@@ -42,17 +41,12 @@
 
 #include "QRGBAColorPicker.h"
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
 /// Private namespace
-namespace materialdatawidget_h
+namespace sofa::gui::qt::materialdatawidget_h
 {
+
 using sofa::gui::qt::QRGBAColorPicker ;
-using sofa::core::loader::Material ;
+using sofa::type::Material ;
 using sofa::core::objectmodel::Data ;
 
 class MaterialDataWidget : public TDataWidget<Material>
@@ -86,15 +80,15 @@ protected:
 };
 
 
-typedef helper::vector<Material> VectorMaterial;
+typedef type::vector<Material> VectorMaterial;
 class VectorMaterialDataWidget : public TDataWidget< VectorMaterial >
 {
     Q_OBJECT
 public:
     VectorMaterialDataWidget(QWidget* parent,
                              const char* name,
-                             Data< helper::vector<Material> >* data):
-        TDataWidget< helper::vector<Material> >(parent,name,data),
+                             Data< type::vector<Material> >* data):
+        TDataWidget< type::vector<Material> >(parent,name,data),
         _materialDataWidget(nullptr),
         _currentMaterial(0,data->isDisplayed(),data->isReadOnly()),
         _comboBox(nullptr)
@@ -121,13 +115,9 @@ protected slots:
     void changeMaterial( int );
 };
 
-} /// namespace materialdatawidget_h
+} // namespace sofa::gui::qt::materialdatawidget_h
 
-using materialdatawidget_h::MaterialDataWidget ;
-
-} /// namespace qt
-} /// namespace gui
-} /// namespace ssofa
-
-#endif
-
+namespace sofa::gui::qt
+{
+    using sofa::gui::qt::materialdatawidget_h::MaterialDataWidget;
+} // namespace sofa::gui::qt

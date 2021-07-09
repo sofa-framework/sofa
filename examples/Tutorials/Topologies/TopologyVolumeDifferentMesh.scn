@@ -6,7 +6,8 @@
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehaviorModels showVisual showWireframe" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" />
-    <BruteForceDetection name="Detection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
     <DefaultCollisionGroupManager name="Group" />
@@ -51,7 +52,6 @@
         <MeshGmshLoader name="meshLoader1" filename="mesh/cylinder.msh" />
         <TetrahedronSetTopologyContainer name="Topology Container" src="@meshLoader1" />
         <TetrahedronSetTopologyModifier name="Topology Modifier" />
-        <TetrahedronSetTopologyAlgorithms name="Topology Algorithms" template="Vec3d" />
         <TetrahedronSetGeometryAlgorithms name="Geometry Algorithms" template="Vec3d" />
         <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />
         <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />

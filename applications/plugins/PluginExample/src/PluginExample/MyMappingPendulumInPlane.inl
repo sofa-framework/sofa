@@ -25,6 +25,7 @@
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/MechanicalParams.h>
 #include <iostream>
 
 using std::cerr;
@@ -36,8 +37,8 @@ namespace sofa::component::mapping
 
 using helper::ReadAccessor;
 using helper::WriteAccessor;
-using defaulttype::Vec;
-using defaulttype::Vector3;
+using type::Vec;
+using type::Vector3;
 
 
 template <class In, class Out>
@@ -86,7 +87,7 @@ void MyMappingPendulumInPlane<In, Out>::draw(const core::visual::VisualParams* v
     {
         points[i] = Out::getCPos(out[i]);
     }
-    vparams->drawTool()->drawPoints (points, 7, Vec<4, float> (1,1,0,1));
+    vparams->drawTool()->drawPoints (points, 7, type::RGBAColor::yellow());
 
     points.resize(2*out.size());
     for (unsigned int i=0; i<out.size(); i++)
@@ -94,7 +95,7 @@ void MyMappingPendulumInPlane<In, Out>::draw(const core::visual::VisualParams* v
         points[2*i] =   Vector3(0, 0,0);
         points[2*i+1] = Out::getCPos(out[i]);
     }
-    vparams->drawTool()->drawLines (points, 1, Vec<4, float> (0,1,0,1));
+    vparams->drawTool()->drawLines (points, 1, type::RGBAColor::green());
 
 
 }
@@ -194,7 +195,7 @@ void MyMappingPendulumInPlane<In, Out>::applyDJT(const core::MechanicalParams* m
                                                 core::ConstMultiVecDerivId)
 {
     ReadAccessor<Data<VecOutDeriv> > childForce (*mparams->readF(this->toModel));
-    WriteAccessor<Data<VecInDeriv> > parentForce (*parentForceChangeId[this->fromModel.get(mparams)].write());
+    WriteAccessor<Data<VecInDeriv> > parentForce (*parentForceChangeId[this->fromModel.get()].write());
     ReadAccessor<Data<VecInDeriv> > parentDx (*mparams->readDx(this->fromModel));
     InReal kfactor = (InReal)mparams->kFactor();
 

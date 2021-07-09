@@ -120,7 +120,7 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::s
             if (!index)
             {
                 ++nbnew;
-                if (printLog) sout << "RegistrationContact: New contact "<<o->id<<sendl;
+                msg_info() << "RegistrationContact: New contact "<<o->id;
             }
         }
         index = -1-i; // save this index as a negative value in contactIndex map.
@@ -145,7 +145,7 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::s
         int& index = it->second;
         if (index >= 0)
         {
-            if (printLog) sout << "RegistrationContact: Removed contact "<<it->first<<sendl;
+            msg_info() << "RegistrationContact: Removed contact "<<it->first;
             ContactIndexMap::iterator oldit = it;
             ++it;
             contactIndex.erase(oldit);
@@ -156,18 +156,13 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::s
             ++it;
         }
     }
-    if (printLog) sout << "RegistrationContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)."<<sendl;
+    msg_info() << "RegistrationContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new).";
 
-    //int size = contacts.size();
     ff->clear(size);
     mapper1.resize(size);
     mapper2.resize(size);
-    //int i = 0;
-    const double d0= 0;//intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
+    const double d0=0;
 
-    //for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    //{
-    //    DetectionOutput* o = &*it;
     for (int i=0; i<insize; i++)
     {
         int index = oldIndex[i];
@@ -209,7 +204,6 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::c
         parent = group;
         if (parent!=NULL)
         {
-            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
             parent->addObject(this);
             parent->addObject(ff);
         }
@@ -223,7 +217,6 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::r
     {
         if (parent!=NULL)
         {
-            //sout << "Removing contact response from "<<parent->getName()<<sendl;
             parent->removeObject(this);
             parent->removeObject(ff);
         }
@@ -234,8 +227,6 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::r
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 {
-    //	if (ff!=NULL)
-    //		ff->draw();
 }
 
 } // namespace collision

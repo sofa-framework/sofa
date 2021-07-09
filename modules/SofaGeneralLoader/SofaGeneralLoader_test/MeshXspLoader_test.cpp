@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest;
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 using sofa::simulation::Node;
@@ -35,6 +35,7 @@ public:
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","SofaGeneralLoader" } });
         auto loader = sofa::simpleapi::createObject(root, "MeshXspLoader",
                                       {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"test.xs3"}});
         simulation->init(root.get());

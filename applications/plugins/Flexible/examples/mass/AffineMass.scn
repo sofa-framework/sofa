@@ -51,7 +51,7 @@
     	<LinearMapping template="Affine,Vec3d"/>
     	<Node 	name="visual"   >
 		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
-		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
+		<OglModel template="Vec3d" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
 	    	<IdentityMapping />
     	</Node>
     </Node>

@@ -22,10 +22,7 @@
 #ifndef SOFA_CORE_BASEMAPPING_H
 #define SOFA_CORE_BASEMAPPING_H
 
-
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ConstraintParams.h>
-#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {
@@ -65,17 +62,17 @@ public:
     Data<bool> f_mapMatrices; ///< Are matrix explicit mapped?
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
-    virtual void apply (const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
+    virtual void apply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;
     /// Compute output velocity based on input velocity, using the linearized transformation (tangent operator). Also used to propagate small displacements.
-    virtual void applyJ(const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
+    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = VecDerivId::velocity(), ConstMultiVecDerivId inVel = ConstVecDerivId::velocity() ) = 0;
 
     /// Accessor to the input model of this mapping
-    virtual helper::vector<BaseState*> getFrom() = 0;
+    virtual type::vector<BaseState*> getFrom() = 0;
     /// If the type is compatible set the input model and return true, otherwise do nothing and return false.
     virtual bool setFrom( BaseState* from );
 
     /// Accessor to the output model of this mapping
-    virtual helper::vector<BaseState*> getTo() = 0;
+    virtual type::vector<BaseState*> getTo() = 0;
     /// If the type is compatible set the output model and return true, otherwise do nothing and return false.
     virtual bool setTo( BaseState* to );
 
@@ -137,9 +134,9 @@ public:
     virtual sofa::defaulttype::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix);
 
     /// Get the source (upper) mechanical state.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom() = 0;
+    virtual type::vector<behavior::BaseMechanicalState*> getMechFrom() = 0;
     /// Get the destination (lower, mapped) mechanical state.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechTo() = 0;
+    virtual type::vector<behavior::BaseMechanicalState*> getMechTo() = 0;
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     virtual void disable()=0;
@@ -149,7 +146,7 @@ public:
 
     /// Returns pointers to Jacobian matrices associated with parent states, consistently with getFrom(). Most mappings have only one parent, however Multimappings have several parents.
     /// For efficiency concerns, please return pointers to defaulttype::EigenBaseSparseMatrix
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() { dmsg_error() << "Calling a virtual method not implemented."; return nullptr; }
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() { dmsg_error() << "Calling a virtual method not implemented."; return nullptr; }
 
     /// Compute the geometric stiffness matrix based on given child forces
     /// K = dJ^T * outForce
@@ -174,8 +171,6 @@ protected:
     bool m_forceMaskNewStep;
 #endif
 
-    /// type used for masks
-    typedef behavior::BaseMechanicalState::ForceMask ForceMask;
     /// Useful when the mapping is applied only on a subset of parent dofs.
     /// It is automatically called by applyJT.
     ///
@@ -183,12 +178,9 @@ protected:
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask() = 0;
 
-
 public:
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
-
 };
 
 } // namespace core

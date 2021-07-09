@@ -60,44 +60,39 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
     virtual void init()
     {
         sofa::simpleapi::importPlugin("SofaOpenglVisual");
+        sofa::simpleapi::importPlugin("SofaLoader");
         DataEngine_test<DataEngineType>::init();
 
         const DDGLinkContainer& parent_inputs = this->m_engineInput->DDGNode::getInputs();
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
             core::objectmodel::BaseData* data = static_cast<core::objectmodel::BaseData*>(parent_inputs[i]);
+            /// Get the general type info describing what is in the data field
+            auto typeinfo = data->getValueTypeInfo();
 
-            const defaulttype::AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-
-            if( typeinfo->name().find("Image") != std::string::npos || typeinfo->name().find("BranchingImage") != std::string::npos )
+            /// To detect that the object in the typeinfo is in fact a BaseImageTypeInfo and thus
+            /// the data field contains something inheriting from BaseImage.
+            auto imgInfo = dynamic_cast<const defaulttype::BaseImageTypeInfo*>(typeinfo);
+            if( imgInfo != nullptr && !data->isSet())
             {
-                if( !data->isSet() )
-                {
-                    defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
-    //                std::cerr<<data->getName()<<" is a Data<Image>\n";
-                    // allocate input
-                    img->setDimensions( defaulttype::BaseImage::imCoord(1,1,1,1,1) );
-                    data->endEditVoidPtr();
-                }
+                defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
+                img->setDimensions( defaulttype::BaseImage::imCoord(1,1,1,1,1) );
+                data->endEditVoidPtr();
             }
         }
-
-
         if( this->root ) modeling::initScene(this->root);
     }
-
 
     void openScene( const std::string& fileName )
     {
         this->root = modeling::clearScene();
         this->root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
     }
-
 };
 
 
 
-typedef testing::Types<
+typedef ::testing::Types<
 TestDataEngine< component::engine::ComputeDualQuatEngine<defaulttype::Rigid3Types> >
 ,TestDataEngine< component::engine::GaussPointContainer >
 ,TestDataEngine< component::engine::ImageShapeFunctionSelectNode<defaulttype::ImageUC> >
@@ -130,7 +125,7 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
     typedef FlexibleDataEngine_test< TestDataEngine< component::engine::GaussPointContainer > > TestDataEngineType;
     static void run( TestDataEngineType* tested )
     {
-        tested->m_engineInput->f_inputVolume.setValue( helper::vector<SReal>(1,1) );
+        tested->m_engineInput->f_inputVolume.setValue( type::vector<SReal>(1,1) );
     }
 };
 
@@ -148,7 +143,7 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
         childNode->addObject( tested->m_engine );
         childNode->addObject( tested->m_engineInput );
 
-        tested->m_engineInput->dimensions.setValue( defaulttype::Vector3(1,1,1) );
+        tested->m_engineInput->dimensions.setValue( type::Vector3(1,1,1) );
         tested->m_engineInput->inputImage.setParent( "@../image.inputImage" );
         tested->m_engineInput->inputTransform.setParent( "@../image.inputTransform" );
     }
@@ -261,7 +256,7 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE( FlexibleDataEngine_test, TestTypes );
+TYPED_TEST_SUITE( FlexibleDataEngine_test, TestTypes );
 
 // test number of call to DataEngine::update
 TYPED_TEST( FlexibleDataEngine_test, basic_test )

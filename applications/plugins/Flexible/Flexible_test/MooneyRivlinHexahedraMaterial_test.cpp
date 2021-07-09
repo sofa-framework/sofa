@@ -40,7 +40,7 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 const size_t sizePressureArray = 11;
 
@@ -275,14 +275,14 @@ const std::string TypePrincipalStretchesMRHexaTest::sceneName= "AssembledSolverM
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     TypeInvariantMRHexaTest,
     TypePrincipalStretchesMRHexaTest
 > DataTypes; 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(MooneyRivlinHexahedraMaterial_test, DataTypes);
+TYPED_TEST_SUITE(MooneyRivlinHexahedraMaterial_test, DataTypes);
 
 TYPED_TEST( MooneyRivlinHexahedraMaterial_test , test_MR_Hexahedra_InTraction )
 {

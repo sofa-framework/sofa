@@ -24,7 +24,7 @@
 
 
 #include <sofa/simulation/VisitorScheduler.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 namespace sofa
 {

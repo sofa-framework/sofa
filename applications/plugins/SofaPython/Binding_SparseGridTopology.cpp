@@ -23,13 +23,13 @@
 #include "Binding_SparseGridTopology.h"
 #include "Binding_MeshTopology.h"
 #include "Binding_RegularGridTopology.h"
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include "PythonToSofa.inl"
 #include "Binding_Vector.h"
 
 using sofa::component::topology::SparseGridTopology ;
 using sofa::component::topology::RegularGridTopology ;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 
 /// getting a GridTopology* from a PyObject*
 static inline SparseGridTopology* get_SparseGridTopology(PyObject* obj) {
@@ -103,7 +103,7 @@ static PyObject * SparseGridTopology_getRegularGridNodeIndex(PyObject *self, PyO
     if (sparse_grid_node_index < 0)
         return PyInt_FromLong(-1);
 
-    if (sparse_grid_node_index >= obj->getNbPoints()) {
+    if ((sofa::Size)sparse_grid_node_index >= obj->getNbPoints()) {
         std::string msg = "SparseGridTopology.getRegularGridNodeIndex Trying to access the node index '" + std::to_string(sparse_grid_node_index) +
                           "' but the topology only has '" + std::to_string(obj->getNbPoints()) + "' nodes.";
         SP_MESSAGE_ERROR(msg);
@@ -136,7 +136,7 @@ static PyObject * SparseGridTopology_getNodePosition(PyObject *self, PyObject * 
     if (sparse_grid_node_index < 0)
         return PyInt_FromLong(-1);
 
-    if (sparse_grid_node_index >= obj->getNbPoints()) {
+    if ((sofa::Size)sparse_grid_node_index >= obj->getNbPoints()) {
         std::string msg = "SparseGridTopology.getNodePosition Trying to access the node index '" + std::to_string(sparse_grid_node_index) +
                           "' but the topology only has '" + std::to_string(obj->getNbPoints()) + "' nodes.";
         SP_MESSAGE_ERROR(msg);

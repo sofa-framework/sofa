@@ -19,7 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
@@ -27,8 +31,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
-
-#include <SofaTest/TestMessageHandler.h>
 
 
 namespace sofa {
@@ -41,7 +43,7 @@ using namespace defaulttype;
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _DataTypes>
-struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -135,7 +137,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
        for (unsigned i=0; i<numNodes; i++){
            xprev[i] = x[i] = CPos(i,0,0);
        }
-       projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
+       projection->projectPosition(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -145,7 +147,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
            {
               CPos crossprod = (x[i]-origin).cross(direction); // should be parallel
               Real scal = crossprod*crossprod; // null if x is on the line
-              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
+              if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
               }
@@ -155,7 +157,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
            {
               CPos dx = x[i]-xprev[i];
               Real scal = dx*dx;
-              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
+              if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of unconstrained particle " << i << " is wrong: " << x[i] ;
               }
@@ -172,7 +174,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
        for (unsigned i=0; i<numNodes; i++){
            vprev[i] = v[i] = CPos(i,0,0);
        }
-       projection->projectVelocity(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
+       projection->projectVelocity(core::mechanicalparams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -182,7 +184,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
            {
               CPos crossprod = v[i].cross(direction); // should be parallel
               Real scal = crossprod.norm(); // null if v is ok
-              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
+              if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
               }
@@ -192,7 +194,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
            {
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
-              if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
+              if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;
               }
@@ -213,13 +215,13 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(ProjectToLineConstraint_test, DataTypes);
+TYPED_TEST_SUITE(ProjectToLineConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToLineConstraint_test , oneConstrainedParticle )
 {

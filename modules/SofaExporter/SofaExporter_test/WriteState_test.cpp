@@ -24,8 +24,8 @@
 #include <iterator>
 #include <algorithm>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 
@@ -35,10 +35,7 @@ using sofa::helper::testing::BaseTest;
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaExporter/WriteState.h>
-
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa {
 
@@ -76,9 +73,6 @@ namespace sofa {
         /// Create the context for the scene
         void SetUp()
         {
-            sofa::component::initSofaBase();
-            sofa::component::initSofaCommon();
-            sofa::component::initSofaGeneral();
             // Init simulation
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
             root = simulation::getSimulation()->createNewGraph("root");
@@ -114,7 +108,7 @@ namespace sofa {
             childNode->addObject(mass);
 
             sofa::component::misc::WriteState::SPtr writeState =New<sofa::component::misc::WriteState>();
-            helper::vector<double> time;
+            type::vector<double> time;
             time.resize(1);
             time[0] = 0.0;
             writeState->d_period.setValue(timeStep);
@@ -208,7 +202,6 @@ namespace sofa {
                 std::cout<<"Problem opening file "+referenceFile<<std::endl;
                 return false;
             }
-
             if (f1.tellg() != f2.tellg())
             {
                 std::cout<<"File size mismatch "<<std::endl;
@@ -234,10 +227,10 @@ namespace sofa {
     };
 
     // Define the list of DataTypes to instantiate
-    typedef testing::Types< Vec3Types > DataTypes;
+    typedef ::testing::Types< Vec3Types > DataTypes;
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(WriteState_test, DataTypes);
+    TYPED_TEST_SUITE(WriteState_test, DataTypes);
 
     // Test 1 : write position of a particle falling under gravity (required to use SymplecticSolver
     TYPED_TEST( WriteState_test , test_write_position)

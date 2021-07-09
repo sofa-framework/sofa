@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <cstring>
 
 #if defined(WIN32)
@@ -40,7 +40,7 @@ namespace helper
 namespace io
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 bool MeshTopologyLoader::addMeshtoTopology()
 {
@@ -49,12 +49,12 @@ bool MeshTopologyLoader::addMeshtoTopology()
 
     setNbPoints((int)m_mesh->getVertices().size());
 
-    const sofa::helper::vector<Vector3>& vertices = m_mesh->getVertices();
-    const sofa::helper::vector< Topology::Edge > & edges = m_mesh->getEdges();
-    const sofa::helper::vector< Topology::Triangle > & triangles = m_mesh->getTriangles();
-    const sofa::helper::vector< Topology::Quad > & quads = m_mesh->getQuads();
-    const sofa::helper::vector< Topology::Tetrahedron > & tetra = m_mesh->getTetrahedra();
-    const sofa::helper::vector< Topology::Hexahedron > & hexa = m_mesh->getHexahedra();
+    const auto& vertices = m_mesh->getVertices();
+    const auto& edges = m_mesh->getEdges();
+    const auto& triangles = m_mesh->getTriangles();
+    const auto& quads = m_mesh->getQuads();
+    const auto& tetra = m_mesh->getTetrahedra();
+    const auto& hexa = m_mesh->getHexahedra();
 
     for (size_t i = 0; i < vertices.size(); ++i)
         addPoint(vertices[i][0], vertices[i][1], vertices[i][2]);
@@ -92,11 +92,11 @@ bool MeshTopologyLoader::loadObj(const char *filename)
                 (SReal)m_mesh->getVertices()[i][2]);
     }
 
-    const vector< vector < vector <int> > > & facets = m_mesh->getFacets();
+    const auto & facets = m_mesh->getFacets();
     std::set< std::pair<int,int> > edges;
     for (size_t i=0; i<facets.size(); i++)
     {
-        const vector<int>& facet = facets[i][0];
+        const auto& facet = facets[i][0];
         if (facet.size()==2)
         {
             // Line

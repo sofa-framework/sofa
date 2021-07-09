@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_WINDOW_DATAGRAPH
-#define SOFA_WINDOW_DATAGRAPH
-
+#pragma once
 #include <QDialog>
 #include <sofa/simulation/Node.h>
 
@@ -34,13 +32,7 @@ namespace QtNodes
 }
 
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
  /**
  * This Class provide an interface with the library QtNodes to display Data Graph connection inside a QDialog.
@@ -92,10 +84,4 @@ protected:
     bool debugNodeGraph; ///< parameter to activate graph logs. False by default.
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_WINDOW_DATAGRAPH
+} //namespace sofa::gui::qt

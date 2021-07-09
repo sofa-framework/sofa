@@ -1,8 +1,13 @@
 <Node name="root" dt="0.01" gravity="0 0 0" >
     <RequiredPlugin name="SensableEmulation" pluginName="SensableEmulation" />
+    <RequiredPlugin name='SofaConstraint'/>
+    <RequiredPlugin name='SofaGraphComponent'/>
+    <RequiredPlugin name='SofaUserInteraction'/>
+
 	<Gravity name="G" gravity="10 0 0" />
 	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
-	<BruteForceDetection name="detection" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<DefaultContactManager name="response" response="FrictionContact" />
 	<LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
 	<FreeMotionAnimationLoop solveVelocityConstraintFirst="true"/>

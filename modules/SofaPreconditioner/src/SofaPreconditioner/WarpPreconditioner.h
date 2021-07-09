@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <cmath>
 #include <sofa/core/behavior/RotationMatrix.h>
@@ -56,9 +56,10 @@ public:
     typedef TVector Vector;
     typedef typename TMatrix::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,ThreadManager> Inherit;
-    typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
+    typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
     typedef TMatrix TRotationMatrix;
     typedef typename Inherit::JMatrixType JMatrixType;
+    using Index = typename TMatrix::Index;
 
     Data <std::string> solverName; ///< Name of the solver/preconditioner to warp
     Data<unsigned> f_useRotationFinder; ///< Which rotation Finder to use
@@ -82,7 +83,7 @@ public:
 
     bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
-    unsigned getSystemDimention(const sofa::core::MechanicalParams* mparams);
+    Index getSystemDimention(const sofa::core::MechanicalParams* mparams);
 
     void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* /*f*/) override;
 

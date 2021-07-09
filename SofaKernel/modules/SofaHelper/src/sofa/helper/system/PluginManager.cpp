@@ -29,6 +29,7 @@ using sofa::helper::system::FileSystem;
 
 #include <boost/filesystem.hpp>
 #include <fstream>
+#include <array>
 
 using sofa::helper::Utils;
 
@@ -169,6 +170,12 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
             return false;
         }
         getPluginEntry(p.getModuleName,d);
+
+        if (checkDuplicatedPlugin(p, pluginPath))
+        {
+            return true;
+        }
+
         getPluginEntry(p.getModuleDescription,d);
         getPluginEntry(p.getModuleLicense,d);
         getPluginEntry(p.getModuleComponentList,d);
@@ -180,7 +187,29 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     p.initExternalModule();
 
     msg_info("PluginManager") << "Loaded plugin: " << pluginPath;
+
+    for (const auto& [key, callback] : m_onPluginLoadedCallbacks)
+    {
+        if(callback)
+        {
+            callback(pluginPath, p);
+        }
+    }
+
     return true;
+}
+
+void PluginManager::addOnPluginLoadedCallback(const std::string& key, std::function<void(const std::string&, const Plugin&)> callback)
+{
+    if(m_onPluginLoadedCallbacks.find(key) == m_onPluginLoadedCallbacks.end())
+    {
+        m_onPluginLoadedCallbacks[key] = callback;
+    }
+}
+
+void PluginManager::removeOnPluginLoadedCallback(const std::string& key)
+{
+    m_onPluginLoadedCallbacks.erase(key);
 }
 
 bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog)
@@ -225,6 +254,7 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     else
     {
         m_pluginMap.erase(m_pluginMap.find(pluginPath));
+        removeOnPluginLoadedCallback(pluginPath);
         return true;
     }
 }
@@ -234,7 +264,7 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
     std::string pluginPath = plugin;
 
     if (!FileSystem::isFile(plugin)) {
-        pluginPath = findPlugin(plugin);
+        return getPluginByName(plugin);
     }
 
     if (!pluginPath.empty() && m_pluginMap.find(pluginPath) != m_pluginMap.end())
@@ -243,9 +273,24 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
     }
     else
     {
-        msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin << msgendl;
+        msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin;
         return nullptr;
     }
+}
+
+Plugin* PluginManager::getPluginByName(const std::string& pluginName)
+{
+    for (PluginMap::iterator itP = m_pluginMap.begin(); itP != m_pluginMap.end(); ++itP)
+    {
+        std::string name(itP->second.getModuleName());
+        if (name.compare(pluginName) == 0)
+        {
+            return &itP->second;
+        }
+    }
+
+    msg_info("PluginManager") << "Plugin not found in loaded plugins: " << pluginName;
+    return nullptr;
 }
 
 std::istream& PluginManager::readFromStream(std::istream & in)
@@ -300,12 +345,20 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
     // First try: case sensitive
-    for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
-    {
-        const std::string path = *i + "/" + libName;
-        if (FileSystem::isFile(path))
-            return path;
+    for (const auto & prefix : searchPaths) {
+        const std::array<std::string, 4> paths = {
+                prefix + "/" + libName,
+                prefix + "/" + pluginName + "/" + libName,
+                prefix + "/" + pluginName + "/bin/" + libName,
+                prefix + "/" + pluginName + "/lib/" + libName
+        };
+        for (const auto & path : paths) {
+            if (FileSystem::isFile(path)) {
+                return path;
+            }
+        }
     }
+
     // Second try: case insensitive and recursive
     if (ignoreCase)
     {
@@ -351,13 +404,61 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
 
 bool PluginManager::pluginIsLoaded(const std::string& plugin)
 {
-    std::string pluginPath = plugin;
+    if (plugin.empty()) return false;
 
-    if (!FileSystem::isFile(plugin)) {
+    std::string pluginPath;
+
+    /// If we are not providing a filename then we have either to iterate in the plugin
+    /// map to check no plugin has the same name or check in there is no accessible path
+    /// in the plugin repository matching the pluginName
+    if (FileSystem::cleanPath(plugin, FileSystem::SLASH).find('/') != std::string::npos)
+    {
+        // plugin argument is a path
+        if (!FileSystem::isFile(plugin))
+        {
+            // path is invalid
+            msg_error("PluginManager") << "File not found: " << plugin;
+            return false;
+        }
+
+        pluginPath = plugin;
+    }
+    else
+    {
+        // plugin argument is a name
+        /// Here is the iteration in the loaded plugin map
+        for(auto k : m_pluginMap)
+        {
+            if(plugin == k.second.getModuleName())
+            {
+                return true;
+            }
+        }
+
+        /// At this point we have not found a loaded plugin, we try to
+        /// explore if the filesystem can help.
         pluginPath = findPlugin(plugin);
     }
 
+    /// Check that the path (either provided by user or through the call to findPlugin()
+    /// leads to a loaded plugin.
     return m_pluginMap.find(pluginPath) != m_pluginMap.end();
+}
+
+bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::string& pluginPath)
+{
+    for (auto itP : m_pluginMap)
+    {
+        std::string name(itP.second.getModuleName());
+        std::string plugName(plugin.getModuleName());
+        if (name.compare(plugName) == 0 && pluginPath.compare(itP.first) != 0)
+        {
+            msg_warning("PluginManager") << "Trying to load plugin (" + name + ", from path: " + pluginPath + ") already registered from path: " + itP.first;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 }

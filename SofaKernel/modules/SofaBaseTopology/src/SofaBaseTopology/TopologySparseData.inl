@@ -1,0 +1,195 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
+#include <SofaBaseTopology/TopologySparseData.h>
+#include <SofaBaseTopology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyDataHandler.inl>
+
+namespace sofa::component::topology
+{
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////// Private functions on TopologySparseData changes /////////////////////////////
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::swap(Index i1, Index i2)
+{
+    // get access to data and its map
+    container_type& data = *(this->beginEdit());
+    sofa::type::vector<Index>& keys = this->getMap2Elements();
+
+    value_type tmp = data[i1];
+    data[i1] = data[i2];
+    data[i2] = tmp;
+
+    //apply same change to map:
+    Index tmp2 = keys[i1];
+    keys[i1] = keys[i2];
+    keys[i2] = tmp2;
+
+    this->endEdit();
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
+    const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
+    const sofa::type::vector<sofa::type::vector<double> >& coefs)
+{
+    // get access to data and its map
+    if (!this->getSparseDataStatus())
+        return;
+
+    container_type& data = *(this->beginEdit());
+    sofa::type::vector<Index>& keys = this->getMap2Elements();
+
+    Size size = data.size();
+    data.resize(size + nbElements);
+
+    if (this->m_topologyHandler)
+    {
+        for (unsigned int i = 0; i < nbElements; ++i)
+        {
+            value_type t;
+            if (ancestors.empty() || coefs.empty())
+            {
+                const sofa::type::vector< Index > empty_vecint;
+                const sofa::type::vector< double > empty_vecdouble;
+                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
+            }
+            else
+                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
+
+            // Incremente the total number of edges in topology
+            this->lastElementIndex++;
+            keys.push_back(this->lastElementIndex);
+        }
+    }
+    else
+    {
+        for (unsigned int i = 0; i < nbElements; ++i)
+        {
+            // Incremente the total number of edges in topology
+            this->lastElementIndex++;
+            keys.push_back(this->lastElementIndex);
+        }
+    }
+    
+
+    this->endEdit();
+    return;
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::add(sofa::Size nbElements,
+    const sofa::type::vector< TopologyElementType >&,
+    const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
+    const sofa::type::vector<sofa::type::vector<double> >& coefs)
+{
+    this->add(nbElements, ancestors, coefs);
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::add(const sofa::type::vector<Index>& index,
+    const sofa::type::vector< TopologyElementType >& elems,
+    const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+    const sofa::type::vector< sofa::type::vector< double > >& coefs,
+    const sofa::type::vector< AncestorElem >& ancestorElems)
+{
+    SOFA_UNUSED(elems);
+    SOFA_UNUSED(ancestorElems);
+    this->add(index.size(), ancestors, coefs);
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::move(const sofa::type::vector<Index>&,
+    const sofa::type::vector< sofa::type::vector< Index > >&,
+    const sofa::type::vector< sofa::type::vector< double > >&)
+{
+    msg_warning("TopologySparseData") << "Move event on topology SparseData is not yet handled.";
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::remove(const sofa::type::vector<Index>& index)
+{
+    // get the sparseData map
+    sofa::type::vector<Index>& keys = this->getMap2Elements();
+    container_type& data = *(this->beginEdit());
+    Size last = data.size() - 1;
+
+    // check for each element remove if it concern this sparseData
+    unsigned int cptDone = 0;
+    for (Size i = 0; i < index.size(); ++i)
+    {
+        unsigned int elemId = index[i];
+        unsigned int id = this->indexOfElement(elemId);
+
+        if (id == sofa::InvalidID)
+            continue;
+
+        cptDone++;
+        if (this->m_topologyHandler)
+        {
+            this->m_topologyHandler->applyDestroyFunction(id, data[id]);
+        }
+        this->swap(id, last);
+        --last;
+    }
+
+    data.resize(data.size() - cptDone);
+    keys.resize(keys.size() - cptDone);
+    this->lastElementIndex = last;
+
+    this->endEdit();
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::renumber(const sofa::type::vector<Index>&)
+{
+    msg_warning("TopologySparseData") << "renumber event on topology SparseData is not yet handled";
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::type::vector<Index>&,
+    const sofa::type::vector<TopologyElementType>&)
+{
+    msg_warning("TopologySparseData") << "addOnMovedPosition event on topology SparseData is not yet handled";
+}
+
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologySparseData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::type::vector<Index>&)
+{
+    msg_warning("TopologySparseData") << "removeOnMovedPosition event on topology SparseData is not yet handled";
+}
+
+
+} //namespace sofa::component::topology

@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QSOFALISTVIEW_H
-#define SOFA_GUI_QT_QSOFALISTVIEW_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <QWidget>
@@ -32,18 +30,13 @@
 
 
 #include <sofa/gui/qt/config.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <map>
 
-namespace sofa
-{
-
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class AddObject;
@@ -70,7 +63,7 @@ public:
     sofa::core::objectmodel::Base* asBase()
     {
         if( isNode() )
-            return dynamic_cast<sofa::core::objectmodel::Base*>(ptr.Node);
+            return sofa::simulation::node::toBase(ptr.Node);
         if( isObject() )
             return dynamic_cast<sofa::core::objectmodel::Base*>(ptr.Object);
         return nullptr;
@@ -89,9 +82,9 @@ class SOFA_SOFAGUIQT_API QSofaListView : public QTreeWidget
     Q_OBJECT
 public:
     QSofaListView(const SofaListViewAttribute& attribute,
-            QWidget* parent=0,
-            const char* name=0,
-            Qt::WindowFlags f = 0 );
+            QWidget* parent = nullptr,
+            const char* name = nullptr,
+            Qt::WindowFlags f = Qt::WindowType::Widget );
     ~QSofaListView() override;
 
     GraphListenerQListView* getListener() const { return  graphListener_; }
@@ -179,10 +172,4 @@ protected:
 
 };
 
-} //sofa
-} //gui
-}//qt
-
-#endif // SOFA_GUI_QT_QSOFALISTVIEW_H
-
-
+} //namespace sofa::gui::qt

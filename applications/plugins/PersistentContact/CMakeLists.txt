@@ -29,7 +29,9 @@ set(README_FILES PersistentContact.txt)
 set(README_FILES
 	PersistentContact.txt)
 
-find_package(SofaGeneral REQUIRED)
+find_package(SofaBaseMechanics REQUIRED)
+find_package(SofaRigid REQUIRED)
+find_package(SofaConstraint REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PERSISTENTCONTACT")

@@ -19,26 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QGLVIEWER_GENGRAPHFORM_H
-#define SOFA_GUI_QGLVIEWER_GENGRAPHFORM_H
-
+#pragma once
 #include <ui_BaseGenGraphForm.h>
-#include <sofa/simulation/Node.h>
 
 #include "QProcess"
 #include "QStringList"
+#include <sofa/simulation/Node.h>
 
 #include <list>
 #include <map>
 #include <set>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 class GenGraphForm : public QDialog, public Ui_BaseGenGraphForm
@@ -74,10 +66,4 @@ protected:
     std::set<std::string> getCurrentFilter();
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::gui::qt

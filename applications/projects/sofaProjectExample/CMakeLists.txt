@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(sofaProjectExample)
 
-find_package(SofaGui)
-find_package(SofaOpenglVisual)
+find_package(SofaGui REQUIRED)
+find_package(SofaOpenglVisual REQUIRED)
 
 add_executable(${PROJECT_NAME} Main.cpp)
-target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaOpenglVisual)
+target_link_libraries(${PROJECT_NAME} SofaGui SofaOpenglVisual)

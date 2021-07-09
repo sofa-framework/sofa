@@ -19,10 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
+#include <SofaExplicitOdeSolver_test/MassSpringSystemCreation.h>
+
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/core/ExecParams.h>
+
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -31,7 +37,7 @@
 
 // Including mechanical object
 #include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
+using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 // Solvers
 #include <SofaGeneralExplicitOdeSolver/CentralDifferenceSolver.h>
@@ -42,7 +48,7 @@ using namespace component;
 using namespace defaulttype;
 using namespace simulation;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 /**  Dynamic solver test.
 Test the dynamic behavior of solver: study a mass-spring system under gravity initialize with spring rest length it will oscillate around its equilibrium position if there is no damping.
@@ -54,7 +60,7 @@ Then it compares the effective mass position to the computed mass position every
 */
 
 template <typename _DataTypes>
-struct CentralDifferenceExplicitSolverDynamic_test : public Elasticity_test<_DataTypes>
+struct CentralDifferenceExplicitSolverDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -96,7 +102,7 @@ struct CentralDifferenceExplicitSolverDynamic_test : public Elasticity_test<_Dat
         MechanicalObject3::DataTypes::set( vMass[0], 0., 0., 0.);
 
         // Mass spring system
-        root = this-> createMassSpringSystem(
+        root = sofa::createMassSpringSystem<DataTypes>(
                 root,   // add mass spring system to the node containing solver
                 K,      // stiffness
                 m,      // mass
@@ -215,13 +221,13 @@ struct CentralDifferenceExplicitSolverDynamic_test : public Elasticity_test<_Dat
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(CentralDifferenceExplicitSolverDynamic_test, DataTypes);
+TYPED_TEST_SUITE(CentralDifferenceExplicitSolverDynamic_test, DataTypes);
 
 // Test case: h=0.01 k=100 m =10 rm=0.1 rk=0.1
 TYPED_TEST( CentralDifferenceExplicitSolverDynamic_test , centralDifferenceExplicitSolverDynamicTest_medium_dt_without_damping)

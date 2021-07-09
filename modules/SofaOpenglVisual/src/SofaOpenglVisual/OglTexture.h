@@ -26,8 +26,8 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/gl/template.h>
+#include <sofa/gl/Texture.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <SofaOpenglVisual/OglShader.h>
 
@@ -66,7 +66,7 @@ protected:
     Data<unsigned int> proceduralTextureWidth; ///< Width of procedural Texture
     Data<unsigned int> proceduralTextureHeight; ///< Height of procedural Texture
     Data<unsigned int> proceduralTextureNbBits; ///< Nb bits per color
-    Data<helper::vector<unsigned int> > proceduralTextureData; ///< Data of procedural Texture 
+    Data<type::vector<unsigned int> > proceduralTextureData; ///< Data of procedural Texture 
     sofa::core::objectmodel::DataFileName cubemapFilenamePosX;
     sofa::core::objectmodel::DataFileName cubemapFilenamePosY;
     sofa::core::objectmodel::DataFileName cubemapFilenamePosZ;
@@ -74,7 +74,7 @@ protected:
     sofa::core::objectmodel::DataFileName cubemapFilenameNegY;
     sofa::core::objectmodel::DataFileName cubemapFilenameNegZ;
 
-    helper::gl::Texture* texture;
+    sofa::gl::Texture* texture;
     helper::io::Image* img;
 
 public:

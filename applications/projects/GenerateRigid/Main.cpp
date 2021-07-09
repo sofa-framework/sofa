@@ -24,7 +24,9 @@
 #include <fstream>
 
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
+
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/GenerateRigid.h>
 
 using namespace sofa::defaulttype;
 
@@ -38,7 +40,6 @@ int main(int argc, char** argv)
 
 
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
 
 //////// SCALE //////
     Vector3 scale(1, 1, 1);
@@ -63,7 +64,7 @@ int main(int argc, char** argv)
     Vector3 center;
     Rigid3Mass mass;
 
-    if( !generateRigid(mass, center, argv[1], density, scale, rotation) )
+    if( !sofa::helper::generateRigid(mass, center, argv[1], density, scale, rotation) )
     {
         return 2;
     }

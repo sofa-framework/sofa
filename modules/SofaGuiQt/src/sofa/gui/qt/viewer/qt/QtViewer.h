@@ -19,14 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QTVIEWER_H
-#define SOFA_GUI_QT_QTVIEWER_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
-#include <qgl.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <qtimer.h>
 #include <cmath>
 #include <cstdlib>
@@ -46,11 +43,11 @@
 
 #include <sofa/gui/ViewerFactory.h>
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/gl/Trackball.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
+#include <sofa/helper/visual/Transformation.h>
+#include <sofa/helper/visual/Trackball.h>
+#include <sofa/gl/Texture.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <SofaSimulationCommon/xml/Element.h>
@@ -58,25 +55,14 @@
 // allow catheter navigation using the tracking system (very simple version, surely will be modified)
 //#define TRACKING
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
-{
-
-namespace qt
+namespace sofa::gui::qt::viewer::qt
 {
 
 //using namespace sofa::defaulttype;
-using sofa::defaulttype::Vector3;
-using sofa::defaulttype::Quaternion;
-using namespace sofa::helper::gl;
+using sofa::type::Vector3;
+using sofa::type::Quat;
+using namespace sofa::gl;
+using namespace sofa::helper::visual;
 using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
@@ -192,10 +178,10 @@ public slots:
     virtual void setSizeW(int) override;
     virtual void setSizeH(int) override;
 
-    virtual void getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) const override;
-    virtual void setView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori) override ;
+    virtual void getView(type::Vector3& pos, type::Quat<SReal>& ori) const override;
+    virtual void setView(const type::Vector3& pos, const type::Quat<SReal> &ori) override ;
     virtual void newView() override ;
-    virtual void moveView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori) override ;
+    virtual void moveView(const type::Vector3& pos, const type::Quat<SReal> &ori) override ;
     virtual void captureEvent()  override { SofaViewer::captureEvent(); }
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code) override ;
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode * node )  override { SofaViewer::fitNodeBBox(node); }
@@ -244,12 +230,12 @@ public:
     bool _mouseInteractorTranslationMode;
     bool _mouseInteractorRotationMode;
     int _translationMode;
-    Quaternion _mouseInteractorCurrentQuat;
+    Quat<SReal> _mouseInteractorCurrentQuat;
     Vector3 _mouseInteractorAbsolutePosition;
     Trackball _mouseInteractorTrackball;
     void ApplyMouseInteractorTransformation(int x, int y);
 
-    static Quaternion _mouseInteractorNewQuat;
+    static Quat<SReal> _mouseInteractorNewQuat;
     static bool _mouseTrans;
     static bool _mouseRotate;
 
@@ -294,16 +280,4 @@ private:
     virtual bool mouseEvent ( QMouseEvent * e ) override;
 };
 
-} // namespace qt
-
-} // namespace viewer
-
-} //namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::gui::qt::viewer::qt

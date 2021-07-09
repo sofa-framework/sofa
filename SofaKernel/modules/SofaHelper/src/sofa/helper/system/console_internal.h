@@ -24,7 +24,7 @@
 #define __HELPER_SYSTEM_console_internal_H_
 
 #ifndef __CONSOLE_INTERNAL__
-#error "The console internal header must be exclusively included inside console.h and nowhere else."
+#error The console internal header must be exclusively included inside console.h and nowhere else.
 #endif
 
 namespace internal {

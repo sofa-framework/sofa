@@ -14,10 +14,16 @@ set(SOURCE_FILES
 )
 
 
-find_package(SofaGeneral REQUIRED)
+sofa_find_package(SofaBaseLinearSolver REQUIRED)
+sofa_find_package(SofaBaseMechanics REQUIRED)
+sofa_find_package(SofaBaseTopology REQUIRED)
+sofa_find_package(SofaBoundaryCondition REQUIRED)
+sofa_find_package(SofaGraphComponent REQUIRED)
+sofa_find_package(SofaImplicitOdeSolver REQUIRED)
+sofa_find_package(SofaSimpleFem REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGeneral)
+target_link_libraries(${PROJECT_NAME} SofaBaseLinearSolver SofaBaseMechanics SofaBaseTopology SofaBoundaryCondition SofaGraphComponent SofaImplicitOdeSolver SofaSimpleFem)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_${PROJECT_NAME}")
 
 sofa_create_package_with_targets(

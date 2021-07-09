@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QSOFASTATGRAPH_H
-#define SOFA_GUI_QT_QSOFASTATGRAPH_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <QLabel>
 #include <QWidget>
@@ -32,24 +30,22 @@
 #include <QHeaderView>
 #include <QListView>
 
-namespace sofa
+namespace sofa::core
 {
-namespace core
-{
-class CollisionModel;
-namespace objectmodel
-{
-class Base;
-}
-}
-namespace simulation
-{
-class Node;
-}
+    class CollisionModel;
+} // namespace sofa::core
 
-namespace gui
+namespace sofa::core::objectmodel
 {
-namespace qt
+    class Base;
+} // namespace sofa::core::objectmodel
+
+namespace sofa::simulation
+{
+    class Node;
+} // namespace sofa::core
+
+namespace sofa::gui::qt
 {
 
 class SOFA_SOFAGUIQT_API QSofaStatWidget : public QWidget
@@ -62,12 +58,9 @@ protected:
     QLabel* statsLabel;
     QTreeWidget* statsCounter;
     void addSummary();
-    void addCollisionModelsStat(const sofa::helper::vector< sofa::core::CollisionModel* >& v);
+    void addCollisionModelsStat(const sofa::type::vector< sofa::core::CollisionModel* >& v);
     std::vector<std::pair<core::objectmodel::Base*, QTreeWidgetItem*> > items_stats;
 
 };
-} //qt
-} //gui
-} //sofa
 
-#endif //SOFA_GUI_QT_QSOFASTATGRAPH_H
+} //namespace sofa::gui::qt

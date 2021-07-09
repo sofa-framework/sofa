@@ -24,11 +24,11 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualManager.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 
-#include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/gl/FrameBufferObject.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
@@ -48,10 +48,10 @@ public:
 
     SOFA_CLASS(OglViewport, core::visual::VisualManager);
 
-    Data<defaulttype::Vec<2, int> > p_screenPosition; ///< Viewport position
-    Data<defaulttype::Vec<2, unsigned int> > p_screenSize; ///< Viewport size
-    Data<defaulttype::Vec3f> p_cameraPosition; ///< Camera's position in eye's space
-    Data<defaulttype::Quat> p_cameraOrientation; ///< Camera's orientation
+    Data<type::Vec<2, int> > p_screenPosition; ///< Viewport position
+    Data<type::Vec<2, unsigned int> > p_screenSize; ///< Viewport size
+    Data<type::Vec3f> p_cameraPosition; ///< Camera's position in eye's space
+    Data<type::Quat<SReal>> p_cameraOrientation; ///< Camera's orientation
     Data<RigidCoord > p_cameraRigid; ///< Camera's rigid coord
     Data<double> p_zNear; ///< Camera's ZNear
     Data<double> p_zFar; ///< Camera's ZFar
@@ -62,7 +62,7 @@ public:
     Data<bool> p_swapMainView; ///< Swap this viewport with the main view
     Data<bool> p_drawCamera; ///< Draw a frame representing the camera (see it in main viewport)
 
-    std::unique_ptr<helper::gl::FrameBufferObject> fbo;
+    std::unique_ptr<sofa::gl::FrameBufferObject> fbo;
 
 protected:
     OglViewport();

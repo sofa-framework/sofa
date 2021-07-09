@@ -35,13 +35,13 @@ namespace visual
 {
 
 VisualParams::VisualParams()
-    : m_viewport(sofa::helper::make_array(0,0,0,0))
+    : m_viewport(sofa::type::make_array(0,0,0,0))
     , m_zNear(0)
     , m_zFar(0)
     , m_cameraType(PERSPECTIVE_TYPE)
     , m_pass(Std)
     , m_drawTool(nullptr)
-    , m_boundFrameBuffer(nullptr)
+    //, m_boundFrameBuffer(nullptr)
     , m_x (ConstVecCoordId::position())
     , m_v (ConstVecDerivId::velocity())
     , m_supportedAPIs(0)

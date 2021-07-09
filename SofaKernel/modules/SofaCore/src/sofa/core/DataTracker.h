@@ -25,8 +25,10 @@
 #include <functional>
 #include <map>
 #include <vector>
+#include <string>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include "objectmodel/ComponentState.h"
+#include <sofa/core/objectmodel/ComponentState.h>
+
 namespace sofa::core::objectmodel
 {
     class Base;
@@ -59,10 +61,10 @@ namespace core
 
         /// Did the data change since its last access?
         /// @warning data must be a tracked Data @see trackData
-        bool hasChanged( const objectmodel::BaseData& data );
+        bool hasChanged( const objectmodel::BaseData& data ) const;
 
         /// Did one of the tracked data change since the last call to clean()?
-        bool hasChanged();
+        bool hasChanged() const;
 
         /// comparison point is cleaned for the specified tracked Data
         /// @warning data must be a tracked Data @see trackData
@@ -183,23 +185,11 @@ namespace core
 
     ///////////////////////
 
-    class SOFA_CORE_API DataTrackerEngine : public DataTrackerDDGNode
-    {
-    public:
-        [[deprecated("2020-06-17: DataTrackerEngine has been deprecated, use DataTrackerCallback instead. DataTrackerCallback only supports 1 callback at a time, but multiple DataTrackerCallbacks can be created within a single component")]]
-        DataTrackerEngine() : DataTrackerDDGNode() {}
-        /// set the update function to call
-        /// when asking for an output and any input changed.
-        void addCallback(std::function<sofa::core::objectmodel::ComponentState(void)> f);
-
-        /// Calls the callback when one of the data has changed.
-        void update() override;
-
-    protected:
-        std::vector<std::function<sofa::core::objectmodel::ComponentState(void)>> m_callbacks;
-        std::string m_name {""};
-        sofa::core::objectmodel::Base* m_owner {nullptr};
-    };
+    SOFA_ATTRIBUTE_DISABLED("v20.06 (PR#1406)", "v21.06",
+        "Use DataTrackerCallback instead. \
+         DataTrackerCallback only supports 1 callback at a time, \
+         but multiple DataTrackerCallbacks can be created within a single component.")
+    typedef DeprecatedAndRemoved DataTrackerEngine;
 
     /////////////////////////
 

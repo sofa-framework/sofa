@@ -32,7 +32,6 @@
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -111,9 +110,9 @@ void FEMGridBehaviorModel<DataTypes>::init()
     odesolver->f_rayleighMass.setValue(0);
     odesolver->f_velocityDamping.setValue(0);
     typename component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::SPtr cg = sofa::core::objectmodel::New< component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
-    cg->f_maxIter.setValue(100);
-    cg->f_smallDenominatorThreshold.setValue(1e-10);
-    cg->f_tolerance.setValue(1e-10);
+    cg->d_maxIter.setValue(100);
+    cg->d_smallDenominatorThreshold.setValue(1e-10);
+    cg->d_tolerance.setValue(1e-10);
 
 
     m_internalNode->addObject( m_internalDofs );
@@ -123,7 +122,7 @@ void FEMGridBehaviorModel<DataTypes>::init()
     m_internalNode->addObject( constraint );
     m_internalNode->addObject( odesolver );
     m_internalNode->addObject( cg );
-    m_internalNode->execute<simulation::InitVisitor>(sofa::core::ExecParams::defaultInstance());
+    m_internalNode->execute<simulation::InitVisitor>(sofa::core::execparams::defaultInstance());
     m_internalNode->setGravity(this->getContext()->getGravity());
     m_internalNode->setDt(this->getContext()->getDt());
 
@@ -176,7 +175,7 @@ void FEMGridBehaviorModel<DataTypes>::handleEvent(sofa::core::objectmodel::Event
         internalDataV.endEdit();
 
 //        // start the internal model ode solver (where the sofa dof states must be constrained)
-        simulation::AnimateVisitor av( core::ExecParams::defaultInstance(), m_internalNode->getDt() );
+        simulation::AnimateVisitor av( core::execparams::defaultInstance(), m_internalNode->getDt() );
         m_internalNode->execute( av );
     }
 }

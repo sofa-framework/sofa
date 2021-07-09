@@ -30,16 +30,16 @@
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 
 
 #include <sofa/core/behavior/BaseController.h>
+#include <sofa/simulation/Node.h>
+
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 
@@ -49,11 +49,9 @@
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <SofaHaptics/NullForceFeedbackT.h>
 
-#include <sofa/simulation/Node.h>
 #include <cstring>
 
 #include <SofaOpenglVisual/OglModel.h>
-#include <SofaSimulationTree/GNode.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 
@@ -61,7 +59,6 @@
 
 namespace sofa
 {
-namespace simulation { class Node; }
 
 namespace component
 {

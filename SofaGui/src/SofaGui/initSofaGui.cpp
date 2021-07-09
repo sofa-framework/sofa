@@ -19,8 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaGui.h"
+#include <SofaGui/initSofaGui.h>
 
+#include <sofa/gui/GUIManager.h>
+
+#include <sofa/gui/BatchGUI.h>
+#if SOFAGUI_HAVE_SOFAGUIQT
+#include <sofa/gui/qt/RealGUI.h>
+#endif
+#if SOFAGUI_HAVE_SOFAHEADLESSRECORDER
+#include <SofaHeadlessRecorder/HeadlessRecorder.h>
+#endif
 
 namespace sofa
 {
@@ -36,6 +45,22 @@ void initSofaGui()
         first = false;
     }
 }
+
+
+int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
+
+#if SOFAGUI_HAVE_SOFAHEADLESSRECORDER
+int HeadlessRecorderClass = GUIManager::RegisterGUI("hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2);
+#endif
+
+#if SOFAGUIQT_HAVE_QGLVIEWER
+int QGLViewerGUIClass = GUIManager::RegisterGUI("qglviewer", &qt::RealGUI::CreateGUI, nullptr, 3);
+#endif
+
+#if SOFAGUIQT_HAVE_QTVIEWER
+int QtGUIClass = GUIManager::RegisterGUI("qt", &qt::RealGUI::CreateGUI, nullptr, 2);
+#endif
+
 
 } // namespace gui
 

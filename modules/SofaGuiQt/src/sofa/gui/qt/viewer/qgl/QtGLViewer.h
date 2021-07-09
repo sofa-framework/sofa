@@ -19,12 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QGLVIEWER_QTVIEWER_H
-#define SOFA_GUI_QGLVIEWER_QTVIEWER_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <qgl.h>
 #include <qtimer.h>
 #include <cmath>
@@ -35,12 +33,12 @@
 
 #include <sofa/gui/qt/viewer/OglModelPolicy.h>
 #include <sofa/gui/ViewerFactory.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/gl/Trackball.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
+#include <sofa/helper/visual/Transformation.h>
+#include <sofa/helper/visual/Trackball.h>
 #include <sofa/helper/system/thread/CTime.h>
+#include <sofa/gl/Texture.h>
 #include <SofaSimulationCommon/xml/Element.h>
 
 
@@ -50,24 +48,12 @@
 
 #define TRACKING_MOUSE
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
-{
-
-namespace qgl
+namespace sofa::gui::qt::viewer::qgl
 {
 
 class SOFA_SOFAGUIQT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
 {
-    typedef defaulttype::Vector3::value_type Real;
+    typedef type::Vector3::value_type Real;
     Q_OBJECT
 private:
 
@@ -200,8 +186,8 @@ public slots:
     void setSizeW(int) override;
     void setSizeH(int) override;
 
-    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const override;
-    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori) override;
+    virtual void getView(type::Vec3d& pos, type::Quat<SReal>& ori) const override;
+    virtual void setView(const type::Vec3d& pos, const type::Quat<SReal> &ori) override;
     virtual void captureEvent() override { SofaViewer::captureEvent(); }
     void fitObjectBBox(sofa::core::objectmodel::BaseObject* object) override
     {
@@ -242,16 +228,4 @@ signals:
     void quit();
 };
 
-} // namespace qgl
-
-} // namespace viewer
-
-} //namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::gui::qt::viewer::qgl

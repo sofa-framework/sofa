@@ -29,11 +29,7 @@
 
 #include <algorithm>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 helper::Creator<DataWidgetFactory,DataFileNameWidget> DW_Datafilename("widget_filename",false);
@@ -45,7 +41,7 @@ bool DataFileNameWidget::createWidgets()
     QHBoxLayout* layout = new QHBoxLayout(this);
 
     openFilePath = new QLineEdit(this);
-    const std::string& filepath = this->getData()->virtualGetValue();
+    const std::string& filepath = this->getData()->getValue();
     openFilePath->setText( QString(filepath.c_str()) );
 
     openFileButton = new QPushButton(this);
@@ -95,13 +91,10 @@ void DataFileNameWidget::raiseDialog()
 
     if (s.isNull() ) return;
     fileName=std::string (s.toStdString());
-    fileName = sofa::helper::system::FileRepository::relativeToPath(fileName,SofaPath,false);
+    fileName = sofa::helper::system::FileRepository::relativeToPath(fileName,SofaPath);
 
     openFilePath->setText( QString( fileName.c_str() ) );
 }
 
 
-}
-}
-}
-
+} // namespace sofa::gui::qt

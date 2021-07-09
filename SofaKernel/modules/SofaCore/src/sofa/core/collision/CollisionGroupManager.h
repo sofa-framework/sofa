@@ -62,24 +62,24 @@ public:
 
 protected:
     /// integration groups
-    sofa::helper::vector<core::objectmodel::BaseContext::SPtr> groups;
+    sofa::type::vector<core::objectmodel::BaseContext::SPtr> groups;
 
 
     /// Destructor
     ~CollisionGroupManager() override { }
 public:
     /// Create the integration groups
-    virtual void createGroups(objectmodel::BaseContext* scene, const sofa::helper::vector<Contact::SPtr>& contacts) = 0;
+    virtual void createGroups(objectmodel::BaseContext* scene, const sofa::type::vector<Contact::SPtr>& contacts) = 0;
 
     /// Clear the integration groups
     virtual void clearGroups(objectmodel::BaseContext* scene) = 0;
 
     /// Get the integration groups
-    virtual const sofa::helper::vector<objectmodel::BaseContext::SPtr>& getGroups() { return groups; };
+    virtual const sofa::type::vector<objectmodel::BaseContext::SPtr>& getGroups() { return groups; };
 
 protected:
 
-    std::map<Instance,sofa::helper::vector<core::objectmodel::BaseContext::SPtr> > storedGroups;
+    std::map<Instance,sofa::type::vector<core::objectmodel::BaseContext::SPtr> > storedGroups;
 
     void changeInstance(Instance inst) override
     {

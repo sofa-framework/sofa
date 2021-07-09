@@ -22,10 +22,10 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
 
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/VecId.h>
-
 
 
 namespace sofa
@@ -40,10 +40,7 @@ using core::topology::BaseMeshTopology;
 
 // forward declarations:
 
-/// Provides high-level topology algorithms (e.g. CutAlongPlane, DecimateTopology, etc).
-class TopologyAlgorithms;
-
-/// Provides some geometric functions (e.g. ComputeTriangleNormal, ComputeShell, etc).
+/// Provides some geometric functions (e.g. ComputeTriangleNormal, ComputeShell, etc) and high-level topology algorithms (e.g. CutAlongPlane, DecimateTopology, etc).
 class GeometryAlgorithms;
 
 /// Provides low-level topology methods (e.g. AddPoint, RemoveEdge, etc).
@@ -56,38 +53,8 @@ class TopologyContainer;
 class TopologicalMapping;
 
 /// Allow topological handle events
-class TopologyEngine;
+class TopologyHandler;
 
-
-/** A class that contains a set of high-level (user frisendly) methods that perform topological changes */
-class SOFA_CORE_API TopologyAlgorithms : public sofa::core::topology::BaseTopologyObject
-{
-public:
-    SOFA_CLASS(TopologyAlgorithms, BaseTopologyObject);
-
-protected:
-    /** \brief Constructor.
-    *
-    */
-    TopologyAlgorithms()
-    {}
-
-
-    /// Destructor
-    ~TopologyAlgorithms() override
-    {}
-public:
-    void init() override;
-
-protected:
-    /** \brief Adds a TopologyChange object to the list of the topology this object describes.
-    */
-    void addTopologyChange(const TopologyChange *topologyChange);
-
-protected:
-    /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
-    TopologyContainer *m_topologyContainer;
-};
 
 /** A class that contains a set of methods that describes the geometry of the object */
 class SOFA_CORE_API GeometryAlgorithms : public sofa::core::topology::BaseTopologyObject
@@ -114,14 +81,16 @@ public:
     *
     * \param ancestorElems are the ancestors topology info used in the points modifications
     */
-    virtual void initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< PointAncestorElem > &ancestorElems
-        , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs );
+    virtual void initPointsAdded(const type::vector< sofa::Index > &indices, const type::vector< PointAncestorElem > &ancestorElems
+        , const type::vector< core::VecCoordId >& coordVecs, const type::vector< core::VecDerivId >& derivVecs );
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
 class SOFA_CORE_API TopologyModifier : public sofa::core::topology::BaseTopologyObject
 {
 public:
+    typedef sofa::Index Index;
+
     SOFA_CLASS(TopologyModifier, BaseTopologyObject);
 
 protected:
@@ -167,7 +136,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<unsigned int> & /*items*/);
+    virtual void removeItems(const sofa::type::vector<Index> & /*items*/);
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
@@ -275,34 +244,34 @@ public:
 
     ///@}
 
-    /// TopologyEngine interactions
+    /// TopologyHandler interactions
     ///@{
-    const std::list<TopologyEngine *> &getTopologyEngineList() const { return m_topologyEngineList; }
+    const std::list<TopologyHandler *> &getTopologyHandlerList() const { return m_TopologyHandlerList; }
 
-    /** \brief Adds a TopologyEngine to the list.
+    /** \brief Adds a TopologyHandler to the list.
     */
-    void addTopologyEngine(TopologyEngine* _topologyEngine) override;
+    void addTopologyHandler(TopologyHandler* _TopologyHandler) override;
 
 
-    /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
+    /** \brief Provides an iterator on the first element in the list of TopologyHandler objects.
      */
-    std::list<TopologyEngine *>::const_iterator beginTopologyEngine() const override;
+    std::list<TopologyHandler *>::const_iterator beginTopologyHandler() const override;
 
-    /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
+    /** \brief Provides an iterator on the last element in the list of TopologyHandler objects.
      */
-    std::list<TopologyEngine *>::const_iterator endTopologyEngine() const override;
+    std::list<TopologyHandler *>::const_iterator endTopologyHandler() const override;
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
     */
-    void resetTopologyEngineList();
+    void resetTopologyHandlerList();
 
     ///@}
 
 
 protected:
 
-    virtual void updateTopologyEngineGraph() {}
+    virtual void updateTopologyHandlerGraph() {}
 
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <std::list<const TopologyChange *> >m_changeList;
@@ -311,7 +280,7 @@ protected:
     Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    std::list<TopologyEngine *> m_topologyEngineList;
+    std::list<TopologyHandler *> m_TopologyHandlerList;
 
 public:
 

@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
-
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa
 {

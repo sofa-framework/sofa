@@ -67,7 +67,7 @@ public:
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
 
     //Pierre-Luc : I added this function to use some functionalities of the mapping component whitout using it as a sofa graph component (protected)
-    virtual void initJacobianBlock( helper::vector<BlockType>& jacobianBlock ) override
+    virtual void initJacobianBlock( type::vector<BlockType>& jacobianBlock ) override
     {
         if(this->f_printLog.getValue()==true)
             std::cout << SOFA_CLASS_METHOD << std::endl;
@@ -186,7 +186,7 @@ protected:
 
     virtual ~CorotationalStrainMapping() { }
 
-    virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, helper::vector<BlockType>& jacobianBlock) override
+    virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, type::vector<BlockType>& jacobianBlock) override
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
@@ -346,7 +346,7 @@ protected:
         if( !f_geometricStiffness.getValue() ) return;
         if(BlockType::constant) return;
 
-        Data<typename Inherit::InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+        Data<typename Inherit::InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get()].write();
         const Data<typename Inherit::InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
         const Data<typename Inherit::OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
 
@@ -356,7 +356,7 @@ protected:
 
         if(this->assemble.getValue())
         {
-            this->K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+            this->K.addMult(parentForceData,parentDisplacementData,sofa::core::mechanicalparams::kFactor(mparams));
         }
         else
         {
@@ -373,7 +373,7 @@ protected:
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
-                    this->jacobian[i].addDForce_qr( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                    this->jacobian[i].addDForce_qr( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
                 }
                 break;
             }
@@ -384,7 +384,7 @@ protected:
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
-                    this->jacobian[i].addDForce_polar( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                    this->jacobian[i].addDForce_polar( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
                 }
                 break;
             }
@@ -395,7 +395,7 @@ protected:
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
-                    this->jacobian[i].addDForce_svd( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                    this->jacobian[i].addDForce_svd( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
                 }
                 break;
             }
@@ -406,7 +406,7 @@ protected:
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
-                    this->jacobian[i].addDForce_frobenius( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                    this->jacobian[i].addDForce_frobenius( parentForce[i], parentDisplacement[i], childForce[i], sofa::core::mechanicalparams::kFactor(mparams) );
                 }
                 break;
             }

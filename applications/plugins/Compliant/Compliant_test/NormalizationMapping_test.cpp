@@ -37,7 +37,7 @@ struct NormalizationMappingTest : public Mapping_test<Mapping>
     typedef NormalizationMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 
@@ -66,13 +66,13 @@ struct NormalizationMappingTest : public Mapping_test<Mapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     component::mapping::NormalizationMapping<defaulttype::Vec3Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(NormalizationMappingTest, DataTypes);
+TYPED_TEST_SUITE(NormalizationMappingTest, DataTypes);
 
 TYPED_TEST( NormalizationMappingTest, test )
 {

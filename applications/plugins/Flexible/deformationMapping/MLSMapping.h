@@ -88,7 +88,7 @@ protected:
     typedef typename mlsinfo::moment moment;
 
     ///< Compute the moment matrix \f$ M = sum w_i.xi*.xi*^T \f$ and its spatial derivatives (xi is the initial spatial position of node i)
-    void computeMLSMatrices(moment& M, defaulttype::Vec<spatial_dimensions, moment>& dM, defaulttype::Mat<spatial_dimensions,spatial_dimensions, moment>& ddM,
+    void computeMLSMatrices(moment& M, type::Vec<spatial_dimensions, moment>& dM, type::Mat<spatial_dimensions,spatial_dimensions, moment>& ddM,
                                 const VRef& index, const InVecCoord& in, const VReal& w, const VGradient& dw, const VHessian& ddw)
     {
         M=moment();
@@ -116,15 +116,15 @@ protected:
 
 
     ///< Compute the mls coordinates \f$ C = w.x*.x*^T M^{-1} p* \f$ and its spatial derivatives (p is the initial spatial position of a material point and x the initial spatial position of a node)
-    void computeMLSCoordinates(basis& P, defaulttype::Vec<spatial_dimensions, basis>& dP, defaulttype::Mat<spatial_dimensions,spatial_dimensions, basis>& ddP,
-                               const moment& Minv, const defaulttype::Vec<spatial_dimensions, moment>& dM, const defaulttype::Mat<spatial_dimensions,spatial_dimensions, moment>& ddM,
+    void computeMLSCoordinates(basis& P, type::Vec<spatial_dimensions, basis>& dP, type::Mat<spatial_dimensions,spatial_dimensions, basis>& ddP,
+                               const moment& Minv, const type::Vec<spatial_dimensions, moment>& dM, const type::Mat<spatial_dimensions,spatial_dimensions, moment>& ddM,
                                const Coord& p0, const InCoord& in, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
         moment XXT=mlsinfo::getCov(ininfo::getCenter(in));
 
         basis P0 = mlsinfo::getBasis(defaulttype::InInfo<Coord>::getCenter(p0));
-        defaulttype::Vec<spatial_dimensions, basis> dP0; for(unsigned int k=0; k<spatial_dimensions; k++ ) dP0[k]=mlsinfo::getBasisGradient(defaulttype::InInfo<Coord>::getCenter(p0),k);
-        defaulttype::Mat<spatial_dimensions,spatial_dimensions, basis> ddP0; for(unsigned int j=0; j<spatial_dimensions; j++ ) for(unsigned int k=0; k<spatial_dimensions; k++ ) ddP0(j,k)=mlsinfo::getBasisHessian(defaulttype::InInfo<Coord>::getCenter(p0),j,k);
+        type::Vec<spatial_dimensions, basis> dP0; for(unsigned int k=0; k<spatial_dimensions; k++ ) dP0[k]=mlsinfo::getBasisGradient(defaulttype::InInfo<Coord>::getCenter(p0),k);
+        type::Mat<spatial_dimensions,spatial_dimensions, basis> ddP0; for(unsigned int j=0; j<spatial_dimensions; j++ ) for(unsigned int k=0; k<spatial_dimensions; k++ ) ddP0(j,k)=mlsinfo::getBasisHessian(defaulttype::InInfo<Coord>::getCenter(p0),j,k);
 
         // P = w.x*.x*^T M^{-1} p0*
         P = XXT*(Minv * P0) * w;
@@ -163,12 +163,12 @@ protected:
         this->jacobian.resize(size);
 
         moment M,Minv;
-        defaulttype::Vec<spatial_dimensions, moment > dM;
-        defaulttype::Mat<spatial_dimensions,spatial_dimensions, moment> ddM;
+        type::Vec<spatial_dimensions, moment > dM;
+        type::Mat<spatial_dimensions,spatial_dimensions, moment> ddM;
 
         basis P;
-        defaulttype::Vec<spatial_dimensions, basis> dP;
-        defaulttype::Mat<spatial_dimensions,spatial_dimensions, basis> ddP;
+        type::Vec<spatial_dimensions, basis> dP;
+        type::Mat<spatial_dimensions,spatial_dimensions, basis> ddP;
 
         for(unsigned int i=0; i<size; i++ )
         {
@@ -197,18 +197,18 @@ protected:
         PointMapperType mapper;
 
         // empty variables (not used in init)
-        typename PointMapperType::OutCoord o(defaulttype::NOINIT);
-        typename PointMapperType::MaterialToSpatial MtoS0(defaulttype::NOINIT);
+        typename PointMapperType::OutCoord o(type::NOINIT);
+        typename PointMapperType::MaterialToSpatial MtoS0(type::NOINIT);
 
         VGradient dw(1);
         VHessian ddw(1);
 
         moment M,Minv;
-        defaulttype::Vec<spatial_dimensions, moment > dM;
-        defaulttype::Mat<spatial_dimensions,spatial_dimensions, moment> ddM;
+        type::Vec<spatial_dimensions, moment > dM;
+        type::Mat<spatial_dimensions,spatial_dimensions, moment> ddM;
         basis P;
-        defaulttype::Vec<spatial_dimensions, basis> dP;
-        defaulttype::Mat<spatial_dimensions,spatial_dimensions, basis> ddP;
+        type::Vec<spatial_dimensions, basis> dP;
+        type::Mat<spatial_dimensions,spatial_dimensions, basis> ddP;
 
         computeMLSMatrices(M,dM,ddM,ref,in0.ref(),w,dw,ddw);
         invertMomentMatrix(Minv,M);
@@ -235,11 +235,11 @@ protected:
         VHessian ddw(1);
 
         moment M,Minv;
-        defaulttype::Vec<spatial_dimensions, moment > dM;
-        defaulttype::Mat<spatial_dimensions,spatial_dimensions, moment> ddM;
+        type::Vec<spatial_dimensions, moment > dM;
+        type::Mat<spatial_dimensions,spatial_dimensions, moment> ddM;
         basis P;
-        defaulttype::Vec<spatial_dimensions, basis> dP;
-        defaulttype::Mat<spatial_dimensions,spatial_dimensions, basis> ddP;
+        type::Vec<spatial_dimensions, basis> dP;
+        type::Mat<spatial_dimensions,spatial_dimensions, basis> ddP;
 
         computeMLSMatrices(M,dM,ddM,ref,in0.ref(),w,dw,ddw);
         invertMomentMatrix(Minv,M);

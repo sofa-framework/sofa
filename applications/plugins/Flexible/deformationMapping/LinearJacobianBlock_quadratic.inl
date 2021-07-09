@@ -23,8 +23,8 @@
 #define FLEXIBLE_LinearJacobianBlock_quadratic_INL
 
 #include "LinearJacobianBlock.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include "../types/AffineTypes.h"
@@ -65,10 +65,10 @@ public:
 
     enum { dim = Out::spatial_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:   \f$ p = w.t + w.A.(A0^{-1}.p0-A0^{-1}.t0)^* = w.t + w.A.q0^*  \f$
@@ -150,12 +150,12 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -172,7 +172,7 @@ public:
     static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
-    Mat<dimq,mdim,Real> PFa;      ///< =   q0^*.grad w.M + w.grad q0^*.M   =  dF/dA
+    type::Mat<dimq,mdim,Real> PFa;      ///< =   q0^*.grad w.M + w.grad q0^*.M   =  dF/dA
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
@@ -182,7 +182,7 @@ public:
         SpatialCoord q0 = inverseInitialTransform.pointToParent(SPos);
         QuadraticCoord vectorInLocalCoordinates = convertSpatialToQuadraticCoord( q0 ); // q0^*
 
-        Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
+        type::Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
         for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
         PFa=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
@@ -250,12 +250,12 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -272,7 +272,7 @@ public:
     static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
-    Mat<dimq,mdim,Real> PFa;      ///< =   q0^*.grad w.M + w.grad q0^*.M   =  dF/dA
+    type::Mat<dimq,mdim,Real> PFa;      ///< =   q0^*.grad w.M + w.grad q0^*.M   =  dF/dA
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
@@ -282,7 +282,7 @@ public:
         SpatialCoord q0 = inverseInitialTransform.pointToParent(SPos);
         QuadraticCoord vectorInLocalCoordinates = convertSpatialToQuadraticCoord( q0 ); // q0^*
 
-        Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
+        type::Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
         for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
         PFa=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
@@ -351,12 +351,12 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
+    typedef type::Vec<mdim,Real> mGradient;
 
     /**
     Mapping:
@@ -373,7 +373,7 @@ public:
     static const bool constant=true;
 
     mGradient Ft;       ///< =   grad w.M     =  d F/dt
-    Mat<dimq,mdim,Real> PFa;      ///< =   q0^*.grad w.M + w.grad q0^*.M   =  dF/dA
+    type::Mat<dimq,mdim,Real> PFa;      ///< =   q0^*.grad w.M + w.grad q0^*.M   =  dF/dA
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
@@ -383,7 +383,7 @@ public:
         SpatialCoord q0 = inverseInitialTransform.pointToParent(SPos);
         QuadraticCoord vectorInLocalCoordinates = convertSpatialToQuadraticCoord( q0 ); // q0^*
 
-        Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
+        type::Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
         for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
         PFa=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
@@ -450,13 +450,13 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,mdim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,mdim,Real> MaterialToSpatial;
 
-    typedef Vec<mdim,Real> mGradient;
-    typedef Mat<dim,mdim,Real> mHessian;
+    typedef type::Vec<mdim,Real> mGradient;
+    typedef type::Mat<dim,mdim,Real> mHessian;
 
     /**
     Mapping:
@@ -477,7 +477,7 @@ public:
 
     mGradient Ft;       ///< =   grad w     =  d F/dt
     mHessian dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
-    Vec<dim+1,Mat<dimq,mdim,Real> > PFdFa;      ///< =   q0.grad w + w.grad q0^*, [q0.(grad2 w)_k^T + (grad w)_k.grad q0^* +  grad q0^*_k.grad w]   =  dF/dA , d (grad F)_k/dA
+    type::Vec<dim+1,type::Mat<dimq,mdim,Real> > PFdFa;      ///< =   q0.grad w + w.grad q0^*, [q0.(grad2 w)_k^T + (grad w)_k.grad q0^* +  grad q0^*_k.grad w]   =  dF/dA , d (grad F)_k/dA
 
     void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
@@ -489,13 +489,13 @@ public:
         SpatialCoord q0 = inverseInitialTransform.pointToParent(SPos);
         QuadraticCoord vectorInLocalCoordinates = convertSpatialToQuadraticCoord( q0 ); // q0^*
 
-        Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
+        type::Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
         for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
         PFdFa[0]=covMN(vectorInLocalCoordinates,Ft) + gradQ0 * F0 * w;
 
-        Mat<dim,dimq,Real> gradQ0T = gradQ0.transposed();
-        Mat<dimq,mdim> gradQ0M; for (unsigned int k = 0; k < dimq; ++k) gradQ0M[k]=F0.transposed()*gradQ0[k];
+        type::Mat<dim,dimq,Real> gradQ0T = gradQ0.transposed();
+        type::Mat<dimq,mdim> gradQ0M; for (unsigned int k = 0; k < dimq; ++k) gradQ0M[k]=F0.transposed()*gradQ0[k];
         for (unsigned int k = 0; k < dim; ++k) PFdFa[k+1] = covMN( vectorInLocalCoordinates, dFt[k]) + gradQ0M * dw[k] + covMN(gradQ0T[k],Ft);
     }
 
@@ -570,10 +570,10 @@ public:
 
     enum { dim = Out::spatial_dimensions };
 
-    typedef Vec<dim,Real> Gradient;
-    typedef Mat<dim,dim,Real> Hessian;
-    typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
+    typedef type::Vec<dim,Real> Gradient;
+    typedef type::Mat<dim,dim,Real> Hessian;
+    typedef type::Vec<dim, Real> SpatialCoord;
+    typedef type::Mat<dim,dim,Real> MaterialToSpatial;
 
     /**
     Mapping:
@@ -592,7 +592,7 @@ public:
 
     Real Pt;      ///< =   w         =  dp/dt
     QuadraticCoord Pa;   ///< =  w.q0^*      =  dp/dA
-    Mat<dimq,dim,Real> PFa;      ///< =   w.grad F0^*.M   =  dF/dA
+    type::Mat<dimq,dim,Real> PFa;      ///< =   w.grad F0^*.M   =  dF/dA
 
     void init( const InCoord& InPos, const OutCoord& OutPos, const SpatialCoord& /*SPos*/, const MaterialToSpatial& /*M*/, const Real& w, const Gradient& /*dw*/, const Hessian& /*ddw*/)
     {
@@ -603,7 +603,7 @@ public:
         SpatialCoord q0 = inverseInitialTransform.pointToParent(OutPos.getCenter());
         QuadraticCoord vectorInLocalCoordinates = convertSpatialToQuadraticCoord( q0 ); // q0^*
 
-        Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
+        type::Mat<dimq,dim,Real> gradQ0 = SpatialToQuadraticCoordGradient (q0) ;  // grad q0^*
         for (unsigned int i=0; i<dim; ++i) for (unsigned int j=0; j<dim; ++j) gradQ0[i][j]=inverseInitialTransform.getAffine()[i][j];
 
         Pa=vectorInLocalCoordinates*Pt;

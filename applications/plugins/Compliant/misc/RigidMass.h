@@ -3,12 +3,11 @@
 
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
-
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include "../utils/se3.h"
 #include "../utils/map.h"
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/Axis.h>
 
 namespace sofa
 {
@@ -43,8 +42,8 @@ public:
 	SOFA_CLASS(SOFA_TEMPLATE(RigidMass, DataTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 	
 	typedef typename DataTypes::Real real;
-	typedef helper::vector<real> mass_type;
-	typedef helper::vector< defaulttype::Vec<3, real> > inertia_type;
+	typedef type::vector<real> mass_type;
+	typedef type::vector< type::Vec<3, real> > inertia_type;
 	
 	Data<mass_type> mass; ///< mass of each rigid body
 	Data<inertia_type> inertia; ///< inertia of each rigid body
@@ -110,7 +109,6 @@ public:
 	typedef core::objectmodel::Data<VecCoord> DataVecCoord;
 	typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-#ifndef SOFA_NO_OPENGL
     void draw(const core::visual::VisualParams* vparams) override {
 		
         if ( !vparams->displayFlags().getShowBehaviorModels() || !_draw.getValue() )
@@ -125,18 +123,15 @@ public:
             const real& m11 = inertia.getValue()[index][1];
             const real& m22 = inertia.getValue()[index][2];
 			
-            defaulttype::Vec3d len;
+            type::Vec3d len;
             len[0] = std::sqrt(m11+m22-m00);
             len[1] = std::sqrt(m00+m22-m11);
             len[2] = std::sqrt(m00+m11-m22);
 
-#ifndef SOFA_NO_OPENGL
-            helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
-#endif
+            vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), len);
         }
 		
 	}
-#endif
 
 	void addForce(const core::MechanicalParams* , 
 	              DataVecDeriv& _f, 
@@ -208,7 +203,7 @@ public:
                                const DataVecCoord& _x  ) const override {
 		helper::ReadAccessor< DataVecCoord >  x(_x);
 				
-		defaulttype::Vec3d g ( this->getContext()->getGravity() );
+		type::Vec3d g ( this->getContext()->getGravity() );
 
         SReal res = 0;
 
@@ -251,7 +246,7 @@ public:
 		sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix( this->mstate );
 		const unsigned size = defaulttype::DataTypeInfo<typename DataTypes::Deriv>::size();
 
-        real mFactor = (real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+        real mFactor = (real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
 		
 		for(unsigned i = 0, n = this->mstate->getSize(); i < n; ++i) {
 
@@ -281,6 +276,8 @@ public:
 		}
 		
     }
+
+    bool isDiagonal() const override { return false; }
 
 };
 

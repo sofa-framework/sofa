@@ -46,12 +46,8 @@ namespace sofa {
 
 
 ////////////////////////////////// DECLARATION /////////////////////////////////////////////////////
-namespace sofa
+namespace sofa::component
 {
-
-namespace component
-{
-
 namespace _stlexporter_
 {
 
@@ -68,8 +64,8 @@ public:
 
     Data<bool> d_binaryFormat;      //0 for Ascii Formats, 1 for Binary File Format
     Data<defaulttype::Vec3Types::VecCoord>               d_position; ///< points coordinates
-    Data< helper::vector< BaseMeshTopology::Triangle > > d_triangle; ///< triangles indices
-    Data< helper::vector< BaseMeshTopology::Quad > >     d_quad; ///< quads indices
+    Data< type::vector< BaseMeshTopology::Triangle > > d_triangle; ///< triangles indices
+    Data< type::vector< BaseMeshTopology::Quad > >     d_quad; ///< quads indices
 
     void doInit() override ;
     void doReInit() override ;
@@ -90,20 +86,19 @@ private:
     VisualModel*         m_inputvmodel   {nullptr};
 };
 
-} /// _stlexporter_
-
-//todo(18.06): remove the old namespaces...
-/// Import the object in the "old" namespace to allow smooth update of code base.
-namespace misc {
-    using _stlexporter_::STLExporter ;
-}
+} // namespace _stlexporter_
 
 namespace exporter {
-    using _stlexporter_::STLExporter ;
-}
+    using STLExporter = _stlexporter_::STLExporter;
+} // namespace exporter
 
-}
+// Import the object in the "old" namespaces to allow smooth update of code base.
+namespace misc {
+    using STLExporter
+        SOFA_ATTRIBUTE_DEPRECATED("v17.12 (PR#372)", "v21.12", "Use sofa::component::STLExporter instead.")
+        = _stlexporter_::STLExporter;
+} // namespace misc
 
-}
+} // namespace sofa::component
 
 #endif /* STLEXPORTER_H_ */

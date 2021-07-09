@@ -76,37 +76,54 @@ std::string cleanPath( const std::string& path )
 
 // Initialize PluginRepository and DataRepository
 #ifdef WIN32
-FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getExecutableDirectory().c_str() );
+FileRepository PluginRepository(
+    "SOFA_PLUGIN_PATH",
+    {
+        Utils::getSofaPathTo("bin"),
+        Utils::getSofaPathTo("plugins"),
+        Utils::getExecutableDirectory(),
+    }
+);
 #else
-FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getSofaPathTo("lib").c_str() );
+FileRepository PluginRepository(
+    "SOFA_PLUGIN_PATH",
+    {
+        Utils::getSofaPathTo("plugins"),
+        Utils::getSofaPathTo("lib"),
+    }
+);
 #endif
-FileRepository DataRepository( "SOFA_DATA_PATH", 0, {
-                                   { Utils::getSofaPathTo("etc/sofa.ini"), {"SHARE_DIR", "EXAMPLES_DIR"} }
-                               });
+FileRepository DataRepository(
+    "SOFA_DATA_PATH",
+    {
+        Utils::getSofaPathTo("share/sofa"),
+        Utils::getSofaPathTo("share/sofa/examples")
+    },
+    {
+        { Utils::getSofaPathTo("etc/sofa.ini"), {"SHARE_DIR", "EXAMPLES_DIR"} }
+    }
+);
 
-
-FileRepository::FileRepository(const char* envVar, const char* relativePath, const fileKeysMap& iniFilesAndKeys)
-{
+FileRepository::FileRepository(const char* envVar, const std::vector<std::string> & paths, const fileKeysMap& iniFilesAndKeys) {
     if (envVar != nullptr && envVar[0]!='\0')
     {
         const char* envpath = getenv(envVar);
         if (envpath != nullptr && envpath[0]!='\0')
             addFirstPath(envpath);
     }
-    if (relativePath != nullptr && relativePath[0]!='\0')
-    {
-        std::string path = relativePath;
-        size_t p0 = 0;
-        while ( p0 < path.size() )
-        {
-            size_t p1 = path.find(entrySeparator(),p0);
-            if (p1 == std::string::npos) p1 = path.size();
-            if (p1>p0+1)
-            {
-                std::string p = path.substr(p0,p1-p0);
-                addLastPath(SetDirectory::GetRelativeFromProcess(p.c_str()));
+
+    for (const auto & path : paths) {
+        if (!path.empty()) {
+            size_t p0 = 0;
+            while (p0 < path.size()) {
+                size_t p1 = path.find(entrySeparator(), p0);
+                if (p1 == std::string::npos) p1 = path.size();
+                if (p1 > p0 + 1) {
+                    std::string p = path.substr(p0, p1 - p0);
+                    addLastPath(SetDirectory::GetRelativeFromProcess(p.c_str()));
+                }
+                p0 = p1 + 1;
             }
-            p0 = p1+1;
         }
     }
     if ( !iniFilesAndKeys.empty() )
@@ -129,7 +146,7 @@ FileRepository::FileRepository(const char* envVar, const char* relativePath, con
                 }
 
                 const std::string& absoluteDir = SetDirectory::GetRelativeFromProcess(lineDir.c_str());
-                if ( FileSystem::isDirectory(absoluteDir) )
+                if ( FileSystem::exists(absoluteDir) && FileSystem::isDirectory(absoluteDir) )
                 {
                     addFirstPath(absoluteDir);
                 }
@@ -226,7 +243,16 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 {
     if (filename.empty()) return false; // no filename
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
-    boost::filesystem::path::imbue(std::locale(""));
+    std::locale locale;
+    try
+    {
+        locale = std::locale("en_US.UTF-8");
+    }
+    catch (const std::exception & e)
+    {
+        locale = std::locale("");
+    }
+    boost::filesystem::path::imbue(locale);
     boost::filesystem::path p(newfname);
     if (boost::filesystem::exists(p))
     {
@@ -301,7 +327,7 @@ const std::string FileRepository::getPathsJoined()
 }
 
 /*static*/
-std::string FileRepository::relativeToPath(std::string path, std::string refPath, bool doLowerCaseOnWin32)
+std::string FileRepository::relativeToPath(std::string path, std::string refPath)
 {
     /// This condition replace the #ifdef in the code.
     /// The advantage is that the code is compiled and is
@@ -318,25 +344,14 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
 
     /// WIN32 is a pain here because of mixed case formatting with randomly
     /// picked slash and backslash to separate dirs.
-    ///TODO(dmarchal 2017-05-01): remove the deprecated part in one year.
     std::string tmppath;
     std::replace(path.begin(),path.end(),'\\' , '/' );
     std::replace(refPath.begin(),refPath.end(),'\\' , '/' );
 
     std::transform(refPath.begin(), refPath.end(), refPath.begin(), ::tolower );
 
-    if( doLowerCaseOnWin32 )
-    {
-        dmsg_deprecated("FileRepository") << "Using relativePath(doLowerCaseOnWin32=true) is a deprecated behavior since 2017-05-01. "
-                                             "This behavior will be removed in 2018-05-01 and you need to update your code to use new "
-                                             "API";
-        /// The complete path is lowered... and copied into the tmppath;
-        std::transform(path.begin(), path.end(), path.begin(), ::tolower );
-        tmppath = path ;
-    }else{
-        tmppath = path ;
-        std::transform(tmppath.begin(), tmppath.end(), tmppath.begin(), ::tolower );
-    }
+    tmppath = path ;
+    std::transform(tmppath.begin(), tmppath.end(), tmppath.begin(), ::tolower );
 
     std::string::size_type loc = tmppath.find( refPath, 0 );
     if (loc==0)

@@ -124,8 +124,8 @@ public:
     ///
     /// This method retrieves the positions and velocity vectors and call the internal
     /// getMomentum(const MechanicalParams*, const VecCoord&, const VecDeriv&) method implemented by the component.
-    defaulttype::Vector6 getMomentum( const MechanicalParams* mparams ) const override;
-    virtual defaulttype::Vector6 getMomentum( const MechanicalParams* , const DataVecCoord& , const DataVecDeriv&  ) const;
+    type::Vector6 getMomentum( const MechanicalParams* mparams ) const override;
+    virtual type::Vector6 getMomentum( const MechanicalParams* , const DataVecCoord& , const DataVecDeriv&  ) const;
 
 
 
@@ -149,7 +149,7 @@ public:
     void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /// addMBKToMatrix only on the subMatrixIndex
-    void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> subMatrixIndex) override;
+    void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> subMatrixIndex) override;
 
     /// @}
 
@@ -165,8 +165,8 @@ public:
 
 
     /// recover the mass of an element
-    SReal getElementMass(unsigned int) const override;
-    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
+    SReal getElementMass(sofa::Index) const override;
+    void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const override;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files

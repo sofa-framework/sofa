@@ -21,30 +21,19 @@
 ******************************************************************************/
 #include "MeshExporter.h"
 
-#include <sstream>
 #include <iomanip>
 #include <fstream>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 using sofa::core::objectmodel::ComponentState ;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace _meshexporter_
+namespace sofa::component::_meshexporter_
 {
 
 int MeshExporterClass = core::RegisterObject("Export topology and positions into file. " msgendl
@@ -53,11 +42,13 @@ int MeshExporterClass = core::RegisterObject("Export topology and positions into
                                              "- vtk" msgendl
                                              "- netgen" msgendl
                                              "- teten" msgendl
-                                             "- gmsh" msgendl)
+                                             "- gmsh" msgendl
+                                             "- obj" msgendl)
+
         .add< MeshExporter >();
 
 MeshExporter::MeshExporter()
-    : d_fileFormat( initData(&d_fileFormat, sofa::helper::OptionsGroup(6,"ALL","vtkxml","vtk","netgen","tetgen","gmsh"), "format", "File format to use"))
+    : d_fileFormat( initData(&d_fileFormat, sofa::helper::OptionsGroup(7,"ALL","vtkxml","vtk","netgen","tetgen","gmsh","obj"), "format", "File format to use"))
     , d_position( initData(&d_position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
     , d_writeEdges( initData(&d_writeEdges, true, "edges", "write edge topology"))
     , d_writeTriangles( initData(&d_writeTriangles, true, "triangles", "write triangle topology"))
@@ -124,6 +115,7 @@ bool MeshExporter::writeMesh()
     const bool netgen = all || (format == 3);
     const bool tetgen = all || (format == 4);
     const bool gmsh   = all || (format == 5);
+    const bool obj    = all || (format == 6);
     msg_info() << "Exporting a mesh in '" << getMeshFilename("") << "'" << msgendl
                << "-" << d_position.getValue().size() << " points" << msgendl
                << "-" << m_inputtopology->getNbEdges() << " edges" << msgendl
@@ -143,6 +135,8 @@ bool MeshExporter::writeMesh()
         res = writeMeshTetgen();
     if (gmsh)
         res = writeMeshGmsh();
+    if (obj)
+        res = writeMeshObj();
 
     return res ;
 }
@@ -247,28 +241,28 @@ bool MeshExporter::writeMeshVTKXML()
     outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">\n";
     if (d_writeEdges.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbEdges() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbEdges() ; i++)
             outfile << "          " << m_inputtopology->getEdge(i) << "\n";
     }
 
     if (d_writeTriangles.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
             outfile << "          " <<  m_inputtopology->getTriangle(i) << "\n";
     }
     if (d_writeQuads.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbQuads() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbQuads() ; i++)
             outfile << "          " << m_inputtopology->getQuad(i) << "\n";
     }
     if (d_writeTetras.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbTetras() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTetras() ; i++)
             outfile << "          " <<  m_inputtopology->getTetra(i) << "\n";
     }
     if (d_writeHexas.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbHexas() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbHexas() ; i++)
             outfile << "          " <<  m_inputtopology->getHexa(i) << "\n";
     }
     outfile << "        </DataArray>\n";
@@ -278,7 +272,7 @@ bool MeshExporter::writeMeshVTKXML()
     outfile << "          ";
     if (d_writeEdges.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbEdges() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbEdges() ; i++)
         {
             num += 2;
             outfile << num << ' ';
@@ -286,7 +280,7 @@ bool MeshExporter::writeMeshVTKXML()
     }
     if (d_writeTriangles.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
         {
             num += 3;
             outfile << num << ' ';
@@ -294,7 +288,7 @@ bool MeshExporter::writeMeshVTKXML()
     }
     if (d_writeQuads.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbQuads() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbQuads() ; i++)
         {
             num += 4;
             outfile << num << ' ';
@@ -302,7 +296,7 @@ bool MeshExporter::writeMeshVTKXML()
     }
     if (d_writeTetras.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbTetras() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTetras() ; i++)
         {
             num += 4;
             outfile << num << ' ';
@@ -310,7 +304,7 @@ bool MeshExporter::writeMeshVTKXML()
     }
     if (d_writeHexas.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbHexas() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbHexas() ; i++)
         {
             num += 6;
             outfile << num << ' ';
@@ -323,27 +317,27 @@ bool MeshExporter::writeMeshVTKXML()
     outfile << "          ";
     if (d_writeEdges.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbEdges() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbEdges() ; i++)
             outfile << 3 << ' ';
     }
     if (d_writeTriangles.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
             outfile << 5 << ' ';
     }
     if (d_writeQuads.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbQuads() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbQuads() ; i++)
             outfile << 9 << ' ';
     }
     if (d_writeTetras.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbTetras() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTetras() ; i++)
             outfile << 10 << ' ';
     }
     if (d_writeHexas.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbHexas() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbHexas() ; i++)
             outfile << 12 << ' ';
     }
     outfile << "\n";
@@ -417,29 +411,29 @@ bool MeshExporter::writeMeshVTK()
 
     if (d_writeEdges.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbEdges() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbEdges() ; i++)
             outfile << 2 << ' ' << m_inputtopology->getEdge(i) << "\n";
     }
 
     if (d_writeTriangles.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
             outfile << 3 << ' ' <<  m_inputtopology->getTriangle(i) << "\n";
     }
     if (d_writeQuads.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbQuads() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbQuads() ; i++)
             outfile << 4 << ' ' << m_inputtopology->getQuad(i) << "\n";
     }
 
     if (d_writeTetras.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbTetras() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTetras() ; i++)
             outfile << 4 << ' ' <<  m_inputtopology->getTetra(i) << "\n";
     }
     if (d_writeHexas.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbHexas() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbHexas() ; i++)
             outfile << 8 << ' ' <<  m_inputtopology->getHexa(i) << "\n";
     }
 
@@ -447,29 +441,29 @@ bool MeshExporter::writeMeshVTK()
 
     if (d_writeEdges.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbEdges() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbEdges() ; i++)
             outfile << 3 << "\n";
     }
 
     if (d_writeTriangles.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
             outfile << 5 << "\n";
     }
     if (d_writeQuads.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbQuads() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbQuads() ; i++)
             outfile << 9 << "\n";
     }
 
     if (d_writeTetras.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbTetras() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTetras() ; i++)
             outfile << 10 << "\n";
     }
     if (d_writeHexas.getValue())
     {
-        for (size_t i=0 ; i<m_inputtopology->getNbHexas() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbHexas() ; i++)
             outfile << 12 << "\n";
     }
     msg_info() << filename << " written. " ;
@@ -522,18 +516,12 @@ bool MeshExporter::writeMeshGmsh()
             +( (d_writeQuads.getValue()) ? m_inputtopology->getNbQuads() : 0 )
             +( (d_writeTetras.getValue()) ? m_inputtopology->getNbTetras() : 0 )
             +( (d_writeHexas.getValue()) ? m_inputtopology->getNbHexas() : 0 );
-    /*totalSize =     ( (writeEdges.getValue()) ? 3 * topology->getNbEdges() : 0 )
-            +( (writeTriangles.getValue()) ? 4 *topology->getNbTriangles() : 0 )
-            +( (writeQuads.getValue()) ? 5 *topology->getNbQuads() : 0 )
-            +( (writeTetras.getValue()) ? 5 *topology->getNbTetras() : 0 )
-            +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );*/
-
 
     outfile << numberOfCells << "\n";
     unsigned int elem = 0;
     if (d_writeEdges.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbEdges() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbEdges() ; i++)
         {
             outfile << ++elem << ' ' << 1 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Edge t = m_inputtopology->getEdge(i);
@@ -545,7 +533,7 @@ bool MeshExporter::writeMeshGmsh()
 
     if (d_writeTriangles.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
         {
             outfile << ++elem << ' ' << 2 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Triangle t = m_inputtopology->getTriangle(i);
@@ -556,7 +544,7 @@ bool MeshExporter::writeMeshGmsh()
     }
     if (d_writeQuads.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbQuads() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbQuads() ; i++)
         {
             outfile << ++elem << ' ' << 3 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Quad t = m_inputtopology->getQuad(i);
@@ -568,7 +556,7 @@ bool MeshExporter::writeMeshGmsh()
 
     if (d_writeTetras.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbTetras() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTetras() ; i++)
         {
             outfile << ++elem << ' ' << 4 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Tetra t = m_inputtopology->getTetra(i);
@@ -579,7 +567,7 @@ bool MeshExporter::writeMeshGmsh()
     }
     if (d_writeHexas.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbHexas() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbHexas() ; i++)
         {
             outfile << ++elem << ' ' << 5 << ' ' << 0;
             sofa::core::topology::BaseMeshTopology::Hexa t = m_inputtopology->getHexa(i);
@@ -626,7 +614,7 @@ bool MeshExporter::writeMeshNetgen()
     outfile << ((d_writeTetras.getValue()) ? m_inputtopology->getNbTetras() : 0) << "\n";
     if (d_writeTetras.getValue())
     {
-        for (unsigned int i=0 ; i<m_inputtopology->getNbTetras() ; i++)
+        for (Index i=0 ; i<m_inputtopology->getNbTetras() ; i++)
         {
             sofa::core::topology::BaseMeshTopology::Tetra t = m_inputtopology->getTetra(i);
             outfile << 0; // subdomain
@@ -646,7 +634,7 @@ bool MeshExporter::writeMeshNetgen()
         }
         else
         {
-            for (unsigned int i=0; i<m_inputtopology->getNbTriangles(); ++i)
+            for (Index i=0; i<m_inputtopology->getNbTriangles(); ++i)
             {
                 if (m_inputtopology->getTetrahedraAroundTriangle(i).size() < 2)
                     ++nbtri;
@@ -658,7 +646,7 @@ bool MeshExporter::writeMeshNetgen()
     {
         if (m_inputtopology->getNbTetras() == 0)
         {
-            for (unsigned int i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
+            for (Index i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
             {
                 sofa::core::topology::BaseMeshTopology::Triangle t = m_inputtopology->getTriangle(i);
                 outfile << 0; // subdomain
@@ -669,7 +657,7 @@ bool MeshExporter::writeMeshNetgen()
         }
         else
         {
-            for (unsigned int i=0; i<m_inputtopology->getNbTriangles(); ++i)
+            for (Index i=0; i<m_inputtopology->getNbTriangles(); ++i)
             {
                 if (m_inputtopology->getTetrahedraAroundTriangle(i).size() < 2)
                     ++nbtri;
@@ -738,7 +726,7 @@ bool MeshExporter::writeMeshTetgen()
         // <tetrahedron #> <node> <node> <node> <node> ... [attributes]
         if (d_writeTetras.getValue())
         {
-            for (unsigned int i=0 ; i<m_inputtopology->getNbTetras() ; i++)
+            for (Index i=0 ; i<m_inputtopology->getNbTetras() ; i++)
             {
                 sofa::core::topology::BaseMeshTopology::Tetra t = m_inputtopology->getTetra(i);
                 // check tetra inversion
@@ -777,7 +765,7 @@ bool MeshExporter::writeMeshTetgen()
             }
             else
             {
-                for (unsigned int i=0; i<m_inputtopology->getNbTriangles(); ++i)
+                for (Index i=0; i<m_inputtopology->getNbTriangles(); ++i)
                 {
                     if (m_inputtopology->getTetrahedraAroundTriangle(i).size() < 2)
                         ++nbtri;
@@ -789,7 +777,7 @@ bool MeshExporter::writeMeshTetgen()
         // <face #> <node> <node> <node> [boundary marker]
         if (m_inputtopology->getNbTetras() == 0)
         {
-            for (unsigned int i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
+            for (Index i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
             {
                 sofa::core::topology::BaseMeshTopology::Triangle t = m_inputtopology->getTriangle(i);
                 outfile << 1+i; // id
@@ -800,7 +788,7 @@ bool MeshExporter::writeMeshTetgen()
         }
         else
         {
-            for (unsigned int i=0; i<m_inputtopology->getNbTriangles(); ++i)
+            for (Index i=0; i<m_inputtopology->getNbTriangles(); ++i)
             {
                 if (m_inputtopology->getTetrahedraAroundTriangle(i).size() < 2)
                     ++nbtri;
@@ -817,30 +805,87 @@ bool MeshExporter::writeMeshTetgen()
     return true;
 }
 
-void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
+bool MeshExporter::writeMeshObj()
 {
-    if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
+    if(d_componentState.getValue() != ComponentState::Valid)
+        return false;
+
+    std::string filename = getMeshFilename(".obj");
+
+    std::ofstream outfile(filename.c_str());
+    if( !outfile.is_open() )
     {
-        sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
-        switch(ev->getKey())
+        msg_error() << "Unable to create file '"<<filename << "'";
+        return false;
+    }
+
+    outfile << std::setprecision (9);
+
+    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = d_position;
+
+    const size_t nbp = pointsPos.size();
+
+    //Write header
+    outfile << "#Export in obj format from SOFA\n";
+    outfile << "#";
+
+    outfile << "\n";
+    outfile << "o " << d_filename.getValue() << "\n";
+    outfile << "\n";
+
+    //Write Points
+    outfile << "#Points (total = "<<nbp<<" pts)\n";
+    for (size_t i=0 ; i<nbp; i++)
+    {
+        outfile << "v " << pointsPos[i] << "\n";
+    }
+    outfile << "\n";
+
+    //Write Edges
+    if (d_writeEdges.getValue())
+    {
+        for (Index i=0 ; i<m_inputtopology->getNbEdges() ; i++)
         {
-        case 'E':
-        case 'e':
-            //done(18.12) really remove the behavior and write a message explaining the proper design.
-            //done(17.12) wrote a message to discourage the use of this behavior
-            msg_deprecated() << "Writing the mesh by pressing key is now removed from Sofa."
-                                "To implement component or scene specific interaction it is better to implement it "
-                                "using an external C++ controller or pythonScriptController."
-                                "Ask to the sofa forum for help if needed.";
-            //writeMesh();
-            break;
+            outfile << 'l';
+            sofa::core::topology::BaseMeshTopology::Edge t = m_inputtopology->getEdge(i);
+            for (unsigned int j=0; j<t.size(); ++j)
+                outfile << ' ' << 1+t[j];
+            outfile << "\n";
         }
     }
-      BaseSimulationExporter::handleEvent(event);
+
+    //Write Triangles OR quads
+    if (d_writeTriangles.getValue())
+    {
+        for (Index i=0 ; i<m_inputtopology->getNbTriangles() ; i++)
+        {
+            outfile << 'f';
+            sofa::core::topology::BaseMeshTopology::Triangle t = m_inputtopology->getTriangle(i);
+            for (unsigned int j=0; j<t.size(); ++j)
+                outfile << ' ' << 1+t[j];
+            outfile << "\n";
+        }
+    }
+    else if (d_writeQuads.getValue())
+    {
+        for (Index i=0 ; i<m_inputtopology->getNbQuads() ; i++)
+        {
+            outfile << 'f';
+            sofa::core::topology::BaseMeshTopology::Quad t = m_inputtopology->getQuad(i);
+            for (unsigned int j=0; j<t.size(); ++j)
+                outfile << ' ' << 1+t[j];
+            outfile << "\n";
+        }
+    }
+
+    outfile.close();
+    msg_info() << filename << " written." ;
+    return true ;
 }
 
-} // namespace misc
+void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
+{
+    BaseSimulationExporter::handleEvent(event);
+}
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::_meshexporter_

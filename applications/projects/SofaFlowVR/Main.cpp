@@ -31,8 +31,8 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/type/Mat.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -44,11 +44,9 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
-#include <SofaSimulationTree/init.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
-#include <SofaBaseCollision/BruteForceDetection.h>
 #include <SofaMain/init.h>
 
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -59,7 +57,7 @@
 #endif
 
 #include <sofa/gui/config.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/helper/system/glut.h>
 
 using sofa::helper::system::thread::CTime;
@@ -80,13 +78,13 @@ namespace Type
 {
 
 template<int N, typename real>
-Type get(const sofa::defaulttype::Vec<N,real>&)
+Type get(const sofa::type::Vec<N,real>&)
 {
     return (Type)vector(get(real()),N);
 }
 
 template<int L, int C, typename real>
-Type get(const sofa::defaulttype::Mat<L,C,real>&)
+Type get(const sofa::type::Mat<L,C,real>&)
 {
     return (Type)matrix(get(real()),L,C);
 }
@@ -393,8 +391,8 @@ public:
     sofa::component::container::MechanicalObject<Vec3Types> * newPoints;
     sofa::component::collision::PointModel * newPointsCM;
     sofa::component::collision::MinProximityIntersection * intersection;
-    sofa::component::collision::BruteForceDetection * detection;
-    sofa::helper::vector<double> newPointsDist;
+    sofa::component::collision::BVHNarrowPhase * narrowPhase;
+    sofa::type::vector<double> newPointsDist;
 
     Mat4x4f matrix;
     int facetsLastIt;
@@ -406,7 +404,10 @@ public:
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
         , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
         , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
-        , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
+        , newPointsNode(nullptr)
+        , newPointsCM(nullptr)
+        , intersection(nullptr)
+        , narrowPhase(nullptr)
         , facetsLastIt(-20), pointsLastIt(-20), matrixLastIt(-20), motionLastTime(-1000)
     {
         matrix.identity();
@@ -442,8 +443,8 @@ public:
             intersection->setAlarmDistance(maxVDist.getValue());
             intersection->setContactDistance(0); //maxVDist.getValue());
 
-            newPointsNode->addObject ( detection = new sofa::component::collision::BruteForceDetection );
-            detection->setIntersectionMethod(intersection);
+            newPointsNode->addObject ( narrowPhase = new sofa::component::collision::BVHNarrowPhase );
+            narrowPhase->setIntersectionMethod(intersection);
 
             newPointsNode->execute<sofa::simulation::InitVisitor>();
         }
@@ -539,16 +540,16 @@ public:
                     intersection->setContactDistance(0);
                     newPointsCM->computeBoundingTree( 6 ); // compute a bbox tree of depth 6
                     //std::cout << "computeV: "<<newPointsCM->end().getIndex()<<" points"<<std::endl;
-                    detection->beginNarrowPhase();
+                    narrowPhase->beginNarrowPhase();
                     for (CMIterator it = node->collisionModel.begin(), itend = node->collisionModel.end(); it != itend ; ++it)
                     {
                         sofa::core::CollisionModel* cm2 = *it;
                         std::cout << "computeV: narrow phase detection with "<<cm2->getClassName()<<std::endl;
-                        detection->addCollisionPair(std::make_pair(newPointsCM->getFirst(), cm2->getFirst()));
-                        //detection->addCollisionPair(std::make_pair(cm2, newPointsCM));
+                        narrowPhase->addCollisionPair(std::make_pair(newPointsCM->getFirst(), cm2->getFirst()));
+                        //narrowPhase->addCollisionPair(std::make_pair(cm2, newPointsCM));
                     }
                     {
-                        sofa::core::collision::NarrowPhaseDetection::DetectionOutputMap& contactMap = detection->getDetectionOutputs();
+                        const auto& contactMap = narrowPhase->getDetectionOutputs();
                         int ncollisions = 0;
                         for (sofa::core::collision::NarrowPhaseDetection::DetectionOutputMap::iterator it1 = contactMap.begin(); it1 != contactMap.end(); ++it1)
                         {
@@ -920,9 +921,9 @@ public:
 int FlowVRInputDistanceGridClass = sofa::core::RegisterObject("Import a distance field from a FlowVR InputPort")
         .add< FlowVRInputDistanceGrid<sofa::component::collision::RigidDistanceGridCollisionModel,sofa::component::collision::DistanceGrid> >()
 #ifdef SOFA_GPU_CUDA
-        .add< FlowVRInputDistanceGrid<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,sofa::gpu::cuda::CudaDistanceGrid> >()
+.add< FlowVRInputDistanceGrid<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,sofa::gpu::cuda::CudaDistanceGrid> >()
 #endif
-        ;
+;
 
 class FlowVRRenderEvent : public FlowVREvent
 {
@@ -1254,9 +1255,6 @@ public:
         : vShader(initData(&vShader, std::string(""), "vshader", "vertex shader name"))
         , pShader(initData(&pShader, std::string(""), "pshader", "pixel shader name"))
         , useTangent(initData(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
-//    , color(initData(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
-//    , topology(NULL)
-//    , mmodel(NULL)
         , idP(0)
         , idVB(0)
         , idVBN(0)
@@ -1268,7 +1266,6 @@ public:
         , idTex(0)
         , posModified(true)
         , meshModified(true)
-//    , lastMeshRev(-1)
         , lastPosRev(-1)
     {
     }
@@ -1391,7 +1388,6 @@ public:
             if (material.getValue().useDiffuse) for (int i=0; i<3; i++) diffuse[i] = (float)material.getValue().diffuse[i];
             if (material.getValue().useSpecular) for (int i=0; i<3; i++) specular[i] = (float)material.getValue().specular[i];
             specular[3] = material.getValue().shininess;
-            //scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "color", color); //ftl::Vec4f(1, 1, 1, 0.5));
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_ambient" , ambient );
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_diffuse" , diffuse );
             if (useSpecular)
@@ -1453,9 +1449,6 @@ public:
                 }
             }
 
-            // SOFA = trans + scale * FLOWVR
-            // FLOWVR = SOFA * 1/scale - trans * 1/scale
-
             const Vec3f trans = mod->f_trans.getValue();
             const float scale = mod->f_scale.getValue();
             const float inv_scale = 1/scale;
@@ -1486,7 +1479,6 @@ public:
                 if (!idVBN)
                 {
                     *scratch = false;
-                    //idVBN = module->generateID();
                     idVBN = addVertexBuffer(scene);
                     scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "normal", idVBN);
                     scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "normal", 0);
@@ -1497,20 +1489,16 @@ public:
                 memcpy(vb->data(), &(n[0]), vb->dataSize());
             }
 
-            const sofa::helper::vector<TexCoord>& t = vtexcoords;
+            const sofa::type::vector<TexCoord>& t = vtexcoords;
             if (!t.empty() && !idVBT) // only send texcoords once
             {
-                if (!idVBT)
-                {
-                    *scratch = false;
-                    //idVBT = module->generateID();
-                    idVBT = addVertexBuffer(scene);
-                    scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "texcoord0", idVBT);
-                    scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "texcoord0", 0);
-                }
+                *scratch = false;
+                idVBT = addVertexBuffer(scene);
+                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "texcoord0", idVBT);
+                scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "texcoord0", 0);
+
                 int types[1] = { ftl::Type::get(t[0]) };
                 flowvr::render::ChunkVertexBuffer* vb = scene->addVertexBuffer(idVBT, n.size(), 1, types, bb);
-                //vb->gen = lastPosRev;
                 memcpy(vb->data(), &(t[0]), vb->dataSize());
             }
 
@@ -1524,12 +1512,11 @@ public:
                     scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "tangent", 0);
                 }
 
-                sofa::helper::vector<Vec4f> tangent; tangent.resize(t.size());
-                sofa::helper::vector<Coord> tangent1; tangent1.resize(t.size());
-                sofa::helper::vector<Coord> tangent2; tangent2.resize(t.size());
+                sofa::type::vector<Vec4f> tangent; tangent.resize(t.size());
+                sofa::type::vector<Coord> tangent1; tangent1.resize(t.size());
+                sofa::type::vector<Coord> tangent2; tangent2.resize(t.size());
 
                 // see http://www.terathon.com/code/tangent.php
-
                 for (unsigned int i=0; i<triangles.size(); i++)
                 {
                     int i1 = triangles[i][0];
@@ -1713,10 +1700,6 @@ public:
             matrix[1][3] = position[1];
             matrix[2][3] = position[2];
 
-            // SOFA = trans + scale * FLOWVR
-            // FLOWVR = (SOFA - trans) * 1/scale
-            // FLOWVR = SOFA * 1/scale - trans * 1/scale
-
             Vec3f trans = mod->f_trans.getValue();
             const float scale = mod->f_scale.getValue();
             const float inv_scale = 1/scale;
@@ -1727,9 +1710,6 @@ public:
 
             matrix *= inv_scale;
 
-            // TODO: use xforms
-            //scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_POSITION, "", ftl::Vec3f(trans.ptr())*(-inv_scale));
-            //scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_SCALE, "", ftl::Vec3f(inv_scale,inv_scale,inv_scale));
             scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM, "", ftl::Mat4x4f(matrix.ptr()));
 
             xformsModified = false;
@@ -1793,15 +1773,15 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
-    .option(&startAnim,'s',"start","start the animation loop")
-    .option(&printFactory,'p',"factory","print factory logs")
-    .option(&gui,'g',"gui",gui_help.c_str())
-    .option(&plugins,'l',"load","load given plugins")
-    .option(&loadRecent,'r',"recent","load most recently opened file")
-    .option(&dimension,'d',"dimension","width and height of the viewer")
-    .option(&fullScreen,'f',"fullScreen","start in full screen")
-    .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
-    (argc,argv);
+            .option(&startAnim,'s',"start","start the animation loop")
+            .option(&printFactory,'p',"factory","print factory logs")
+            .option(&gui,'g',"gui",gui_help.c_str())
+            .option(&plugins,'l',"load","load given plugins")
+            .option(&loadRecent,'r',"recent","load most recently opened file")
+            .option(&dimension,'d',"dimension","width and height of the viewer")
+            .option(&fullScreen,'f',"fullScreen","start in full screen")
+            .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
+            (argc,argv);
 
     if(gui!="batch") glutInit(&argc,argv);
 

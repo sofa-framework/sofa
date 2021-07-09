@@ -20,10 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaTest/ForceField_test.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
+
+#include <SofaSimpleFem_test/ForceFieldTestCreation.h>
 
 namespace sofa {
 
@@ -79,7 +80,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
 
     typedef ForceType Spring;
     typedef component::container::MechanicalObject<DataTypes> DOF;
@@ -162,11 +163,11 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
         this->dof->resize(1);
         childDof->resize(1);
         typename DOF::WriteVecCoord xdof = this->dof->writePositions(), xchildDof = childDof->writePositions();
-        copyToData( xdof, xp );
-        copyToData( xchildDof, xc );
+        sofa::testing::copyToData( xdof, xp );
+        sofa::testing::copyToData( xchildDof, xc );
         typename DOF::WriteVecDeriv vdof = this->dof->writeVelocities(), vchildDof = childDof->writeVelocities();
-        copyToData( vdof, vp );
-        copyToData( vchildDof, vc );
+        sofa::testing::copyToData( vdof, vp );
+        sofa::testing::copyToData( vchildDof, vc );
 
         // tune the force field
         spring->addSpring(0,0,stiffness,dampingRatio,restLength);
@@ -178,7 +179,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
         sofa::simulation::getSimulation()->init(this->node.get());
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        simulation::MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
+        MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
         this->node->execute(computeForce);
 
         // check force
@@ -190,9 +191,9 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
             std::cout << "                   vp = " << vp << std::endl;
             std::cout << "                   vc = " << vc << std::endl;
             std::cout << "          expected fp = " << fp << std::endl;
-            std::cout << "            actual fp = " << actualfp << std::endl;
+            std::cout << "            actual fp = " << actualfp.ref() << std::endl;
             std::cout << "          expected fc = " << fc << std::endl;
-            std::cout << "            actual fc = " << actualfc << std::endl;
+            std::cout << "            actual fc = " << actualfc.ref() << std::endl;
         }
         ASSERT_TRUE( this->vectorMaxDiff(fp,actualfp)< this->errorMax*this->epsilon() );
         ASSERT_TRUE( this->vectorMaxDiff(fc,actualfc)< this->errorMax*this->epsilon() );
@@ -204,8 +205,8 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
 
 
 // ========= Define the list of types to instanciate.
-//using testing::Types;
-typedef testing::Types<
+//using ::testing::Types;
+typedef ::testing::Types<
 component::interactionforcefield::StiffSpringForceField<defaulttype::Vec2Types>,  // 2D
 component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types>   // 3D
 > TestTypes; // the types to instanciate.
@@ -213,7 +214,7 @@ component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types> 
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(StiffSpringForceField_test, TestTypes);
+TYPED_TEST_SUITE(StiffSpringForceField_test, TestTypes);
 
 // first test case: extension, no velocity
 TYPED_TEST( StiffSpringForceField_test , extension )

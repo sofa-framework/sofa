@@ -23,20 +23,20 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
 using sofa::core::VecId;
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
-using Coord3 = sofa::defaulttype::Vector3;
-using VecCoord3 = sofa::helper::vector<Coord3>;
+using Coord3 = sofa::type::Vector3;
+using VecCoord3 = sofa::type::vector<Coord3>;
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
 
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
+#include <SofaSimulationGraph/init.h>
 
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 using CGLinearSolver = sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector>;
@@ -58,9 +58,6 @@ using sofa::component::odesolver::EulerImplicitSolver;
 using sofa::component::visualmodel::OglModel;
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>;
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/GNode.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::New;
@@ -77,22 +74,21 @@ using sofa::simulation::Node;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    sofa::simulation::tree::init();
-    ArgumentParser argParser(argc, argv);
+    sofa::gui::ArgumentParser argParser(argc, argv);
     sofa::gui::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
-    sofa::gui::initMain();
+
+    //force load SofaComponentAll
+    sofa::component::initSofaComponentAll();
+    //force load SofaGui (registering guis)
+    sofa::gui::initSofaGui();
+
     sofa::gui::GUIManager::Init(argv[0]);
 
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
-
     // The graph root node : gravity already exists in a GNode by default
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-    sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
-    groot->setGravity( sofa::defaulttype::Vector3(0,-10,0) );
+    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    auto groot = sofa::simulation::getSimulation()->createNewGraph("root");
+    groot->setGravity( sofa::type::Vector3(0,-10,0) );
 
     // One solver for all the graph
     EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<EulerImplicitSolver>();
@@ -180,15 +176,15 @@ int main(int argc, char** argv)
     flags.setShowBehaviorModels(true);
     style->displayFlags.endEdit();
 
-    // Init the scene
-    sofa::simulation::tree::getSimulation()->init(groot.get());
-    groot->setAnimate(false);
+    sofa::gui::GUIManager::SetScene(groot);
 
+    // Init the scene
+    sofa::simulation::getSimulation()->init(groot.get());
+    groot->setAnimate(false);
 
     //=======================================
     // Run the main loop
     sofa::gui::GUIManager::MainLoop(groot);
-
-    sofa::simulation::tree::cleanup();
+    sofa::simulation::graph::cleanup();
     return 0;
 }

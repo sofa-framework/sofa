@@ -72,7 +72,8 @@ public:
         /// BaseClass structure associated with the type of intanciated objects.
         virtual const objectmodel::BaseClass* getClass() = 0;
 
-        virtual std::string shortName(objectmodel::BaseObjectDescription* arg) = 0;
+        SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
+        std::string shortName(objectmodel::BaseObjectDescription* arg) = delete;
 
         /// The name of the library or executable containing the binary code for this component
         virtual const char* getTarget() = 0;
@@ -228,15 +229,6 @@ public:
     {
         return RealObject::HeaderFileLocation();
     }
-
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
-    virtual std::string shortName(objectmodel::BaseObjectDescription* arg) override
-    {
-        SOFA_UNUSED(arg);
-        return sofa::helper::NameDecoder::getShortName<RealObject>();
-    }
-
 };
 
 /**

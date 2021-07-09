@@ -19,12 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/gui/config.h>
+
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa
+namespace sofa::gui
 {
-namespace gui
-{
-    extern SOFA_HELPER_API sofa::helper::system::FileRepository GuiDataRepository;
-}
-}
+    extern SOFA_SOFAGUICOMMON_API sofa::helper::system::FileRepository GuiDataRepository;
+} // namespace sofa::gui

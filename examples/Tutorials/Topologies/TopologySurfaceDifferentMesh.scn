@@ -5,7 +5,8 @@
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
-    <BruteForceDetection name="Detection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
     <DefaultCollisionGroupManager name="Group" />
@@ -20,7 +21,6 @@
         <UniformMass name="Mass" template="Vec3d" vertexMass="0.1" />
         <TriangleSetTopologyContainer src="@loader" name="Topology Container" />
         <TriangleSetTopologyModifier name="Topology Modifier" />
-        <TriangleSetTopologyAlgorithms template="Vec3d" name="Topology Algorithms" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="Geometry Algorithms" />
         <TriangularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="300" damping="1" />
         <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="80" />

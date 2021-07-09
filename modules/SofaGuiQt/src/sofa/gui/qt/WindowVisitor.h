@@ -19,12 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_WINDOWVISITOR_H
-#define SOFA_WINDOWVISITOR_H
-
+#pragma once
 #include <ui_VisitorGUI.h>
-#include "PieWidget.h"
-#include "QVisitorControlPanel.h"
+
+#include <sofa/gui/qt/PieWidget.h>
+#include <sofa/gui/qt/QVisitorControlPanel.h>
 
 #include <QTreeWidgetItem>
 #include <QDrag>
@@ -34,13 +33,7 @@
 #include <QDialog>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 class WindowVisitor: public QDialog, public Ui_VisitorGUI
@@ -128,8 +121,5 @@ protected:
     ChartsWidget *chartsVisitor;
     QComboBox *typeOfCharts;
 };
-}
-}
-}
 
-#endif
+} // namespace sofa::gui::qt

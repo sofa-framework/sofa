@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest;
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 using sofa::simulation::Node;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3;
+#include <sofa/type/Vec.h>
+using sofa::type::Vec3;
 
 class ReadState_test : public BaseSimulationTest
 {
@@ -38,6 +38,7 @@ public:
         sofa::simpleapi::importPlugin("SofaComponentAll") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","SofaGeneralLoader" } });
 
         /// no need of gravity, the file .data is just read
         root->setGravity(Vec3(0.0,0.0,0.0));

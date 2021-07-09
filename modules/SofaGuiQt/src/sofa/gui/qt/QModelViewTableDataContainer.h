@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_MODELVIEWTABLEDATACONTAINER_H
-#define SOFA_GUI_QT_MODELVIEWTABLEDATACONTAINER_H
-
+#pragma once
 #include "SimpleDataWidget.h"
 #include "StructDataWidget.h"
 #ifdef TODOTOPO
@@ -39,13 +37,7 @@
 
 #include <sofa/helper/deque.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 enum
@@ -546,7 +538,7 @@ public:
             currentTableNumRows=wTableModel->columnCount();
         else
             currentTableNumRows=wTableModel->rowCount();
-        int rows = wSize->value();
+        int rowSize = wSize->value();
 
         QStringList horizontalHeaders;
         QStringList verticalHeaders;
@@ -582,18 +574,18 @@ public:
         else
             wTableModel->setVerticalHeaderLabels(verticalHeaders);
 
-        if (rows == currentTableNumRows)
+        if (rowSize == currentTableNumRows)
         {
             return;
         }
 
 
         if (FLAGS & TABLE_HORIZONTAL)
-            wTableModel->setColumnCount(rows);
+            wTableModel->setColumnCount(rowSize);
         else
-            wTableModel->setRowCount(rows);
+            wTableModel->setRowCount(rowSize);
 
-        for (int y=currentTableNumRows; y<rows; ++y)
+        for (int y=currentTableNumRows; y<rowSize; ++y)
         {
             const char* h = rhelper::header(d,y);
             if (h && *h)
@@ -669,7 +661,7 @@ public:
 
 
 template<class T>
-class vector_data_trait < sofa::helper::vector<T> > : public vector_data_trait< std::vector<T> >
+class vector_data_trait < sofa::type::vector<T> > : public vector_data_trait< std::vector<T> >
 {
 };
 
@@ -789,11 +781,4 @@ public:
 
 
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-
-#endif
+} //namespace sofa::gui::qt

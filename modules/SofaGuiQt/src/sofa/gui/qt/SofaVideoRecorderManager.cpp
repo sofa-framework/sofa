@@ -22,11 +22,7 @@
 #include "SofaVideoRecorderManager.h"
 #include <iostream>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 CaptureOptionsWidget::CaptureOptionsWidget( QWidget * parent)
@@ -168,8 +164,4 @@ void SofaVideoRecorderManager::close()
     this->hide();
 }
 
-} //namespace qt
-
-} //namespace gui
-
-}//namespace sofa
+} //namespace sofa::gui::qt

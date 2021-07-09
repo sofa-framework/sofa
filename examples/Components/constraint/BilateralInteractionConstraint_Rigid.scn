@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <!-- BilateralInteractionConstraint example using rigid-->
 <Node name="root" dt="0.1" gravity="0 -0.981 0">
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaConstraint'/>
+    <RequiredPlugin pluginName='SofaGeneralLinearSolver'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaRigid'/>
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver tolerance="0.001" maxIterations="1000"/>

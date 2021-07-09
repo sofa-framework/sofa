@@ -23,7 +23,7 @@
 #define SOFA_CORE_VISUAL_DISPLAYFLAGS_H
 
 #include <sofa/core/config.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <map>
 
 
@@ -113,15 +113,15 @@ protected:
         }
     };
 
-    sofa::helper::vector<std::string> m_showName;
-    sofa::helper::vector<std::string> m_hideName;
+    sofa::type::vector<std::string> m_showName;
+    sofa::type::vector<std::string> m_hideName;
     tristate m_state;
 
     FlagTreeItem* m_parent;
-    sofa::helper::vector<FlagTreeItem*> m_child;
+    sofa::type::vector<FlagTreeItem*> m_child;
 
-    typedef helper::vector<FlagTreeItem*>::iterator ChildIterator;
-    typedef helper::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
+    typedef type::vector<FlagTreeItem*>::iterator ChildIterator;
+    typedef type::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
 
 public:
     FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent = nullptr);
@@ -129,14 +129,8 @@ public:
     const tristate& state( ) const {return m_state;}
     tristate& state() {return m_state;}
 
-    friend std::ostream& operator<< ( std::ostream& os, const FlagTreeItem& root )
-    {
-        return root.write(os);
-    }
-    friend std::istream& operator>> ( std::istream& in, FlagTreeItem& root )
-    {
-        return root.read(in);
-    }
+    SOFA_CORE_API friend std::ostream& operator<< ( std::ostream& os, const FlagTreeItem& root );
+    SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, FlagTreeItem& root );
     std::ostream& write(std::ostream& os) const;
     std::istream& read(std::istream& in);
 
@@ -144,7 +138,7 @@ public:
 
     void addAliasShow(const std::string& newAlias);
     void addAliasHide(const std::string& newAlias);
-    void addAlias(sofa::helper::vector<std::string> &name, const std::string &newAlias);
+    void addAlias(sofa::type::vector<std::string> &name, const std::string &newAlias);
 
 protected:
     void propagateStateDown(FlagTreeItem* origin);
@@ -225,14 +219,8 @@ public:
     DisplayFlags& setShowAdvancedRendering(tristate v=true) { m_showAdvancedRendering.setValue(v); return (*this); }
     DisplayFlags& setShowWireFrame(tristate v=true) { m_showWireframe.setValue(v); return (*this); }
     DisplayFlags& setShowNormals(tristate v=true) { m_showNormals.setValue(v); return (*this); }
-    friend std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags )
-    {
-        return flags.m_root.write(os);
-    }
-    friend std::istream& operator>> ( std::istream& in, DisplayFlags& flags )
-    {
-        return flags.m_root.read(in);
-    }
+    SOFA_CORE_API friend std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags );
+    SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, DisplayFlags& flags );
 
     bool isNeutral() const;
 

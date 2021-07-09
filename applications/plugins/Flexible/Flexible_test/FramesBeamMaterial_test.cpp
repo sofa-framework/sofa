@@ -39,7 +39,7 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 const double pressureArray[] = {0.01, 0.05};
 const size_t sizePressureArray = sizeof(pressureArray)/sizeof(pressureArray[0]);
@@ -227,13 +227,13 @@ struct BeamType{
 const std::string BeamType::sceneName= "FramesBeamTractionTest.scn";
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     BeamType
 > DataTypes; 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(BeamMaterial_test, DataTypes);
+TYPED_TEST_SUITE(BeamMaterial_test, DataTypes);
 
 // Test traction cylinder
 TYPED_TEST( BeamMaterial_test , test_Hooke_Beam_InTraction )
