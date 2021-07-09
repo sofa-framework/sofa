@@ -29,7 +29,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
-#include <sofa/helper/decompose.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::forcefield
