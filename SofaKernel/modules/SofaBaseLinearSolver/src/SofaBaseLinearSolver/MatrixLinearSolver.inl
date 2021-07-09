@@ -43,6 +43,12 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVis
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 
+#ifdef SOFA_SUPPORT_CRS_MATRIX
+#include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
+#else
+#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
+#endif
+
 namespace sofa::component::linearsolver
 {
 
