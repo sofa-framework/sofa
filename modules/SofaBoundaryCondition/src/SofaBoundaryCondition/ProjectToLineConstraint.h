@@ -145,6 +145,10 @@ protected :
 
     SparseMatrix jacobian; ///< projection matrix in local state
     SparseMatrix J;        ///< auxiliary variable
+
+    /// Resize/update Jacobian matrix according to the linked mechanical state and the direction
+    void updateJacobian();
+
 };
 
 
