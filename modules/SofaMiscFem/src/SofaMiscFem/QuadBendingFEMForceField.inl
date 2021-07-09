@@ -30,7 +30,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/ColorMap.h>
 #include <sofa/type/RGBAColor.h>
 
 #include <SofaBaseTopology/TopologyData.inl>

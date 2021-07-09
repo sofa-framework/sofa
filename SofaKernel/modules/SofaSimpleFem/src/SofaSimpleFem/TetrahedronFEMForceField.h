@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/helper/ColorMap.h>
+#include <sofa/helper/fwd.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,

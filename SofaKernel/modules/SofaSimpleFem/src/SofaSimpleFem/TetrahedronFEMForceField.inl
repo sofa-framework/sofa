@@ -29,7 +29,7 @@
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-
+#include <sofa/helper/ColorMap.h>
 
 namespace sofa::component::forcefield
 {
