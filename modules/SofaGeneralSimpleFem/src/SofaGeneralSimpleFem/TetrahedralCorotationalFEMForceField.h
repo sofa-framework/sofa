@@ -28,6 +28,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/helper/map.h>
+#include <sofa/helper/ColorMap.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -63,6 +64,13 @@ public:
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+
+    typedef core::topology::BaseMeshTopology::Tetra Element;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
+    typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+
+    typedef type::Mat<4, 4, Real> Mat44;
+    typedef type::Mat<3, 3, Real> Mat33;
 
     using Index = sofa::Index;
 
@@ -105,6 +113,8 @@ protected:
         Transformation rotation;
         /// polar method
         Transformation initialTransformation;
+        /// von Mises stress
+        Real vonMisesStress;
 
         TetrahedronInformation()
         {
@@ -257,6 +267,34 @@ protected:
 
     void printStiffnessMatrix(int idTetra);
 
+public:
+    Data<bool> _computeVonMisesStress;
+    void computeVonMisesStress();
+    bool updateVonMisesStress;
+    void handleEvent(core::objectmodel::Event* event) override;
+    Data< VecCoord > _initialPoints; ///< the initial positions of the points
+    const VecElement* _indexedElements;
+
+    /// to compute vonMises stress for visualization
+    /// two options: either using corotational strain (TODO)
+    ///              or full Green strain tensor (which must be therefore computed for each element and requires some pre-calculations in reinit)
+    type::vector<Real> elemLambda;
+    type::vector<Real> elemMu;
+    type::vector<Mat44> elemShapeFun;
+
+    /// Symmetrical tensor written as a vector following the Voigt notation
+    typedef type::VecNoInit<6, Real> VoigtTensor;
+
+    Data<type::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
+    Data<type::vector<type::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
+
+    Real prevMaxStress;
+    Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
+    Data<std::string> _showStressColorMap; ///< Color map used to show stress values
+    sofa::helper::ColorMap* m_VonMisesColorMap;
+    Data<bool> _showVonMisesColorMap;
+    Real minVM;
+    Real maxVM;
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
