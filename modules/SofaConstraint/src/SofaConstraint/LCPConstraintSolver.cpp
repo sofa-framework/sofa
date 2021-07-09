@@ -61,9 +61,8 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     timeTotal=0.0;
     timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
 
@@ -898,14 +897,14 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     // for each contact, the pair of constraint correction that is involved with the contact is memorized
     _cclist_elem1.clear();
     _cclist_elem2.clear();
+    std::vector<int> missingConstraintCorrectionContacts;
     for (c1=0; c1<numContacts; c1++)
     {
         bool elem1 = false;
         bool elem2 = false;
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
-        {
 
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        for (auto* cc : constraintCorrections)
+        {
             if(cc->hasConstraintNumber(3*c1))
             {
                 if(elem1)
@@ -922,10 +921,28 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
             }
         }
         if (!elem1)
-            msg_error() << "WARNING: no constraintCorrection found for contact" << c1;
+        {
+            _cclist_elem1.push_back(nullptr);
+            missingConstraintCorrectionContacts.push_back(c1);
+        }
         if(!elem2)
             _cclist_elem2.push_back(nullptr);
 
+    }
+
+    if (!missingConstraintCorrectionContacts.empty())
+    {
+        std::stringstream ss;
+        for (const auto c : missingConstraintCorrectionContacts)
+        {
+            ss << c << ' ';
+        }
+        msg_error() << "The following contacts do not have an associated constraint correction component: " << ss.str();
+        if (missingConstraintCorrectionContacts.size() == _cclist_elem1.size())
+        {
+            msg_error() << "None of the contacts has an associated constraint correction component: constraint correction is aborted";
+            return 0;
+        }
     }
 
     // memory allocation of vector d
@@ -951,8 +968,10 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         dmsg_info() <<"contact "<<c1<<" cclist_elem1 : "<<_cclist_elem1[c1]->getName();
 
         // compliance of object1
-        _cclist_elem1[c1]->getBlockDiagonalCompliance(_Wdiag, 3*c1, 3*c1+2);
-
+        if (_cclist_elem1[c1] != nullptr)
+        {
+            _cclist_elem1[c1]->getBlockDiagonalCompliance(_Wdiag, 3 * c1, 3 * c1 + 2);
+        }
         // compliance of object2 (if object2 exists)
         if(_cclist_elem2[c1] != nullptr)
         {
@@ -1016,7 +1035,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
             fn0=fn=f[3*c1]; ft=f[3*c1+1]; fs=f[3*c1+2];
 
             // displacement of object1 due to contact force
-            _cclist_elem1[c1]->addConstraintDisplacement(d, 3*c1, 3*c1+2);
+            if(_cclist_elem1[c1] != nullptr)
+                _cclist_elem1[c1]->addConstraintDisplacement(d, 3*c1, 3*c1+2);
 
             // displacement of object2 due to contact force (if object2 exists)
             if(_cclist_elem2[c1] != nullptr)
@@ -1051,7 +1071,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
             if(update)
             {
-                _cclist_elem1[c1]->setConstraintDForce(f, 3*c1, 3*c1+2, update);
+                if(_cclist_elem1[c1] != nullptr)
+                    _cclist_elem1[c1]->setConstraintDForce(f, 3*c1, 3*c1+2, update);
 
                 // set Delta force on object2 (if object2 exists)
                 if(_cclist_elem2[c1] != nullptr)
@@ -1083,12 +1104,17 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
                                            << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
 
     msg_warning() << "No convergence in  unbuilt nlcp gaussseidel function : error ="
-                <<error <<" after"<< it<<" iterations";
+                <<error <<" after "<< it<<" iterations";
 
     return 0;
 }
 
-
+int LCPConstraintSolver::gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals)
+{
+    if (_mu == 0.0)
+        return lcp_gaussseidel_unbuilt(dfree, f, residuals);
+    return nlcp_gaussseidel_unbuilt(dfree, f, residuals);
+}
 
 
 
@@ -1143,14 +1169,13 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     // for each contact, the pair of constraint correction that is involved with the contact is memorized
     _cclist_elem1.resize(numContacts);
     _cclist_elem2.resize(numContacts);
+    std::vector<int> missingConstraintCorrectionContacts;
     for (c1=0; c1<numContacts; c1++)
     {
         bool elem1 = false;
         bool elem2 = false;
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
-
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if(cc->hasConstraintNumber(c1))
             {
                 if(elem1)
@@ -1166,9 +1191,28 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
 
             }
         }
-        msg_warning_when(!elem1) << "WARNING: no constraintCorrection found for contact"<<c1 ;
+        if (!elem1)
+        {
+            _cclist_elem1[c1] = nullptr;
+            missingConstraintCorrectionContacts.push_back(c1);
+        }
         if(!elem2)
-            _cclist_elem2[c1] = (nullptr);
+            _cclist_elem2[c1] = nullptr;
+    }
+
+    if (!missingConstraintCorrectionContacts.empty())
+    {
+        std::stringstream ss;
+        for (const auto c : missingConstraintCorrectionContacts)
+        {
+            ss << c << ' ';
+        }
+        msg_error() << "The following contacts do not have an associated constraint correction component: " << ss.str();
+        if (missingConstraintCorrectionContacts.size() == _cclist_elem1.size())
+        {
+            msg_error() << "None of the contacts has an associated constraint correction component: constraint correction is aborted";
+            return 0;
+        }
     }
 
     unbuilt_d.resize(_numConstraints);
@@ -1189,7 +1233,10 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     for (c1=0; c1<numContacts; c1++)
     {
         // compliance of object1
-        _cclist_elem1[c1]->getBlockDiagonalCompliance(_Wdiag, c1, c1);
+        if (_cclist_elem1[c1] != nullptr)
+        {
+            _cclist_elem1[c1]->getBlockDiagonalCompliance(_Wdiag, c1, c1);
+        }
         // compliance of object2 (if object2 exists)
         if(_cclist_elem2[c1] != nullptr)
         {
@@ -1230,7 +1277,10 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
             fn0=fn=f[c1];
 
             // displacement of object1 due to contact force
-            _cclist_elem1[c1]->addConstraintDisplacement(d, c1, c1);
+            if (_cclist_elem1[c1] != nullptr)
+            {
+                _cclist_elem1[c1]->addConstraintDisplacement(d, c1, c1);
+            }
             // displacement of object2 due to contact force (if object2 exists)
             if(_cclist_elem2[c1] != nullptr)
                 _cclist_elem2[c1]->addConstraintDisplacement(d, c1, c1);
@@ -1251,7 +1301,10 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
                 // set the new force :
                 // compute the Delta of contact forces:
                 f[c1] = fn - fn0;
-                _cclist_elem1[c1]->setConstraintDForce(f, c1, c1, update);
+                if (_cclist_elem1[c1] != nullptr)
+                {
+                    _cclist_elem1[c1]->setConstraintDForce(f, c1, c1, update);
+                }
                 if(_cclist_elem2[c1] != nullptr)
                     _cclist_elem2[c1]->setConstraintDForce(f, c1, c1, update);
             }
@@ -1279,7 +1332,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     sofa::helper::AdvancedTimer::valSet("GS iterations", it);
 
     msg_warning() <<" No convergence in  unbuilt lcp gaussseidel function : error ="
-                <<error <<" after"<< it<<" iterations";
+                <<error <<" after "<< it<<" iterations";
 
     return 0;
 }
