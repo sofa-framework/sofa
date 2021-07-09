@@ -53,7 +53,6 @@ public:
     typedef typename HexahedralFEMForceFieldT::Mat33 Mat33;
     typedef typename HexahedralFEMForceFieldT::Displacement Displacement;
     typedef typename HexahedralFEMForceFieldT::VecElement VecElement;
-    typedef typename HexahedralFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedralFEMForceFieldT::ElementStiffness ElementMass;
     typedef core::topology::BaseMeshTopology::Index Index;
     typedef typename HexahedralFEMForceFieldT::HexahedronInformation HexahedronInformation;

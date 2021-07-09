@@ -134,7 +134,6 @@ protected:
     /// structures used to compute vonMises stress
     typedef type::Mat<4, 4, Real> Mat44;
     typedef type::Mat<3, 3, Real> Mat33;
-    typedef type::Mat<4, 3, Real> Mat43;
 
     /// Vector of material stiffness matrices of each tetrahedron
     VecMaterialStiffness materialsStiffnesses;
@@ -312,7 +311,7 @@ protected:
     void handleTopologyChange() override { needUpdateTopology = true; }
 
     void computeVonMisesStress();
-    const bool isComputeVonMisesStressMethodSet();
+    bool isComputeVonMisesStressMethodSet();
     void handleEvent(core::objectmodel::Event *event) override;
 };
 

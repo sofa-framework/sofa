@@ -408,7 +408,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     VecDeriv& vnormals = *(m_vnormals.beginEdit());
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     auto& vertPosIdx = (*m_vertPosIdx.beginEdit());
-    auto& vertNormIdx = (*m_vertNormIdx.beginEdit());;
+    auto& vertNormIdx = (*m_vertNormIdx.beginEdit());
 
     positions.resize(nbVIn);
 
@@ -1837,7 +1837,7 @@ void VisualModelImpl::handleTopologyChange()
         default:
             // Ignore events that are not Triangle  related.
             break;
-        }; // switch( changeType )
+        } // switch( changeType )
 
         ++itBegin;
     } // while( changeIt != last; )

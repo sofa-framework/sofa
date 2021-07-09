@@ -99,7 +99,7 @@ void MechanicalStateController<Vec1Types>::applyController()
 
         }
     }
-};
+}
 
 
 

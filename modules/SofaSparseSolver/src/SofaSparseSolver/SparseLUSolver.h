@@ -26,13 +26,7 @@
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <csparse.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 //defaut structure for a LDL factorization
@@ -87,10 +81,6 @@ protected :
 
 };
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver
 
 #endif

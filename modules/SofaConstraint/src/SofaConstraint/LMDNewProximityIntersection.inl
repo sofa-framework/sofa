@@ -384,7 +384,7 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2, 
     if (n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
+        for (auto detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
@@ -416,7 +416,7 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T1>& e1, TSphere<T2
     if (n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
+        for (auto detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
@@ -444,7 +444,7 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, O
     if (n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
+        for (auto detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
@@ -506,7 +506,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
     if (n > 0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
+        for (auto detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;

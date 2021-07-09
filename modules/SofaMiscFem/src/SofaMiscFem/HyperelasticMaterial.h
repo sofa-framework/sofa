@@ -79,7 +79,7 @@ public:
 		
 	}
 
-	virtual void ElasticityTensor(StrainInformation<DataTypes> *, const  MaterialParameters<DataTypes> &, Matrix6&) {;}
+	virtual void ElasticityTensor(StrainInformation<DataTypes> *, const  MaterialParameters<DataTypes> &, Matrix6&) {}
 			
 
 };
