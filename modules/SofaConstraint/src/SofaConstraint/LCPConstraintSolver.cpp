@@ -123,9 +123,9 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 
             if (multi_grid.getValue())
             {
-                sofa::helper::AdvancedTimer::stepBegin("ConstraintsMerge");
+                sofa::helper::advancedtimer::stepBegin("ConstraintsMerge");
                 MultigridConstraintsMerge();
-                sofa::helper::AdvancedTimer::stepEnd  ("ConstraintsMerge");
+                sofa::helper::advancedtimer::stepEnd  ("ConstraintsMerge");
 
                 sofa::type::vector<double>& graph_residuals = graph["Error"];
                 graph_residuals.clear();
@@ -134,10 +134,10 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
                 sofa::type::vector<double>& graph_levels = graph["Level"];
                 graph_levels.clear();
 
-                sofa::helper::AdvancedTimer::stepBegin("NLCP MultiGrid");
+                sofa::helper::advancedtimer::stepBegin("NLCP MultiGrid");
                 helper::nlcp_multiGrid_Nlevels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                         hierarchy_contact_group, hierarchy_num_group, hierarchy_constraint_group, hierarchy_constraint_group_fact,  notMuted(), &graph_residuals, &graph_levels, &graph_violations);
-                sofa::helper::AdvancedTimer::stepEnd("NLCP MultiGrid");
+                sofa::helper::advancedtimer::stepEnd("NLCP MultiGrid");
 
             }
             else
@@ -146,19 +146,19 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
                 graph_error.clear();
                 sofa::type::vector<double>& graph_violations = graph["Violation"];
                 graph_violations.clear();
-                sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel");
+                sofa::helper::advancedtimer::stepBegin("NLCP GaussSeidel");
                 helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                         notMuted(), _minW, _maxF, &graph_error, &graph_violations);
-                sofa::helper::AdvancedTimer::stepEnd("NLCP GaussSeidel");
+                sofa::helper::advancedtimer::stepEnd("NLCP GaussSeidel");
              }
         }
         else
         {
             sofa::type::vector<double>& graph_error = graph["Error"];
             graph_error.clear();
-            sofa::helper::AdvancedTimer::stepBegin("LCP GaussSeidel");
+            sofa::helper::advancedtimer::stepBegin("LCP GaussSeidel");
             helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, _minW, _maxF, &graph_error);
-            sofa::helper::AdvancedTimer::stepEnd  ("LCP GaussSeidel");
+            sofa::helper::advancedtimer::stepEnd  ("LCP GaussSeidel");
             if (notMuted()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
         }
     }
@@ -167,9 +167,9 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 
         sofa::type::vector<double>& graph_error = graph["Error"];
         graph_error.clear();
-        sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
+        sofa::helper::advancedtimer::stepBegin("NLCP GaussSeidel Unbuild");
         gaussseidel_unbuilt(_dFree->ptr(), _result->ptr(), &graph_error);
-        sofa::helper::AdvancedTimer::stepEnd("NLCP GaussSeidel Unbuild");
+        sofa::helper::advancedtimer::stepEnd("NLCP GaussSeidel Unbuild");
 
         if (displayDebug.getValue())
         {
@@ -204,7 +204,7 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
 
     dmsg_info() << "keepContactForces done" ;
 
-    sofa::helper::AdvancedTimer::stepBegin("Apply Contact Force");
+    sofa::helper::advancedtimer::stepBegin("Apply Contact Force");
 
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
     {
@@ -212,7 +212,7 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->applyContactForce(_result);
     }
-    sofa::helper::AdvancedTimer::stepEnd  ("Apply Contact Force");
+    sofa::helper::advancedtimer::stepEnd  ("Apply Contact Force");
 
     dmsg_info() <<"applyContactForce in constraintCorrection done" ;
 
@@ -316,24 +316,24 @@ void LCPConstraintSolver::build_LCP()
     cparams.setX(core::ConstVecCoordId::freePosition());
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
-    sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
+    sofa::helper::advancedtimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
     MechanicalResetConstraintVisitor(&cparams).execute(context);
     MechanicalAccumulateConstraint(&cparams, cparams.j(), _numConstraints).execute(context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
+    sofa::helper::advancedtimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
-    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
+    sofa::helper::advancedtimer::valSet("numConstraints", _numConstraints);
 
     lcp->mu = _mu;
     lcp->clear(_numConstraints);
 
-    sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
+    sofa::helper::advancedtimer::stepBegin("Get Constraint Value");
     MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(context);
-    sofa::helper::AdvancedTimer::stepEnd("Get Constraint Value");
+    sofa::helper::advancedtimer::stepEnd("Get Constraint Value");
 
     dmsg_info() <<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu ;
 
-    sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
+    sofa::helper::advancedtimer::stepBegin("Get Compliance");
 
     dmsg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
 
@@ -345,7 +345,7 @@ void LCPConstraintSolver::build_LCP()
 
     dmsg_info() << "W=" << *_W ;
 
-    sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
+    sofa::helper::advancedtimer::stepEnd  ("Get Compliance");
 
     dmsg_info() <<" computeCompliance_done " ;
 
@@ -371,9 +371,9 @@ void LCPConstraintSolver::build_LCP()
 
     if ((initial_guess.getValue() || multi_grid.getValue() || showLevels.getValue()) && (_numConstraints != 0))
     {
-        sofa::helper::AdvancedTimer::stepBegin("Get Constraint Info");
+        sofa::helper::advancedtimer::stepBegin("Get Constraint Info");
         MechanicalGetConstraintInfoVisitor(&cparams, hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(context);
-        sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Info");
+        sofa::helper::advancedtimer::stepEnd  ("Get Constraint Info");
         if (initial_guess.getValue())
             computeInitialGuess();
     }
@@ -699,7 +699,7 @@ void LCPConstraintSolver::build_problem_info()
 
     _numConstraints = 0;
 
-    sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
+    sofa::helper::advancedtimer::stepBegin("Accumulate Constraint");
 
     // Accumulate Constraints
 
@@ -707,9 +707,9 @@ void LCPConstraintSolver::build_problem_info()
     resetCtr.execute(context);
     MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
     accCtr.execute(context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
+    sofa::helper::advancedtimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
-    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
+    sofa::helper::advancedtimer::valSet("numConstraints", _numConstraints);
 
     lcp->mu = _mu;
     lcp->clear(_numConstraints);
@@ -717,9 +717,9 @@ void LCPConstraintSolver::build_problem_info()
     // as _Wdiag is a sparse matrix resize do not allocate memory
     _Wdiag->resize(_numConstraints,_numConstraints);
 
-    sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
+    sofa::helper::advancedtimer::stepBegin("Get Constraint Value");
     MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Value");
+    sofa::helper::advancedtimer::stepEnd  ("Get Constraint Value");
 
     dmsg_info() <<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu;
 
@@ -745,9 +745,9 @@ void LCPConstraintSolver::build_problem_info()
 
     if ((initial_guess.getValue() || multi_grid.getValue() || showLevels.getValue()) && (_numConstraints != 0))
     {
-        sofa::helper::AdvancedTimer::stepBegin("Get Constraint Info");
+        sofa::helper::advancedtimer::stepBegin("Get Constraint Info");
         MechanicalGetConstraintInfoVisitor(&cparams, hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(context);
-        sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Info");
+        sofa::helper::advancedtimer::stepEnd  ("Get Constraint Info");
         if (initial_guess.getValue())
             computeInitialGuess();
     }
@@ -1071,13 +1071,13 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
                                                   <<" GAUSS_SEIDEL iterations  " << ( (double) timer.getTime() - time)*timeScale<<" ms";
 
 
-            sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
+            sofa::helper::advancedtimer::valSet("GS iterations", it+1);
             return 1;
         }
 
     }
 
-    sofa::helper::AdvancedTimer::valSet("GS iterations", it);
+    sofa::helper::advancedtimer::valSet("GS iterations", it);
 
     msg_info_when( displayTime.getValue() ) <<" GAUSS_SEIDEL iterations  "
                                            << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
@@ -1266,7 +1266,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
                 msg_info() <<"convergence after "<<it<<" iterations - error = "<<error << msgendl
                            <<" GAUSS_SEIDEL iterations  " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
             }
-            sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
+            sofa::helper::advancedtimer::valSet("GS iterations", it+1);
 
             return 1;
         }
@@ -1276,7 +1276,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
                                          << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
 
 
-    sofa::helper::AdvancedTimer::valSet("GS iterations", it);
+    sofa::helper::advancedtimer::valSet("GS iterations", it);
 
     msg_warning() <<" No convergence in  unbuilt lcp gaussseidel function : error ="
                 <<error <<" after"<< it<<" iterations";

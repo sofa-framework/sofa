@@ -32,7 +32,7 @@
 #include <sofa/type/Quat.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 #include <Eigen/LU>
 #include <Eigen/QR>
@@ -246,17 +246,17 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
 
     if      (orderState==core::ConstraintParams::POS)
     {
-        sofa::helper::AdvancedTimer::valSet("numConstraintsPosition", numConstraint);
+        sofa::helper::advancedtimer::valSet("numConstraintsPosition", numConstraint);
         msg_info() << "Applying the constraint on the position";
     }
     else if (orderState==core::ConstraintParams::VEL)
     {
-        sofa::helper::AdvancedTimer::valSet("numConstraintsVelocity", numConstraint);
+        sofa::helper::advancedtimer::valSet("numConstraintsVelocity", numConstraint);
         msg_info() << "Applying the constraint on the velocity" ;
     }
     else if (orderState==core::ConstraintParams::ACC)
     {
-        sofa::helper::AdvancedTimer::valSet("numConstraintsAcceleration", numConstraint);
+        sofa::helper::advancedtimer::valSet("numConstraintsAcceleration", numConstraint);
         msg_info() << "Applying the constraint on the acceleration" ;
     }
     else msg_warning() << "Order Not recognized " << orderState ;
@@ -273,7 +273,7 @@ bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, Mult
     sofa::simulation::Visitor::printNode("SystemCreation");
 #endif
 
-    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem Prepare");
+    sofa::helper::advancedtimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem Prepare");
     const type::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
     //Informations to build the matrices
     //Dofs to be constrained
@@ -304,30 +304,30 @@ bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, Mult
         }
 #endif
     }
-    sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints "  + id.getName() + " BuildSystem Prepare");
+    sofa::helper::advancedtimer::stepEnd  ("SolveConstraints "  + id.getName() + " BuildSystem Prepare");
 
 
     //Store the indices used in order to speed up the correction propagation
     //************************************************************
     // Build the Right Hand Term
     //************************************************************
-    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem C");
+    sofa::helper::advancedtimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem C");
     c = VectorEigen::Zero((int)numConstraint);
     buildRightHandTerm(LMConstraints, c, id, orderState);
-    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem C");
+    sofa::helper::advancedtimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem C");
 
 
     //************************************************************
     // Build M^-1
     //************************************************************
-    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem M^-1");
+    sofa::helper::advancedtimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem M^-1");
     buildInverseMassMatrices(setDofs, invMassMatrix);
-    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem M^-1");
+    sofa::helper::advancedtimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem M^-1");
 
     //************************************************************
     //Building L
     //************************************************************
-    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem L");
+    sofa::helper::advancedtimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem L");
     LMatrices.clear();
     //Init matrices to the good size
     for (SetDof::iterator it=setDofs.begin(); it!=setDofs.end(); ++it)
@@ -354,23 +354,23 @@ bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, Mult
         }
 
     }
-    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem L");
+    sofa::helper::advancedtimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem L");
 
 
     //************************************************************
     // Building W=L0.M0^-1.L0^T + L1.M1^-1.L1^T + ... and M^-1.L^T
     //************************************************************
     //Store the matrix M^-1.L^T for each dof in order to apply the modification of the state
-    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem W");
+    sofa::helper::advancedtimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem W");
     SparseMatrixEigen WEi((int)numConstraint,(int)numConstraint);
     buildLeftMatrix(invMassMatrix, LMatrices,WEi, invMass_Ltrans);
-    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem W");
+    sofa::helper::advancedtimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem W");
 
-    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem conversionW");
+    sofa::helper::advancedtimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem conversionW");
     //Convert the Sparse Matrix AEi into a Dense Matrix-> faster access to elements, and possilibity to use a direct LU solution
     convertSparseToDense(WEi,W);
 
-    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem conversionW");
+    sofa::helper::advancedtimer::stepEnd("SolveConstraints "  + id.getName() + " BuildSystem conversionW");
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printCloseNode("SystemCreation");
 #endif

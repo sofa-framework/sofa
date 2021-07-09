@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 
 #include <sys/types.h>
@@ -228,11 +228,11 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(SparsePARDISOSolverInvertD
         }
     }
     sout << "Solver phase " << phase << "..." << sendl;
-    sofa::helper::AdvancedTimer::stepBegin("PardisoRealSolving");
+    sofa::helper::advancedtimer::stepBegin("PardisoRealSolving");
     F77_FUNC(pardiso)(data->pardiso_pt, &maxfct, &mnum, &data->pardiso_mtype, &phase,
             &n, a, ia, ja, perm, &nrhs,
             data->pardiso_iparm, &msglvl, b, x, &error,  data->pardiso_dparm);
-    sofa::helper::AdvancedTimer::stepEnd("PardisoRealSolving");
+    sofa::helper::advancedtimer::stepEnd("PardisoRealSolving");
     const char* msg = NULL;
     switch(error)
     {
@@ -282,7 +282,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
 
 
 
-    sofa::helper::AdvancedTimer::stepBegin("PardisoInvert");
+    sofa::helper::advancedtimer::stepBegin("PardisoInvert");
 
     if (doExportData) {
         std::string exportDir=f_exportDataToDir.getValue();
@@ -348,7 +348,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
     if (callPardiso(data, 22)) { data->factorized = false; return; }    
 
     sout << "Factorization completed ..." << sendl;
-    sofa::helper::AdvancedTimer::stepEnd("PardisoInvert");
+    sofa::helper::advancedtimer::stepEnd("PardisoInvert");
 
     numStep++;
 }
@@ -366,7 +366,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
         f.close();
     }
 
-    sofa::helper::AdvancedTimer::stepBegin("PardisoSolve");
+    sofa::helper::advancedtimer::stepBegin("PardisoSolve");
     SparsePARDISOSolverInvertData * data = (SparsePARDISOSolverInvertData *) this->getMatrixInvertData(&M);
 
     if (data->pardiso_initerr) return;
@@ -379,7 +379,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
 
     //std::cout << "[" << this->getName() << "] solve the matrix" << std::endl;
     if (callPardiso(data, 33, &z, &r)) return;
-    sofa::helper::AdvancedTimer::stepEnd("PardisoSolve");
+    sofa::helper::advancedtimer::stepEnd("PardisoSolve");
 
     if (doExportData){
         std::string exportDir=f_exportDataToDir.getValue();

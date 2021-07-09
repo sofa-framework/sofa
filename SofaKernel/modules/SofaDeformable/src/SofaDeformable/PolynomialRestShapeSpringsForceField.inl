@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaDeformable/PolynomialRestShapeSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 namespace sofa::component::forcefield
 {
@@ -416,7 +416,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
 {    
     msg_info() << "[" <<  this->getName() << "]: addKToMatrix";
 
-    sofa::helper::AdvancedTimer::stepBegin("restShapePolynomialSpringAddKToMatrix");
+    sofa::helper::advancedtimer::stepBegin("restShapePolynomialSpringAddKToMatrix");
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
@@ -436,7 +436,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
         }
     }
 
-    sofa::helper::AdvancedTimer::stepEnd("restShapePolynomialSpringAddKToMatrix");
+    sofa::helper::advancedtimer::stepEnd("restShapePolynomialSpringAddKToMatrix");
 }
 
 

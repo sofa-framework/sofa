@@ -44,7 +44,8 @@
 
 #include <sofa/core/behavior/BaseConstraint.h> ///< ConstraintResolution.
 
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <thread>
 
@@ -335,9 +336,9 @@ void ConstraintAnimationLoop::launchCollisionDetection(const core::ExecParams* p
             <<"computeCollision is called"<<sendl;
 
     ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
-    sofa::helper::AdvancedTimer::stepBegin("Collision");
+    sofa::helper::advancedtimer::stepBegin("Collision");
     computeCollision(params);
-    sofa::helper::AdvancedTimer::stepEnd  ("Collision");
+    sofa::helper::advancedtimer::stepEnd  ("Collision");
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if ( d_displayTime.getValue() )
@@ -355,7 +356,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
             <<"Free Motion is called" ;
 
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
-    sofa::helper::AdvancedTimer::stepBegin("Free Motion");
+    sofa::helper::advancedtimer::stepBegin("Free Motion");
     MechanicalBeginIntegrationVisitor(params, dt).execute(context);
 
     ////////////////// (optional) PREDICTIVE CONSTRAINT FORCES ///////////////////////////////////////////////////////////////////////////////////////////
@@ -383,7 +384,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
         MechanicalProjectPositionVisitor(&mparams, 0, xfree ).execute(context);
         MechanicalPropagateOnlyPositionVisitor(&mparams, 0, xfree, true ).execute(context);
     }
-    sofa::helper::AdvancedTimer::stepEnd  ("Free Motion");
+    sofa::helper::advancedtimer::stepEnd  ("Free Motion");
 
     //////// TODO : propagate velocity !!
 
@@ -414,7 +415,7 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
     //////////////////////////////////////CONSTRAINTS RESOLUTION//////////////////////////////////////////////////////////////////////
     msg_info_when(EMIT_EXTRA_DEBUG_MESSAGE) <<"constraints Matrix construction is called" ;
 
-    sofa::helper::AdvancedTimer::stepBegin("Constraints definition");
+    sofa::helper::advancedtimer::stepBegin("Constraints definition");
 
 
     if(!d_schemeCorrection.getValue())
@@ -439,7 +440,7 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
         getIndividualConstraintSolvingProcess(params, context);
     }
 
-    sofa::helper::AdvancedTimer::stepEnd  ("Constraints definition");
+    sofa::helper::advancedtimer::stepEnd  ("Constraints definition");
 
     /// calling getCompliance projected in the contact space => getDelassusOperator(_W) = H*C*Ht
     computeComplianceInConstraintSpace();
@@ -463,7 +464,7 @@ void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(con
     // calling applyConstraint on each constraint
     MechanicalSetConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), numConstraints).execute(context);
 
-    sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
+    sofa::helper::advancedtimer::valSet("numConstraints", numConstraints);
 
     // calling accumulateConstraint on the mappings
     MechanicalAccumulateConstraint2(&cparams, core::MatrixDerivId::constraintJacobian()).execute(context);
@@ -495,14 +496,14 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     /// calling getCompliance => getDelassusOperator(_W) = H*C*Ht
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE) << "   4. get Compliance " ;
 
-    sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
+    sofa::helper::advancedtimer::stepBegin("Get Compliance");
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->addComplianceInConstraintSpace(core::constraintparams::defaultInstance(), getCP()->getW());
     }
 
-    sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
+    sofa::helper::advancedtimer::stepEnd  ("Get Compliance");
 
 }
 
@@ -511,7 +512,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE)
             <<"constraintCorrections motion is called" ;
 
-    sofa::helper::AdvancedTimer::stepBegin("Corrective Motion");
+    sofa::helper::advancedtimer::stepBegin("Corrective Motion");
 
     if(d_schemeCorrection.getValue())
     {
@@ -550,7 +551,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
         }
     }
 
-    sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
+    sofa::helper::advancedtimer::stepEnd ("Corrective Motion");
 }
 
 void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
@@ -644,9 +645,9 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     // Update the BehaviorModels => to be removed ?
     // Required to allow the RayPickInteractor interaction
-    sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
+    sofa::helper::advancedtimer::stepBegin("BehaviorUpdate");
     simulation::BehaviorUpdatePositionVisitor(params, dt).execute(this->gnode);
-    sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
+    sofa::helper::advancedtimer::stepEnd  ("BehaviorUpdate");
 
 
     if(d_schemeCorrection.getValue())
@@ -703,7 +704,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         helper::resultToString(std::cout, CP.getF()->ptr(),CP.getSize());
     }
 
-    sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
+    sofa::helper::advancedtimer::stepBegin("GaussSeidel");
 
     if (EMIT_EXTRA_DEBUG_MESSAGE)
         msg_info() << "Gauss-Seidel solver is called on problem of size " << CP.getSize() ;
@@ -713,7 +714,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     gaussSeidelConstraint(CP.getSize(), CP.getDfree()->ptr(), CP.getW()->lptr(), CP.getF()->ptr(), CP.getD()->ptr(), CP.getConstraintResolutions(), CP.getdF()->ptr());
 
-    sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
+    sofa::helper::advancedtimer::stepEnd  ("GaussSeidel");
 
     if (EMIT_EXTRA_DEBUG_MESSAGE)
         helper::afficheLCP(CP.getDfree()->ptr(), CP.getW()->lptr(), CP.getF()->ptr(),  CP.getSize());
@@ -746,16 +747,16 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         this->gnode->execute ( act );
     }
 
-    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
+    sofa::helper::advancedtimer::stepBegin("UpdateMapping");
 
     this->gnode->execute<UpdateMappingVisitor>(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+    sofa::helper::advancedtimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
         this->gnode->execute ( act );
     }
-    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
+    sofa::helper::advancedtimer::stepEnd("UpdateMapping");
 
     if (!SOFA_NO_UPDATE_BBOX)
     {
@@ -962,7 +963,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
         }
     }
 
-    sofa::helper::AdvancedTimer::valSet("GS iterations", iter+1);
+    sofa::helper::advancedtimer::valSet("GS iterations", iter+1);
 
     for(int i=0; i<dim; )
     {

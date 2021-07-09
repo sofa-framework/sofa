@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/ConstraintParams.h>
 
@@ -37,30 +38,30 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 
     bool continueSolving = true;
     {
-        sofa::helper::AdvancedTimer::stepBegin(className + " - PrepareState");
+        sofa::helper::advancedtimer::stepBegin(className + " - PrepareState");
         continueSolving = prepareStates(cParams, res1, res2);
-        sofa::helper::AdvancedTimer::stepEnd(className + " - PrepareState");
+        sofa::helper::advancedtimer::stepEnd(className + " - PrepareState");
     }
 
     if (continueSolving)
     {
-        sofa::helper::AdvancedTimer::stepBegin(className + " - BuildSystem");
+        sofa::helper::advancedtimer::stepBegin(className + " - BuildSystem");
         continueSolving = buildSystem(cParams, res1, res2);
-        sofa::helper::AdvancedTimer::stepEnd(className + " - BuildSystem");
+        sofa::helper::advancedtimer::stepEnd(className + " - BuildSystem");
     }
 
     if (continueSolving)
     {
-        sofa::helper::AdvancedTimer::stepBegin(className + " - SolveSystem");
+        sofa::helper::advancedtimer::stepBegin(className + " - SolveSystem");
         continueSolving = solveSystem(cParams, res1, res2);
-        sofa::helper::AdvancedTimer::stepEnd(className + " - SolveSystem");
+        sofa::helper::advancedtimer::stepEnd(className + " - SolveSystem");
     }
 
     if (continueSolving)
     {
-        sofa::helper::AdvancedTimer::stepBegin(className + " - ApplyCorrection");
+        sofa::helper::advancedtimer::stepBegin(className + " - ApplyCorrection");
         applyCorrection(cParams, res1, res2);
-        sofa::helper::AdvancedTimer::stepEnd(className + " - ApplyCorrection");
+        sofa::helper::advancedtimer::stepEnd(className + " - ApplyCorrection");
     }
 }
 

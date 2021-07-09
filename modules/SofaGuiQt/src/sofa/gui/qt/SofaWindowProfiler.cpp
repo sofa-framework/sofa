@@ -28,6 +28,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <QGridLayout>
 #include <QDebug>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::gui::qt
 {

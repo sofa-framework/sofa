@@ -31,7 +31,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/BackTrace.h>
 
@@ -322,13 +322,13 @@ namespace sofa
 		void SofaHAPIHapticsDevice::onBeginAnimationStep(const double /*dt*/)
 		{
 			if (!device.get()) return;
-			sofa::helper::AdvancedTimer::stepBegin("SofaHAPIHapticsDevice");
+			sofa::helper::advancedtimer::stepBegin("SofaHAPIHapticsDevice");
 
-			sofa::helper::AdvancedTimer::stepBegin("DeviceValues");
+			sofa::helper::advancedtimer::stepBegin("DeviceValues");
 			HAPI::HAPIHapticsDevice::DeviceValues dv = device->getDeviceValues();
-			sofa::helper::AdvancedTimer::stepEnd("DeviceValues");
+			sofa::helper::advancedtimer::stepEnd("DeviceValues");
 
-			sofa::helper::AdvancedTimer::stepBegin("XForm");
+			sofa::helper::advancedtimer::stepBegin("XForm");
 			/// COMPUTATION OF THE virtualTool 6D POSITION IN THE World COORDINATES
 			Vec3d pos = conv(dv.position);
 			Quat quat = conv(dv.orientation);
@@ -344,10 +344,10 @@ namespace sofa
 				sout << "bHe2 = " << baseDevice_H_endDevice2 << sendl;
 				sout << sendl;
 			*/
-			sofa::helper::AdvancedTimer::stepEnd("XForm");
+			sofa::helper::advancedtimer::stepEnd("XForm");
 
 
-			sofa::helper::AdvancedTimer::stepBegin("Button");
+			sofa::helper::advancedtimer::stepBegin("Button");
 
 			int buttonState = fakeButtonState | device->getButtonStatus();
 
@@ -388,19 +388,19 @@ namespace sofa
 					isToolControlled = true;
 				}
 			}
-			sofa::helper::AdvancedTimer::stepNext("Button", "Event");
+			sofa::helper::advancedtimer::stepNext("Button", "Event");
 
 			if (buttonState != lastButtonState)
 			{
 				lastButtonState = buttonState;
 				sendHapticDeviceEvent();
 			}
-			sofa::helper::AdvancedTimer::stepEnd("Event");
+			sofa::helper::advancedtimer::stepEnd("Event");
 
 			if (isToolControlled) // ignore haptic device if tool is unselected
 			{
 				const int currentToolIndex = toolIndex.getValue();
-				sofa::helper::AdvancedTimer::stepBegin("FFB");
+				sofa::helper::advancedtimer::stepBegin("FFB");
 				// store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
 				for (unsigned int i=0; i < feedbackEffects.size(); ++i)
 				{
@@ -409,10 +409,10 @@ namespace sofa
 					if (ffe->getForceFeedback())
 						ffe->getForceFeedback()->setReferencePosition(world_H_virtualTool);
 				}
-				sofa::helper::AdvancedTimer::stepEnd("FFB");
+				sofa::helper::advancedtimer::stepEnd("FFB");
 				if (mState)
 				{
-					sofa::helper::AdvancedTimer::stepBegin("SetState");
+					sofa::helper::advancedtimer::stepBegin("SetState");
 					/// TODO : SHOULD INCLUDE VELOCITY !!
 
 					sofa::helper::WriteAccessor<Data<sofa::type::vector<sofa::defaulttype::RigidCoord<3,double> > > > x = *this->mState->write(sofa::core::VecCoordId::position());
@@ -426,14 +426,14 @@ namespace sofa
 					xfree[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
 					x[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
 
-					sofa::helper::AdvancedTimer::stepEnd("SetState", "UpdateMapping");
+					sofa::helper::advancedtimer::stepEnd("SetState", "UpdateMapping");
 					sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
 					if (node)
 					{
-						sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
+						sofa::helper::advancedtimer::stepBegin("UpdateMapping");
 						sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
 						sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
-						sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
+						sofa::helper::advancedtimer::stepEnd("UpdateMapping");
 					}
 				}
 			}
@@ -441,7 +441,7 @@ namespace sofa
 			{
 			}
 
-			sofa::helper::AdvancedTimer::stepEnd("SofaHAPIHapticsDevice");
+			sofa::helper::advancedtimer::stepEnd("SofaHAPIHapticsDevice");
 		}
 
 		void SofaHAPIHapticsDevice::onEndAnimationStep(const double /*dt*/)

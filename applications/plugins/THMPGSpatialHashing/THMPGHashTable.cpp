@@ -31,7 +31,7 @@ void THMPGHashTable::refersh(SReal timeStamp){
     int movingcell[3];
     //SReal alarmDistd2 = intersectionMethod->getAlarmDistance()/((SReal)(2.0));
 
-    //sofa::helper::AdvancedTimer::stepBegin("THMPGSpatialHashing : Hashing");
+    //sofa::helper::advancedtimer::stepBegin("THMPGSpatialHashing : Hashing");
 
     Cube c(cube_model);
 
@@ -51,9 +51,9 @@ void THMPGHashTable::refersh(SReal timeStamp){
         for(movingcell[0] = mincell[0] ; movingcell[0] <= maxcell[0] ; ++movingcell[0]){
             for(movingcell[1] = mincell[1] ; movingcell[1] <= maxcell[1] ; ++movingcell[1]){
                 for(movingcell[2] = mincell[2] ; movingcell[2] <= maxcell[2] ; ++movingcell[2]){
-                    //sofa::helper::AdvancedTimer::stepBegin("THMPGSpatialHashing : addAndCollide");
+                    //sofa::helper::advancedtimer::stepBegin("THMPGSpatialHashing : addAndCollide");
                     (*this)(movingcell[0],movingcell[1],movingcell[2]).add(c/*.getExternalChildren().first*/,timeStamp);
-                    //sofa::helper::AdvancedTimer::stepEnd("THMPGSpatialHashing : addAndCollide");
+                    //sofa::helper::advancedtimer::stepEnd("THMPGSpatialHashing : addAndCollide");
                 }
             }
         }

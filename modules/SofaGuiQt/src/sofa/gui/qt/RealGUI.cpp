@@ -65,7 +65,7 @@
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <SofaBaseVisual/VisualStyle.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
 
@@ -2139,7 +2139,7 @@ void RealGUI::interactionGUI ( bool )
 //called at each step of the rendering
 void RealGUI::step()
 {
-    sofa::helper::AdvancedTimer::begin("Animate");
+    sofa::helper::advancedtimer::begin("Animate");
 
     Node* root = currentSimulation();
     if ( root == nullptr ) return;
@@ -2202,7 +2202,7 @@ void RealGUI::step()
     }
 #endif
 
-    sofa::helper::AdvancedTimer::end("Animate");
+    sofa::helper::advancedtimer::end("Animate");
 }
 
 //------------------------------------
@@ -2409,7 +2409,7 @@ void RealGUI::displayComputationTime ( bool value )
             std::cout << "Activating Timer" << std::endl;
         else
             std::cout << "Deactivating Timer" << std::endl;
-        sofa::helper::AdvancedTimer::setEnabled("Animate", value);
+        sofa::helper::advancedtimer::setEnabled("Animate", value);
     }
 }
 

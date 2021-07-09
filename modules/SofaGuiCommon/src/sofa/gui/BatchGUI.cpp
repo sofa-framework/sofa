@@ -38,8 +38,6 @@
 namespace sofa::gui
 {
 
-using sofa::helper::AdvancedTimer;
-
 const signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
 signed int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
 std::string BatchGUI::nbIterInp="";
@@ -65,9 +63,9 @@ int BatchGUI::mainLoop()
             msg_info("BatchGUI") << "Computing infinite iterations." << msgendl;
         }
 
-        AdvancedTimer::begin("Animate");
+        sofa::helper::AdvancedTimer::begin("Animate");
         sofa::simulation::getSimulation()->animate(groot.get());
-        msg_info("BatchGUI") << "Processing." << AdvancedTimer::end("Animate", groot->getTime(), groot->getDt()) << msgendl;
+        msg_info("BatchGUI") << "Processing." << sofa::helper::AdvancedTimer::end("Animate", groot->getTime(), groot->getDt()) << msgendl;
         sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
         sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
@@ -79,11 +77,11 @@ int BatchGUI::mainLoop()
         {
             if (i != nbIter)
             {
-                AdvancedTimer::begin("Animate");
+                sofa::helper::AdvancedTimer::begin("Animate");
 
                 sofa::simulation::getSimulation()->animate(groot.get());
 
-                const std::string timerOutputStr = AdvancedTimer::end("Animate", groot->getTime(), groot->getDt());
+                const std::string timerOutputStr = sofa::helper::AdvancedTimer::end("Animate", groot->getTime(), groot->getDt());
                 if (canExportJson(timerOutputStr, "Animate"))
                 {
                     exportJson(timerOutputStr, i);
@@ -191,10 +189,10 @@ int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
 
 bool BatchGUI::canExportJson(const std::string& timerOutputStr, const std::string& timerId)
 {
-    const auto outputType = AdvancedTimer::getOutputType(AdvancedTimer::IdTimer(timerId));
-    if (outputType == AdvancedTimer::outputType::JSON || outputType == AdvancedTimer::outputType::LJSON)
+    const auto outputType = sofa::helper::AdvancedTimer::getOutputType(sofa::helper::AdvancedTimer::IdTimer(timerId));
+    if (outputType == sofa::helper::AdvancedTimer::outputType::JSON || outputType == sofa::helper::AdvancedTimer::outputType::LJSON)
     {
-        //timerOutputStr is not empty when the AdvancedTimer has been setup with an interval (AdvancedTimer::setInterval)
+        //timerOutputStr is not empty when the AdvancedTimer has been setup with an interval (sofa::helper::AdvancedTimer::setInterval)
         //and the number of iterations is reached
         return !timerOutputStr.empty() && timerOutputStr != "null";
     }

@@ -35,12 +35,13 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/type/Quat.h>
 #include <sofa/type/vector.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/type/Material.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sstream>
 #include <map>
@@ -1276,23 +1277,23 @@ void VisualModelImpl::updateVisual()
                 computeMesh();
             }
         }
-        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computePositions");
+        sofa::helper::advancedtimer::stepBegin("VisualModelImpl::computePositions");
         computePositions();
-        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computePositions");
+        sofa::helper::advancedtimer::stepEnd("VisualModelImpl::computePositions");
 
-        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::updateBuffers");
+        sofa::helper::advancedtimer::stepBegin("VisualModelImpl::updateBuffers");
         updateBuffers();
-        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::updateBuffers");
+        sofa::helper::advancedtimer::stepEnd("VisualModelImpl::updateBuffers");
 
-        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computeNormals");
+        sofa::helper::advancedtimer::stepBegin("VisualModelImpl::computeNormals");
         computeNormals();
-        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computeNormals");
+        sofa::helper::advancedtimer::stepEnd("VisualModelImpl::computeNormals");
         
         if (m_updateTangents.getValue())
         {
-            sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computeTangents");
+            sofa::helper::advancedtimer::stepBegin("VisualModelImpl::computeTangents");
             computeTangents();
-            sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computeTangents");
+            sofa::helper::advancedtimer::stepEnd("VisualModelImpl::computeTangents");
         }
         modified = false;
 

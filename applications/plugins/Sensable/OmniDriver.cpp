@@ -40,7 +40,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 //sensable namespace
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -488,7 +488,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
-        sofa::helper::AdvancedTimer::stepBegin("OmniDriver::1");
+        sofa::helper::advancedtimer::stepBegin("OmniDriver::1");
         //hdScheduleSynchronous(copyDeviceDataCallbackOmni, (void *) &data, HD_MAX_SCHEDULER_PRIORITY);
 
         doUpdate.inc(); // set to 1
@@ -501,10 +501,10 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 #endif
         }
 
-        sofa::helper::AdvancedTimer::stepEnd("OmniDriver::1");
+        sofa::helper::advancedtimer::stepEnd("OmniDriver::1");
         if (data.deviceData.ready)
         {
-            sofa::helper::AdvancedTimer::stepBegin("OmniDriver::2");
+            sofa::helper::advancedtimer::stepBegin("OmniDriver::2");
             data.deviceData.quat.normalize();
 
             /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
@@ -513,9 +513,9 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             {
                 sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
                 sofa::defaulttype::SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
-                sofa::helper::AdvancedTimer::stepEnd("OmniDriver::2");
+                sofa::helper::advancedtimer::stepEnd("OmniDriver::2");
 
-                sofa::helper::AdvancedTimer::stepBegin("OmniDriver::3");
+                sofa::helper::advancedtimer::stepBegin("OmniDriver::3");
                 // store actual position of interface for the forcefeedback (as it will be used as soon as new LCP will be computed)
                 data.forceFeedbackIndice=currentToolIndex;
                 // which forcefeedback ?
@@ -527,9 +527,9 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
                 helper::WriteAccessor<Data<type::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::VecCoordId::position());
                 helper::WriteAccessor<Data<type::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
-                sofa::helper::AdvancedTimer::stepEnd("OmniDriver::3");
+                sofa::helper::advancedtimer::stepEnd("OmniDriver::3");
 
-                sofa::helper::AdvancedTimer::stepBegin("OmniDriver::4");
+                sofa::helper::advancedtimer::stepBegin("OmniDriver::4");
                 xfree[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
                 x[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
 
@@ -553,15 +553,15 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
 
 
-            sofa::helper::AdvancedTimer::stepEnd("OmniDriver::4");
-            sofa::helper::AdvancedTimer::stepBegin("OmniDriver::5");
+            sofa::helper::advancedtimer::stepEnd("OmniDriver::4");
+            sofa::helper::advancedtimer::stepBegin("OmniDriver::5");
 
             // launch events on buttons changes
             static bool btn1 = false;
             static bool btn2 = false;
             bool newBtn1 = 0!=(data.deviceData.m_buttonState & HD_DEVICE_BUTTON_1);
             bool newBtn2 = 0!=(data.deviceData.m_buttonState & HD_DEVICE_BUTTON_2);
-            sofa::helper::AdvancedTimer::stepEnd("OmniDriver::5");
+            sofa::helper::advancedtimer::stepEnd("OmniDriver::5");
 
             // special case: btn2 is mapped to tool selection if "toolSelector" is used
             if (toolSelector.getValue() && btn2!=newBtn2)
@@ -574,7 +574,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
             if (btn1!=newBtn1 || (!toolSelector.getValue() && btn2!=newBtn2))
             {
-                sofa::helper::AdvancedTimer::stepBegin("OmniDriver::6");
+                sofa::helper::advancedtimer::stepBegin("OmniDriver::6");
                 btn1 = newBtn1;
                 btn2 = newBtn2;
                 unsigned char buttonState = 0;
@@ -585,7 +585,7 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
                 sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,buttonState);
                 simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
                 groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
-                sofa::helper::AdvancedTimer::stepEnd("OmniDriver::6");
+                sofa::helper::advancedtimer::stepEnd("OmniDriver::6");
             }
 
 

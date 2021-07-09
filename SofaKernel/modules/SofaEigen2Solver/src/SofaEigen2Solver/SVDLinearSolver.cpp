@@ -23,7 +23,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/Dense>
 #include <Eigen/Core>
@@ -52,7 +52,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     simulation::Visitor::printComment("SVD");
 #endif
 
-    sofa::helper::AdvancedTimer::stepBegin("Solve-SVD");
+    sofa::helper::advancedtimer::stepBegin("Solve-SVD");
 
     const bool verbose  = f_verbose.getValue();
 
@@ -106,7 +106,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         x[i] = (Real) solution(i);
     }
 
-    sofa::helper::AdvancedTimer::stepEnd("Solve-SVD");
+    sofa::helper::advancedtimer::stepEnd("Solve-SVD");
 
     dmsg_info() << "solve, rhs vector = " << msgendl << rhs.transpose() << msgendl
                 << " solution =   \n" << msgendl << x << msgendl

@@ -37,7 +37,7 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer ;
 
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 
 namespace sofa::component::collision
@@ -257,9 +257,9 @@ void DefaultPipeline::doCollisionResponse()
     msg_info_when(d_doPrintInfoMessage.getValue())
         << "Create Contacts " << contactManager->getName() ;
 
-    sofa::helper::AdvancedTimer::stepBegin("CreateContacts");
+    sofa::helper::advancedtimer::stepBegin("CreateContacts");
     contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
-    sofa::helper::AdvancedTimer::stepEnd("CreateContacts");
+    sofa::helper::advancedtimer::stepEnd("CreateContacts");
 
     // finally we start the creation of collisionGroup
 
@@ -268,7 +268,7 @@ void DefaultPipeline::doCollisionResponse()
     // First we remove all contacts with non-simulated objects and directly add them
     type::vector<Contact::SPtr> notStaticContacts;
 
-    sofa::helper::AdvancedTimer::stepBegin("CreateStaticObjectsResponse");
+    sofa::helper::advancedtimer::stepBegin("CreateStaticObjectsResponse");
     for (const auto& contact : contacts)
     {
         const auto collisionModels = contact->getCollisionModels();
@@ -285,7 +285,7 @@ void DefaultPipeline::doCollisionResponse()
             notStaticContacts.push_back(contact);
         }
     }
-    sofa::helper::AdvancedTimer::stepEnd("CreateStaticObjectsResponse");
+    sofa::helper::advancedtimer::stepEnd("CreateStaticObjectsResponse");
 
     if (groupManager == nullptr)
     {

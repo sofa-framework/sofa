@@ -26,8 +26,9 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/core/topology/TopologyHandler.h>
+
 
 namespace sofa::component::topology
 {
@@ -259,19 +260,19 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
 void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
                                          const bool addDOF)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addPoints");
+    sofa::helper::advancedtimer::stepBegin("addPoints");
 
-    sofa::helper::AdvancedTimer::stepBegin("addPointsProcess");
+    sofa::helper::advancedtimer::stepBegin("addPointsProcess");
     addPointsProcess(nPoints);
 
-    sofa::helper::AdvancedTimer::stepNext ("addPointsProcess", "addPointsWarning");
+    sofa::helper::advancedtimer::stepNext ("addPointsProcess", "addPointsWarning");
     addPointsWarning(nPoints, addDOF);
 
-    sofa::helper::AdvancedTimer::stepNext ("addPointsWarning", "propagateTopologicalChanges");
+    sofa::helper::advancedtimer::stepNext ("addPointsWarning", "propagateTopologicalChanges");
     propagateTopologicalChanges();
-    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
+    sofa::helper::advancedtimer::stepEnd("propagateTopologicalChanges");
 
-    sofa::helper::AdvancedTimer::stepEnd("addPoints");
+    sofa::helper::advancedtimer::stepEnd("addPoints");
 }
 
 void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
@@ -279,19 +280,19 @@ void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
      const sofa::type::vector< sofa::type::vector< double> >& coefs,
      const bool addDOF)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addPoints with ancestors");
+    sofa::helper::advancedtimer::stepBegin("addPoints with ancestors");
 
-    sofa::helper::AdvancedTimer::stepBegin("addPointsProcess");
+    sofa::helper::advancedtimer::stepBegin("addPointsProcess");
     addPointsProcess(nPoints);
 
-    sofa::helper::AdvancedTimer::stepNext ("addPointsProcess", "addPointsWarning");
+    sofa::helper::advancedtimer::stepNext ("addPointsProcess", "addPointsWarning");
     addPointsWarning(nPoints, ancestors, coefs, addDOF);
 
-    sofa::helper::AdvancedTimer::stepNext ("addPointsWarning", "propagateTopologicalChanges");
+    sofa::helper::advancedtimer::stepNext ("addPointsWarning", "propagateTopologicalChanges");
     propagateTopologicalChanges();
-    sofa::helper::AdvancedTimer::stepEnd("propagateTopologicalChanges");
+    sofa::helper::advancedtimer::stepEnd("propagateTopologicalChanges");
 
-    sofa::helper::AdvancedTimer::stepEnd("addPoints with ancestors");
+    sofa::helper::advancedtimer::stepEnd("addPoints with ancestors");
 }
 
 void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
@@ -331,39 +332,39 @@ void PointSetTopologyModifier::renumberPoints(const sofa::type::vector< PointID 
     const sofa::type::vector< PointID >& inv_index,
     const bool renumberDOF)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Renumber Points");
+    sofa::helper::advancedtimer::stepBegin("Renumber Points");
 
-    sofa::helper::AdvancedTimer::stepBegin("renumberPointsWarning");
+    sofa::helper::advancedtimer::stepBegin("renumberPointsWarning");
     renumberPointsWarning(index, inv_index, renumberDOF);
 
-    sofa::helper::AdvancedTimer::stepNext("renumberPointsWarning", "propagateTopologicalChanges");
+    sofa::helper::advancedtimer::stepNext("renumberPointsWarning", "propagateTopologicalChanges");
     propagateTopologicalChanges();
 
-    sofa::helper::AdvancedTimer::stepNext("propagateTopologicalChanges", "renumberPointsProcess");
+    sofa::helper::advancedtimer::stepNext("propagateTopologicalChanges", "renumberPointsProcess");
     renumberPointsProcess(index, inv_index, renumberDOF);
 
-    sofa::helper::AdvancedTimer::stepEnd("renumberPointsProcess");
+    sofa::helper::advancedtimer::stepEnd("renumberPointsProcess");
 
-    sofa::helper::AdvancedTimer::stepEnd("Renumber Points");
+    sofa::helper::advancedtimer::stepEnd("Renumber Points");
 }
 
 
 void PointSetTopologyModifier::removePoints(sofa::type::vector< PointID >& indices, const bool removeDOF)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Remove Points");
+    sofa::helper::advancedtimer::stepBegin("Remove Points");
 
-    sofa::helper::AdvancedTimer::stepBegin("removePointsWarning");
+    sofa::helper::advancedtimer::stepBegin("removePointsWarning");
     removePointsWarning(indices, removeDOF);
 
-    sofa::helper::AdvancedTimer::stepNext("removePointsWarning", "propagateTopologicalChanges");
+    sofa::helper::advancedtimer::stepNext("removePointsWarning", "propagateTopologicalChanges");
     propagateTopologicalChanges();
 
-    sofa::helper::AdvancedTimer::stepNext("propagateTopologicalChanges", "removePointsProcess");
+    sofa::helper::advancedtimer::stepNext("propagateTopologicalChanges", "removePointsProcess");
     removePointsProcess(indices, removeDOF);
 
-    sofa::helper::AdvancedTimer::stepEnd("removePointsProcess");
+    sofa::helper::advancedtimer::stepEnd("removePointsProcess");
 
-    sofa::helper::AdvancedTimer::stepEnd("Remove Points");
+    sofa::helper::advancedtimer::stepEnd("Remove Points");
 }
 
 
@@ -371,7 +372,7 @@ void PointSetTopologyModifier::removePoints(sofa::type::vector< PointID >& indic
 void PointSetTopologyModifier::removePointsWarning(sofa::type::vector<PointID> &indices,
         const bool removeDOF)
 {
-    sofa::helper::AdvancedTimer::stepBegin("removePointsWarning");
+    sofa::helper::advancedtimer::stepBegin("removePointsWarning");
     m_container->setPointTopologyToDirty();
 
     // sort points so that they are removed in a descending order
@@ -386,21 +387,21 @@ void PointSetTopologyModifier::removePointsWarning(sofa::type::vector<PointID> &
         PointsRemoved *e2 = new PointsRemoved(indices);
         addStateChange(e2);
     }
-    sofa::helper::AdvancedTimer::stepEnd("removePointsWarning");
+    sofa::helper::advancedtimer::stepEnd("removePointsWarning");
 }
 
 
 void PointSetTopologyModifier::removePointsProcess(const sofa::type::vector<PointID> & indices,
         const bool removeDOF)
 {
-    sofa::helper::AdvancedTimer::stepBegin("removePointsProcess");
+    sofa::helper::advancedtimer::stepBegin("removePointsProcess");
     if(removeDOF)
     {
         propagateStateChanges();
     }
     m_container->removePoints(sofa::Size(indices.size()));
 
-    sofa::helper::AdvancedTimer::stepEnd("removePointsProcess");
+    sofa::helper::advancedtimer::stepEnd("removePointsProcess");
 }
 
 
@@ -454,7 +455,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isPointTopologyDirty()) // triangle Data has not been touched
         return;
 
-    sofa::helper::AdvancedTimer::stepBegin("PointSetTopologyModifier::propagateTopologicalEngineChanges");
+    sofa::helper::advancedtimer::stepBegin("PointSetTopologyModifier::propagateTopologicalEngineChanges");
     // get directly the list of engines created at init: case of removing.... for the moment
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
 
@@ -469,7 +470,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     }
 
     m_container->cleanPointTopologyFromDirty();
-    sofa::helper::AdvancedTimer::stepEnd("PointSetTopologyModifier::propagateTopologicalEngineChanges");
+    sofa::helper::advancedtimer::stepEnd("PointSetTopologyModifier::propagateTopologicalEngineChanges");
 }
 
 void PointSetTopologyModifier::propagateStateChanges()

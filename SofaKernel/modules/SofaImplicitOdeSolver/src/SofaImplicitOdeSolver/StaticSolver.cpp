@@ -22,7 +22,8 @@
 #include <SofaImplicitOdeSolver/StaticSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/MultiMatrix.h>
@@ -220,7 +221,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
     // # Before starting any newton iterations, we first need to compute         #
     // # the residual with the updated right-hand side (the new load increment)  #
     // ###########################################################################
-    sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
+    sofa::helper::advancedtimer::stepBegin("ComputeForce");
     // Step 1   Assemble the force vector
     // 1. Clear the force vector (F := 0)
     // 2. Go down in the current context tree calling addForce on every forcefields
@@ -233,7 +234,7 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
     // it will set to 0 every row (i, _) of the right-hand side (force) vector for the ith degree of
     // freedom.
     mop.projectResponse(force);
-    sofa::helper::AdvancedTimer::stepEnd("ComputeForce");
+    sofa::helper::advancedtimer::stepEnd("ComputeForce");
 
     // Compute the initial residual
     R_squared_norm = force.dot(force);
@@ -455,9 +456,9 @@ void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::
         }
     }
 
-    sofa::helper::AdvancedTimer::valSet("nb_iterations", n_it+1);
-    sofa::helper::AdvancedTimer::valSet("residual", std::sqrt(R_squared_norm));
-    sofa::helper::AdvancedTimer::valSet("correction", std::sqrt(dx_squared_norm));
+    sofa::helper::advancedtimer::valSet("nb_iterations", n_it+1);
+    sofa::helper::advancedtimer::valSet("residual", std::sqrt(R_squared_norm));
+    sofa::helper::advancedtimer::valSet("correction", std::sqrt(dx_squared_norm));
 }
 
 

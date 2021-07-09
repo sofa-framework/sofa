@@ -22,7 +22,8 @@
 #include <SofaGeneralAnimationLoop/MultiStepAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -66,7 +67,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
         dt = this->gnode->getDt();
 
 
-    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
+    sofa::helper::advancedtimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
 #endif
@@ -120,16 +121,16 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
         this->gnode->execute ( act );
     }
 
-    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
+    sofa::helper::advancedtimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     this->gnode->execute<UpdateMappingVisitor>(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+    sofa::helper::advancedtimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
         this->gnode->execute ( act );
     }
-    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
+    sofa::helper::advancedtimer::stepEnd("UpdateMapping");
 
     if (!SOFA_NO_UPDATE_BBOX)
     {
@@ -141,7 +142,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     simulation::Visitor::printCloseNode("Step");
 #endif
 
-    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
+    sofa::helper::advancedtimer::stepEnd("AnimationStep");
 }
 
 } // namespace sofa::component::animationloop

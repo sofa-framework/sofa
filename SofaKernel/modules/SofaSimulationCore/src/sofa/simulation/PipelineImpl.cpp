@@ -29,7 +29,7 @@
 
 #include <sofa/simulation/Node.h>
 
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 namespace sofa
 {
@@ -103,9 +103,9 @@ void PipelineImpl::computeCollisionReset()
         narrowPhaseDetection->setIntersectionMethod(intersectionMethod);
     if (contactManager!=nullptr && contactManager->getIntersectionMethod()!=intersectionMethod)
         contactManager->setIntersectionMethod(intersectionMethod);
-    sofa::helper::AdvancedTimer::stepBegin("CollisionReset");
+    sofa::helper::advancedtimer::stepBegin("CollisionReset");
     doCollisionReset();
-    sofa::helper::AdvancedTimer::stepEnd("CollisionReset");
+    sofa::helper::advancedtimer::stepEnd("CollisionReset");
 }
 
 void PipelineImpl::computeCollisionDetection()
@@ -121,9 +121,9 @@ void PipelineImpl::computeCollisionResponse()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;
-    sofa::helper::AdvancedTimer::stepBegin("CollisionResponse");
+    sofa::helper::advancedtimer::stepBegin("CollisionResponse");
     doCollisionResponse();
-    sofa::helper::AdvancedTimer::stepEnd("CollisionResponse");
+    sofa::helper::advancedtimer::stepEnd("CollisionResponse");
 }
 
 } // namespace simulation

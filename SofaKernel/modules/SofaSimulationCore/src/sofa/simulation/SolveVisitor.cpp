@@ -20,19 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/SolveVisitor.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/TaskScheduler.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::simulation
 {
 
 void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* s)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
+    sofa::helper::advancedtimer::stepBegin("Mechanical",node->getName());
     s->solve(params, dt, x, v);
-    sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
+    sofa::helper::advancedtimer::stepEnd("Mechanical",node->getName());
 }
 
 Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)

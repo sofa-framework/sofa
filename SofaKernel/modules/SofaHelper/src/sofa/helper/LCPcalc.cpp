@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/LCPcalc.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <vector>
 #include <algorithm>
@@ -29,6 +29,7 @@
 #include <fstream>
 #include <cstring>
 #include <iomanip>
+#include <sofa/helper/fwd.h>
 
 namespace sofa
 {
@@ -1694,11 +1695,11 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
             if (verbose){
                 dmsg_info("LCPcalc") << "Convergence after "<< it <<" iteration(s) with tolerance : "<< tol <<" and error : "<< error <<" with dim : " <<  dim ;
             }
-            sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
+            sofa::helper::advancedtimer::valSet("GS iterations", it+1);
             return 1;
         }
     }
-    sofa::helper::AdvancedTimer::valSet("GS iterations", it);
+    sofa::helper::advancedtimer::valSet("GS iterations", it);
 
     free(d);
     for (int i = 0; i < numContacts; i++)
@@ -1826,11 +1827,11 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
             free(W33);
             //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
             //afficheLCP(dfree,W,f,dim);
-            sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
+            sofa::helper::advancedtimer::valSet("GS iterations", it+1);
             return 1;
         }
     }
-    sofa::helper::AdvancedTimer::valSet("GS iterations", it);
+    sofa::helper::advancedtimer::valSet("GS iterations", it);
     free(d);
     for (int i = 0; i < numContacts; i++)
         delete W33[i];
@@ -1906,7 +1907,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
         }
 
     }
-    sofa::helper::AdvancedTimer::valSet("GS iterations", (compteur < numItMax) ? compteur+1 : compteur);
+    sofa::helper::advancedtimer::valSet("GS iterations", (compteur < numItMax) ? compteur+1 : compteur);
 
     if (maxF != 0.0)
     {

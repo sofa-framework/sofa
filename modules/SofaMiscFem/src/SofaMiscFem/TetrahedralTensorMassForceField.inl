@@ -27,7 +27,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 namespace sofa::component::forcefield
 {
@@ -351,7 +351,7 @@ void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 template <class DataTypes>
 SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */) const
 {
-    sofa::helper::AdvancedTimer::stepBegin("getPotentialEnergy");
+    sofa::helper::advancedtimer::stepBegin("getPotentialEnergy");
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -384,14 +384,14 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
 
     msg_info() << "energy="<<energy ;
 
-    sofa::helper::AdvancedTimer::stepEnd("getPotentialEnergy");
+    sofa::helper::advancedtimer::stepEnd("getPotentialEnergy");
     return(energy);
 }
 
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addForceTetraTensorMass");
+    sofa::helper::advancedtimer::stepBegin("addForceTetraTensorMass");
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -422,14 +422,14 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
     edgeInfo.endEdit();
     d_f.endEdit();
 
-    sofa::helper::AdvancedTimer::stepEnd("addForceTetraTensorMass");
+    sofa::helper::advancedtimer::stepEnd("addForceTetraTensorMass");
 }
 
 
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addDForceTetraTensorMass");
+    sofa::helper::advancedtimer::stepBegin("addDForceTetraTensorMass");
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -461,7 +461,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
 
     d_df.endEdit();
 
-    sofa::helper::AdvancedTimer::stepEnd("addDForceTetraTensorMass");
+    sofa::helper::advancedtimer::stepEnd("addDForceTetraTensorMass");
 }
 
 
