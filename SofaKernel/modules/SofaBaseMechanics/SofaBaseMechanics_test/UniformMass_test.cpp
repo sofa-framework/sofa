@@ -52,8 +52,6 @@ using sofa::simulation::SceneLoaderXML ;
 using sofa::testing::BaseTest;
 using testing::Types;
 
-#include <sofa/core/ExecParams.h>
-
 template <class TDataTypes, class TMassTypes>
 struct TemplateTypes
 {

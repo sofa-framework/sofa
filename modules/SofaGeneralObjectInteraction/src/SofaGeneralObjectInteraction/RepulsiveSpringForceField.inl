@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralObjectInteraction/RepulsiveSpringForceField.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::interactionforcefield
 {

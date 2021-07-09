@@ -22,7 +22,6 @@
 #pragma once
 
 #include <SofaNonUniformFem/NonUniformHexahedralFEMForceFieldAndMass.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <SofaNonUniformFem/MultilevelHexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/objectmodel/Base.h>
