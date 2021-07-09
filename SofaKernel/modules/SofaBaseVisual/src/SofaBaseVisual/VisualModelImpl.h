@@ -122,7 +122,6 @@ public:
     Data< VecVisualTriangle > m_triangles; ///< triangles of the model
     Data< VecVisualQuad > m_quads; ///< quads of the model
 
-    bool m_topoChanged {false};
     bool m_textureChanged {false};
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
