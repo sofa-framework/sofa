@@ -20,7 +20,7 @@ sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 
 if(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     # Add SofaPython BEFORE image and Compliant to enable their soft dependency
-    sofa_add_plugin(SofaPython SofaPython)
+    sofa_add_plugin_external(SofaPython SofaPython)
 endif()
 
 sofa_add_plugin(image image)           # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
