@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_MULTIVECID_SKIP_EXTERN_TEMPLATE_DECLARATION 1
+#define SOFA_CORE_MULTIVECID_TEMPLATE_DEFINITION
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/BaseState.h>
 

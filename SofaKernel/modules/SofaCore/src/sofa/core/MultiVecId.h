@@ -163,7 +163,7 @@ protected:
 };
 
 template <VecType vtype, VecAccess vaccess>
-class TMultiVecId
+class SOFA_CORE_API TMultiVecId
 {
 public:
     typedef TVecId<vtype, vaccess> MyVecId;
@@ -400,7 +400,7 @@ public:
 
 
 template <VecAccess vaccess>
-class TMultiVecId<V_ALL, vaccess>
+class SOFA_CORE_API TMultiVecId<V_ALL, vaccess>
 {
 public:
     typedef TVecId<V_ALL, vaccess> MyVecId;
@@ -606,16 +606,16 @@ typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiMatrixDerivId;
 typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
 typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
 
-//#if (SOFA_CORE_MULTIVECID_SKIP_EXTERN_TEMPLATE_DECLARATION == 1)
-extern template class TMultiVecId<V_COORD, V_READ>;
-extern template class TMultiVecId<V_COORD, V_WRITE>;
-extern template class TMultiVecId<V_DERIV, V_READ>;
-extern template class TMultiVecId<V_DERIV, V_WRITE>;
-extern template class TMultiVecId<V_MATDERIV, V_READ>;
-extern template class TMultiVecId<V_MATDERIV, V_WRITE>;
-extern template class TMultiVecId<V_ALL, V_READ>;
-extern template class TMultiVecId<V_ALL, V_WRITE>;
-//#endif
+#if !defined(SOFA_CORE_MULTIVECID_TEMPLATE_DEFINITION)
+extern template class SOFA_CORE_API  TMultiVecId<V_COORD, V_READ>;
+extern template class SOFA_CORE_API  TMultiVecId<V_COORD, V_WRITE>;
+extern template class SOFA_CORE_API  TMultiVecId<V_DERIV, V_READ>;
+extern template class SOFA_CORE_API  TMultiVecId<V_DERIV, V_WRITE>;
+extern template class SOFA_CORE_API  TMultiVecId<V_MATDERIV, V_READ>;
+extern template class SOFA_CORE_API  TMultiVecId<V_MATDERIV, V_WRITE>;
+extern template class SOFA_CORE_API  TMultiVecId<V_ALL, V_READ>;
+extern template class SOFA_CORE_API  TMultiVecId<V_ALL, V_WRITE>;
+#endif
 
 } // namespace sofa::core
 
