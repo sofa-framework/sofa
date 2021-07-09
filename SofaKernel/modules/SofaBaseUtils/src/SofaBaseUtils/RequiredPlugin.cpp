@@ -44,7 +44,6 @@ RequiredPlugin::RequiredPlugin()
     , d_requireOne ( initData(&d_requireOne , false, "requireOne", "Display an error message if no plugin names were successfully loaded"))
     , d_requireAll ( initData(&d_requireAll , true, "requireAll", "Display an error message if any plugin names failed to be loaded"))
     , d_loadedPlugins(initData(&d_loadedPlugins, "loadedPlugins", "List of the plugins that are have been loaded."))
-    , d_test1(initData(&d_test1, "test1", "List of the plugins that are have been loaded."))
     , d_test2(initData(&d_test2, "test2", "List of the plugins that are have been loaded."))
     , d_test3(initData(&d_test3, "test3", "List of the plugins that are have been loaded."))
     , d_test4(initData(&d_test4, "test4", "List of the plugins that are have been loaded."))
@@ -52,9 +51,6 @@ RequiredPlugin::RequiredPlugin()
 
 
 {
-    d_test1.setRequired(true);
-    d_test1.setWithDefaultValue(false);
-
     d_test2.setRequired(true);
     d_test2.setWithDefaultValue(false);
 

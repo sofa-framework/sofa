@@ -65,7 +65,7 @@ public:
     typedef unsigned DataFlags;
 
     /// Default value used for flags.
-    enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK | FLAG_REQUIRED | FLAG_WITH_DEFAULT_VALUE };
+    enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK | FLAG_WITH_DEFAULT_VALUE };
 
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class BaseInitData

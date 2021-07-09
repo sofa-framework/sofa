@@ -153,7 +153,27 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     }
     else
     {
-        setTitle(data_->getName().c_str());
+        if(data_->isRequired())
+        {
+            QString s;
+            s = s + data_->getName().c_str();
+            setTitle(s);
+            if(!data_->hasDefaultValue() && !data->isSet())
+            {
+                datawidget_->setStyleSheet("background-color: lightyellow;");
+            }
+        }else
+        {
+            QString s;
+            s = s + data_->getName().c_str(); // + " (optional)";
+            setTitle(s);
+
+            if(!data_->hasDefaultValue() && !data->isSet())
+            {
+                datawidget_->setStyleSheet("color: gray;");
+            }
+            //setStyleSheet("QGroupBox { font-style: italic; color: gray} ");
+        }
         setContentsMargins(0,0,0,0);
     }
     gridLayout_->setContentsMargins(10,10,10,10);
