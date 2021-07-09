@@ -25,7 +25,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/type/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
