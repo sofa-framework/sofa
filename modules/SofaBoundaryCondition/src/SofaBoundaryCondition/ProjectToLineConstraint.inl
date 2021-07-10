@@ -115,11 +115,17 @@ void ProjectToLineConstraint<DataTypes>::init()
         }
     }
 
-    reinit();
+    updateJacobian();
 }
 
 template <class DataTypes>
 void  ProjectToLineConstraint<DataTypes>::reinit()
+{
+    updateJacobian();
+}
+
+template <class DataTypes>
+void  ProjectToLineConstraint<DataTypes>::updateJacobian()
 {
     // normalize the normal vector
     CPos n = f_direction.getValue();
@@ -179,8 +185,13 @@ template <class DataTypes>
 void ProjectToLineConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
+    
+    helper::WriteAccessor<DataVecDeriv> res(resData);
+    if( (jacobian.colSize() / DataTypes::deriv_total_size) != res.size())
+    {
+        updateJacobian();
+    }
 
-    helper::WriteAccessor<DataVecDeriv> res ( resData );
     jacobian.mult(res.wref(),res.ref());
 }
 
