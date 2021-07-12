@@ -319,6 +319,8 @@ public:
         if(mass!=nullptr){
 
             static const MassType volume = 8.0;
+            //dmarchal, TODO(epernod): some use of the following value needs to be done
+            //static const MassType volumeElem = volume / 8.0; // 8 hexa in the grid
             static const MassType expectedTotalMass = 27.0;
             static const MassType expectedDensity = expectedTotalMass / volume;
 
