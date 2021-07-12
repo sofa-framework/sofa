@@ -70,7 +70,7 @@ public:
     ///
     /// If the ForceField can be represented as a matrix, this method computes
     /// \f[
-    ///                          $ f += B v + K x $
+    ///                          f += B v + K x
     /// \f]
     /// where K is the stiffness matrix (associated with forces which derive from a potential),
     /// and B is the damping matrix (associated with viscous forces).
@@ -96,7 +96,7 @@ public:
     ///
     /// If the ForceField can be represented as a matrix, this method computes
     /// \f[
-    ///                    $ df += kFactor K dx + bFactor B dx $
+    ///                    df += kFactor K dx + bFactor B dx
     /// \f]
     /// where K is the stiffness matrix (associated with forces which derive from a potential),
     /// and B is the damping matrix (associated with viscous forces).
