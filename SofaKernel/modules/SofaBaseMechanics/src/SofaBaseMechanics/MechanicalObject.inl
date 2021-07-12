@@ -557,7 +557,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         default:
             // Ignore events that are not Point-related.
             break;
-        };
+        }
 
         ++itBegin;
     }

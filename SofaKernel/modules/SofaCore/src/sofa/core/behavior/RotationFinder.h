@@ -47,7 +47,7 @@ public:
     typedef type::Mat< 3, 3, Real > Mat3x3;
 
     using BaseRotationFinder::getRotations;
-    virtual const type::vector< type::Mat3x3 >& getRotations() = 0;
+    virtual const type::vector< Mat3x3 >& getRotations() = 0;
 };
 
 } // namespace behavior

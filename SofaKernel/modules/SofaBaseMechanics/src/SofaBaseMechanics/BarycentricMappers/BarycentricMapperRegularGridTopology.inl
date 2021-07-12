@@ -268,13 +268,6 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::Vi
 }
 
 template <class In, class Out>
-void BarycentricMapperRegularGridTopology<In,Out>::addMatrixContrib(MatrixType* m,
-                                                                    int row, int col, Real value)
-{
-    Inherit1::addMatrixContrib(m, row, col, value);
-}
-
-template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();

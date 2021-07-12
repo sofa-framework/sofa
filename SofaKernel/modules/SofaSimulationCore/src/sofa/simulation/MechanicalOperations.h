@@ -162,6 +162,12 @@ protected:
     void setDf(core::MultiVecDerivId& v);
     void setDf(core::ConstMultiVecDerivId& v);
 
+    /// Warn the user that a linear solver is required but has not been found
+    void showMissingLinearSolverError() const;
+
+    /// Store if the "missing linear solver" error message has already been shown for a given context
+    static std::map<core::objectmodel::BaseContext*, bool> hasShownMissingLinearSolverMap;
+
 };
 
 }

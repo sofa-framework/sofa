@@ -208,7 +208,6 @@ void LineLocalMinDistanceFilter::init()
 
         pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
         m_pointInfo.createTopologyHandler(bmt, pointInfoHandler);
-        m_pointInfo.registerTopologicalData();
 
         type::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
@@ -216,7 +215,6 @@ void LineLocalMinDistanceFilter::init()
 
         lineInfoHandler = new LineInfoHandler(this,&m_lineInfo);
         m_lineInfo.createTopologyHandler(bmt, lineInfoHandler);
-        m_lineInfo.registerTopologicalData();
     }
 }
 
@@ -258,7 +256,8 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index /*ed
 
 bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const type::Vector3 &PQ)
 {
-    PointInfo & Pi = m_pointInfo[pointIndex];
+    helper::WriteAccessor< Data<sofa::type::vector<PointInfo> > > pInfo(m_pointInfo);
+    PointInfo & Pi = pInfo[pointIndex];
     if(this->isRigid())
     {
         // filter is precomputed in the rest position

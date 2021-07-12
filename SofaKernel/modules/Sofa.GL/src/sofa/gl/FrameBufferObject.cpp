@@ -170,7 +170,7 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
         if(enableColor)
         {
             glDrawBuffer(GL_BACK);
-            glReadBuffer(GL_BACK);;
+            glReadBuffer(GL_BACK);
         }
 
 #ifdef _DEBUG

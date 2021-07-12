@@ -104,7 +104,6 @@ public:
     SOFA_CLASS(LCPConstraintSolver, ConstraintSolverImpl);
 
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
-    typedef std::vector<list_cc> VecListcc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 protected:
@@ -159,7 +158,7 @@ public:
 
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
-    private:
+private:
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 	std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
     void computeInitialGuess();
@@ -203,7 +202,7 @@ public:
     void build_problem_info();
     int lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
     int nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
-    int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr) { if (_mu == 0.0) return lcp_gaussseidel_unbuilt(dfree, f, residuals); else return nlcp_gaussseidel_unbuilt(dfree, f, residuals); }
+    int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
 
     sofa::component::linearsolver::SparseMatrix<double> *_Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
@@ -242,7 +241,6 @@ public:
     type::vector< double > unbuilt_d;
 
     type::vector< double > unbuilt_W11;
-    type::vector< double > unbuilt_invW11;
 
     bool isActive;
 };

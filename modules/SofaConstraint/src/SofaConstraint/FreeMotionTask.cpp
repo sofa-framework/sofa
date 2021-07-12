@@ -26,9 +26,7 @@
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ConstraintParams.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/helper/logging/Messaging.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;

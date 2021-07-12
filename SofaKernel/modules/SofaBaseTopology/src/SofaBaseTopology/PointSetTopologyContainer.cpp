@@ -190,9 +190,9 @@ void PointSetTopologyContainer::updateTopologyHandlerGraph()
 }
 
 
-void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyHandler *_engine)
+void PointSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler * _TopologyHandler)
 {
-    this->m_enginesList.push_back(_engine);
+    this->m_enginesList.push_back(_TopologyHandler);
 }
 
 const sofa::type::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const

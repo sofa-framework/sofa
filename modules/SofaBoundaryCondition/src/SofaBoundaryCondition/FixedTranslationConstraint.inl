@@ -25,28 +25,10 @@
 #include <SofaBoundaryCondition/FixedTranslationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/vector_algorithm.h>
 
 namespace sofa::component::projectiveconstraintset
 {
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    return fc != 0;
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeIndex((Index) pointIndex);
-    }
-}
 
 template< class DataTypes>
 FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
@@ -56,7 +38,6 @@ FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
     , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_coordinates( initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
@@ -67,8 +48,7 @@ FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
 template <class DataTypes>
 FixedTranslationConstraint<DataTypes>::~FixedTranslationConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class DataTypes>
@@ -110,13 +90,9 @@ void FixedTranslationConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
-        f_indices.registerTopologicalData();
-
+        // Initialize topological changes support
+        f_indices.createTopologyHandler(_topology);
         f_coordinates.createTopologyHandler(_topology);
-        f_coordinates.registerTopologicalData();
     }
     else
     {

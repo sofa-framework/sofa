@@ -127,9 +127,6 @@ public:
 
 };
 
-template <Size N, Size M, class Real>
-struct IdentityMappingMatrixHelper;
-
 #if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
 
 extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
