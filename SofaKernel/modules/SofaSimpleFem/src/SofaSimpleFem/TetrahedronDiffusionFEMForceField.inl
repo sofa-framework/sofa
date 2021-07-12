@@ -25,7 +25,6 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>

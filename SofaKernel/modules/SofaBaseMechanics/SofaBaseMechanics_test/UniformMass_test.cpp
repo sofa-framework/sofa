@@ -27,7 +27,6 @@ using std::string ;
 #include <SofaBaseMechanics/MechanicalObject.h>
 using namespace sofa::defaulttype ;
 
-#include <SofaBaseMechanics/UniformMass.h>
 using sofa::component::mass::UniformMass ;
 
 #include <SofaSimulationGraph/SimpleApi.h>

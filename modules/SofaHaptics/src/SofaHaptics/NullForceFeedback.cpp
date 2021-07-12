@@ -35,17 +35,17 @@ namespace controller
 void NullForceFeedback::init()
 {
     this->ForceFeedback::init();
-};
+}
 
 void NullForceFeedback::computeForce(SReal /*x*/, SReal /*y*/, SReal /*z*/, SReal /*u*/, SReal /*v*/, SReal /*w*/, SReal /*q*/, SReal& fx, SReal& fy, SReal& fz)
 {
     fx = fy = fz = 0.0;
-};
+}
 
 void NullForceFeedback::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &/*world_H_tool*/, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )
 {
     W_tool_world.clear();
-};
+}
 
 int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
         .add< NullForceFeedback >();

@@ -102,7 +102,6 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
 
     // Create specific handler for TriangleData
     localFiberDirection.createTopologyHandler(m_topology, triangleHandler);
-    localFiberDirection.registerTopologicalData();
 
     Inherited::init();
     reinit();

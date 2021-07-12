@@ -49,15 +49,6 @@ BarycentricMapperSparseGridTopology<In, Out>::~BarycentricMapperSparseGridTopolo
         delete m_matrixJ;
 }
 
-template<class In, class Out>
-void BarycentricMapperSparseGridTopology<In, Out>::addMatrixContrib(MatrixType* m,
-                                                                    int row, int col, Real value)
-{
-    Inherit1::addMatrixContrib(m, row, col, value);
-}
-
-
-
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::clear ( std::size_t size )
 {

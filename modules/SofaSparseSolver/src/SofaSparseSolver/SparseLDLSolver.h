@@ -38,13 +38,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 /// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
@@ -108,10 +102,6 @@ extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSp
 #endif
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver
 
 #endif

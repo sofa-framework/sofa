@@ -70,7 +70,6 @@ public:
             LARGE = 1, ///< Symbol of large displacements tetrahedron solver
             POLAR = 2  ///< Symbol of polar displacements tetrahedron solver
          };
-protected:
 
     /// @name Per element (tetrahedron) data
     /// @{

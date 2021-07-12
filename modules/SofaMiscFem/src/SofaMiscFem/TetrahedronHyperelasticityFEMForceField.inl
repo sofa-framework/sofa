@@ -87,7 +87,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
           if (!(j%2))
               tinfo.m_shapeVector[j]=-cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
           else
-              tinfo.m_shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;;
+              tinfo.m_shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
       }
 
 
@@ -230,8 +230,6 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     edgeInf.resize(m_topology->getNbEdges());
     m_edgeInfo.createTopologyHandler(m_topology);
 
-    m_edgeInfo.registerTopologicalData();
-
     m_edgeInfo.endEdit();
 
     // get restPosition
@@ -251,8 +249,6 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
 
     /// set the call back function upon creation of a tetrahedron
     m_tetrahedronInfo.createTopologyHandler(m_topology,m_tetrahedronHandler);
-    m_tetrahedronInfo.registerTopologicalData();
-
     m_tetrahedronInfo.endEdit();
     //testDerivatives();
 

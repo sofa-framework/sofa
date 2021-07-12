@@ -69,7 +69,7 @@ struct MapMapSparseMatrixToEigenSparseVec
             }
         }
 
-        eigenMat.setFromTriplets(triplets.begin(), triplets.end());;
+        eigenMat.setFromTriplets(triplets.begin(), triplets.end());
         eigenMat.makeCompressed();
 
         return eigenMat;

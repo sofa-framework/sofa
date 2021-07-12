@@ -280,7 +280,7 @@ public:
     /// Cast into a standard C array of elements (stored per line) (read-only).
     const real* ptr() const
     {
-        return this->elems[0].ptr();;
+        return this->elems[0].ptr();
     }
 
     /// Cast into a standard C array of elements (stored per line).
@@ -392,7 +392,7 @@ public:
     bool operator==(const Mat<L,C,real>& b) const
     {
         for (Size i=0; i<L; i++)
-            if (!(this->elems[i]==b[i])) return false;
+            if (this->elems[i] != b[i]) return false;
         return true;
     }
 

@@ -236,22 +236,17 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         this->getContext()->get(cgLinearSolver);
         this->getContext()->get(linearSolver);
 
-        simulation::Node *solvernode = nullptr;
-
         if (eulerSolver && cgLinearSolver)
         {
             msg_info() << "use EulerImplicitSolver & CGLinearSolver" ;
-            solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if (eulerSolver && linearSolver)
         {
             msg_info() << "use EulerImplicitSolver & LinearSolver";
-            solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if(eulerSolver)
         {
             msg_info() << "use EulerImplicitSolver";
-            solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else
         {
@@ -1078,9 +1073,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
     _sparseCompliance.resize(constraint_dofs.size() * nbConstraints);
 
-    std::list< int >::iterator dofsItEnd = constraint_dofs.end();
+    auto dofsItEnd = constraint_dofs.end();
 
-    for (std::list< int >::iterator dofsIt = constraint_dofs.begin(); dofsIt != dofsItEnd; ++dofsIt)
+    for (auto dofsIt = constraint_dofs.begin(); dofsIt != dofsItEnd; ++dofsIt)
     {
         int NodeIdx = (*dofsIt);
         _indexNodeSparseCompliance[NodeIdx] = it;
@@ -1188,7 +1183,7 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(doubl
         int c = id_to_localIndex[i];
         double dc = d[i];
 
-        for (std::list<unsigned int>::iterator it = itBegin; it != itEnd; ++it)
+        for (auto it = itBegin; it != itEnd; ++it)
         {
             int id = localIndex_to_id[*it];
             dc += localW.element(c, *it) * constraint_force[id];

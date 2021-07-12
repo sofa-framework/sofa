@@ -33,13 +33,11 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
         sofa::core::topology::BaseMeshTopology *_topology, value_type defaultValue)
     : TopologyHandler()
     , m_topologyData(_topologicalData)
-    , m_topology(nullptr)
     , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
     , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
     SOFA_UNUSED(defaultValue);
-    m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
-
+    m_topology = dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 }
 
 
@@ -48,7 +46,6 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
     value_type defaultValue)
     : TopologyHandler()
     , m_topologyData(_topologicalData)
-    , m_topology(nullptr)
     , m_defaultValue(defaultValue)
     , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
     , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
@@ -76,46 +73,12 @@ void TopologyDataHandler<TopologyElementType,  VecT>::init()
 
 
 template <typename TopologyElementType, typename VecT>
-bool TopologyDataHandler<TopologyElementType,  VecT>::registerTopology(sofa::core::topology::BaseMeshTopology *_topology)
-{
-    m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
-
-    if (m_topology == nullptr)
-    {
-        msg_info(m_topologyData->getOwner()) <<"Topology: " << _topology->getName() << " is not dynamic. The linked topology Data '" << m_data_name << "' inside component: '"<< m_topologyData->getOwner()->getName() << "' won't support topological changes.";
-        return false;
-    }
-    else
-        m_topology->addTopologyHandler(this);
-
-    return true;
-}
-
-
-template <typename TopologyElementType, typename VecT>
-bool TopologyDataHandler<TopologyElementType,  VecT>::registerTopology()
-{
-    if (m_topology == nullptr)
-    {
-        msg_info(m_topologyData->getOwner()) << "Current topology is not defined. The linked topology Data '" << m_data_name << "' inside component: '" << m_topologyData->getOwner()->getName() << "' won't support topological changes.";
-        return false;
-    }
-    else
-        m_topology->addTopologyHandler(this);
-
-    return true;
-}
-
-
-template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType,  VecT>::handleTopologyChange()
 {
     if (!this->isTopologyDataRegistered() || m_topology == nullptr)
         return;
 
-    m_topologyData->setDataSetArraySize(m_topology->getNbPoints());
-
-    sofa::core::topology::TopologyHandler::ApplyTopologyChanges(m_changeList.getValue(), m_topology->getNbPoints());
+    sofa::core::topology::TopologyHandler::ApplyTopologyChanges(m_topology->m_changeList.getValue(), m_topology->getNbPoints());
 }
 
 
@@ -140,6 +103,8 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToPointDataArray()
     }
 
     _container->d_initPoints.addOutput(this);
+    _container->addTopologyHandler(this);
+    m_topologyData->setDataSetArraySize(_container->getNbPoints());
     m_pointsLinked = true;
 }
 
@@ -164,6 +129,8 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToEdgeDataArray()
     }
 
     _container->d_edge.addOutput(this);
+    _container->addTopologyHandler(this);
+    m_topologyData->setDataSetArraySize(_container->d_edge.getValue().size());
     m_edgesLinked = true;
 }
 
@@ -188,6 +155,8 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToTriangleDataArray()
     }
 
     _container->d_triangle.addOutput(this);
+    _container->addTopologyHandler(this);
+    m_topologyData->setDataSetArraySize(_container->d_triangle.getValue().size());
     m_trianglesLinked = true;
 }
 
@@ -212,6 +181,8 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToQuadDataArray()
     }
 
     _container->d_quad.addOutput(this);
+    _container->addTopologyHandler(this);
+    m_topologyData->setDataSetArraySize(_container->d_quad.getValue().size());
     m_quadsLinked = true;
 }
 
@@ -236,6 +207,8 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToTetrahedronDataArray
     }
 
     _container->d_tetrahedron.addOutput(this);
+    _container->addTopologyHandler(this);
+    m_topologyData->setDataSetArraySize(_container->d_tetrahedron.getValue().size());
     m_tetrahedraLinked = true;
 }
 
@@ -260,6 +233,8 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToHexahedronDataArray(
     }
 
     _container->d_hexahedron.addOutput(this);
+    _container->addTopologyHandler(this);
+    m_topologyData->setDataSetArraySize(_container->d_hexahedron.getValue().size());
     m_hexahedraLinked = true;
 }
 

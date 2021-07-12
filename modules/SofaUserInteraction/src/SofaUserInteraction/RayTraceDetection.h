@@ -66,10 +66,6 @@ protected:
     RayTraceDetection() = default;
     ~RayTraceDetection() override = default;
 
-private:
-
-    void findAllDetectionComponents(std::vector<std::string>& broadPhaseComponents, std::vector<std::string>& narrowPhaseComponents);
-
 };
 
 } // namespace sofa::component::collision

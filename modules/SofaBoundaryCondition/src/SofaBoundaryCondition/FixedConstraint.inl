@@ -28,7 +28,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/vector_algorithm.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -37,30 +36,6 @@ using sofa::core::objectmodel::ComponentState;
 
 namespace sofa::component::projectiveconstraintset
 {
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    if (fc)
-    {
-        return false;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void FixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
@@ -72,7 +47,6 @@ FixedConstraint<DataTypes>::FixedConstraint()
     , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new FixedConstraintInternalData<DataTypes>())
-    , m_pointHandler(nullptr)
 {
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
@@ -90,9 +64,6 @@ FixedConstraint<DataTypes>::FixedConstraint()
 template <class DataTypes>
 FixedConstraint<DataTypes>::~FixedConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
-
     delete data;
 }
 
@@ -144,10 +115,8 @@ void FixedConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize topological functions
-        m_pointHandler = new FCPointHandler(this, &d_indices);
-        d_indices.createTopologyHandler(_topology, m_pointHandler);
-        d_indices.registerTopologicalData();
+        // Initialize topological changes support
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {

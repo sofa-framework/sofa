@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/vector.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <set>
 
 namespace sofa::component::projectiveconstraintset
@@ -67,7 +67,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef type::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
     typedef sofa::core::topology::Point Point;
     typedef sofa::type::Vector3 Vector3;
 
@@ -118,31 +118,9 @@ public:
 
     bool fixAllDOFs() const { return d_fixAll.getValue(); }
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename FixedConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(FixedConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::type::vector< Index > & /*ancestors*/,
-                const sofa::type::vector< double > & /*coefs*/);
-    protected:
-        FixedConstraint<DataTypes> *fc;
-    };
-
 protected :
     /// Function check values of given indices
     void checkIndices();
-    
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
 };
 

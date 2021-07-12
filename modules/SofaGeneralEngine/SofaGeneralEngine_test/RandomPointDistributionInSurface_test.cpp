@@ -192,7 +192,7 @@ TYPED_TEST(RandomPointDistributionInSurface_test, seeds)
 
     // true random seeds
     this->generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints1);
-    std::this_thread::sleep_for(std::chrono::milliseconds(1100));; // wait a bit in order to change seed
+    std::this_thread::sleep_for(std::chrono::milliseconds(1100)); // wait a bit in order to change seed
     this->generate(vertices, triangles, 0.1, 0, nbPoints, outputPoints2);
     ASSERT_EQ(outputPoints1.size(), nbPoints);
     ASSERT_EQ(outputPoints2.size(), nbPoints);

@@ -144,13 +144,10 @@ void QuadBendingFEMForceField<DataTypes>::init()
     }
     // Create specific handler for QuadData
     quadInfo.createTopologyHandler(m_topology, quadHandler);
-    quadInfo.registerTopologicalData();
 
     edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.registerTopologicalData();
 
     vertexInfo.createTopologyHandler(m_topology);
-    vertexInfo.registerTopologicalData(); 
 
     reinit();
 }

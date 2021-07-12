@@ -102,7 +102,8 @@ void WriteState::init()
             gzfile = gzopen(filename.c_str(),"wb");
             if( !gzfile )
             {
-                msg_error() << "Error creating compressed file "<<filename;
+                msg_error() << "Error creating compressed file " << filename
+                            << ". Reason: " << std::strerror(errno);
             }
         }
         else

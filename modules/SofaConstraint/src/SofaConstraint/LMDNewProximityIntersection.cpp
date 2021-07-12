@@ -22,18 +22,15 @@
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <SofaConstraint/LMDNewProximityIntersection.inl>
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
-#include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 
 
-#include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 
 
-#include <iostream>
 #include <algorithm>
 
 namespace sofa::component::collision

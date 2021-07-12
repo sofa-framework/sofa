@@ -763,7 +763,7 @@ int RealGUI::closeGUI()
 {
     QSettings settings;
     QScreen* screen = widget->window()->windowHandle()->screen();
-    settings.beginGroup("viewer"); ;
+    settings.beginGroup("viewer");
     settings.setValue("screenNumber", QGuiApplication::screens().indexOf(screen));
     settings.endGroup();
     delete this;
@@ -870,7 +870,7 @@ void RealGUI::emitIdle()
     }
 
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
 }
 
 /// This open popup the file selection windows.
@@ -1971,7 +1971,7 @@ void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
         getViewer()->load();
         getViewer()->resetView();
         if(isEmbeddedViewer())
-            getQtViewer()->getQWidget()->update();;
+            getQtViewer()->getQWidget()->update();
         statWidget->CreateStats(root);
     }
 }
@@ -2300,7 +2300,7 @@ void RealGUI::showhideElements()
 {
     displayFlag->updateDataValue();
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
 }
 
 //------------------------------------
@@ -2308,7 +2308,7 @@ void RealGUI::showhideElements()
 void RealGUI::Update()
 {
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
     statWidget->CreateStats(currentSimulation());
 }
 
@@ -2319,7 +2319,7 @@ void RealGUI::updateBackgroundColour()
     if(getViewer())
         getViewer()->setBackgroundColour(background[0]->text().toFloat(),background[1]->text().toFloat(),background[2]->text().toFloat());
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
 }
 
 //------------------------------------
@@ -2329,7 +2329,7 @@ void RealGUI::updateBackgroundImage()
     if(getViewer())
         getViewer()->setBackgroundImage( backgroundImage->text().toStdString() );
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
 }
 
 //------------------------------------

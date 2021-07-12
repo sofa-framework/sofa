@@ -23,7 +23,7 @@
 #include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/simulation/fwd.h>
-#include <sofa/core/behavior/fwd.h>    // Because this is where is RotationMatrix
+#include <sofa/core/behavior/fwd.h>    // Because this is where RotationMatrix is
 #include <SofaBaseLinearSolver/fwd.h>
 
 #include <sofa/core/behavior/LinearSolver.h>

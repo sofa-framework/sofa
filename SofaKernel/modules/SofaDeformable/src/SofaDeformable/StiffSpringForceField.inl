@@ -26,7 +26,6 @@
 
 
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa::component::interactionforcefield
 {

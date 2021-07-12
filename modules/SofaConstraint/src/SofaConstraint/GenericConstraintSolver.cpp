@@ -30,11 +30,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
-#include <algorithm>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/simulation/DefaultTaskScheduler.h>
 
-#include <thread>
 #include <functional>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
@@ -139,15 +137,15 @@ void GenericConstraintSolver::init()
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
     {
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-            constraintCorrections[i]->removeConstraintSolver(this);
+        for (auto* constraintCorrection : constraintCorrections)
+            constraintCorrection->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
 
     getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
     constraintCorrectionIsActive.resize(constraintCorrections.size());
-    for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-        constraintCorrections[i]->addConstraintSolver(this);
+    for (auto* constraintCorrection : constraintCorrections)
+        constraintCorrection->addConstraintSolver(this);
     context = getContext();
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
@@ -167,12 +165,10 @@ void GenericConstraintSolver::init()
 
 void GenericConstraintSolver::cleanup()
 {
-    if (!constraintCorrections.empty())
-    {
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-            constraintCorrections[i]->removeConstraintSolver(this);
-        constraintCorrections.clear();
-    }
+    for (auto* constraintCorrection : constraintCorrections)
+        constraintCorrection->removeConstraintSolver(this);
+    constraintCorrections.clear();
+
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     vop.v_free(m_lambdaId, false, true);
     vop.v_free(m_dxId, false, true);
@@ -262,9 +258,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
     if (unbuilt.getValue())
     {
-        for (unsigned int i=0;i<constraintCorrections.size();i++)
+        for (auto* cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if (!cc->isActive()) continue;
             cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
         }
@@ -356,9 +351,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
             }
 
         } else {
-            for (unsigned int i=0; i<constraintCorrections.size(); i++)
+            for (auto* cc : constraintCorrections)
             {
-                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
                 if (!cc->isActive())
                     continue;
 
@@ -383,9 +377,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
 void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFactor)
 {
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto* cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         if (!cc->isActive()) continue;
         cc->rebuildSystem(massFactor, forceFactor);
     }
@@ -486,9 +479,8 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
 void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
 {
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto* cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->computeResidual(eparam,&current_cp->f);
     }
 }
@@ -629,13 +621,9 @@ void GenericConstraintProblem::clear(int nbC)
 
 void GenericConstraintProblem::freeConstraintResolutions()
 {
-    for(unsigned int i=0; i<constraintsResolutions.size(); i++)
+    for(auto* constraintsResolution : constraintsResolutions)
     {
-        if (constraintsResolutions[i] != nullptr)
-        {
-            delete constraintsResolutions[i];
-            constraintsResolutions[i] = nullptr;
-        }
+        delete constraintsResolution;
     }
 }
 int GenericConstraintProblem::getNumConstraints()

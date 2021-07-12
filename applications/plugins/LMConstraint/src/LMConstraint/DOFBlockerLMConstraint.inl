@@ -22,38 +22,12 @@
 #pragma once
 #include <LMConstraint/DOFBlockerLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::constraintset
 {
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(Index /*nbPoints*/, const sofa::type::vector< Index > &, const sofa::type::vector< double >& )
-{
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-    return;
-}
 
 template <class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::clearConstraints()
@@ -95,10 +69,8 @@ void DOFBlockerLMConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
-        // Initialize functions and parameters
-        m_pointHandler = new FCTPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
-        f_indices.registerTopologicalData();        
+        // Initialize topological change handling
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {

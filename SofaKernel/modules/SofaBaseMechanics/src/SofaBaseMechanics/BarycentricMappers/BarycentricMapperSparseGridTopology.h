@@ -78,8 +78,6 @@ protected:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
                                         topology::PointSetTopologyContainer* _toTopology);
 
-    void addMatrixContrib(MatrixType* m, int row, int col, Real value);
-
     sofa::type::vector<CubeData> m_map;
     topology::SparseGridTopology* m_fromTopology {nullptr};
     MatrixType* m_matrixJ {nullptr};

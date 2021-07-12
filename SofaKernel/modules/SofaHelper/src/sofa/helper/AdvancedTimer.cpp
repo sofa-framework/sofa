@@ -770,12 +770,12 @@ void printVal(std::ostream& out, double v)
                 out << '.' << dec;
         }
     }
-};
+}
 
 void printNoVal(std::ostream& out)
 {
     out << "       ";
-};
+}
 
 void printVal(std::ostream& out, double v, int niter)
 {
@@ -1260,7 +1260,7 @@ json TimerData::getJson(std::string stepNumber)
 
                     ComposantId << steps[s];
                     deepthTree.push_back(ComposantId.str());
-                    temp[ComposantId.str()]["Values"] = createJSONArray(s, temp[ComposantId.str()]["Values"], data);;
+                    temp[ComposantId.str()]["Values"] = createJSONArray(s, temp[ComposantId.str()]["Values"], data);
                     *jsonPointer = temp;
                     jsonPointer = &jsonPointer->at(ComposantId.str());
 
@@ -1350,7 +1350,7 @@ json TimerData::getLightJson(std::string stepNumber)
                     ComposantId << steps[s];
                     deepthTree.push_back(ComposantId.str());
                     jsonOutput[jsonObjectName][ComposantId.str()]["Father"] = father;
-                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["Values"], data);;
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["Values"], data);
 
                 }
                 // If the level decrement

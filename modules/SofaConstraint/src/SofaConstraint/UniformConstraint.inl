@@ -120,7 +120,7 @@ void UniformConstraint<DataTypes>::getConstraintResolution(const sofa::core::Con
         {
             for (std::size_t j = 0; j < Deriv::size(); ++j)
             {
-                sofa::component::constraintset::BilateralConstraintResolution* cr = new sofa::component::constraintset::BilateralConstraintResolution();
+                auto* cr = new sofa::component::constraintset::BilateralConstraintResolution();
                 crVector[offset++] = cr;
             }
         }
@@ -128,7 +128,7 @@ void UniformConstraint<DataTypes>::getConstraintResolution(const sofa::core::Con
     else
     {
         const std::size_t nbLines = this->getMState()->getSize() * Deriv::size();
-        sofa::component::constraintset::BilateralConstraintResolutionNDof* cr = new sofa::component::constraintset::BilateralConstraintResolutionNDof(nbLines);
+        auto* cr = new sofa::component::constraintset::BilateralConstraintResolutionNDof(nbLines);
         crVector[offset] = cr;
         offset += nbLines;
     }
