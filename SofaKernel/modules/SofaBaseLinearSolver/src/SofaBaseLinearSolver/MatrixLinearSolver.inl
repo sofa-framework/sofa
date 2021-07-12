@@ -175,8 +175,9 @@ typename MatrixLinearSolverInternalData<TVector>::JMatrixType* MatrixLinearSolve
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
     : Inherit()
+    , internalData(new MatrixLinearSolverInternalData<Vector>())
     , invertData()
-    , linearSystem()
+    , linearSystem(new LinearSystemData())
     , currentMFactor(), currentBFactor(), currentKFactor()
 {
 }
