@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimpleFem/config.h>
+#include <SofaSimpleFem/fwd.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -31,12 +31,6 @@
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/OptionsGroup.h>
-
-namespace sofa::component::linearsolver
-{
-template<typename TBloc, typename TVecBloc, typename TVecIndex>
-class CompressedRowSparseMatrix;
-}
 
 namespace sofa::component::forcefield
 {
