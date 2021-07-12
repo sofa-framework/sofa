@@ -27,6 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/Dense>
 #include <Eigen/Core>
+#include <sofa/simulation/Visitor.h>
 
 namespace sofa::component::linearsolver
 {
