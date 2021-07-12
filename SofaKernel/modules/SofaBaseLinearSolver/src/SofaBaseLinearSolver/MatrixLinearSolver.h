@@ -84,10 +84,10 @@ public:
         J_local.clear();
         J_local.resize(J->rowSize(),J->colSize());
 
-        for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LineConstIterator jit1 = J->begin(); jit1 != J->end(); jit1++)
+        for (auto jit1 = J->begin(); jit1 != J->end(); jit1++)
         {
             auto l = jit1->first;
-            for (typename sofa::component::linearsolver::SparseMatrix<MReal>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+            for (auto i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
             {
                 auto c = i1->first;
                 MReal val = i1->second;
@@ -151,9 +151,7 @@ public:
 
 
     void addLocalRes(defaulttype::BaseMatrix * /*R*/)
-    {
-        return ;
-    }
+    {}
 
 private :
     JMatrixType J_local;

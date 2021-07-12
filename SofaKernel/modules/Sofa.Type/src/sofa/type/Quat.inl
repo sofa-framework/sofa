@@ -249,16 +249,16 @@ bool Quat<Real>::isNormalized()
 template<class Real>
 void Quat<Real>::normalize()
 {
-    Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
+    const Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
     double epsilon = 1.0e-10;
     if (std::abs(mag - 1.0) > epsilon)
     {
         if( mag != 0)
         {
-            Real sqr = static_cast<Real>(1.0 / sqrt(mag));
-            for (int i = 0; i < 4; i++)
+            const Real sqr = static_cast<Real>(1.0 / sqrt(mag));
+            for (auto& i : _q)
             {
-                _q[i] *= sqr;
+                i *= sqr;
             }
         }
         else

@@ -26,8 +26,6 @@
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
-
 #include <sofa/core/visual/VisualParams.h>
 
 

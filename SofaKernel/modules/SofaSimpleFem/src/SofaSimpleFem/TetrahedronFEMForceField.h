@@ -44,6 +44,11 @@
 //   url          = "http://www-evasion.imag.fr/Publications/2005/NPF05"
 // }
 
+namespace sofa::component::linearsolver
+{
+template<typename TBloc, typename TVecBloc, typename TVecIndex>
+class CompressedRowSparseMatrix;
+}
 
 namespace sofa::component::forcefield
 {
@@ -134,7 +139,6 @@ protected:
     /// structures used to compute vonMises stress
     typedef type::Mat<4, 4, Real> Mat44;
     typedef type::Mat<3, 3, Real> Mat33;
-    typedef type::Mat<4, 3, Real> Mat43;
 
     /// Vector of material stiffness matrices of each tetrahedron
     VecMaterialStiffness materialsStiffnesses;
@@ -304,12 +308,18 @@ protected:
     void initSVD(Index i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
+    /// Specialized addKToMatrix implementation for CRS 3x3 bloc matrices
+    template<class BlocReal>
+    void addKToBlocMatrix(
+            sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,BlocReal>,  type::vector<type::Mat<3,3,BlocReal> >, type::vector<sofa::Index> > *crsmat,
+            SReal k, unsigned int &offset);
+
     void applyStiffnessCorotational( Vector& f, const Vector& x, Index i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
     void handleTopologyChange() override { needUpdateTopology = true; }
 
     void computeVonMisesStress();
-    const bool isComputeVonMisesStressMethodSet();
+    bool isComputeVonMisesStressMethodSet();
     void handleEvent(core::objectmodel::Event *event) override;
 };
 

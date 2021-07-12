@@ -23,8 +23,6 @@
 
 #include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <vector>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::forcefield

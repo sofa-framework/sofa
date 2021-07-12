@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SofaBoundaryCondition/OscillatingTorsionPressureForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/type/RGBAColor.h>
@@ -96,7 +96,6 @@ void OscillatingTorsionPressureForceField<DataTypes>::init()
     origCenter.resize( numPts );
 
     trianglePressureMap.createTopologyHandler(m_topology);
-    trianglePressureMap.registerTopologicalData();
 
     initTriangleInformation();
 }

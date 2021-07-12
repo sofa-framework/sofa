@@ -379,8 +379,7 @@ void FastTriangularBendingSprings<DataTypes>::init()
     d_edgeSprings.createTopologyHandler(m_topology,d_edgeHandler);
     d_edgeSprings.linkToPointDataArray();
     d_edgeSprings.linkToTriangleDataArray();
-    d_edgeSprings.registerTopologicalData();
-
+    
     this->reinit();
 }
 

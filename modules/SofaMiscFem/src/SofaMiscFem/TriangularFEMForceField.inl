@@ -45,36 +45,6 @@ namespace sofa::component::forcefield
 using namespace sofa::core::topology;
 
 // --------------------------------------------------------------------------------------
-// ---  Topology Creation/Destruction functions
-// --------------------------------------------------------------------------------------
-
-template< class DataTypes>
-void TriangularFEMForceField<DataTypes>::TRQSTriangleEngine::applyCreateFunction(Index triangleIndex, TriangleInformation &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    if (ff)
-    {
-
-        Index a = t[0];
-        Index b = t[1];
-        Index c = t[2];
-
-        switch(ff->method)
-        {
-        case SMALL :
-            ff->initSmall(triangleIndex,a,b,c);
-            ff->computeMaterialStiffness(triangleIndex,a,b,c);
-            break;
-
-        case LARGE :
-            ff->initLarge(triangleIndex,a,b,c);
-            ff->computeMaterialStiffness(triangleIndex,a,b,c);
-            break;
-        }
-    }
-}
-
-
-// --------------------------------------------------------------------------------------
 // --- constructor
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
@@ -108,7 +78,6 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , p_computeDrawInfo(false)
 {
     _anisotropicMaterial = false;
-    triangleEngine = new TRQSTriangleEngine(this, &triangleInfo);
 #ifdef PLOT_CURVE
     f_graphStress.setWidget("graph");
     f_graphCriteria.setWidget("graph");
@@ -124,7 +93,6 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
 template <class DataTypes>
 TriangularFEMForceField<DataTypes>::~TriangularFEMForceField()
 {
-    if(triangleEngine) delete triangleEngine;
     if (p_drawColorMap) delete p_drawColorMap;
 }
 
@@ -172,16 +140,19 @@ void TriangularFEMForceField<DataTypes>::init()
     }
 
     // Create specific Engine for TriangleData
-    triangleInfo.createTopologyHandler(m_topology, triangleEngine);
-    triangleInfo.registerTopologicalData();
-
+    triangleInfo.createTopologyHandler(m_topology);
     edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.registerTopologicalData();
-
     vertexInfo.createTopologyHandler(m_topology);
-    vertexInfo.registerTopologicalData();
 
-
+    triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInformation& triInfo,
+        const core::topology::BaseMeshTopology::Triangle& triangle,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createTriangleInformation(triangleIndex, triInfo, triangle, ancestors, coefs);
+    });
+       
+    
     if (f_method.getValue() == "small")
         method = SMALL;
     else if (f_method.getValue() == "large")
@@ -311,7 +282,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 
     for (Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
-        triangleEngine->applyCreateFunction(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0, (const sofa::type::vector< double >)0);
+        createTriangleInformation(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0, (const sofa::type::vector< double >)0);
     }
 
     edgeInfo.endEdit();
@@ -338,8 +309,33 @@ void TriangularFEMForceField<DataTypes>::reinit()
 #endif
 }
 
+// --------------------------------------------------------------------------------------
+// ---  Topology Creation/Destruction functions
+// --------------------------------------------------------------------------------------
 
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::createTriangleInformation(Index triangleIndex, TriangleInformation&,
+    const core::topology::BaseMeshTopology::Triangle& t,
+    const sofa::type::vector< Index >&,
+    const sofa::type::vector< double >&)
+{
+    Index a = t[0];
+    Index b = t[1];
+    Index c = t[2];
 
+    switch (method)
+    {
+    case SMALL:
+        initSmall(triangleIndex, a, b, c);
+        computeMaterialStiffness(triangleIndex, a, b, c);
+        break;
+
+    case LARGE:
+        initLarge(triangleIndex, a, b, c);
+        computeMaterialStiffness(triangleIndex, a, b, c);
+        break;
+    }
+}
 
 
 // --------------------------------------------------------------------------------------

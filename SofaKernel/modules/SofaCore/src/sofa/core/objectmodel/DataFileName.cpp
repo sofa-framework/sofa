@@ -104,7 +104,7 @@ void DataFileName::updatePath()
 
 void DataFileNameVector::updatePath()
 {
-    DataFileNameVector* parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.getTarget());;
+    DataFileNameVector* parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.getTarget());
     if (parentDataFileNameVector)
     {
         if (getPathType() != PathType::BOTH && getPathType() != parentDataFileNameVector->getPathType())

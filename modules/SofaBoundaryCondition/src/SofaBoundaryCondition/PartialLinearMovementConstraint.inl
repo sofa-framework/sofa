@@ -29,30 +29,11 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/RGBAColor.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::projectiveconstraintset
 {
-
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    return lc != 0;
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (lc)
-    {
-        lc->removeIndex((Index) pointIndex);
-    }
-}
 
 template <class DataTypes>
 PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
@@ -72,7 +53,6 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     , Z0 ( initData ( &Z0, Real(0.0),"Z0","Size of specimen in Z-direction" ) )
     , movedDirections( initData(&movedDirections,"movedDirections","for each direction, 1 if moved, 0 if free") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -93,8 +73,7 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
 template <class DataTypes>
 PartialLinearMovementConstraint<DataTypes>::~PartialLinearMovementConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class DataTypes>
@@ -156,10 +135,8 @@ void PartialLinearMovementConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &m_indices);
-        m_indices.createTopologyHandler(_topology, m_pointHandler);
-        m_indices.registerTopologicalData();
+        // Initialize topological changes support
+        m_indices.createTopologyHandler(_topology);
     }
     else
     {

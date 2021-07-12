@@ -55,7 +55,7 @@ void FilesRecentlyOpenedManager::setPath(const std::string &path)
     while (std::getline(filesStream, filePath))
         files.push_back(filePath);
     filesStream.close();
-};
+}
 
 void FilesRecentlyOpenedManager::writeFiles() const
 {

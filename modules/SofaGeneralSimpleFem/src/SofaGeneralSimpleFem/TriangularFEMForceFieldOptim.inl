@@ -88,8 +88,8 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
 template <class DataTypes>
 TriangularFEMForceFieldOptim<DataTypes>::~TriangularFEMForceFieldOptim()
 {
-    if(triangleInfoHandler) delete triangleInfoHandler;
-    if(triangleStateHandler) delete triangleStateHandler;
+    delete triangleInfoHandler;
+    delete triangleStateHandler;
 }
 
 
@@ -119,16 +119,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
 
     // Create specific handler for TriangleData
     d_triangleInfo.createTopologyHandler(m_topology, triangleInfoHandler);
-    d_triangleInfo.registerTopologicalData();
-
     d_triangleState.createTopologyHandler(m_topology, triangleStateHandler);
-    d_triangleState.registerTopologicalData();
-
     d_edgeInfo.createTopologyHandler(m_topology);
-    d_edgeInfo.registerTopologicalData();
-
     d_vertexInfo.createTopologyHandler(m_topology);
-    d_vertexInfo.registerTopologicalData();
 
     if (m_topology->getNbTriangles()==0 && m_topology->getNbQuads()!=0 )
     {
@@ -457,7 +450,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::Mechanic
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::getTriangleVonMisesStress(Index i, Real& stressValue)
 {
-    Deriv s = d_triangleState[i].stress;
+    const Deriv& s = d_triangleState.getValue()[i].stress;
     Real vonMisesStress = sofa::helper::rsqrt(s[0]*s[0] - s[0]*s[1] + s[1]*s[1] + 3*s[2]);
     stressValue = vonMisesStress;
 }
@@ -473,7 +466,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(Index i
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2)
 {
-    const TriangleState& ts = d_triangleState[i];
+    const TriangleState& ts = d_triangleState.getValue()[i];
     Deriv s = ts.stress;
 
     // If A = [ a b ] is a real symmetric 2x2 matrix
@@ -582,9 +575,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
             {
                 Real maxs = std::min(stresses[i],stresses2[i]);
                 Triangle t = triangles[i];
-                for (unsigned int j=0;j<t.size();++j)
+                for (const auto p : t)
                 {
-                    unsigned int p = t[j];
                     pstresses[p].first += 1;
                     pstresses[p].second += helper::rabs(maxs);
                 }

@@ -22,39 +22,11 @@
 #pragma once
 #include <LMConstraint/FixedLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::constraintset
 {
-
-
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index /*nbPoints*/, const sofa::type::vector< Index > &, const sofa::type::vector< double >& )
-{
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-    return;
-}
 
 template <class DataTypes>
 FixedLMConstraint<DataTypes>::FixedLMConstraint(MechanicalState *dof)
@@ -62,7 +34,6 @@ FixedLMConstraint<DataTypes>::FixedLMConstraint(MechanicalState *dof)
     , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
     , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     
 }
@@ -119,10 +90,8 @@ void FixedLMConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
-        f_indices.registerTopologicalData();
+        // Initialize topological change handling
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {

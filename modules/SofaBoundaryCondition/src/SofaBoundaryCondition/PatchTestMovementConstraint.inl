@@ -24,7 +24,6 @@
 #include <sofa/simulation/Node.h>
 #include "PatchTestMovementConstraint.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
@@ -33,25 +32,6 @@
 
 namespace sofa::component::projectiveconstraintset
 {
-
-// Define TestFunction
-template< class DataTypes>
-bool PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    return fc != 0;
-}
-
-
-// Define RemovalFunction
-template< class DataTypes>
-void PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
-
 
 template <class DataTypes>
 PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
@@ -66,7 +46,6 @@ PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
     , d_cornerPoints(  initData(&d_cornerPoints,"cornerPoints","corner points for computing constraint") )
     , d_drawConstrainedPoints(  initData(&d_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     if(!d_beginConstraintTime.isSet())
      d_beginConstraintTime = 0;
@@ -79,8 +58,7 @@ PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
 template <class DataTypes>
 PatchTestMovementConstraint<DataTypes>::~PatchTestMovementConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class DataTypes>
@@ -124,10 +102,8 @@ void PatchTestMovementConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &d_indices);
-        d_indices.createTopologyHandler(_topology, m_pointHandler);
-        d_indices.registerTopologicalData();
+        // Initialize topological changes support
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
