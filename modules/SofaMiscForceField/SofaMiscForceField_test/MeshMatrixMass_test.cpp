@@ -1672,7 +1672,18 @@ public:
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
         const VecMass& eMasses = mass->d_edgeMass.getValue();
-       static const MassType wrongValue = 0; // TODO epernod 2021-06-29: MeshMatrixMass based on edge topology doesn't support topological changes
+       static const MassType wrongValue = 0; 
+       // TODO epernod 2021-06-29: MeshMatrixMass based on edge topology doesn't support topological changes
+       // Keeping expected values for record
+       /*
+       static const MassType volume = 2.0;
+       static const MassType volumeElem = volume / 3.0; // 3 edges in the grid            
+       static const MassType expectedDensity = 1.0;
+       static const MassType expectedTotalMass = expectedDensity * volume;
+       static const MassType massElem = expectedDensity * volumeElem;
+       static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 6);
+       static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 12);
+       */
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 4);
