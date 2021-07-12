@@ -42,62 +42,20 @@ typedef Topology::Quad             Quad;
 typedef Topology::Tetrahedron      Tetrahedron;
 typedef Topology::Hexahedron       Hexahedron;
 
-//TODO(dmarchal 2017-05-13):
-// When someone want to deprecate something....please help other contributors by providing
-// details on:
-//   - why is deprecated
-//   - when it have been deprecated
-//   - when can we remove the classe
-//   - how are we suppose to update classes that make use of BaseTopologyData
-//   - who is supposed to do the update...and if it is not the person that deprecate the
-//     code how your co-worker will be notified they have something to do.
+
 /** A class that define topological Data general methods
-
-      DEPRECATED
-
+* 
 */
 template < class T = void* >
 class BaseTopologyData : public sofa::core::objectmodel::Data <T>
 {
 public:
-    //SOFA_CLASS(SOFA_TEMPLATE2(BaseTopologyData,T,VecT), SOFA_TEMPLATE(sofa::core::objectmodel::Data, T));
-
-    class InitData : public sofa::core::objectmodel::BaseData::BaseInitData
-    {
-    public:
-        InitData() : value(T()) {}
-        InitData(const T& v) : value(v) {}
-        InitData(const sofa::core::objectmodel::BaseData::BaseInitData& i) : sofa::core::objectmodel::BaseData::BaseInitData(i), value(T()) {}
-
-        T value;
-    };
 
     /** \copydoc Data(const BaseData::BaseInitData&) */
     explicit BaseTopologyData(const sofa::core::objectmodel::BaseData::BaseInitData& init)
         : Data<T>(init)
     {
     }
-
-    /** \copydoc Data(const InitData&) */
-    explicit BaseTopologyData(const InitData& init)
-        : Data<T>(init)
-    {
-    }
-
-
-    /** \copydoc Data(const char*, bool, bool) */
-    BaseTopologyData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
-        : Data<T>(helpMsg, isDisplayed, isReadOnly)
-    {
-
-    }
-
-    /** \copydoc Data(const T&, const char*, bool, bool) */
-    BaseTopologyData( const T& /*value*/, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
-        : Data<T>(helpMsg, isDisplayed, isReadOnly)
-    {
-    }
-
 
     /// Add some values. Values are added at the end of the vector.
     virtual void add(const sofa::type::vector< Topology::PointID >& ,

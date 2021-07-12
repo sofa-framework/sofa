@@ -46,6 +46,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaGeneralDeformable/RegularGridSpringForceField.h>

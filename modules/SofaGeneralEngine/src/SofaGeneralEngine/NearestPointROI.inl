@@ -25,7 +25,6 @@
 #include <sofa/type/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::component::engine

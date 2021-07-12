@@ -93,8 +93,6 @@ protected:
     BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
                                   topology::PointSetTopologyContainer* toTopology) ;
 
-    void addMatrixContrib(MatrixType* m, int row, int col, Real value);
-
     sofa::type::vector< MappingData1D >  m_map1d;
     sofa::type::vector< MappingData2D >  m_map2d;
     sofa::type::vector< MappingData3D >  m_map3d;

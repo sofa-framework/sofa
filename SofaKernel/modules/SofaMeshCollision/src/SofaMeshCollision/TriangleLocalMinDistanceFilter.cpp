@@ -115,7 +115,6 @@ void TriangleLocalMinDistanceFilter::init()
 
         pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
         m_pointInfo.createTopologyHandler(bmt, pointInfoHandler);
-        m_pointInfo.registerTopologicalData();
         m_pointInfo.createTopologyHandler(bmt);
 
         type::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
@@ -130,7 +129,6 @@ void TriangleLocalMinDistanceFilter::init()
 
         lineInfoHandler = new LineInfoHandler(this,&m_lineInfo);
         m_lineInfo.createTopologyHandler(bmt, lineInfoHandler);
-        m_lineInfo.registerTopologicalData();
 
         type::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
@@ -144,7 +142,6 @@ void TriangleLocalMinDistanceFilter::init()
 
         triangleInfoHandler = new TriangleInfoHandler(this,&m_triangleInfo);
         m_triangleInfo.createTopologyHandler(bmt, triangleInfoHandler);
-        m_triangleInfo.registerTopologicalData();
 
         type::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
         tInfo.resize(bmt->getNbTriangles());
@@ -294,7 +291,8 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(In
 
 bool TriangleLocalMinDistanceFilter::validPoint(const Index pointIndex, const type::Vector3 &PQ)
 {
-    PointInfo & Pi = m_pointInfo[pointIndex];
+    helper::WriteAccessor< Data<sofa::type::vector<PointInfo> > > pInfo(m_pointInfo);
+    PointInfo & Pi = pInfo[pointIndex];
 
     if(this->isRigid())
     {
@@ -311,7 +309,8 @@ bool TriangleLocalMinDistanceFilter::validPoint(const Index pointIndex, const ty
 
 bool TriangleLocalMinDistanceFilter::validLine(const Index lineIndex, const type::Vector3 &PQ)
 {
-    LineInfo &Li = m_lineInfo[lineIndex];  // filter is precomputed
+    helper::WriteAccessor< Data<sofa::type::vector<LineInfo> > > lInfo(m_lineInfo);
+    LineInfo &Li = lInfo[lineIndex];  // filter is precomputed
 
     if(this->isRigid())
     {
@@ -326,7 +325,8 @@ bool TriangleLocalMinDistanceFilter::validLine(const Index lineIndex, const type
 
 bool TriangleLocalMinDistanceFilter::validTriangle(const Index triangleIndex, const type::Vector3 &PQ)
 {
-    TriangleInfo &Ti = m_triangleInfo[triangleIndex];
+    helper::WriteAccessor< Data<sofa::type::vector<TriangleInfo> > > tInfo(m_triangleInfo);
+    TriangleInfo &Ti = tInfo[triangleIndex];
 
     if(this->isRigid())
     {

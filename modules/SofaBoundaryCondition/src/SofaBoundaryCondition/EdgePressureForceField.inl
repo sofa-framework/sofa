@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SofaBoundaryCondition/EdgePressureForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/type/RGBAColor.h>
@@ -97,7 +97,6 @@ void EdgePressureForceField<DataTypes>::init()
 
     // init edgesubsetData engine
     edgePressureMap.createTopologyHandler(m_topology);
-    edgePressureMap.registerTopologicalData();
 
     if (dmin.getValue()!=dmax.getValue())
     {
@@ -179,6 +178,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     const type::vector<Real>& intensities = p_intensity.getValue();
 
     const sofa::type::vector<Index>& my_map = edgePressureMap.getMap2Elements();
+    helper::WriteAccessor< Data<sofa::type::vector< EdgePressureInformation> > > edgePMap(edgePressureMap);
 
     sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
@@ -209,7 +209,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 Real intensity = (intensities.size() > 1 && intensities.size() > (unsigned int) i) ? intensities[i] : intensities[0];
                 ei.length = edgeGeo->computeRestEdgeLength(i);
                 ei.force = normal * intensity * ei.length ;
-                edgePressureMap[i] = ei;
+                edgePMap[i] = ei;
             }
         }
         else
@@ -271,7 +271,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                     Real intensity = (intensities.size() > 1 && intensities.size() > (unsigned int) i) ? intensities[i] : intensities[0];
                     ei.length = edgeGeo->computeRestEdgeLength(i);
                     ei.force = n1 * ei.length * intensity;
-                    edgePressureMap[i] = ei;
+                    edgePMap[i] = ei;
                 }
             }
         }

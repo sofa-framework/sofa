@@ -1107,7 +1107,7 @@ inline void HexahedronFEMForceField<DataTypes>::setMethod(int val)
     case POLAR: f_method.setValue("polar"); break;
     case SMALL: f_method.setValue("small"); break;
     default   : f_method.setValue("large");
-    };
+    }
 }
 
 /////////////////////////////////////////////////

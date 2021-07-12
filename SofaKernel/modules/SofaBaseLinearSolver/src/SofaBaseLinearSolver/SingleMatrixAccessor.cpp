@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SingleMatrixAccessor.h"
-#include <iostream>
 
 namespace sofa::component::linearsolver
 {

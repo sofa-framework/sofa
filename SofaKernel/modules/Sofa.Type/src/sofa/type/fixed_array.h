@@ -282,6 +282,6 @@ extern template class SOFA_TYPE_API fixed_array<double, 6>;
 
 extern template class SOFA_TYPE_API fixed_array<float, 7>;
 extern template class SOFA_TYPE_API fixed_array<double, 7>;
-#endif //
+#endif //FIXED_ARRAY_CPP
 
 } // namespace sofa::type

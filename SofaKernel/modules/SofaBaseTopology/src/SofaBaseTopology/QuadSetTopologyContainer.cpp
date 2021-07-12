@@ -777,4 +777,9 @@ void QuadSetTopologyContainer::updateTopologyHandlerGraph()
     EdgeSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
+void QuadSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler)
+{
+    this->m_enginesList.push_back(_TopologyHandler);
+}
+
 } //namespace sofa::component::topology

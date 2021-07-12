@@ -215,14 +215,12 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     /// prepare to store info in the edge array
     edgeInf.resize(m_topology->getNbEdges());
     edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
     type::vector<Mat3x3>& pointInf = *(pointInfo.beginEdit());
     /// prepare to store info in the point array
     pointInf.resize(m_topology->getNbPoints());
     pointInfo.createTopologyHandler(m_topology);
-    pointInfo.registerTopologicalData();
     pointInfo.endEdit();
 
     if (_initialPoints.size() == 0)
@@ -242,7 +240,6 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     }
     /// set the call back function upon creation of a tetrahedron
     tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
-    tetrahedronInfo.registerTopologicalData();
     tetrahedronInfo.endEdit();
 
     updateTopologyInfo=true;

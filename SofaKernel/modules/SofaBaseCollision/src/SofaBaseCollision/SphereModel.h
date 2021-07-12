@@ -140,11 +140,10 @@ public:
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         typename T::SPtr obj;
-        core::behavior::MechanicalState<TDataTypes>* _mstate = nullptr;
 
         if( context)
         {
-            _mstate = dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState());
+            auto* _mstate = dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState());
             if (_mstate)
                 obj = sofa::core::objectmodel::New<T>(_mstate);
             else

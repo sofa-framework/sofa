@@ -35,11 +35,7 @@
 #include <iomanip>      // std::setprecision
 #include <string>
 
-namespace sofa {
-
-namespace component {
-
-namespace linearsolver {
+namespace sofa::component::linearsolver {
 
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
@@ -165,10 +161,6 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
     return true;
 }
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver
 
 #endif

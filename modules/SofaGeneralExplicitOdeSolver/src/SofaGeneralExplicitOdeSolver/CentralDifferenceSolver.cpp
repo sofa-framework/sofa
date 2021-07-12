@@ -159,6 +159,5 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 int CentralDifferenceSolverClass = core::RegisterObject("Explicit time integrator using central difference (also known as Verlet of Leap-frog)")
         .add< CentralDifferenceSolver >()
         .addAlias("CentralDifference");
-;
 
 } //namespace sofa::component::odesolver

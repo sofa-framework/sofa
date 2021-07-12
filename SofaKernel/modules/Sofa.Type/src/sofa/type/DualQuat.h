@@ -275,9 +275,6 @@ public:
 
 };
 
-using DualQuatCoordd = DualQuatCoord3<double>;
-using DualQuatCoordf = DualQuatCoord3<double>;
-
 #if !defined(SOFA_TYPE_DUALQUAT_CPP)
 extern template class SOFA_TYPE_API DualQuatCoord3<double>;
 extern template class SOFA_TYPE_API DualQuatCoord3<float>;

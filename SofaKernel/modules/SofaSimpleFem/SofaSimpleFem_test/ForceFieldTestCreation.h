@@ -56,7 +56,7 @@ namespace sofa {
  * Pointers to node, state and force are available.
  * Deriving the ForceField test from this class makes it easy to write: just call function run_test with positions, velocities and the corresponding expected forces.
  * This function automatically checks not only the forces (function addForce), but also the stiffness (methods addDForce and addKToMatrix), using finite differences.
- * @author François Faure, 2014
+ * @author FranÃ§ois Faure, 2014
  *
  */
 template <typename _ForceFieldType>
@@ -292,7 +292,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         modeling::Vector df;
         sofa::testing::data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
         if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
-            ADD_FAILURE()<<"Kdx differs from change of force"<< std::endl << "Failed seed number = " << this->seed << std::endl;;
+            ADD_FAILURE()<<"Kdx differs from change of force"<< std::endl << "Failed seed number = " << this->seed << std::endl;
 
 
         // =================== test updateForceMask
