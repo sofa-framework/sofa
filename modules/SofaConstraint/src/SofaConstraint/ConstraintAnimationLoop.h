@@ -117,7 +117,6 @@ protected:
     double _tol;
     int _dim;
     sofa::helper::system::thread::CTime *_timer;
-    bool m_printLog;
 
 public:
     ConstraintProblem(bool printLog=false);
@@ -170,7 +169,7 @@ public:
     Data<std::map < std::string, sofa::type::vector<double> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
     Data<std::map < std::string, sofa::type::vector<double> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
 
-    ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;}
+    ConstraintProblem *getConstraintProblem() {return bufCP1 ? &CP1 : &CP2;}
 
     /// Construction method called by ObjectFactory.
     template<class T>

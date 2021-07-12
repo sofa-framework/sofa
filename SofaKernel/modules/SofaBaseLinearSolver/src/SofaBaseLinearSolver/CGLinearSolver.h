@@ -56,8 +56,8 @@ protected:
     /// It computes: x += p*alpha, r -= q*alpha
     inline void cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha);
 
-    int timeStepCount;
-    bool equilibriumReached;
+    int timeStepCount{0};
+    bool equilibriumReached{false};
 
 public:
     void init() override;

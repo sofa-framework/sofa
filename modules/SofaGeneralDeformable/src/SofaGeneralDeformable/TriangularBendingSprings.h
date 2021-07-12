@@ -111,50 +111,29 @@ protected:
     };
 
     sofa::component::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
-
-    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<EdgeInformation> >
-    {
-    public:
-        typedef typename TriangularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
-        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, topology::EdgeData<type::vector<EdgeInformation> >* _data)
-            : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::type::vector<EdgeInformation> >(_data), ff(_ff) {}
-
-        void applyCreateFunction(Index edgeIndex,
-                EdgeInformation &ei,
-                const core::topology::BaseMeshTopology::Edge& ,  const sofa::type::vector< Index > &,
-                const sofa::type::vector< double >&);
-
-        void applyTriangleCreation(const type::vector<Index> &triangleAdded,
-                const type::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const type::vector<type::vector<Index> > & ,
-                const type::vector<type::vector<double> > &);
-
-        void applyTriangleDestruction(const type::vector<Index> &triangleRemoved);
-
-        void applyPointDestruction(const type::vector<Index> &pointIndices);
-
-        void applyPointRenumbering(const type::vector<Index> &pointToRenumber);
-
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<EdgeInformation> >::ApplyTopologyChange;
-        /// Callback to add triangles elements.
-        void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
-        /// Callback to remove triangles elements.
-        void ApplyTopologyChange(const core::topology::TrianglesRemoved* /*event*/);
-
-        /// Callback to remove points elements.
-        void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/);
-        /// Callback to renumbering on points elements.
-        void ApplyTopologyChange(const core::topology::PointsRenumbering* /*event*/);
-
-    protected:
-        TriangularBendingSprings<DataTypes>* ff;
-    };    
+    typedef typename topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::type::vector<EdgeInformation> > TriangularBSEdgeHandler;
 
     bool updateMatrix;
     TriangularBendingSprings(/*double _ks, double _kd*/);
     //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
     virtual ~TriangularBendingSprings();
+
+    void applyEdgeCreation(Index edgeIndex,
+        EdgeInformation& ei,
+        const core::topology::BaseMeshTopology::Edge&, const sofa::type::vector< Index >&,
+        const sofa::type::vector< double >&);
+
+    void applyTriangleCreation(const type::vector<Index>& triangleAdded,
+        const type::vector<core::topology::BaseMeshTopology::Triangle>&,
+        const type::vector<type::vector<Index> >&,
+        const type::vector<type::vector<double> >&);
+
+    void applyTriangleDestruction(const type::vector<Index>& triangleRemoved);
+
+    void applyPointDestruction(const type::vector<Index>& pointIndices);
+
+    void applyPointRenumbering(const type::vector<Index>& pointToRenumber);
 public:
     /// Searches triangle topology and creates the bending springs
     void init() override;

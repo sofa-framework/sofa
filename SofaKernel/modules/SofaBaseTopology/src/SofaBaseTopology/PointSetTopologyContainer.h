@@ -138,6 +138,9 @@ public:
 
     const sofa::type::vector<PointID>& getPoints() const;
 
+    /// \brief function to add a TopologyHandler to the current list of engines.
+    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
+
 protected:
     /// \brief Function creating the data graph linked to d_point
     void updateTopologyHandlerGraph() override;
@@ -151,9 +154,6 @@ protected:
     void setPointTopologyToDirty();
     void cleanPointTopologyFromDirty();
     const bool& isPointTopologyDirty() {return m_pointTopologyDirty;}
-
-    /// \brief function to add a TopologyHandler to the current list of engines.
-    void addEngineToList(sofa::core::topology::TopologyHandler * _engine);
 
     /// \brief functions to display the graph of Data/DataEngines linked to the different Data array, using member variable.
     virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);

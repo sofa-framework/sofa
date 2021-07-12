@@ -23,7 +23,6 @@
 
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::projectiveconstraintset
@@ -74,7 +73,6 @@ void ParabolicConstraint<DataTypes>::init()
 
         // Initialize functions and parameters for topology data and handler
         m_indices.createTopologyHandler(_topology);
-        m_indices.registerTopologicalData();
     }
     else
     {

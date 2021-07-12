@@ -27,7 +27,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/MechanicalParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa::component::forcefield
 {
@@ -63,7 +62,6 @@ void LinearForceField<DataTypes>::init()
         
         // Initialize functions and parameters for topology data and handler
         points.createTopologyHandler(_topology);
-        points.registerTopologicalData();
     }
     else
     {

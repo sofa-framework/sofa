@@ -23,7 +23,6 @@
 
 #include <SofaBoundaryCondition/HermiteSplineConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::projectiveconstraintset
@@ -84,7 +83,6 @@ void HermiteSplineConstraint<DataTypes>::init()
 
         // Initialize functions and parameters for topology data and handler
         m_indices.createTopologyHandler(_topology);
-        m_indices.registerTopologicalData();
     }
     else
     {

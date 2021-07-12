@@ -119,7 +119,7 @@ void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
                     if(minElem[jj] > vs[j][jj])
                         minElem[jj] = vs[j][jj];
                     else if(maxElem[jj] < vs[j][jj])
-                        maxElem[jj] = vs[j][jj];;
+                        maxElem[jj] = vs[j][jj];
                 }
             }
 

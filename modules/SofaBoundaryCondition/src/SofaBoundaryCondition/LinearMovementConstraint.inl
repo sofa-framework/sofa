@@ -27,29 +27,11 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/RGBAColor.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::projectiveconstraintset
 {
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool LinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    return lc != 0;
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void LinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (lc)
-    {
-        lc->removeIndex(pointIndex);
-    }
-}
 
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
@@ -61,7 +43,6 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     , d_relativeMovements( initData(&d_relativeMovements, bool(true), "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
     , showMovement( initData(&showMovement, bool(false), "showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -79,8 +60,7 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::~LinearMovementConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class DataTypes>
@@ -140,10 +120,8 @@ void LinearMovementConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &m_indices);
-        m_indices.createTopologyHandler(_topology, m_pointHandler);
-        m_indices.registerTopologicalData();        
+        // Initialize topological changes support
+        m_indices.createTopologyHandler(_topology);
     }
     else
     {

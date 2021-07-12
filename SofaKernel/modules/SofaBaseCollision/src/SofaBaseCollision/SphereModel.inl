@@ -57,7 +57,7 @@ void SphereCollisionModel<DataTypes>::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
 
-    VecReal &r = *radius.beginEdit();
+    helper::WriteAccessor< Data<VecReal> > r = radius;
 
     if (r.size() < size)
     {
@@ -69,8 +69,6 @@ void SphereCollisionModel<DataTypes>::resize(Size size)
     {
         r.resize(size);
     }
-
-    radius.endEdit();
 }
 
 

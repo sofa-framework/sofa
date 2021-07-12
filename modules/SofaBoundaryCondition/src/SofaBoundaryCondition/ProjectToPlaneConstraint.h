@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <set>
 
@@ -68,7 +68,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef type::vector<Index> Indices;
-    typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
+    typedef sofa::component::topology::TopologySubsetIndices IndexSubsetData;
     typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
@@ -120,30 +120,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-
-    class FCPointHandler : public component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >
-    {
-    public:
-        typedef typename ProjectToPlaneConstraint<DataTypes>::Indices Indices;
-        typedef typename sofa::core::topology::Point Point;
-        FCPointHandler(ProjectToPlaneConstraint<DataTypes>* _fc, component::topology::PointSubsetData<Indices>* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >(_data), fc(_fc) {}
-
-
-        using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >::applyDestroyFunction;
-        void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
-
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::type::vector< Index > & /*ancestors*/,
-                const sofa::type::vector< double > & /*coefs*/);
-    protected:
-        ProjectToPlaneConstraint<DataTypes> *fc;
-    };
-
 protected :
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
     SparseMatrix jacobian; ///< projection matrix in local state
     SparseMatrix J;        ///< auxiliary variable
