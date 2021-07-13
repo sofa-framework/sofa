@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
+#include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/helper/ColorMap.h>
@@ -78,10 +79,10 @@ public:
 *   Corotational methods are based on a rotation from world-space to material-space.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::BaseRotationFinder
+class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::behavior::BaseRotationFinder);
+    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
 
     typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -174,9 +175,15 @@ public:
     Real getRestVolume() {return m_restVolume;}
 
     //For a faster contact handling with simplified compliance
-    void getRotation(Transformation& R, Index nodeIdx);
+    void getRotation(Mat33& R, Index nodeIdx);
     void getRotations(VecReal& vecR) ;
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override ;
+    
+    // BaseRotationFinder API
+    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override;
+    // RotationFinder<T> API
+    type::vector< Mat33 > m_rotations;
+    const type::vector<Mat33>& getRotations() override;
+
     Data< VecCoord > _initialPoints; ///< the initial positions of the points
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
