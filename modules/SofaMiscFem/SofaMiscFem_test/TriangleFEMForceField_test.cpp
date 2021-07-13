@@ -40,11 +40,15 @@ using sofa::simulation::SceneLoaderXML;
 #include <string>
 using std::string;
 
+#include <sofa/helper/system/thread/CTime.h>
+#include <limits>
+
 namespace sofa
 {
 using namespace sofa::defaulttype;
 using namespace sofa::simpleapi;
 using sofa::component::container::MechanicalObject;
+using sofa::helper::system::thread::ctime_t;
 
 template <class DataTypes>
 class TriangleFEMForceField_test : public BaseTest
@@ -63,6 +67,7 @@ protected:
     //std::vector<int> m_indices = { 0, 20, 40, 1200, 1560 };
     std::vector<int> m_indices = { 3};
 
+    ctime_t timeTicks = sofa::helper::system::thread::CTime::getRefTicksPerSec();
 
 public:
 
@@ -226,6 +231,106 @@ public:
 
     }
 
+
+    void testTriangleFEMPerformance()
+    {
+        // init
+        m_nbrStep = 1000;
+        int nbrGrid = 40;
+
+        // load Triangular FEM
+        loadFEMScene(0, nbrGrid);
+        if (m_root.get() == nullptr)
+            return;
+
+        int nbrTest = 10;
+        double diffTimeMs = 0;
+        double timeMin = std::numeric_limits<double>::max();
+        double timeMax = std::numeric_limits<double>::min();
+        for (int i = 0; i < nbrTest; ++i)
+        {
+            ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
+            for (int i = 0; i < m_nbrStep; i++)
+            {
+                m_simulation->animate(m_root.get(), 0.01);
+            }
+
+            ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
+            double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
+            
+            if (timeMin > diffTimed)
+                timeMin = diffTimed;
+            if (timeMax < diffTimed)
+                timeMax = diffTimed;
+
+            diffTimeMs += diffTimed;
+            m_simulation->reset(m_root.get());
+        }
+        
+        //std::cout << "timeMean: " << diffTimeMs/nbrTest << std::endl;
+        //std::cout << "timeMin: " << timeMin << std::endl;
+        //std::cout << "timeMax: " << timeMax << std::endl;
+
+        //Record:
+        //timeMean: 4.1545   ||   4.12943
+        //timeMin : 4.07156  ||   4.05766
+        //timeMax : 4.25747  ||   4.33603
+    }
+
+    void testTriangularFEMPerformance()
+    {
+        // init
+        m_nbrStep = 1000;
+        int nbrGrid = 40;
+
+        // load Triangular FEM
+        loadFEMScene(1, nbrGrid);
+        if (m_root.get() == nullptr)
+            return;
+
+        int nbrTest = 10;
+        double diffTimeMs = 0;
+        double timeMin = std::numeric_limits<double>::max();
+        double timeMax = std::numeric_limits<double>::min();
+        for (int i = 0; i < nbrTest; ++i)
+        {
+            ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
+            for (int i = 0; i < m_nbrStep; i++)
+            {
+                m_simulation->animate(m_root.get(), 0.01);
+            }
+
+            ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
+            double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
+
+            if (timeMin > diffTimed)
+                timeMin = diffTimed;
+            if (timeMax < diffTimed)
+                timeMax = diffTimed;
+
+            diffTimeMs += diffTimed;
+            m_simulation->reset(m_root.get());
+        }
+
+        //std::cout << "timeMean: " << diffTimeMs / nbrTest << std::endl;
+        //std::cout << "timeMin: " << timeMin << std::endl;
+        //std::cout << "timeMax: " << timeMax << std::endl;
+
+        //Record:
+        //timeMean: 5.32281   ||  5.21513   ||  4.32919
+        //timeMin : 5.171     ||  5.1868    ||  4.27747
+        //timeMax : 5.50842   ||  5.29571   ||  4.3987
+
+        // Optimisation:
+        // addDForce: 0.00363014
+        // addDForce: 0.00317752 -> getTriangle()[]
+        // addDForce: 0.00290456 ->  const &
+
+        // addForce: 0.0011347
+        // addForce: 0.00110351
+        // addForce: 0.00094206
+    }
+
 };
 
 
@@ -242,5 +347,16 @@ TEST_F(TriangleFEMForceField3_test, checkTriangularFEMValues)
     this->checkTriangularFEMValues();
 }
 
+/// Those tests should not be removed but can't be run on the CI
+#if(PERFORMANCE_TESTS)
+TEST_F(TriangleFEMForceField3_test, testTriangleFEMPerformance)
+{
+    this->testTriangleFEMPerformance();
+}
 
+TEST_F(TriangleFEMForceField3_test, testTriangularFEMPerformance)
+{
+    this->testTriangularFEMPerformance();
+}
+#endif
 } // namespace sofa
