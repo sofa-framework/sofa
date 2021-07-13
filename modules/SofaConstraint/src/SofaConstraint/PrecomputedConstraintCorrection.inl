@@ -868,7 +868,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
     MatrixDerivRowIterator rowItEnd = c.end();
 
     Transformation Ri;
-    auto rotations = rotationFinder->getRotations();
+    const auto& rotations = rotationFinder->getRotations();
     for (MatrixDerivRowIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
         MatrixDerivColIterator colItEnd = rowIt.end();
@@ -925,8 +925,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         // on passe les deplacements du repere local au repere global
-        Deriv temp = rotations[j] * dx[j];
-        dx[j] = temp;
+        dx[j] = rotations[j] * dx[j];
     }
 }
 

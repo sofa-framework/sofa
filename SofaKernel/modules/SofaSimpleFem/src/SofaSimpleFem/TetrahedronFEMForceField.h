@@ -27,7 +27,6 @@
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
-#include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/helper/OptionsGroup.h>
 
