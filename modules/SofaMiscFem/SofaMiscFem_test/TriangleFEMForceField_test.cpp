@@ -54,9 +54,12 @@ template <class DataTypes>
 class TriangleFEMForceField_test : public BaseTest
 {
 public:
+    typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef MechanicalObject<DataTypes> MState;
+    using TriangleFEM = sofa::component::forcefield::TriangleFEMForceField<DataTypes>;
+    using TriangularFEM = sofa::component::forcefield::TriangularFEMForceField<DataTypes>;
 
 
 protected:
@@ -83,7 +86,32 @@ public:
             simulation::getSimulation()->unload(m_root);
     }
 
-    void loadFEMScene(int FEMType, int nbrGrid, bool both = false)
+    void createSingleTriangleFEMScene(int FEMType, float young, float poisson, std::string method)
+    {
+        m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+
+        createObject(m_root, "MechanicalObject", {{"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
+        createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2  1 3 2"} });
+        createObject(m_root, "TriangleSetTopologyModifier");
+        createObject(m_root, "TriangleSetGeometryAlgorithms", { {"template","Vec3d"} });
+
+        if (FEMType == 0) // TriangleModel
+        {
+            createObject(m_root, "TriangleFEMForceField", {
+                {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
+        }
+        else
+        {
+            createObject(m_root, "TriangularFEMForceField", {
+                {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
+        }
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(m_root.get());
+    }
+
+
+    void createGridFEMScene(int FEMType, int nbrGrid, bool both = false)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
         m_root->setGravity(type::Vec3(0.0, 10.0, 0.0));
@@ -136,11 +164,9 @@ public:
         {
             createObject(FEMNode, "TriangleFEMForceField", {
                 {"name","FEM"}, {"youngModulus","100"}, {"poissonRatio","0.3"}, {"method","large"} });
-            std::cout << "TriangleFEMForceField" << std::endl;
         }
         else
         {
-            std::cout << "TriangularFEMForceField" << std::endl;
             createObject(FEMNode, "TriangularFEMForceField", {
                 {"name","FEM"}, {"youngModulus","100"}, {"poissonRatio","0.3"}, {"method","large"} });
         }
@@ -153,11 +179,157 @@ public:
     }
 
 
+
+
+    void checkCreation(int FEMType)
+    {
+        createSingleTriangleFEMScene(FEMType, 100, 0.3, "large");
+
+        MState::SPtr dofs = m_root->getTreeObject<MState>();
+        ASSERT_TRUE(dofs.get() != nullptr);
+        ASSERT_EQ(dofs->getSize(), 4);
+
+        if (FEMType == 0)
+        {
+            TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
+            ASSERT_TRUE(triFEM.get() != nullptr);
+            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
+            ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
+            ASSERT_EQ(triFEM->getMethod(), 0);
+        }
+        else if (FEMType == 1)
+        {
+            TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
+            ASSERT_TRUE(triFEM.get() != nullptr);
+            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
+            ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
+            ASSERT_EQ(triFEM->getMethod(), 0);
+        }
+    }
+
+    void checkNoTopology(int FEMType)
+    {
+        m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
+        if (FEMType == 0) // TriangleModel
+        {
+            createObject(m_root, "TriangleFEMForceField", {
+                {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
+        }
+        else
+        {
+            createObject(m_root, "TriangularFEMForceField", {
+                {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
+        }
+
+        EXPECT_MSG_EMIT(Error);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(m_root.get());
+    }
+
+    void checkEmptyTopology(int FEMType)
+    {
+        m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "MechanicalObject", { {"template","Vec3d"} });
+        createObject(m_root, "TriangleSetTopologyContainer");
+        if (FEMType == 0) // TriangleModel
+        {
+            createObject(m_root, "TriangleFEMForceField", {
+                {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
+        }
+        else
+        {
+            createObject(m_root, "TriangularFEMForceField", {
+                {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
+        }
+
+        EXPECT_MSG_EMIT(Error);
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(m_root.get());
+    }
+
+
+    void checkDefaultAttributes(int FEMType)
+    {
+        m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+
+        createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
+        createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2"} });
+        createObject(m_root, "TriangleSetTopologyModifier");
+        createObject(m_root, "TriangleSetGeometryAlgorithms", { {"template","Vec3d"} });
+
+        if (FEMType == 0) // TriangleModel
+        {
+            createObject(m_root, "TriangleFEMForceField");
+        }
+        else if (FEMType == 1)
+        {
+            createObject(m_root, "TriangularFEMForceField");
+        }
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(m_root.get());
+        if (FEMType == 0)
+        {
+            TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
+            ASSERT_TRUE(triFEM.get() != nullptr);
+            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
+            ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
+            ASSERT_EQ(triFEM->getMethod(), 0);
+        }
+        else if (FEMType == 1)
+        {
+            TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
+            ASSERT_TRUE(triFEM.get() != nullptr);
+            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.45); // Not the same default values
+            ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
+            ASSERT_EQ(triFEM->getMethod(), 0);
+        }
+    }
+
+
+    void checkWrongAttributes(int FEMType)
+    {
+        EXPECT_MSG_EMIT(Error);
+        createSingleTriangleFEMScene(FEMType, -100, -0.3, "toto");
+    }
+
+
+    void checkInit(int FEMType)
+    {
+        createSingleTriangleFEMScene(FEMType, 100, 0.3, "large");
+        type::Mat<3, 3, Real> MatStiffness = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+        if (FEMType == 0)
+        {
+            TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
+            
+            std::cout << triFEM->getRotatedInitialElement(0) << std::endl;
+            std::cout << triFEM->getRotationMatrix(0) << std::endl;
+            std::cout << triFEM->getMaterialStiffness(0) << std::endl;
+            std::cout << triFEM->getStrainDisplacements(0) << std::endl;
+
+            std::cout << triFEM->getRotatedInitialElement(1) << std::endl;
+            std::cout << triFEM->getRotationMatrix(1) << std::endl;
+            std::cout << triFEM->getMaterialStiffness(1) << std::endl;
+            std::cout << triFEM->getStrainDisplacements(1) << std::endl;
+
+        }
+        else if (FEMType == 1)
+        {
+            TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
+        }
+    }
+
+
+
     void checkTriangleFEMValues()
     {
         // load Triangular FEM
         int nbrGrid = 40;
-        loadFEMScene(0, nbrGrid);
+        createGridFEMScene(0, nbrGrid);
 
         if (m_root.get() == nullptr)
             return;
@@ -193,7 +365,7 @@ public:
     {
         // load Triangular FEM
         int nbrGrid = 40;
-        loadFEMScene(1, nbrGrid);
+        createGridFEMScene(1, nbrGrid);
 
         if (m_root.get() == nullptr)
             return;
@@ -239,7 +411,7 @@ public:
         int nbrGrid = 40;
 
         // load Triangular FEM
-        loadFEMScene(0, nbrGrid);
+        createGridFEMScene(0, nbrGrid);
         if (m_root.get() == nullptr)
             return;
 
@@ -284,7 +456,7 @@ public:
         int nbrGrid = 40;
 
         // load Triangular FEM
-        loadFEMScene(1, nbrGrid);
+        createGridFEMScene(1, nbrGrid);
         if (m_root.get() == nullptr)
             return;
 
@@ -336,16 +508,82 @@ public:
 
 typedef TriangleFEMForceField_test<Vec3Types> TriangleFEMForceField3_test;
 
+/// Tests for TriangleFEMForceField
+TEST_F(TriangleFEMForceField3_test, checkTriangleFEMForceField_Creation)
+{
+    this->checkCreation(0);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangleFEMForceField_noTopology)
+{
+    this->checkNoTopology(0);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangleFEMForceField_emptyTopology)
+{
+    this->checkEmptyTopology(0);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangleFEMForceField_defaultAttributes)
+{
+    this->checkDefaultAttributes(0);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangleFEMForceField_wrongAttributess)
+{
+    this->checkWrongAttributes(0);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangleFEMForceField_init)
+{
+    this->checkInit(0);
+}
+
 
 TEST_F(TriangleFEMForceField3_test, checkTriangleFEMValues)
 {
     this->checkTriangleFEMValues();
 }
 
+
+
+
+/// Tests for TriangularFEMForceField  TODO: remove them when component has been fully merged into TriangleFEMForceField
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_Creation)
+{
+    this->checkCreation(1);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_NoTopology)
+{
+    this->checkNoTopology(1);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_emptyTopology)
+{
+    this->checkEmptyTopology(1);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_defaultAttributes)
+{
+    this->checkDefaultAttributes(1);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_wrongAttributess)
+{
+    this->checkWrongAttributes(1);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_init)
+{
+    this->checkInit(1);
+}
+
 TEST_F(TriangleFEMForceField3_test, checkTriangularFEMValues)
 {
     this->checkTriangularFEMValues();
 }
+
 
 /// Those tests should not be removed but can't be run on the CI
 #if(PERFORMANCE_TESTS)
