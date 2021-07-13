@@ -26,6 +26,6 @@
 namespace sofa::component::topology
 {
 
-template class TopologySubsetData<Index, sofa::type::vector<Index>>;
+template class SOFA_SOFABASETOPOLOGY_API TopologySubsetData<Index, sofa::type::vector<Index>>;
 
 } // namespace sofa::component::topology
