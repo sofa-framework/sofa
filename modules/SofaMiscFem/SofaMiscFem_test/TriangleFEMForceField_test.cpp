@@ -43,6 +43,7 @@ using std::string;
 namespace sofa
 {
 using namespace sofa::defaulttype;
+using namespace sofa::simpleapi;
 using sofa::component::container::MechanicalObject;
 
 template <class DataTypes>
@@ -58,6 +59,9 @@ protected:
     simulation::Simulation* m_simulation = nullptr;
     simulation::Node::SPtr m_root;
 
+    int m_nbrStep = 100;
+    //std::vector<int> m_indices = { 0, 20, 40, 1200, 1560 };
+    std::vector<int> m_indices = { 3};
 
 
 public:
@@ -74,31 +78,32 @@ public:
             simulation::getSimulation()->unload(m_root);
     }
 
-
-    void loadTriangularFEMScene()
+    void loadFEMScene(int FEMType, int nbrGrid, bool both = false)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                              "
-            "<Node  name='Root' gravity='0 10 0' dt='0.01' animate='0' >                        "
-            "    <RegularGridTopology name='grid' n='40 40 1' min='0 0 0' max='10 10 0' />      "
-            "    <Node name='FEM' >                                                             "
-            "        <EulerImplicitSolver />                                                    "
-            "        <CGLinearSolver iterations='25' threshold='1.0e-9'/>                       "
-            "        <MechanicalObject name='dof' position='@../grid.position' />               "
-            "        <TriangleSetTopologyContainer name='topo' src='@../grid' />                "
-            "        <TriangleSetTopologyModifier name='Modifier' />                            "
-            "        <TriangleSetGeometryAlgorithms name='GeomAlgo' template='Vec3d' />         "
-            "        <TriangularFEMForceField name='FEM' youngModulus='100' poissonRatio='0.3' method='large' /> "
-            "        <DiagonalMass massDensity='0.1' />                                        "
-            "        <FixedConstraint indices='0 39' />                                        "
-            "    </Node>"
-            "</Node>  ";
+        m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        m_root->setGravity(type::Vec3(0.0, 10.0, 0.0));
+        m_root->setDt(0.01);
 
-        /// Load scene
-        m_root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
-            scene.c_str(),
-            scene.size());
-
+        createObject(m_root, "RegularGridTopology", { {"name", "grid"}, 
+            {"n", str(type::Vec3(nbrGrid, nbrGrid, 1))}, {"min", "0 0 0"}, {"max", "10 10 0"} });
+        
+        unsigned int fixP = 0;
+        if (nbrGrid > 1)
+            fixP = unsigned int(nbrGrid - 1);
+        
+        if (both)
+        {
+            addTriangleFEMNode(FEMType, fixP, "TriangleFEM");
+            addTriangleFEMNode(FEMType, fixP, "TriangularFEM");
+        }
+        else if (FEMType == 0)
+        {
+            addTriangleFEMNode(FEMType, fixP, "TriangleFEM");
+        }
+        else if (FEMType == 1)
+        {
+            addTriangleFEMNode(FEMType, fixP, "TriangularFEM");
+        }
 
         ASSERT_NE(m_root.get(), nullptr);
 
@@ -106,44 +111,48 @@ public:
         sofa::simulation::getSimulation()->init(m_root.get());
     }
 
-
-    void loadTriangleFEMScene()
+    void addTriangleFEMNode(int FEMType, unsigned int fixP, std::string nodeName)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                              "
-            "<Node  name='Root' gravity='0 10 0' dt='0.01' animate='0' >                        "
-            "    <RegularGridTopology name='grid' n='40 40 1' min='0 0 0' max='10 10 0' />      "
-            "    <Node name='FEM' >                                                             "
-            "        <EulerImplicitSolver />                                                    "
-            "        <CGLinearSolver iterations='25' threshold='1.0e-9'/>                       "
-            "        <MechanicalObject name='dof' position='@../grid.position' />               "
-            "        <TriangleSetTopologyContainer name='topo' src='@../grid' />                "
-            "        <TriangleSetTopologyModifier name='Modifier' />                            "
-            "        <TriangleSetGeometryAlgorithms name='GeomAlgo' template='Vec3d' />         "
-            "        <TriangleFEMForceField name='FEM' youngModulus='100' poissonRatio='0.3' method='large' /> "
-            "        <DiagonalMass massDensity='0.1' />                                        "
-            "        <FixedConstraint indices='0 39' />                                        "
-            "    </Node>"
-            "</Node>  ";
+        Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
+        createObject(FEMNode, "EulerImplicitSolver");
+        createObject(FEMNode, "CGLinearSolver", {{ "threshold", "1e-9" }});
 
-        /// Load scene
-        m_root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
-            scene.c_str(),
-            scene.size());
+        createObject(FEMNode, "MechanicalObject", {
+            {"name","dof"}, {"template","Vec3d"}, {"position", "@../grid.position"} });
+
+        createObject(FEMNode, "TriangleSetTopologyContainer", {
+            {"name","topo"}, {"src","@../grid"} });
+        createObject(FEMNode, "TriangleSetTopologyModifier", {
+            {"name","Modifier"} });
+        createObject(FEMNode, "TriangleSetGeometryAlgorithms", {
+            {"name","GeomAlgo"}, {"template","Vec3d"} });
+
+        if (FEMType == 0) // TriangleModel
+        {
+            createObject(FEMNode, "TriangleFEMForceField", {
+                {"name","FEM"}, {"youngModulus","100"}, {"poissonRatio","0.3"}, {"method","large"} });
+            std::cout << "TriangleFEMForceField" << std::endl;
+        }
+        else
+        {
+            std::cout << "TriangularFEMForceField" << std::endl;
+            createObject(FEMNode, "TriangularFEMForceField", {
+                {"name","FEM"}, {"youngModulus","100"}, {"poissonRatio","0.3"}, {"method","large"} });
+        }
 
 
-        ASSERT_NE(m_root.get(), nullptr);
-
-        /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        createObject(FEMNode, "DiagonalMass", {
+            {"name","mass"}, {"massDensity","0.1"} });
+        createObject(FEMNode, "FixedConstraint", {
+            {"name","fix"}, {"indices", str(type::Vec2(0, fixP))} });
     }
 
 
     void checkTriangleFEMValues()
     {
-        std::cout << "-- checkTriangleFEMValues() --" << std::endl;
         // load Triangular FEM
-        loadTriangleFEMScene();
+        int nbrGrid = 40;
+        loadFEMScene(0, nbrGrid);
 
         if (m_root.get() == nullptr)
             return;
@@ -151,25 +160,25 @@ public:
         // Access mstate
         MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
-
+        
         // Access dofs
         const VecCoord& positions = dofs->x.getValue();
-        ASSERT_EQ(positions.size(), 1600);
-        std::vector<int> indices = { 0, 20, 40, 1200, 1560 };
+        ASSERT_EQ(positions.size(), nbrGrid * nbrGrid);
         
-        for (auto id : indices)
+        
+        for (auto id : m_indices)
         {
             std::cout << "init: " << id << " -> " << positions[id] << std::endl;
         }
         
         std::cout << "animate... " << std::endl;
 
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < m_nbrStep; i++)
         {
             m_simulation->animate(m_root.get(), 0.01);
         }
         
-        for (auto id : indices)
+        for (auto id : m_indices)
         {
             std::cout << "end: " << id << " -> " << positions[id] << std::endl;
         }
@@ -177,9 +186,9 @@ public:
 
     void checkTriangularFEMValues()
     {
-        std::cout << "-- checkTriangularFEMValues() --" << std::endl;
         // load Triangular FEM
-        loadTriangularFEMScene();
+        int nbrGrid = 40;
+        loadFEMScene(1, nbrGrid);
 
         if (m_root.get() == nullptr)
             return;
@@ -190,22 +199,22 @@ public:
 
         // Access dofs
         const VecCoord& positions = dofs->x.getValue();
-        ASSERT_EQ(positions.size(), 1600);
-        std::vector<int> indices = { 0, 20, 40, 1200, 1560 };
+        ASSERT_EQ(positions.size(), nbrGrid * nbrGrid);
+        
 
-        for (auto id : indices)
+        for (auto id : m_indices)
         {
             std::cout << "init: " << id << " -> " << positions[id] << std::endl;
         }
 
         std::cout << "animate... " << std::endl;
 
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < m_nbrStep; i++)
         {
             m_simulation->animate(m_root.get(), 0.01);
         }
 
-        for (auto id : indices)
+        for (auto id : m_indices)
         {
             std::cout << "end: " << id << " -> " << positions[id] << std::endl;
         }
