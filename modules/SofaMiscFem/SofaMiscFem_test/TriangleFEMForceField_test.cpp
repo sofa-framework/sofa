@@ -122,7 +122,7 @@ public:
         
         unsigned int fixP = 0;
         if (nbrGrid > 1)
-            fixP = unsigned int(nbrGrid - 1);
+            fixP = static_cast<unsigned int>(nbrGrid - 1);
         
         if (both)
         {
