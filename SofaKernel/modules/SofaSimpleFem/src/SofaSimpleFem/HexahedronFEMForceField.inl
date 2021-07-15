@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/decompose.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 // WARNING: indices ordering is different than in topology node
 //
@@ -1119,42 +1120,88 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     // Build Matrix Block for this ForceField
-    int i,j,n1, n2, e;
-
-    typename VecElement::const_iterator it;
-
-    Index node1, node2;
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
+    if (auto* crsmat_d = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(r.matrix))
     {
-        const ElementStiffness &Ke = _elementStiffnesses.getValue()[e];
+        addKToBlocMatrix<double>(crsmat_d, kFactor, r.offset);
+    }
+    else if (auto* crsmat_f = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(r.matrix))
+    {
+        addKToBlocMatrix<float>(crsmat_f, kFactor, r.offset);
+    }
+    else
+    {
+        int e; //index of the element in the topology
 
-        Transformation Rot = getElementRotation(e);
+        typename VecElement::const_iterator it;
+        typename Element::size_type n1, n2;
 
-        Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-        // find index of node 1
-        for (n1=0; n1<8; n1++)
+        Index node1, node2;
+
+        for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
         {
-            node1 = (*it)[n1];
-            // find index of node 2
-            for (n2=0; n2<8; n2++)
-            {
-                node2 = (*it)[n2];
+            const ElementStiffness &Ke = _elementStiffnesses.getValue()[e];
+            const Transformation Rot = getElementRotation(e);
 
-                Mat33 tmp = Rot.multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
-                        Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
-                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
-                for(i=0; i<3; i++)
-                    for (j=0; j<3; j++)
-                        r.matrix->add(r.offset+3*node1+i, r.offset+3*node2+j, - tmp[i][j]*kFactor);
+            // find index of node 1
+            for (n1 = 0; n1 < Element::size(); n1++)
+            {
+                node1 = (*it)[n1];
+                // find index of node 2
+                for (n2 = 0; n2 < Element::size(); n2++)
+                {
+                    node2 = (*it)[n2];
+
+                    const Mat33 tmp = Rot.multTranspose( Mat33(
+                            Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
+                            Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
+                            Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
+                    r.matrix->add(r.offset + 3 * node1, r.offset + 3 * node2, tmp * (-kFactor));
+                }
             }
         }
     }
 }
 
+template<class DataTypes>
+template<class BlocReal>
+void HexahedronFEMForceField<DataTypes>::addKToBlocMatrix(
+        sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3, 3, BlocReal>, type::vector<type::Mat<3, 3, BlocReal> >, type::vector<sofa::Index> >* crsmat,
+        SReal k, unsigned int& offset)
+{
+    int e; //index of the element in the topology
 
+    typename VecElement::const_iterator it;
+    typename Element::size_type n1, n2;
+
+    Index node1, node2;
+
+    for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
+    {
+        const ElementStiffness &Ke = _elementStiffnesses.getValue()[e];
+        const Transformation Rot = getElementRotation(e);
+
+        // find index of node 1
+        for (n1 = 0; n1 < Element::size(); n1++)
+        {
+            node1 = (*it)[n1];
+            // find index of node 2
+            for (n2 = 0; n2 < Element::size(); n2++)
+            {
+                node2 = (*it)[n2];
+
+                const Mat33 tmp = Rot.multTranspose( Mat33(
+                        Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
+                        Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
+                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
+                *crsmat->wbloc(offset + node1, offset + node2, true) += tmp * (-k);
+            }
+        }
+    }
+}
 
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimpleFem/config.h>
+#include <SofaSimpleFem/fwd.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -152,6 +152,12 @@ public:
     void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override ;
 
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+
+    /// Specialized addKToMatrix implementation for CRS 3x3 bloc matrices
+    template<class BlocReal>
+    void addKToBlocMatrix(
+            sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,BlocReal>,  type::vector<type::Mat<3,3,BlocReal> >, type::vector<sofa::Index> > *crsmat,
+            SReal k, unsigned int &offset);
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
