@@ -22,13 +22,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 BaseForceField::BaseForceField()
@@ -70,8 +64,4 @@ bool BaseForceField::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

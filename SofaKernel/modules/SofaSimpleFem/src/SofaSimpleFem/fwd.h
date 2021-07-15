@@ -19,13 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define DEFINITION_TOPOLOGYSUBSETDATA
+#pragma once
 
-#include <SofaBaseTopology/TopologySubsetData.inl>
+#include <SofaSimpleFem/config.h>
 
-namespace sofa::component::topology
+namespace sofa::component::linearsolver
 {
-
-template class SOFA_SOFABASETOPOLOGY_API TopologySubsetData<Index, sofa::type::vector<Index>>;
-
-} // namespace sofa::component::topology
+template<typename TBloc, typename TVecBloc, typename TVecIndex>
+class CompressedRowSparseMatrix;
+}

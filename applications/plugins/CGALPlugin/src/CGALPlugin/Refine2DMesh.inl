@@ -384,7 +384,7 @@ namespace cgal
             vparams->drawTool()->saveLastState();
 
             const VecCoord& seeds = d_seedPoints.getValue();
-            sofa::type::vector<sofa::defaulttype::Vec3> points;
+            sofa::type::vector<sofa::type::Vec3> points;
             sofa::type::RGBAColor color(0.0, 0.0, 1.0, 1);
 
             for (unsigned int i = 0; i < seeds.size(); i++)
@@ -399,7 +399,7 @@ namespace cgal
             vparams->drawTool()->saveLastState();
 
             const VecCoord& regions = d_regionPoints.getValue();
-            sofa::type::vector<sofa::defaulttype::Vec3> points;
+            sofa::type::vector<sofa::type::Vec3> points;
             sofa::type::RGBAColor color(1.0, 0.0, 0.0, 1);
 
             for (unsigned int i = 0; i < regions.size(); i++)
