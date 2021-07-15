@@ -185,7 +185,7 @@ public:
     {
         createSingleTriangleFEMScene(FEMType, 100, 0.3, "large");
 
-        MState::SPtr dofs = m_root->getTreeObject<MState>();
+        auto dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
         ASSERT_EQ(dofs->getSize(), 4);
 
