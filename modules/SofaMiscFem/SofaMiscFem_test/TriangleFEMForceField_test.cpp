@@ -185,13 +185,13 @@ public:
     {
         createSingleTriangleFEMScene(FEMType, 100, 0.3, "large");
 
-        auto dofs = m_root->getTreeObject<MState>();
+        typename MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
         ASSERT_EQ(dofs->getSize(), 4);
 
         if (FEMType == 0)
         {
-            TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
+            typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
             ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
@@ -199,7 +199,7 @@ public:
         }
         else if (FEMType == 1)
         {
-            TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
+            typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
             ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
@@ -273,7 +273,7 @@ public:
         sofa::simulation::getSimulation()->init(m_root.get());
         if (FEMType == 0)
         {
-            TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
+            typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
             ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
@@ -281,7 +281,7 @@ public:
         }
         else if (FEMType == 1)
         {
-            TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
+            typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
             ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.45); // Not the same default values
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
@@ -322,7 +322,7 @@ public:
 
         if (FEMType == 0)
         {
-            TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
+            typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
 
             for (int id = 0; id < 2; id++)
             {
@@ -347,10 +347,10 @@ public:
         }
         else if (FEMType == 1)
         {
-            TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
+            typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             for (int id = 0; id < 2; id++)
             {
-                TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[id];
+                typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[id];
                 const type::fixed_array <Coord, 3>& rotInit = triangleInfo.rotatedInitialElements;
                 const Mat33& rotMat = triangleInfo.initialTransformation;
                 const Mat33& stiffnessMat = triangleInfo.materialMatrix;
@@ -385,7 +385,7 @@ public:
             return;
 
         // Access mstate
-        MState::SPtr dofs = m_root->getTreeObject<MState>();
+        typename MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
         
         // Access dofs
@@ -415,7 +415,7 @@ public:
 
         if (FEMType == 0)
         {
-            TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
+            typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
 
             const type::fixed_array <Coord, 3>& rotInit = triFEM->getRotatedInitialElement(42);
             const Mat33& rotMat = triFEM->getRotationMatrix(42);
@@ -437,9 +437,9 @@ public:
         }
         else if (FEMType == 1)
         {
-            TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
+            typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             
-            TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[42];
+            typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[42];
             const type::fixed_array <Coord, 3>& rotInit = triangleInfo.rotatedInitialElements;
             const Mat33& rotMat = triangleInfo.initialTransformation; // rotMat: [1 0 0,0 1 0,0 0 1]
             const Mat33& stiffnessMat = triangleInfo.materialMatrix;
