@@ -432,53 +432,6 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 }
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix, const vector<unsigned> & addSubIndex )
-{
-    MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
-    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-
-    const VecReal& k = d_stiffness.getValue();
-    const sofa::Size N = Coord::total_size;
-
-    sofa::Index curIndex = 0;
-
-    if (k.size() != m_indices.size())
-    {
-        const Real k0 = -k[0] * (Real)kFact;
-
-        for (sofa::Index index = 0; index < m_indices.size(); index++)
-        {
-            curIndex = m_indices[index];
-
-            if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
-                continue;
-
-            for(sofa::Index i = 0; i < N; i++)
-            {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, k0);
-            }
-        }
-    }
-    else
-    {
-        for (unsigned int index = 0; index < m_indices.size(); index++)
-        {
-            curIndex = m_indices[index];
-
-            if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
-                continue;
-
-            for(sofa::Index i = 0; i < N; i++)
-            {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
-            }
-        }
-    }
-}
-
-template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::updateForceMask()
 {
     for (sofa::Index i=0; i<m_indices.size(); i++)

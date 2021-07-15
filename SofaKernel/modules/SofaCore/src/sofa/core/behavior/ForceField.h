@@ -141,9 +141,6 @@ public:
 
     void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    /// addToMatrix only on the subMatrixIndex
-    void addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> & subMatrixIndex) override;
-
     /// Internal addKToMatrix
     /// Overloaded function, usually called from the generic addKToMatrix version.
     /// This addKToMatrix version directly gives access to the matrix to fill, the stiffness factor and
@@ -156,13 +153,7 @@ public:
     /// @param offset Starting index of the submatrix to fill in the global matrix.
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
 
-    /// addToMatrix only on the subMatrixIndex
-    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix * matrix, const type::vector<unsigned> & subMatrixIndex, SReal kFact, unsigned int &offset);
-
     void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
-    /// addBToMatrix only on the subMatrixIndex
-    void addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> & subMatrixIndex ) override;
 
     /** Accumulate an element matrix to a global assembly matrix. This is a helper for addKToMatrix, to accumulate each (square) element matrix in the (square) assembled matrix.
     \param bm the global assembly matrix
@@ -196,10 +187,6 @@ public:
     }
 
     virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
-
-    /// addBToMatrix only on the subMatrixIndex
-    virtual void addSubBToMatrix(sofa::defaulttype::BaseMatrix * matrix, const type::vector<unsigned> & subMatrixIndex, SReal bFact, unsigned int &offset);
-
     /// @}
 
     /// Pre-construction check method called by ObjectFactory.

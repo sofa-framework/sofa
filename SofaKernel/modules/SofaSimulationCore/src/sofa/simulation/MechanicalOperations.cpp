@@ -47,7 +47,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 
@@ -528,18 +527,6 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     if (matrix != nullptr)
     {
         executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
-        executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
-    }
-}
-
-void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const type::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact)
-{
-    mparams.setMFactor(mFact);
-    mparams.setBFactor(bFact);
-    mparams.setKFactor(kFact);
-    if (matrix != nullptr)
-    {
-        executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams, matrix, subMatrixIndex) );
         executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
     }
 }

@@ -150,16 +150,12 @@ public:
     /// \param matrix the matrix to add the result to
     virtual void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) = 0;
 
-    virtual void addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> & subMatrixIndex);
-
     /// \brief Compute the system matrix corresponding to \f$ b B \f$
     ///
     /// \param mparams \a sofa::core::mechanicalparams::bFactor(mparams) is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param matrix the matrix to add the result to
     virtual void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     //virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
-
-    virtual void addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> & vecIds);
 
     /// \brief Compute the system matrix corresponding to \f$ m M + b B + k K \f$
     ///
@@ -170,9 +166,6 @@ public:
     /// \param matrix the matrix to add the result to
     virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     ////virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, SReal bFact, SReal kFact, unsigned int &offset);
-
-    /// \brief addMBKToMatrix only on the subMatrixIndex
-    virtual void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> subMatrixIndex);
 
     /// @}
 
