@@ -26,14 +26,12 @@ Components/forcefield/TetrahedronFEMForceField.scn 300 1e-4 0 1
 Components/forcefield/TetrahedronHyperelasticityFEMForceField.scn 100 1e-4 0 1
 Components/forcefield/TriangularFEMForceFieldOptim.scn 100 1e-4 0 1
 Components/interactionforcefield/InteractionEllipsoidForceField.scn 100 1e-4 0 1
-Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1
-Components/topology/SparseGridTopology.scn 100 1e-4 0 1
-Components/topology/SparseGridRamificationTopology.scn 100 1e-4 0 1
 Components/solver/EulerExplicitSolver/EulerExplicitSolver.scn 3000 1e-4 0 1
 Components/solver/EulerExplicitSolver/EulerExplicitSolver_diagonal.scn 3000 1e-4 0 1
 Components/solver/EulerImplicitSolver.scn 3000 1e-4 0 1
-Components/topology/SparseGridRamificationTopology.scn 100 1e-4 0 1
+Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1
 Components/topology/SparseGridTopology.scn 100 1e-4 0 1
+Components/topology/SparseGridRamificationTopology.scn 100 1e-4 0 1
 
 ### Benchmark scenes ###
 Benchmark/Performance/MatrixAssembly/MatrixAssembly_assembledCG.scn 300 1e-4 0 1
