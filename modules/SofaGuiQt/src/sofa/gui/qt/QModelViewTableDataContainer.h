@@ -36,6 +36,7 @@
 #include <QStandardItemModel>
 
 #include <sofa/helper/deque.h>
+#include <SofaRigid/JointSpring.h>
 
 namespace sofa::gui::qt
 {
