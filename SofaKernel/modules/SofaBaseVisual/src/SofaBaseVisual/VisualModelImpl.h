@@ -121,7 +121,9 @@ public:
     Data< VecVisualEdge > m_edges; ///< edges of the model
     Data< VecVisualTriangle > m_triangles; ///< triangles of the model
     Data< VecVisualQuad > m_quads; ///< quads of the model
-  
+
+    bool m_textureChanged {false};
+
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertex
     /// If it is empty then each vertex correspond to one position
@@ -381,6 +383,8 @@ public:
     virtual void computeUVSphereProjection();
 
     virtual void updateBuffers() {}
+    virtual void deleteBuffers() {}
+    virtual void deleteTextures() {}
 
     void updateVisual() override;
 

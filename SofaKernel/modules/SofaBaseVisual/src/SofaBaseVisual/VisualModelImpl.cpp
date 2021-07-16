@@ -235,6 +235,14 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 
     // add one identity matrix
     xforms.resize(1);
+
+    addUpdateCallback("updateTextures", { &texturename },
+        [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        m_textureChanged = true;
+        return sofa::core::objectmodel::ComponentState::Loading;
+    }, { &d_componentState });
 }
 
 VisualModelImpl::~VisualModelImpl()
@@ -281,6 +289,18 @@ bool VisualModelImpl::hasOpaque()
 
 void VisualModelImpl::drawVisual(const core::visual::VisualParams* vparams)
 {
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Loading)
+    {
+        if (m_textureChanged)
+        {
+            deleteTextures();
+            m_textureChanged = false;
+        }
+        init();
+        initVisual();
+        updateBuffers();
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    }
     //Update external buffers (like VBO) if the mesh change AFTER doing the updateVisual() process
     if(m_vertices2.isDirty())
     {
