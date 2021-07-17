@@ -20,8 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP
-#include <SofaGeneralLinearSolver/CholeskySolver.inl>
 
+#include <SofaGeneralLinearSolver/CholeskySolver.inl>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver

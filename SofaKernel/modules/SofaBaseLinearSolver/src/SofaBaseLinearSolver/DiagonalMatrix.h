@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
+#include <SofaBaseLinearSolver/fwd.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaBaseLinearSolver/MatrixExpr.h>
 #include <SofaBaseLinearSolver/matrix_bloc_traits.h>
@@ -321,7 +322,7 @@ public:
 
 
 /// Simple full matrix container
-template<std::size_t LC, typename T = double>
+template<std::size_t LC, typename T>
 class BlockDiagonalMatrix : public defaulttype::BaseMatrix
 {
 public:

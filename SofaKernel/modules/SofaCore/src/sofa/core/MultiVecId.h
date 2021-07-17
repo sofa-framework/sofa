@@ -19,18 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MULTIVECID_H
-#define SOFA_CORE_MULTIVECID_H
+#pragma once
 
+#include <sofa/core/fwd.h>
 #include <sofa/core/VecId.h>
-#include <sofa/core/objectmodel/Data.h>
-namespace sofa
+#include <memory>
+#include <map>
+#include <set>
+
+namespace sofa::core
 {
 
-namespace core
-{
-
-class SOFA_CORE_API BaseState;
 template<class DataTypes> class State;
 
 /// Identify a vector of a given type stored in multiple State instances
@@ -47,11 +46,10 @@ struct StateVecAccessor<DataTypes, V_COORD, V_READ>
 {
 public:
     typedef TVecId<V_COORD, V_READ> MyVecId;
-    typedef Data<typename DataTypes::VecCoord> MyDataVec;
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
+    auto read()  const {  return state-> read(id);  }
 
 protected:
     const State<DataTypes>* state;
@@ -63,12 +61,11 @@ struct StateVecAccessor<DataTypes, V_COORD, V_WRITE>
 {
 public:
     typedef TVecId<V_COORD, V_WRITE> MyVecId;
-    typedef Data<typename DataTypes::VecCoord> MyDataVec;
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-    MyDataVec* write() const {  return state->write(id);  }
+    auto read()  const {  return state-> read(id);  }
+    auto write() const {  return state->write(id);  }
 
 protected:
     State<DataTypes>* state;
@@ -80,11 +77,10 @@ struct StateVecAccessor<DataTypes, V_DERIV, V_READ>
 {
 public:
     typedef TVecId<V_DERIV, V_READ> MyVecId;
-    typedef Data<typename DataTypes::VecDeriv> MyDataVec;
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
+    auto read()  const {  return state-> read(id);  }
 
 protected:
     const State<DataTypes>* state;
@@ -96,12 +92,11 @@ struct StateVecAccessor<DataTypes, V_DERIV, V_WRITE>
 {
 public:
     typedef TVecId<V_DERIV, V_WRITE> MyVecId;
-    typedef Data<typename DataTypes::VecDeriv> MyDataVec;
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-    MyDataVec* write() const {  return state->write(id);  }
+    auto read()  const {  return state-> read(id);  }
+    auto write() const {  return state->write(id);  }
 
 protected:
     State<DataTypes>* state;
@@ -113,11 +108,10 @@ struct StateVecAccessor<DataTypes, V_MATDERIV, V_READ>
 {
 public:
     typedef TVecId<V_MATDERIV, V_READ> MyVecId;
-    typedef Data<typename DataTypes::MatrixDeriv> MyDataVec;
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
+    auto read()  const {  return state-> read(id);  }
 
 protected:
     const State<DataTypes>* state;
@@ -129,12 +123,11 @@ struct StateVecAccessor<DataTypes, V_MATDERIV, V_WRITE>
 {
 public:
     typedef TVecId<V_MATDERIV, V_WRITE> MyVecId;
-    typedef Data<typename DataTypes::MatrixDeriv> MyDataVec;
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-    MyDataVec* write() const {  return state->write(id);  }
+    auto read()  const {  return state-> read(id);  }
+    auto write() const {  return state->write(id);  }
 
 protected:
     State<DataTypes>* state;
@@ -146,11 +139,9 @@ struct StateVecAccessor<DataTypes, V_ALL, V_READ>
 {
 public:
     typedef TVecId<V_ALL, V_READ> MyVecId;
-    //typedef BaseData MyDataVec;
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    //const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
     const State<DataTypes>* state;
@@ -172,7 +163,7 @@ protected:
 };
 
 template <VecType vtype, VecAccess vaccess>
-class TMultiVecId
+class SOFA_CORE_API TMultiVecId
 {
 public:
     typedef TVecId<vtype, vaccess> MyVecId;
@@ -375,38 +366,7 @@ public:
         return defaultId;
     }
 
-    std::string getName() const
-    {
-        if (!hasIdMap())
-            return defaultId.getName();
-        else
-        {
-            std::ostringstream out;
-            out << '{';
-            out << defaultId.getName() << "[*";
-            const IdMap& map = getIdMap();
-            MyVecId prev = defaultId;
-            for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
-            {
-                if (it->second != prev) // new id
-                {
-                    out << "],";
-                    if (it->second.getType() == defaultId.getType())
-                        out << it->second.getIndex();
-                    else
-                        out << it->second.getName();
-                    out << '[';
-                    prev = it->second;
-                }
-                else out << ',';
-                if (it->first == nullptr) out << "nullptr";
-                else
-                    out << it->first->getName();
-            }
-            out << "]}";
-            return out.str();
-        }
-    }
+    std::string getName() const;
 
     friend inline std::ostream& operator << ( std::ostream& out, const TMultiVecId<vtype, vaccess>& v )
     {
@@ -440,7 +400,7 @@ public:
 
 
 template <VecAccess vaccess>
-class TMultiVecId<V_ALL, vaccess>
+class SOFA_CORE_API TMultiVecId<V_ALL, vaccess>
 {
 public:
     typedef TVecId<V_ALL, vaccess> MyVecId;
@@ -605,38 +565,7 @@ public:
         return defaultId;
     }
 
-    std::string getName() const
-    {
-        if (!hasIdMap())
-            return defaultId.getName();
-        else
-        {
-            std::ostringstream out;
-            out << '{';
-            out << defaultId.getName() << "[*";
-            const IdMap& map = getIdMap();
-            MyVecId prev = defaultId;
-            for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
-            {
-                if (it->second != prev) // new id
-                {
-                    out << "],";
-                    if (it->second.getType() == defaultId.getType())
-                        out << it->second.getIndex();
-                    else
-                        out << it->second.getName();
-                    out << '[';
-                    prev = it->second;
-                }
-                else out << ',';
-                if (it->first == nullptr) out << "nullptr";
-                else
-                    out << it->first->getName();
-            }
-            out << "]}";
-            return out.str();
-        }
-    }
+    std::string getName() const;
 
     friend inline std::ostream& operator << ( std::ostream& out, const TMultiVecId<V_ALL, vaccess>& v )
     {
@@ -668,7 +597,6 @@ public:
 
 };
 
-
 typedef TMultiVecId<V_COORD, V_READ> ConstMultiVecCoordId;
 typedef TMultiVecId<V_COORD, V_WRITE>     MultiVecCoordId;
 typedef TMultiVecId<V_DERIV, V_READ> ConstMultiVecDerivId;
@@ -678,8 +606,16 @@ typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiMatrixDerivId;
 typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
 typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
 
-} // namespace core
-
-} // namespace sofa
-
+#if !defined(SOFA_CORE_MULTIVECID_TEMPLATE_DEFINITION)
+extern template class SOFA_CORE_API  TMultiVecId<V_COORD, V_READ>;
+extern template class SOFA_CORE_API  TMultiVecId<V_COORD, V_WRITE>;
+extern template class SOFA_CORE_API  TMultiVecId<V_DERIV, V_READ>;
+extern template class SOFA_CORE_API  TMultiVecId<V_DERIV, V_WRITE>;
+extern template class SOFA_CORE_API  TMultiVecId<V_MATDERIV, V_READ>;
+extern template class SOFA_CORE_API  TMultiVecId<V_MATDERIV, V_WRITE>;
+extern template class SOFA_CORE_API  TMultiVecId<V_ALL, V_READ>;
+extern template class SOFA_CORE_API  TMultiVecId<V_ALL, V_WRITE>;
 #endif
+
+} // namespace sofa::core
+

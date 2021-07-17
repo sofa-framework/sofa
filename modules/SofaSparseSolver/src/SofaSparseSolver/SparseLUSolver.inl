@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_INL
 
 #include <SofaSparseSolver/SparseLUSolver.h>
-
+#include <sofa/helper/system/thread/CTime.h>
 namespace sofa
 {
 
