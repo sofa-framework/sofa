@@ -23,9 +23,7 @@
 #include <SofaRigid/config.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
-
 #include <sofa/core/behavior/PairInteractionForceField.h>
-#include <SofaRigid/JointSpring.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -40,8 +38,6 @@ public:
 template<typename DataTypes>
 class JointSpring;
 
-template<typename DataTypes>
-class JointSpring;
 
 /** JointSpringForceField simulates 6D springs between Rigid DOFS
   Use kst vector to specify the directionnal stiffnesses (on each local axe)
@@ -165,9 +161,8 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
-extern template class SOFA_SOFARIGID_API JointSpring<defaulttype::Rigid3Types>;
+#if !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
 extern template class SOFA_SOFARIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
-
 #endif
+
 } // namespace sofa::component::interactionforcefield

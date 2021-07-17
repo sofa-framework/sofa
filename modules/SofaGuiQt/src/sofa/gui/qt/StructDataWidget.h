@@ -23,6 +23,7 @@
 #include "SimpleDataWidget.h"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaDeformable/SpringForceField.h>
+#include <SofaRigid/JointSpring.h>
 #include <SofaRigid/JointSpringForceField.h>
 #include <SofaMiscForceField/GearSpringForceField.h>
 /* #include <../../../projects/vulcain/lib/DiscreteElementModel.h> */
