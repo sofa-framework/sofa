@@ -69,7 +69,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/Task.h
     ${SRC_ROOT}/InitTasks.h
     ${SRC_ROOT}/Locks.h
-    ${SRC_ROOT}/VisitorAsync.h
     ${SRC_ROOT}/WorkerThread.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
     ${SRC_ROOT}/events/SimulationInitStartEvent.h
