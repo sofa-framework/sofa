@@ -32,26 +32,13 @@ namespace sofa::component::collision
 class SOFA_SOFACONSTRAINT_API ContactIdentifier
 {
 public:
-    ContactIdentifier()
-    {
-        if (!availableId.empty())
-        {
-            id = availableId.front();
-            availableId.pop_front();
-        }
-        else
-            id = cpt++;
-    }
-
-    virtual ~ContactIdentifier()
-    {
-        availableId.push_back(id);
-    }
+    ContactIdentifier();
+    virtual ~ContactIdentifier();
 
 protected:
-    static sofa::core::collision::DetectionOutput::ContactId cpt;
+    inline static sofa::core::collision::DetectionOutput::ContactId cpt = 0;
     sofa::core::collision::DetectionOutput::ContactId id;
-    static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
+    inline static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
 };
 
 inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)

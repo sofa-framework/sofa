@@ -21,16 +21,12 @@
 ******************************************************************************/
 #pragma once
 
+#include <SofaBoundaryCondition/FixedConstraint.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <iostream>
 #include <sofa/type/vector_algorithm.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::ComponentState;
 
 
