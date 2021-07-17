@@ -33,7 +33,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
@@ -473,39 +472,16 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
     if (! use_rotations.getValue()) return;
 
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
-    sofa::component::forcefield::TetrahedronFEMForceField<TDataTypes>* forceField = nullptr;
     sofa::core::behavior::RotationFinder<TDataTypes>* rotationFinder = nullptr;
 
     if (node != nullptr)
     {
-        forceField = node->get<component::forcefield::TetrahedronFEMForceField<TDataTypes> > ();
-        if (forceField == nullptr)
-        {
-            rotationFinder = node->get< sofa::core::behavior::RotationFinder<TDataTypes> > ();
-
-            msg_info_when(rotationFinder == nullptr) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
-        }
+        rotationFinder = node->get< sofa::core::behavior::RotationFinder<TDataTypes> > ();
+        msg_info_when(rotationFinder == nullptr) << "No rotation defined : only applicable for components implementing RotationFinder!";
     }
 
     Transformation Rotation;
-    if (forceField != nullptr)
-    {
-        for(unsigned int k = 0; k < nb_dofs; k++)
-        {
-            int pid;
-            pid = k;
-
-            forceField->getRotation(Rotation, pid);
-            for (int j=0; j<3; j++)
-            {
-                for (int i=0; i<3; i++)
-                {
-                    R[k*9+j*3+i] = (Real)Rotation[j][i];
-                }
-            }
-        }
-    }
-    else if (rotationFinder != nullptr)
+    if (rotationFinder != nullptr)
     {
         const type::vector<type::Mat<3,3,Real> > & rotations = rotationFinder->getRotations();
         for(unsigned int k = 0; k < nb_dofs; k++)

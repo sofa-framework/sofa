@@ -37,12 +37,11 @@ list(APPEND SOURCE_FILES
 
 # Dependencies
 sofa_find_package(SofaImplicitOdeSolver REQUIRED)
-sofa_find_package(SofaSimpleFem REQUIRED)
 sofa_find_package(SofaGeneralLinearSolver REQUIRED)
 sofa_find_package(SofaSparseSolver QUIET) # Soft dependency of PrecomputedWarpPreconditioner
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaGeneralLinearSolver SofaSimpleFem)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaGeneralLinearSolver)
 if(SofaSparseSolver_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaSparseSolver)
 endif()

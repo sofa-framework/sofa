@@ -844,7 +844,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transform
 
 //HACK get rotation for fast contact handling with simplified compliance
 template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
+inline void TetrahedronFEMForceField<DataTypes>::getRotation(Mat33& R, unsigned int nodeIdx)
 { 
     if(method == SMALL)
     {
@@ -852,7 +852,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
         R[0][1] = 0.0 ; R[0][2] = 0.0 ;
         R[1][0] = 0.0 ; R[1][2] = 0.0 ;
         R[2][0] = 0.0 ; R[2][1] = 0.0 ;
-        msg_warning() << "getRotation called but no rotation comptued because case== SMALL";
+        msg_warning() << "getRotation called but no rotation computed because case== SMALL";
         return;
     }
 
@@ -1320,7 +1320,7 @@ TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
-    d_componentState.setValue(ComponentState::Invalid) ;
+    this->d_componentState.setValue(ComponentState::Invalid) ;
 
     const VecReal& youngModulus = _youngModulus.getValue();
     minYoung=youngModulus[0];
@@ -1442,7 +1442,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
        _indexedElements = tetrahedra;
     }
 
-    d_componentState.setValue(ComponentState::Valid) ;
+    this->d_componentState.setValue(ComponentState::Valid) ;
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
@@ -1463,7 +1463,7 @@ void TetrahedronFEMForceField<DataTypes>::reset()
 template <class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::reinit()
 {
-    if(d_componentState.getValue() == ComponentState::Invalid)
+    if(this->d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     if (!this->mstate || !m_topology){
@@ -1747,7 +1747,7 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, b
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(d_componentState.getValue() == ComponentState::Invalid)
+    if(this->d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     if (!vparams->displayFlags().getShowForceFields()) return;
@@ -2142,6 +2142,22 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix *
             rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);
         }
     }
+}
+
+
+template<class DataTypes>
+const type::vector< typename TetrahedronFEMForceField<DataTypes>::Mat33 >& TetrahedronFEMForceField<DataTypes>::getRotations()
+{
+    const auto nbDOFs = this->mstate->getSize();
+
+    m_rotations.resize(nbDOFs);
+
+    for (auto i = 0; i < nbDOFs; ++i)
+    {
+        getRotation(m_rotations[i], i);
+    }
+
+    return m_rotations;
 }
 
 template<class DataTypes>
