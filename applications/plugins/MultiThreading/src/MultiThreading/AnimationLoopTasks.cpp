@@ -1,11 +1,10 @@
 #include "AnimationLoopTasks.h"
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/ExecParams.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 #include <thread>
 
@@ -31,7 +30,7 @@ namespace sofa
         
         Task::MemoryAlloc StepTask::run()
         {
-            animationloop->step( core::ExecParams::defaultInstance(), dt);
+            animationloop->step( core::execparams::defaultInstance(), dt);
             return Task::MemoryAlloc::Dynamic;
         }        
         

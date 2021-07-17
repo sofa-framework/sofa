@@ -22,7 +22,6 @@
 #define SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP
 #include "GroupFilterYoungModulus.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
 {

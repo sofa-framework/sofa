@@ -24,7 +24,6 @@
 
 #include <SofaSphFluid/config.h>
 
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>

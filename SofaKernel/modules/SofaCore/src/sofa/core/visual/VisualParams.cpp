@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
-#include <sofa/helper/BackTrace.h>
 #include <cassert>
 #include <iostream>
 

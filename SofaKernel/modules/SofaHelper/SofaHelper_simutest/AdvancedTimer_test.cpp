@@ -44,7 +44,7 @@ protected:
 	{
 		using namespace sofa::helper;
 
-		AdvancedTimer::setEnabled("validID", true);
+        AdvancedTimer::setEnabled("validID", true);
 	}
 
 	void initScene()

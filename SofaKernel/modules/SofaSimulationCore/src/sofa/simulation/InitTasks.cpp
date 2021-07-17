@@ -5,7 +5,7 @@
 
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/simulation/TaskScheduler.h>
 
@@ -42,8 +42,8 @@ namespace sofa
                 
                 //spinMutexLock lock( IdFactorygetIDMutex );
                 
-                helper::AdvancedTimer::begin("Animate");
-                helper::AdvancedTimer::end("Animate");
+                helper::advancedtimer::begin("Animate");
+                helper::advancedtimer::end("Animate");
             }
             
             _atomicCounter->fetch_sub(1, std::memory_order_acq_rel);

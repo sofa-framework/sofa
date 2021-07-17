@@ -48,7 +48,7 @@
 #include <sofa/simulation/DefaultVisualManagerLoop.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/helper/init.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
@@ -158,7 +158,7 @@ void Simulation::exportGraph ( Node* root, const char* filename )
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
-    sofa::helper::AdvancedTimer::stepBegin("Simulation::init");
+    sofa::helper::advancedtimer::stepBegin("Simulation::init");
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
@@ -193,7 +193,7 @@ void Simulation::init ( Node* root )
 
     // propagate the visualization settings (showVisualModels, etc.) in the whole graph
     updateVisualContext(root);
-    sofa::helper::AdvancedTimer::stepEnd("Simulation::init");
+    sofa::helper::advancedtimer::stepEnd("Simulation::init");
 }
 
 
@@ -229,7 +229,7 @@ void Simulation::initNode( Node* node)
 /// Execute one timestep. If do is 0, the dt parameter in the graph will be used
 void Simulation::animate ( Node* root, SReal dt )
 {
-    sofa::helper::AdvancedTimer::stepBegin("Simulation::animate");
+    sofa::helper::advancedtimer::stepBegin("Simulation::animate");
 
     if ( !root ) {
         msg_error() << "Simulation::animate, no root found";
@@ -248,12 +248,12 @@ void Simulation::animate ( Node* root, SReal dt )
         return;
     }
 
-    sofa::helper::AdvancedTimer::stepEnd("Simulation::animate");
+    sofa::helper::advancedtimer::stepEnd("Simulation::animate");
 }
 
 void Simulation::updateVisual ( Node* root)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Simulation::updateVisual");
+    sofa::helper::advancedtimer::stepBegin("Simulation::updateVisual");
 
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
@@ -268,7 +268,7 @@ void Simulation::updateVisual ( Node* root)
         return;
     }
 
-    sofa::helper::AdvancedTimer::stepEnd("Simulation::updateVisual");
+    sofa::helper::advancedtimer::stepEnd("Simulation::updateVisual");
 }
 
 /// Reset to initial state
@@ -377,7 +377,7 @@ void Simulation::updateVisualContext (Node* root)
 /// Render the scene
 void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
-    sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
+    sofa::helper::advancedtimer::stepBegin("Simulation::draw");
 
     sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
     if(vloop)
@@ -393,7 +393,7 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
         return;
     }
 
-    sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
+    sofa::helper::advancedtimer::stepEnd("Simulation::draw");
 }
 
 /// Export a scene to an OBJ 3D Scene

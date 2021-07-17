@@ -34,14 +34,13 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/MechanicalParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <SofaBaseTopology/TopologyData.inl>
 #include <algorithm>
 #include <iterator>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::forcefield
@@ -266,7 +265,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::initNeighbourhoodEdges(){}
 template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::MechanicalParams*  mparams , DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addForceStandardTetraFEM");
+    sofa::helper::advancedtimer::stepBegin("addForceStandardTetraFEM");
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -442,14 +441,14 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
     edgeInfo.endEdit();
     d_f.endEdit();
 
-    sofa::helper::AdvancedTimer::stepEnd("addForceStandardTetraFEM");
+    sofa::helper::advancedtimer::stepEnd("addForceStandardTetraFEM");
 }
 
 
 template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addDForceStandardTetraFEM");
+    sofa::helper::advancedtimer::stepBegin("addDForceStandardTetraFEM");
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -536,7 +535,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 //	tetrahedronInfo.endEdit();
     d_df.beginEdit();
 
-    sofa::helper::AdvancedTimer::stepEnd("addDForceStandardTetraFEM");
+    sofa::helper::advancedtimer::stepEnd("addDForceStandardTetraFEM");
 }
 
 template<class DataTypes>

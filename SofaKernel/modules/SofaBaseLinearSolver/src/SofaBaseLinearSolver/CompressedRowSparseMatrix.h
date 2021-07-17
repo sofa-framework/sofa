@@ -23,6 +23,7 @@
 #include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <SofaBaseLinearSolver/fwd.h>
 #include <SofaBaseLinearSolver/MatrixExpr.h>
 #include <SofaBaseLinearSolver/matrix_bloc_traits.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
@@ -44,7 +45,7 @@ namespace sofa::component::linearsolver
 #define EMIT_EXTRA_MESSAGE false
 #endif // defined(SPARSEMATRIX_VERBOSE) && (SPARSEMATRIX_VERBOSE == true)
 
-template<typename TBloc, typename TVecBloc = type::vector<TBloc>, typename TVecIndex = type::vector<sofa::Index> >
+template<typename TBloc, typename TVecBloc, typename TVecIndex>
 class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
 {
 public:

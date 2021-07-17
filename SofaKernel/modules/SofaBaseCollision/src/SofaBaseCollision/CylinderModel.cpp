@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP
 #include <SofaBaseCollision/CylinderModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision
 {

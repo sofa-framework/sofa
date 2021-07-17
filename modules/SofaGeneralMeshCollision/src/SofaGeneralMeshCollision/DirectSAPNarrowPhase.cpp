@@ -21,7 +21,8 @@
 ******************************************************************************/
 #include <SofaGeneralMeshCollision/DirectSAPNarrowPhase.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <unordered_map>
@@ -336,7 +337,7 @@ void DirectSAPNarrowPhase::narrowCollisionDetectionFromSortedEndPoints()
     }
 
     d_nbPairs.setValue(nbInvestigatedPairs);
-    sofa::helper::AdvancedTimer::valSet("Direct SAP pairs", nbInvestigatedPairs);
+    sofa::helper::advancedtimer::valSet("Direct SAP pairs", nbInvestigatedPairs);
 }
 
 bool DirectSAPNarrowPhase::isPairFiltered(const BoxData &data0, const BoxData &data1, const DSAPBox &box0, int boxId1) const

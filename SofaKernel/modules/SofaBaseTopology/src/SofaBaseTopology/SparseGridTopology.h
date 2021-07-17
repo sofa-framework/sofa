@@ -24,7 +24,7 @@
 
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
-#include <sofa/helper/MarchingCubeUtility.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/type/Vec.h>
 
 #include <sofa/helper/io/Mesh.h>
@@ -54,6 +54,8 @@ public:
     typedef sofa::type::fixed_array<Vector3,8> CubeCorners;
     typedef sofa::type::BoundingBox BoundingBox;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
+
+    ~SparseGridTopology() override;
 protected:
     SparseGridTopology(bool _isVirtual=false);
 
@@ -220,7 +222,7 @@ protected:
     virtual void updateEdges();
     virtual void updateQuads();
 
-    sofa::helper::MarchingCubeUtility                 marchingCubes;
+    std::unique_ptr<sofa::helper::MarchingCubeUtility> marchingCubes;
     bool                                _usingMC;
 
     type::vector<Type> _types; ///< BOUNDARY or FULL filled cells

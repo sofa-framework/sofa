@@ -24,12 +24,11 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <SofaBaseTopology/fwd.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
-#include <sofa/helper/decompose.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::forcefield

@@ -39,8 +39,10 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 
+#include <sofa/type/vector.h>
+#include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <deque>
 
 namespace sofa::gui::qt

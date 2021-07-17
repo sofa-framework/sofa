@@ -22,6 +22,7 @@
 
 #pragma once
 #include <sofa/core/config.h>
+#include <sofa/core/sptr.h>
 #include <iosfwd>
 
 namespace sofa::helper::visual { class DrawTool; }
@@ -80,6 +81,8 @@ class BaseClass;
 class AbstractDataLink;
 class ContextObject;
 class ConfigurationSetting;
+
+typedef sofa::core::sptr<BaseObject> BaseObjectSPtr;
 
 
 class Tag;

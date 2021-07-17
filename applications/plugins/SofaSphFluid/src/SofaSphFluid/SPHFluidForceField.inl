@@ -27,7 +27,7 @@
 #include <SofaSphFluid/SpatialGridContainer.inl>
 #include <cmath>
 #include <iostream>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 namespace sofa
 {

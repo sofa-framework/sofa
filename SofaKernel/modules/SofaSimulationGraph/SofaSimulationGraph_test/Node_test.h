@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 class Dummy: public sofa::core::objectmodel::BaseObject
 {

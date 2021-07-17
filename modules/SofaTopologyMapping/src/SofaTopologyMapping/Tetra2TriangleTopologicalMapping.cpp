@@ -29,7 +29,7 @@
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 
@@ -169,7 +169,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    sofa::helper::AdvancedTimer::stepBegin("Update Tetra2TriangleTopologicalMapping");
+    sofa::helper::advancedtimer::stepBegin("Update Tetra2TriangleTopologicalMapping");
 
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
@@ -180,7 +180,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     {
         TopologyChangeType changeType = (*itBegin)->getChangeType();
         std::string topoChangeType = "Tetra2TriangleTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
-        sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
+        sofa::helper::advancedtimer::stepBegin(topoChangeType);
 
         switch( changeType )
         {
@@ -491,12 +491,12 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             break;
         };
 
-        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
+        sofa::helper::advancedtimer::stepEnd(topoChangeType);
         ++itBegin;
     }    
     Loc2GlobDataVec.endEdit();
 
-    sofa::helper::AdvancedTimer::stepEnd("Update Tetra2TriangleTopologicalMapping");
+    sofa::helper::advancedtimer::stepEnd("Update Tetra2TriangleTopologicalMapping");
 }
 
 

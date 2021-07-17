@@ -26,7 +26,6 @@
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>

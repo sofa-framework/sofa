@@ -25,7 +25,6 @@
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
 #include <cmath>

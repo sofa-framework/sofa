@@ -30,7 +30,7 @@
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/Node.h>
 
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 namespace sofa
 {

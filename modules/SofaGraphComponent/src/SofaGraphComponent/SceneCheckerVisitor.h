@@ -23,7 +23,6 @@
 
 #include <SofaGraphComponent/config.h>
 #include <SofaGraphComponent/SceneCheck.h>
-#include <sofa/core/ExecParams.h>
 #include <functional>
 #include <map>
 

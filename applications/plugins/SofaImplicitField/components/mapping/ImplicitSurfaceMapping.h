@@ -25,7 +25,6 @@
 
 #include <sofa/core/Mapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
-#include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 

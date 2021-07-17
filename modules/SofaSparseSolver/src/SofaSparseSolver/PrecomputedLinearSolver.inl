@@ -25,7 +25,6 @@
 #include "PrecomputedLinearSolver.h"
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
@@ -73,7 +72,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
     {
         first = false;
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->linearSystem.systemMatrix);
+        loadMatrix(*this->getSystemMatrix());
     }
 }
 
@@ -87,7 +86,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVe
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 {
-    systemSize = this->linearSystem.systemMatrix->rowSize();
+    systemSize = this->getSystemMatrix()->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 

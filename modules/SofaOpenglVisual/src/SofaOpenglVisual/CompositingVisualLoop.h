@@ -30,7 +30,6 @@
 #include <SofaOpenglVisual/VisualManagerPass.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/objectmodel/Event.h>
 
 namespace sofa
 {

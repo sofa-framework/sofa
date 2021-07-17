@@ -25,7 +25,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/BackTrace.h>
 

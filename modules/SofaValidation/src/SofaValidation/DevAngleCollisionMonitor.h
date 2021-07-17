@@ -23,8 +23,6 @@
 #include <SofaValidation/config.h>
 
 #include <sofa/type/vector.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateEndEvent.h>
 #include <SofaValidation/DevMonitor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>

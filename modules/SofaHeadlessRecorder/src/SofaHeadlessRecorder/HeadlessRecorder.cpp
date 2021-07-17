@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "HeadlessRecorder.h"
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/helper/Utils.h>
 using sofa::helper::Utils;
 #include <sofa/helper/system/SetDirectory.h>

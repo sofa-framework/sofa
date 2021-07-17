@@ -23,8 +23,6 @@
 #include <SofaGeneralEngine/GenerateRigidMass.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/core/ObjectFactory.h>
-
 #include <iostream>
 #include <fstream>
 

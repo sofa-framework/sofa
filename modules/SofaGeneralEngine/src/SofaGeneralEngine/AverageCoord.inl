@@ -22,7 +22,6 @@
 #pragma once
 #include "AverageCoord.h"
 #include <iostream>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/helper/logging/Messaging.h>
 

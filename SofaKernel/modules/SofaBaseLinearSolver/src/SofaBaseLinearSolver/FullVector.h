@@ -21,8 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
-
-#include <sofa/helper/logging/Messaging.h>
 #include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa::component::linearsolver

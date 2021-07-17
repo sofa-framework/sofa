@@ -28,8 +28,8 @@
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <sofa/simulation/Node.h>
-
+#include <sofa/simulation/fwd.h>
+#include <vector>
 #include <unordered_map>
 #include <typeindex>
 

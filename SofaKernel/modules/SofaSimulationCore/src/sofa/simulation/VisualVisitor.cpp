@@ -23,7 +23,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/Shader.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
@@ -148,9 +148,9 @@ Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 
 void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
-    sofa::helper::AdvancedTimer::stepBegin("VisualUpdateVisitor process: " + vm->getName());
+    sofa::helper::advancedtimer::stepBegin("VisualUpdateVisitor process: " + vm->getName());
     vm->updateVisual();
-    sofa::helper::AdvancedTimer::stepEnd("VisualUpdateVisitor process: " + vm->getName());
+    sofa::helper::advancedtimer::stepEnd("VisualUpdateVisitor process: " + vm->getName());
 }
 
 

@@ -63,42 +63,42 @@ AnimateVisitor::AnimateVisitor(const core::ExecParams* params, SReal dt)
 {
 }
 
-void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField* obj)
+void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::behavior::BaseInteractionForceField*obj)
 {
-    sofa::helper::AdvancedTimer::stepBegin("InteractionFF",obj);
+    sofa::helper::advancedtimer::stepBegin("InteractionFF",obj->getName());
 
     MultiVecDerivId   ffId      = VecDerivId::externalForce();
     MechanicalParams mparams;
     mparams.setDt(this->dt);
     obj->addForce(&mparams, ffId);
 
-    sofa::helper::AdvancedTimer::stepEnd("InteractionFF",obj);
+    sofa::helper::advancedtimer::stepEnd("InteractionFF",obj->getName());
 }
 
-void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj)
+void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::collision::Pipeline*obj)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Collision",obj);
+    sofa::helper::advancedtimer::stepBegin("Collision",obj->getName());
 
-    sofa::helper::AdvancedTimer::stepBegin("begin collision",obj);
+    sofa::helper::advancedtimer::stepBegin("begin collision",obj->getName());
     {
         CollisionBeginEvent evBegin;
         PropagateEventVisitor eventPropagation( params, &evBegin);
         eventPropagation.execute(node->getContext());
     }
-    sofa::helper::AdvancedTimer::stepEnd("begin collision",obj);
+    sofa::helper::advancedtimer::stepEnd("begin collision",obj->getName());
 
     CollisionVisitor act(this->params);
     node->execute(&act);
 
-    sofa::helper::AdvancedTimer::stepBegin("end collision",obj);
+    sofa::helper::advancedtimer::stepBegin("end collision",obj->getName());
     {
         CollisionEndEvent evEnd;
         PropagateEventVisitor eventPropagation( params, &evEnd);
         eventPropagation.execute(node->getContext());
     }
-    sofa::helper::AdvancedTimer::stepEnd("end collision",obj);
+    sofa::helper::advancedtimer::stepEnd("end collision",obj->getName());
 
-    sofa::helper::AdvancedTimer::stepEnd("Collision",obj);
+    sofa::helper::advancedtimer::stepEnd("Collision",obj->getName());
 }
 
 Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
@@ -174,22 +174,19 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     return RESULT_CONTINUE;
 }
 
-void AnimateVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* obj)
+void AnimateVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel*obj)
 {
-    sofa::helper::AdvancedTimer::stepBegin("BehaviorModel",obj);
+    sofa::helper::advancedtimer::stepBegin("BehaviorModel",obj->getName());
 
     obj->updatePosition(getDt());
-    sofa::helper::AdvancedTimer::stepEnd("BehaviorModel",obj);
+    sofa::helper::advancedtimer::stepEnd("BehaviorModel",obj->getName());
 }
 
 void AnimateVisitor::processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* solver)
 {
-    sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
-    /*    MechanicalIntegrationVisitor act(getDt());
-        node->execute(&act);*/
-
+    sofa::helper::advancedtimer::stepBegin("Mechanical",node->getName());
     solver->solve(params, getDt());
-    sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
+    sofa::helper::advancedtimer::stepEnd("Mechanical",node->getName());
 }
 
 } // namespace sofa::simulation

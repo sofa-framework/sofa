@@ -35,7 +35,7 @@
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 
 namespace sofa::component::topology
 {
@@ -156,7 +156,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    sofa::helper::AdvancedTimer::stepBegin("Update Hexa2QuadTopologicalMapping");
+    sofa::helper::advancedtimer::stepBegin("Update Hexa2QuadTopologicalMapping");
     QuadSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);
 
@@ -169,7 +169,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     {
         TopologyChangeType changeType = (*itBegin)->getChangeType();
         std::string topoChangeType = "Hexa2QuadTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
-        sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
+        sofa::helper::advancedtimer::stepBegin(topoChangeType);
 
         switch( changeType )
         {
@@ -396,12 +396,12 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
             break;
         };
 
-        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
+        sofa::helper::advancedtimer::stepEnd(topoChangeType);
         ++itBegin;
     }
     Loc2GlobDataVec.endEdit();
 
-    sofa::helper::AdvancedTimer::stepEnd("Update Hexa2QuadTopologicalMapping");
+    sofa::helper::advancedtimer::stepEnd("Update Hexa2QuadTopologicalMapping");
 }
 
 } //namespace sofa::component::topology

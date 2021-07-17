@@ -24,7 +24,7 @@
 
 
 #include <sofa/helper/config.h>
-
+#include <list>
 #include <map>
 #include <iostream>
 #include <string>

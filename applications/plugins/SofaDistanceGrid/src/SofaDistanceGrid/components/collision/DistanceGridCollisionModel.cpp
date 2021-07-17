@@ -28,6 +28,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
 #include <SofaBaseCollision/CubeModel.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseTopology/SparseGridTopology.h>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
 

@@ -23,7 +23,7 @@
 
 #include <MultiThreading/ParallelHexahedronFEMForceField.h>
 #include <sofa/simulation/TaskScheduler.h>
-
+#include <SofaBaseTopology/SparseGridTopology.h>
 namespace sofa::component::forcefield
 {
 

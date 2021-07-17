@@ -24,7 +24,6 @@
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::component::topology
 {

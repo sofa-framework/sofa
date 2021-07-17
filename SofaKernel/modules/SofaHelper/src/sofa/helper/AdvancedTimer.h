@@ -21,10 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/helper/config.h>
+#include <sofa/helper/fwd.h>
+
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/type/vector.h>
-#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <ostream>
 #include <istream>

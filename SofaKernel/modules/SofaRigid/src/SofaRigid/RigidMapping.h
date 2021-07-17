@@ -25,7 +25,6 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/defaulttype/VecTypes.h>

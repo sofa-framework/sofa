@@ -28,7 +28,6 @@
 #include <sofa/type/Vec.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -38,6 +37,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/FileRepository.h>
 
+#include <sofa/core/visual/VisualParams.h>
 #if IMAGE_HAVE_ZLIB
 #include <zlib.h>
 #endif

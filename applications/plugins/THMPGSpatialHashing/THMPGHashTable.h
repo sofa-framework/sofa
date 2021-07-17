@@ -10,7 +10,7 @@
 #endif
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/fwd.h>
 #include <boost/functional/hash.hpp>
 #include <SofaBaseCollision/CubeModel.h>
 
@@ -24,7 +24,7 @@ public:
     THMPGCollisionSet() : _timeStamp(SReal(-1.0)){}
 
     inline void add(sofa::component::collision::Cube elem,SReal timeStamp){
-        //sofa::helper::AdvancedTimer::stepBegin("THMPGCollisionSet : add");
+        //sofa::helper::advancedtimer::stepBegin("THMPGCollisionSet : add");
 
         if(_timeStamp < timeStamp){
             _timeStamp = timeStamp;
@@ -43,7 +43,7 @@ public:
             _coll_elems.push_back(elem);
         }
 #endif
-        //sofa::helper::AdvancedTimer::stepEnd("THMPGCollisionSet : add");
+        //sofa::helper::advancedtimer::stepEnd("THMPGCollisionSet : add");
     }
 
     inline void clearAndAdd(sofa::component::collision::Cube elem,SReal timeStamp){

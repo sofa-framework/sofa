@@ -28,7 +28,6 @@
 #include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>

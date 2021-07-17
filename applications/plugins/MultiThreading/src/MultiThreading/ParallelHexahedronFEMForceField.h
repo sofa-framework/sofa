@@ -25,7 +25,7 @@
 
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
 #include <sofa/simulation/CpuTask.h>
-
+#include <sofa/helper/vector.h>
 namespace sofa::component::forcefield
 {
 

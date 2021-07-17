@@ -128,7 +128,7 @@ void THMPGSpatialHashing::beginNarrowPhase(){
 
 void THMPGSpatialHashing::addCollisionModel(core::CollisionModel *cm)
 {
-   //sofa::helper::AdvancedTimer::stepBegin("THMPGSpatialHashing::addCollisionModel");
+   //sofa::helper::advancedtimer::stepBegin("THMPGSpatialHashing::addCollisionModel");
 
     if(!_params_initialized){
         sumEdgeLength(cm->getLast());
@@ -200,7 +200,7 @@ void THMPGSpatialHashing::addCollisionModel(core::CollisionModel *cm)
     }
     _collisionModels.push_back(cm);
 
-    //sofa::helper::AdvancedTimer::stepEnd("THMPGSpatialHashing::addCollisionModel");
+    //sofa::helper::advancedtimer::stepEnd("THMPGSpatialHashing::addCollisionModel");
 }
 
 bool THMPGSpatialHashing::keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2)
@@ -214,7 +214,7 @@ bool THMPGSpatialHashing::keepCollisionBetween(core::CollisionModel *cm1, core::
 }
 
 void THMPGSpatialHashing::addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& coll_pair){
-    //sofa::helper::AdvancedTimer::stepBegin("THMPGSpatialHashing::addCollisionPair");
+    //sofa::helper::advancedtimer::stepBegin("THMPGSpatialHashing::addCollisionPair");
 
     core::CollisionModel* cm1 = coll_pair.first->getLast();
     core::CollisionModel* cm2 = coll_pair.second->getLast();
@@ -228,7 +228,7 @@ void THMPGSpatialHashing::addCollisionPair (const std::pair<core::CollisionModel
     //t1.showStats(_timeStamp);
     if(cm1 == cm2){
         t1.autoCollide(this,intersectionMethod,_timeStamp);
-        //sofa::helper::AdvancedTimer::stepEnd("THMPGSpatialHashing::addCollisionPair");
+        //sofa::helper::advancedtimer::stepEnd("THMPGSpatialHashing::addCollisionPair");
 
         return;
     }
@@ -241,7 +241,7 @@ void THMPGSpatialHashing::addCollisionPair (const std::pair<core::CollisionModel
 
     t1.collide(t2,this,intersectionMethod,_timeStamp);
     //t2.showStats(_timeStamp);
-    //sofa::helper::AdvancedTimer::stepEnd("THMPGSpatialHashing::addCollisionPair");
+    //sofa::helper::advancedtimer::stepEnd("THMPGSpatialHashing::addCollisionPair");
 }
 
 }

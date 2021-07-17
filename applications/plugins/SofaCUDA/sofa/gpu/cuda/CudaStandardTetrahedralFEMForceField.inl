@@ -63,7 +63,7 @@ using namespace gpu::cuda;
 template <>
 void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addForceStandardTetraFEM");
+    sofa::helper::advancedtimer::stepBegin("addForceStandardTetraFEM");
 
     VecDeriv& f = *d_f.beginEdit();
 	const VecCoord& x = d_x.getValue();
@@ -95,13 +95,13 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce(const
 
 	d_f.endEdit();
 
-    sofa::helper::AdvancedTimer::stepEnd("addForceStandardTetraFEM");
+    sofa::helper::advancedtimer::stepEnd("addForceStandardTetraFEM");
 }
 
 template <>
 void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    sofa::helper::AdvancedTimer::stepBegin("addDForceStandardTetraFEM");
+    sofa::helper::advancedtimer::stepBegin("addDForceStandardTetraFEM");
 
     VecDeriv& df = *d_df.beginEdit();
 	const VecDeriv& dx = d_dx.getValue();
@@ -154,7 +154,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(cons
 	tetrahedronInfo.endEdit();
 	d_df.beginEdit();
 
-    sofa::helper::AdvancedTimer::stepEnd("addDForceStandardTetraFEM");
+    sofa::helper::advancedtimer::stepEnd("addDForceStandardTetraFEM");
 }
 
 template<>

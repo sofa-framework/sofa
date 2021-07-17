@@ -26,7 +26,6 @@
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/fwd.h>
 
 #include <SofaBaseLinearSolver/FullMatrix.h>

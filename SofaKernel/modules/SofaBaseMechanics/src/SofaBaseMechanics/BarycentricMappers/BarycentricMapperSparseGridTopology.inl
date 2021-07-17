@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <SofaBaseTopology/SparseGridTopology.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/State.h>

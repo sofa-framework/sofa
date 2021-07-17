@@ -26,6 +26,7 @@
 
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #if SOFAGUICOMMON_HAVE_SOFA_GL == 1
 #include <sofa/gl/gl.h>

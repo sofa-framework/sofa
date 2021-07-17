@@ -24,7 +24,6 @@
 #include "TriangularAnisotropicFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <fstream> // for reading the file

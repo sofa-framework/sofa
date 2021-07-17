@@ -29,7 +29,6 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/type/SVector.h>
 #include <sofa/type/Vec.h>

@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <cstring>
 
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
 using namespace sofa::simulation;
@@ -62,7 +63,7 @@ BaseGUI::~BaseGUI()
 
 }
 
-void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
+void BaseGUI::configureGUI(sofa::simulation::NodeSPtr groot)
 {
 
     sofa::component::configurationsetting::SofaDefaultPathSetting *defaultPath;
