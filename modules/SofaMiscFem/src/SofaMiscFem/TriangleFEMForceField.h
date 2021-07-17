@@ -69,6 +69,16 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+    typedef type::Vec<6, Real> Displacement;								///< the displacement vector
+    typedef type::Mat<3, 3, Real> MaterialStiffness;						///< the matrix of material stiffness
+    typedef sofa::type::vector<MaterialStiffness> VecMaterialStiffness;    ///< a vector of material stiffness matrices
+    typedef type::Mat<6, 3, Real> StrainDisplacement;						///< the strain-displacement matrix (the transpose, actually)
+    typedef sofa::type::vector<StrainDisplacement> VecStrainDisplacement;	///< a vector of strain-displacement matrices
+    typedef type::Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
+    /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
+    typedef type::Mat<9, 9, Real> StiffnessMatrix;
+
+
     typedef sofa::core::topology::BaseMeshTopology::Index Index;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
@@ -77,24 +87,11 @@ public:
     static const int LARGE = 0;										///< Symbol of large displacements triangle solver
 
 protected:
-    typedef type::Vec<6, Real> Displacement;								///< the displacement vector
-
-    typedef type::Mat<3, 3, Real> MaterialStiffness;						///< the matrix of material stiffness
-    typedef sofa::type::vector<MaterialStiffness> VecMaterialStiffness;    ///< a vector of material stiffness matrices
     VecMaterialStiffness _materialsStiffnesses;						///< the material stiffness matrices vector
-
-    typedef type::Mat<6, 3, Real> StrainDisplacement;						///< the strain-displacement matrix (the transpose, actually)
-    typedef sofa::type::vector<StrainDisplacement> VecStrainDisplacement;	///< a vector of strain-displacement matrices
     VecStrainDisplacement _strainDisplacements;						///< the strain-displacement matrices vector
-
-    typedef type::Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
-
-    /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
-    typedef type::Mat<9, 9, Real> StiffnessMatrix;
     
     const VecElement *_indexedElements;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
-
 
     TriangleFEMForceField();
     virtual ~TriangleFEMForceField();
@@ -131,6 +128,12 @@ public:
 //    void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
+
+    /// Public methods to access FEM information per element. Those method should not be used internally as they add check on element id.
+    const type::fixed_array <Coord, 3>& getRotatedInitialElement(Index elemId);
+    const Transformation& getRotationMatrix(Index elemId);
+    const MaterialStiffness& getMaterialStiffness(Index elemId);
+    const StrainDisplacement& getStrainDisplacements(Index elemId);
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangleFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -192,6 +195,10 @@ protected :
             }
         }
     }
+
+    type::Mat<3, 3, Real> InvalidTransform;
+    type::fixed_array <Coord, 3> InvalidCoords;
+    StrainDisplacement InvalidStrainDisplacement;
 };
 
 

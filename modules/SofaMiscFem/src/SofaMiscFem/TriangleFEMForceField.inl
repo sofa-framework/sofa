@@ -737,5 +737,50 @@ void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatri
     }
 }
 
+template<class DataTypes>
+const type::fixed_array <typename TriangleFEMForceField<DataTypes>::Coord, 3>& TriangleFEMForceField<DataTypes>::getRotatedInitialElement(Index elemId)
+{
+    if (elemId >= 0 && elemId < _rotatedInitialElements.size())
+        return _rotatedInitialElements[elemId];
+
+    msg_warning() << "Method getRotatedInitialElement called with element index: " << elemId 
+        << " which is out of bounds: [0, " << _rotatedInitialElements.size() << "]. Returning default empty array of coordinates.";
+    return InvalidCoords;
+}
+
+template<class DataTypes>
+const typename TriangleFEMForceField<DataTypes>::Transformation& TriangleFEMForceField<DataTypes>::getRotationMatrix(Index elemId)
+{
+    if (elemId >= 0 && elemId < _rotations.size())
+        return _rotations[elemId];
+
+    msg_warning() << "Method getRotationMatrix called with element index: " 
+        << elemId << " which is out of bounds: [0, " << _rotations.size() << "]. Returning default empty rotation.";
+    return InvalidTransform;
+}
+
+template<class DataTypes>
+const typename TriangleFEMForceField<DataTypes>::MaterialStiffness& TriangleFEMForceField<DataTypes>::getMaterialStiffness(Index elemId)
+{
+    if (elemId >= 0 && elemId < _materialsStiffnesses.size())
+        return _materialsStiffnesses[elemId];
+
+    msg_warning() << "Method getMaterialStiffness called with element index: " 
+        << elemId << " which is out of bounds: [0, " << _materialsStiffnesses.size() << "]. Returning default empty matrix.";
+    return InvalidTransform;
+}
+
+template<class DataTypes>
+const typename TriangleFEMForceField<DataTypes>::StrainDisplacement& TriangleFEMForceField<DataTypes>::getStrainDisplacements(Index elemId)
+{
+    if (elemId >= 0 && elemId < _strainDisplacements.size())
+        return _strainDisplacements[elemId];
+
+    msg_warning() << "Method getStrainDisplacements called with element index: "
+        << elemId << " which is out of bounds: [0, " << _strainDisplacements.size() << "]. Returning default empty displacements.";
+    return InvalidStrainDisplacement;
+}
+
+
 
 } // namespace sofa::component::forcefield
