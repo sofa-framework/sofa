@@ -10,12 +10,14 @@ set(HEADER_FILES
     ${SOFAIMPLICITEODESOLVER_SRC}/initSofaImplicitOdeSolver.h
     ${SOFAIMPLICITEODESOLVER_SRC}/EulerImplicitSolver.h
     ${SOFAIMPLICITEODESOLVER_SRC}/StaticSolver.h
+    ${SOFAIMPLICITEODESOLVER_SRC}/NBESolver.h
 )
 
 set(SOURCE_FILES
     ${SOFAIMPLICITEODESOLVER_SRC}/initSofaImplicitOdeSolver.cpp
     ${SOFAIMPLICITEODESOLVER_SRC}/EulerImplicitSolver.cpp
     ${SOFAIMPLICITEODESOLVER_SRC}/StaticSolver.cpp
+    ${SOFAIMPLICITEODESOLVER_SRC}/NBESolver.cpp
 )
 
 sofa_find_package(SofaFramework REQUIRED) # SofaCore SofaSimulationCore
