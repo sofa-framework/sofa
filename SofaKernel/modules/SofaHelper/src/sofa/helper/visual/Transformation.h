@@ -39,6 +39,7 @@ public:
     Transformation(const Transformation & other);
 
     Transformation&	operator=(const Transformation& transform);
+    Transformation(const Transformation & r) { this->operator=(r); }
 
     virtual void Apply() {};
     virtual void ApplyWithCentring() {};

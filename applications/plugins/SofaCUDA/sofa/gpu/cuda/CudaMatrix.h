@@ -25,6 +25,7 @@
 //#include "host_runtime.h" // CUDA
 #include "CudaTypes.h"
 #include <iostream>
+#include <sofa/helper/NameDecoder.h>
 
 //#define DEBUG_OUT_MATRIX
 

@@ -227,7 +227,7 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::
                 indexIn = colIt.index();
                 InDeriv data = (InDeriv) colIt.val();
 
-                for (int j=0; j<maxNIn; ++j)
+                for (int j=0; j<(int) maxNIn; ++j)
                 {
                     const OutReal f = ( OutReal ) getMapValue(indexIn,j);
                     int index = getMapIndex(indexIn,j);

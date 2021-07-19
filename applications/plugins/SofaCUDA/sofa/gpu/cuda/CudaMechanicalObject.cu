@@ -1734,7 +1734,7 @@ void MechanicalObjectCudaVec3f_vClear(unsigned int size, void* res)
 
 void MechanicalObjectCudaVec3f1_vClear(unsigned int size, void* res)
 {
-    dim3 threads(BSIZE,1);
+    //dim3 threads(BSIZE,1);
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //MechanicalObjectCudaVec3t1_vClear_kernel<float><<< grid, threads >>>(size, (CudaVec4<float>*)res);
     //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
@@ -2698,7 +2698,7 @@ void MechanicalObjectCudaVec2d_vClear(unsigned int size, void* res)
 
 void MechanicalObjectCudaVec3d_vClear(unsigned int size, void* res)
 {
-    dim3 threads(BSIZE,1);
+    //dim3 threads(BSIZE,1);
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //MechanicalObjectCudaVec3t_vClear_kernel<double><<< grid, threads >>>(size, (CudaVec3<real>*)res);
     //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
@@ -2708,7 +2708,7 @@ void MechanicalObjectCudaVec3d_vClear(unsigned int size, void* res)
 
 void MechanicalObjectCudaVec3d1_vClear(unsigned int size, void* res)
 {
-    dim3 threads(BSIZE,1);
+    //dim3 threads(BSIZE,1);
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //MechanicalObjectCudaVec3t1_vClear_kernel<double><<< grid, threads >>>(size, (CudaVec4<double>*)res);
     //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
