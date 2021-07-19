@@ -292,7 +292,7 @@ public:
 
     void checkWrongAttributes(int FEMType)
     {
-        EXPECT_MSG_EMIT(Error);
+        EXPECT_MSG_EMIT(Warning);
         createSingleTriangleFEMScene(FEMType, -100, -0.3, "toto");
     }
 

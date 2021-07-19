@@ -121,13 +121,14 @@ public:
     Data<bool> f_planeStrain; ///< compute material stiffness corresponding to the plane strain assumption, or to the plane stress otherwise.
 
     Real getPoisson() { return f_poisson.getValue(); }
-    void setPoisson(Real val) { f_poisson.setValue(val); }
+    void setPoisson(Real val);
     Real getYoung() { return f_young.getValue(); }
-    void setYoung(Real val) { f_young.setValue(val); }
 //    Real getDamping() { return f_damping.getValue(); }
 //    void setDamping(Real val) { f_damping.setValue(val); }
+    void setYoung(Real val);
     int  getMethod() { return method; }
-    void setMethod(int val) { method = val; }
+    void setMethod(int val);
+    void setMethod(std::string val);
 
     /// Public methods to access FEM information per element. Those method should not be used internally as they add check on element id.
     const type::fixed_array <Coord, 3>& getRotatedInitialElement(Index elemId);

@@ -64,10 +64,11 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::init()
 {
     this->Inherited::init();
-    if (f_method.getValue() == "small")
-        method = SMALL;
-    else if (f_method.getValue() == "large")
-        method = LARGE;
+
+    // checking inputs using setter
+    setMethod(f_method.getValue());
+    setPoisson(f_poisson.getValue());
+    setYoung(f_young.getValue());
 
     if (l_topology.empty())
     {
@@ -123,9 +124,13 @@ void TriangleFEMForceField<DataTypes>::init()
     _strainDisplacements.resize(_indexedElements->size());
     _rotations.resize(_indexedElements->size());
 
+    if (method == SMALL) {
+        initSmall();
+    }
+    else {
+        initLarge();
+    }
 
-    initSmall();
-    initLarge();
     computeMaterialStiffnesses();
 }
 
@@ -139,9 +144,13 @@ void TriangleFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
+    if (method == SMALL) {
+        //    initSmall();  // useful ? The rotations are recomputed later
+    }
+    else {
+        initLarge(); // compute the per-element strain-displacement matrices
+    }
 
-    //    initSmall();  // useful ? The rotations are recomputed later
-    initLarge();  // compute the per-element strain-displacement matrices
     computeMaterialStiffnesses();
 }
 
@@ -736,6 +745,56 @@ void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatri
         this->addToMatrix(mat,offset,(*_indexedElements)[i],RJKJtRt,-k);
     }
 }
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::setPoisson(Real val)
+{
+    if (val < 0)
+    {
+        msg_warning() << "Input Poisson Coefficient is not possible: " << val << ", setting default value: 0.3";
+        f_poisson.setValue(0.3);
+    }
+    else
+        f_poisson.setValue(val);
+}
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::setYoung(Real val)
+{
+    if (val < 0)
+    {
+        msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
+        f_young.setValue(1000);
+    }
+    else
+        f_young.setValue(val);
+}
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::setMethod(int val)
+{
+    if (val != 0 && val != 1)
+    {
+        msg_warning() << "Input Method is not possible: " << val << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
+        method = LARGE;
+    }
+    else
+        method = val;
+}
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::setMethod(std::string val)
+{
+    if (val == "small")
+        method = SMALL;
+    else if (val == "large")
+        method = LARGE;
+    else {
+        msg_warning() << "Input Method is not possible: " << val << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
+        method = LARGE;
+    }
+}
+
 
 template<class DataTypes>
 const type::fixed_array <typename TriangleFEMForceField<DataTypes>::Coord, 3>& TriangleFEMForceField<DataTypes>::getRotatedInitialElement(Index elemId)
