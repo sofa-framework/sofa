@@ -1,12 +1,12 @@
 #include "TaskSchedulerTestTasks.h"
 
 #include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/CpuTask.h>
 #include <sofa/simulation/DefaultTaskScheduler.h>
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 
 namespace sofa
 {
-
     // compute the Fibonacci number for input N
     static int64_t Fibonacci(int64_t N, int nbThread = 0)
     {

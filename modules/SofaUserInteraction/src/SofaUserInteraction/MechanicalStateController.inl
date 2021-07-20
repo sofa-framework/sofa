@@ -26,11 +26,18 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
+
 namespace sofa::component::controller
 {
 
@@ -39,7 +46,7 @@ MechanicalStateController<DataTypes>::MechanicalStateController()
     : index( initData(&index, (unsigned int)0, "index", "Index of the controlled DOF") )
     , onlyTranslation( initData(&onlyTranslation, false, "onlyTranslation", "Controlling the DOF only in translation") )
     , buttonDeviceState(initData(&buttonDeviceState, false, "buttonDeviceState", "state of ths device button"))
-    , mainDirection( initData(&mainDirection, sofa::defaulttype::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
+    , mainDirection( initData(&mainDirection, sofa::type::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
 {
     mainDirection.beginEdit()->normalize();
     mainDirection.endEdit();
@@ -59,8 +66,8 @@ void MechanicalStateController<DataTypes>::init()
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::applyController()
 {
-    using sofa::defaulttype::Quat;
-    using sofa::defaulttype::Vec;
+    using sofa::type::Quat;
+    using sofa::type::Vec;
 
     if(device)
     {
@@ -100,22 +107,22 @@ void MechanicalStateController<DataTypes>::applyController()
 
             if (mouseMode==BtLeft)
             {
-                xfree[i].getOrientation() = x[i].getOrientation() * Quat(vy, dx * (Real)0.001) * Quat(vz, dy * (Real)0.001);
-                x[i].getOrientation() = x[i].getOrientation() * Quat(vy, dx * (Real)0.001) * Quat(vz, dy * (Real)0.001);
+                xfree[i].getOrientation() = x[i].getOrientation() * Quat<SReal>(vy, dx * (Real)0.001) * Quat<SReal>(vz, dy * (Real)0.001);
+                x[i].getOrientation() = x[i].getOrientation() * Quat<SReal>(vy, dx * (Real)0.001) * Quat<SReal>(vz, dy * (Real)0.001);
             }
             else
             {
-                sofa::helper::Quater<Real>& quatrot = x[i].getOrientation();
-                sofa::defaulttype::Vec<3,Real> vectrans(dy * mainDirection.getValue()[0] * (Real)0.05, dy * mainDirection.getValue()[1] * (Real)0.05, dy * mainDirection.getValue()[2] * (Real)0.05);
+                sofa::type::Quat<Real>& quatrot = x[i].getOrientation();
+                sofa::type::Vec<3,Real> vectrans(dy * mainDirection.getValue()[0] * (Real)0.05, dy * mainDirection.getValue()[1] * (Real)0.05, dy * mainDirection.getValue()[2] * (Real)0.05);
                 vectrans = quatrot.rotate(vectrans);
 
                 x[i].getCenter() += vectrans;
-                x[i].getOrientation() = x[i].getOrientation() * Quat(vx, dx * (Real)0.001);
+                x[i].getOrientation() = x[i].getOrientation() * Quat<SReal>(vx, dx * (Real)0.001);
 
                 if(xfree.size() > 0)
                 {
                     xfree[i].getCenter() += vectrans;
-                    xfree[i].getOrientation() = x[i].getOrientation() * Quat(vx, dx * (Real)0.001);
+                    xfree[i].getOrientation() = x[i].getOrientation() * Quat<SReal>(vx, dx * (Real)0.001);
                 }
             }
         }
@@ -154,10 +161,10 @@ void MechanicalStateController<DataTypes>::applyController()
     }
 
     auto node = this->getContext();
-    sofa::simulation::MechanicalProjectPositionAndVelocityVisitor mechaProjectVisitor(core::mechanicalparams::defaultInstance()); mechaProjectVisitor.execute(node);
-    sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(core::mechanicalparams::defaultInstance()); mechaVisitor.execute(node);
+    MechanicalProjectPositionAndVelocityVisitor mechaProjectVisitor(core::mechanicalparams::defaultInstance()); mechaProjectVisitor.execute(node);
+    MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(core::mechanicalparams::defaultInstance()); mechaVisitor.execute(node);
     sofa::simulation::UpdateMappingVisitor updateVisitor(core::execparams::defaultInstance()); updateVisitor.execute(node);
-};
+}
 
 
 template <class DataTypes>
@@ -202,7 +209,7 @@ void MechanicalStateController<DataTypes>::setIndex(const unsigned int _index)
 
 
 template <class DataTypes>
-const sofa::defaulttype::Vec<3, typename MechanicalStateController<DataTypes>::Real > &MechanicalStateController<DataTypes>::getMainDirection() const
+const sofa::type::Vec<3, typename MechanicalStateController<DataTypes>::Real > &MechanicalStateController<DataTypes>::getMainDirection() const
 {
     return mainDirection.getValue();
 }
@@ -210,7 +217,7 @@ const sofa::defaulttype::Vec<3, typename MechanicalStateController<DataTypes>::R
 
 
 template <class DataTypes>
-void MechanicalStateController<DataTypes>::setMainDirection(const sofa::defaulttype::Vec<3,Real> _mainDirection)
+void MechanicalStateController<DataTypes>::setMainDirection(const sofa::type::Vec<3,Real> _mainDirection)
 {
     mainDirection.setValue(_mainDirection);
 }

@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/config.h>
+
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
@@ -31,10 +33,11 @@ using sofa::helper::system::DataRepository ;
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory ;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
-#define filename "UtilsTest.ini"
+const std::string filename = "UtilsTest.ini";
+const std::string fullpath = std::string(SOFA_TESTING_RESOURCES_DIR) + "/" + filename;
 
 class DataFileName_test: public BaseTest
 {
@@ -42,7 +45,7 @@ class DataFileName_test: public BaseTest
 public:
     void SetUp() override
     {
-        DataRepository.addFirstPath( FRAMEWORK_TEST_RESOURCES_DIR );
+        DataRepository.addFirstPath( SOFA_TESTING_RESOURCES_DIR );
     }
 
     /// These two should return the same things
@@ -50,24 +53,24 @@ public:
         d_filename.setValue(filename) ;
         EXPECT_EQ( filename, d_filename.getValue()) ;
 
-        d_filename.setValue( FRAMEWORK_TEST_RESOURCES_DIR "/" filename) ;
-        EXPECT_EQ( FRAMEWORK_TEST_RESOURCES_DIR "/" filename, d_filename.getValue() ) ;
+        d_filename.setValue(fullpath) ;
+        EXPECT_EQ(fullpath, d_filename.getValue());
     }
 
     /// I see no reason why asking for the full path return a short path.
     void checkSetGetFullPath(){
         d_filename.setValue(filename) ;
-        EXPECT_EQ( FRAMEWORK_TEST_RESOURCES_DIR "/" filename, d_filename.getFullPath() )  ;
+        EXPECT_EQ(fullpath, d_filename.getFullPath() )  ;
 
-        d_filename.setValue(FRAMEWORK_TEST_RESOURCES_DIR "/" filename) ;
-        EXPECT_EQ( FRAMEWORK_TEST_RESOURCES_DIR "/" filename, d_filename.getFullPath() ) ;
+        d_filename.setValue(fullpath) ;
+        EXPECT_EQ(fullpath, d_filename.getFullPath() ) ;
     }
 
     void checkSetGetRelativePath(){
         d_filename.setValue(filename) ;
         EXPECT_EQ( filename, d_filename.getRelativePath() ) ;
 
-        d_filename.setValue(FRAMEWORK_TEST_RESOURCES_DIR "/" filename) ;
+        d_filename.setValue(fullpath) ;
         EXPECT_EQ( filename, d_filename.getRelativePath() ) ;
     }
 };

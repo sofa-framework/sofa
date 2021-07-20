@@ -24,7 +24,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaGeneralDeformable/FrameSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <cassert>
 #include <iostream>
 
@@ -61,9 +61,9 @@ void FrameSpringForceField<DataTypes>::addSpringForce ( SReal& /*potentialEnergy
 
     Mat Mr01, Mr10, Mr02, Mr20;
     p1[a].writeRotationMatrix ( Mr01 );
-    defaulttype::invertMatrix ( Mr10, Mr01 );
+    type::invertMatrix ( Mr10, Mr01 );
     p2[b].writeRotationMatrix ( Mr02 );
-    defaulttype::invertMatrix ( Mr20, Mr02 );
+    type::invertMatrix ( Mr20, Mr02 );
 
     Deriv Vp1p2 = v2[b] - v1[a];
 
@@ -98,7 +98,7 @@ void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const Vec
 
     Mat Mr01, Mr10;
     springRef[a].writeRotationMatrix ( Mr01 );
-    defaulttype::invertMatrix ( Mr10, Mr01 );
+    type::invertMatrix ( Mr10, Mr01 );
 
     VecN kst ( spring.stiffnessTrans, spring.stiffnessTrans, spring.stiffnessTrans );
     VecN ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );
@@ -130,7 +130,7 @@ void FrameSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
     f1.resize ( x1.size() );
     f2.resize ( x2.size() );
     m_potentialEnergy = 0;
-    const sofa::helper::vector<Spring>& springsVec = springs.getValue();
+    const sofa::type::vector<Spring>& springsVec = springs.getValue();
     for ( unsigned int i=0; i<springsVec.size(); i++ )
     {
         this->addSpringForce ( m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springsVec[i] );
@@ -152,7 +152,7 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
     df1.resize ( dx1.size() );
     df2.resize ( dx2.size() );
 
-    const sofa::helper::vector<Spring>& springsVec = springs.getValue();
+    const sofa::type::vector<Spring>& springsVec = springs.getValue();
     for ( unsigned int i=0; i<springsVec.size(); i++ )
     {
         this->addSpringDForce ( df1,dx1,df2,dx2, i, springsVec[i] );
@@ -172,11 +172,11 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::helper::types::RGBAColor> colors;
+    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colors;
 
     bool external = ( this->mstate1!=this->mstate2 );
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->springs.getValue();
 
     for ( unsigned int i=0; i<springs.size(); i++ )
     {
@@ -186,26 +186,26 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         {
             if ( d < restLength *0.9999 )
             {
-                colors.push_back(sofa::helper::types::RGBAColor::red());
-                colors.push_back(sofa::helper::types::RGBAColor::red());
+                colors.push_back(sofa::type::RGBAColor::red());
+                colors.push_back(sofa::type::RGBAColor::red());
             }
             else
             {
-                colors.push_back(sofa::helper::types::RGBAColor::green());
-                colors.push_back(sofa::helper::types::RGBAColor::green());
+                colors.push_back(sofa::type::RGBAColor::green());
+                colors.push_back(sofa::type::RGBAColor::green());
             }
         }
         else
         {
             if ( d < restLength *0.9999 )
             {
-                colors.push_back(sofa::helper::types::RGBAColor(1,0.5, 0,1));
-                colors.push_back(sofa::helper::types::RGBAColor(1,0.5, 0,1));
+                colors.push_back(sofa::type::RGBAColor(1,0.5, 0,1));
+                colors.push_back(sofa::type::RGBAColor(1,0.5, 0,1));
             }
             else
             {
-                colors.push_back(sofa::helper::types::RGBAColor(0,1,0.5,1));
-                colors.push_back(sofa::helper::types::RGBAColor(0,1,0.5,1));
+                colors.push_back(sofa::type::RGBAColor(0,1,0.5,1));
+                colors.push_back(sofa::type::RGBAColor(0,1,0.5,1));
             }
 
         }
@@ -223,7 +223,7 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template<class DataTypes>
 void FrameSpringForceField<DataTypes>::clear ( int reserve )
 {
-    helper::vector<Spring>& springs = *this->springs.beginEdit();
+    type::vector<Spring>& springs = *this->springs.beginEdit();
     springs.clear();
     if ( reserve ) springs.reserve ( reserve );
     this->springs.endEdit();

@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
- #include <gtest/gtest.h>
+#include <sofa/testing/config.h>
+#include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
 #include <thread>
@@ -54,7 +55,7 @@ using sofa::helper::system::thread::ctime_t ;
 #endif
 
 static std::string getPath(std::string s) {
-    return std::string(FRAMEWORK_TEST_RESOURCES_DIR) + std::string("/") + s;
+    return std::string(SOFA_TESTING_RESOURCES_DIR) + std::string("/") + s;
 }
 
 void createAFilledFile(const string filename, unsigned int rep, bool resetFileMonitor=true){

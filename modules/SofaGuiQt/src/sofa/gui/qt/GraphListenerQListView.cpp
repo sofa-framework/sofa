@@ -129,11 +129,11 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
 
 
     using namespace sofa::simulation::Colors;
-    unsigned int flags=0;
+    unsigned int flags = 0;
 
     if (obj->toBaseNode())
     {
-        unsigned int flags = 0 ;
+        
         const char** icon = reinterpret_cast<const char**>(iconsleep_xpm);
         if( !obj->toBaseNode()->getContext()->isSleeping() ){
             icon = reinterpret_cast<const char**>(iconnode_xpm) ;

@@ -29,6 +29,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <numeric>
 
 namespace sofa::component::mass
 {
@@ -48,7 +49,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "Display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
-    , m_pointHandler(nullptr)
+    , m_pointEngine(nullptr)
     , l_topology(initLink("topology", "link to the topology container"))
     , m_massTopologyType(TopologyElementType::UNKNOWN)
     , m_topology(nullptr)
@@ -59,76 +60,66 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::~DiagonalMass()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+    if (m_pointEngine)
+        delete m_pointEngine;
 }
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyCreateFunction(PointID, MassType &m, const Point &, const sofa::helper::vector<PointID> &, const sofa::helper::vector<double> &)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyCreateFunction(PointID, MassType &m, const Point &, const sofa::type::vector<PointID> &, const sofa::type::vector<double> &)
 {
     m=0;
 }
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyPointDestruction(const sofa::helper::vector<PointID> & pointsRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyPointDestruction(const sofa::type::vector<PointID> & pointsRemoved)
 {
     helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
     helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
 
-    size_t numberPointsRemoved = pointsRemoved.size();
-    size_t newSize = masses.size()-numberPointsRemoved;
-    size_t counter = 0;
-
-    // Remove the mass of the removed points from totalMass
-    for(size_t i=0; i<numberPointsRemoved; i++)
+    Index last = masses.size() - 1;
+    for (std::size_t i = 0; i < pointsRemoved.size(); ++i)
     {
-        totalMass -= masses[pointsRemoved[i]];
-    }
+        Index id = pointsRemoved[i];
 
-    // Resize the vertexMass vector and remove removed indices
-    bool removedPointFound;
-    for(size_t i=0; i<newSize; i++)
-    {
-        removedPointFound = false;
-        for(size_t j=0; j<numberPointsRemoved; j++)
+        if (id >= masses.size())
         {
-            if(i == pointsRemoved[j])
-                removedPointFound = true;
+            msg_error("DMassPointEngine") << "Point to remove is out of bounds from mass vector: " << id << " out of size: " << masses.size();
+            continue;
         }
-        if(removedPointFound)
-            counter++;
-        else
-            masses[i-counter] = masses[i];
+        
+        // Remove the mass of the removed points from totalMass
+        totalMass -= masses[id];
+
+        // swap value before resize
+        masses[id] = masses[last];
+        --last;
     }
 
-    masses.resize(newSize);
+    masses.resize(last + 1);
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::PointsRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::PointsRemoved* e)
 {
     if(!dm->d_computeMassOnRest.getValue())
-        msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+        msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
     const auto& pointsRemoved = e->getArray();
     applyPointDestruction(pointsRemoved);
     dm->cleanTracker();
     dm->printMass();
 
-    if(dm->f_printLog.getValue())
-    {
-        msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesRemoved";
-        msg_info("DiagonalMassPointHandler")<<"Size of vertexMass: "<< dm->d_vertexMass.getValue().size();
-    }
+    msg_info(dm) << "ApplyTopologyChange: EdgesRemoved";
+    msg_info(dm) << "Size of vertexMass: "<< dm->d_vertexMass.getValue().size();
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeCreation(const sofa::helper::vector< EdgeID >& edgeAdded,
-        const sofa::helper::vector< Edge >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< EdgeID > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyEdgeCreation(const sofa::type::vector< EdgeID >& edgeAdded,
+        const sofa::type::vector< Edge >& /*elems*/,
+        const sofa::type::vector< sofa::type::vector< EdgeID > >& /*ancestors*/,
+        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
 {
     if (dm->getMassTopologyType() == TopologyElementType::EDGE)
     {
@@ -158,7 +149,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeCreation(cons
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeDestruction(const sofa::helper::vector<EdgeID> & edgeRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyEdgeDestruction(const sofa::type::vector<EdgeID> & edgeRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::EDGE)
     {
@@ -188,20 +179,20 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeDestruction(c
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::EdgesAdded* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::EdgesAdded* e)
 {
     const auto& edgeIndex = e->getIndexArray();
-    const sofa::helper::vector< Edge >& edges = e->getArray();
+    const sofa::type::vector< Edge >& edges = e->getArray();
     const auto& ancestors = e->ancestorsList;
-    const sofa::helper::vector< sofa::helper::vector< double > >& coeffs = e->coefs;
+    const sofa::type::vector< sofa::type::vector< double > >& coeffs = e->coefs;
 
     if(dm->edgeGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
         if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesAdded";
+            msg_info("DiagonalMassPointEngine")<<"ApplyTopologyChange: EdgesAdded";
 
         applyEdgeCreation(edgeIndex, edges, ancestors, coeffs);
         dm->cleanTracker();
@@ -210,17 +201,16 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::EdgesRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::EdgesRemoved* e)
 {
     const auto& edgeRemoved = e->getArray();
 
     if(dm->edgeGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning(dm) << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: EdgesRemoved";
+        msg_info(dm) << "ApplyTopologyChange: EdgesRemoved";
 
         applyEdgeDestruction(edgeRemoved);
         dm->cleanTracker();
@@ -230,10 +220,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleCreation(const sofa::helper::vector< TriangleID >& triangleAdded,
-        const sofa::helper::vector< Triangle >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< TriangleID > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTriangleCreation(const sofa::type::vector< TriangleID >& triangleAdded,
+        const sofa::type::vector< Triangle >& /*elems*/,
+        const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
+        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
@@ -264,7 +254,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleCreation(
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleDestruction(const sofa::helper::vector<TriangleID > & triangleRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTriangleDestruction(const sofa::type::vector<TriangleID > & triangleRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
@@ -297,20 +287,19 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleDestructi
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
     const auto& triangleAdded = e->getIndexArray();
-    const sofa::helper::vector< Triangle >& elems = e->getElementArray();
+    const sofa::type::vector< Triangle >& elems = e->getElementArray();
     const auto& ancestors = e->ancestorsList;
-    const sofa::helper::vector< sofa::helper::vector< double > >& coefs = e->coefs;
+    const sofa::type::vector< sofa::type::vector< double > >& coefs = e->coefs;
 
     if(dm->triangleGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning(dm) << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TrianglesAdded";
+        msg_info(dm) << "ApplyTopologyChange: TrianglesAdded";
 
         applyTriangleCreation(triangleAdded,elems,ancestors,coefs);
         dm->cleanTracker();
@@ -319,17 +308,16 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
 {
     const auto& triangleRemoved = e->getArray();
 
     if(dm->triangleGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning(dm) << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TrianglesRemoved";
+        msg_info(dm) << "ApplyTopologyChange: TrianglesRemoved";
 
         applyTriangleDestruction(triangleRemoved);
         dm->cleanTracker();
@@ -338,10 +326,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronCreation(const sofa::helper::vector< TetrahedronID >& tetrahedronAdded,
-        const sofa::helper::vector< Tetrahedron >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< TetrahedronID > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTetrahedronCreation(const sofa::type::vector< TetrahedronID >& tetrahedronAdded,
+        const sofa::type::vector< Tetrahedron >& /*elems*/,
+        const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
+        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
@@ -376,7 +364,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronCreati
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronDestruction(const sofa::helper::vector<TetrahedronID> & tetrahedronRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTetrahedronDestruction(const sofa::type::vector<TetrahedronID> & tetrahedronRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
@@ -409,20 +397,19 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronDestru
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TetrahedraAdded* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TetrahedraAdded* e)
 {
     const auto& tetrahedronAdded = e->getIndexArray();
-    const sofa::helper::vector< Tetrahedron >& elems = e->getElementArray();
+    const sofa::type::vector< Tetrahedron >& elems = e->getElementArray();
     const auto& ancestors = e->ancestorsList;
-    const sofa::helper::vector< sofa::helper::vector< double > >& coefs = e->coefs;
+    const sofa::type::vector< sofa::type::vector< double > >& coefs = e->coefs;
 
     if(dm->tetraGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning(dm) << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TetrahedraAdded";
+        msg_info(dm) << "ApplyTopologyChange: TetrahedraAdded";
 
         applyTetrahedronCreation(tetrahedronAdded, elems, ancestors, coefs);
         dm->cleanTracker();
@@ -431,17 +418,16 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::TetrahedraRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TetrahedraRemoved* e)
 {
     const auto& tetrahedronRemoved = e->getArray();
 
     if(dm->tetraGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning(dm) << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: TetrahedraRemoved";
+        msg_info(dm) << "ApplyTopologyChange: TetrahedraRemoved";
 
         applyTetrahedronDestruction(tetrahedronRemoved);
         dm->cleanTracker();
@@ -450,10 +436,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronCreation(const sofa::helper::vector< HexahedronID >& hexahedronAdded,
-        const sofa::helper::vector< Hexahedron >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< HexahedronID > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyHexahedronCreation(const sofa::type::vector< HexahedronID >& hexahedronAdded,
+        const sofa::type::vector< Hexahedron >& /*elems*/,
+        const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
+        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
 {
     if (dm->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
@@ -484,7 +470,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronCreatio
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronDestruction(const sofa::helper::vector<HexahedronID> & hexahedronRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyHexahedronDestruction(const sofa::type::vector<HexahedronID> & hexahedronRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
@@ -514,20 +500,19 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronDestruc
     }
 }
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::HexahedraAdded* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::HexahedraAdded* e)
 {
     const auto& hexahedronAdded = e->getIndexArray();
-    const sofa::helper::vector< Hexahedron >& elems = e->getElementArray();
+    const sofa::type::vector< Hexahedron >& elems = e->getElementArray();
     const auto& ancestors = e->ancestorsList;
-    const sofa::helper::vector< sofa::helper::vector< double > >& coefs = e->coefs;
+    const sofa::type::vector< sofa::type::vector< double > >& coefs = e->coefs;
 
     if(dm->hexaGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning(dm) << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: HexahedraAdded";
+        msg_info(dm) << "ApplyTopologyChange: HexahedraAdded";
 
         applyHexahedronCreation(hexahedronAdded,elems,ancestors,coefs);
         dm->cleanTracker();
@@ -536,17 +521,16 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(const core::topology::HexahedraRemoved* e)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::HexahedraRemoved* e)
 {
     const auto& hexahedronRemoved = e->getArray();
 
     if(dm->hexaGeo)
     {
         if(!dm->d_computeMassOnRest.getValue())
-            msg_warning("DiagonalMassPointHandler") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
+            msg_warning(dm) << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
 
-        if(dm->f_printLog.getValue())
-            msg_info("DiagonalMassPointHandler")<<"ApplyTopologyChange: HexahedraRemoved";
+        msg_info(dm) << "ApplyTopologyChange: HexahedraRemoved";
 
         applyHexahedronDestruction(hexahedronRemoved);
         dm->cleanTracker();
@@ -559,25 +543,22 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::clear()
 {
-    MassVector& masses = *d_vertexMass.beginEdit();
+    helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
     masses.clear();
-    d_vertexMass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
 {
-    MassVector& masses = *d_vertexMass.beginEdit();
+    helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
     masses.push_back(m);
-    d_vertexMass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 {
-    MassVector& masses = *d_vertexMass.beginEdit();
+    helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
     masses.resize(vsize);
-    d_vertexMass.endEdit();
 }
 
 // -- Mass interface
@@ -645,7 +626,7 @@ SReal DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechani
     helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
     // gravity
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<masses.size(); i++)
@@ -657,10 +638,10 @@ SReal DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechani
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-defaulttype::Vector6
+type::Vector6
 DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return defaulttype::Vector6();
+    return type::Vector6();
 }
 
 template <class DataTypes, class MassType>
@@ -705,8 +686,8 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
     // add the functions to handle topology changes.
-    m_pointHandler = new DMassPointHandler(this, &d_vertexMass);
-    d_vertexMass.createTopologicalEngine(m_topology, m_pointHandler);
+    m_pointEngine = new DMassPointEngine(this, &d_vertexMass);
+    d_vertexMass.createTopologyHandler(m_topology, m_pointEngine);
     if (edgeGeo)
         d_vertexMass.linkToEdgeDataArray();
     if (triangleGeo)
@@ -717,7 +698,6 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
         d_vertexMass.linkToTetrahedronDataArray();
     if (hexaGeo)
         d_vertexMass.linkToHexahedronDataArray();
-    d_vertexMass.registerTopologicalData();
 }
 
 template <class DataTypes, class MassType>
@@ -875,13 +855,12 @@ void DiagonalMass<DataTypes, MassType>::init()
         // TODO(dmarchal 2018-11-10): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
         if (this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < unsigned(this->mstate->getSize()))
         {
-            MassVector &masses= *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             size_t i = masses.size()-1;
             size_t n = size_t(this->mstate->getSize());
             masses.reserve(n);
             while (masses.size() < n)
                 masses.push_back(masses[i]);
-            d_vertexMass.endEdit();
         }
 
         massInitialization();
@@ -996,8 +975,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
     {
         if (m_topology->getNbHexahedra()>0 && hexaGeo)
         {
-
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::HEXAHEDRON;
 
             masses.resize(this->mstate->getSize());
@@ -1027,13 +1005,10 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             }
 
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
-
         }
         else if (m_topology->getNbTetrahedra()>0 && tetraGeo)
         {
-
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::TETRAHEDRON;
 
             // resize array
@@ -1064,10 +1039,9 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
         }
         else if (m_topology->getNbQuads()>0 && quadGeo) {
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::QUAD;
 
             // resize array
@@ -1098,11 +1072,10 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
         }
         else if (m_topology->getNbTriangles()>0 && triangleGeo)
         {
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::TRIANGLE;
 
             // resize array
@@ -1133,12 +1106,10 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
         }
         else if (m_topology->getNbEdges()>0 && edgeGeo)
         {
-
-            MassVector& masses = *d_vertexMass.beginEdit();
+            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = TopologyElementType::EDGE;
 
             // resize array
@@ -1169,9 +1140,130 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_vertexMass.endEdit();
         }
     }
+}
+
+
+template <class DataTypes, class MassType>
+typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassType>::computeVertexMass(Real density)
+{
+    Real total_mass = Real(0);
+
+    if (m_topology == nullptr)
+    {
+        msg_warning() << "No topology set. DiagonalMass can't computeMass.";
+        return total_mass;
+    }
+    
+    Real mass = Real(0);
+    helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
+    // resize array
+    masses.clear();
+    masses.resize(this->mstate->getSize(), Real(0));
+
+    if (m_topology->getNbHexahedra() > 0 && hexaGeo)
+    {
+        m_massTopologyType = TopologyElementType::HEXAHEDRON;
+
+        for (Topology::HexahedronID i = 0; i < m_topology->getNbHexahedra(); ++i)
+        {
+            const Hexahedron& h = m_topology->getHexahedron(i);
+
+            if (d_computeMassOnRest.getValue())
+                mass = (density * hexaGeo->computeRestHexahedronVolume(i)) / (Real(8.0));
+            else
+                mass = (density * hexaGeo->computeHexahedronVolume(i)) / (Real(8.0));
+
+            for (unsigned int j = 0; j < h.size(); j++)
+            {
+                masses[h[j]] += mass;
+                total_mass += mass;
+            }
+        }
+    }
+    else if (m_topology->getNbTetrahedra() > 0 && tetraGeo)
+    {
+        m_massTopologyType = TopologyElementType::TETRAHEDRON;
+
+        for (Topology::TetrahedronID i = 0; i < m_topology->getNbTetrahedra(); ++i)
+        {
+            const Tetrahedron& t = m_topology->getTetrahedron(i);
+
+            if (d_computeMassOnRest.getValue())
+                mass = (density * tetraGeo->computeRestTetrahedronVolume(i)) / (Real(4.0));
+            else
+                mass = (density * tetraGeo->computeTetrahedronVolume(i)) / (Real(4.0));
+
+            for (unsigned int j = 0; j < t.size(); j++)
+            {
+                masses[t[j]] += mass;
+                total_mass += mass;
+            }
+        }
+    }
+    else if (m_topology->getNbQuads() > 0 && quadGeo) 
+    {
+        m_massTopologyType = TopologyElementType::QUAD;
+
+        for (Topology::QuadID i = 0; i < m_topology->getNbQuads(); ++i)
+        {
+            const Quad& t = m_topology->getQuad(i);
+
+            if (d_computeMassOnRest.getValue())
+                mass = (density * quadGeo->computeRestQuadArea(i)) / (Real(4.0));
+            else
+                mass = (density * quadGeo->computeQuadArea(i)) / (Real(4.0));
+
+            for (unsigned int j = 0; j < t.size(); j++)
+            {
+                masses[t[j]] += mass;
+                total_mass += mass;
+            }
+        }
+    }
+    else if (m_topology->getNbTriangles() > 0 && triangleGeo)
+    {
+        m_massTopologyType = TopologyElementType::TRIANGLE;
+
+        for (Topology::TriangleID i = 0; i < m_topology->getNbTriangles(); ++i)
+        {
+            const Triangle& t = m_topology->getTriangle(i);
+
+            if (d_computeMassOnRest.getValue())
+                mass = (density * triangleGeo->computeRestTriangleArea(i)) / (Real(3.0));
+            else
+                mass = (density * triangleGeo->computeTriangleArea(i)) / (Real(3.0));
+
+            for (unsigned int j = 0; j < t.size(); j++)
+            {
+                masses[t[j]] += mass;
+                total_mass += mass;
+            }
+        }
+    }
+    else if (m_topology->getNbEdges() > 0 && edgeGeo)
+    {
+        m_massTopologyType = TopologyElementType::EDGE;
+
+        for (Topology::EdgeID i = 0; i < m_topology->getNbEdges(); ++i)
+        {
+            const Edge& e = m_topology->getEdge(i);
+
+            if (d_computeMassOnRest.getValue())
+                mass = (density * edgeGeo->computeRestEdgeLength(i)) / (Real(2.0));
+            else
+                mass = (density * edgeGeo->computeEdgeLength(i)) / (Real(2.0));
+
+            for (unsigned int j = 0; j < e.size(); j++)
+            {
+                masses[e[j]] += mass;
+                total_mass += mass;
+            }
+        }
+    }
+
+    return total_mass;
 }
 
 template <class DataTypes, class MassType>
@@ -1236,15 +1328,23 @@ void DiagonalMass<DataTypes, MassType>::initFromVertexMass()
 {
     msg_info() << "vertexMass information is used";
 
-    const MassVector& vertexMass = d_vertexMass.getValue();
-    Real totalMassSave = 0.0;
-    for(size_t i=0; i<vertexMass.size(); i++)
-    {
-        totalMassSave += vertexMass[i];
-    }
+    // saving a copy of vertexMass vector to recover the input values after init methods which are overwritten those values.
+    const MassVector vertexMass = d_vertexMass.getValue();
+    const Real totalMassSave = std::accumulate(vertexMass.begin(), vertexMass.end(), Real(0));
 
+    // set total mass
     d_totalMass.setValue(totalMassSave);
-    initFromTotalMass();
+
+    // compute vertexMass vector with density == 1
+    const Real sumMass = computeVertexMass(1.0);
+
+    // Set real density from sumMass found
+    if (sumMass < std::numeric_limits<typename DataTypes::Real>::epsilon())
+        setMassDensity(1.0);
+    else
+        setMassDensity(Real(totalMassSave / sumMass));
+
+    // restore input vertexMass vector
     helper::WriteAccessor<Data<MassVector> > vertexMassWrite = d_vertexMass;
     for(size_t i=0; i<vertexMassWrite.size(); i++)
     {
@@ -1277,14 +1377,10 @@ void DiagonalMass<DataTypes, MassType>::initFromMassDensity()
     msg_info() << "massDensity information is used";
 
     // Compute Mass per vertex using mesh topology
-    computeMass();
+    const Real& md = d_massDensity.getValue();
+    const Real sumMass = computeVertexMass(md);
 
-    // Sum the mass per vertex to obtain total mass
-    const MassVector &vertexMass = d_vertexMass.getValue();    
-    Real sumMass = 0.0;
-    for (auto vMass : vertexMass)
-        sumMass += vMass;
-
+    // sum of mass per vertex give total mass
     d_totalMass.setValue(sumMass);
 }
 
@@ -1294,27 +1390,29 @@ void DiagonalMass<DataTypes, MassType>::initFromTotalMass()
 {
     msg_info() << "totalMass information is used";
 
-    const Real totalMassTemp = d_totalMass.getValue();
+    const Real totalMass = d_totalMass.getValue();
+    
+    // compute vertexMass vector with density == 1
+    const Real sumMass = computeVertexMass(1.0);
 
-    Real sumMass = 0.0;
-    setMassDensity(1.0);
-
-    // Compute Mass per vertex using mesh topology
-    computeMass();
-
-    // Sum the mass per vertex to obtain total mass
-    const MassVector &vertexMass = d_vertexMass.getValue();
-    for (auto vMass : vertexMass)
-        sumMass += vMass;
-
-    setMassDensity(Real(totalMassTemp/sumMass));
-
-    computeMass();
+    // Set real density from sumMass found
+    if (sumMass < std::numeric_limits<typename DataTypes::Real>::epsilon())
+        setMassDensity(1.0);
+    else
+        setMassDensity(Real(totalMass / sumMass));
+    
+    // Update vertex mass using real density
+    helper::WriteAccessor<Data<MassVector> > vertexMass = d_vertexMass;
+    const Real& density = d_massDensity.getValue();
+    for (auto& vm : vertexMass)
+    {
+        vm *= density;
+    }
 }
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::setVertexMass(sofa::helper::vector< Real > vertexMass)
+void DiagonalMass<DataTypes, MassType>::setVertexMass(sofa::type::vector< Real > vertexMass)
 {
     const MassVector currentVertexMass = d_vertexMass.getValue();
     helper::WriteAccessor<Data<MassVector> > vertexMassWrite = d_vertexMass;
@@ -1431,7 +1529,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPara
     {
         VecDeriv& v = *d_v.beginEdit();
         // gravity
-        sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
+        sofa::type::Vec3d g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * typename DataTypes::Real(sofa::core::mechanicalparams::dt(mparams));
@@ -1456,7 +1554,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
     helper::WriteAccessor< DataVecDeriv > _f = f;
 
     // gravity
-    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    sofa::type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
@@ -1482,11 +1580,11 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     Coord gravityCenter;
     Real totalMass=0.0;
 
-    std::vector<  sofa::defaulttype::Vector3 > points;
+    std::vector<  sofa::type::Vector3 > points;
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        sofa::defaulttype::Vector3 p;
+        sofa::type::Vector3 p;
         p = DataTypes::getCPos(x[i]);
 
         points.push_back(p);
@@ -1499,13 +1597,13 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
         gravityCenter /= totalMass;
 
         Real axisSize = d_showAxisSize.getValue();
-        sofa::defaulttype::Vector3 temp;
+        sofa::type::Vector3 temp;
 
         for ( unsigned int i=0 ; i<3 ; i++ )
             if(i < Coord::spatial_dimensions )
                 temp[i] = gravityCenter[i];
 
-        vparams->drawTool()->drawCross(temp, float(axisSize), sofa::helper::types::RGBAColor::yellow());
+        vparams->drawTool()->drawCross(temp, float(axisSize), sofa::type::RGBAColor::yellow());
     }
 }
 

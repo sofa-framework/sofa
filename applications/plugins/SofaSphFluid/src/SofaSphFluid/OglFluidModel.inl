@@ -20,6 +20,9 @@ namespace component
 namespace visualmodel
 {
 
+using namespace sofa::type;
+using namespace sofa::defaulttype;
+
 const float SPRITE_SCALE_DIV = tanf(65.0f * ((float)M_PI_2 / 180.0f));
 
 template<class DataTypes>
@@ -31,7 +34,7 @@ OglFluidModel<DataTypes>::OglFluidModel()
     , d_spriteBlurRadius(initData(&d_spriteBlurRadius,  float(10.f), "spriteBlurRadius", "Blur radius (in pixels)"))
     , d_spriteBlurScale(initData(&d_spriteBlurScale, 0.1f, "spriteBlurScale", "Blur scale"))
     , d_spriteBlurDepthFalloff(initData(&d_spriteBlurDepthFalloff, 1.0f,"spriteBlurDepthFalloff", "Blur Depth Falloff"))
-    , d_spriteDiffuseColor(initData(&d_spriteDiffuseColor, sofa::helper::types::RGBAColor::blue(),"spriteDiffuseColor", "Diffuse Color"))
+    , d_spriteDiffuseColor(initData(&d_spriteDiffuseColor, sofa::type::RGBAColor::blue(),"spriteDiffuseColor", "Diffuse Color"))
 {
 }
 
@@ -49,14 +52,14 @@ void OglFluidModel<DataTypes>::init()
 template<class DataTypes>
 void OglFluidModel<DataTypes>::initVisual()
 {
-    m_spriteDepthFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteThicknessFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteNormalFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteBlurDepthHFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteBlurDepthVFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteBlurThicknessHFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteBlurThicknessVFBO = new helper::gl::FrameBufferObject(true, true, true);
-    m_spriteShadeFBO = new helper::gl::FrameBufferObject(true, true, true);
+    m_spriteDepthFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteThicknessFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteNormalFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteBlurDepthHFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteBlurDepthVFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteBlurThicknessHFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteBlurThicknessVFBO = new sofa::gl::FrameBufferObject(true, true, true);
+    m_spriteShadeFBO = new sofa::gl::FrameBufferObject(true, true, true);
 
     const VecCoord& vertices = m_positions.getValue();
 
@@ -74,7 +77,7 @@ void OglFluidModel<DataTypes>::initVisual()
     m_spriteBlurThicknessVFBO->init(width, height);
     m_spriteShadeFBO->init(width, height);
 
-    if (!sofa::helper::gl::GLSLShader::InitGLSL())
+    if (!sofa::gl::GLSLShader::InitGLSL())
     {
         msg_error() << "InitGLSL failed, check your GPU setup (driver, etc)";
         return;
@@ -521,7 +524,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
-    const sofa::helper::types::RGBAColor& diffuse = d_spriteDiffuseColor.getValue();
+    const sofa::type::RGBAColor& diffuse = d_spriteDiffuseColor.getValue();
 
     m_spriteShadeShader.TurnOn();
 
@@ -746,7 +749,7 @@ void OglFluidModel<DataTypes>::computeBBox(const core::ExecParams* params, bool 
         }
     }
 
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 
 }
 

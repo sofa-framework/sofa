@@ -28,13 +28,11 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <SofaMeshCollision/EndPoint.h>
 #include <set>
 #include <map>
 #include <deque>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
@@ -212,7 +210,7 @@ private:
 
     Data<bool> bDraw; ///< enable/disable display of results
 
-    Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
+    Data< type::fixed_array<type::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     CubeCollisionModel::SPtr boxModel;
 
@@ -258,7 +256,7 @@ public:
 
     // Unuseful methods because all is done in addCollisionModel
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
-    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
+    void addCollisionPairs (const type::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
 
     void beginNarrowPhase() override;
 

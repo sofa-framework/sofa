@@ -87,35 +87,35 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
     for (unsigned int i = 0; i < x.size(); ++i)
     {
         // Current orientations
-        sofa::defaulttype::Quat Q = x[i].getOrientation();
+        sofa::type::Quat<SReal> Q = x[i].getOrientation();
         // Previous orientations
-        sofa::defaulttype::Quat Q_prev = previousOrientation[i];
+        sofa::type::Quat<SReal> Q_prev = previousOrientation[i];
 
         auto project = [](const Vec3 a, const Vec3 b) -> Vec3 {
             return (a * b) * b;
         };
-        auto decompose_ts = [&](const sofa::defaulttype::Quat q, const Vec3 twistAxis) {
+        auto decompose_ts = [&](const sofa::type::Quat<SReal> q, const Vec3 twistAxis) {
             Vec3 vec3_part(q[0], q[1], q[2]);
             Vec3 projected = project(vec3_part, twistAxis);
-            sofa::defaulttype::Quat twist(projected[0], projected[1], projected[2], q[3]);
+            sofa::type::Quat<SReal> twist(projected[0], projected[1], projected[2], q[3]);
             // Singularity : A perpendicular angle would give you quaternion (0, 0, 0, 0)
             if(std::none_of(twist.ptr(), twist.ptr() + 4 * sizeof(double), [](double x) {return x != 0. ;})) {
-                twist = sofa::defaulttype::Quat::identity();
+                twist = sofa::type::Quat<SReal>::identity();
             }
             twist.normalize();
-            sofa::defaulttype::Quat swing = q * twist.inverse();
+            sofa::type::Quat<SReal> swing = q * twist.inverse();
             swing.normalize();
             return std::make_pair(twist, swing);
         };
         const Vec3 vx(1, 0, 0), vy(0, 1, 0), vz(0, 0, 1);
 
-        sofa::defaulttype::Quat Q_remaining = Q;
-        sofa::defaulttype::Quat Qp_remaining = Q_prev;
-        sofa::defaulttype::Quat to_keep = sofa::defaulttype::Quat::identity();
+        sofa::type::Quat<SReal> Q_remaining = Q;
+        sofa::type::Quat<SReal> Qp_remaining = Q_prev;
+        sofa::type::Quat<SReal> to_keep = sofa::type::Quat<SReal>::identity();
 
         auto remove_rotation = [&](const Vec3 axis) {
             Q_remaining = decompose_ts(Q_remaining, axis).second;
-            sofa::defaulttype::Quat twist;
+            sofa::type::Quat<SReal> twist;
             std::tie(twist, Qp_remaining) = decompose_ts(Qp_remaining, axis);
             to_keep = twist * to_keep;
         };

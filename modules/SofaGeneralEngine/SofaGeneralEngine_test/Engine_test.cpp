@@ -19,16 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "TestEngine.h"
 #include <SceneCreator/SceneCreator.h>
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/DataEngine_test.h>
+
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <sofa/defaulttype/VecTypes.h>
 
-
-#include <SofaTest/TestMessageHandler.h>
-
+#include "TestEngine.h"
+#include "DataEngineTestCreation.h"
 
 namespace sofa {
 
@@ -44,7 +43,7 @@ engine1
          engine3
 
   */
-struct Engine_test : public Sofa_test<>
+struct Engine_test : public BaseTest
 {
     typedef sofa::component::engine::TestEngine TestEngine;
     TestEngine::SPtr engine1;
@@ -199,7 +198,6 @@ TEST_F(Engine_test , check_propagation )
 #include <SofaGeneralEngine/config.h>
 #include <SofaGeneralEngine/AverageCoord.h>
 #include <SofaEngine/BoxROI.h>
-#include <SofaTest/TestMessageHandler.h>
 #include <SofaGeneralEngine/PairBoxRoi.h>
 #include <SofaGeneralEngine/PlaneROI.h>
 #include <SofaGeneralEngine/SphereROI.h>
@@ -287,11 +285,11 @@ TestDataEngine< component::engine::ExtrudeQuadsAndGenerateHexas<defaulttype::Vec
 TestDataEngine< component::engine::ExtrudeEdgesAndGenerateQuads<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::GenerateRigidMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass> >,
 TestDataEngine< component::engine::GroupFilterYoungModulus<defaulttype::Vec3Types> >,
-TestDataEngine< component::engine::MathOp< helper::vector<int> > >,
+TestDataEngine< component::engine::MathOp< type::vector<int> > >,
 TestDataEngine< component::engine::MergeMeshes<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::MergePoints<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::MergeSets<int> >,
-TestDataEngine< component::engine::MergeVectors< helper::vector<defaulttype::Vector3> > >,
+TestDataEngine< component::engine::MergeVectors< type::vector<type::Vector3> > >,
 TestDataEngine< component::engine::MergeROIs >,
 //TestDataEngine< component::engine::MeshBarycentricMapperEngine<defaulttype::Vec3Types> >, // require a scene
 TestDataEngine< component::engine::MeshROI<defaulttype::Vec3Types> >,
@@ -320,12 +318,12 @@ TestDataEngine< component::engine::ClusteringEngine<defaulttype::Vec3Types> >,
 //TestDataEngine< component::engine::ShapeMatching<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 TestDataEngine< component::engine::ProximityROI<defaulttype::Vec3Types> >,
 //TestDataEngine< component::engine::HausdorffDistance<defaulttype::Vec3Types> >, // ???
-TestDataEngine< component::engine::NormEngine<defaulttype::Vector3> >,
+TestDataEngine< component::engine::NormEngine<type::Vector3> >,
 TestDataEngine< component::engine::MeshClosingEngine<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::MeshSubsetEngine<defaulttype::Vec3Types> >,
 //TestDataEngine< component::engine::MeshSampler<defaulttype::Vec3Types> > // ???
-TestDataEngine< component::engine::SumEngine<defaulttype::Vector3> >,
-TestDataEngine< component::engine::DifferenceEngine<defaulttype::Vector3> >
+TestDataEngine< component::engine::SumEngine<type::Vector3> >,
+TestDataEngine< component::engine::DifferenceEngine<type::Vector3> >
 > TestTypes; // the types to instanciate.
 
 //// ========= Tests to run for each instanciated type

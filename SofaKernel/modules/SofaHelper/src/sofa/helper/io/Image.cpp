@@ -419,14 +419,14 @@ Image* Image::Create(std::string filename)
     {
         if(!createdImage )
         {
-            helper::vector<std::string> validExtensions;
+            type::vector<std::string> validExtensions;
             helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
             msg_error("Image") << "Could not load image with extension " << extension << ". Valid extensions: " << validExtensions;
         }
     }
     else
     {
-        helper::vector<std::string> validExtensions;
+        type::vector<std::string> validExtensions;
         helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
         msg_error("Image") << "No extension detected. Valid extensions: " << validExtensions;
     }

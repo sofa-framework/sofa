@@ -22,32 +22,66 @@
 #pragma once
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 
 namespace sofa::component::collision
 {
 
-inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id)
+inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2,
+                                                       const type::Vector3& p,
+                                                       const type::Vector3& q,
+                                                       OutputVector* contacts,
+                                                       int id)
 {
-    defaulttype::Vector3 pq = q-p;
+    const type::Vector3 pq = q-p;
 
-    SReal norm2 = pq.norm2();
+    const SReal norm2 = pq.norm2();
 
     if ( norm2 >= dist2)
         return 0;
 
-    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts->resize(contacts->size()+1);
-    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    detection->id = id;
-    detection->point[0]=p;
-    detection->point[1]=q;
-    detection->value = helper::rsqrt(norm2);
-    detection->normal=pq/detection->value;
-    //detection->value -= contactDist;
+    sofa::core::collision::DetectionOutput detectionOutput;
+    detectionOutput.id = id;
+    detectionOutput.point[0]=p;
+    detectionOutput.point[1]=q;
+    detectionOutput.value = helper::rsqrt(norm2);
+    detectionOutput.normal = pq / detectionOutput.value;
+
+    contacts->push_back(std::move(detectionOutput));
+
     return 1;
+}
+
+template<typename SphereType1, typename SphereType2>
+bool NewProximityIntersection::testIntersection(SphereType1& sph1, SphereType2& sph2)
+{
+    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+
+    OutputVector contacts;
+    const double alarmDist2 = alarmDist + sph1.r() + sph2.r();
+    int n = doIntersectionPointPoint(alarmDist2 * alarmDist2, sph1.center(), sph2.center(), &contacts, -1);
+    return n > 0;
+}
+
+template<typename SphereType1, typename SphereType2>
+int NewProximityIntersection::computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts)
+{
+    const auto alarmDist = this->getAlarmDistance() + sph1.getProximity() + sph2.getProximity();
+    const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
+
+    const double alarmDist2 = alarmDist + sph1.r() + sph2.r();
+    int n = doIntersectionPointPoint(alarmDist2 * alarmDist2, sph1.center(), sph2.center(), contacts, (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex());
+    if (n > 0)
+    {
+        const double contactDist2 = contactDist + sph1.r() + sph2.r();
+        for (OutputVector::iterator detection = contacts->end() - n; detection != contacts->end(); ++detection)
+        {
+            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(sph1, sph2);
+            detection->value -= contactDist2;
+        }
+    }
+    return n;
 }
 
 

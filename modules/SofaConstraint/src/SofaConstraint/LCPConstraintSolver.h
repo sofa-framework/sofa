@@ -65,11 +65,7 @@ public:
         , _directions(directions)
         , _areas(areas)
         , _cparams(params)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override
     {
@@ -93,11 +89,6 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalGetConstraintInfoVisitor";}
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 private:
     VecConstraintBlockInfo& _blocks;
     VecPersistentID& _ids;
@@ -113,7 +104,6 @@ public:
     SOFA_CLASS(LCPConstraintSolver, ConstraintSolverImpl);
 
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
-    typedef std::vector<list_cc> VecListcc;
     typedef sofa::core::MultiVecId MultiVecId;
 
 protected:
@@ -156,19 +146,19 @@ public:
 
     Data < std::set<int> > constraintGroups; ///< list of ID of groups of constraints to be handled by this solver.
 
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of residuals at each iteration
+    Data<std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of residuals at each iteration
 
     Data<int> showLevels; ///< Number of constraint levels to display
     Data<double> showCellWidth; ///< Distance between each constraint cells
-    Data<defaulttype::Vector3> showTranslation; ///< Position of the first cell
-    Data<defaulttype::Vector3> showLevelTranslation; ///< Translation between levels
+    Data<type::Vector3> showTranslation; ///< Position of the first cell
+    Data<type::Vector3> showLevelTranslation; ///< Translation between levels
 
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
 
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
-    private:
+private:
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 	std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
     void computeInitialGuess();
@@ -212,7 +202,7 @@ public:
     void build_problem_info();
     int lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
     int nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
-    int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr) { if (_mu == 0.0) return lcp_gaussseidel_unbuilt(dfree, f, residuals); else return nlcp_gaussseidel_unbuilt(dfree, f, residuals); }
+    int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
 
     sofa::component::linearsolver::SparseMatrix<double> *_Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
@@ -238,20 +228,19 @@ public:
     };
 
     std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
-    helper::vector< double > _previousForces;
+    type::vector< double > _previousForces;
 
-    helper::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;
-    helper::vector< VecPersistentID > hierarchy_constraintIds;
-    helper::vector< VecConstCoord > hierarchy_constraintPositions;
-    helper::vector< VecConstDeriv > hierarchy_constraintDirections;
-    helper::vector< VecConstArea > hierarchy_constraintAreas;
+    type::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;
+    type::vector< VecPersistentID > hierarchy_constraintIds;
+    type::vector< VecConstCoord > hierarchy_constraintPositions;
+    type::vector< VecConstDeriv > hierarchy_constraintDirections;
+    type::vector< VecConstArea > hierarchy_constraintAreas;
 
     // for gaussseidel_unbuilt
-    helper::vector< helper::LocalBlock33 > unbuilt_W33;
-    helper::vector< double > unbuilt_d;
+    type::vector< helper::LocalBlock33 > unbuilt_W33;
+    type::vector< double > unbuilt_d;
 
-    helper::vector< double > unbuilt_W11;
-    helper::vector< double > unbuilt_invW11;
+    type::vector< double > unbuilt_W11;
 
     bool isActive;
 };

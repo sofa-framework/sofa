@@ -20,18 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.inl>
+
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
-#include <iostream>
-#include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
 
 
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
@@ -60,8 +58,6 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
         intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
         intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
         intersection->intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
-        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
-        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshMinProximityIntersection>(this);
 
         if (intersection->useSphereTriangle.getValue())
         {
@@ -100,7 +96,7 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
     b[0] = AB*AC;
     b[1] = -CD*AC;
 
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -114,12 +110,9 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
             return false;
     }
 
-    Vector3 PQ = AC + CD * beta - AB * alpha;
+    const Vector3 PQ = AC + CD * beta - AB * alpha;
 
-    if (PQ.norm2() < alarmDist*alarmDist)
-        return true;
-    else
-        return false;
+    return PQ.norm2() < alarmDist * alarmDist;
 }
 
 int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
@@ -137,7 +130,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     A[0][1] = A[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -227,7 +220,7 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -241,10 +234,7 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
 
     const Vector3 PQ = AB * alpha + AC * beta - AP;
 
-    if (PQ.norm2() < alarmDist*alarmDist)
-        return true;
-    else
-        return false;
+    return PQ.norm2() < alarmDist * alarmDist;
 }
 
 int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, OutputVector* contacts)
@@ -263,7 +253,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     b[0] = AP*AB;
     b[1] = AP*AC;
 
-    const SReal det = defaulttype::determinant(A);
+    const SReal det = type::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -323,7 +313,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
 
     if(intersection->getUseSurfaceNormals())
     {
-        int normalIndex = e2.getIndex();
+        const auto normalIndex = e2.getIndex();
         detection->normal = e2.model->getNormals()[normalIndex];
     }    
 
@@ -353,10 +343,7 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
     Q = e2.p1() + AB * alpha;
     PQ = Q-P;
 
-    if (PQ.norm2() < alarmDist*alarmDist)
-        return true;
-    else
-        return false;
+    return PQ.norm2() < alarmDist * alarmDist;
 }
 
 int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
@@ -432,12 +419,9 @@ bool MeshMinProximityIntersection::testIntersection(Point& e1, Point& e2)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    Vector3 PQ = e2.p()-e1.p();
+    const Vector3 PQ = e2.p()-e1.p();
 
-    if (PQ.norm2() < alarmDist*alarmDist)
-        return true;
-    else
-        return false;
+    return PQ.norm2() < alarmDist * alarmDist;
 }
 
 int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
@@ -488,24 +472,6 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     detection->value -= contactDist;
 
     return 1;
-}
-
-
-
-int MeshMinProximityIntersection::computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,tri,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
-}
-
-int MeshMinProximityIntersection::computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts){
-    return MeshIntTool::computeIntersection(cap,lin,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
-}
-
-bool MeshMinProximityIntersection::testIntersection(Capsule&,Triangle&){
-    return true;
-}
-
-bool MeshMinProximityIntersection::testIntersection(Capsule&,Line&){
-    return true;
 }
 
 } // namespace sofa::component::collision

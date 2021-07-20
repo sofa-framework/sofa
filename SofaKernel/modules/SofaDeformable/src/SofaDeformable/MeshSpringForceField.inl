@@ -24,8 +24,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <iostream>
 
 namespace sofa::component::interactionforcefield
@@ -47,7 +46,7 @@ MeshSpringForceField<DataTypes>::MeshSpringForceField()
     , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
-    , d_localRange( initData(&d_localRange, defaulttype::Vec<2, sofa::Index>(sofa::InvalidID, sofa::InvalidID), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, type::Vec<2, sofa::Index>(sofa::InvalidID, sofa::InvalidID), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , l_topology(initLink("topology", "link to the topology container"))
 {
 	this->ks.setDisplayed(false);
@@ -211,7 +210,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
     if(vparams->displayFlags().getShowForceFields())
     {
         typedef typename Inherit1::Spring  Spring;
-        const sofa::helper::vector<Spring> &ss = springs.getValue();
+        const sofa::type::vector<Spring> &ss = springs.getValue();
         
         const VecCoord& p1 = mstate1->read(core::ConstVecCoordId::position())->getValue();
         const VecCoord& p2 = mstate2->read(core::ConstVecCoordId::position())->getValue();
@@ -237,7 +236,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         {
             const Spring& s = ss[i];
             const Coord pa[2] = {p1[s.m1], p2[s.m2]};
-            const std::vector<sofa::defaulttype::Vector3> points(pa, pa+2);
+            const std::vector<sofa::type::Vector3> points(pa, pa+2);
             Deriv v = pa[0] - pa[1];
             Real elongation = (s.initpos - v.norm()) / s.initpos;
             Real R = 0.;
@@ -257,7 +256,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
                 G = 1. - B;
             }
 
-            vparams->drawTool()->drawLines(points, float(drawSpringSize), sofa::helper::types::RGBAColor{ float(R), float(G), float(B), 1.f });
+            vparams->drawTool()->drawLines(points, float(drawSpringSize), sofa::type::RGBAColor{ float(R), float(G), float(B), 1.f });
         }
     }
 }

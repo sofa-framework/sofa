@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h
     ${SOFATYPESRC_ROOT}/Mat_solve_LU.h
     ${SOFATYPESRC_ROOT}/Mat_solve_SVD.h
+    ${SOFATYPESRC_ROOT}/Mat_solve_LCP.h
     ${SOFATYPESRC_ROOT}/trait/is_container.h
     ${SOFATYPESRC_ROOT}/trait/is_vector.h
     ${SOFATYPESRC_ROOT}/fwd.h
@@ -61,18 +62,25 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Boost REQUIRED)
-
 sofa_find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Compat QUIET BOTH_SCOPES)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost)
+if(Sofa.Compat_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Compat)
+endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaFramework
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaFramework"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     )
+
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(${PROJECT_NAME}_test)
+endif()

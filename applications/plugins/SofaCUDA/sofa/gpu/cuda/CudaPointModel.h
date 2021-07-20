@@ -31,13 +31,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 using namespace sofa::defaulttype;
@@ -115,13 +109,6 @@ inline std::size_t CudaPoint::getSize()
         return model->groupSize.getValue();
 }
 
-using CudaPointModel [[deprecated("The CudaPointModel is now deprecated, please use CudaPointCollisionModel instead. Compatibility stops at v20.06")]] = CudaPointCollisionModel;
-
-
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda
 
 #endif

@@ -21,13 +21,13 @@
 ******************************************************************************/
 #include <sofa/gl/Color.h>
 #include <sofa/gl/gl.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <cmath>
 
 namespace sofa::gl
 {
-using sofa::helper::types::RGBAColor ;
+using sofa::type::RGBAColor ;
 
 void Color::setHSVA( float h, float s, float v, float a )
 {

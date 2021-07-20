@@ -34,9 +34,9 @@ int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
 
 
 SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) : SparseGridRamificationTopology(_isVirtual),
-    _fileTopologies(initData(&_fileTopologies, helper::vector< std::string >() , "fileTopologies", "All topology filenames")),
-    _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, helper::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
-    _dataMassCoefs(initData(&_dataMassCoefs, helper::vector< float >() , "massCoefs", "A mass coefficient for each topology filename")),
+    _fileTopologies(initData(&_fileTopologies, type::vector< std::string >() , "fileTopologies", "All topology filenames")),
+    _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, type::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
+    _dataMassCoefs(initData(&_dataMassCoefs, type::vector< float >() , "massCoefs", "A mass coefficient for each topology filename")),
     _computeRamifications(initData(&_computeRamifications, true , "computeRamifications", "Are ramifications wanted?")),
     _erasePreviousCoef(initData(&_erasePreviousCoef, false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
 {
@@ -82,7 +82,7 @@ void SparseGridMultipleTopology::buildAsFinest()
 
     _regularGridTypes.resize(_fileTopologies.getValue().size());
 
-    helper::vector< helper::io::Mesh*> meshes(_fileTopologies.getValue().size());
+    type::vector< helper::io::Mesh*> meshes(_fileTopologies.getValue().size());
 
 
     SReal xMing=99999999, xMaxg=-99999999, yMing=99999999, yMaxg=-99999999, zMing=99999999, zMaxg=-99999999;
@@ -138,8 +138,8 @@ void SparseGridMultipleTopology::buildAsFinest()
     }
 
 
-    helper::vector<Type> regularGridTypes; // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
-    helper::vector< float > regularStiffnessCoefs,regularMassCoefs;
+    type::vector<Type> regularGridTypes; // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
+    type::vector< float > regularStiffnessCoefs,regularMassCoefs;
 
     assembleRegularGrids( regularGridTypes, regularStiffnessCoefs, regularMassCoefs );
 
@@ -183,7 +183,7 @@ void SparseGridMultipleTopology::buildFromTriangleMesh(helper::io::Mesh* mesh, u
 }
 
 
-void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regularGridTypes,helper::vector< float >& regularStiffnessCoefs,helper::vector< float >& regularMassCoefs)
+void SparseGridMultipleTopology::assembleRegularGrids(type::vector<Type>& regularGridTypes,type::vector< float >& regularStiffnessCoefs,type::vector< float >& regularMassCoefs)
 {
     _regularGrid->setSize(getNx(),getNy(),getNz());
     _regularGrid->setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
@@ -229,7 +229,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
         newnz = (newnz-1)*2+1;
     }
 
-    SparseGridMultipleTopology::SPtr sgmt = sofa::core::objectmodel::New< SparseGridMultipleTopology >(true);;
+    SparseGridMultipleTopology::SPtr sgmt = sofa::core::objectmodel::New< SparseGridMultipleTopology >(true);
 
     _virtualFinerLevels[0] = sgmt;
     _virtualFinerLevels[0]->setNx( newnx );

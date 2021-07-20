@@ -25,9 +25,8 @@
 
 
 #include <sofa/core/DataEngine.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/SVector.h>
 
 
 namespace sofa::component::engine
@@ -48,11 +47,11 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<helper::vector<helper::SVector<T> > > d_labels; ///< lists of labels associated to each point/cell
-    Data<helper::vector<T> > d_selectLabels; ///< list of selected labels
+    Data<type::vector<type::SVector<T> > > d_labels; ///< lists of labels associated to each point/cell
+    Data<type::vector<T> > d_selectLabels; ///< list of selected labels
 
     //Output
-    Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
+    Data<type::vector<Index> > d_indices; ///< selected point/cell indices
 
     /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
     /// so we need to override that by implementing GetCustomTemplateName() function
@@ -85,14 +84,14 @@ protected:
 
     void doUpdate() override
     {
-        helper::ReadAccessor< Data< helper::vector<T>  > > selectLabels = d_selectLabels;
+        helper::ReadAccessor< Data< type::vector<T>  > > selectLabels = d_selectLabels;
         // convert to set for efficient look-up
         std::set<T> selectLabelsSet;
         selectLabelsSet.insert(selectLabels.begin(), selectLabels.end());
 
-        helper::ReadAccessor< Data< helper::vector<helper::SVector<T> >  > > labels = d_labels;
+        helper::ReadAccessor< Data< type::vector<type::SVector<T> >  > > labels = d_labels;
         size_t nb = labels.size();
-        helper::WriteOnlyAccessor< Data< helper::vector<Index> > > indices = d_indices;
+        helper::WriteOnlyAccessor< Data< type::vector<Index> > > indices = d_indices;
         indices.clear();
         for(Index i=0; i<nb;i++)
         {

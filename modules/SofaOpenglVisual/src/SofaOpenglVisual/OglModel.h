@@ -25,11 +25,11 @@
 
 #include <vector>
 #include <string>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/gl/template.h>
+#include <sofa/gl/Texture.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 
@@ -83,15 +83,15 @@ protected:
     Data<sofa::helper::OptionsGroup> destFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed
     GLenum blendEq, sfactor, dfactor;
 
-    helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
+    sofa::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     size_t oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
 
     /// These two buffers are used to convert the data field to float type before being sent to
     /// opengl
-    std::vector<sofa::defaulttype::Vec3f> verticesTmpBuffer;
-    std::vector<sofa::defaulttype::Vec3f> normalsTmpBuffer;
+    std::vector<sofa::type::Vec3f> verticesTmpBuffer;
+    std::vector<sofa::type::Vec3f> normalsTmpBuffer;
 
     void internalDraw(const core::visual::VisualParams* vparams, bool transparent) override;
 
@@ -101,7 +101,7 @@ protected:
     virtual void pushTransformMatrix(float* matrix) { glPushMatrix(); glMultMatrixf(matrix); }
     virtual void popTransformMatrix() { glPopMatrix(); }
 
-    std::vector<helper::gl::Texture*> textures;
+    std::vector<sofa::gl::Texture*> textures;
 
     std::map<int, int> materialTextureIdMap; //link between a material and a texture
 
@@ -124,6 +124,9 @@ public:
 
     void updateBuffers() override;
 
+    void deleteBuffers() override;
+    void deleteTextures() override;
+
     bool hasTransparent() override;
     bool hasTexture();
 
@@ -132,12 +135,12 @@ public:
     bool isUseTriangles()	{ return useTriangles; }
     bool isUseQuads()	{ return useQuads; }
 
-    helper::gl::Texture* getTex() const	{ return tex; }
+    sofa::gl::Texture* getTex() const	{ return tex; }
     GLuint getVbo()	{ return vbo;	}
     GLuint getIboEdges() { return iboEdges; }
     GLuint getIboTriangles() { return iboTriangles; }
     GLuint getIboQuads()    { return iboQuads; }
-    const std::vector<helper::gl::Texture*>& getTextures() const { return textures;	}
+    const std::vector<sofa::gl::Texture*>& getTextures() const { return textures;	}
 
     void createVertexBuffer();
     void createEdgesIndicesBuffer();
@@ -153,7 +156,7 @@ public:
     void updateQuadsIndicesBuffer();
 };
 
-typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;
+typedef sofa::type::Vec<3,GLfloat> GLVec3f;
 
 } // namespace visualmodel
 

@@ -20,16 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaGeneralMeshCollision/MeshDiscreteIntersection.inl>
-#include <sofa/helper/FnDispatcher.inl>
+
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
-#include <iostream>
-#include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
 
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
@@ -41,21 +39,11 @@ MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object,
     if (addSelf)
     {
         intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshDiscreteIntersection>  (this);
-        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshDiscreteIntersection>(this);
-        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshDiscreteIntersection>(this);
     }
 }
 
 bool MeshDiscreteIntersection::testIntersection(Triangle&, Line&)
 {
-    return true;
-}
-
-bool MeshDiscreteIntersection::testIntersection(Capsule&,Triangle&){
-    return true;
-}
-
-bool MeshDiscreteIntersection::testIntersection(Capsule&,Line&){
     return true;
 }
 

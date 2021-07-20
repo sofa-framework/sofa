@@ -25,12 +25,12 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <fstream>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <cmath>
 #include <limits>
 
@@ -295,7 +295,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
 
     if ( this->saveWcinToGnuplot.getValue() )
     {
-        sofa::simulation::MechanicalComputeEnergyVisitor *kineticEnergy = new sofa::simulation::MechanicalComputeEnergyVisitor(core::mechanicalparams::defaultInstance());
+        sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor *kineticEnergy = new sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor(core::mechanicalparams::defaultInstance());
         kineticEnergy->execute( this->getContext() );
         ( *this->saveGnuplotWcin ) << time <<"\t";
         ( *this->saveGnuplotWcin ) << kineticEnergy->getKineticEnergy() << std::endl;
@@ -303,7 +303,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
 
     if ( this->saveWextToGnuplot.getValue() )
     {
-        sofa::simulation::MechanicalComputeEnergyVisitor *potentialEnergy= new sofa::simulation::MechanicalComputeEnergyVisitor(core::mechanicalparams::defaultInstance());
+        sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor *potentialEnergy= new sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor(core::mechanicalparams::defaultInstance());
         potentialEnergy->execute( this->getContext() );
         ( *this->saveGnuplotWext ) << time <<"\t";
         ( *this->saveGnuplotWext ) << potentialEnergy->getPotentialEnergy() << std::endl;

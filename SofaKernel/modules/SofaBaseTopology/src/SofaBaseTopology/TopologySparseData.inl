@@ -20,56 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+// TODO: Backward compability header, to be removed for v21.12
+#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <SofaBaseTopology/TopologySparseData.h>
-#include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/TopologyDataEngine.inl>
-#include <SofaBaseTopology/TopologySparseDataHandler.inl>
-
-namespace sofa::component::topology
-{
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template <typename TopologyElementType, typename VecT>
-TopologySparseData <TopologyElementType, VecT>::~TopologySparseData()
-{
-    if (this->m_topologyHandler)
-        delete m_topologyHandler;
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology, sofa::core::topology::TopologyHandler *_topologyHandler)
-{
-    this->m_topology = _topology;
-    if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
-    {
-        this->m_topologicalEngine = sofa::core::objectmodel::New< TopologyDataEngine<VecT> >((sofa::component::topology::TopologySparseData<TopologyElementType, VecT>*)this, _topology, _topologyHandler);
-        this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("SparseEngine_"));
-        if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
-        this->m_topologicalEngine->init();
-        this->linkToElementDataArray((TopologyElementType*)nullptr);
-        msg_info(this->getOwner())<<"TopologySparseData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << " Topology.";
-    }
-    else if (_topology)
-    {
-        msg_info(this->getOwner())<<"TopologySparseData: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology.";
-    }
-    else
-    {
-        msg_info(this->getOwner())<<"TopologySparseData: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled.";
-    }
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologySparseData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
-{
-    this->m_topologyHandler = new TopologySparseDataHandler<TopologyElementType, VecT>(this);
-    createTopologicalEngine(_topology, this->m_topologyHandler);
-}
-
-
-} //namespace sofa::component::topology

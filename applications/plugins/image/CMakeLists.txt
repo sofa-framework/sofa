@@ -12,11 +12,7 @@ sofa_find_package(SofaPython QUIET)
 sofa_find_package(MultiThreading QUIET)
 sofa_find_package(ZLIB)
 sofa_find_package(Freenect QUIET)
-sofa_find_package(DiffusionSolver QUIET)
-if(NOT DiffusionSolver_FOUND)
-    # warning to remove at v19.12
-    message(SEND_ERROR "image: DiffusionSolver is now a plugin, make sure you activated the associated CMake option (PLUGIN_DIFFUSIONSOLVER)")
-endif()
+sofa_find_package(DiffusionSolver REQUIRED)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 

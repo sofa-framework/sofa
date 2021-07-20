@@ -35,6 +35,7 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::core::objectmodel::ComponentState;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 #include <SofaEngine/BoxROI.h>
@@ -63,10 +64,10 @@ using sofa::simulation::SceneLoaderXML;
 using sofa::helper::logging::MessageDispatcher;
 
 #include <sofa/helper/testing/TestMessageHandler.h>
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 
 template <typename TDataType>
-struct BoxROITest :  public sofa::helper::testing::BaseTest
+struct BoxROITest :  public sofa::testing::BaseTest
 {
     typedef BoxROI<TDataType> TheBoxROI;
     Simulation* m_simu  {nullptr};
@@ -101,7 +102,7 @@ struct BoxROITest :  public sofa::helper::testing::BaseTest
 
         /// List of the supported attributes the user expect to find
         /// This list needs to be updated if you add an attribute.
-        vector<string> attrnames = {
+        std::vector<string> attrnames = {
             "box", "orientedBox",
             "position", "edges",  "triangles", "tetrahedra", "hexahedra", "quad",
             "computeEdges", "computeTriangles", "computeTetrahedra", "computeHexahedra", "computeQuad",

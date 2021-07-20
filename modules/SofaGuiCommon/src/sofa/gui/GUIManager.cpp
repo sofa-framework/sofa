@@ -19,17 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <fstream>
-
 #include "GUIManager.h"
+
 #include "BaseGUI.h"
-#include <SofaBase/initSofaBase.h>
-#include <SofaSimulationCommon/init.h>
-#include <sofa/helper/system/FileSystem.h>
+#include <sofa/gui/ArgumentParser.h>
+
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaSimulationCommon/init.h>
+
+#include <fstream>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;

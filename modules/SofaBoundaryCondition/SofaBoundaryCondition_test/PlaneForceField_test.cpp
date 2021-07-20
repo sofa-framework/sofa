@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -56,6 +56,7 @@ namespace sofa {
 
 namespace {
 using namespace component;
+using namespace type;
 using namespace defaulttype;
 using namespace core::objectmodel;
 
@@ -86,7 +87,7 @@ struct TypeTuple
 
 
 template <typename TTypeTuple>
-struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Real>
+struct PlaneForceField_test : public BaseSimulationTest
 {
     typedef typename TTypeTuple::DataType DataTypes ;
     typedef typename TTypeTuple::MassType MassType ;
@@ -133,9 +134,9 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 
         typename CGLinearSolverType::SPtr cgLinearSolver = New<CGLinearSolverType>();
         m_root->addObject(cgLinearSolver);
-        cgLinearSolver->f_maxIter.setValue(25);
-        cgLinearSolver->f_tolerance.setValue(1e-5);
-        cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+        cgLinearSolver->d_maxIter.setValue(25);
+        cgLinearSolver->d_tolerance.setValue(1e-5);
+        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
         m_mechanicalObj = New<MechanicalObjectType>();
         m_root->addObject(m_mechanicalObj);

@@ -27,8 +27,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/simulation/fwd.h>
 namespace sofa::component::collision
@@ -128,36 +126,11 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
             RigidSphere e(this->model, index);
             const typename SphereCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes::Coord & rCenter = e.rigidCenter();
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
-            const defaulttype::Quaternion & ori = rCenter.getOrientation();
+            const type::Quat<SReal> & ori = rCenter.getOrientation();
 
             //r = e.r();
 
             return RigidContactMapper<RigidSphereModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
-        }
-};
-
-
-template <class TVec3Types>
-class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
-    public:
-        sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
-        {
-            const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const defaulttype::Quaternion & ori = this->model->orientation(index);
-
-            return RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
-        }
-};
-
-template <class TVec3Types>
-class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
-    public:
-        sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
-        {
-            const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const defaulttype::Quaternion & ori = this->model->orientation(index);
-
-            return RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
 };
 
@@ -167,7 +140,7 @@ class ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3
         sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const defaulttype::Quaternion & ori = this->model->orientation(index);
+            const type::Quat<SReal> & ori = this->model->orientation(index);
 
             return RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
@@ -175,19 +148,13 @@ class ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3
 
 #if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP)
 extern template class SOFA_SOFAMESHCOLLISION_API ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>;
-extern template class SOFA_SOFAMESHCOLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>;
 extern template class SOFA_SOFAMESHCOLLISION_API ContactMapper<RigidSphereModel, defaulttype::Vec3Types>;
-extern template class SOFA_SOFAMESHCOLLISION_API ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>;
 
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.
 extern template SOFA_SOFAMESHCOLLISION_API void RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
 extern template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);
-extern template SOFA_SOFAMESHCOLLISION_API void RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);
 extern template SOFA_SOFAMESHCOLLISION_API void RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::cleanup();
 extern template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::createMapping(const char*);
-extern template SOFA_SOFAMESHCOLLISION_API void RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);
 #endif
 
 } //namespace sofa::component::collision

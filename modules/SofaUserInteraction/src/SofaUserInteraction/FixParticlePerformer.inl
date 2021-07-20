@@ -27,11 +27,6 @@
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-
 
 namespace sofa::component::collision
 {
@@ -41,7 +36,7 @@ void FixParticlePerformer<DataTypes>::start()
 {
     const BodyPicked &picked=this->interactor->getBodyPicked();
 
-    helper::vector<unsigned int > points;
+    type::vector<unsigned int > points;
     typename DataTypes::Coord fixPoint;
     MouseContainer* mstateCollision=getFixationPoints(picked, points, fixPoint);
 
@@ -85,7 +80,7 @@ void FixParticlePerformer<DataTypes>::start()
 template <class DataTypes>
 void FixParticlePerformer<DataTypes>::execute()
 {
-};
+}
 
 
 
@@ -112,38 +107,24 @@ FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TI
 
 
 template <class DataTypes>
-sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint)
+sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, type::vector<Index> &points, Coord &fixPoint)
 {
-    const int idx=b.indexCollisionElement;
+    const auto idx=b.indexCollisionElement;
     MouseContainer* collisionState=0;
 
     if (b.body)
     {
         collisionState = dynamic_cast<MouseContainer*>(b.body->getContext()->getMechanicalState());
 
-        if (SphereCollisionModel<sofa::defaulttype::Vec3Types> *sphere = dynamic_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
+        auto funcGetFixationPoints = s_mapSupportedModels.find(std::type_index(typeid(*b.body)));
+        if (funcGetFixationPoints != s_mapSupportedModels.end())
         {
-            Sphere s(sphere, idx);
-            fixPoint = s.p();
-            points.push_back(s.getIndex());
+            funcGetFixationPoints->second(b.body, idx, points, fixPoint);
         }
-        else if(TriangleCollisionModel<sofa::defaulttype::Vec3Types> *triangle = dynamic_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body))
+        else
         {
-            Triangle t(triangle, idx);
-            fixPoint = (t.p1()+t.p2()+t.p3())/3.0;
-            points.push_back(t.p1Index());
-            points.push_back(t.p2Index());
-            points.push_back(t.p3Index());
-        }
-        else if(CapsuleCollisionModel<sofa::defaulttype::Vec3Types> *capsule = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>*>(b.body)){
-            fixPoint = (capsule->point1(idx) + capsule->point2(idx))/2.0;
-            points.push_back(capsule->point1Index(idx));
-            points.push_back(capsule->point2Index(idx));
-        }
-        else if(dynamic_cast<SphereCollisionModel<sofa::defaulttype::Rigid3Types>*>(b.body)||dynamic_cast<OBBCollisionModel<sofa::defaulttype::Rigid3Types>*>(b.body)){
-            collisionState = dynamic_cast<MouseContainer*>(b.mstate);
-            fixPoint = (collisionState->read(core::ConstVecCoordId::position())->getValue())[idx];
-            points.push_back(idx);
+            msg_warning("FixParticlePerformer") << "Could not find a Collision Model to fix particle on. " 
+                                                << typeid(b.body).name() << " has not been registered.";
         }
     }
     else if (b.mstate)
@@ -156,5 +137,11 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
 
     return collisionState;
 }
+
+#ifndef WIN32
+template<typename DataTypes>
+    std::unordered_map<std::type_index, typename FixParticlePerformer<DataTypes>::GetFixationPointsOnModelFunction >
+    FixParticlePerformer<DataTypes>::s_mapSupportedModels;
+#endif // WIN32
 
 } // namespace sofa::component::collision

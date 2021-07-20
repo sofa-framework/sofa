@@ -21,18 +21,20 @@
 ******************************************************************************/
 #include "BaseGUI.h"
 #include "BaseViewer.h"
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/helper/vector.h>
+
+#include <sofa/type/vector.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
-#include <SofaGraphComponent/SofaDefaultPathSetting.h>
-#include <SofaGraphComponent/StatsSetting.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaBaseVisual/BackgroundSetting.h>
+#include <SofaGraphComponent/ViewerSetting.h>
+#include <SofaGraphComponent/StatsSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <SofaGraphComponent/SofaDefaultPathSetting.h>
 
 #include <algorithm>
 #include <cstring>
-
 
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
@@ -109,7 +111,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
     //TODO: Video Recorder Configuration
 
     //Mouse Manager using ConfigurationSetting component...
-    sofa::helper::vector< sofa::component::configurationsetting::MouseButtonSetting*> mouseConfiguration;
+    sofa::type::vector< sofa::component::configurationsetting::MouseButtonSetting*> mouseConfiguration;
     groot->get<sofa::component::configurationsetting::MouseButtonSetting>(&mouseConfiguration, sofa::core::objectmodel::BaseContext::SearchRoot);
 
     for (unsigned int i=0; i<mouseConfiguration.size(); ++i)  setMouseButtonConfiguration(mouseConfiguration[i]);

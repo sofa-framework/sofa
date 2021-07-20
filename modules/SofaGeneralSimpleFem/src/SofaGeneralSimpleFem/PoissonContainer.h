@@ -20,17 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralSimpleFem/config.h>
 
-namespace sofa::component::container
-{
+#include <sofa/config.h>
 
-class PoissonContainer : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(PoissonContainer,sofa::core::objectmodel::BaseObject);
-
-    virtual double getPoisson(sofa::Index index) = 0;
-};
-
-} // namespace sofa::component::container
+SOFA_DISABLED_HEADER_NOT_REPLACED("v21.06 (PR#2099)","v21.06 (PR#2099)")

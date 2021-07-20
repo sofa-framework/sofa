@@ -19,16 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
 
-#include <SofaTest/Mapping_test.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
 
 
 namespace sofa {
@@ -36,7 +34,7 @@ namespace {
 
 // checks that a 1 second rotation at 1 rad.s^{-1} rotates by 1 rad.
 template<class Rigid3Types>
-struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
+struct QuaternionIntegrationTest : NumericTest< typename Rigid3Types::Real > {
 
     using data_types = Rigid3Types;
 
@@ -57,7 +55,7 @@ struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
 
     void test_quaternion_angle() const {
         using real = typename data_types::Real;
-        defaulttype::Vec<3, real> axis; real angle;
+        type::Vec<3, real> axis; real angle;
         coord.getOrientation().quatToAxis(axis, angle);
 
         const real expected_angle = dt * deriv.getVOrientation().norm();

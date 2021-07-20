@@ -1,19 +1,22 @@
+<?xml version="1.0" ?>
 <Node dt="0.005" gravity="0 -10 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName="SofaSphFluid"/>
-    <RequiredPlugin pluginName="SofaMiscCollision"/>
-    <RequiredPlugin pluginName='SofaGeneralExplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin name="SofaSphFluid"/>
+    <RequiredPlugin name='SofaGeneralExplicitOdeSolver'/>
+    <RequiredPlugin name='SofaMeshCollision'/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" />
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <Node name="Fluid">
         <RungeKutta4Solver />
         <PointSetTopologyContainer />
         <MechanicalObject name="MModel" />
+        <PointSetTopologyContainer name="con" />
+        <PointSetTopologyModifier name="mod" />
         <ParticleSource name="Source" center="&#x0A;-0.375 0 -0.75&#x0A; 0.0   0 -0.75&#x0A; 0.375 0 -0.75&#x0A;-0.75  0 -0.375&#x0A;-0.375 0 -0.375&#x0A; 0.0   0 -0.375&#x0A; 0.375 0 -0.375&#x0A; 0.75  0 -0.375&#x0A;-0.75  0  0.0&#x0A;-0.375 0  0.0&#x0A; 0.0   0  0.0&#x0A; 0.375 0  0.0&#x0A; 0.75  0  0.0&#x0A;-0.75  0  0.375&#x0A;-0.375 0  0.375&#x0A; 0.0   0  0.375&#x0A; 0.375 0  0.375&#x0A; 0.75  0  0.375&#x0A;-0.375 0  0.75&#x0A; 0.0   0  0.75&#x0A; 0.375 0  0.75&#x0A; " translation="0 3 0" radius="0.01 0.1 0.01" velocity="0 -20 0" delay="0.01875" start="-0.1" stop="2" />
         <ParticleSink normal="0 1 0" d0="-10" d1="-11" showPlane="true" printLog="false" />
         <UniformMass name="M1" vertexMass="1" />

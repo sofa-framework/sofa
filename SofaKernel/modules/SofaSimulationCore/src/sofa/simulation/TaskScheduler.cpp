@@ -74,7 +74,6 @@ namespace sofa
         
         TaskScheduler::~TaskScheduler()
         {
-            
         }
 
 	} // namespace simulation

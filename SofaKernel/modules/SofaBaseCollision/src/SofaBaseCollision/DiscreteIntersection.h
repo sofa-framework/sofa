@@ -24,7 +24,8 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
-#include <SofaBaseCollision/BaseIntTool.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 
 namespace sofa::component::collision
 {
@@ -44,14 +45,52 @@ public:
     core::collision::IntersectorMap intersectors;
     typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
 
-    template <class Elem1,class Elem2>
-    int computeIntersection(Elem1 & e1,Elem2 & e2,OutputVector* contacts){
-        return BaseIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
+    //Intersectors
+    // Cube
+    virtual bool testIntersection(Cube& cube1, Cube& cube2);
+    virtual int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
+
+    //Sphere
+    virtual bool testIntersection(Sphere& sph1, Sphere& sph2);
+    virtual int computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(RigidSphere& sph1, RigidSphere& sph2);
+    virtual int computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(Sphere& sph1, RigidSphere& sph2);
+    virtual int computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+
+protected:
+
+    template<class SphereType1, class SphereType2>
+    bool testIntersectionSphere(SphereType1& sph1, SphereType2& sph2, const SReal alarmDist)
+    {
+        const auto r = sph1.r() + sph2.r() + alarmDist;
+        return (sph1.center() - sph2.center()).norm2() <= r * r;
     }
 
-    template <class Elem1,class Elem2>
-    bool testIntersection(Elem1& e1,Elem2& e2){
-        return BaseIntTool::testIntersection(e1,e2,this->getAlarmDistance());
+    template<class SphereType1, class SphereType2>
+    int computeIntersectionSphere(SphereType1& sph1, SphereType2& sph2, DiscreteIntersection::OutputVector* contacts, const SReal alarmDist, const SReal contactDist)
+    {
+        SReal r = sph1.r() + sph2.r();
+        SReal myAlarmDist = alarmDist + r;
+        type::Vector3 dist = sph2.center() - sph1.center();
+        SReal norm2 = dist.norm2();
+
+        if (norm2 > myAlarmDist * myAlarmDist)
+            return 0;
+
+        contacts->resize(contacts->size() + 1);
+        core::collision::DetectionOutput* detection = &*(contacts->end() - 1);
+        SReal distSph1Sph2 = helper::rsqrt(norm2);
+        detection->normal = dist / distSph1Sph2;
+        detection->point[0] = sph1.getContactPointByNormal(-detection->normal);
+        detection->point[1] = sph2.getContactPointByNormal(detection->normal);
+
+        detection->value = distSph1Sph2 - r - contactDist;
+        detection->elem.first = sph1;
+        detection->elem.second = sph2;
+        detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
+
+        return 1;
     }
 };
 

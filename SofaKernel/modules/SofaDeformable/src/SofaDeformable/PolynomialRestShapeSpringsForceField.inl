@@ -40,7 +40,7 @@ PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialRestShapeSpringsForce
     , d_polynomialDegree(initData(&d_polynomialDegree, "polynomialDegree", "vector of values that show polynomials degrees"))
     , d_recomputeIndices(initData(&d_recomputeIndices, false, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
-    , d_springColor(initData(&d_springColor, sofa::helper::types::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor","spring color"))
+    , d_springColor(initData(&d_springColor, sofa::type::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor","spring color"))
     , d_showIndicesScale(initData(&d_showIndicesScale, (float)0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
     , d_zeroLength(initData(&d_zeroLength,"initialLength","initial virtual length of the spring"))
     , d_smoothShift(initData(&d_smoothShift,double(0.0),"smoothShift","denominator correction adding shift value"))
@@ -106,14 +106,14 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::bwdInit()
 
     // read and fill polynomial parameters
     if (d_polynomialDegree.getValue().empty()) {
-        helper::WriteAccessor<Data<helper::vector<unsigned int>>> vPolynomialWriteDegree = d_polynomialDegree;
+        helper::WriteAccessor<Data<type::vector<unsigned int>>> vPolynomialWriteDegree = d_polynomialDegree;
         vPolynomialWriteDegree.push_back(1);
     }
 
-    helper::ReadAccessor<Data<helper::vector<unsigned int>>> vPolynomialDegree = d_polynomialDegree;
+    helper::ReadAccessor<Data<type::vector<unsigned int>>> vPolynomialDegree = d_polynomialDegree;
 
     m_polynomialsMap.clear();
-    helper::vector<unsigned int> polynomial;
+    type::vector<unsigned int> polynomial;
     sofa::Index inputIndex = 0;
     for (sofa::Index degreeIndex = 0; degreeIndex < vPolynomialDegree.size(); degreeIndex++) {
         polynomial.clear();
@@ -211,12 +211,9 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
     helper::ReadAccessor<DataVecCoord> p1 = x;
     helper::ReadAccessor<DataVecCoord> p0 = *getExtPosition();
 
-    msg_info() << this->getName() << " P1 = " << p1.ref();
-    msg_info() << this->getName() << " P0 = " << p0.ref();
-    msg_info() << this->getName() << " F = " << f1.ref();
-
-    if (this->f_printLog.getValue())
-        msg_info() << "[" <<  this->getName() << "]: ";
+    msg_info() << "P1 = " << p1.ref();
+    msg_info() << "P0 = " << p0.ref();
+    msg_info() << "F = " << f1.ref();
 
     const VecReal& zeroLength = d_zeroLength.getValue();
     f1.resize(p1.size());
@@ -381,7 +378,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (m_useRestMState ? m_ext_indices : m_indices);
 
-    std::vector< defaulttype::Vector3 > points;
+    std::vector< type::Vector3 > points;
 
     for (sofa::Index i=0; i<indices.size(); i++)
     {
@@ -401,13 +398,13 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     // draw connected point indices
     Real scale = (vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * d_showIndicesScale.getValue();
 
-    helper::vector<defaulttype::Vector3> positions;
+    type::vector<type::Vector3> positions;
     for (sofa::Index i = 0; i < indices.size(); i++) {
         const sofa::Index index = indices[i];
-        positions.push_back(defaulttype::Vector3(p0[index][0], p0[index][1], p0[index][2] ));
+        positions.push_back(type::Vector3(p0[index][0], p0[index][1], p0[index][2] ));
     }
 
-    vparams->drawTool()->draw3DText_Indices(positions, float(scale), helper::types::RGBAColor::white());
+    vparams->drawTool()->draw3DText_Indices(positions, float(scale), type::RGBAColor::white());
     vparams->drawTool()->restoreLastState();
 }
 
@@ -442,44 +439,11 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
     sofa::helper::AdvancedTimer::stepEnd("restShapePolynomialSpringAddKToMatrix");
 }
 
-
-template<class DataTypes>
-void PolynomialRestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::MechanicalParams* mparams,
-                                                                      const sofa::core::behavior::MultiMatrixAccessor* matrix,
-                                                                      const helper::vector<sofa::Index> & addSubIndex )
-{
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
-    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-
-    sofa::Index curIndex = 0;
-    const sofa::Size Dimension = Coord::total_size;
-
-    for (sofa::Index index = 0; index < m_indices.size(); index++)
-    {
-        curIndex = m_indices[index];
-        const JacobianVector& jacobVector = m_differential[index];
-        bool contains = false;
-        for (sofa::Index s = 0; s < addSubIndex.size() && !contains; s++) {
-            if (curIndex == addSubIndex[s]) contains = true;
-        }
-        if (!contains) continue;
-
-        for(sofa::Size i = 0; i < Dimension; i++)
-        {
-            mat->add(offset + Dimension * curIndex + i, offset + Dimension * curIndex + i, -kFact * jacobVector[i]);
-        }
-    }
-}
-
-
-
 template<class DataTypes>
 double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialValue(unsigned int springIndex, double strainValue)
 {
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
-    helper::ReadAccessor<Data<helper::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
+    helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
     msg_info() << "Polynomial data: ";
     double highOrderStrain = 1.0;
@@ -498,7 +462,7 @@ template<class DataTypes>
 double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigned int springIndex, double strainValue)
 {
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
-    helper::ReadAccessor<Data<helper::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
+    helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
     msg_info() << "Polynomial derivative data: ";
     double highOrderStrain = 1.0;

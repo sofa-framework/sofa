@@ -19,21 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/MultiMapping_test.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 
+#include <SofaBaseMechanics_test/MultiMappingTestCreation.h>
+
+#include <SofaBase/initSofaBase.h>
 
 namespace sofa {
 namespace {
 
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using sofa::helper::vector;
+using type::Vec;
+using type::Mat;
+using type::vector;
 
 
 /**  Test suite for SubsetMultiMapping.
@@ -67,6 +69,11 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
     typedef typename OutMechanicalObject::WriteVecDeriv WriteOutVecDeriv;
     typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
     typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
+
+    void SetUp() override
+    {
+        sofa::component::initSofaBase();
+    }
 
     /** @name Test_Cases
       For each of these cases, we can test if the mapping work

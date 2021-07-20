@@ -26,7 +26,7 @@
 #include <SofaDeformable/config.h>
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -48,8 +48,8 @@ public:
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::vector<unsigned int> VecIndex;
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<unsigned int> VecIndex;
+    typedef type::vector<Real> VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
@@ -67,7 +67,7 @@ public:
     /// For examples the coeffiencts for polynomials with degrees [3, 2, 4] will be put as [ a1, a2, a3, b1, b2, c1, c2, c3, c4]
     Data<VecReal> d_polynomialStiffness;
     /// Describe set of polynomial degrees fro every spring
-    Data< helper::vector<unsigned int> > d_polynomialDegree;
+    Data< type::vector<unsigned int> > d_polynomialDegree;
 
     Data<int> d_computeZeroLength;                    /// Flag to verify if initial length has to be computed during the first iteration
     Data<VecReal> d_zeroLength;                       /// Springs initial lengths
@@ -77,12 +77,12 @@ public:
 
     Data<int> d_drawMode;                             /// Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
     Data<float> d_showArrowSize;                      ///< size of the axis
-    Data<sofa::helper::types::RGBAColor> d_springColor;
+    Data<sofa::type::RGBAColor> d_springColor;
     Data<float> d_showIndicesScale;
 
 
     // data to compute spring derivatives
-    typedef defaulttype::Mat<Coord::total_size, Coord::total_size, Real> JacobianMatrix;
+    typedef type::Mat<Coord::total_size, Coord::total_size, Real> JacobianMatrix;
 
 
 protected:
@@ -94,13 +94,13 @@ protected:
     VecIndex m_firstObjectIndices;
     VecIndex m_secondObjectIndices;
 
-    helper::vector<JacobianMatrix> m_differential;
+    type::vector<JacobianMatrix> m_differential;
 
     VecReal m_springLength;
     VecReal m_strainValue;
     VecCoord m_weightedCoordinateDifference;
 
-    helper::vector<helper::vector<unsigned int>> m_polynomialsMap;
+    type::vector<type::vector<unsigned int>> m_polynomialsMap;
 
     VecReal m_initialSpringLength;
     VecReal m_strainSign;
@@ -126,10 +126,6 @@ public:
 
     /// Brings ForceField contribution to the global system stiffness matrix.
     virtual void addKToMatrix(const core::MechanicalParams* mparams, const core::behavior::MultiMatrixAccessor* matrix) override;
-
-    virtual void addSubKToMatrix(const core::MechanicalParams* mparams,
-                                 const sofa::core::behavior::MultiMatrixAccessor* matrix,
-                                 const helper::vector<unsigned> & addSubIndex ) override;
 
     virtual void draw(const core::visual::VisualParams* vparams) override;
 

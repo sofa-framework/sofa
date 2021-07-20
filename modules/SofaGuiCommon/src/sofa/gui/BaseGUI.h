@@ -22,20 +22,23 @@
 #pragma once
 
 #include <sofa/gui/config.h>
-#include <sofa/defaulttype/Vec.h>
-#include <SofaGraphComponent/ViewerSetting.h>
-#include <SofaGraphComponent/MouseButtonSetting.h>
-#include <sofa/helper/ArgumentParser.h>
+
+#include <sofa/type/RGBAColor.h>
+#include <sofa/type/Vec.h>
 #include <sofa/simulation/fwd.h>
-using sofa::helper::ArgumentParser;
 
-#include <list>
+namespace sofa::component::configurationsetting
+{
+    class ViewerSetting;
+    class MouseButtonSetting;
 
+} // namespace sofa::component::configurationsetting
 
 namespace sofa::gui
 {
 
 class BaseViewer;
+class ArgumentParser;
 
 class SOFA_SOFAGUICOMMON_API BaseGUI
 {
@@ -74,7 +77,7 @@ public:
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
     virtual void setViewerResolution(int /* width */, int /* height */) {}
     virtual void setFullScreen() {}
-    virtual void setBackgroundColor(const sofa::helper::types::RGBAColor& /*color*/) {}
+    virtual void setBackgroundColor(const sofa::type::RGBAColor& /*color*/) {}
     virtual void setBackgroundImage(const std::string& /*image*/) {}
 
     virtual BaseViewer* getViewer() {return nullptr;}

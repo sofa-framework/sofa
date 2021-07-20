@@ -22,7 +22,7 @@
 #include <SofaOpenglVisual/Light.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaOpenglVisual/LightManager.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/glu.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
@@ -55,7 +55,7 @@ int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
         .add< SpotLight >()
         ;
 
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER = "shaders/softShadows/VSM/generate_depth_texture.vert";
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER = "shaders/softShadows/VSM/generate_depth_texture.frag";
@@ -65,7 +65,7 @@ const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softSha
 
 Light::Light()
     : m_lightID(0), m_shadowTexWidth(0),m_shadowTexHeight(0)
-    , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "Set the color of the light. (default=[1.0,1.0,1.0,1.0])"))
+    , d_color(initData(&d_color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "Set the color of the light. (default=[1.0,1.0,1.0,1.0])"))
     , d_shadowTextureSize(initData(&d_shadowTextureSize, (GLuint)0, "shadowTextureSize", "[Shadowing] Set size for shadow texture "))
     , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
     , d_zNear(initData(&d_zNear, "zNear", "[Shadowing] Light's ZNear"))
@@ -80,8 +80,8 @@ Light::Light()
     , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "[Shadowing] Projection Matrix"))
     , b_needUpdate(false)
 {
-    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
-    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
+    type::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
+    type::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
 
     wModelViewMatrix.resize(16);
     wProjectionMatrix.resize(16);
@@ -196,12 +196,12 @@ void Light::initVisual()
     computeShadowMapSize();
     //Shadow part
     //Shadow texture init
-    m_shadowFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
-                new helper::gl::FrameBufferObject(true, true, true));
-    m_blurHFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
-                new helper::gl::FrameBufferObject(false,false,true));
-    m_blurVFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
-                new helper::gl::FrameBufferObject(false,false,true));
+    m_shadowFBO = std::unique_ptr<sofa::gl::FrameBufferObject>(
+                new sofa::gl::FrameBufferObject(true, true, true));
+    m_blurHFBO = std::unique_ptr<sofa::gl::FrameBufferObject>(
+                new sofa::gl::FrameBufferObject(false,false,true));
+    m_blurVFBO = std::unique_ptr<sofa::gl::FrameBufferObject>(
+                new sofa::gl::FrameBufferObject(false,false,true));
     m_depthShader = sofa::core::objectmodel::New<OglShader>();
     m_blurShader = sofa::core::objectmodel::New<OglShader>();
 
@@ -436,11 +436,11 @@ void DirectionalLight::drawSource(const core::visual::VisualParams* vparams)
     SOFA_UNUSED(vparams);
 }
 
-void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &direction)
+void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::Vector3 &direction)
 {
     //1-compute bounding box
     sofa::core::visual::VisualParams* vp = sofa::core::visual::visualparams::defaultInstance();
-    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
     Vector3 center = (sceneBBox.minBBox() + sceneBBox.maxBBox()) * 0.5;
     Vector3 posLight = center;
 
@@ -470,7 +470,7 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
     yAxis = zAxis.cross(xAxis);
     yAxis.normalize();
 
-    defaulttype::Quat q;
+    type::Quat<SReal> q;
     q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
     for (unsigned int i = 0; i < 3; i++)
     {
@@ -489,7 +489,7 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
 
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
-    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
+    type::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
 
     for (unsigned int i = 0; i < 4; i++)
         for (unsigned int j = 0; j < 4; j++)
@@ -524,7 +524,7 @@ void DirectionalLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float& lef
 
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
-    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
+    type::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
 
     for (unsigned int i = 0; i < 4; i++)
         for (unsigned int j = 0; j < 4; j++)
@@ -538,7 +538,7 @@ void DirectionalLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float& lef
 
 void DirectionalLight::computeClippingPlane(const core::visual::VisualParams* vp, float& left, float& right, float& top, float& bottom, float& zNear, float& zFar )
 {
-    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
     Vector3 minBBox = sceneBBox.minBBox();
     Vector3 maxBBox = sceneBBox.maxBBox();
 
@@ -693,7 +693,7 @@ SpotLight::~SpotLight()
 void SpotLight::drawLight()
 {
     PositionalLight::drawLight();
-    defaulttype::Vector3 d = d_direction.getValue();
+    type::Vector3 d = d_direction.getValue();
     if (d_lookat.getValue()) d -= d_position.getValue();
     d.normalize();
     GLfloat dir[3]= {(GLfloat)(d[0]), (GLfloat)(d[1]), (GLfloat)(d[2])};
@@ -773,7 +773,7 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
     zNear = 1e10;
     zFar = -1e10;
 
-    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
     const Vector3 &pos = d_position.getValue();
     Vector3 dir = d_direction.getValue();
     if (d_lookat.getValue())
@@ -798,7 +798,7 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
     yAxis = zAxis.cross(xAxis);
     yAxis.normalize();
 
-    defaulttype::Quat q;
+    type::Quat<SReal> q;
     q = q.createQuaterFromFrame(xAxis, yAxis, dir);
 
     if (!d_zNear.isSet() || !d_zFar.isSet())
@@ -877,7 +877,7 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
     glEnable(GL_DEPTH_TEST);
 }
 
-void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &direction)
+void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::Vector3 &position, const sofa::type::Vector3 &direction)
 {
     double epsilon = 0.0000001;
     Vector3 zAxis = -direction;
@@ -905,8 +905,8 @@ void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaul
         mat[i * 4 + 2] = GLfloat(zAxis[i]);
     }
 
-    sofa::defaulttype::Quat q;
-    q = sofa::defaulttype::Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
+    sofa::type::Quat<SReal> q;
+    q = sofa::type::Quat<SReal>::createQuaterFromFrame(xAxis, yAxis, zAxis);
 
     Vector3 origin = q.inverseRotate(-position);
 
@@ -920,7 +920,7 @@ void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaul
 
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
-    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
+    type::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
 
     for (unsigned int i = 0; i < 4; i++)
         for (unsigned int j = 0; j < 4; j++)
@@ -953,7 +953,7 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
     mat[2] = 0;
     mat[6] = 0;
     mat[10] = -(zFar + zNear) / (zFar - zNear);
-    mat[14] = -2.f * zFar * zNear / (zFar - zNear);;
+    mat[14] = -2.f * zFar * zNear / (zFar - zNear);
 
     mat[3] = 0.0;
     mat[7] = 0.0;
@@ -962,7 +962,7 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
 
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
-    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
+    type::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
 
     for (unsigned int i = 0; i < 4; i++)
         for (unsigned int j = 0; j < 4; j++)

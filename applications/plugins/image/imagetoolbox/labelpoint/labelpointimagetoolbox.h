@@ -54,8 +54,8 @@ public:
     }
     
 public:
-    Data<sofa::defaulttype::Vec3d> d_ip;
-    Data<sofa::defaulttype::Vec3d> d_p;
+    Data<sofa::type::Vec3d> d_ip;
+    Data<sofa::type::Vec3d> d_p;
     Data<unsigned int> d_axis;
     Data<std::string> d_value;
 };

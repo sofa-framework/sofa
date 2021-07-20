@@ -3,7 +3,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2"  />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DiscreteIntersection />
     <Node name="Poutre1">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

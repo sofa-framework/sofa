@@ -79,8 +79,8 @@ bool RequiredPlugin::loadPlugin()
     auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
 
     const std::string defaultSuffix = PluginManager::getDefaultSuffix();
-    const helper::vector<helper::fixed_array<std::string,2> >& sMap = d_suffixMap.getValue();
-    helper::vector<std::string> suffixVec;
+    const type::vector<type::fixed_array<std::string,2> >& sMap = d_suffixMap.getValue();
+    type::vector<std::string> suffixVec;
     if (!sMap.empty())
     {
         const std::string skey = (defaultSuffix.empty() ? std::string("!") : defaultSuffix);
@@ -96,8 +96,8 @@ bool RequiredPlugin::loadPlugin()
         suffixVec.push_back(defaultSuffix);
 
     /// Copy the lost of names provided as arguments
-    const helper::vector<std::string>& nameVec = d_pluginName.getValue();
-    helper::vector<std::string> pluginsToLoad = nameVec;
+    const type::vector<std::string>& nameVec = d_pluginName.getValue();
+    type::vector<std::string> pluginsToLoad = nameVec;
 
     /// In case the pluginName is not set we copy the provided name into the set to load.
     if(!d_pluginName.isSet() && name.isSet())
@@ -105,7 +105,7 @@ bool RequiredPlugin::loadPlugin()
         pluginsToLoad.push_back(this->getName());
     }
 
-    helper::vector< std::string > failed;
+    type::vector< std::string > failed;
     std::ostringstream errmsg;
     for (const auto& pluginName : pluginsToLoad)
     {

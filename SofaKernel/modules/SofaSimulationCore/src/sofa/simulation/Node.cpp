@@ -69,10 +69,7 @@
 #define DEBUG_VISITOR false
 #define DEBUG_LINK false
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
@@ -83,37 +80,34 @@ Node::Node(const std::string& name)
     , child(initLink("child", "Child nodes"))
     , object(initLink("object","All objects attached to this node"))
 
-    , animationManager(initLink("animationLoop","The AnimationLoop attached to this node (only valid for root node)"))
-    , visualLoop(initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
-
     , behaviorModel(initLink("behaviorModel", "The BehaviorModel attached to this node (only valid for root node)"))
     , mapping(initLink("mapping", "The (non-mechanical) Mapping(s) attached to this node (only valid for root node)"))
 
     , solver(initLink("odeSolver", "The OdeSolver(s) attached to this node (controlling the mechanical time integration of this branch)"))
     , constraintSolver(initLink("constraintSolver", "The ConstraintSolver(s) attached to this node"))
     , linearSolver(initLink("linearSolver", "The LinearSolver(s) attached to this node"))
-    , topology(initLink("topology", "The Topology attached to this node"))
-    , meshTopology(initLink("meshTopology", "The MeshTopology / TopologyContainer attached to this node"))
     , topologyObject(initLink("topologyObject", "The topology-related objects attached to this node"))
-    , state(initLink("state", "The State attached to this node (storing vectors such as position, velocity)"))
-    , mechanicalState(initLink("mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"))
-    , mechanicalMapping(initLink("mechanicalMapping", "The MechanicalMapping attached to this node"))
-    , mass(initLink("mass", "The Mass attached to this node"))
     , forceField(initLink("forceField", "The (non-interaction) ForceField(s) attached to this node"))
     , interactionForceField(initLink("interactionForceField", "The InteractionForceField(s) attached to this node"))
     , projectiveConstraintSet(initLink("projectiveConstraintSet", "The ProjectiveConstraintSet(s) attached to this node"))
     , constraintSet(initLink("constraintSet", "The ConstraintSet(s) attached to this node"))
     , contextObject(initLink("contextObject", "The ContextObject(s) attached to this node"))
     , configurationSetting(initLink("configurationSetting", "The ConfigurationSetting(s) attached to this node"))
-
     , shaders(initLink("shaders", "The shaders attached to this node"))
     , visualModel(initLink("visualModel", "The VisualModel(s) attached to this node"))
     , visualManager(initLink("visualManager", "The VisualManager(s) attached to this node"))
-
     , collisionModel(initLink("collisionModel", "The CollisionModel(s) attached to this node"))
-    , collisionPipeline(initLink("collisionPipeline", "The collision Pipeline attached to this node"))
-
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
+
+    , animationManager(initLink("animationLoop","The AnimationLoop attached to this node (only valid for root node)"))
+    , visualLoop(initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
+    , topology(initLink("topology", "The Topology attached to this node"))
+    , meshTopology(initLink("meshTopology", "The MeshTopology / TopologyContainer attached to this node"))
+    , state(initLink("state", "The State attached to this node (storing vectors such as position, velocity)"))
+    , mechanicalState(initLink("mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"))
+    , mechanicalMapping(initLink("mechanicalMapping", "The MechanicalMapping attached to this node"))
+    , mass(initLink("mass", "The Mass attached to this node"))
+    , collisionPipeline(initLink("collisionPipeline", "The collision Pipeline attached to this node"))
 
     , debug_(false)
     , initialized(false)
@@ -348,7 +342,7 @@ void Node::notifyEndRemoveSlave(core::objectmodel::BaseObject* master, core::obj
 void Node::notifySleepChanged(Node* node) const
 {
     if (this->getFirstParent() == nullptr) {
-        for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
+        for (type::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
             (*it)->sleepChanged(node);
     }
     else {
@@ -359,7 +353,7 @@ void Node::notifySleepChanged(Node* node) const
 void Node::addListener(MutationListener* obj)
 {
     // make sure we don't add the same listener twice
-    helper::vector< MutationListener* >::iterator it = listener.begin();
+    type::vector< MutationListener* >::iterator it = listener.begin();
     while (it != listener.end() && (*it)!=obj)
         ++it;
     if (it == listener.end())
@@ -368,7 +362,7 @@ void Node::addListener(MutationListener* obj)
 
 void Node::removeListener(MutationListener* obj)
 {
-    helper::vector< MutationListener* >::iterator it = listener.begin();
+    type::vector< MutationListener* >::iterator it = listener.begin();
     while (it != listener.end() && (*it)!=obj)
         ++it;
     if (it != listener.end())
@@ -608,11 +602,13 @@ bool Node::doAddObject(BaseObject::SPtr sobj)
 /// Remove an object
 bool Node::doRemoveObject(BaseObject::SPtr sobj)
 {
+    dmsg_warning_when(sobj == nullptr) << "Trying to remove a nullptr object";
+
     this->clearObjectContext(sobj);
     object.remove(sobj);
     BaseObject* obj = sobj.get();
 
-    if( !obj->removeInNode( this ) )
+    if(obj != nullptr && !obj->removeInNode( this ) )
         unsorted.remove(obj);
     return true;
 }
@@ -677,7 +673,7 @@ core::visual::Shader* Node::getShader(const sofa::core::objectmodel::TagSet& t) 
         return getShader();
     else // if getShader is Tag filtered
     {
-        for(Sequence<core::visual::Shader>::iterator it = shaders.begin(), iend=shaders.end(); it!=iend; ++it)
+        for(NodeSequence<core::visual::Shader>::iterator it = shaders.begin(), iend=shaders.end(); it!=iend; ++it)
         {
             if ( (*it)->getTags().includes(t) )
                 return (*it);
@@ -791,7 +787,7 @@ bool Node::getDebug() const
 void Node::removeControllers()
 {
     removeObject(*animationManager.begin());
-    typedef Sequence<core::behavior::OdeSolver> Solvers;
+    typedef NodeSequence<core::behavior::OdeSolver> Solvers;
     Solvers solverRemove = solver;
     for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; ++i )
         removeObject( *i );
@@ -937,67 +933,67 @@ void Node::printComponents()
     std::stringstream sstream;
 
     sstream << "BaseAnimationLoop: ";
-    for (Single<BaseAnimationLoop>::iterator i = animationManager.begin(), iend = animationManager.end(); i != iend; ++i)
+    for (NodeSingle<BaseAnimationLoop>::iterator i = animationManager.begin(), iend = animationManager.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "OdeSolver: ";
-    for (Sequence<OdeSolver>::iterator i = solver.begin(), iend = solver.end(); i != iend; ++i)
+    for (NodeSequence<OdeSolver>::iterator i = solver.begin(), iend = solver.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "LinearSolver: ";
-    for (Sequence<BaseLinearSolver>::iterator i = linearSolver.begin(), iend = linearSolver.end(); i != iend; i++)
+    for (NodeSequence<BaseLinearSolver>::iterator i = linearSolver.begin(), iend = linearSolver.end(); i != iend; i++)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "ConstraintSolver: ";
-    for (Sequence<ConstraintSolver>::iterator i = constraintSolver.begin(), iend = constraintSolver.end(); i != iend; ++i)
+    for (NodeSequence<ConstraintSolver>::iterator i = constraintSolver.begin(), iend = constraintSolver.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "VisualLoop: ";
-    for (Single<VisualLoop>::iterator i = visualLoop.begin(), iend = visualLoop.end(); i != iend; ++i)
+    for (NodeSingle<VisualLoop>::iterator i = visualLoop.begin(), iend = visualLoop.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "InteractionForceField: ";
-    for (Sequence<BaseInteractionForceField>::iterator i = interactionForceField.begin(), iend = interactionForceField.end(); i != iend; ++i)
+    for (NodeSequence<BaseInteractionForceField>::iterator i = interactionForceField.begin(), iend = interactionForceField.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "ForceField: ";
-    for (Sequence<BaseForceField>::iterator i = forceField.begin(), iend = forceField.end(); i != iend; ++i)
+    for (NodeSequence<BaseForceField>::iterator i = forceField.begin(), iend = forceField.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "State: ";
-    for (Single<BaseState>::iterator i = state.begin(), iend = state.end(); i != iend; ++i)
+    for (NodeSingle<BaseState>::iterator i = state.begin(), iend = state.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "MechanicalState: ";
-    for (Single<BaseMechanicalState>::iterator i = mechanicalState.begin(), iend = mechanicalState.end(); i != iend; ++i)
+    for (NodeSingle<BaseMechanicalState>::iterator i = mechanicalState.begin(), iend = mechanicalState.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "Mechanical Mapping: ";
-    for (Single<BaseMapping>::iterator i = mechanicalMapping.begin(), iend = mechanicalMapping.end(); i != iend; ++i)
+    for (NodeSingle<BaseMapping>::iterator i = mechanicalMapping.begin(), iend = mechanicalMapping.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "Mapping: ";
-    for (Sequence<BaseMapping>::iterator i = mapping.begin(), iend = mapping.end(); i != iend; ++i)
+    for (NodeSequence<BaseMapping>::iterator i = mapping.begin(), iend = mapping.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "Topology: ";
-    for (Single<Topology>::iterator i = topology.begin(), iend = topology.end(); i != iend; ++i)
+    for (NodeSingle<Topology>::iterator i = topology.begin(), iend = topology.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "MeshTopology: ";
-    for (Single<BaseMeshTopology>::iterator i = meshTopology.begin(), iend = meshTopology.end(); i != iend; ++i)
+    for (NodeSingle<BaseMeshTopology>::iterator i = meshTopology.begin(), iend = meshTopology.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "Shader: ";
-    for (Sequence<Shader>::iterator i = shaders.begin(), iend = shaders.end(); i != iend; ++i)
+    for (NodeSequence<Shader>::iterator i = shaders.begin(), iend = shaders.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "ProjectiveConstraintSet: ";
-    for (Sequence<BaseProjectiveConstraintSet>::iterator i = projectiveConstraintSet.begin(), iend = projectiveConstraintSet.end(); i != iend; ++i)
+    for (NodeSequence<BaseProjectiveConstraintSet>::iterator i = projectiveConstraintSet.begin(), iend = projectiveConstraintSet.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "ConstraintSet: ";
-    for (Sequence<BaseConstraintSet>::iterator i = constraintSet.begin(), iend = constraintSet.end(); i != iend; ++i)
+    for (NodeSequence<BaseConstraintSet>::iterator i = constraintSet.begin(), iend = constraintSet.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "BehaviorModel: ";
-    for (Sequence<BehaviorModel>::iterator i = behaviorModel.begin(), iend = behaviorModel.end(); i != iend; ++i)
+    for (NodeSequence<BehaviorModel>::iterator i = behaviorModel.begin(), iend = behaviorModel.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "VisualModel: ";
-    for (Sequence<VisualModel>::iterator i = visualModel.begin(), iend = visualModel.end(); i != iend; ++i)
+    for (NodeSequence<VisualModel>::iterator i = visualModel.begin(), iend = visualModel.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "CollisionModel: ";
-    for (Sequence<CollisionModel>::iterator i = collisionModel.begin(), iend = collisionModel.end(); i != iend; ++i)
+    for (NodeSequence<CollisionModel>::iterator i = collisionModel.begin(), iend = collisionModel.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "ContextObject: ";
-    for (Sequence<ContextObject>::iterator i = contextObject.begin(), iend = contextObject.end(); i != iend; ++i)
+    for (NodeSequence<ContextObject>::iterator i = contextObject.begin(), iend = contextObject.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "Pipeline: ";
-    for (Single<Pipeline>::iterator i = collisionPipeline.begin(), iend = collisionPipeline.end(); i != iend; ++i)
+    for (NodeSingle<Pipeline>::iterator i = collisionPipeline.begin(), iend = collisionPipeline.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n";
 
@@ -1018,6 +1014,64 @@ void Node::setSleeping(bool val)
     }
 }
 
-}
+#define NODE_DEFINE_SEQUENCE_ACCESSOR( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
+    void Node::add##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.add(obj); } \
+    void Node::remove##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.remove(obj); }
+
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::topology::Topology, Topology, topology )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BaseState, State, state )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMass, Mass, mass )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseForceField, ForceField, forceField )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ContextObject, ContextObject, contextObject )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::Shader, Shader, shaders )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualModel, VisualModel, visualModel )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualManager, VisualManager, visualManager )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, collisionModel )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+
+template class NodeSequence<Node,true>;
+template class NodeSequence<sofa::core::objectmodel::BaseObject,true>;
+template class NodeSequence<sofa::core::BehaviorModel>;
+template class NodeSequence<sofa::core::BaseMapping>;
+template class NodeSequence<sofa::core::behavior::OdeSolver>;
+template class NodeSequence<sofa::core::behavior::ConstraintSolver>;
+template class NodeSequence<sofa::core::behavior::BaseLinearSolver>;
+template class NodeSequence<sofa::core::topology::BaseTopologyObject>;
+template class NodeSequence<sofa::core::behavior::BaseForceField>;
+template class NodeSequence<sofa::core::behavior::BaseInteractionForceField>;
+template class NodeSequence<sofa::core::behavior::BaseProjectiveConstraintSet>;
+template class NodeSequence<sofa::core::behavior::BaseConstraintSet>;
+template class NodeSequence<sofa::core::objectmodel::ContextObject>;
+template class NodeSequence<sofa::core::objectmodel::ConfigurationSetting>;
+template class NodeSequence<sofa::core::visual::Shader>;
+template class NodeSequence<sofa::core::visual::VisualModel>;
+template class NodeSequence<sofa::core::visual::VisualManager>;
+template class NodeSequence<sofa::core::CollisionModel>;
+template class NodeSequence<sofa::core::objectmodel::BaseObject>;
+
+template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
+template class NodeSingle<sofa::core::visual::VisualLoop>;
+template class NodeSingle<sofa::core::topology::Topology>;
+template class NodeSingle<sofa::core::topology::BaseMeshTopology>;
+template class NodeSingle<sofa::core::BaseState>;
+template class NodeSingle<sofa::core::behavior::BaseMechanicalState>;
+template class NodeSingle<sofa::core::BaseMapping>;
+template class NodeSingle<sofa::core::behavior::BaseMass>;
+template class NodeSingle<sofa::core::collision::Pipeline>;
 
 }

@@ -6,7 +6,8 @@
 	<FreeMotionAnimationLoop/>
 	
 	<DefaultPipeline depth="6" verbose="0" draw="0"/>
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity" alarmDistance="3" contactDistance="0" coneFactor="0.5" angleCone="0.002"/>
 
 	<RuleBasedContactManager name="Response" response="FrictionContact" rules="	1 3 FrictionContact

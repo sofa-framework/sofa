@@ -26,7 +26,7 @@
 #include <sofa/core/CollisionElement.h>
 
 //todo(dmarchal 2018-06-19) I really wonder why a collision model has a dependency to a RGBAColors.
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa
 {
@@ -94,7 +94,7 @@ public:
 
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
-    typedef sofa::defaulttype::Vector3::value_type Real;
+    typedef sofa::type::Vector3::value_type Real;
     using Index = sofa::Index;
     using Size = sofa::Size;
 
@@ -135,13 +135,13 @@ public:
     /// Get the number of contacts attached to the collision model
     Size getNumberOfContacts() const
     {
-        return numberOfContacts;
+        return d_numberOfContacts.getValue();
     }
 
     /// Set the number of contacts attached to the collision model
     void setNumberOfContacts(Size i)
     {
-        numberOfContacts = i;
+        d_numberOfContacts.setValue(i);
     }
 
     /// Set the number of elements.
@@ -403,7 +403,7 @@ protected:
     Data<std::string> contactResponse;
 
     /// color used to display the collision model if requested
-    Data<sofa::helper::types::RGBAColor> color;
+    Data<sofa::type::RGBAColor> color;
 
     /// No collision can occur between collision
     /// models included in a common group (i.e. sharing a common id)
@@ -413,7 +413,7 @@ protected:
     Size size;
 
     /// number of contacts attached to the collision model
-    Size numberOfContacts;
+    Data<Size> d_numberOfContacts;
 
     /// Pointer to the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
     SingleLink<CollisionModel,CollisionModel,BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> previous;

@@ -30,7 +30,7 @@
 #include <SofaImplicitField/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 namespace sofa::component::geometry
 {
@@ -39,8 +39,8 @@ namespace _scalarfield_
 {
 
 using sofa::core::objectmodel::BaseObject ;
-using sofa::defaulttype::Vec3d ;
-using sofa::defaulttype::Mat3x3 ;
+using sofa::type::Vec3d ;
+using sofa::type::Mat3x3 ;
 
 ////////////////// ///////////////
 class SOFA_SOFAIMPLICITFIELD_API ScalarField : public BaseObject

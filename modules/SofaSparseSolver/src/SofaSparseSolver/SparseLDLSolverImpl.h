@@ -30,13 +30,7 @@ extern "C" {
 #include <metis.h>
 }
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 //defaut structure for a LDL factorization
@@ -47,7 +41,7 @@ public :
     VecInt P_rowind,P_colptr,L_rowind,L_colptr,LT_rowind,LT_colptr;
     VecInt perm, invperm;
     VecReal P_values,L_values,LT_values,invD;
-    helper::vector<int> Parent;
+    type::vector<int> Parent;
     bool new_factorization_needed;
 };
 
@@ -365,21 +359,17 @@ protected :
         }
     }
 
-    helper::vector<Real> Tmp;
+    type::vector<Real> Tmp;
 protected : //the folowing variables are used during the factorization they canno be used in the main thread !
-    helper::vector<int> xadj,adj,t_xadj,t_adj;
-    helper::vector<Real> Y;
-    helper::vector<int> Lnz,Flag,Pattern;
-    helper::vector<int> tran_countvec;
+    type::vector<int> xadj,adj,t_xadj,t_adj;
+    type::vector<Real> Y;
+    type::vector<int> Lnz,Flag,Pattern;
+    type::vector<int> tran_countvec;
 
-//    helper::vector<int> perm, invperm; //premutation inverse
+//    type::vector<int> perm, invperm; //premutation inverse
 
 };
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver
 
 #endif

@@ -22,18 +22,19 @@
 #define SOFA_COMPONENT_CONSTRAINT_GENERICCONSTRAINTCORRECTION_CPP
 
 #include <SofaConstraint/GenericConstraintCorrection.h>
-
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/ConstraintParams.h>
+
 using sofa::core::execparams::defaultInstance; 
 
 namespace sofa::component::constraintset 
 {
-
-using sofa::helper::vector;
+using sofa::simulation::mechanicalvisitor::MechanicalIntegrateConstraintsVisitor;
+using sofa::type::vector;
 using sofa::core::objectmodel::BaseContext;
 using sofa::core::behavior::LinearSolver;
 using sofa::core::behavior::BaseConstraintCorrection;
@@ -66,7 +67,7 @@ void GenericConstraintCorrection::bwdInit()
     // Find linear solvers
     m_linearSolvers.clear();
     const vector<std::string>& solverNames = d_linearSolversName.getValue();
-    if(solverNames.size() == 0)
+    if(solverNames.empty())
     {
         LinearSolver* s = nullptr;
         context->get(s);
@@ -116,15 +117,15 @@ void GenericConstraintCorrection::bwdInit()
         }
     }
 
-    if (m_linearSolvers.size() == 0)
+    if (m_linearSolvers.empty())
     {
         msg_error() << "No LinearSolver found.";
         return;
     }
 
     msg_info() << "Found " << m_linearSolvers.size() << " m_linearSolvers";
-    for (unsigned i = 0; i < m_linearSolvers.size(); i++)
-        msg_info() << m_linearSolvers[i]->getName();
+    for (auto* linearSolver : m_linearSolvers)
+        msg_info() << linearSolver->getName();
 }
 
 void GenericConstraintCorrection::cleanup()
@@ -149,8 +150,8 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
 
 void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceFactor)
 {
-    for (unsigned i = 0; i < m_linearSolvers.size(); i++)
-        m_linearSolvers[i]->rebuildSystem(massFactor, forceFactor);
+    for (auto* linearSolver : m_linearSolvers)
+        linearSolver->rebuildSystem(massFactor, forceFactor);
 }
 
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
@@ -179,17 +180,17 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
     factor *= complianceFactor;
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    for (unsigned i = 0; i < m_linearSolvers.size(); i++)
+    for (auto* linearSolver : m_linearSolvers)
     {
-        m_linearSolvers[i]->buildComplianceMatrix(cparams, W, factor);
+        linearSolver->buildComplianceMatrix(cparams, W, factor);
     }
 }
 
 void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const defaulttype::BaseVector * lambda)
 {
-    for (Size i = 0; i < m_linearSolvers.size(); ++i)
+    for (auto* linearSolver : m_linearSolvers)
     {
-        m_linearSolvers[i]->applyConstraintForce(cparams, dx, lambda);
+        linearSolver->applyConstraintForce(cparams, dx, lambda);
     }
 }
 
@@ -201,10 +202,10 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
                                                         double positionFactor,
                                                         double velocityFactor)
 {
-    for (Size i = 0; i < m_linearSolvers.size(); ++i)
+    for (auto* linearSolver : m_linearSolvers)
     {
-        simulation::MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, m_linearSolvers[i]->getSystemMultiMatrixAccessor());
-        m_linearSolvers[i]->getContext()->executeVisitor(&v);
+        MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, linearSolver->getSystemMultiMatrixAccessor());
+        linearSolver->getContext()->executeVisitor(&v);
     }
 }
 
@@ -261,9 +262,9 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 
 void GenericConstraintCorrection::computeResidual(const ExecParams* params, defaulttype::BaseVector *lambda)
 {
-    for (unsigned i = 0; i < m_linearSolvers.size(); i++)
+    for (auto* linearSolver : m_linearSolvers)
     {
-        m_linearSolvers[i]->computeResidual(params, lambda);
+        linearSolver->computeResidual(params, lambda);
     }
 }
 

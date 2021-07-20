@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaBaseTopology/TopologyData.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 //VERY IMPORTANT FOR GRAPHS
@@ -56,7 +56,7 @@ public:
     typedef typename DataTypes::Real Real;
 
     /// In case of non 3D template
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
     /// assumes the geometry object type is 3D
     typedef defaulttype::StdVectorTypes< Vec3, Vec3, Real > GeometricalTypes;
 };
@@ -77,8 +77,8 @@ public:
     typedef core::objectmodel::Data<VecCoord>               DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>               DataVecDeriv;
     typedef TMassType                                       MassType;
-    typedef helper::vector<MassType>                        MassVector;
-    typedef helper::vector<MassVector>                      MassVectorVector;
+    typedef type::vector<MassType>                        MassVector;
+    typedef type::vector<MassVector>                      MassVectorVector;
 
     using Index = sofa::Index;
 
@@ -86,22 +86,17 @@ public:
 
     /// @name Data of mass information
     /// @{
-    /// Mass stored on vertices
-    Data< sofa::helper::vector< Real > > d_vertexMass;
     /// Mass density of the object
-    Data< sofa::helper::vector< Real > > d_massDensity;
+    Data< sofa::type::vector< Real > > d_massDensity;
     /// Total mass of the object
     Data< Real > d_totalMass;
     /// @}
 
 
     /// Values of the particles masses stored on vertices
-    topology::PointData<helper::vector<MassType> >  d_vertexMassInfo;
+    topology::PointData<type::vector<MassType> >  d_vertexMass;
     /// Values of the particles masses stored on edges
-    topology::EdgeData<helper::vector<MassType> >   d_edgeMassInfo;
-
-    /// to display the center of gravity of the system
-    Data< sofa::helper::vector< Real > > d_edgeMass;
+    topology::EdgeData<type::vector<MassType> >   d_edgeMass;
 
     /// if true, the mass of every element is computed based on the rest position rather than the position
     Data< bool > d_computeMassOnRest;
@@ -113,7 +108,7 @@ public:
     Data< bool >         d_lumping;
     /// if specific mass information should be outputed
     Data< bool >         d_printMass; ///< Boolean to print the mass
-    Data< std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of the controlled potential
+    Data< std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of the controlled potential
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<MeshMatrixMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -162,7 +157,7 @@ public:
     }
 
     int getMassCount() {
-        return d_vertexMassInfo.getValue().size();
+        return d_vertexMass.getValue().size();
     }
 
     /// Print key mass informations (totalMass, vertexMass and massDensity)
@@ -174,12 +169,12 @@ public:
 
     /// @name Read and write access functions in mass information
     /// @{
-    virtual const sofa::helper::vector< Real > &getVertexMass();
-    virtual const sofa::helper::vector< Real > &getMassDensity();
+    virtual const sofa::type::vector< Real > &getVertexMass();
+    virtual const sofa::type::vector< Real > &getMassDensity();
     virtual const Real &getTotalMass();
 
-    virtual void setVertexMass(sofa::helper::vector< Real > vertexMass);
-    virtual void setMassDensity(sofa::helper::vector< Real > massDensity);
+    virtual void setVertexMass(sofa::type::vector< Real > vertexMass);
+    virtual void setMassDensity(sofa::type::vector< Real > massDensity);
     virtual void setMassDensity(Real massDensityValue);
     virtual void setTotalMass(Real totalMass);
     /// @}
@@ -217,7 +212,7 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)) override
+    type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)) override
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
@@ -242,26 +237,29 @@ protected:
     class VertexMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point,MassVector>
     {
     public:
-        VertexMassHandler(MeshMatrixMass<DataTypes,TMassType>* _m, topology::PointData<helper::vector<TMassType> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point,helper::vector<TMassType> >(_data), m(_m) {}
+        VertexMassHandler(MeshMatrixMass<DataTypes,TMassType>* _m, topology::PointData<type::vector<TMassType> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point,type::vector<TMassType> >(_data), m(_m) {}
 
         /// Mass initialization Creation Functions:
         /// Vertex mass coefficient matrix creation function
         void applyCreateFunction(Index pointIndex, TMassType & VertexMass,
-                const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double >&);
+                const sofa::type::vector< Index > &,
+                const sofa::type::vector< double >&);
+
+        /// Apply removing 
+        void applyDestroyFunction(Index, TMassType&);
 
 
         ///////////////////////// Functions on Triangles //////////////////////////////////////
 
         /// Mass coefficient Creation/Destruction functions for Triangular Mesh:
         /// Vertex coefficient of mass matrix creation function to handle creation of new triangles
-        void applyTriangleCreation(const sofa::helper::vector< Index >& /*indices*/,
-                const sofa::helper::vector< core::topology::BaseMeshTopology::Triangle >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        void applyTriangleCreation(const sofa::type::vector< Index >& /*indices*/,
+                const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& /*elems*/,
+                const sofa::type::vector< sofa::type::vector< Index > >& /*ancestors*/,
+                const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
         /// Vertex coefficient of mass matrix destruction function to handle creation of new triangles
-        void applyTriangleDestruction(const sofa::helper::vector<Index> & /*indices*/);
+        void applyTriangleDestruction(const sofa::type::vector<Index> & /*indices*/);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point,MassVector>::ApplyTopologyChange;
         /// Callback to add triangles elements.
@@ -274,13 +272,13 @@ protected:
 
         /// Mass coefficient Creation/Destruction functions for Quad Mesh:
         /// Vertex coefficient of mass matrix creation function to handle creation of new quads
-        void applyQuadCreation(const sofa::helper::vector< Index >& /*indices*/,
-                const sofa::helper::vector< core::topology::BaseMeshTopology::Quad >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        void applyQuadCreation(const sofa::type::vector< Index >& /*indices*/,
+                const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& /*elems*/,
+                const sofa::type::vector< sofa::type::vector< Index > >& /*ancestors*/,
+                const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
         /// Vertex coefficient of mass matrix destruction function to handle creation of new quads
-        void applyQuadDestruction(const sofa::helper::vector<Index> & /*indices*/);
+        void applyQuadDestruction(const sofa::type::vector<Index> & /*indices*/);
 
         /// Callback to add quads elements.
         void ApplyTopologyChange(const core::topology::QuadsAdded* /*event*/);
@@ -292,13 +290,13 @@ protected:
 
         /// Mass coefficient Creation/Destruction functions for Tetrahedral Mesh:
         /// Vertex coefficient of mass matrix creation function to handle creation of new tetrahedra
-        void applyTetrahedronCreation(const sofa::helper::vector< Index >& /*indices*/,
-                const sofa::helper::vector< core::topology::BaseMeshTopology::Tetrahedron >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        void applyTetrahedronCreation(const sofa::type::vector< Index >& /*indices*/,
+                const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& /*elems*/,
+                const sofa::type::vector< sofa::type::vector< Index > >& /*ancestors*/,
+                const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
         /// Vertex coefficient of mass matrix destruction function to handle creation of new tetrahedra
-        void applyTetrahedronDestruction(const sofa::helper::vector<Index> & /*indices*/);
+        void applyTetrahedronDestruction(const sofa::type::vector<Index> & /*indices*/);
 
         /// Callback to add tetrahedron elements.
         void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/);
@@ -310,13 +308,13 @@ protected:
 
         /// Mass coefficient Creation/Destruction functions for Hexahedral Mesh:
         /// Vertex coefficient of mass matrix creation function to handle creation of new hexahedra
-        void applyHexahedronCreation(const sofa::helper::vector< Index >& /*indices*/,
-                const sofa::helper::vector< core::topology::BaseMeshTopology::Hexahedron >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        void applyHexahedronCreation(const sofa::type::vector< Index >& /*indices*/,
+                const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& /*elems*/,
+                const sofa::type::vector< sofa::type::vector< Index > >& /*ancestors*/,
+                const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
         /// Vertex coefficient of mass matrix destruction function to handle creation of new hexahedra
-        void applyHexahedronDestruction(const sofa::helper::vector<Index> & /*indices*/);
+        void applyHexahedronDestruction(const sofa::type::vector<Index> & /*indices*/);
 
         /// Callback to add hexahedron elements.
         virtual void ApplyTopologyChange(const core::topology::HexahedraAdded* /*event*/);
@@ -331,26 +329,29 @@ protected:
     class EdgeMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,MassVector>
     {
     public:
-        EdgeMassHandler(MeshMatrixMass<DataTypes,TMassType>* _m, topology::EdgeData<helper::vector<TMassType> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<TMassType> >(_data), m(_m) {}
+        EdgeMassHandler(MeshMatrixMass<DataTypes,TMassType>* _m, topology::EdgeData<type::vector<TMassType> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,type::vector<TMassType> >(_data), m(_m) {}
 
         /// Edge mass coefficient matrix creation function
         void applyCreateFunction(Index edgeIndex, MassType & EdgeMass,
                 const core::topology::BaseMeshTopology::Edge&,
-                const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double >&);
+                const sofa::type::vector< Index > &,
+                const sofa::type::vector< double >&);
+
+        /// Apply removing 
+        void applyDestroyFunction(Index, MassType&);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,MassVector>::ApplyTopologyChange;
 
         ///////////////////////// Functions on Triangles //////////////////////////////////////
 
         /// Edge coefficient of mass matrix creation function to handle creation of new triangles
-        void applyTriangleCreation(const sofa::helper::vector< Index >& /*indices*/,
-                const sofa::helper::vector< core::topology::BaseMeshTopology::Triangle >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        void applyTriangleCreation(const sofa::type::vector< Index >& /*indices*/,
+                const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& /*elems*/,
+                const sofa::type::vector< sofa::type::vector< Index > >& /*ancestors*/,
+                const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
         /// Edge coefficient of mass matrix destruction function to handle creation of new triangles
-        void applyTriangleDestruction(const sofa::helper::vector<Index> & /*indices*/);
+        void applyTriangleDestruction(const sofa::type::vector<Index> & /*indices*/);
 
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
@@ -361,13 +362,13 @@ protected:
         ///////////////////////// Functions on Quads //////////////////////////////////////
 
         /// Edge coefficient of mass matrix creation function to handle creation of new quads
-        void applyQuadCreation(const sofa::helper::vector< Index >& /*indices*/,
-                const sofa::helper::vector< core::topology::BaseMeshTopology::Quad >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        void applyQuadCreation(const sofa::type::vector< Index >& /*indices*/,
+                const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& /*elems*/,
+                const sofa::type::vector< sofa::type::vector< Index > >& /*ancestors*/,
+                const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
         /// Edge coefficient of mass matrix destruction function to handle creation of new quads
-        void applyQuadDestruction(const sofa::helper::vector<Index> & /*indices*/);
+        void applyQuadDestruction(const sofa::type::vector<Index> & /*indices*/);
 
         /// Callback to add quads elements.
         void ApplyTopologyChange(const core::topology::QuadsAdded* /*event*/);
@@ -378,13 +379,13 @@ protected:
         ///////////////////////// Functions on Tetrahedron //////////////////////////////////////
 
         /// Edge coefficient of mass matrix creation function to handle creation of new tetrahedra
-        void applyTetrahedronCreation(const sofa::helper::vector< Index >& /*indices*/,
-                const sofa::helper::vector< core::topology::BaseMeshTopology::Tetrahedron >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        void applyTetrahedronCreation(const sofa::type::vector< Index >& /*indices*/,
+                const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& /*elems*/,
+                const sofa::type::vector< sofa::type::vector< Index > >& /*ancestors*/,
+                const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
         /// Edge coefficient of mass matrix destruction function to handle creation of new tetrahedra
-        void applyTetrahedronDestruction(const sofa::helper::vector<Index> & /*indices*/);
+        void applyTetrahedronDestruction(const sofa::type::vector<Index> & /*indices*/);
 
         /// Callback to add tetrahedron elements.
         void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/);
@@ -395,13 +396,13 @@ protected:
         ///////////////////////// Functions on Hexahedron //////////////////////////////////////
 
         /// Edge coefficient of mass matrix creation function to handle creation of new hexahedra
-        void applyHexahedronCreation(const sofa::helper::vector< Index >& /*indices*/,
-                const sofa::helper::vector< core::topology::BaseMeshTopology::Hexahedron >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+        void applyHexahedronCreation(const sofa::type::vector< Index >& /*indices*/,
+                const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& /*elems*/,
+                const sofa::type::vector< sofa::type::vector< Index > >& /*ancestors*/,
+                const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
         /// Edge coefficient of mass matrix destruction function to handle creation of new hexahedra
-        void applyHexahedronDestruction(const sofa::helper::vector<Index> & /*indices*/);
+        void applyHexahedronDestruction(const sofa::type::vector<Index> & /*indices*/);
 
         /// Callback to add hexahedron elements.
         void ApplyTopologyChange(const core::topology::HexahedraAdded* /*event*/);

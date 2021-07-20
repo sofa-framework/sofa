@@ -23,6 +23,7 @@
 #define SOFA_HELPER_POLYNOMIAL_LD_INL
 
 #include <sofa/helper/Polynomial_LD.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sstream>
 #include <iterator>
 

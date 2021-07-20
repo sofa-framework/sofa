@@ -28,15 +28,15 @@
 
 #include <sofa/gui/PickHandler.h>
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/gl/Texture.h>
-#include <sofa/helper/gl/Capture.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
+#include <sofa/gl/Texture.h>
+#include <sofa/gl/Capture.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/gl/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <cmath>
 #include <cstdlib>
@@ -54,7 +54,7 @@ namespace glut
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
+using namespace sofa::gl;
 using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
@@ -63,7 +63,7 @@ class SimpleGUI : public sofa::gui::BaseGUI
 
 public:
     typedef sofa::core::visual::VisualParams VisualParams;
-    typedef sofa::core::visual::DrawToolGL   DrawToolGL;
+    typedef sofa::gl::DrawToolGL   DrawToolGL;
 
     /// @name methods each GUI must implement
     /// @{

@@ -71,8 +71,8 @@ MeshLoader::MeshLoader() : BaseLoader()
   , d_translation(initData(&d_translation, Vec3(), "translation", "Translation of the DOFs"))
   , d_rotation(initData(&d_rotation, Vec3(), "rotation", "Rotation of the DOFs"))
   , d_scale(initData(&d_scale, Vec3(1.0, 1.0, 1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
-  , d_transformation(initData(&d_transformation, Matrix4::s_identity, "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
-  , d_previousTransformation( Matrix4::s_identity )
+  , d_transformation(initData(&d_transformation, type::Matrix4::s_identity, "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
+  , d_previousTransformation(type::Matrix4::s_identity )
 {
     addAlias(&d_tetrahedra, "tetras");
     addAlias(&d_hexahedra, "hexas");
@@ -132,7 +132,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_normals.setReadOnly(true);
 
     /// name filename => component state update + change of all data field...but not visible ?
-    addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t)
+    addUpdateCallback("filename", {&d_filename}, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
         if(load()){
@@ -197,12 +197,8 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
         d_scale.setValue(d_scale.getValue()*s);
     }
 
-    bool success = false;
-    if (canLoad())
-        success = load(/*m_filename.getFullPath().c_str()*/);
-
     // File not loaded, component is set to invalid
-    if (!success)
+    if (!canLoad())
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 }
 
@@ -214,7 +210,7 @@ void MeshLoader::init()
 
 void MeshLoader::reinit()
 {
-    Matrix4 transformation = d_transformation.getValue();
+    type::Matrix4 transformation = d_transformation.getValue();
     const Vec3& scale = d_scale.getValue();
     const Vec3& rotation = d_rotation.getValue();
     const Vec3& translation = d_translation.getValue();
@@ -224,7 +220,7 @@ void MeshLoader::reinit()
     d_previousTransformation.identity();
 
 
-    if (transformation != Matrix4::s_identity)
+    if (transformation != type::Matrix4::s_identity)
     {
         if (d_scale.getValue() != Vec3(1.0, 1.0, 1.0) || d_rotation.getValue() != Vec3(0.0, 0.0, 0.0) || d_translation.getValue() != Vec3(0.0, 0.0, 0.0))
         {
@@ -236,12 +232,12 @@ void MeshLoader::reinit()
         // Transformation of the local frame: scale along the translated and rotated axes, then rotation around the translated origin, then translation
         // is applied to the points to implement the matrix product TRSx
 
-        transformation = Matrix4::transformTranslation(translation) *
-                Matrix4::transformRotation(helper::Quater< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
-                Matrix4::transformScale(scale);
+        transformation = type::Matrix4::transformTranslation(translation) *
+                type::Matrix4::transformRotation(type::Quat< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
+                type::Matrix4::transformScale(scale);
     }
 
-    if (transformation != Matrix4::s_identity)
+    if (transformation != type::Matrix4::s_identity)
     {
         this->applyTransformation(transformation);
         d_previousTransformation.transformInvert(transformation);
@@ -299,8 +295,8 @@ void MeshLoader::updateElements()
 {
     if (d_triangulate.getValue())
     {
-        helper::WriteAccessor<Data<helper::vector< Quad > > > waQuads = d_quads;
-        helper::WriteAccessor<Data<helper::vector< Triangle > > > waTriangles = d_triangles;
+        helper::WriteAccessor<Data<type::vector< Quad > > > waQuads = d_quads;
+        helper::WriteAccessor<Data<type::vector< Triangle > > > waTriangles = d_triangles;
 
         for (Size i = 0; i < waQuads.size() ; i++)
         {
@@ -312,8 +308,8 @@ void MeshLoader::updateElements()
     }
     if (d_hexahedra.getValue().size() > 0 && d_createSubelements.getValue())
     {
-        helper::ReadAccessor<Data<helper::vector< Hexahedron > > > hexahedra = this->d_hexahedra;
-        helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
+        helper::ReadAccessor<Data<type::vector< Hexahedron > > > hexahedra = this->d_hexahedra;
+        helper::WriteAccessor<Data<type::vector< Quad > > > quads = this->d_quads;
         std::set<Quad > eSet;
         for (Size i = 0; i < quads.size(); ++i)
         {
@@ -323,7 +319,7 @@ void MeshLoader::updateElements()
         for (Size i = 0; i < hexahedra.size(); ++i)
         {
             Hexahedron h = hexahedra[i];
-            helper::fixed_array< Quad, 6 > e;
+            type::fixed_array< Quad, 6 > e;
             e[0] = Quad(h[0], h[3], h[2], h[1]);
             e[1] = Quad(h[4], h[5], h[6], h[7]);
             e[2] = Quad(h[0], h[1], h[5], h[4]);
@@ -346,9 +342,9 @@ void MeshLoader::updateElements()
     }
     if (d_pentahedra.getValue().size() > 0 && d_createSubelements.getValue())
     {
-        helper::ReadAccessor<Data<helper::vector< Pentahedron > > > pentahedra = this->d_pentahedra;
-        helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
-        helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
+        helper::ReadAccessor<Data<type::vector< Pentahedron > > > pentahedra = this->d_pentahedra;
+        helper::WriteAccessor<Data<type::vector< Quad > > > quads = this->d_quads;
+        helper::WriteAccessor<Data<type::vector< Triangle > > > triangles = this->d_triangles;
 
         std::set<Quad > eSetQuad;
         for (Size i = 0; i < quads.size(); ++i)
@@ -408,10 +404,10 @@ void MeshLoader::updateElements()
     }
     if (d_pyramids.getValue().size() > 0 && d_createSubelements.getValue())
     {
-        helper::ReadAccessor<Data<helper::vector< Pyramid > > > pyramids = this->d_pyramids;
+        helper::ReadAccessor<Data<type::vector< Pyramid > > > pyramids = this->d_pyramids;
 
-        helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
-        helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
+        helper::WriteAccessor<Data<type::vector< Quad > > > quads = this->d_quads;
+        helper::WriteAccessor<Data<type::vector< Triangle > > > triangles = this->d_triangles;
 
         std::set<Quad > eSetQuad;
         for (Size i = 0; i < quads.size(); ++i)
@@ -470,8 +466,8 @@ void MeshLoader::updateElements()
     }
     if (d_tetrahedra.getValue().size() > 0 && d_createSubelements.getValue())
     {
-        helper::ReadAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->d_tetrahedra;
-        helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
+        helper::ReadAccessor<Data<type::vector< Tetrahedron > > > tetrahedra = this->d_tetrahedra;
+        helper::WriteAccessor<Data<type::vector< Triangle > > > triangles = this->d_triangles;
         std::set<Triangle > eSet;
         for (Size i = 0; i < triangles.size(); ++i)
         {
@@ -513,8 +509,8 @@ void MeshLoader::updateElements()
     }
     if (d_quads.getValue().size() > 0 && d_createSubelements.getValue())
     {
-        helper::ReadAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
-        helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->d_edges;
+        helper::ReadAccessor<Data<type::vector< Quad > > > quads = this->d_quads;
+        helper::WriteAccessor<Data<type::vector< Edge > > > edges = this->d_edges;
         std::set<Edge > eSet;
         for (Size i = 0; i < edges.size(); ++i)
         {
@@ -541,8 +537,8 @@ void MeshLoader::updateElements()
     }
     if (d_triangles.getValue().size() > 0 && d_createSubelements.getValue())
     {
-        helper::ReadAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
-        helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->d_edges;
+        helper::ReadAccessor<Data<type::vector< Triangle > > > triangles = this->d_triangles;
+        helper::WriteAccessor<Data<type::vector< Edge > > > edges = this->d_edges;
         std::set<Edge > eSet;
         for (Size i = 0; i < edges.size(); ++i)
         {
@@ -575,7 +571,7 @@ void MeshLoader::updatePoints()
     {
         std::set<Topology::ElemID> attachedPoints;
         {
-            helper::ReadAccessor<Data< helper::vector< Edge > > > elems = d_edges;
+            helper::ReadAccessor<Data< type::vector< Edge > > > elems = d_edges;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -583,7 +579,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< helper::vector< Triangle > > > elems = d_triangles;
+            helper::ReadAccessor<Data< type::vector< Triangle > > > elems = d_triangles;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -591,7 +587,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< helper::vector< Quad > > > elems = d_quads;
+            helper::ReadAccessor<Data< type::vector< Quad > > > elems = d_quads;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -599,7 +595,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< helper::vector< Tetrahedron > > > elems = d_tetrahedra;
+            helper::ReadAccessor<Data< type::vector< Tetrahedron > > > elems = d_tetrahedra;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -607,7 +603,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< helper::vector< Pentahedron > > > elems = d_pentahedra;
+            helper::ReadAccessor<Data< type::vector< Pentahedron > > > elems = d_pentahedra;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -615,7 +611,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< helper::vector< Pyramid > > > elems = d_pyramids;
+            helper::ReadAccessor<Data< type::vector< Pyramid > > > elems = d_pyramids;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -623,7 +619,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::ReadAccessor<Data< helper::vector< Hexahedron > > > elems = d_hexahedra;
+            helper::ReadAccessor<Data< type::vector< Hexahedron > > > elems = d_hexahedra;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -635,8 +631,8 @@ void MeshLoader::updatePoints()
         {
             return;    // all points are attached
         }
-        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waPositions = d_positions;
-        helper::vector<Topology::ElemID> old2new;
+        helper::WriteAccessor<Data<type::vector<sofa::type::Vec<3, SReal> > > > waPositions = d_positions;
+        type::vector<Topology::ElemID> old2new;
         old2new.resize(waPositions.size());
         Topology::ElemID p = 0;
         for (std::set<Topology::ElemID>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
@@ -651,7 +647,7 @@ void MeshLoader::updatePoints()
         }
         waPositions.resize(newsize);
         {
-            helper::WriteAccessor<Data< helper::vector< Edge > > > elems = d_edges;
+            helper::WriteAccessor<Data< type::vector< Edge > > > elems = d_edges;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -659,7 +655,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::WriteAccessor<Data< helper::vector< Triangle > > > elems = d_triangles;
+            helper::WriteAccessor<Data< type::vector< Triangle > > > elems = d_triangles;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -667,7 +663,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::WriteAccessor<Data< helper::vector< Quad > > > elems = d_quads;
+            helper::WriteAccessor<Data< type::vector< Quad > > > elems = d_quads;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -675,7 +671,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::WriteAccessor<Data< helper::vector< Tetrahedron > > > elems = d_tetrahedra;
+            helper::WriteAccessor<Data< type::vector< Tetrahedron > > > elems = d_tetrahedra;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -683,7 +679,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::WriteAccessor<Data< helper::vector< Pentahedron > > > elems = d_pentahedra;
+            helper::WriteAccessor<Data< type::vector< Pentahedron > > > elems = d_pentahedra;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -691,7 +687,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::WriteAccessor<Data< helper::vector< Pyramid > > > elems = d_pyramids;
+            helper::WriteAccessor<Data< type::vector< Pyramid > > > elems = d_pyramids;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -699,7 +695,7 @@ void MeshLoader::updatePoints()
                 }
         }
         {
-            helper::WriteAccessor<Data< helper::vector< Hexahedron > > > elems = d_hexahedra;
+            helper::WriteAccessor<Data< type::vector< Hexahedron > > > elems = d_hexahedra;
             for (Size i = 0; i < elems.size(); ++i)
                 for (Size j = 0; j < elems[i].size(); ++j)
                 {
@@ -711,9 +707,9 @@ void MeshLoader::updatePoints()
 
 void MeshLoader::updateNormals()
 {
-    helper::ReadAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > raPositions = d_positions;
-    helper::ReadAccessor<Data< helper::vector< Triangle > > > raTriangles = d_triangles;
-    helper::ReadAccessor<Data< helper::vector< Quad > > > raQuads = d_quads;
+    helper::ReadAccessor<Data<type::vector<sofa::type::Vec<3, SReal> > > > raPositions = d_positions;
+    helper::ReadAccessor<Data< type::vector< Triangle > > > raTriangles = d_triangles;
+    helper::ReadAccessor<Data< type::vector< Quad > > > raQuads = d_quads;
 
     //look if we already have loaded normals
     if (d_normals.getValue().size() == raPositions.size())
@@ -721,16 +717,16 @@ void MeshLoader::updateNormals()
         return;
     }
 
-    helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waNormals = d_normals;
+    helper::WriteAccessor<Data<type::vector<sofa::type::Vec<3, SReal> > > > waNormals = d_normals;
 
     waNormals.resize(raPositions.size());
 
     for (Size i = 0; i < raTriangles.size() ; i++)
     {
-        const sofa::defaulttype::Vec<3, SReal>  v1 = raPositions[raTriangles[i][0]];
-        const sofa::defaulttype::Vec<3, SReal>  v2 = raPositions[raTriangles[i][1]];
-        const sofa::defaulttype::Vec<3, SReal>  v3 = raPositions[raTriangles[i][2]];
-        sofa::defaulttype::Vec<3, SReal> n = cross(v2 - v1, v3 - v1);
+        const sofa::type::Vec<3, SReal>  v1 = raPositions[raTriangles[i][0]];
+        const sofa::type::Vec<3, SReal>  v2 = raPositions[raTriangles[i][1]];
+        const sofa::type::Vec<3, SReal>  v3 = raPositions[raTriangles[i][2]];
+        sofa::type::Vec<3, SReal> n = cross(v2 - v1, v3 - v1);
 
         n.normalize();
         waNormals[raTriangles[i][0]] += n;
@@ -740,14 +736,14 @@ void MeshLoader::updateNormals()
     }
     for (Size i = 0; i < raQuads.size() ; i++)
     {
-        const sofa::defaulttype::Vec<3, SReal>& v1 = raPositions[raQuads[i][0]];
-        const sofa::defaulttype::Vec<3, SReal>& v2 = raPositions[raQuads[i][1]];
-        const sofa::defaulttype::Vec<3, SReal>& v3 = raPositions[raQuads[i][2]];
-        const sofa::defaulttype::Vec<3, SReal>& v4 = raPositions[raQuads[i][3]];
-        sofa::defaulttype::Vec<3, SReal> n1 = cross(v2 - v1, v4 - v1);
-        sofa::defaulttype::Vec<3, SReal> n2 = cross(v3 - v2, v1 - v2);
-        sofa::defaulttype::Vec<3, SReal> n3 = cross(v4 - v3, v2 - v3);
-        sofa::defaulttype::Vec<3, SReal> n4 = cross(v1 - v4, v3 - v4);
+        const sofa::type::Vec<3, SReal>& v1 = raPositions[raQuads[i][0]];
+        const sofa::type::Vec<3, SReal>& v2 = raPositions[raQuads[i][1]];
+        const sofa::type::Vec<3, SReal>& v3 = raPositions[raQuads[i][2]];
+        const sofa::type::Vec<3, SReal>& v4 = raPositions[raQuads[i][3]];
+        sofa::type::Vec<3, SReal> n1 = cross(v2 - v1, v4 - v1);
+        sofa::type::Vec<3, SReal> n2 = cross(v3 - v2, v1 - v2);
+        sofa::type::Vec<3, SReal> n3 = cross(v4 - v3, v2 - v3);
+        sofa::type::Vec<3, SReal> n4 = cross(v1 - v4, v3 - v4);
         n1.normalize();
         n2.normalize();
         n3.normalize();
@@ -765,46 +761,46 @@ void MeshLoader::updateNormals()
 }
 
 
-void MeshLoader::applyTransformation(Matrix4 const& T)
+void MeshLoader::applyTransformation(type::Matrix4 const& T)
 {
     if (!T.isTransform())
     {
         msg_info() << "applyTransformation: ignored matrix which is not a transformation T=" << T ;
         return;
     }
-    sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3, SReal> > > > my_positions = d_positions;
+    sofa::helper::WriteAccessor <Data< type::vector<sofa::type::Vec<3, SReal> > > > my_positions = d_positions;
     for (Size i = 0; i < my_positions.size(); i++)
     {
         my_positions[i] = T.transform(my_positions[i]);
     }
 }
 
-void MeshLoader::addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >& pPositions, const sofa::defaulttype::Vec<3, SReal>& p)
+void MeshLoader::addPosition(type::vector<sofa::type::Vec<3, SReal> >& pPositions, const sofa::type::Vec<3, SReal>& p)
 {
     pPositions.push_back(p);
 }
 
-void MeshLoader::addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z)
+void MeshLoader::addPosition(type::vector<sofa::type::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z)
 {
-    addPosition(pPositions, sofa::defaulttype::Vec<3, SReal>(x, y, z));
+    addPosition(pPositions, sofa::type::Vec<3, SReal>(x, y, z));
 }
 
-void MeshLoader::addPolyline(helper::vector<Polyline>& pPolylines, Polyline p)
+void MeshLoader::addPolyline(type::vector<Polyline>& pPolylines, Polyline p)
 {
     pPolylines.push_back(p);
 }
 
-void MeshLoader::addEdge(helper::vector<Edge >& pEdges, const Edge& p)
+void MeshLoader::addEdge(type::vector<Edge >& pEdges, const Edge& p)
 {
     pEdges.push_back(p);
 }
 
-void MeshLoader::addEdge(helper::vector<Edge >& pEdges, Topology::EdgeID p0, Topology::EdgeID p1)
+void MeshLoader::addEdge(type::vector<Edge >& pEdges, Topology::EdgeID p0, Topology::EdgeID p1)
 {
     addEdge(pEdges, Edge(p0, p1));
 }
 
-void MeshLoader::addTriangle(helper::vector<Triangle >& pTriangles, const Triangle& p)
+void MeshLoader::addTriangle(type::vector<Triangle >& pTriangles, const Triangle& p)
 {
     if (d_flipNormals.getValue())
     {
@@ -818,12 +814,12 @@ void MeshLoader::addTriangle(helper::vector<Triangle >& pTriangles, const Triang
     }
 }
 
-void MeshLoader::addTriangle(helper::vector<Triangle >& pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2)
+void MeshLoader::addTriangle(type::vector<Triangle >& pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2)
 {
     addTriangle(pTriangles, Triangle(p0, p1, p2));
 }
 
-void MeshLoader::addQuad(helper::vector<Quad >& pQuads, const Quad& p)
+void MeshLoader::addQuad(type::vector<Quad >& pQuads, const Quad& p)
 {
     if (d_flipNormals.getValue())
     {
@@ -838,16 +834,16 @@ void MeshLoader::addQuad(helper::vector<Quad >& pQuads, const Quad& p)
     }
 }
 
-void MeshLoader::addQuad(helper::vector<Quad >& pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3)
+void MeshLoader::addQuad(type::vector<Quad >& pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3)
 {
     addQuad(pQuads, Quad(p0, p1, p2, p3));
 }
 
-void MeshLoader::addPolygon(helper::vector< helper::vector <Topology::ElemID> >& pPolygons, const helper::vector<Topology::ElemID>& p)
+void MeshLoader::addPolygon(type::vector< type::vector<Topology::ElemID> >& pPolygons, const type::vector<Topology::ElemID>& p)
 {
     if (d_flipNormals.getValue())
     {
-        helper::vector<Topology::ElemID> revertP(p.size());
+        type::vector<Topology::ElemID> revertP(p.size());
         std::reverse_copy(p.begin(), p.end(), revertP.begin());
 
         pPolygons.push_back(revertP);
@@ -859,47 +855,47 @@ void MeshLoader::addPolygon(helper::vector< helper::vector <Topology::ElemID> >&
 }
 
 
-void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >& pTetrahedra, const Tetrahedron& p)
+void MeshLoader::addTetrahedron(type::vector< Tetrahedron >& pTetrahedra, const Tetrahedron& p)
 {
     pTetrahedra.push_back(p);
 }
 
-void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >& pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3)
+void MeshLoader::addTetrahedron(type::vector< Tetrahedron >& pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3)
 {
     addTetrahedron(pTetrahedra, Tetrahedron(p0, p1, p2, p3));
 }
 
-void MeshLoader::addHexahedron(helper::vector< Hexahedron >& pHexahedra,
+void MeshLoader::addHexahedron(type::vector< Hexahedron >& pHexahedra,
                                Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
                                Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7)
 {
     addHexahedron(pHexahedra, Hexahedron(p0, p1, p2, p3, p4, p5, p6, p7));
 }
 
-void MeshLoader::addHexahedron(helper::vector< Hexahedron >& pHexahedra, const Hexahedron& p)
+void MeshLoader::addHexahedron(type::vector< Hexahedron >& pHexahedra, const Hexahedron& p)
 {
     pHexahedra.push_back(p);
 }
 
-void MeshLoader::addPentahedron(helper::vector< Pentahedron >& pPentahedra,
+void MeshLoader::addPentahedron(type::vector< Pentahedron >& pPentahedra,
                                 Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
                                 Topology::ElemID p4, Topology::ElemID p5)
 {
     addPentahedron(pPentahedra, Pentahedron(p0, p1, p2, p3, p4, p5));
 }
 
-void MeshLoader::addPentahedron(helper::vector< Pentahedron >& pPentahedra, const Pentahedron& p)
+void MeshLoader::addPentahedron(type::vector< Pentahedron >& pPentahedra, const Pentahedron& p)
 {
     pPentahedra.push_back(p);
 }
 
-void MeshLoader::addPyramid(helper::vector< Pyramid >& pPyramids,
+void MeshLoader::addPyramid(type::vector< Pyramid >& pPyramids,
                             Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4)
 {
     addPyramid(pPyramids, Pyramid(p0, p1, p2, p3, p4));
 }
 
-void MeshLoader::addPyramid(helper::vector< Pyramid >& pPyramids, const Pyramid& p)
+void MeshLoader::addPyramid(type::vector< Pyramid >& pPyramids, const Pyramid& p)
 {
     pPyramids.push_back(p);
 }

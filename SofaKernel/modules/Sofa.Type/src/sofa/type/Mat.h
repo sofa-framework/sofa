@@ -32,12 +32,18 @@
 namespace // anonymous
 {
     template<typename real>
-    real rabs(const real r)
+    constexpr real rabs(const real r)
     {
         if constexpr (std::is_signed<real>())
             return std::abs(r);
         else
             return r;
+    }
+
+    template<typename real>
+    constexpr real equalsZero(const real r, const real epsilon = std::numeric_limits<real>::epsilon())
+    {
+        return rabs(r) <= epsilon;
     }
 
 } // anonymous namespace
@@ -274,7 +280,7 @@ public:
     /// Cast into a standard C array of elements (stored per line) (read-only).
     const real* ptr() const
     {
-        return this->elems[0].ptr();;
+        return this->elems[0].ptr();
     }
 
     /// Cast into a standard C array of elements (stored per line).
@@ -386,7 +392,7 @@ public:
     bool operator==(const Mat<L,C,real>& b) const
     {
         for (Size i=0; i<L; i++)
-            if (!(this->elems[i]==b[i])) return false;
+            if (this->elems[i] != b[i]) return false;
         return true;
     }
 
@@ -677,10 +683,21 @@ public:
     template<class Quat>
     static Mat<L,C,real> transformRotation(const Quat& q)
     {
+        static_assert(L == C && (L ==4 || L == 3), "transformRotation can only be called with 3x3 or 4x4 matrices.");
+
         Mat<L,C,real> m;
         m.identity();
-        q.toMatrix(m);
-        return m;
+
+        if constexpr(L == 4 && C == 4)
+        {
+            q.toHomogeneousMatrix(m);
+            return m;
+        }
+        else // if constexpr(L == 3 && C == 3)
+        {
+            q.toMatrix(m);
+            return m;
+        }
     }
 
     /// @return True if and only if the Matrix is a transformation matrix
@@ -837,8 +854,6 @@ inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
     return v;
 }
 
-#define MIN_DETERMINANT  1.0e-100
-
 /// Matrix inversion (general case).
 template<sofa::Size S, class real>
 [[nodiscard]] bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
@@ -872,7 +887,7 @@ template<sofa::Size S, class real>
             }
         }
 
-        if (pivot <= (real) MIN_DETERMINANT)
+        if (equalsZero(pivot))
         {
             return false;
         }
@@ -913,7 +928,7 @@ template<class real>
 {
     real det=determinant(from);
 
-    if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
+    if (equalsZero(det))
     {
         return false;
     }
@@ -937,7 +952,7 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 {
     real det=determinant(from);
 
-    if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
+    if (equalsZero(det))
     {
         return false;
     }
@@ -949,7 +964,6 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 
     return true;
 }
-#undef MIN_DETERMINANT
 
 /// Inverse Matrix considering the matrix as a transformation.
 template<sofa::Size S, class real>

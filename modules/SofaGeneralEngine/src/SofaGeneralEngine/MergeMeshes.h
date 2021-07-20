@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/loader/MeshLoader.h>
@@ -43,7 +43,7 @@ class MergeMeshes : public core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MergeMeshes,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef helper::vector<unsigned int> VecIndex;
+    typedef type::vector<unsigned int> VecIndex;
 
 protected:
     MergeMeshes();
@@ -64,28 +64,28 @@ public:
 
     Data<unsigned int> f_nbMeshes; ///< number of meshes to merge
 
-    helper::vector<Data<VecCoord>*> vf_positions;
-    helper::vector< Data< helper::vector< helper::fixed_array <unsigned int,2> > >* > vf_edges;
-    helper::vector< Data< helper::vector< helper::fixed_array <unsigned int,3> > >* > vf_triangles;
-    helper::vector< Data< helper::vector< helper::fixed_array <unsigned int,4> > >* > vf_quads;
-    helper::vector< Data< helper::vector< helper::vector <unsigned int> > >* > vf_polygons;
-    helper::vector< Data< helper::vector< helper::fixed_array<unsigned int,4> > >* > vf_tetrahedra;
-    helper::vector< Data< helper::vector< helper::fixed_array<unsigned int,8> > >* > vf_hexahedra;
+    type::vector<Data<VecCoord>*> vf_positions;
+    type::vector< Data< type::vector< type::fixed_array <unsigned int,2> > >* > vf_edges;
+    type::vector< Data< type::vector< type::fixed_array <unsigned int,3> > >* > vf_triangles;
+    type::vector< Data< type::vector< type::fixed_array <unsigned int,4> > >* > vf_quads;
+    type::vector< Data< type::vector< type::vector<unsigned int> > >* > vf_polygons;
+    type::vector< Data< type::vector< type::fixed_array<unsigned int,4> > >* > vf_tetrahedra;
+    type::vector< Data< type::vector< type::fixed_array<unsigned int,8> > >* > vf_hexahedra;
 
 
     Data<unsigned> f_output_npoints; ///< Number Of out points
     Data<VecCoord> f_output_positions; ///< Output Vertices of the merged mesh
-    Data< helper::vector< helper::fixed_array <unsigned int,2> > > f_output_edges; ///< Output Edges of the merged mesh
-    Data< helper::vector< helper::fixed_array <unsigned int,3> > > f_output_triangles; ///< Output Triangles of the merged mesh
-    Data< helper::vector< helper::fixed_array <unsigned int,4> > > f_output_quads; ///< Output Quads of the merged mesh
-    Data< helper::vector< helper::vector <unsigned int> > > f_output_polygons; ///< Output Polygons of the merged mesh
-    Data< helper::vector< helper::fixed_array<unsigned int,4> > > f_output_tetrahedra; ///< Output Tetrahedra of the merged mesh
-    Data< helper::vector< helper::fixed_array<unsigned int,8> > > f_output_hexahedra; ///< Output Hexahedra of the merged mesh
+    Data< type::vector< type::fixed_array <unsigned int,2> > > f_output_edges; ///< Output Edges of the merged mesh
+    Data< type::vector< type::fixed_array <unsigned int,3> > > f_output_triangles; ///< Output Triangles of the merged mesh
+    Data< type::vector< type::fixed_array <unsigned int,4> > > f_output_quads; ///< Output Quads of the merged mesh
+    Data< type::vector< type::vector<unsigned int> > > f_output_polygons; ///< Output Polygons of the merged mesh
+    Data< type::vector< type::fixed_array<unsigned int,4> > > f_output_tetrahedra; ///< Output Tetrahedra of the merged mesh
+    Data< type::vector< type::fixed_array<unsigned int,8> > > f_output_hexahedra; ///< Output Hexahedra of the merged mesh
 
 protected:
     void createInputMeshesData(int nb = -1);
     template<class T>
-    void createInputDataVector(unsigned int nb, helper::vector< Data<T>* >& vf, std::string name, std::string help)
+    void createInputDataVector(unsigned int nb, type::vector< Data<T>* >& vf, std::string name, std::string help)
     {
         vf.reserve(nb);
         for (unsigned int i=vf.size(); i<nb; ++i)
@@ -103,7 +103,7 @@ protected:
         }
     }
     template<class T>
-    void deleteInputDataVector(helper::vector< Data<T>* >& vf)
+    void deleteInputDataVector(type::vector< Data<T>* >& vf)
     {
         for (unsigned int i=0; i<vf.size(); ++i)
         {
@@ -113,7 +113,7 @@ protected:
         vf.clear();
     }
     template<class T>
-    void mergeInputDataVector(unsigned int nb, Data<T>& outF, const helper::vector< Data<T>* >& inVF, const helper::vector< Data<VecCoord>* >& inVFPos)
+    void mergeInputDataVector(unsigned int nb, Data<T>& outF, const type::vector< Data<T>* >& inVF, const type::vector< Data<VecCoord>* >& inVFPos)
     {
         unsigned int nelems = 0;
         for (unsigned int i=0; i<nb; ++i)
@@ -135,7 +135,7 @@ protected:
             shift += inVFPos[i]->getValue().size();
         }
     }
-    void mergeInputDataVector(unsigned int nb, Data<VecCoord>& outF, const helper::vector< Data<VecCoord>* >& inVF)
+    void mergeInputDataVector(unsigned int nb, Data<VecCoord>& outF, const type::vector< Data<VecCoord>* >& inVF)
     {
         unsigned int nelems = 0;
         for (unsigned int i=0; i<nb; ++i)

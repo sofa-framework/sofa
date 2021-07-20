@@ -23,6 +23,8 @@
 #define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYDATA_H
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 namespace sofa
 {
@@ -33,36 +35,21 @@ namespace core
 namespace topology
 {
 
+typedef Topology::Point            Point;
+typedef Topology::Edge             Edge;
+typedef Topology::Triangle         Triangle;
+typedef Topology::Quad             Quad;
+typedef Topology::Tetrahedron      Tetrahedron;
+typedef Topology::Hexahedron       Hexahedron;
 
-//TODO(dmarchal 2017-05-13):
-// When someone want to deprecate something....please help other contributors by providing
-// details on:
-//   - why is deprecated
-//   - when it have been deprecated
-//   - when can we remove the classe
-//   - how are we suppose to update classes that make use of BaseTopologyData
-//   - who is supposed to do the update...and if it is not the person that deprecate the
-//     code how your co-worker will be notified they have something to do.
+
 /** A class that define topological Data general methods
-
-      DEPRECATED
-
+* 
 */
 template < class T = void* >
 class BaseTopologyData : public sofa::core::objectmodel::Data <T>
 {
 public:
-    //SOFA_CLASS(SOFA_TEMPLATE2(BaseTopologyData,T,VecT), SOFA_TEMPLATE(sofa::core::objectmodel::Data, T));
-
-    class InitData : public sofa::core::objectmodel::BaseData::BaseInitData
-    {
-    public:
-        InitData() : value(T()) {}
-        InitData(const T& v) : value(v) {}
-        InitData(const sofa::core::objectmodel::BaseData::BaseInitData& i) : sofa::core::objectmodel::BaseData::BaseInitData(i), value(T()) {}
-
-        T value;
-    };
 
     /** \copydoc Data(const BaseData::BaseInitData&) */
     explicit BaseTopologyData(const sofa::core::objectmodel::BaseData::BaseInitData& init)
@@ -70,106 +57,76 @@ public:
     {
     }
 
-    /** \copydoc Data(const InitData&) */
-    explicit BaseTopologyData(const InitData& init)
-        : Data<T>(init)
-    {
-    }
-
-
-    /** \copydoc Data(const char*, bool, bool) */
-    BaseTopologyData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
-        : Data<T>(helpMsg, isDisplayed, isReadOnly)
-    {
-
-    }
-
-    /** \copydoc Data(const T&, const char*, bool, bool) */
-    BaseTopologyData( const T& /*value*/, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
-        : Data<T>(helpMsg, isDisplayed, isReadOnly)
-    {
-    }
-
-
-    // Generic methods to apply changes on the Data
-    //{
-    /// Apply adding points elements.
-    virtual void applyCreatePointFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing points elements.
-    virtual void applyDestroyPointFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding edges elements.
-    virtual void applyCreateEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing edges elements.
-    virtual void applyDestroyEdgeFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding triangles elements.
-    virtual void applyCreateTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing triangles elements.
-    virtual void applyDestroyTriangleFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding quads elements.
-    virtual void applyCreateQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing quads elements.
-    virtual void applyDestroyQuadFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding tetrahedra elements.
-    virtual void applyCreateTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing tetrahedra elements.
-    virtual void applyDestroyTetrahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-
-    /// Apply adding hexahedra elements.
-    virtual void applyCreateHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-    /// Apply removing hexahedra elements.
-    virtual void applyDestroyHexahedronFunction(const sofa::helper::vector<unsigned int>& ) {}
-    //}
-
     /// Add some values. Values are added at the end of the vector.
-    virtual void add(unsigned int ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::type::vector< Topology::PointID >& ,
+        const sofa::type::vector< Topology::Point >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::PointID > >&,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< PointAncestorElem >&) {}
 
     /// Temporary Hack: find a way to have a generic description of topological element:
     /// add Edge
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,2> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::type::vector< Topology::EdgeID >&,
+        const sofa::type::vector< Topology::Edge >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::EdgeID > >&,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< EdgeAncestorElem >&) {}
 
     /// add Triangle
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,3> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::type::vector< Topology::TriangleID >&,
+        const sofa::type::vector< Topology::Triangle >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::TriangleID > > &,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< TriangleAncestorElem >&) {}
 
     /// add Quad & Tetrahedron
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,4> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::type::vector< Topology::TetrahedronID >&,
+        const sofa::type::vector< Topology::Tetrahedron >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::TetrahedronID > > &,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< TetrahedronAncestorElem >&) {}
+
+    virtual void add(const sofa::type::vector< Topology::QuadID >&,
+        const sofa::type::vector< Topology::Quad >&,
+        const sofa::type::vector< sofa::type::vector< Topology::QuadID > >&,
+        const sofa::type::vector< sofa::type::vector< SReal > >&,
+        const sofa::type::vector< QuadAncestorElem >&) {}
 
     /// add Hexahedron
-    virtual void add( unsigned int ,
-            const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,8> >& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void add(const sofa::type::vector< Topology::HexahedronID >&,
+        const sofa::type::vector< Topology::Hexahedron >& ,
+        const sofa::type::vector< sofa::type::vector< Topology::HexahedronID > > &,
+        const sofa::type::vector< sofa::type::vector< SReal > >& ,
+        const sofa::type::vector< HexahedronAncestorElem >&) {}
+
 
     /// Remove the values corresponding to the points removed.
-    virtual void remove( const sofa::helper::vector<unsigned int>& ) {}
+    virtual void remove( const sofa::type::vector<unsigned int>& ) {}
 
     /// Swaps values at indices i1 and i2.
     virtual void swap( unsigned int , unsigned int ) {}
 
     /// Reorder the values.
-    virtual void renumber( const sofa::helper::vector<unsigned int>& ) {}
+    virtual void renumber( const sofa::type::vector<unsigned int>& ) {}
 
     /// Move a list of points
-    virtual void move( const sofa::helper::vector<unsigned int>& ,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
-            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
+    virtual void move( const sofa::type::vector<unsigned int>& ,
+            const sofa::type::vector< sofa::type::vector< unsigned int > >& ,
+            const sofa::type::vector< sofa::type::vector< SReal > >& ) {}
 
+    sofa::core::topology::BaseMeshTopology* getTopology()
+    {
+        return m_topology;
+    }
 
+    /// to handle PointSubsetData
+    void setDataSetArraySize(const Index s) { lastElementIndex = s - 1; }
 
+protected:
+    sofa::core::topology::BaseMeshTopology* m_topology = nullptr;
+
+    /// to handle properly the removal of items, the container must know the index of the last element
+    Index lastElementIndex = 0;
 };
 
 

@@ -55,9 +55,9 @@ Deriv inertiaForce( const SV& sv, const Vec& a, const M& m, const Coord& x, cons
 
 /// Specialization of the inertia force for 3D particles
 template <>
-inline defaulttype::Vec<3, double> inertiaForce<
-defaulttype::Vec<3, double>,
-            defaulttype::Vec<3, double>,
+inline type::Vec<3, double> inertiaForce<
+type::Vec<3, double>,
+            type::Vec<3, double>,
             objectmodel::BaseContext::Vec3,
             double,
             objectmodel::BaseContext::SpatialVector
@@ -66,8 +66,8 @@ defaulttype::Vec<3, double>,
                     const objectmodel::BaseContext::SpatialVector& sv,
                     const objectmodel::BaseContext::Vec3& a,
                     const double& m,
-                    const defaulttype::Vec<3, double>& x,
-                    const defaulttype::Vec<3, double>& v
+                    const type::Vec<3, double>& x,
+                    const type::Vec<3, double>& v
             )
 {
     const objectmodel::BaseContext::Vec3& omega=sv.getAngularVelocity();
@@ -77,9 +77,9 @@ defaulttype::Vec<3, double>,
 
 /// Specialization of the inertia force for 3D particles
 template <>
-inline defaulttype::Vec<3, float> inertiaForce<
-defaulttype::Vec<3, float>,
-            defaulttype::Vec<3, float>,
+inline type::Vec<3, float> inertiaForce<
+type::Vec<3, float>,
+            type::Vec<3, float>,
             objectmodel::BaseContext::Vec3,
             float,
             objectmodel::BaseContext::SpatialVector
@@ -88,8 +88,8 @@ defaulttype::Vec<3, float>,
                     const objectmodel::BaseContext::SpatialVector& sv,
                     const objectmodel::BaseContext::Vec3& a,
                     const float& m,
-                    const defaulttype::Vec<3, float>& x,
-                    const defaulttype::Vec<3, float>& v
+                    const type::Vec<3, float>& x,
+                    const type::Vec<3, float>& v
             )
 {
     const objectmodel::BaseContext::Vec3& omega=sv.getAngularVelocity();
@@ -99,9 +99,9 @@ defaulttype::Vec<3, float>,
 
 /// Specialization of the inertia force for 2D particles
 template <>
-inline defaulttype::Vec<2, double> inertiaForce<
-defaulttype::Vec<2, double>,
-            defaulttype::Vec<2, double>,
+inline type::Vec<2, double> inertiaForce<
+type::Vec<2, double>,
+            type::Vec<2, double>,
             objectmodel::BaseContext::Vec3,
             double,
             objectmodel::BaseContext::SpatialVector
@@ -110,20 +110,20 @@ defaulttype::Vec<2, double>,
                     const objectmodel::BaseContext::SpatialVector& sv,
                     const objectmodel::BaseContext::Vec3& a,
                     const double& m,
-                    const defaulttype::Vec<2, double>& x,
-                    const defaulttype::Vec<2, double>& v
+                    const type::Vec<2, double>& x,
+                    const type::Vec<2, double>& v
             )
 {
     double omega=(double)sv.getAngularVelocity()[2]; // z direction
-    defaulttype::Vec<2, double> a2( (double)a[0], (double)a[1] );
+    type::Vec<2, double> a2( (double)a[0], (double)a[1] );
     return -( a2 -( x*omega + v*2 )*omega )*m;
 }
 
 /// Specialization of the inertia force for 2D particles
 template <>
-inline defaulttype::Vec<2, float> inertiaForce<
-defaulttype::Vec<2, float>,
-            defaulttype::Vec<2, float>,
+inline type::Vec<2, float> inertiaForce<
+type::Vec<2, float>,
+            type::Vec<2, float>,
             objectmodel::BaseContext::Vec3,
             float,
             objectmodel::BaseContext::SpatialVector
@@ -132,12 +132,12 @@ defaulttype::Vec<2, float>,
                     const objectmodel::BaseContext::SpatialVector& sv,
                     const objectmodel::BaseContext::Vec3& a,
                     const float& m,
-                    const defaulttype::Vec<2, float>& x,
-                    const defaulttype::Vec<2, float>& v
+                    const type::Vec<2, float>& x,
+                    const type::Vec<2, float>& v
             )
 {
     float omega=(float)sv.getAngularVelocity()[2]; // z direction
-    defaulttype::Vec<2, float> a2( (float)a[0], (float)a[1] );
+    type::Vec<2, float> a2( (float)a[0], (float)a[1] );
     return -( a2 -( x*omega + v*2 )*omega )*m;
 }
 
@@ -199,22 +199,22 @@ template <>
 inline defaulttype::LaparoscopicRigid3Types::Deriv inertiaForce<
 defaulttype::LaparoscopicRigid3Types::Coord,
             defaulttype::LaparoscopicRigid3Types::Deriv,
-            defaulttype::Vector3,
+            type::Vector3,
             defaulttype::Rigid3Mass,
             objectmodel::BaseContext::SpatialVector
             >
             (
                     const objectmodel::BaseContext::SpatialVector& vframe,
-                    const defaulttype::Vector3& aframe,
+                    const type::Vector3& aframe,
                     const defaulttype::Rigid3Mass& mass,
                     const defaulttype::LaparoscopicRigid3Types::Coord& x,
                     const defaulttype::LaparoscopicRigid3Types::Deriv& v )
 {
-    defaulttype::Vector3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::Vector3 origin, finertia, zero(0,0,0);
+    type::Vector3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    type::Vector3 origin, finertia, zero(0,0,0);
     origin[0] = x.getTranslation();
 
-    finertia = -( aframe + omega.cross( omega.cross(origin) + defaulttype::Vector3(v.getVTranslation()*2,0,0) ))*mass.mass;
+    finertia = -( aframe + omega.cross( omega.cross(origin) + type::Vector3(v.getVTranslation()*2,0,0) ))*mass.mass;
     return defaulttype::LaparoscopicRigid3Types::Deriv( finertia[0], zero );
     /// \todo replace zero by Jomega.cross(omega)
 }

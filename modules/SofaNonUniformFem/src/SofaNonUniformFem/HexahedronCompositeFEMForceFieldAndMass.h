@@ -67,7 +67,7 @@ public:
 
     typedef typename NonUniformHexahedronFEMForceFieldAndMassT::VecElement VecElement;
 
-    typedef defaulttype::Mat<8*3, 8*3, Real> Weight;
+    typedef type::Mat<8*3, 8*3, Real> Weight;
 
     using Index = sofa::Index;
 
@@ -103,7 +103,7 @@ public:
     Data<float> d_drawSize;
 
 
-    void findFinestChildren( helper::vector<Index>& finestChildren, const Index elementIndice,  int level=0);
+    void findFinestChildren( type::vector<Index>& finestChildren, const Index elementIndice,  int level=0);
     void computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const Index elementIndice);
     void computeMechanicalMatricesRecursively( ElementStiffness &K, ElementMass &M, const Index elementIndice,  int level);
     void computeMechanicalMatricesRecursivelyWithRamifications( ElementStiffness &K, ElementMass &M, const Index elementIndice,  int level);
@@ -118,8 +118,8 @@ public:
 
 
 
-    helper::vector< helper::vector<Weight> > _weights;
-    helper::vector< std::pair<Index, Weight> > _finalWeights; // for each fine element -> the coarse element idx and corresponding Weight
+    type::vector< type::vector<Weight> > _weights;
+    type::vector< std::pair<Index, Weight> > _finalWeights; // for each fine element -> the coarse element idx and corresponding Weight
 
 protected:
 

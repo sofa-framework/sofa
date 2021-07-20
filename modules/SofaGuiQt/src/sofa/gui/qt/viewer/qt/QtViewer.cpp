@@ -56,6 +56,7 @@ namespace sofa::gui::qt::viewer::qt
 {
 using std::cout;
 using std::endl;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 using sofa::simulation::getSimulation;
@@ -71,7 +72,7 @@ const std::string QtViewer::VIEW_FILE_EXTENSION = "view";
 // Mouse Interactor
 bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
-Quaternion QtViewer::_mouseInteractorNewQuat;
+Quat<SReal> QtViewer::_mouseInteractorNewQuat;
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x050400
 QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
@@ -389,7 +390,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     // ---- Display a "X" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
 
-    gl::GlText::draw('X', sofa::defaulttype::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('X', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
 
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
@@ -405,7 +406,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Y" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    gl::GlText::draw('Y', sofa::defaulttype::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('Y', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -420,7 +421,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Z" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    gl::GlText::draw('Z', sofa::defaulttype::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('Z', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -674,7 +675,7 @@ void QtViewer::DisplayOBJs()
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vector3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -811,8 +812,8 @@ void QtViewer::drawScene(void)
             {
                 width /= 2;
                 viewport = true;
-                vpleft = sofa::helper::make_array(0,0,width,height);
-                vpright = sofa::helper::make_array(_W-width,0,width,height);
+                vpleft = sofa::type::make_array(0,0,width,height);
+                vpright = sofa::type::make_array(_W-width,0,width,height);
                 if (smode == sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF)
                     width = _W; // keep the original ratio for camera
                 break;
@@ -828,8 +829,8 @@ void QtViewer::drawScene(void)
                 else // other resolutions
                     height /= 2;
                 viewport = true;
-                vpleft = sofa::helper::make_array(0,0,width,height);
-                vpright = sofa::helper::make_array(0,_H-height,width,height);
+                vpleft = sofa::type::make_array(0,0,width,height);
+                vpright = sofa::type::make_array(0,_H-height,width,height);
                 if (smode == sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF)
                     height = _H; // keep the original ratio for camera
                 break;
@@ -946,7 +947,7 @@ void QtViewer::drawScene(void)
         }
         if (viewport)
         {
-            vparams->viewport() = sofa::helper::make_array(0,0,_W,_H);
+            vparams->viewport() = sofa::type::make_array(0,0,_W,_H);
             glViewport(0, 0, _W, _H);
             glScissor(0, 0, _W, _H);
             glDisable(GL_SCISSOR_TEST);
@@ -1016,7 +1017,7 @@ void QtViewer::calcProjection(int width, int height)
     //Update vparams
     vparams->zNear() = currentCamera->getZNear();
     vparams->zFar() = currentCamera->getZFar();
-    vparams->viewport() = sofa::helper::make_array(0, 0, width, height);
+    vparams->viewport() = sofa::type::make_array(0, 0, width, height);
     vparams->setProjectionMatrix(projectionMatrix);
 }
 
@@ -1042,12 +1043,16 @@ void QtViewer::paintGL()
     drawScene();
 
     if(!captureTimer.isActive())
+    {
         SofaViewer::captureEvent();
+    }
 
     if (_waitForRender)
+    {
         _waitForRender = false;
+    }
 
-    emit( redrawn());
+    emit redrawn();
 }
 
 void QtViewer::paintEvent(QPaintEvent* qpe)
@@ -1076,11 +1081,11 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 {
     // Mouse Interaction
     double coeffDeplacement = 0.025;
-    const sofa::defaulttype::BoundingBox sceneBBox = vparams->sceneBBox();
+    const sofa::type::BoundingBox sceneBBox = vparams->sceneBBox();
     if (sceneBBox.isValid() && ! sceneBBox.isFlat())
         coeffDeplacement *= 0.001 * (sceneBBox.maxBBox()
                 - sceneBBox.minBBox()).norm();
-    Quaternion conjQuat, resQuat, _newQuatBckUp;
+    Quat<SReal> conjQuat, resQuat, _newQuatBckUp;
 
     float x1, x2, y1, y2;
 
@@ -1521,7 +1526,7 @@ void QtViewer::moveRayPickInteractor(int eventX, int eventY)
     transform[2][3] = p0[2];
     Mat3x3d mat;
     mat = transform;
-    Quat q;
+    Quat<SReal> q;
     q.fromMatrix(mat);
 
     Vec3d position, direction;
@@ -1537,7 +1542,7 @@ void QtViewer::moveRayPickInteractor(int eventX, int eventY)
 void QtViewer::resetView()
 {
     Vec3d position;
-    Quat orientation;
+    Quat<SReal> orientation;
     bool fileRead = false;
 
     if (!sceneFileName.empty())
@@ -1565,17 +1570,17 @@ void QtViewer::newView()
     SofaViewer::newView();
 }
 
-void QtViewer::getView(Vector3& pos, Quat& ori) const
+void QtViewer::getView(Vector3& pos, Quat<SReal>& ori) const
 {
     SofaViewer::getView(pos, ori);
 }
 
-void QtViewer::setView(const Vector3& pos, const Quat &ori)
+void QtViewer::setView(const Vector3& pos, const Quat<SReal> &ori)
 {
     SofaViewer::setView(pos, ori);
 }
 
-void QtViewer::moveView(const Vector3& pos, const Quat &ori)
+void QtViewer::moveView(const Vector3& pos, const Quat<SReal> &ori)
 {
     SofaViewer::moveView(pos, ori);
 }

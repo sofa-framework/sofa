@@ -24,7 +24,20 @@
 namespace sofa::component::collision
 {
 
-sofa::core::collision::DetectionOutput::ContactId ContactIdentifier::cpt = 0;
-std::list<sofa::core::collision::DetectionOutput::ContactId> ContactIdentifier::availableId;
+ContactIdentifier::ContactIdentifier()
+{
+    if (!availableId.empty())
+    {
+        id = availableId.front();
+        availableId.pop_front();
+    }
+    else
+        id = cpt++;
+}
+
+ContactIdentifier::~ContactIdentifier()
+{
+    availableId.push_back(id);
+}
 
 } //namespace sofa::component::collision

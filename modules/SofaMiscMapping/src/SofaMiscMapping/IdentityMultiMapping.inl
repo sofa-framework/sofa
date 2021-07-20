@@ -21,10 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/visual/VisualParams.h>
 #include <SofaMiscMapping/IdentityMultiMapping.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
-#include <iostream>
+#include <sofa/core/MappingHelper.h>
 
 namespace sofa::component::mapping
 {
@@ -94,7 +92,7 @@ IdentityMultiMapping<TIn, TOut>::~IdentityMultiMapping()
 
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
+void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos)
 {
     SOFA_UNUSED(mparams);
 
@@ -107,7 +105,7 @@ void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparam
 
         for(unsigned int j=0; j<inpos.size(); j++)
         {
-            helper::eq( out[offset+j], inpos[j]);
+            core::eq( out[offset+j], inpos[j]);
         }
         offset += inpos.size();
     }
@@ -116,7 +114,7 @@ void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparam
 }
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
+void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel)
 {
     SOFA_UNUSED(mparams);
 
@@ -130,7 +128,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
         for(unsigned int j=0; j<in.size(); j++)
         {
             if( !this->maskTo[0]->isActivated() || this->maskTo[0]->getEntry(offset+j) )
-                helper::eq( out[offset+j], in[j]);
+                core::eq( out[offset+j], in[j]);
         }
         offset += in.size();
     }
@@ -139,7 +137,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
 }
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
     SOFA_UNUSED(mparams);
 
@@ -153,7 +151,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
         for(unsigned int j=0; j<out.size(); j++)
         {
             if( this->maskTo[0]->getEntry(offset+j) )
-                helper::peq( out[j], in[offset+j]);
+                core::peq( out[j], in[offset+j]);
         }
 
         dataVecOutForce[i]->endEdit();
@@ -165,14 +163,14 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
 }
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const helper::vector< InDataMatrixDeriv* >& /*dOut*/, const helper::vector< const OutDataMatrixDeriv* >& /*dIn*/)
+void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const type::vector< InDataMatrixDeriv* >& /*dOut*/, const type::vector< const OutDataMatrixDeriv* >& /*dIn*/)
 {
 
 }
 
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
 {
 // it looks like it is more costly to update the Jacobian matrix than using the full, unfiltered matrix in assembly
 //    size_t currentHash = this->maskTo[0]->getHash();

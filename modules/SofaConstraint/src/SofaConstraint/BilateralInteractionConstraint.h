@@ -25,9 +25,9 @@
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <deque>
@@ -47,8 +47,8 @@ using sofa::core::ConstraintParams ;
 using sofa::core::ConstVecCoordId;
 
 using sofa::defaulttype::BaseVector ;
-using sofa::defaulttype::Quaternion ;
-using sofa::defaulttype::Vec3d ;
+using sofa::type::Vec3d;
+using sofa::type::Quat ;
 
 using sofa::defaulttype::Rigid3Types ;
 using sofa::defaulttype::Vec3Types ;
@@ -88,12 +88,12 @@ public:
 
 protected:
     std::vector<Deriv> dfree;
-    Quaternion q;
+    Quat<SReal> q;
 
     std::vector<unsigned int> cid;
 
-    Data<helper::vector<int> > m1; ///< index of the constraint on the first model
-    Data<helper::vector<int> > m2; ///< index of the constraint on the second model
+    Data<type::vector<int> > m1; ///< index of the constraint on the first model
+    Data<type::vector<int> > m2; ///< index of the constraint on the second model
     Data<VecDeriv> restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
@@ -163,24 +163,6 @@ public:
 private:
     void unspecializedInit() ;
 };
-
-template<>
-void BilateralInteractionConstraint<Rigid3Types>::buildConstraintMatrix(const ConstraintParams *cParams,
-                                                                        DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d,
-                                                                        unsigned int &cIndex
-                                                                        , const DataVecCoord &x1, const DataVecCoord &x2);
-
-template<>
-void BilateralInteractionConstraint<Rigid3Types>::getConstraintViolation(const ConstraintParams *cParams,
-                                                                         BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
-                                                                         , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
-
-template<>
-void BilateralInteractionConstraint<Rigid3Types>::addContact(Deriv /*norm*/,
-                                                             Coord P, Coord Q, Real /*contactDistance*/,
-                                                             int m1, int m2, Coord /*Pfree*/,
-                                                             Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
-
 
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)

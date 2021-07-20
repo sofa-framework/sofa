@@ -20,10 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaTest/ForceField_test.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
+
+#include <SofaSimpleFem_test/ForceFieldTestCreation.h>
 
 namespace sofa {
 
@@ -79,7 +80,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
 
     typedef ForceType Spring;
     typedef component::container::MechanicalObject<DataTypes> DOF;
@@ -162,11 +163,11 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
         this->dof->resize(1);
         childDof->resize(1);
         typename DOF::WriteVecCoord xdof = this->dof->writePositions(), xchildDof = childDof->writePositions();
-        copyToData( xdof, xp );
-        copyToData( xchildDof, xc );
+        sofa::testing::copyToData( xdof, xp );
+        sofa::testing::copyToData( xchildDof, xc );
         typename DOF::WriteVecDeriv vdof = this->dof->writeVelocities(), vchildDof = childDof->writeVelocities();
-        copyToData( vdof, vp );
-        copyToData( vchildDof, vc );
+        sofa::testing::copyToData( vdof, vp );
+        sofa::testing::copyToData( vchildDof, vc );
 
         // tune the force field
         spring->addSpring(0,0,stiffness,dampingRatio,restLength);
@@ -178,7 +179,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
         sofa::simulation::getSimulation()->init(this->node.get());
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        simulation::MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
+        MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
         this->node->execute(computeForce);
 
         // check force

@@ -14,9 +14,11 @@ set(SOURCE_FILES
 
 list(APPEND HEADER_FILES
 	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.h
+	${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.h
 )
 list(APPEND SOURCE_FILES
 	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.cpp
+	${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.cpp
 )
 
 sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology

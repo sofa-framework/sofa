@@ -22,8 +22,6 @@
 #pragma once
 #include <SofaBaseMechanics/SubsetMapping.h>
 
-#include <SofaBaseTopology/TopologySubsetData.inl>
-
 namespace sofa::component::mapping
 {
 
@@ -160,8 +158,7 @@ void SubsetMapping<TIn, TOut>::init()
         if (topology)
         {
             // Initialize functions and parameters for topological changes
-            f_indices.createTopologicalEngine(topology);
-            f_indices.registerTopologicalData();
+            f_indices.createTopologyHandler(topology);
         }
         else
         {

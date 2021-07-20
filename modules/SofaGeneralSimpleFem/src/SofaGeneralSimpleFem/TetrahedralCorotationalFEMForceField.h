@@ -24,9 +24,9 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/helper/map.h>
 
 // corotational tetrahedron from
@@ -70,25 +70,24 @@ public:
             LARGE = 1, ///< Symbol of large displacements tetrahedron solver
             POLAR = 2  ///< Symbol of polar displacements tetrahedron solver
          };
-protected:
 
     /// @name Per element (tetrahedron) data
     /// @{
 
     /// Displacement vector (deformation of the 4 corners of a tetrahedron
-    typedef defaulttype::VecNoInit<12, Real> Displacement;
+    typedef type::VecNoInit<12, Real> Displacement;
 
     /// Material stiffness matrix of a tetrahedron
-    typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;
+    typedef type::Mat<6, 6, Real> MaterialStiffness;
 
     /// Strain-displacement matrix
-    typedef defaulttype::Mat<12, 6, Real> StrainDisplacementTransposed;
+    typedef type::Mat<12, 6, Real> StrainDisplacementTransposed;
 
     /// Rigid transformation (rotation) matrix
-    typedef defaulttype::MatNoInit<3, 3, Real> Transformation;
+    typedef type::MatNoInit<3, 3, Real> Transformation;
 
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
-    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
+    typedef type::Mat<12, 12, Real> StiffnessMatrix;
 
     /// @}
 
@@ -101,7 +100,7 @@ protected:
         /// the strain-displacement matrices vector
         StrainDisplacementTransposed strainDisplacementTransposedMatrix;
         /// large displacement method
-        helper::fixed_array<Coord,4> rotatedInitialElements;
+        type::fixed_array<Coord,4> rotatedInitialElements;
         Transformation rotation;
         /// polar method
         Transformation initialTransformation;
@@ -123,14 +122,14 @@ protected:
         }
     };
     /// container that stotes all requires information for each tetrahedron
-    topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> > tetrahedronInfo;
+    topology::TetrahedronData<sofa::type::vector<TetrahedronInformation> > tetrahedronInfo;
 
     /// @name Full system matrix assembly support
     /// @{
 
     typedef std::pair<int,Real> Col_Value;
-    typedef helper::vector< Col_Value > CompressedValue;
-    typedef helper::vector< CompressedValue > CompressedMatrix;
+    typedef type::vector< Col_Value > CompressedValue;
+    typedef type::vector< CompressedValue > CompressedMatrix;
 
     CompressedMatrix _stiffnesses;
     /// @}
@@ -139,22 +138,22 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 public:
-    class SOFA_SOFAGENERALSIMPLEFEM_API TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
+    class SOFA_SOFAGENERALSIMPLEFEM_API TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::type::vector<TetrahedronInformation> >
     {
     public :
         typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
         using Index = sofa::Index;
         TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
-                           topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
+                           topology::TetrahedronData<sofa::type::vector<TetrahedronInformation> >* data)
+            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::type::vector<TetrahedronInformation> >(data)
             ,ff(ff)
         {
 
         }
 
         void applyCreateFunction(Index, TetrahedronInformation &t, const core::topology::BaseMeshTopology::Tetrahedron &,
-                const sofa::helper::vector<Index> &,
-                const sofa::helper::vector<double> &);
+                const sofa::type::vector<Index> &,
+                const sofa::type::vector<double> &);
 
     protected:
         TetrahedralCorotationalFEMForceField<DataTypes>* ff;
@@ -170,11 +169,11 @@ public:
     Data<bool> _assembling;
     Data<bool> f_drawing; ///<  draw the forcefield if true
     Data<bool> _displayWholeVolume;
-    Data<sofa::helper::types::RGBAColor> drawColor1; ///<  draw color for faces 1
-    Data<sofa::helper::types::RGBAColor> drawColor2; ///<  draw color for faces 2
-    Data<sofa::helper::types::RGBAColor> drawColor3; ///<  draw color for faces 3
-    Data<sofa::helper::types::RGBAColor> drawColor4; ///<  draw color for faces 4
-    Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
+    Data<sofa::type::RGBAColor> drawColor1; ///<  draw color for faces 1
+    Data<sofa::type::RGBAColor> drawColor2; ///<  draw color for faces 2
+    Data<sofa::type::RGBAColor> drawColor3; ///<  draw color for faces 3
+    Data<sofa::type::RGBAColor> drawColor4; ///<  draw color for faces 4
+    Data<std::map < std::string, sofa::type::vector<double> > > _volumeGraph;
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<TetrahedralCorotationalFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -227,7 +226,7 @@ public:
 protected:
 
     void computeStrainDisplacement( StrainDisplacementTransposed &J, Coord a, Coord b, Coord c, Coord d );
-    Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
+    Real peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M );
 
     void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacementTransposed &J, const Transformation& Rot );
 

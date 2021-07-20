@@ -19,29 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationGraph/init.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <SofaGraphComponent/Gravity.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseMechanics/UniformMass.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <sofa/core/VecId.h>
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
 
-#include <sofa/helper/system/glut.h>
 #include <sofa/helper/accessor.h>
 
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaGui/initSofaGui.h>
 
 
 
-using sofa::component::odesolver::EulerSolver;
+using sofa::component::odesolver::EulerExplicitSolver;
 using namespace sofa::component::collision;
 using sofa::core::objectmodel::Data;
 using sofa::helper::ReadAccessor;
@@ -54,23 +53,23 @@ using sofa::core::objectmodel::New;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    glutInit(&argc,argv);
-    sofa::simulation::graph::init();
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
-    sofa::gui::initMain();
+    //force load SofaComponentAll
+    sofa::component::initSofaComponentAll();
+    //force load SofaGui (registering guis)
+    sofa::gui::initSofaGui();
 
-    sofa::helper::parse("This is a SOFA application.")
-    (argc,argv);
+    //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
+    sofa::gui::GUIManager::SetDimension(800, 600);
+
+    sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     sofa::simulation::Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
-    groot->setGravity( Coord3(0,-10,0) );
+    groot->setGravity({ 0,-10,0 });
 
     // One solver for all the graph
-    EulerSolver::SPtr solver = sofa::core::objectmodel::New<EulerSolver>();
+    auto solver = sofa::core::objectmodel::New<EulerExplicitSolver>();
     solver->setName("solver");
     solver->f_printLog.setValue(false);
     groot->addObject(solver);
@@ -78,22 +77,24 @@ int main(int argc, char** argv)
     // One node to define the particle
     sofa::simulation::Node::SPtr particule_node = groot.get()->createChild("particle_node");
     // The particule, i.e, its degrees of freedom : a point with a velocity
-    MechanicalObject3::SPtr dof = sofa::core::objectmodel::New<MechanicalObject3>();
+    using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>;
+    auto dof = sofa::core::objectmodel::New<MechanicalObject3>();
     dof->setName("particle");
     particule_node->addObject(dof);
     dof->resize(1);
     // get write access the particle positions vector
-    WriteAccessor< Data<MechanicalObject3::VecCoord> > positions = *dof->write( VecId::position() );
-    positions[0] = Coord3(0,0,0);
+    auto positions = sofa::helper::getWriteAccessor(*dof->write(VecId::position()));
+    positions[0] = { 0,0,0 };
     // get write access the particle velocities vector
-    WriteAccessor< Data<MechanicalObject3::VecDeriv> > velocities = *dof->write( VecId::velocity() );
-    velocities[0] = Deriv3(0,0,0);
+    auto velocities = sofa::helper::getWriteAccessor(*dof->write(VecId::velocity()));
+    velocities[0] = { 0,0,0 };
     // show the particle
     dof->showObject.setValue(true);
     dof->showObjectScale.setValue(10.);
 
     // Its properties, i.e, a simple mass node
-    UniformMass3::SPtr mass = sofa::core::objectmodel::New<UniformMass3>();
+    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types, SReal>;
+    auto mass = sofa::core::objectmodel::New<UniformMass3>();
     mass->setName("mass");
     particule_node->addObject(mass);
     mass->setMass( 1 );

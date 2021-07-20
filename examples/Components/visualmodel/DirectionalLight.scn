@@ -7,7 +7,8 @@
     <RequiredPlugin pluginName='SofaRigid'/> 
 
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.02" contactDistance="0.02" />
     <DefaultCollisionGroupManager />

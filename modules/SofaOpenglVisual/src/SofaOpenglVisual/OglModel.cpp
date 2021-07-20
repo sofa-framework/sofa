@@ -23,13 +23,13 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/RAII.h>
-#include <sofa/helper/vector.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/RAII.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <cstring>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 //#define DEBUG_DRAW
 namespace sofa
@@ -41,15 +41,16 @@ namespace component
 namespace visualmodel
 {
 
-using sofa::helper::types::RGBAColor;
-using sofa::helper::types::Material;
+using sofa::type::RGBAColor;
+using sofa::type::Material;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
     .add< sofa::component::visualmodel::OglModel >();
 
 template<class T>
-const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
+const T* getData(const sofa::type::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
@@ -98,7 +99,7 @@ OglModel::OglModel()
     primitiveType.endEdit();
 }
 
-OglModel::~OglModel()
+void OglModel::deleteTextures()
 {
     if (tex!=nullptr) delete tex;
 
@@ -106,7 +107,10 @@ OglModel::~OglModel()
     {
         delete textures[i];
     }
+}
 
+void OglModel::deleteBuffers()
+{
     // NB fjourdes : I don t know why gDEBugger still reports
     // graphics memory leaks after destroying the GLContext
     // even if the vbos destruction is claimed with the following
@@ -127,14 +131,19 @@ OglModel::~OglModel()
     {
         glDeleteBuffers(1,&iboQuads);
     }
+}
 
+OglModel::~OglModel()
+{
+    deleteTextures();
+    deleteBuffers();
 }
 
 void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     if (arg->getAttribute("isToPrint")!=nullptr)
     {
-        msg_deprecated() << "The 'isToPrint' data field has been deprecated in Sofa 19.06 due to lack of consistency in how it should work." << msgendl
+        msg_deprecated() << "The 'isToPrint' data field has been deprecated in SOFA v19.06 due to lack of consistency in how it should work." << msgendl
                             "Please contact sofa-dev team in case you need similar.";
     }
     Inherit1::parse(arg);
@@ -319,7 +328,7 @@ void OglModel::drawGroup(int ig, bool transparent)
 
 void OglModel::drawGroups(bool transparent)
 {
-    helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
+    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
 
     if (groups.empty())
     {
@@ -616,7 +625,7 @@ bool OglModel::loadTexture(const std::string& filename)
     helper::io::Image *img = helper::io::Image::Create(filename);
     if (!img)
         return false;
-    tex = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
+    tex = new sofa::gl::Texture(img, true, true, false, srgbTexturing.getValue());
     return true;
 }
 
@@ -658,7 +667,7 @@ bool OglModel::loadTextures()
             result = false;
             continue;
         }
-        helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
+        sofa::gl::Texture * text = new sofa::gl::Texture(img, true, true, false, srgbTexturing.getValue());
         materialTextureIdMap.insert(std::pair<int, int>(*i,textures.size()));
         textures.push_back( text );
     }

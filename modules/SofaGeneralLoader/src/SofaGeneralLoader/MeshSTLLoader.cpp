@@ -35,6 +35,7 @@ namespace sofa::component::loader
 
 using sofa::helper::getWriteOnlyAccessor;
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 static int MeshSTLLoaderClass = core::RegisterObject("Loader for the STL file format. STL can be used to represent the surface of object using with a triangulation.")
@@ -51,7 +52,7 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
 
 bool MeshSTLLoader::doLoad()
 {
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::string sfilename(filename);
     if (!sofa::helper::system::DataRepository.findFile(sfilename))
     {
@@ -123,7 +124,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(this->d_triangles);
 
-    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::Index > my_map;
+    std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
     core::topology::Topology::Index positionCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 
@@ -155,7 +156,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 #endif
 
     // temporaries
-    sofa::defaulttype::Vec3f vertex, normal;
+    sofa::type::Vec3f vertex, normal;
 
     // reserve vector before filling it
     my_triangles.reserve( nbrFacet );
@@ -239,7 +240,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(d_triangles);
 
-    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::Index > my_map;
+    std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
     core::topology::Topology::Index positionCounter = 0, vertexCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 

@@ -24,16 +24,17 @@
 #include <SofaUserInteraction/ComponentMouseInteraction.h>
 #include <SofaUserInteraction/RayContact.h>
 
-#include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/collision/Pipeline.h>
 
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-
 #include <SofaGraphComponent/MouseButtonSetting.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPickParticlesVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPickParticlesVisitor;
 
 #include <iostream>
 #include <limits>
@@ -272,14 +273,14 @@ void PickHandler::setCompatibleInteractor()
 }
 
 
-void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sofa::defaulttype::Vector3 &orientation)
+void PickHandler::updateRay(const sofa::type::Vector3 &position,const sofa::type::Vector3 &orientation)
 {
     if (!interactorInUse || !mouseCollision) return;
 
     mouseCollision->getRay(0).setOrigin( position+orientation*interaction->mouseInteractor->getDistanceFromMouse() );
     mouseCollision->getRay(0).setDirection( orientation );
-    simulation::MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::position(), true).execute(mouseCollision->getContext());
-    simulation::MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::freePosition(), true).execute(mouseCollision->getContext());
+    MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::position(), true).execute(mouseCollision->getContext());
+    MechanicalPropagateOnlyPositionVisitor(sofa::core::mechanicalparams::defaultInstance(), 0, sofa::core::VecCoordId::freePosition(), true).execute(mouseCollision->getContext());
 
     if (needToCastRay())
     {
@@ -376,15 +377,15 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
         return result;
     }
 
-    const defaulttype::Vector3& origin          = mouseCollision->getRay(0).origin();
-    const defaulttype::Vector3& direction       = mouseCollision->getRay(0).direction();
+    const type::Vector3& origin          = mouseCollision->getRay(0).origin();
+    const type::Vector3& direction       = mouseCollision->getRay(0).direction();
     const double& maxLength                     = mouseCollision->getRay(0).l();
     
     const std::set< sofa::component::collision::BaseRayContact*> &contacts = mouseCollision->getContacts();
     for (std::set< sofa::component::collision::BaseRayContact*>::const_iterator it=contacts.begin(); it != contacts.end(); ++it)
     {
 
-        const sofa::helper::vector<core::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();
+        const sofa::type::vector<core::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();
         sofa::core::CollisionModel *modelInCollision;
         for (unsigned int i=0; i<output.size(); ++i)
         {
@@ -429,8 +430,8 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
 
 component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce()
 {
-    const defaulttype::Vector3& origin          = mouseCollision->getRay(0).origin();
-    const defaulttype::Vector3& direction       = mouseCollision->getRay(0).direction();
+    const type::Vector3& origin          = mouseCollision->getRay(0).origin();
+    const type::Vector3& direction       = mouseCollision->getRay(0).direction();
     const double& maxLength                     = mouseCollision->getRay(0).l();
 
     return findCollisionUsingBruteForce(origin, direction, maxLength, mouseNode->getRoot());
@@ -438,21 +439,21 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce()
 
 component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding()
 {
-    const defaulttype::Vector3& origin          = mouseCollision->getRay(0).origin();
-    const defaulttype::Vector3& direction       = mouseCollision->getRay(0).direction();
+    const type::Vector3& origin          = mouseCollision->getRay(0).origin();
+    const type::Vector3& direction       = mouseCollision->getRay(0).direction();
 
     return findCollisionUsingColourCoding(origin, direction);
 
 }
 
-component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const defaulttype::Vector3& origin,
-        const defaulttype::Vector3& direction,
+component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const type::Vector3& origin,
+        const type::Vector3& direction,
         double maxLength, core::objectmodel::BaseNode* rootNode)
 {
     BodyPicked result;
     // Look for particles hit by this ray
 //  msg_info()<<"PickHandler::findCollisionUsingBruteForce" << std::endl;
-    simulation::MechanicalPickParticlesVisitor picker(sofa::core::execparams::defaultInstance(), origin, direction, maxLength, 0 );
+    MechanicalPickParticlesVisitor picker(sofa::core::execparams::defaultInstance(), origin, direction, maxLength, 0 );
     //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //sofa::simulation::getSimulation()->getContext()->toBaseNode();
 
     if (rootNode) picker.execute(rootNode->getContext());
@@ -465,8 +466,8 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 }
 
 //WARNING: do not use this method with Ogre
-component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(const defaulttype::Vector3& origin,
-        const defaulttype::Vector3& direction)
+component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(const type::Vector3& origin,
+        const type::Vector3& direction)
 {
     SOFA_UNUSED(origin);
     SOFA_UNUSED(direction);

@@ -24,7 +24,7 @@
 
 #include "CudaTetrahedralVisualModel.h"
 
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/GLSLShader.h>
 
 namespace sofa
 {

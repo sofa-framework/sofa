@@ -27,21 +27,53 @@
 namespace sofa::component::collision
 {
 
+/**
+ * It uses proximities on cubes and spheres, but supported pairs of collision models can
+ * be extended. For example, see MeshMinProximityIntersection which adds support for
+ * Point/Point, Line/Point, etc.
+ *
+ * Supported by default:
+ * - Cube/Cube
+ * - Sphere/Sphere (rigid or vec3)
+ * MeshMinProximityIntersection adds support for:
+ * - Point/Point
+ * - Line/Point
+ * - Line/Line
+ * - Triangle/Point
+ * - Triangle/Line
+ * - Triangle/Triangle
+ * - Sphere/Point
+ * - RigidSphere/Point
+ * - Line/RigidSphere
+ * - Line/Sphere
+ * - Triangle/RigidSphere
+ * - Triangle/Sphere
+ */
 class SOFA_SOFABASECOLLISION_API NewProximityIntersection : public BaseProximityIntersection
 {
 public:
     SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
 
     Data<bool> useLineLine; ///< Line-line collision detection enabled
-protected:
-    NewProximityIntersection();
-public:
 
     typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
 
     void init() override;
 
-    static inline int doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id);
+    static inline int
+    doIntersectionPointPoint(SReal dist2, const type::Vector3& p, const type::Vector3& q,
+                             OutputVector* contacts, int id);
+
+    bool testIntersection(Cube& cube1, Cube& cube2) override;
+    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts) override;
+
+    template<typename SphereType1, typename SphereType2>
+    bool testIntersection(SphereType1& sph1, SphereType2& sph2);
+    template<typename SphereType1, typename SphereType2>
+    int computeIntersection(SphereType1& sph1, SphereType2& sph2, OutputVector* contacts);
+
+protected:
+    NewProximityIntersection();
 
 };
 

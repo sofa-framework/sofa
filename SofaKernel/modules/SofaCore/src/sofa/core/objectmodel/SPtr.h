@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_SPTR_H
 #define SOFA_CORE_OBJECTMODEL_SPTR_H
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/config.h>
 
 namespace sofa

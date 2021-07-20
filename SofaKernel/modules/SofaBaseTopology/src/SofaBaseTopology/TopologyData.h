@@ -22,12 +22,10 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <sofa/core/topology/BaseTopologyData.h>
-#include <SofaBaseTopology/TopologyDataEngine.h>
 #include <SofaBaseTopology/TopologyDataHandler.h>
-
 
 
 namespace sofa::component::topology
@@ -39,7 +37,7 @@ namespace sofa::component::topology
 
 /** \brief A class for storing topology related data. Automatically manages topology changes.
 *
-* This class is a wrapper of class helper::vector that is made to take care transparently of all topology changes that might
+* This class is a wrapper of class type::vector that is made to take care transparently of all topology changes that might
 * happen (non exhaustive list: element added, removed, fused, renumbered).
 */
 template< class TopologyElementType, class VecT>
@@ -58,54 +56,22 @@ public:
     typedef typename container_type::const_reference const_reference;
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
+    typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
+    typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
+    typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
 
     /// Constructor
-    TopologyData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : sofa::core::topology::BaseTopologyData< VecT >(data),
-          m_topologicalEngine(nullptr),
-          m_topology(nullptr),
-          m_topologyHandler(nullptr)
-    {}
-
-    virtual ~TopologyData(){
-        if (this->m_topologyHandler)
-            delete m_topologyHandler;
-
-    }
+    TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* _topologyHandler, bool deleteHandler = false);
+    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology);
 
     /** Public functions to handle topological engine creation */
     /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
-
-    /// Allow to add additionnal dependencies to others Data.
-    void addInputData(sofa::core::objectmodel::BaseData* _data);
-
-    /// Function to link the topological Data with the engine and the current topology. And init everything.
-    /// This function should be used at the end of the all declaration link to this Data while using it in a component.
-    void registerTopologicalData();
-
-
-    const value_type& operator[](int i) const
-    {
-        const container_type& data = *(this->getValue());
-        const value_type& result = data[i];
-        return result;
-    }
-
-    value_type& operator[](int i)
-    {
-        container_type& data = *(this->beginEdit());
-        value_type& result = data[i];
-        this->endEdit();
-        return result;
-    }
-
+    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine);
 
     /// Link Data to topology arrays
     void linkToPointDataArray();
@@ -115,26 +81,71 @@ public:
     void linkToTetrahedronDataArray();
     void linkToHexahedronDataArray();
 
-    sofa::component::topology::TopologyDataEngine<VecT>* getTopologicalEngine()
-    {
-        return m_topologicalEngine.get();
-    }
+    /// Swaps values at indices i1 and i2.
+    void swap(Index i1, Index i2) override;
 
-    sofa::core::topology::BaseMeshTopology* getTopology()
-    {
-        return m_topology;
-    }
+    /// Remove the values corresponding to the elements removed.
+    void remove(const sofa::type::vector<Index>& index) override;
 
-    sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* getTopologyHandler()
-    {
-        return m_topologyHandler;
-    }
+    /// Add some values. Values are added at the end of the vector.
+    /// This (new) version gives more information for element indices and ancestry
+    virtual void add(const sofa::type::vector<Index>& index,
+        const sofa::type::vector< TopologyElementType >& elems,
+        const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& coefs,
+        const sofa::type::vector< AncestorElem >& ancestorElems) override;
 
+    /// Reorder the values.
+    void renumber(const sofa::type::vector<Index>& index) override;
+
+    /// Move a list of points
+    void move(const sofa::type::vector<Index>& indexList,
+        const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& coefs) override;
+
+    /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    virtual void addOnMovedPosition(const sofa::type::vector<Index>& indexList,
+        const sofa::type::vector< TopologyElementType >& elems);
+
+    /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
+    virtual void removeOnMovedPosition(const sofa::type::vector<Index>& indices);
+
+    /** Method to add a callback when a element is deleted from this container. It will be called by @sa remove method for example.
+    * This is only to specify a specific behevior/computation when removing an element from this container. Otherwise normal deletion is applyed.
+    * Parameters are @param Index of the element which is detroyed and @value_type value hold by this container.
+    */
+    void setDestructionCallback(std::function<void(Index, value_type&)> func) { p_onDestructionCallback = func; }
+    
+    /** Method to add a callback when a element is created in this container. It will be called by @sa add method for example.
+    * This is only to specify a specific behevior/computation when adding an element in this container. Otherwise default constructor of the element is used.
+    * @param Index of the element which is created.
+    * @param value_type value hold by this container.
+    * @param TopologyElementType type of topologyElement created.
+    * @param List of ancestor indices.
+    * @param List of coefficient respect to the ancestor indices.
+    */
+    void setCreationCallback(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> func) { p_onCreationCallback = func; }
+
+    std::function<void(Index, value_type&)> p_onDestructionCallback;
+    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> p_onCreationCallback;
+
+    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method has been removed as it is not part of the new topology change design.")
+    void addInputData(sofa::core::objectmodel::BaseData* _data) = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
+    const value_type& operator[](int i) const = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
+    value_type& operator[](int i) = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2086)", "v21.06 (PR#2086)", "This method has been removed as it's mechanism is now automatically done in TopologyHandler.")
+    void registerTopologicalData() = delete;
+    
 protected:
+    sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* m_topologyHandler;
 
-    typename sofa::component::topology::TopologyDataEngine<VecT>::SPtr m_topologicalEngine;
-    sofa::core::topology::BaseMeshTopology* m_topology;
-    sofa::component::topology::TopologyDataHandler<TopologyElementType,VecT>* m_topologyHandler;
+    bool m_isTopologyDynamic;
 
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*      ) { linkToPointDataArray();       }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*       ) { linkToEdgeDataArray();        }
@@ -142,7 +153,6 @@ protected:
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*       ) { linkToQuadDataArray();        }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*) { linkToTetrahedronDataArray(); }
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron* ) { linkToHexahedronDataArray();  }
-
 };
 
 

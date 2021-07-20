@@ -27,34 +27,11 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::projectiveconstraintset
 {
-
-template< class DataTypes>
-bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    if (fc)
-    {
-        return false;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-template< class DataTypes>
-void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type> &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
 
 template <class DataTypes>
 ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
@@ -65,7 +42,6 @@ ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new ProjectToPointConstraintInternalData<DataTypes>())    
-    , m_pointHandler(nullptr)
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
@@ -75,9 +51,6 @@ ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
 template <class DataTypes>
 ProjectToPointConstraint<DataTypes>::~ProjectToPointConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
-
     delete data;
 }
 
@@ -98,7 +71,7 @@ void ProjectToPointConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 
@@ -122,10 +95,8 @@ void ProjectToPointConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologicalEngine(_topology, m_pointHandler);
-        f_indices.registerTopologicalData();
+        // Initialize topological changes support
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {
@@ -311,8 +282,8 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         if( f_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
             {
@@ -325,12 +296,12 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 point = DataTypes::getCPos(x[index]);
                 points.push_back(point);
             }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         if(f_fixAll.getValue())
             for (unsigned i=0; i<x.size(); i++ )
             {
@@ -343,7 +314,7 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 point = DataTypes::getCPos(x[index]);
                 points.push_back(point);
             }
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
     vparams->drawTool()->restoreLastState();

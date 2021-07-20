@@ -26,8 +26,8 @@
 #include "ImageTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/SVector.h>
 
 
 namespace sofa
@@ -64,7 +64,7 @@ public:
 
     Data< InImageTypes > inputImage;
     Data< OutImageTypes > outputImage;
-    Data<helper::SVector<helper::SVector<To> > > VoxelData; ///< Data associed to each non null input voxel
+    Data<type::SVector<type::SVector<To> > > VoxelData; ///< Data associed to each non null input voxel
 
     ImageDataDisplay()    :   Inherited()
       , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
@@ -91,7 +91,7 @@ protected:
 
     void doUpdate() override
     {
-        const helper::SVector<helper::SVector<To> >& dat = this->VoxelData.getValue();
+        const type::SVector<type::SVector<To> >& dat = this->VoxelData.getValue();
         raImagei in(this->inputImage);
 
         waImageo out(this->outputImage);

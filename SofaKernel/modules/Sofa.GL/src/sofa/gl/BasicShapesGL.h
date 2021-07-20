@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gl/gl.h>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/fixed_array.h>
+#include <sofa/type/vector.h>
 #include <sofa/gl/GLSLShader.h>
 #include <cmath>
 #include <map>
@@ -71,8 +71,8 @@ public:
     void init() {}
 
     void draw(const VertexType& center, const float& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
-    void draw(const helper::vector<VertexType>& centers, const float& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
-    void draw(const helper::vector<VertexType>& centers, const std::vector<float>& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
+    void draw(const type::vector<VertexType>& centers, const float& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
+    void draw(const type::vector<VertexType>& centers, const std::vector<float>& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
 
 private:
     void generateBuffer(const SphereDescription& desc, GLBuffers& buffer);
@@ -98,8 +98,8 @@ public:
     void init();
 
     void draw(const VertexType& center, const float& radius);
-    void draw(const helper::vector<VertexType>& centers, const float& radius);
-    void draw(const helper::vector<VertexType>& centers, const std::vector<float>& radii);
+    void draw(const type::vector<VertexType>& centers, const float& radius);
+    void draw(const type::vector<VertexType>& centers, const std::vector<float>& radii);
 
 private:
     void generateBuffer(const std::vector<VertexType> &positions, const std::vector<float>& radii);
@@ -117,10 +117,10 @@ private:
 };
 
 #if  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
-extern template class SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
-extern template class SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
-extern template class SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
-extern template class SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
+extern template class SOFA_GL_API BasicShapesGL_Sphere<type::fixed_array< float, 3 > >;
+extern template class SOFA_GL_API BasicShapesGL_Sphere<type::fixed_array< double, 3 > >;
+extern template class SOFA_GL_API BasicShapesGL_FakeSphere<type::fixed_array< float, 3 > >;
+extern template class SOFA_GL_API BasicShapesGL_FakeSphere<type::fixed_array< double, 3 > >;
 #endif //  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 
 } // namespace sofa::gl

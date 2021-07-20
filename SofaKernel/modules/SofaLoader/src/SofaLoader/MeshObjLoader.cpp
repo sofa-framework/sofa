@@ -25,15 +25,15 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
 #include <sofa/helper/accessor.h>
+#include <sofa/helper/system/Locale.h>
 
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
-using namespace sofa::helper::types;
 using sofa::helper::getWriteOnlyAccessor;
-using sofa::helper::getWriteAccessor;
 
 int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
         .add< MeshObjLoader >();
@@ -84,17 +84,17 @@ MeshObjLoader::~MeshObjLoader()
 
 bool MeshObjLoader::doLoad()
 {
-    dmsg_info() << "Loading OBJ file: " << m_filename;
+    dmsg_info() << "Loading OBJ file: " << d_filename;
 
     bool fileRead = false;
 
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
     if (!file.good())
     {
-        msg_error() << "Cannot read file '" << m_filename << "'.";
+        msg_error() << "Cannot read file '" << d_filename << "'.";
         return false;
     }
 
@@ -114,7 +114,7 @@ void MeshObjLoader::doClearBuffers()
     getWriteOnlyAccessor(d_texCoordsList).clear();
     getWriteOnlyAccessor(d_normalsList).clear();
 
-    getWriteAccessor(d_material)->activated = false;
+    getWriteOnlyAccessor(d_material)->activated = false;
     getWriteOnlyAccessor(d_materials).clear();
     getWriteOnlyAccessor(d_faceList)->clear();
     getWriteOnlyAccessor(d_normalsIndexList)->clear();
@@ -147,6 +147,9 @@ void MeshObjLoader::addGroup (const PrimitiveGroup& g)
 
 bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    sofa::helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     const bool handleSeams = d_handleSeams.getValue();
     auto my_positions = getWriteOnlyAccessor(d_positions);
     auto my_texCoords = getWriteOnlyAccessor(d_texCoordsList);
@@ -157,7 +160,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     auto my_faceList = getWriteOnlyAccessor(d_faceList);
     auto my_normalsList = getWriteOnlyAccessor(d_normalsIndexList);
     auto my_texturesList  = getWriteOnlyAccessor(d_texIndexList);
-    helper::vector<int> nodes, nIndices, tIndices;
+    type::vector<int> nodes, nIndices, tIndices;
 
     auto my_edges = getWriteOnlyAccessor(d_edges);
     auto my_triangles = getWriteOnlyAccessor(d_triangles);
@@ -182,7 +185,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
     int vtn[3];
     Vector3 result;
-    helper::WriteAccessor<Data<helper::vector< PrimitiveGroup> > > my_faceGroups[NBFACETYPE] =
+    helper::WriteOnlyAccessor<Data<type::vector< PrimitiveGroup> > > my_faceGroups[NBFACETYPE] =
     {
         d_edgesGroups,
         d_trianglesGroups,
@@ -247,8 +250,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             {
                 values >> curMaterialName;
                 curMaterialId = -1;
-                helper::vector<Material>::iterator it = my_materials.begin();
-                helper::vector<Material>::iterator itEnd = my_materials.end();
+                type::vector<Material>::iterator it = my_materials.begin();
+                type::vector<Material>::iterator itEnd = my_materials.end();
                 for (; it != itEnd; ++it)
                 {
                     if (it->name == curMaterialName)
@@ -398,17 +401,17 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         }
         for (size_t fi=0; fi<my_faceList->size(); ++fi)
         {
-            const helper::SVector<int>& nodes = (*my_faceList)[fi];
-            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
-            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
+            const type::SVector<int>& nodes = (*my_faceList)[fi];
+            const type::SVector<int>& nIndices = (*my_normalsList)[fi];
+            const type::SVector<int>& tIndices = (*my_texturesList)[fi];
             for (size_t i = 0; i < nodes.size(); ++i)
             {
                 unsigned int pi = nodes[i];
                 unsigned int ni = nIndices[i];
                 unsigned int ti = tIndices[i];
                 if (pi >= vertexCount) continue;
-                if (ti < my_texCoords.size() && (vTexCoords[pi] == sofa::defaulttype::Vector2() ||
-                                                 (my_texCoords[ti]-vTexCoords[pi])*sofa::defaulttype::Vector2(-1,1) > 0))
+                if (ti < my_texCoords.size() && (vTexCoords[pi] == sofa::type::Vector2() ||
+                                                 (my_texCoords[ti]-vTexCoords[pi])*sofa::type::Vector2(-1,1) > 0))
                     vTexCoords[pi] = my_texCoords[ti];
                 if (ni < my_normals.size())
                     vNormals[pi] += my_normals[ni];
@@ -430,9 +433,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         vertTexNormMap.resize(nbVIn);
         for (size_t fi=0; fi<my_faceList->size(); ++fi)
         {
-            const helper::SVector<int>& nodes = (*my_faceList)[fi];
-            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
-            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
+            const type::SVector<int>& nodes = (*my_faceList)[fi];
+            const type::SVector<int>& nIndices = (*my_normalsList)[fi];
+            const type::SVector<int>& tIndices = (*my_texturesList)[fi];
             for (size_t i = 0; i < nodes.size(); ++i)
             {
                 unsigned int pi = nodes[i];
@@ -457,9 +460,10 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             vsplit = true;
 
         // Then we can create the final arrays
-        helper::vector<sofa::defaulttype::Vector3> vertices2;
-        auto vnormals = getWriteAccessor(d_normals);
-        auto vtexcoords = getWriteAccessor(d_texCoords);
+
+        type::vector<sofa::type::Vector3> vertices2;
+        auto vnormals = getWriteOnlyAccessor(d_normals);
+        auto vtexcoords = getWriteOnlyAccessor(d_texCoords);
         auto vertPosIdx = getWriteOnlyAccessor(d_vertPosIdx);
         auto vertNormIdx = getWriteOnlyAccessor(d_vertNormIdx);
 
@@ -504,7 +508,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
         // replace the original (non duplicated) vector with the new one
         my_positions.clear();
-        for(const sofa::defaulttype::Vector3& c : vertices2)
+        for(const sofa::type::Vector3& c : vertices2)
             my_positions.push_back(c);
 
         if( vsplit && nbNOut == nbVOut )
@@ -514,9 +518,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         
         for (size_t fi=0; fi<my_faceList->size(); ++fi)
         {
-            const helper::SVector<int>& verts = (*my_faceList)[fi];
-            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
-            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
+            const type::SVector<int>& verts = (*my_faceList)[fi];
+            const type::SVector<int>& nIndices = (*my_normalsList)[fi];
+            const type::SVector<int>& tIndices = (*my_texturesList)[fi];
             std::vector<int> nodes;
             nodes.resize(verts.size());
             for (size_t i = 0; i < verts.size(); ++i)
@@ -559,13 +563,13 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     if (d_computeMaterialFaces.getValue())
     {
         // create subset lists
-        std::map< std::string, helper::vector<unsigned int> > materialFaces[NBFACETYPE];
+        std::map< std::string, type::vector<unsigned int> > materialFaces[NBFACETYPE];
         for (int ft = 0; ft < NBFACETYPE; ++ft)
         {
             for (size_t gi=0; gi<my_faceGroups[ft].size(); ++gi)
             {
                 PrimitiveGroup g = my_faceGroups[ft][gi];
-                helper::vector<unsigned int>& out = materialFaces[ft][g.materialName];
+                type::vector<unsigned int>& out = materialFaces[ft][g.materialName];
                 for (int f=g.p0; f<g.p0+g.nbp; ++f)
                     out.push_back(f);
             }
@@ -580,14 +584,14 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             case MeshObjLoader::QUAD:     fname = "quad"; break;
             default: break;
             }
-            for (std::map< std::string, helper::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
+            for (std::map< std::string, type::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
             {
                 std::string materialName = it->first;
-                const helper::vector<unsigned>& faces = it->second;
+                const type::vector<unsigned>& faces = it->second;
                 if (faces.empty()) continue;
                 std::ostringstream oname;
                 oname << "material_" << materialName << "_" << fname << "Indices";
-                Data< helper::vector<unsigned int> >* dOut = new Data< helper::vector<unsigned int> >("list of face indices corresponding to a given material");
+                Data< type::vector<unsigned int> >* dOut = new Data< type::vector<unsigned int> >("list of face indices corresponding to a given material");
                 dOut->setName(oname.str());
 
                 this->addData(dOut);
@@ -608,7 +612,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 //    model - properly initialized GLMmodel structure
 //    name  - name of the material library
 // -----------------------------------------------------
-bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& materials)
+bool MeshObjLoader::readMTL(const char* filename, type::vector<Material>& materials)
 {
     FILE* file;
     char buf[128]; // Note: in the strings below, 127 is sizeof(buf)-1

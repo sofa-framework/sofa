@@ -39,6 +39,8 @@
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
 #include <QMenu>
 #include <QMessageBox>
 #include <QHeaderView>
@@ -193,7 +195,7 @@ BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry:
     {
         core::objectmodel::BaseObjectDescription arg;
         std::ostringstream oss;
-        oss << c->shortName(&description) << numComponent++;
+        oss << description.getName() << description.getType() << numComponent++;
         arg.setName(oss.str());
 
         object = c->createInstance(parent->getContext(), &arg);
@@ -373,7 +375,7 @@ QTreeWidgetItem *GraphModeler::getItem(Base *component) const
 
 void GraphModeler::openModifyObject()
 {
-    helper::vector<QTreeWidgetItem*> selection;
+    type::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     for (unsigned int i=0; i<selection.size(); ++i)
         openModifyObject(selection[i]);
@@ -449,7 +451,7 @@ void GraphModeler::openModifyObject(QTreeWidgetItem *item)
 
 void GraphModeler::addInPropertyWidget()
 {
-    helper::vector<QTreeWidgetItem*> selection;
+    type::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
 
     bool clear = true;
@@ -495,7 +497,7 @@ void GraphModeler::rightClick(const QPoint& p /*, int  index */)
     if (!item) return;
 
     bool isNode=true;
-    helper::vector<QTreeWidgetItem*> selection; getSelectedItems(selection);
+    type::vector<QTreeWidgetItem*> selection; getSelectedItems(selection);
     bool isSingleSelection= (selection.size() == 1);
     for (unsigned int i=0; i<selection.size(); ++i)
     {
@@ -542,7 +544,7 @@ void GraphModeler::rightClick(const QPoint& p /*, int  index */)
 
 void GraphModeler::collapseNode()
 {
-    helper::vector<QTreeWidgetItem*> selection;
+    type::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     for (unsigned int i=0; i<selection.size(); ++i)
         collapseNode(selection[i]);
@@ -562,7 +564,7 @@ void GraphModeler::collapseNode(QTreeWidgetItem* item)
 
 void GraphModeler::expandNode()
 {
-    helper::vector<QTreeWidgetItem*> selection;
+    type::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     for (unsigned int i=0; i<selection.size(); ++i)
         expandNode(selection[i]);
@@ -611,13 +613,13 @@ Node::SPtr GraphModeler::loadNode(QTreeWidgetItem* item, std::string filename, b
 void GraphModeler::globalModification()
 {
     //Get all the components which can be modified
-    helper::vector< QTreeWidgetItem* > selection;
+    type::vector< QTreeWidgetItem* > selection;
     getSelectedItems(selection);
 
-    helper::vector< QTreeWidgetItem* > hierarchySelection;
+    type::vector< QTreeWidgetItem* > hierarchySelection;
     for (size_t i=0; i<selection.size(); ++i) getComponentHierarchy(selection[i], hierarchySelection);
 
-    helper::vector< Base* > allComponentsSelected;
+    type::vector< Base* > allComponentsSelected;
     for (size_t i=0; i<hierarchySelection.size(); ++i) allComponentsSelected.push_back(getComponent(hierarchySelection[i]));
 
     sofa::gui::qt::GlobalModification *window=new sofa::gui::qt::GlobalModification(allComponentsSelected, historyManager);
@@ -630,7 +632,7 @@ void GraphModeler::globalModification()
 void GraphModeler::linkComponent()
 {
     // get the selected component
-    helper::vector< QTreeWidgetItem* > selection;
+    type::vector< QTreeWidgetItem* > selection;
     getSelectedItems(selection);
 
     // a component must be selected
@@ -727,7 +729,7 @@ Node::SPtr GraphModeler::buildNodeFromBaseElement(Node::SPtr node,xml::BaseEleme
             itemGraph->setText(0,name.c_str());
         }
     }
-    newNode->clearWarnings();
+    newNode->clearLoggedMessages();
 
     return newNode;
 }
@@ -916,7 +918,7 @@ void GraphModeler::save(const std::string &filename)
 
 void GraphModeler::saveComponents()
 {
-    helper::vector<QTreeWidgetItem*> selection;
+    type::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     if (selection.empty()) return;
     std::string filename;
@@ -924,10 +926,10 @@ void GraphModeler::saveComponents()
 
 }
 
-void GraphModeler::saveComponents(helper::vector<QTreeWidgetItem*> items, const std::string &file)
+void GraphModeler::saveComponents(type::vector<QTreeWidgetItem*> items, const std::string &file)
 {
     std::ofstream out(file.c_str());
-    simulation::XMLPrintVisitor print(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, out);
+    simulation::XMLPrintVisitor print(sofa::core::execparams::defaultInstance() /* PARAMS FIRST */, out);
     print.setLevel(1);
     out << "<Node name=\"Group\">\n";
     for (unsigned int i=0; i<items.size(); ++i)
@@ -1019,7 +1021,7 @@ Base *GraphModeler::getComponentAbove(QTreeWidgetItem *item)
 
 void GraphModeler::deleteComponent()
 {
-    helper::vector<QTreeWidgetItem*> selection;
+    type::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     for (unsigned int i=0; i<selection.size(); ++i)
         deleteComponent(selection[i]);
@@ -1224,7 +1226,7 @@ bool GraphModeler::cut(std::string path)
 
 bool GraphModeler::copy(std::string path)
 {
-    helper::vector< QTreeWidgetItem*> items; getSelectedItems(items);
+    type::vector< QTreeWidgetItem*> items; getSelectedItems(items);
 
     if (!items.empty())
     {
@@ -1236,7 +1238,7 @@ bool GraphModeler::copy(std::string path)
 
 bool GraphModeler::paste(std::string path)
 {
-    helper::vector< QTreeWidgetItem*> items;
+    type::vector< QTreeWidgetItem*> items;
     getSelectedItems(items);
     if (!items.empty())
     {
@@ -1251,7 +1253,7 @@ bool GraphModeler::paste(std::string path)
         QTreeWidgetItem *pasteItem=items.front();
 
         //Find all the QListViewItem inserted
-        helper::vector< QTreeWidgetItem* > insertedItems;
+        type::vector< QTreeWidgetItem* > insertedItems;
 //        QTreeWidgetItem *insertedItem=last;
         for(int i=0 ; i<last->parent()->childCount() ; i++)
         {

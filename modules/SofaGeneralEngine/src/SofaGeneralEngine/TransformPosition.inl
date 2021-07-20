@@ -433,7 +433,7 @@ void TransformPosition<DataTypes>::doUpdate()
         break;
     case ROTATION :
     {
-        sofa::defaulttype::Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
+        sofa::type::Quat<SReal> q=type::Quat<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {
@@ -443,7 +443,7 @@ void TransformPosition<DataTypes>::doUpdate()
     break;
     case SCALE_ROTATION_TRANSLATION :
     {
-        sofa::defaulttype::Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
+        sofa::type::Quat<SReal> q=type::Quat<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {
@@ -477,19 +477,19 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
     if (f_drawInput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
-        std::vector<sofa::defaulttype::Vector3> points;
+        std::vector<sofa::type::Vector3> points;
         for (unsigned int i=0; i < in.size(); i++)
             points.push_back(in[i]);
-        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::helper::types::RGBAColor(0.8f, 0.2f, 0.2f, 1.0f));
+        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::type::RGBAColor(0.8f, 0.2f, 0.2f, 1.0f));
     }
 
     if (f_drawOutput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > out = f_outputX;
-        std::vector<sofa::defaulttype::Vector3> points;
+        std::vector<sofa::type::Vector3> points;
         for (unsigned int i=0; i < out.size(); i++)
             points.push_back(out[i]);
-        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::helper::types::RGBAColor(0.2f, 0.8f, 0.2f, 1.0f));
+        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::type::RGBAColor(0.2f, 0.8f, 0.2f, 1.0f));
     }
     vparams->drawTool()->restoreLastState();
 }

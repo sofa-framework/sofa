@@ -36,7 +36,7 @@
 
 #include <SofaSphFluid/SpatialGridContainer.h>
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -86,7 +86,7 @@ public:
     /// Change particles ordering inside a given cell have contiguous indices
     ///
     /// Fill the old2new and new2old arrays giving the permutation to apply
-    void reorderIndices(helper::vector<Index>* old2new, helper::vector<Index>* new2old);
+    void reorderIndices(type::vector<Index>* old2new, type::vector<Index>* new2old);
     GridData data;
 
     Real getCellWidth() const { return cellWidth; }

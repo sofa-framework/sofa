@@ -23,6 +23,7 @@ list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/ConstraintStoreLambdaVisitor.h
     ${SOFACONSTRAINT_SRC}/ContactIdentifier.h
     ${SOFACONSTRAINT_SRC}/FreeMotionAnimationLoop.h
+    ${SOFACONSTRAINT_SRC}/FreeMotionTask.h
     ${SOFACONSTRAINT_SRC}/FrictionContact.h
     ${SOFACONSTRAINT_SRC}/FrictionContact.inl
     ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.h
@@ -33,7 +34,6 @@ list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.h
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.inl
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.h
-    ${SOFACONSTRAINT_SRC}/LocalMinDistance.inl
     ${SOFACONSTRAINT_SRC}/MappingGeometricStiffnessForceField.h
     ${SOFACONSTRAINT_SRC}/MappingGeometricStiffnessForceField.inl
     ${SOFACONSTRAINT_SRC}/PrecomputedConstraintCorrection.h
@@ -59,6 +59,7 @@ list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/ConstraintStoreLambdaVisitor.cpp
     ${SOFACONSTRAINT_SRC}/ContactIdentifier.cpp
     ${SOFACONSTRAINT_SRC}/FreeMotionAnimationLoop.cpp
+    ${SOFACONSTRAINT_SRC}/FreeMotionTask.cpp
     ${SOFACONSTRAINT_SRC}/FrictionContact.cpp
     ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/GenericConstraintSolver.cpp
@@ -79,11 +80,10 @@ list(APPEND SOURCE_FILES
 sofa_find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
 sofa_find_package(SofaImplicitOdeSolver REQUIRED)  
 sofa_find_package(SofaMeshCollision REQUIRED)
-sofa_find_package(SofaSimpleFem REQUIRED)
 sofa_find_package(SofaUserInteraction REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")

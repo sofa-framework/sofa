@@ -54,7 +54,7 @@ public:
 
 
     typedef Tetra            Tetrahedron;
-    typedef sofa::helper::vector<TetraID>         VecTetraID;
+    typedef sofa::type::vector<TetraID>         VecTetraID;
 
 protected:
     TetrahedronSetTopologyContainer();
@@ -64,10 +64,10 @@ public:
     void init() override;
 
     //add removed tetrahedron index
-    void addRemovedTetraIndex(sofa::helper::vector< TetrahedronID >& tetrahedra);
+    void addRemovedTetraIndex(sofa::type::vector< TetrahedronID >& tetrahedra);
 
     //get removed tetrahedron index
-    sofa::helper::vector< TetrahedronID >& getRemovedTetraIndex();
+    sofa::type::vector< TetrahedronID >& getRemovedTetraIndex();
 
     /// Procedural creation methods
     /// @{
@@ -87,8 +87,6 @@ public:
         return getTetrahedronArray();
     }
 
-    /** \brief Returns a reference to the Data of tetrahedra array container. */
-    Data< sofa::helper::vector<Tetrahedron> >& getTetrahedronDataArray() {return d_tetrahedron;}
 
     /** \brief Returns the tetrahedron corresponding to the TetraID i.
      *
@@ -248,27 +246,27 @@ public:
 
 
     /** \brief Returns the Tetrahedron array. */
-    const sofa::helper::vector<Tetrahedron> &getTetrahedronArray();
+    const sofa::type::vector<Tetrahedron> &getTetrahedronArray();
 
 
     /** \brief Returns the EdgesInTetrahedron array (i.e. provide the 6 edge indices for each tetrahedron). */
-    const sofa::helper::vector< EdgesInTetrahedron > &getEdgesInTetrahedronArray() ;
+    const sofa::type::vector< EdgesInTetrahedron > &getEdgesInTetrahedronArray() ;
 
 
     /** \brief Returns the TrianglesInTetrahedron array (i.e. provide the 4 triangle indices for each tetrahedron). */
-    const sofa::helper::vector< TrianglesInTetrahedron > &getTrianglesInTetrahedronArray() ;
+    const sofa::type::vector< TrianglesInTetrahedron > &getTrianglesInTetrahedronArray() ;
 
 
     /** \brief Returns the TetrahedraAroundVertex array (i.e. provide the tetrahedron indices adjacent to each vertex). */
-    const sofa::helper::vector< TetrahedraAroundVertex > &getTetrahedraAroundVertexArray() ;
+    const sofa::type::vector< TetrahedraAroundVertex > &getTetrahedraAroundVertexArray() ;
 
 
     /** \brief Returns the TetrahedraAroundEdge array (i.e. provide the tetrahedron indices adjacent to each edge). */
-    const sofa::helper::vector< TetrahedraAroundEdge > &getTetrahedraAroundEdgeArray() ;
+    const sofa::type::vector< TetrahedraAroundEdge > &getTetrahedraAroundEdgeArray() ;
 
 
     /** \brief Returns the TetrahedraAroundTriangle array (i.e. provide the tetrahedron indices adjacent to each triangle). */
-    const sofa::helper::vector< TetrahedraAroundTriangle > &getTetrahedraAroundTriangleArray() ;
+    const sofa::type::vector< TetrahedraAroundTriangle > &getTetrahedraAroundTriangleArray() ;
 
 
     bool hasTetrahedra() const;
@@ -290,6 +288,9 @@ public:
 
     SOFA_SOFABASETOPOLOGY_API friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
     SOFA_SOFABASETOPOLOGY_API friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
+
+    /// \brief function to add a TopologyHandler to the current list of engines.
+    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
 
 protected:
     /** \brief Creates the EdgeSet array.
@@ -396,7 +397,7 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_tetrahedron
-    void updateTopologyEngineGraph() override;
+    void updateTopologyHandlerGraph() override;
 
 
     /// Use a specific boolean @see m_tetrahedronTopologyDirty in order to know if topology Data is dirty or not.
@@ -410,36 +411,36 @@ public:
     Data<bool>  d_createTriangleArray;
 
     /// provides the set of tetrahedra.
-    Data< sofa::helper::vector<Tetrahedron> > d_tetrahedron;
+    Data< sofa::type::vector<Tetrahedron> > d_tetrahedron;
 protected:
     /// provides the set of edges for each tetrahedron.
-    sofa::helper::vector<EdgesInTetrahedron> m_edgesInTetrahedron;
+    sofa::type::vector<EdgesInTetrahedron> m_edgesInTetrahedron;
 
     /// provides the set of triangles for each tetrahedron.
-    sofa::helper::vector<TrianglesInTetrahedron> m_trianglesInTetrahedron;
+    sofa::type::vector<TrianglesInTetrahedron> m_trianglesInTetrahedron;
 
     /// for each vertex provides the set of tetrahedra adjacent to that vertex.
-    sofa::helper::vector< TetrahedraAroundVertex > m_tetrahedraAroundVertex;
+    sofa::type::vector< TetrahedraAroundVertex > m_tetrahedraAroundVertex;
 
     /// for each edge provides the set of tetrahedra adjacent to that edge.
-    sofa::helper::vector< TetrahedraAroundEdge > m_tetrahedraAroundEdge;
+    sofa::type::vector< TetrahedraAroundEdge > m_tetrahedraAroundEdge;
 
     /// removed tetrahedron index
-    sofa::helper::vector<TetrahedronID> m_removedTetraIndex;
+    sofa::type::vector<TetrahedronID> m_removedTetraIndex;
 
     /// for each triangle provides the set of tetrahedra adjacent to that triangle.
-    sofa::helper::vector< TetrahedraAroundTriangle > m_tetrahedraAroundTriangle;
+    sofa::type::vector< TetrahedraAroundTriangle > m_tetrahedraAroundTriangle;
 
 
     /// Boolean used to know if the topology Data of this container is dirty
     bool m_tetrahedronTopologyDirty;
 
     /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
 };
 
 } //namespace sofa::component::topology

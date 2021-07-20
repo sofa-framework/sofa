@@ -24,8 +24,8 @@ using std::vector;
 
 #include <PluginExample/MyBehaviorModel.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 using ::testing::Types;
 
@@ -60,11 +60,7 @@ private:
 
 };
 
-std::vector<unsigned> params = {
-    { 1 },
-    { 2 },
-    { 3 }
-};
+std::vector<unsigned> params = { 1, 2, 3};
 
 /// run the tests
 TEST_P(MyBehaviorModel_test, dummyTest) {

@@ -23,7 +23,7 @@
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/helper/rmath.h>
 #include <SofaBaseCollision/CubeModel.h>
 #if SOFACUDA_HAVE_MINIFLOWVR
@@ -200,7 +200,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
-        const sofa::helper::vector<Vector3> & vertices = mesh->getVertices();
+        const sofa::type::vector<Vector3> & vertices = mesh->getVertices();
 
         std::cout << "Computing bbox."<<std::endl;
         Coord bbmin, bbmax;
@@ -686,7 +686,7 @@ void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams*
         m = elems[index].rotation;
         m.transpose();
         m[3] = Vector4(elems[index].translation,1.0);
-        helper::gl::glMultMatrix(m.ptr());
+        sofa::gl::glMultMatrix(m.ptr());
     }
 
     CudaDistanceGrid* grid = getGrid(index);

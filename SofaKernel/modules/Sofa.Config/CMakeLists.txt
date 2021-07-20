@@ -169,7 +169,10 @@ endif()
 ## Windows-specific
 if(WIN32)    
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_USE_MATH_DEFINES")
-    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP;/wd4250;/wd4251;/wd4275;/wd4675;/wd4996;/wd4661")
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_SECURE_NO_WARNINGS")
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_NONSTDC_NO_DEPRECATE")
+
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP;/wd4250;/wd4251;/wd4275;/wd4675;/wd4661")
     # 4661: no suitable definition provided for explicit template instantiation request
     # it happens because we put explicit instantiation in a separate translation unit
     # it is by design, so this warning is irrelevant in our project
@@ -271,13 +274,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_VERSION_STR "${SOFA_VERSIO
 set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_VERSION "${SOFA_VERSION}")
 
 # CMakeParseLibraryList.cmake
-configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
+configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/lib/cmake/CMakeParseLibraryList.cmake COPYONLY)
 install(FILES cmake/CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 
 # SofaMacros*.cmake
 set(macro_files SofaMacros.cmake SofaMacrosConfigure.cmake SofaMacrosInstall.cmake SofaMacrosPython.cmake SofaMacrosUtils.cmake)
 foreach(macro_file ${macro_files})
-    configure_file(cmake/${macro_file} ${CMAKE_BINARY_DIR}/cmake/${macro_file} COPYONLY)
+    configure_file(cmake/${macro_file} ${CMAKE_BINARY_DIR}/lib/cmake/${macro_file} COPYONLY)
     install(FILES cmake/${macro_file} DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 endforeach()
 

@@ -30,11 +30,13 @@
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 namespace sofa{
 namespace {
@@ -87,7 +89,7 @@ struct FixedConstraint_test : public BaseTest
 
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
-        root->setGravity( defaulttype::Vector3(0,0,0) );
+        root->setGravity( type::Vector3(0,0,0) );
 
 #if SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER
         simpleapi::createObject(root , "RequiredPlugin", {{"name", "SofaSparseSolver"}}) ;
@@ -156,6 +158,93 @@ struct FixedConstraint_test : public BaseTest
         return true;
 
     }
+
+    bool testTopologicalChanges()
+    {
+        simulation::Simulation* simulation;
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        
+        /// Scene creation
+        simulation::Node::SPtr root = simulation->createNewGraph("root");
+        root->setGravity(type::Vector3(0, 0, 0));
+
+        /// Create euler solver
+        simulation::Node::SPtr node = createEulerSolverNode(root, "test");
+
+        /// Add mechanicalObject
+        sofa::Size nbrDofs = 5;
+        typename MechanicalObject::SPtr dofs = addNew<MechanicalObject>(node);
+        dofs->resize(nbrDofs);
+        
+        /// Add PointSetTopology
+        auto tCon = sofa::core::objectmodel::New<sofa::component::topology::PointSetTopologyContainer>();
+        auto tMod = sofa::core::objectmodel::New<sofa::component::topology::PointSetTopologyModifier>();
+        tCon->setNbPoints(nbrDofs);
+        node->addObject(tCon);
+        node->addObject(tMod);
+
+        /// Add Mass
+        createUniformMass<DataTypes>(node, *dofs.get());
+
+        /// Add force
+        typename ForceField::SPtr forceField = addNew<ForceField>(node);
+        
+        // create a force vector
+        Deriv force;
+        auto typeSize = force.size();
+        
+        for (unsigned i = 0; i < typeSize; i++)
+            force[i] = 10;
+
+        /// Fill position and force
+        typename MechanicalObject::WriteVecCoord writeX = dofs->writePositions();
+        for (sofa::Index id = 0; id < nbrDofs; id++)
+        {
+            for (unsigned int i = 0; i < typeSize; i++)
+            {
+                writeX[id][i] = id + 0.1 * i;  // create position filled as a grid:  0; 0.1; 0.2 ...  \n  1; 1.1; 1.2 ... \n 2; 2.1; 2.2 ...
+            }
+
+            forceField->setForce(id, force);
+        }
+
+        /// Add fixconstraint
+        typename FixedConstraint::SPtr cst = sofa::core::objectmodel::New<FixedConstraint>();
+        type::vector<Index> indices = { 0, 1, 2 };
+        cst->d_indices.setValue(indices);
+        node->addObject(cst);
+
+
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        /// Perform two time steps
+        sofa::simulation::getSimulation()->animate(root.get(), 0.1);
+        sofa::simulation::getSimulation()->animate(root.get(), 0.1);
+
+        typename MechanicalObject::ReadVecCoord readX = dofs->readPositions();
+
+        /// check info before topological changes
+        EXPECT_EQ(tCon->getPoints().size(), nbrDofs);
+        EXPECT_EQ(readX[0][0], 0);
+        EXPECT_EQ(readX[1][0], 1);
+        EXPECT_EQ(readX[2][0], 2);
+        EXPECT_NEAR(readX[3][0], 4.32231, 1e-4); // compare to computed values
+        EXPECT_NEAR(readX[4][0], 5.32231, 1e-4);
+
+        /// remove some points from topological mechanism
+        sofa::type::vector< sofa::Index > indicesRemove = {0, 2, 3};
+        tMod->removePoints(indicesRemove, true);
+        nbrDofs -= sofa::Size(indicesRemove.size());
+
+        /// new positions are now: {id[4], id[1]}  because remove use swap + pop_back
+        EXPECT_EQ(tCon->getPoints().size(), nbrDofs);
+        EXPECT_NEAR(readX[0][0], 5.32231, 1e-4);
+        EXPECT_NEAR(readX[1][0], 1.0, 1e-4);
+
+        return true;
+    }
+
 };
 
 // Define the list of DataTypes to instanciate
@@ -192,10 +281,14 @@ TYPED_TEST( FixedConstraint_test , testValueImplicitWithSparseLDL )
 }
 #endif
 
+TYPED_TEST(FixedConstraint_test, testTopologicalChanges)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    EXPECT_TRUE(this->testTopologicalChanges());
+}
 
 }// namespace
 }// namespace sofa
-
 
 
 

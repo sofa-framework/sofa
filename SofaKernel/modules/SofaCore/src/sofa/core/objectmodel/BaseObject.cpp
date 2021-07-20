@@ -353,7 +353,7 @@ std::string BaseObject::getPathName() const {
     {
         const BaseNode* node = context->toBaseNode();
         if( node ) {
-            result += node->getPathName();;
+            result += node->getPathName();
             if (node->getPathName() != "/")
                 result += "/";
         }

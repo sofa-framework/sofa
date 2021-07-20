@@ -28,7 +28,7 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 
 namespace sofa::component::mapping
@@ -76,7 +76,7 @@ public:
 
     enum { NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
     enum { NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size };
-    typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
+    typedef type::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     /// Correspondance array
@@ -117,7 +117,7 @@ public:
     const sofa::defaulttype::BaseMatrix* getJ() override;
 
 public:
-    typedef helper::vector< defaulttype::BaseMatrix* > js_type;
+    typedef type::vector< defaulttype::BaseMatrix* > js_type;
     const js_type* getJs() override;
 
 protected:

@@ -22,12 +22,8 @@
 #ifndef SOFA_CORE_COLLISION_DETECTION_H
 #define SOFA_CORE_COLLISION_DETECTION_H
 
-#include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/CollisionAlgorithm.h>
-#include <sofa/core/collision/Intersection.h>
-#include <vector>
 #include <map>
-#include <algorithm>
 
 namespace sofa
 {
@@ -37,6 +33,8 @@ namespace core
 
 namespace collision
 {
+
+class Intersection;
 
 class Detection : public virtual CollisionAlgorithm
 {
@@ -59,6 +57,9 @@ public:
     /// virtual because subclasses might do precomputations based on intersection algorithms
     virtual void setIntersectionMethod(Intersection* v) { intersectionMethod = v;    }
     Intersection* getIntersectionMethod() const         { return intersectionMethod; }
+
+    /// Returns true if the detection algorithm requires a deep bounding tree i.e. a depth that can be superior to 1.
+    inline virtual bool needsDeepBoundingTree() const { return true; }
 
 protected:
     virtual void changeInstanceBP(Instance) {}

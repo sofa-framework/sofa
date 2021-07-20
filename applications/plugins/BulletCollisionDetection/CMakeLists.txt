@@ -43,6 +43,7 @@ set(README_FILES BulletCollisionDetection.txt)
 
 find_package(SofaMiscCollision REQUIRED)
 find_package(SofaVolumetricData REQUIRED)
+find_package(SofaMiscCollision REQUIRED)
 find_package(Compliant QUIET)
 find_package(LMConstraint QUIET)
 

@@ -45,7 +45,7 @@ public:
 
 
     void init() override;
-    void beginContact(const helper::vector<const helper::vector<core::collision::DetectionOutput>* >& ) override;
+    void beginContact(const type::vector<const type::vector<core::collision::DetectionOutput>* >& ) override;
     void endContact(void*) override;
     virtual void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override;
     virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )  override;
@@ -57,7 +57,7 @@ public:
     Data<double> d_penOffset; ///< Distance at which there is no reaction force.
 
 protected:
-    sofa::defaulttype::Vec3d m_contactForce;
+    sofa::type::Vec3d m_contactForce;
 
     EnslavementForceFeedback( core::CollisionModel* collModel1 = nullptr, core::CollisionModel* collModel2 = nullptr );
     ~EnslavementForceFeedback(){}

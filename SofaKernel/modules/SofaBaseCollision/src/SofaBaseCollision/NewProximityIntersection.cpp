@@ -51,24 +51,28 @@ void NewProximityIntersection::init()
 {
     intersectors.add<CubeCollisionModel, CubeCollisionModel, NewProximityIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, NewProximityIntersection>(this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, NewProximityIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,SphereCollisionModel<sofa::defaulttype::Vec3Types>, NewProximityIntersection> (this);
-    intersectors.add<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, NewProximityIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, NewProximityIntersection> (this);
-    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, NewProximityIntersection> (this);
-    intersectors.add<RigidSphereModel,RigidSphereModel, NewProximityIntersection> (this);
-    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, NewProximityIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, NewProximityIntersection> (this);
-    intersectors.add<RigidSphereModel,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, NewProximityIntersection> (this);
+    intersectors.add<RigidSphereModel, RigidSphereModel, NewProximityIntersection>(this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, NewProximityIntersection>(this);
 
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, NewProximityIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,SphereCollisionModel<sofa::defaulttype::Vec3Types>, NewProximityIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, NewProximityIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,RigidSphereModel, NewProximityIntersection> (this);
-
+    //By default, all the previous pairs of collision models are supported,
+    //but other C++ components are able to add a list of pairs to be supported.
+    //In the following function, all the C++ components that registered to
+    //NewProximityIntersection are created. In their constructors, they add
+    //new supported pairs of collision models. For example, see MeshNewProximityIntersection.
     IntersectorFactory::getInstance()->addIntersectors(this);
 
 	BaseProximityIntersection::init();
 }
+
+bool NewProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+{
+    return BaseProximityIntersection::testIntersection(cube1, cube2);
+}
+
+int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
+{
+    return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts);
+}
+
 
 } // namespace sofa::component::collision

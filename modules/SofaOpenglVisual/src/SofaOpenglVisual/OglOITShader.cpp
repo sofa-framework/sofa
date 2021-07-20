@@ -48,11 +48,11 @@ OglOITShader::OglOITShader()
 {
     passive.setValue(false);
 
-    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
+    type::vector<std::string>& vertF = *vertFilename.beginEdit();
     vertF.resize(1);
     vertF[0] = PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS;
     vertFilename.endEdit();
-    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
+    type::vector<std::string>& fragF = *fragFilename.beginEdit();
     fragF.resize(1);
     fragF[0] = PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS;
     fragFilename.endEdit();
@@ -63,7 +63,7 @@ OglOITShader::~OglOITShader()
 
 }
 
-helper::gl::GLSLShader* OglOITShader::accumulationShader()
+sofa::gl::GLSLShader* OglOITShader::accumulationShader()
 {
     if(shaderVector.size() < 1)
         return nullptr;

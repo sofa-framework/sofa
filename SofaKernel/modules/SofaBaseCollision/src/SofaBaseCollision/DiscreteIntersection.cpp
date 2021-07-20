@@ -25,13 +25,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/BaseIntTool.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
-
 namespace sofa::core::collision
 {
     template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
@@ -50,27 +43,15 @@ int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionC
 DiscreteIntersection::DiscreteIntersection()
 {
     intersectors.add<CubeCollisionModel,       CubeCollisionModel,         DiscreteIntersection> (this);
-
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,     SphereCollisionModel<sofa::defaulttype::Vec3Types>,       DiscreteIntersection> (this);
-
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,SphereCollisionModel<sofa::defaulttype::Vec3Types>, DiscreteIntersection> (this);
-
-    intersectors.add<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>,DiscreteIntersection>(this);
-    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>,DiscreteIntersection>(this);
-
     intersectors.add<RigidSphereModel,RigidSphereModel,DiscreteIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel,DiscreteIntersection>(this);
-    intersectors.add<RigidSphereModel,OBBCollisionModel<sofa::defaulttype::Rigid3Types>,DiscreteIntersection>(this);
 
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,SphereCollisionModel<sofa::defaulttype::Vec3Types>, DiscreteIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>,DiscreteIntersection>(this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,RigidSphereModel,DiscreteIntersection>(this);
-
+    //By default, all the previous pairs of collision models are supported,
+    //but other C++ components are able to add a list of pairs to be supported.
+    //In the following function, all the C++ components that registered to
+    //DiscreteIntersection are created. In their constructors, they add
+    //new supported pairs of collision models.
 	IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
@@ -78,6 +59,68 @@ DiscreteIntersection::DiscreteIntersection()
 ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels)
 {
     return intersectors.get(object1, object2, swapModels);
+}
+
+bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
+{
+    const SReal alarmDist = this->getAlarmDistance();
+
+    if (cube1 == cube2)
+    {
+        return cube1.getConeAngle() >= M_PI / 2;
+    }
+
+    const type::Vector3& minVect1 = cube1.minVect();
+    const type::Vector3& minVect2 = cube2.minVect();
+    const type::Vector3& maxVect1 = cube1.maxVect();
+    const type::Vector3& maxVect2 = cube2.maxVect();
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist)
+            return false;
+    }
+
+    return true;
+}
+
+int DiscreteIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
+{
+    SOFA_UNUSED(cube1);
+    SOFA_UNUSED(cube2);
+    SOFA_UNUSED(contacts);
+
+    return 0;
+}
+
+bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
+{
+    return testIntersectionSphere(sph1, sph2, this->getAlarmDistance());
+}
+
+int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
+{
+    return computeIntersectionSphere(sph1, sph2, contacts, this->getAlarmDistance(), this->getContactDistance());
+}
+
+bool DiscreteIntersection::testIntersection(RigidSphere& sph1, RigidSphere& sph2)
+{
+    return testIntersectionSphere(sph1, sph2, this->getAlarmDistance());
+}
+
+int DiscreteIntersection::computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts)
+{
+    return computeIntersectionSphere(sph1, sph2, contacts, this->getAlarmDistance(), this->getContactDistance());
+}
+
+bool DiscreteIntersection::testIntersection(Sphere& sph1, RigidSphere& sph2)
+{
+    return testIntersectionSphere(sph1, sph2, this->getAlarmDistance());
+}
+
+int DiscreteIntersection::computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts)
+{
+    return computeIntersectionSphere(sph1, sph2, contacts, this->getAlarmDistance(), this->getContactDistance());
 }
 
 } // namespace sofa::component::collision

@@ -48,28 +48,31 @@ const std::string SceneCheckMissingRequiredPlugin::getDesc()
 
 void SceneCheckMissingRequiredPlugin::doCheckOn(Node* node)
 {
-    for (auto& object : node->object )
+    for (const auto& object : node->object)
     {
-        ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
+        const ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
         if(!entry.creatorMap.empty())
         {
-            ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
-            if(entry.creatorMap.end() != it && *it->second->getTarget()){
-                std::string pluginName = it->second->getTarget();
-                std::string path = PluginManager::getInstance().findPlugin(pluginName);
+            ObjectFactory::CreatorMap::const_iterator it = entry.creatorMap.find(object->getTemplateName());
+            if(entry.creatorMap.end() != it && *it->second->getTarget())
+            {
+                const std::string pluginName = it->second->getTarget();
+                const std::string path = PluginManager::getInstance().findPlugin(pluginName);
                 if( PluginManager::getInstance().pluginIsLoaded(path)
                         && m_loadedPlugins.find(pluginName) == m_loadedPlugins.end() )
                 {
-                    if( m_requiredPlugins.empty() ){
-                        m_requiredPlugins[pluginName].push_back(object->getClassName());
-                    }else{
-                        std::vector<std::string>& t = m_requiredPlugins[pluginName];
-                        if( std::find(t.begin(), t.end(), object->getClassName()) ==t.end() )
-                            t.push_back(object->getClassName());
-                    }
+                    m_requiredPlugins[pluginName].push_back(object->getClassName());
                 }
             }
         }
+    }
+
+    //sort and remove duplicates
+    for (auto& plugins : m_requiredPlugins)
+    {
+        auto& v = plugins.second;
+        std::sort(v.begin(), v.end());
+        v.erase(std::unique(v.begin(), v.end()), v.end());
     }
 }
 
@@ -77,27 +80,29 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
 {
     if(!m_requiredPlugins.empty())
     {
+        const std::string indent { "  "};
         std::stringstream tmp;
-        for(auto& kv : m_requiredPlugins)
+        for(const auto& kv : m_requiredPlugins)
         {
-            tmp << "<RequiredPlugin pluginName='"<<kv.first<<"'/> <!-- Needed to use components [";
-            for(auto& name : kv.second)
+            tmp << indent << "<RequiredPlugin name=\""<<kv.first<<"\"/> <!-- Needed to use components [";
+            if (!kv.second.empty())
             {
-                tmp << name << ", ";
+                std::copy(kv.second.begin(), kv.second.end() - 1, std::ostream_iterator<std::string>(tmp, ", "));
+                tmp << kv.second.back();
             }
-            tmp <<"]-->" << msgendl;
+            tmp <<"] -->" << msgendl;
         }
         msg_warning(this->getName())
                 << "This scene is using component defined in plugins but is not importing the required plugins." << msgendl
-                << "  " << "Your scene may not work on a sofa environment with different pre-loaded plugins." << msgendl
-                << "  " << "To fix your scene and remove this warning you just need to cut & paste the following lines at the begining of your scene (if it is a .scn): " << msgendl
-                << "  " << tmp.str();
+                << indent << "Your scene may not work on a sofa environment with different pre-loaded plugins." << msgendl
+                << indent << "To fix your scene and remove this warning you just need to cut & paste the following lines at the beginning of your scene (if it is a .scn): " << msgendl
+                << tmp.str();
     }
 }
 
 void SceneCheckMissingRequiredPlugin::doInit(Node* node)
 {
-    helper::vector< RequiredPlugin* > plugins;
+    type::vector< RequiredPlugin* > plugins;
     node->getTreeObjects< RequiredPlugin >(&plugins);
 
     m_requiredPlugins.clear();

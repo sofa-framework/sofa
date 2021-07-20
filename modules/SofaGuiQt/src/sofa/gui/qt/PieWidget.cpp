@@ -29,11 +29,11 @@
 namespace sofa::gui::qt
 {
 
-std::vector< defaulttype::Vec<3,int> > PieWidget::colorArray;
+std::vector< type::Vec<3,int> > PieWidget::colorArray;
 
-defaulttype::Vec<3,int> PieWidget::getColor(int i)
+type::Vec<3,int> PieWidget::getColor(int i)
 {
-    defaulttype::Vec<3,int> res=PieWidget::colorArray[i%PieWidget::colorArray.size()];
+    type::Vec<3,int> res=PieWidget::colorArray[i%PieWidget::colorArray.size()];
     float factor=1.0/(1.0+(0.3*(i/PieWidget::colorArray.size())));
     res[0] = (int)(res[0]*factor);
     res[1] = (int)(res[1]*factor);
@@ -45,11 +45,11 @@ PieWidget::PieWidget(QWidget *parent): QWidget(parent)
 {
     if (PieWidget::colorArray.empty())
     {
-        colorArray.push_back(  defaulttype::Vec<3,int>(250,125,70) );
-        colorArray.push_back(  defaulttype::Vec<3,int>(120,220,110) );
-        colorArray.push_back(  defaulttype::Vec<3,int>(215,90,215) );
-        colorArray.push_back(  defaulttype::Vec<3,int>(255,210,40) );
-        colorArray.push_back(  defaulttype::Vec<3,int>(75,210,210) );
+        colorArray.push_back(  type::Vec<3,int>(250,125,70) );
+        colorArray.push_back(  type::Vec<3,int>(120,220,110) );
+        colorArray.push_back(  type::Vec<3,int>(215,90,215) );
+        colorArray.push_back(  type::Vec<3,int>(255,210,40) );
+        colorArray.push_back(  type::Vec<3,int>(75,210,210) );
     }
 }
 void PieWidget::paintEvent( QPaintEvent* )
@@ -66,7 +66,7 @@ void PieWidget::paintEvent( QPaintEvent* )
 
     for (unsigned int i=0; i<data.size() && i<selection; ++i)
     {
-        defaulttype::Vec<3,int> c=PieWidget::getColor(i);
+        type::Vec<3,int> c=PieWidget::getColor(i);
         QColor color(c[0],c[1],c[2]);
         p.setBrush(color);
         int spanAngle=(int)(16*360*data[i].time/totalTime);
@@ -138,7 +138,7 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
     {
         table->insertRow(i);
 
-        defaulttype::Vec<3,int> c=PieWidget::getColor(i);
+        type::Vec<3,int> c=PieWidget::getColor(i);
         QColor color(c[0],c[1],c[2]);
 
         QString text(value[i].name.c_str());

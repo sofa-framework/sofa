@@ -24,7 +24,7 @@
 
 #include "CudaSPHFluidForceField.h"
 #include <SofaSphFluid/SPHFluidForceField.inl>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa
@@ -241,7 +241,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::Vis
     //if (m_grid != NULL)
     //	grid->draw(vparams);
     helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    helper::ReadAccessor<gpu::cuda::CudaVector<defaulttype::Vec4f> > pos4 = this->data.pos4;
+    helper::ReadAccessor<gpu::cuda::CudaVector<type::Vec4f> > pos4 = this->data.pos4;
     if (pos4.empty()) return;
     glDisable(GL_LIGHTING);
     glColor3f(0,1,1);
@@ -262,7 +262,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::Vis
         {
             glColor3f(f-1,0,2-f);
         }
-        helper::gl::glVertexT(x[i]);
+        sofa::gl::glVertexT(x[i]);
     }
     glEnd();
     glPointSize(1);

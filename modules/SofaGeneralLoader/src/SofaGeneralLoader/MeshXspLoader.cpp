@@ -28,8 +28,8 @@ using sofa::helper::io::XspLoaderDataHook;
 
 using sofa::helper::WriteOnlyAccessor;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3;
+#include <sofa/type/Vec.h>
+using sofa::type::Vec3;
 
 #include <sofa/core/topology/Topology.h>
 using sofa::core::topology::Topology;
@@ -89,7 +89,7 @@ MeshXspLoader::MeshXspLoader() : MeshLoader() {}
 bool MeshXspLoader::doLoad()
 {
     MeshXspLoadDataHook data(this);
-    return XspLoader::Load(m_filename.getValue(), data);
+    return XspLoader::Load(d_filename.getValue(), data);
 }
 
 
