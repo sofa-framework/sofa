@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
@@ -641,6 +642,60 @@ const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::getK()
 {
     if( m_geometricStiffnessMatrix.compressedMatrix.nonZeros() ) return &m_geometricStiffnessMatrix;
     else return nullptr;
+}
+
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned int geomStiff = d_geometricStiffness.getValue().getSelectedId();
+
+    if( !geomStiff )
+    {
+        return;
+    }
+
+    if constexpr (TOut::spatial_dimensions != 3)
+    {
+        static std::set<RigidMapping<TIn, TOut>*> hasShownError;
+        msg_warning_when(hasShownError.insert(this).second) << "Geometric stiffness is not supported in " << TOut::spatial_dimensions << "d";
+    }
+    else
+    {
+        const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
+
+        const auto childForces = this->toModel->readForces();
+
+        std::map<unsigned, sofa::type::vector<unsigned> > in_out;
+        for(sofa::Index i = 0; i < rotatedPoints.size(); ++i)
+        {
+            in_out[ getRigidIndex(i) ].push_back(i);
+        }
+
+        for (auto& [fst, snd] : in_out)
+        {
+            const unsigned rigidIdx = fst;
+
+            static constexpr unsigned rotation_dimension = TIn::deriv_total_size - TIn::spatial_dimensions;
+
+            type::Mat<rotation_dimension,rotation_dimension,Real> block;
+
+            for (const auto pointIdx : snd)
+            {
+                block += type::crossProductMatrix<Real>( childForces[pointIdx] ) * type::crossProductMatrix<Real>( rotatedPoints[pointIdx] );
+            }
+
+            if( geomStiff == 2 )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
+            const auto matrixIndex = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions;
+
+            dJdx(matrixIndex, matrixIndex) += block;
+        }
+    }
 }
 
 

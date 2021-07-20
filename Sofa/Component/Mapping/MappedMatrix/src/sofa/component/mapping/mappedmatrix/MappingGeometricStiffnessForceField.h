@@ -22,6 +22,10 @@
 #pragma once
 #include <sofa/component/mapping/mappedmatrix/config.h>
 
+#ifndef SOFA_BUILD_SOFA_COMPONENT_MAPPING_MAPPEDMATRIX
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+#endif
+
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/ForceField.h>
 
@@ -41,16 +45,21 @@ public:
     typedef typename Inherit::DataVecDeriv DataVecDeriv;
     typedef typename Inherit::DataVecCoord DataVecCoord;
 
+    void init() override;
+
     void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
     void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&) const override
     {
         return 0;
     }
+
+    Data<bool> d_yesIKnowMatrixMappingIsSupportedAutomatically;
 
 protected:
     MappingGeometricStiffnessForceField();

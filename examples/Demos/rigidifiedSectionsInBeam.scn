@@ -37,7 +37,7 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
 
     <Node name="rigidSections">
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+        <SparseLDLSolver/>
 
         <RegularGridTopology name="grid" nx="1" ny="1" nz="20" xmin="0" xmax="0" ymin="-1.5" ymax="1.5" zmin="0" zmax="19" />
         <MechanicalObject template="Rigid3" name="DOFs" showObject="true" showObjectScale="1" position="@grid.position"/>

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/DistanceMultiMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseForceField.h>
@@ -406,6 +407,59 @@ template <class TIn, class TOut>
 const linearalgebra::BaseMatrix* DistanceMultiMapping<TIn, TOut>::getK()
 {
     return &K;
+}
+
+template <class TIn, class TOut>
+void DistanceMultiMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness ) { return; }
+
+    const auto childForce = this->getToModels()[0]->readForces();
+    const SeqEdges& links = l_topology->getEdges();
+    const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
+
+    for(size_t i=0; i<links.size(); i++)
+    {
+        // force in compression (>0) can lead to negative eigen values in geometric stiffness
+        // this results in a undefinite implicit matrix that causes instabilies
+        // if stabilized GS (geometricStiffness==2) -> keep only force in extension
+        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        {
+            type::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+            for(unsigned j=0; j<In::spatial_dimensions; j++)
+            {
+                for(unsigned k=0; k<In::spatial_dimensions; k++)
+                {
+                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[j] * directions[k];
+                }
+            }
+            b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
+
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
+
+            core::State<In>* m0 = this->getFromModels()[pair0[0]];
+            core::State<In>* m1 = this->getFromModels()[pair1[0]];
+
+            // d(J*f)/dX
+            auto dJ0f_dX0 = matrices->getMappingDerivativeIn(m0).withRespectToPositionsIn(m0);
+            auto dJ0f_dX1 = matrices->getMappingDerivativeIn(m0).withRespectToPositionsIn(m1);
+            auto dJ1f_dX0 = matrices->getMappingDerivativeIn(m1).withRespectToPositionsIn(m0);
+            auto dJ1f_dX1 = matrices->getMappingDerivativeIn(m1).withRespectToPositionsIn(m1);
+
+            dJ0f_dX0.checkValidity(this);
+            dJ0f_dX1.checkValidity(this);
+            dJ1f_dX0.checkValidity(this);
+            dJ1f_dX1.checkValidity(this);
+
+            dJ0f_dX0(pair0[1], pair0[1]) += b;
+            dJ0f_dX1(pair0[1], pair1[1]) += -b;
+            dJ1f_dX0(pair1[1], pair0[1]) += -b;
+            dJ1f_dX1(pair1[1], pair1[1]) += b;
+        }
+    }
 }
 
 template <class TIn, class TOut>

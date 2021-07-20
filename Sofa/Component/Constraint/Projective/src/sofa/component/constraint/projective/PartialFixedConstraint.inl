@@ -293,4 +293,42 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::Base
     }
 }
 
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::applyConstraint(
+    sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    static constexpr unsigned int N = Deriv::size();
+    const VecBool& blockedDirection = d_fixedDirections.getValue();
+
+    if( this->d_fixAll.getValue() )
+    {
+        const sofa::Size size = this->mstate->getSize();
+
+        for(sofa::Index i = 0; i < size; ++i)
+        {
+            for (unsigned int c=0; c<N; ++c)
+            {
+                if (blockedDirection[c])
+                {
+                    matrix->discardRowCol(N * i + c, N * i + c);
+                }
+            }
+        }
+    }
+    else
+    {
+        const SetIndexArray & indices = this->d_indices.getValue();
+
+        for (const auto index : indices)
+        {
+            for (unsigned int c = 0; c < N; ++c)
+            {
+                if (blockedDirection[c])
+                {
+                    matrix->discardRowCol(N * index + c, N * index + c);
+                }
+            }
+        }
+    }
+}
 } // namespace sofa::component::constraint::projective

@@ -279,6 +279,7 @@ public:
 
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
     void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

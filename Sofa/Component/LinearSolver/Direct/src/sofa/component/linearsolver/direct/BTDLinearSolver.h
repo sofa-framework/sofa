@@ -24,11 +24,15 @@
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
+#include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
+#include <sofa/component/linearsystem/MatrixLinearSystem.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/linearalgebra/BTDMatrix.h>
 #include <sofa/linearalgebra/BlockVector.h>
 #include <cmath>
 #include <sofa/type/Mat.h>
+#include <sofa/component/linearsolver/direct/MatrixLinearSystem[BTDMatrix].h>
+#include <sofa/component/linearsolver/direct/TypedMatrixLinearSystem[BTDMatrix].h>
 
 namespace sofa::component::linearsolver::direct
 {
@@ -186,5 +190,4 @@ private:
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API BTDLinearSolver< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> >;
 #endif
-
 } //namespace sofa::component::linearsolver::direct

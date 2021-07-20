@@ -21,10 +21,9 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_SHEWCHUKPCGLINEARSOLVER_CPP
 #include <sofa/component/linearsolver/iterative/ShewchukPCGLinearSolver.inl>
-#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 #include <sofa/core/ObjectFactory.h>
-
-#include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/component/linearsystem/MatrixFreeSystem.h>
 
 namespace sofa::component::linearsolver::iterative
 {

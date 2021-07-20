@@ -1825,7 +1825,7 @@ template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,d
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3f & _M);
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3d & _M);
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3f & _M);
-    
+
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_CPP)
 
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>;

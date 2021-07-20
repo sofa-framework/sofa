@@ -5,26 +5,27 @@ set(SOFACOMPONENT_SOURCE_DIR "src/sofa/component")
 
 sofa_add_subdirectory_modules(SOFACOMPONENT_TARGETS
     DIRECTORIES
-        ODESolver
-        IO
-        Playback
-        SceneUtility
-        Topology
-        Visual
-        LinearSolver
-        Mass
-        Diffusion
-        Mapping
-        SolidMechanics
-        StateContainer
-        Constraint
-        AnimationLoop
-        MechanicalLoad
-        Collision
-        Setting
-        Controller
-        Engine
-        Haptics
+    ODESolver
+    IO
+    Playback
+    SceneUtility
+    Topology
+    Visual
+    LinearSystem
+    LinearSolver
+    Mass
+    Diffusion
+    Mapping
+    StateContainer
+    SolidMechanics
+    Constraint
+    AnimationLoop
+    MechanicalLoad
+    Collision
+    Setting
+    Controller
+    Engine
+    Haptics
 )
 
 set(HEADER_FILES

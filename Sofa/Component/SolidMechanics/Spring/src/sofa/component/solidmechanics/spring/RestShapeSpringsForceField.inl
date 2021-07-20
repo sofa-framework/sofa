@@ -27,6 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/RGBAColor.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 #include <string_view>
 #include <type_traits>
@@ -538,4 +539,43 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
     }
 }
 
+template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    const VecReal& k = d_stiffness.getValue();
+    const VecReal& k_a = d_angularStiffness.getValue();
+
+    constexpr sofa::Size space_size = Deriv::spatial_dimensions; // == total_size if DataTypes = VecTypes
+    constexpr sofa::Size total_size = Deriv::total_size;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto index : m_indices)
+    {
+        // translation
+        const auto vt = -k[(index < k.size()) * index];
+        for(sofa::Index i = 0; i < space_size; i++)
+        {
+            dfdx(total_size * index + i, total_size * index + i) += vt;
+        }
+
+        // rotation (if applicable)
+        if constexpr (isRigidType<DataTypes>())
+        {
+            const auto vr = -k_a[(index < k_a.size()) * index];
+            for (sofa::Size i = space_size; i < total_size; ++i)
+            {
+                dfdx(total_size * index + i, total_size * index + i) += vr;
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::buildDampingMatrix(
+    core::behavior::DampingMatrix* matrix)
+{
+    SOFA_UNUSED(matrix);
+}
 } // namespace sofa::component::solidmechanics::spring

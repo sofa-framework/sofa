@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/DistanceMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -338,6 +339,48 @@ template <class TIn, class TOut>
 const linearalgebra::BaseMatrix* DistanceMapping<TIn, TOut>::getK()
 {
     return &K;
+}
+
+template <class TIn, class TOut>
+void DistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness )
+    {
+        return;
+    }
+
+    const auto childForce = this->toModel->readForces();
+    const SeqEdges& links = l_topology->getEdges();
+    const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
+
+    for(size_t i=0; i<links.size(); i++)
+    {
+        // force in compression (>0) can lead to negative eigen values in geometric stiffness
+        // this results in a undefinite implicit matrix that causes instabilies
+        // if stabilized GS (geometricStiffness==2) -> keep only force in extension
+        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        {
+            const sofa::topology::Edge link = links[i];
+            const Direction& dir = directions[i];
+            sofa::type::Mat<In::spatial_dimensions, In::spatial_dimensions, Real> b;  // = (I - uu^T)
+
+            for(unsigned j=0; j<In::spatial_dimensions; j++)
+            {
+                for(unsigned k=0; k<In::spatial_dimensions; k++)
+                {
+                    b[j][k] = static_cast<Real>(1) * ( j==k ) - dir[j] * dir[k];
+                }
+            }
+            b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
+
+            dJdx(link[0] * Nin, link[0] * Nin) += b;
+            dJdx(link[0] * Nin, link[1] * Nin) += -b;
+            dJdx(link[1] * Nin, link[0] * Nin) += -b;
+            dJdx(link[1] * Nin, link[1] * Nin) += b;
+        }
+    }
 }
 
 template <class TIn, class TOut>

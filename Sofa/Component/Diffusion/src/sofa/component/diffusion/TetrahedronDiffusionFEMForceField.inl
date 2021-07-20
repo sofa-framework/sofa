@@ -390,6 +390,31 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::Mech
     sofa::helper::AdvancedTimer::stepEnd("addKToMatrix");
 }
 
+template <class DataTypes>
+void TetrahedronDiffusionFEMForceField<DataTypes>::buildStiffnessMatrix(
+    core::behavior::StiffnessMatrix* matrix)
+{
+    constexpr auto N = DataTypes::deriv_total_size;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    const auto& edges = m_topology->getEdges();
+    std::size_t edgeId {};
+    for (const auto& edge : edges)
+    {
+        const auto v0 = edge[0];
+        const auto v1 = edge[1];
+
+        dfdx(N*v1, N*v0) += edgeDiffusionCoefficient[edgeId];
+        dfdx(N*v0, N*v1) += edgeDiffusionCoefficient[edgeId];
+        dfdx(N*v0, N*v0) += edgeDiffusionCoefficient[edgeId];
+        dfdx(N*v1, N*v1) += edgeDiffusionCoefficient[edgeId];
+
+        ++edgeId;
+    }
+}
+
 
 template<class DataTypes>
 void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)

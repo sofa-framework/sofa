@@ -852,6 +852,40 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, con
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::copyToBaseMatrix(linearalgebra::BaseMatrix* dest, core::ConstMatrixDerivId src, unsigned& offset)
+{
+    if (dest == nullptr)
+    {
+        dmsg_error() << "Cannot copy into an invalid matrix: a valid matrix is required";
+        return;
+    }
+    if (const auto* matrixData = this->read(src))
+    {
+        const MatrixDeriv& matrix = matrixData->getValue();
+
+        for (MatrixDerivRowConstIterator rowIt = matrix.begin(); rowIt != matrix.end(); ++rowIt)
+        {
+            const int cid = rowIt.index();
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
+            {
+                const unsigned int dof = colIt.index();
+                const Deriv n = colIt.val();
+
+                for (unsigned int r = 0; r < Deriv::size(); ++r)
+                {
+                    dest->add(cid, offset + dof * Deriv::size() + r, n[r]);
+                }
+            }
+        }
+    }
+    else
+    {
+        msg_error() << "Cannot copy matrix into destination: source does not exist";
+    }
+    offset += this->getMatrixSize();
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::addToBaseVector(linearalgebra::BaseVector* dest, sofa::core::ConstVecId src, unsigned int &offset)
 {
     applyPredicateIfCoordOrDeriv(src.type, [this, &dest, &offset, &src](auto vtype)

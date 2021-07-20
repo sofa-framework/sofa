@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/SquareDistanceMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
@@ -266,6 +267,42 @@ template <class TIn, class TOut>
 const linearalgebra::BaseMatrix* SquareDistanceMapping<TIn, TOut>::getK()
 {
     return &K;
+}
+
+template <class TIn, class TOut>
+void SquareDistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness )
+    {
+        return;
+    }
+
+    const auto childForce = this->toModel->readForces();
+    const SeqEdges& links = l_topology->getEdges();
+    const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
+
+    unsigned int size = this->fromModel->getSize();
+    for(size_t i=0; i<links.size(); i++)
+    {
+        const sofa::topology::Edge link = links[i];
+        // force in compression (>0) can lead to negative eigen values in geometric stiffness
+        // this results in a undefinite implicit matrix that causes instabilies
+        // if stabilized GS (geometricStiffness==2) -> keep only force in extension
+        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        {
+            SReal tmp = 2*childForce[i][0];
+
+            for(unsigned k=0; k<In::spatial_dimensions; k++)
+            {
+                dJdx(link[0] * Nin + k, link[0] * Nin + k) += tmp;
+                dJdx(link[0] * Nin + k, link[1] * Nin + k) += -tmp;
+                dJdx(link[1] * Nin + k, link[0] * Nin + k) += -tmp;
+                dJdx(link[1] * Nin + k, link[1] * Nin + k) += tmp;
+            }
+        }
+    }
 }
 
 template <class TIn, class TOut>

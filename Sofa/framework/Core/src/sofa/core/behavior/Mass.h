@@ -128,6 +128,7 @@ public:
     void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     virtual void addMToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
 
+
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
     /// \param matrix matrix to add the result to

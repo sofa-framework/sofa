@@ -23,6 +23,10 @@
 
 #include <sofa/component/mapping/mappedmatrix/config.h>
 
+#ifndef SOFA_BUILD_SOFA_COMPONENT_MAPPING_MAPPEDMATRIX
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+#endif
+
 #include <sofa/core/behavior/MixedInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -67,6 +71,7 @@ using sofa::core::objectmodel::ComponentState ;
  * An example using this component can be found in examples/Component/Mapping/MappedMatrix/MechanicalMatrixMapper.pyscn
 */
 template<typename TDataTypes1, typename TDataTypes2>
+// SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "Matrix mapping is now supported automatically. Therefore, MechanicalMatrixMapper is no longer necessary.")
 class MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
 {
 public:
@@ -105,6 +110,8 @@ public:
     typedef Data<VecDeriv2>    DataVecDeriv2;
 
 protected:
+
+    Data<bool> d_yesIKnowMatrixMappingIsSupportedAutomatically;
 
     Data<type::vector<std::string>> d_forceFieldList; ///< List of ForceField Names to work on (by default will take all)
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_STOREPATH > l_nodeToParse;
@@ -250,6 +257,10 @@ protected:
     */
     virtual void optimizeAndCopyMappingJacobianToEigenFormat2(const typename DataTypes2::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
 
+public:
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+
+protected:
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring inherited attributes and function in the current lookup context.

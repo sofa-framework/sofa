@@ -30,7 +30,7 @@
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -46,6 +46,8 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 #include <sofa/simulation/Node.h>
+
+#include <sofa/component/linearsolver/preconditioner/PrecomputedMatrixSystem.h>
 
 
 namespace sofa::component::linearsolver::preconditioner
@@ -66,6 +68,19 @@ PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
     usePrecond = true;
 }
 
+template <class TDataTypes>
+void PrecomputedWarpPreconditioner<TDataTypes>::checkLinearSystem()
+{
+    if (!this->l_linearSystem)
+    {
+        auto* matrixLinearSystem=this->getContext()->template get<PrecomputedMatrixSystem<TMatrix, TVector> >();
+        if(!matrixLinearSystem)
+        {
+            this->template createDefaultLinearSystem<PrecomputedMatrixSystem<TMatrix, TVector> >();
+        }
+    }
+}
+
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
 {
@@ -77,7 +92,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::setSystemMBKMatrix(const core::M
         init_bFact = sofa::core::mechanicalparams::bFactor(mparams);
         init_kFact = mparams->kFactor();
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->linearSystem.systemMatrix);
+        loadMatrix(*this->getSystemMatrix());
     }
 
     this->linearSystem.needInvert = usePrecond;
@@ -644,6 +659,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(linearalgebra::Bas
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::init()
 {
+    Inherit1::init();
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
     if (node != nullptr) mstate = node->get<MState> ();
 }

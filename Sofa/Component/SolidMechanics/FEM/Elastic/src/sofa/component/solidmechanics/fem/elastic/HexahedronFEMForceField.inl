@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 // WARNING: indices ordering is different than in topology node
 //
@@ -1165,6 +1165,41 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
 
                 r.matrix->add( r.offset + 3 * node1, r.offset + 3 * node2, tmp * (-kFactor));
+            }
+        }
+    }
+}
+
+template<class DataTypes>
+void HexahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    sofa::Index e { 0 }; //index of the element in the topology
+
+    const auto& stiffnesses = _elementStiffnesses.getValue();
+    const auto* indexedElements = this->getIndexedElements();
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto& element : *indexedElements)
+    {
+        const ElementStiffness &Ke = stiffnesses[e];
+        const Transformation& Rot = getElementRotation(e);
+        e++;
+
+        for (Element::size_type n1 = 0; n1 < Element::size(); n1++)
+        {
+            const auto node1 = element[n1];
+            for (Element::size_type n2 = 0; n2 < Element::size(); n2++)
+            {
+                const auto node2 = element[n2];
+
+                const Mat33 tmp = Rot.multTranspose( Mat33(
+                        Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
+                        Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
+                        Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
+
+                dfdx(3 * node1, 3 * node2) += - tmp;
             }
         }
     }

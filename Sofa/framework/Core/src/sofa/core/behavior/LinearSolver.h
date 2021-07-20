@@ -23,7 +23,6 @@
 
 #include <sofa/core/behavior/BaseLinearSolver.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior
@@ -142,9 +141,6 @@ public:
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
     virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() { return nullptr; }
-
-    /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
-    virtual const behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const { return nullptr; }
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
     virtual linearalgebra::BaseVector* getSystemRHBaseVector() { return nullptr; }

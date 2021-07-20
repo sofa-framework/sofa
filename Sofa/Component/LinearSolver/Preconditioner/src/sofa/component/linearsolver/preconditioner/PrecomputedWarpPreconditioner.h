@@ -129,6 +129,9 @@ public:
     MState * mstate;
 protected:
     PrecomputedWarpPreconditioner();
+
+    void checkLinearSystem() override;
+
 public:
     void solve (TMatrix& M, TVector& x, TVector& b) override;
     void invert(TMatrix& M) override;

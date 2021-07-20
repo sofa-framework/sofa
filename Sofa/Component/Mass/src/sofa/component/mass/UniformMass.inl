@@ -32,6 +32,7 @@
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/BaseLocalMassMatrix.h>
 
 namespace sofa::component::mass
 {
@@ -562,7 +563,7 @@ void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
 
     static constexpr auto N = Deriv::total_size;
 
-    AddMToMatrixFunctor<Deriv,MassType> calc;
+    AddMToMatrixFunctor<Deriv,MassType, linearalgebra::BaseMatrix> calc;
     MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate);
 
     const Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
@@ -571,6 +572,21 @@ void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
     for (auto id : *indices)
     {
         calc ( r.matrix, m, int(r.offset + N * id), mFactor);
+    }
+}
+
+template <class DataTypes>
+void UniformMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+{
+    const MassType& m = d_vertexMass.getValue();
+    static constexpr auto N = Deriv::total_size;
+
+    AddMToMatrixFunctor<Deriv,MassType, core::behavior::MassMatrixAccumulator> calc;
+
+    const ReadAccessor<Data<SetIndexArray > > indices = d_indices;
+    for (const auto index : indices)
+    {
+        calc( matrices, m, N * index, 1.);
     }
 }
 
@@ -593,7 +609,7 @@ void UniformMass<DataTypes>::getElementMass (sofa::Index  index ,
         m->resize ( dimension, dimension );
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>() ( m, d_vertexMass.getValue(), 0, 1 );
+    AddMToMatrixFunctor<Deriv,MassType, linearalgebra::BaseMatrix>() ( m, d_vertexMass.getValue(), 0, 1 );
 }
 
 

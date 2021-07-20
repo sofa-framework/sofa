@@ -74,6 +74,10 @@ public:
       void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& dF , const DataVecDeriv& dX) override;
       /// Forcefield functions for Matrix system. Adding derivate force to global forcefield vector. (direct solver)
       void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+
+      void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+      void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
+
       /// Return Potential energy of the mesh.
       SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const override;
 

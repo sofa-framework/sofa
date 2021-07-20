@@ -31,6 +31,7 @@
 #include <sofa/component/haptics/init.h>
 #include <sofa/component/io/init.h>
 #include <sofa/component/linearsolver/init.h>
+#include <sofa/component/linearsystem/init.h>
 #include <sofa/component/mapping/init.h>
 #include <sofa/component/mass/init.h>
 #include <sofa/component/mechanicalload/init.h>
@@ -80,6 +81,7 @@ void init()
         sofa::component::engine::init();
         sofa::component::haptics::init();
         sofa::component::io::init();
+        sofa::component::linearsystem::init();
         sofa::component::linearsolver::init();
         sofa::component::mapping::init();
         sofa::component::mass::init();

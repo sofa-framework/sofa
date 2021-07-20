@@ -86,6 +86,7 @@ public:
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const linearalgebra::BaseMatrix* getK() override;
+    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     Data < bool > d_useGeometricStiffnessMatrix; ///< If available (cached), the geometric stiffness matrix is used in order to compute the product with the parent displacement. Otherwise, the product is computed directly using the available vectors (matrix-free method).
 

@@ -26,6 +26,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/TriangleFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -613,6 +614,42 @@ void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMat
         computeElementStiffnessMatrix(JKJt, RJKJtRt, _materialsStiffnesses[i], _strainDisplacements[i], _rotations[i]);
         this->addToMatrix(mat, offset, (*_indexedElements)[i], RJKJtRt, -k);
     }
+}
+
+template <class DataTypes>
+void TriangleFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
+    unsigned int i = 0;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto nodeIndex : *_indexedElements)
+    {
+        StiffnessMatrix JKJt,RJKJtRt;
+        computeElementStiffnessMatrix(JKJt, RJKJtRt, _materialsStiffnesses[i], _strainDisplacements[i], _rotations[i]);
+
+        for (unsigned n1 = 0; n1 < nodeIndex.size(); n1++)
+        {
+            for(unsigned j = 0; j < S; j++)
+            {
+                unsigned ROW = S*nodeIndex[n1] + j;
+                unsigned row = S*n1+j;
+
+                for (unsigned n2=0; n2<nodeIndex.size(); n2++)
+                {
+                    for (unsigned k=0; k<S; k++)
+                    {
+                        unsigned COLUMN = S*nodeIndex[n2] +k;
+                        unsigned column = 3*n2+k;
+                        dfdx( ROW,COLUMN) += - RJKJtRt[row][column];
+                    }
+                }
+            }
+        }
+    }
+    ++i;
 }
 
 template<class DataTypes>

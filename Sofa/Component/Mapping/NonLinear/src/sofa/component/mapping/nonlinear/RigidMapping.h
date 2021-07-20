@@ -145,6 +145,7 @@ public:
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
     const linearalgebra::BaseMatrix* getK() override;
+    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
 
     void draw(const core::visual::VisualParams* vparams) override;

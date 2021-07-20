@@ -32,9 +32,10 @@ The scene compares two simulations in which only the vertices order differs:
 
     <Node name="NoReorder" activated="true">
         <EulerImplicitSolver name="odeImplicitSolver" />
+        <MatrixLinearSystem name="system"/>
         <SparseLUSolver name="solver" template="CompressedRowSparseMatrixd"/>
 
-        <GlobalSystemMatrixImage/>
+        <GlobalSystemMatrixImage linearSystem="@system"/>
 
         <TetrahedronSetTopologyContainer src="@../Mesh/loader" name="topologyContainer"/>
         <MechanicalObject name="dofs" src="@../Mesh/loader"/>
@@ -47,9 +48,10 @@ The scene compares two simulations in which only the vertices order differs:
 
     <Node name="Reorder" activated="true">
         <EulerImplicitSolver name="odeImplicitSolver" />
+        <MatrixLinearSystem name="system"/>
         <SparseLUSolver name="solver" template="CompressedRowSparseMatrixd"/>
 
-        <GlobalSystemMatrixImage/>
+        <GlobalSystemMatrixImage linearSystem="@system"/>
 
         <FillReducingOrdering name="reorder" mstate="@../Mesh/dofs" topology="@../Mesh/topologyContainer" orderingMethod="AMD"/>
         <TransformEngine name="transform" input_position="@reorder.position" translation="10 0 0"/>

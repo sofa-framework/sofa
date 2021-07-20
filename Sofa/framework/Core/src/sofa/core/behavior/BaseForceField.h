@@ -22,13 +22,14 @@
 #pragma once
 
 #include <sofa/core/config.h>
+#include <sofa/core/behavior/fwd.h>
 #include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa::core::behavior { class MultiMatrixAccessor; }
-
-namespace sofa::core::behavior
-{
+namespace sofa::core::behavior {
+class DampingMatrix;
+class StiffnessMatrix;
+class MultiMatrixAccessor;
 
 /**
  *  \brief Component computing forces within simulated bodies.
@@ -165,6 +166,10 @@ public:
     /// \param matrix the matrix to add the result to
     virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     ////virtual void addMBKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, SReal bFact, SReal kFact, unsigned int &offset);
+
+    virtual void buildStiffnessMatrix(StiffnessMatrix* matrix);
+
+    virtual void buildDampingMatrix(DampingMatrix* matrix);
 
     /// @}
 

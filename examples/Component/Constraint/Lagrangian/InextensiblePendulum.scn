@@ -67,7 +67,7 @@
         <!-- resolution = number of particles (including the fixed one) -->
         <!-- scale = total length of the pendulum -->
         <EdgeSetTopologyContainer name="topology" position="@translate.output_position" edges="@../loader.edges" />
-        <MechanicalObject name="defoDOF" template="Vec3" />
+        <MechanicalObject name="defoDOF" template="Vec3"  />
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
         <!-- 1 g for the total mass of the wire -->
