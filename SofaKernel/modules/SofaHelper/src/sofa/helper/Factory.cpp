@@ -82,17 +82,10 @@ std::string SOFA_HELPER_API gettypename(const std::type_info& t)
     return name;
 }
 
-static std::string& getFactoryLog()
+std::string& getFactoryLog()
 {
     static std::string s;
     return s;
-}
-
-/// Log classes registered in the factory
-void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string classname, std::string key, bool multi)
-{
-    getFactoryLog() += baseclass + (multi?" template class ":" class ")
-            + classname + " registered as " + key + "\n";
 }
 
 /// Print factory log

@@ -35,6 +35,15 @@ namespace sofa
 namespace helper
 {
 
+template<class TKey>
+void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string classname, TKey key, bool multi)
+{
+    std::stringstream ss;
+    ss << key;
+    getFactoryLog() += baseclass + (multi?" template class ":" class ")
+        + classname + " registered as " + ss.str() + "\n";
+}
+
 
 template <typename TKey, class TObject, typename TArgument, typename TPtr>
 TPtr Factory<TKey, TObject, TArgument, TPtr>::createObject(Key key, Argument arg)

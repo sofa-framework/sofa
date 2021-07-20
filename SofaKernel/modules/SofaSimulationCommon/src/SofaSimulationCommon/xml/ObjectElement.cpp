@@ -113,7 +113,7 @@ Creator<BaseElement::NodeFactory, ObjectElement> ObjectNodeClass("Object");
 
 const char* ObjectElement::getClass() const
 {
-    return ObjectNodeClass.c_str();
+    return ObjectNodeClass.getKey().c_str();
 }
 
 } // namespace sofa::simulation::xml

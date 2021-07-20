@@ -43,7 +43,10 @@ class NoArgument {} ;
 std::string SOFA_HELPER_API gettypename(const std::type_info& t);
 
 /// Log classes registered in the factory
-void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string classname, std::string key, bool multi);
+template<class TKey>
+void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string classname, TKey key, bool multi);
+
+std::string& getFactoryLog();
 
 /// Print factory log
 void SOFA_HELPER_API printFactoryLog(std::ostream& out = std::cout);
@@ -134,7 +137,7 @@ public:
 };
 
 template <class Factory, class RealObject>
-class Creator : public Factory::Creator, public Factory::Key
+class Creator : public Factory::Creator
 {
 public:
     typedef typename Factory::Object    Object;
@@ -142,7 +145,7 @@ public:
     typedef typename Factory::Argument  Argument;
     typedef typename Factory::Key       Key;
     explicit Creator(Key key, bool multi=false)
-        : Key(key)
+        : m_key(key)
     {
         Factory::getInstance()->registerCreator(key, this, multi);
     }
@@ -162,6 +165,14 @@ public:
         msg_info("Creator") << "[SOFA]Registration of class : " << type().name();
     }
 
+    const Key& getKey() const
+    {
+        return m_key;
+    }
+
+private:
+
+    Key m_key;
 };
 
 template <class Factory, class RealObject>

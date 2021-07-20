@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaHelper_test)
 
 set(SOURCE_FILES
+    Factory_test.cpp
     KdTree_test.cpp
     Utils_test.cpp
     io/MeshOBJ_test.cpp
