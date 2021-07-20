@@ -348,6 +348,69 @@ SReal TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::Mechani
     return 0;
 }
 
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setPoisson(Real val)
+{
+    if (val < 0)
+    {
+        msg_warning() << "Input Poisson Coefficient is not possible: " << val << ", setting default value: 0.3";
+        type::vector<Real> newP(1, 0.3);
+        f_poisson.setValue(newP);
+    }
+    else {
+        type::vector<Real> newP(1, val);
+        f_poisson.setValue(newP);
+    }
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setYoung(Real val)
+{
+    if (val < 0)
+    {
+        msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
+        type::vector<Real> newY(1, 1000);
+        f_poisson.setValue(newY);
+    }
+    else {
+        type::vector<Real> newY(1, val);
+        f_poisson.setValue(newY);
+    }
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setDamping(Real val) 
+{ 
+    f_damping.setValue(val); 
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setMethod(int val) 
+{ 
+    if (val != 0 && val != 1)
+    {
+        msg_warning() << "Input Method is not possible: " << val << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
+        method = LARGE;
+    }
+    else
+        method = val;
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setMethod(const std::string& methodName)
+{
+    if (methodName == "small")
+        method = SMALL;
+    else if (methodName == "large")
+        method = LARGE;
+    else
+    {
+        msg_warning() << "Input Method is not possible: " << methodName << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
+        method = LARGE;
+    }
+}
+
+
 // --------------------------------------------------------------------------------------
 // --- Get the rotation of node
 // --------------------------------------------------------------------------------------
@@ -459,19 +522,6 @@ void TriangularFEMForceField<DataTypes>::getRotations()
     }
     triangleInfo.endEdit();
     vertexInfo.endEdit();
-}
-
-
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::setMethod(const std::string& methodName)
-{
-    if (methodName == "small")
-        this->setMethod(SMALL);
-    else
-    {
-        msg_warning_when(methodName != "large") << "unknown method: large method will be used. Remark: Available method are \"small\", \"large\" "<<sendl;
-        this->setMethod(LARGE);
-    }
 }
 
 
