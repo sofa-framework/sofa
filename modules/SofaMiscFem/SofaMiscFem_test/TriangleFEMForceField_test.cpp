@@ -283,7 +283,7 @@ public:
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.45); // Not the same default values
+            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3); // Not the same default values
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
             ASSERT_EQ(triFEM->getMethod(), 0);
         }

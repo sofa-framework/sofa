@@ -750,8 +750,10 @@ void TriangleFEMForceField<DataTypes>::setPoisson(Real val)
         msg_warning() << "Input Poisson Coefficient is not possible: " << val << ", setting default value: 0.3";
         f_poisson.setValue(0.3);
     }
-    else
+    else if (val != f_poisson.getValue())
+    {
         f_poisson.setValue(val);
+    }
 }
 
 template<class DataTypes>
@@ -762,8 +764,10 @@ void TriangleFEMForceField<DataTypes>::setYoung(Real val)
         msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
         f_young.setValue(1000);
     }
-    else
+    else if (val != f_young.getValue())
+    {
         f_young.setValue(val);
+    }
 }
 
 template<class DataTypes>
@@ -774,8 +778,10 @@ void TriangleFEMForceField<DataTypes>::setMethod(int val)
         msg_warning() << "Input Method is not possible: " << val << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
         method = LARGE;
     }
-    else
+    else if (method != val)
+    {
         method = val;
+    }
 }
 
 template<class DataTypes>

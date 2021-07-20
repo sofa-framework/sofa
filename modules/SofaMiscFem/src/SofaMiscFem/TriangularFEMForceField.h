@@ -214,9 +214,11 @@ public:
     /// Get/Set methods
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val);
+    void setPoissonArray(const type::vector<Real>& values);
     
     Real getYoung() { return (f_young.getValue())[0]; }
     void setYoung(Real val);
+    void setYoungArray(const type::vector<Real>& values);
 
     Real getDamping() { return f_damping.getValue(); }
     void setDamping(Real val);
