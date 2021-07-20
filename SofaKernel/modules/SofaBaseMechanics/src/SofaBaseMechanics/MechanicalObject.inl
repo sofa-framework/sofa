@@ -279,6 +279,7 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
         int newsize = arg->getAttributeAsInt("size", 1) ;
         if(newsize>=0)
         {
+            d_size.setValue(0); // This is to force vectorsCoord resize if mechanicalObject is only init only with d_size parameter.
             resize(newsize) ;
         }
         else
