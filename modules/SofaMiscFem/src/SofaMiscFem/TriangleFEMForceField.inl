@@ -88,21 +88,17 @@ void TriangleFEMForceField<DataTypes>::init()
 
     if (m_topology->getTriangles().empty() && m_topology->getNbQuads() <= 0)
     {
-        msg_error() << "Need a MeshTopology with triangles or quads.";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
+        msg_warning() << "No triangles found in linked Topology.";
+        _indexedElements = &(m_topology->getTriangles());
     }
-    else
+    else if (!m_topology->getTriangles().empty())
     {
-        msg_info() << "TriangleFEMForceField<DataTypes>::init, mesh has " << m_topology->getTriangles().size() << " triangles and " << m_topology->getQuads().size() << " quads" << sendl;
+        msg_info() << "Init using triangles mesh: " << m_topology->getTriangles().size() << " triangles.";
+        _indexedElements = &(m_topology->getTriangles());
     }
-   
-    if (!m_topology->getTriangles().empty())
+    else if (!m_topology->getNbQuads() != 0)
     {
-        _indexedElements = & (m_topology->getTriangles());
-    }
-    else
-    {
+        msg_info() << "Init using quads mesh: " << m_topology->getNbQuads() * 2 << " triangles.";
         sofa::core::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::topology::BaseMeshTopology::SeqTriangles;
         int nbcubes = m_topology->getNbQuads();
         trias->reserve(nbcubes*2);

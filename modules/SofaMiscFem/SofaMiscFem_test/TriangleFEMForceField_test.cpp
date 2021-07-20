@@ -244,7 +244,7 @@ public:
                 {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
         }
 
-        EXPECT_MSG_EMIT(Error);
+        EXPECT_MSG_EMIT(Warning);
 
         /// Init simulation
         sofa::simulation::getSimulation()->init(m_root.get());
