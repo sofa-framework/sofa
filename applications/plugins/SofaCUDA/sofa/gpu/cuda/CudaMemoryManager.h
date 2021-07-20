@@ -23,7 +23,6 @@
 #define SOFA_HELPER_CUDAMEMORYMANAGER_H
 
 #include <sofa/helper/MemoryManager.h>
-#include <sofa/helper/NameDecoder.h>
 #include <cstring>
 #include "mycuda.h"
 
