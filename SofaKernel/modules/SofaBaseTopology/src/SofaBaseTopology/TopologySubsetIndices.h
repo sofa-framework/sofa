@@ -30,9 +30,9 @@ namespace sofa::component::topology
 /** \brief A class for storing point indices. Automatically manages topological changes on Point
 *
 * This class is a TopologySubsetData templated on PointData and wrapping a type::vector <Index>.
-* The type::vector <Index> works as a map storing the global indices of the Point this subset is apply on.
+* The type::vector <Index> works as a map storing the global indices of the Point this subset is applied on.
 * For example a TopologySubsetIndices of size N can be used in a FixConstraint to store the N fixed points. If the points are removed 
-* this subset will follow the changes an remove the constraints.
+* this subset will follow the changes and remove the constraints.
 */
 class SOFA_SOFABASETOPOLOGY_API TopologySubsetIndices : public sofa::component::topology::TopologySubsetData<core::topology::BaseMeshTopology::Point, type::vector<Index> >
 {
@@ -44,13 +44,13 @@ public:
     //TopologySubsetIndices();
 
     /// Default Constructor to init Data
-    TopologySubsetIndices(const typename sofa::core::topology::BaseTopologyData< type::vector<Index> >::InitData& data);
+    explicit TopologySubsetIndices(const typename sofa::core::topology::BaseTopologyData< type::vector<Index> >::InitData& data);
     
     Index indexOfElement(Index index) override;
 
-    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology);
+    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology) override;
 
-    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoEngine);
+    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoEngine) override;
 
 protected:
     void swapPostProcess(Index i1, Index i2) override;
