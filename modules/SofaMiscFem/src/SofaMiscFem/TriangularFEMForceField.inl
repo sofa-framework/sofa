@@ -368,7 +368,8 @@ void TriangularFEMForceField<DataTypes>::setPoisson(Real val)
         type::vector<Real> newP(1, 0.3);
         f_poisson.setValue(newP);
     }
-    else {
+    else
+    {
         type::vector<Real> newP(1, val);
         f_poisson.setValue(newP);
     }
@@ -388,7 +389,8 @@ void TriangularFEMForceField<DataTypes>::setPoissonArray(const type::vector<Real
     for (auto id = 0; id < values.size(); ++id)
     {
         Real val = values[id];
-        if (val < 0) {
+        if (val < 0)
+        {
             msg_warning() << "Input Poisson Coefficient at position: " << id << " is not possible: " << val << ", setting default value: 0.3";
             val = 1000;
         }
@@ -405,7 +407,8 @@ void TriangularFEMForceField<DataTypes>::setYoung(Real val)
         type::vector<Real> newY(1, 1000);
         f_young.setValue(newY);
     }
-    else {
+    else
+    {
         type::vector<Real> newY(1, val);
         f_young.setValue(newY);
     }
@@ -425,7 +428,8 @@ void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>&
     for (auto id = 0; id<values.size(); ++id)
     {
         Real val = values[id];
-        if (val < 0) {
+        if (val < 0)
+        {
             msg_warning() << "Input Young Modulus at position: " << id << " is not possible: " << val << ", setting default value: 1000";
             val = 1000;
         }

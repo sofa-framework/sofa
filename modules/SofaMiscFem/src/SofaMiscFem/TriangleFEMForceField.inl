@@ -121,10 +121,12 @@ void TriangleFEMForceField<DataTypes>::init()
     _strainDisplacements.resize(_indexedElements->size());
     _rotations.resize(_indexedElements->size());
 
-    if (method == SMALL) {
+    if (method == SMALL)
+    {
         initSmall();
     }
-    else {
+    else
+    {
         initLarge();
     }
 
@@ -141,10 +143,12 @@ void TriangleFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    if (method == SMALL) {
+    if (method == SMALL)
+    {
         //    initSmall();  // useful ? The rotations are recomputed later
     }
-    else {
+    else
+    {
         initLarge(); // compute the per-element strain-displacement matrices
     }
 
@@ -792,7 +796,8 @@ void TriangleFEMForceField<DataTypes>::setMethod(std::string val)
         method = SMALL;
     else if (val == "large")
         method = LARGE;
-    else {
+    else
+    {
         msg_warning() << "Input Method is not possible: " << val << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
         method = LARGE;
     }
