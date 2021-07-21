@@ -111,7 +111,7 @@ using namespace gpu::cuda;
         TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = 0;
 
         /// Compute it
-        for(int i=0;i<m_topology->getNbPoints();++i)
+        for(Size i=0;i<m_topology->getNbPoints();++i)
         {
             if((int)m_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode())
                 TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = m_topology->getEdgesAroundVertex(i).size();
@@ -122,7 +122,7 @@ using namespace gpu::cuda;
 
         unsigned int edgeID;
 
-        for (int i=0;i<m_topology->getNbPoints();++i)
+        for (Size i=0;i<m_topology->getNbPoints();++i)
         {
             for(int j=0;j<TetrahedralTensorMassForceField_nbMaxEdgesPerNode();++j)
             {
@@ -131,7 +131,7 @@ using namespace gpu::cuda;
                 else
                 {
                     edgeID = m_topology->getEdgesAroundVertex(i)[j];
-                    if(i == (int)m_topology->getEdge(edgeID)[0])
+                    if(i == Size(m_topology->getEdge(edgeID)[0]))
                         TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID;   //v0
                     else
                         TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID+1; //v1
@@ -191,7 +191,7 @@ using namespace gpu::cuda;
 		TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = 0;
 
 		/// Compute it
-		for(int i=0;i<m_topology->getNbPoints();++i)
+        for(Size i=0;i<m_topology->getNbPoints();++i)
 		{
 			if((int)m_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode())
 				TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = m_topology->getEdgesAroundVertex(i).size();
@@ -202,7 +202,7 @@ using namespace gpu::cuda;
 
 		unsigned int edgeID;
 
-        for (int i=0;i<m_topology->getNbPoints();++i)
+        for (Size i=0;i<m_topology->getNbPoints();++i)
 		{
 			for(int j=0;j<TetrahedralTensorMassForceField_nbMaxEdgesPerNode();++j)
 			{

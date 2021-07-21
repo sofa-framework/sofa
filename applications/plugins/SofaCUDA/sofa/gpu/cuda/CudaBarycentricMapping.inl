@@ -170,8 +170,8 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
             for (int j=0; j<8; j++)
                 nout[index0+shift[j]]++;
         }
-        for (unsigned int i=0; i<insize; i++)
-            if (nout[i] > maxNOut) maxNOut = nout[i];
+        for (Index i=0; i<insize; i++)
+            if (Index(nout[i]) > maxNOut) maxNOut = nout[i];
         int nbloc = (insize+BSIZE-1)/BSIZE;
         std::cout << "CudaBarycentricMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs."<<std::endl;
         mapT.resize(nbloc*(BSIZE*maxNOut));
@@ -670,9 +670,9 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         int nb = (size+BSIZE-1)/BSIZE;
         for (int b=0; b<nb; b++)
         {
-            for (int j=0; j<maxNIn; j++)
+            for (Index j=0; j<Index(maxNIn); j++)
             {
-                int n = (b<nb-1) ? BSIZE : size-b*BSIZE;
+                int n = (b<nb-1) ? BSIZE : Index(size-b*BSIZE);
                 for (int i=0; i<n; i++)
                 {
                     int index = map[b*maxNIn+j].d[i].i-1;
@@ -686,8 +686,8 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
             }
         }
         insize = nout.size();
-        for (int i=0; i<insize; i++)
-            if (nout[i] > maxNOut) maxNOut = nout[i];
+        for (Index i=0; i<Index(insize); i++)
+            if (Index(nout[i]) > maxNOut) maxNOut = nout[i];
         int nbloc = (insize+BSIZE-1)/BSIZE;
         std::cout << "CudaBarycentricMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs."<<std::endl;
         mapT.clear();
@@ -698,9 +698,9 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         nout.resize(insize);
         for (int b=0; b<nb; b++)
         {
-            for (int j=0; j<maxNIn; j++)
+            for (Index j=0; j<Index(maxNIn); j++)
             {
-                int n = (b<nb-1) ? BSIZE : size-b*BSIZE;
+                int n = (b<nb-1) ? BSIZE : Index(size-b*BSIZE);
                 for (int i=0; i<n; i++)
                 {
                     int index = map[b*maxNIn+j].d[i].i-1;
