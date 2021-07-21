@@ -90,9 +90,7 @@ public:
     Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
     Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<bool> use_file; ///< Dump system matrix in a file
-    Data<int> init_MaxIter;
     Data<double> init_Tolerance;
-    Data<double> init_Threshold;
 
     PrecomputedLinearSolver();
     void solve (TMatrix& M, TVector& x, TVector& b) override;

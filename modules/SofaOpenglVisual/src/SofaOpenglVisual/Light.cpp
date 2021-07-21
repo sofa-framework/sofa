@@ -953,7 +953,7 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
     mat[2] = 0;
     mat[6] = 0;
     mat[10] = -(zFar + zNear) / (zFar - zNear);
-    mat[14] = -2.f * zFar * zNear / (zFar - zNear);;
+    mat[14] = -2.f * zFar * zNear / (zFar - zNear);
 
     mat[3] = 0.0;
     mat[7] = 0.0;

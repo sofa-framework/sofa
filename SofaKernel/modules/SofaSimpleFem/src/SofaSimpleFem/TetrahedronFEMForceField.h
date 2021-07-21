@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimpleFem/config.h>
+#include <SofaSimpleFem/fwd.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
-#include <sofa/core/behavior/BaseRotationFinder.h>
+#include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/helper/ColorMap.h>
@@ -43,7 +43,6 @@
 //   keywords     = "animation, physical model, elasticity, finite elements",
 //   url          = "http://www-evasion.imag.fr/Publications/2005/NPF05"
 // }
-
 
 namespace sofa::component::forcefield
 {
@@ -73,10 +72,10 @@ public:
 *   Corotational methods are based on a rotation from world-space to material-space.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::BaseRotationFinder
+class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::behavior::BaseRotationFinder);
+    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
 
     typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -134,7 +133,6 @@ protected:
     /// structures used to compute vonMises stress
     typedef type::Mat<4, 4, Real> Mat44;
     typedef type::Mat<3, 3, Real> Mat33;
-    typedef type::Mat<4, 3, Real> Mat43;
 
     /// Vector of material stiffness matrices of each tetrahedron
     VecMaterialStiffness materialsStiffnesses;
@@ -170,9 +168,15 @@ public:
     Real getRestVolume() {return m_restVolume;}
 
     //For a faster contact handling with simplified compliance
-    void getRotation(Transformation& R, Index nodeIdx);
+    void getRotation(Mat33& R, Index nodeIdx);
     void getRotations(VecReal& vecR) ;
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override ;
+    
+    // BaseRotationFinder API
+    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override;
+    // RotationFinder<T> API
+    type::vector< Mat33 > m_rotations;
+    const type::vector<Mat33>& getRotations() override;
+
     Data< VecCoord > _initialPoints; ///< the initial positions of the points
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
@@ -259,9 +263,6 @@ public:
     void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
     void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
-    void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const type::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
-
-
     void draw(const core::visual::VisualParams* vparams) override;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
@@ -307,12 +308,18 @@ protected:
     void initSVD(Index i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
+    /// Specialized addKToMatrix implementation for CRS 3x3 bloc matrices
+    template<class BlocReal>
+    void addKToBlocMatrix(
+            sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,BlocReal>,  type::vector<type::Mat<3,3,BlocReal> >, type::vector<sofa::Index> > *crsmat,
+            SReal k, unsigned int &offset);
+
     void applyStiffnessCorotational( Vector& f, const Vector& x, Index i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
     void handleTopologyChange() override { needUpdateTopology = true; }
 
     void computeVonMisesStress();
-    const bool isComputeVonMisesStressMethodSet();
+    bool isComputeVonMisesStressMethodSet();
     void handleEvent(core::objectmodel::Event *event) override;
 };
 

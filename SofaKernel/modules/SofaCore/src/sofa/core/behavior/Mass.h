@@ -148,9 +148,6 @@ public:
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    /// addMBKToMatrix only on the subMatrixIndex
-    void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const type::vector<unsigned> subMatrixIndex) override;
-
     /// @}
 
     /// initialization to export kinetic and potential energy to gnuplot files format

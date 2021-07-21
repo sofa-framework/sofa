@@ -47,7 +47,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 
@@ -55,17 +54,18 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 
+#include <sofa/core/ObjectFactory.h>
+
+#include <numeric>
+
 using namespace sofa::core;
-namespace sofa
-{
 
-namespace simulation
-{
-
-namespace common
+namespace sofa::simulation::common
 {
 
 using namespace sofa::simulation::mechanicalvisitor;
+
+std::map<core::objectmodel::BaseContext*, bool> MechanicalOperations::hasShownMissingLinearSolverMap;
 
 MechanicalOperations::MechanicalOperations(const sofa::core::MechanicalParams* mparams, sofa::core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder)
     :mparams(*mparams),ctx(ctx),executeVisitor(*ctx,precomputedTraversalOrder)
@@ -434,7 +434,7 @@ void MechanicalOperations::m_resetSystem()
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     s->resetSystem();
@@ -445,7 +445,7 @@ void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal 
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     mparams.setMFactor(mFact);
@@ -459,7 +459,7 @@ void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+
         return;
     }
     s->setSystemRHVector(v);
@@ -470,7 +470,7 @@ void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     s->setSystemLHVector(v);
@@ -482,7 +482,7 @@ void MechanicalOperations::m_solveSystem()
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     s->solveSystem();
@@ -493,7 +493,7 @@ void MechanicalOperations::m_print( std::ostream& out )
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     defaulttype::BaseMatrix* m = s->getSystemBaseMatrix();
@@ -527,18 +527,6 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     if (matrix != nullptr)
     {
         executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
-        executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
-    }
-}
-
-void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const type::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact)
-{
-    mparams.setMFactor(mFact);
-    mparams.setBFactor(bFact);
-    mparams.setKFactor(kFact);
-    if (matrix != nullptr)
-    {
-        executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams, matrix, subMatrixIndex) );
         executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
     }
 }
@@ -581,8 +569,16 @@ void MechanicalOperations::printWithElapsedTime( core::ConstMultiVecId /*v*/, un
 {
 }
 
-}
-
+void MechanicalOperations::showMissingLinearSolverError() const
+{
+    if (!hasShownMissingLinearSolverMap[ctx])
+    {
+        const auto solvers = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseLinearSolver>();
+        msg_error(ctx) << "A linear solver is required, but has not been found. Add a linear solver to your scene to "
+                          "fix this issue. The list of available linear solver components "
+                          "is: [" << solvers << "].";
+        hasShownMissingLinearSolverMap[ctx] = true;
+    }
 }
 
 }

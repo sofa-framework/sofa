@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimpleFem/config.h>
+#include <SofaSimpleFem/fwd.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -153,6 +153,12 @@ public:
 
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
+    /// Specialized addKToMatrix implementation for CRS 3x3 bloc matrices
+    template<class BlocReal>
+    void addKToBlocMatrix(
+            sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,BlocReal>,  type::vector<type::Mat<3,3,BlocReal> >, type::vector<sofa::Index> > *crsmat,
+            SReal k, unsigned int &offset);
+
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -195,13 +201,13 @@ protected:
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M,
                                           const type::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice,
-                                          double stiffnessFactor=1.0);
-    Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1,
+                                          double stiffnessFactor=1.0) const;
+    static Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1,
                               const Real u, const Real v, const Real w, const Mat33& J_1  );
 
     void computeMaterialStiffness(sofa::Index i);
 
-    void computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
+    static void computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
 
 
     ////////////// large displacements method
@@ -209,7 +215,7 @@ protected:
     type::vector<Transformation> _rotations;
     type::vector<Transformation> _initialrotations;
     void initLarge(int i, const Element&elem);
-    void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
+    static void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
     virtual void accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     ////////////// polar decomposition method

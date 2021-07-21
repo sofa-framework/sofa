@@ -26,7 +26,6 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/type/Mat.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <cmath>

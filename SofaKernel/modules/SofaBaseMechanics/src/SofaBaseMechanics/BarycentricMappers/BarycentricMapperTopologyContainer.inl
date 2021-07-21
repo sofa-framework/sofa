@@ -232,7 +232,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::checkDi
         nearestParams.distance = dist;
         nearestParams.elementId = e;
     }
-};
+}
 
 
 template <class In, class Out, class MappingDataType, class Element>

@@ -235,6 +235,14 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 
     // add one identity matrix
     xforms.resize(1);
+
+    addUpdateCallback("updateTextures", { &texturename },
+        [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        m_textureChanged = true;
+        return sofa::core::objectmodel::ComponentState::Loading;
+    }, { &d_componentState });
 }
 
 VisualModelImpl::~VisualModelImpl()
@@ -281,6 +289,18 @@ bool VisualModelImpl::hasOpaque()
 
 void VisualModelImpl::drawVisual(const core::visual::VisualParams* vparams)
 {
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Loading)
+    {
+        if (m_textureChanged)
+        {
+            deleteTextures();
+            m_textureChanged = false;
+        }
+        init();
+        initVisual();
+        updateBuffers();
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    }
     //Update external buffers (like VBO) if the mesh change AFTER doing the updateVisual() process
     if(m_vertices2.isDirty())
     {
@@ -408,7 +428,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     VecDeriv& vnormals = *(m_vnormals.beginEdit());
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     auto& vertPosIdx = (*m_vertPosIdx.beginEdit());
-    auto& vertNormIdx = (*m_vertNormIdx.beginEdit());;
+    auto& vertNormIdx = (*m_vertNormIdx.beginEdit());
 
     positions.resize(nbVIn);
 
@@ -828,7 +848,6 @@ template<class VecType>
 void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int algo)
 {
     data->createTopologyHandler(m_topology, new VisualModelPointHandler<VecType>(this, data, algo));
-    data->registerTopologicalData();
 }
 
 void VisualModelImpl::init()
@@ -1838,7 +1857,7 @@ void VisualModelImpl::handleTopologyChange()
         default:
             // Ignore events that are not Triangle  related.
             break;
-        }; // switch( changeType )
+        } // switch( changeType )
 
         ++itBegin;
     } // while( changeIt != last; )

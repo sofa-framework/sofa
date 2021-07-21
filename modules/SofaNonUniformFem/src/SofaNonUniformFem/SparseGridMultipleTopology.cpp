@@ -229,7 +229,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
         newnz = (newnz-1)*2+1;
     }
 
-    SparseGridMultipleTopology::SPtr sgmt = sofa::core::objectmodel::New< SparseGridMultipleTopology >(true);;
+    SparseGridMultipleTopology::SPtr sgmt = sofa::core::objectmodel::New< SparseGridMultipleTopology >(true);
 
     _virtualFinerLevels[0] = sgmt;
     _virtualFinerLevels[0]->setNx( newnx );

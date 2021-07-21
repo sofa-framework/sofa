@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaBoundaryCondition"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaSimpleFem"/>
+    <RequiredPlugin name="SofaEngine"/>
+    <RequiredPlugin name="MultiThreading"/>
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+
+    <Node name="M1">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject />
+        <UniformMass vertexMass="1" />
+        <RegularGridTopology nx="8" ny="8" nz="40" xmin="-1.5" xmax="1.5" ymin="-1.5" ymax="1.5" zmin="0" zmax="19" />
+        <BoxROI box="-1.5 -1.5 0 1.5 1.5 0.0001" name="box"/>
+        <FixedConstraint indices="@box.indices" />
+        <ParallelHexahedronFEMForceField name="FEM" youngModulus="400000" poissonRatio="0.4" method="large" updateStiffnessMatrix="false"/>
+    </Node>
+</Node>

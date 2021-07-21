@@ -24,11 +24,9 @@
 #include <string>
 using std::string ;
 
-#include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using namespace sofa::defaulttype ;
 
-#include <SofaBaseMechanics/UniformMass.h>
 using sofa::component::mass::UniformMass ;
 
 #include <SofaSimulationGraph/SimpleApi.h>

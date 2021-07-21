@@ -31,7 +31,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/type/RGBAColor.h>
@@ -71,8 +71,9 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef type::vector<Real> VecDensity;
 
-    typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
-    typedef type::vector<unsigned int> SetIndexArray;
+    typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;    
+    typedef type::vector<sofa::Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
@@ -84,7 +85,7 @@ public:
     Data<Real> d_planeD1; ///< plane d coef at which particles are removed
     Data<bool> d_showPlane; ///< enable/disable drawing of plane
 
-    sofa::component::topology::PointSubsetData< SetIndexArray > d_fixed; ///< indices of fixed particles
+    SetIndex d_fixed; ///< indices of fixed particles
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<ParticleSink<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
