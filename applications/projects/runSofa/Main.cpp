@@ -187,142 +187,133 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     sofa::gui::ArgumentParser* argParser = new sofa::gui::ArgumentParser(argc, argv);
+
     argParser->addArgument(
-        boost::program_options::value<bool>(&showHelp)
-        ->default_value(false)
-        ->implicit_value(true),
-        "help,h",
+        cxxopts::value<bool>(showHelp)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "h,help",
         "Display this help message"
     );
+
     argParser->addArgument(
-        boost::program_options::value<bool>(&startAnim)
-        ->default_value(false)
-        ->implicit_value(true),
-        "start,a",
+        cxxopts::value<bool>(startAnim)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "a,start",
         "start the animation loop"
     );
     argParser->addArgument(
-        boost::program_options::value<bool>(&computationTimeAtBegin)
-        ->default_value(false)
-        ->implicit_value(true),
-        "computationTimeAtBegin,b",
+        cxxopts::value<bool>(computationTimeAtBegin)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "b,computationTimeAtBegin",
         "Output computation time statistics of the init (at the begin of the simulation)"
     );
     argParser->addArgument(
-        boost::program_options::value<unsigned int>(&computationTimeSampling)
-        ->default_value(0),
+        cxxopts::value<unsigned int>(computationTimeSampling)
+        ->default_value("0"),
         "computationTimeSampling",
         "Frequency of display of the computation time statistics, in number of animation steps. 0 means never."
     );
     argParser->addArgument(
-        boost::program_options::value<std::string>(&computationTimeOutputType)
+        cxxopts::value<std::string>(computationTimeOutputType)
         ->default_value("stdout"),
-        "computationTimeOutputType,o",
+        "o,computationTimeOutputType",
         "Output type for the computation time statistics: either stdout, json or ljson"
     );
     argParser->addArgument(
-        boost::program_options::value<std::string>(&gui)->default_value(""),
-        "gui,g",
+        cxxopts::value<std::string>(gui)->default_value(""),
+        "g,gui",
         gui_help.c_str()
     );
     argParser->addArgument(
-        boost::program_options::value<std::vector<std::string>>(&plugins),
-        "load,l",
+        cxxopts::value<std::vector<std::string>>(plugins),
+        "l,load",
         "load given plugins"
     );
     argParser->addArgument(
-        boost::program_options::value<bool>(&noAutoloadPlugins)
-        ->default_value(false)
-        ->implicit_value(true),
+        cxxopts::value<bool>(noAutoloadPlugins)
+        ->default_value("false")
+        ->implicit_value("true"),
         "noautoload",
         "disable plugins autoloading"
     );
     argParser->addArgument(
-        boost::program_options::value<bool>(&noSceneCheck)
-        ->default_value(false)
-        ->implicit_value(true),
+        cxxopts::value<bool>(noSceneCheck)
+        ->default_value("false")
+        ->implicit_value("true"),
         "noscenecheck",
         "disable scene checking for each scene loading"
     );
     argParser->addArgument(
-        boost::program_options::value<bool>(&printFactory)
-        ->default_value(false)
-        ->implicit_value(true),
-        "factory,p",
+        cxxopts::value<bool>(printFactory)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "p,factory",
         "print factory logs"
     );
     argParser->addArgument(
-        boost::program_options::value<bool>(&loadRecent)
-        ->default_value(false)->implicit_value(true),
-        "recent,r",
+        cxxopts::value<bool>(loadRecent)
+        ->default_value("false")->implicit_value("true"),
+        "r,recent",
         "load most recently opened file"
     );
     argParser->addArgument(
-        boost::program_options::value<std::string>(&simulationType),
-        "simu,s", "select the type of simulation (bgl, dag, tree)"
+        cxxopts::value<std::string>(simulationType),
+        "s,simu", 
+        "select the type of simulation (bgl, dag, tree)"
     );
     argParser->addArgument(
-        boost::program_options::value<bool>(&temporaryFile)
-        ->default_value(false)->implicit_value(true),
+        cxxopts::value<bool>(temporaryFile)
+        ->default_value("false")->implicit_value("true"),
         "tmp",
         "the loaded scene won't appear in history of opened files"
     );
     argParser->addArgument(
-        boost::program_options::value<bool>(&testMode)
-        ->default_value(false)->implicit_value(true),
+        cxxopts::value<bool>(testMode)
+        ->default_value("false")->implicit_value("true"),
         "test",
         "select test mode with xml output after N iteration"
-     );
+    );
     argParser->addArgument(
-        boost::program_options::value<std::string>(&verif)
+        cxxopts::value<std::string>(verif)
         ->default_value(""),
-        "verification,v",
+        "v,verification",
         "load verification data for the scene"
     );
     argParser->addArgument(
-        boost::program_options::value<std::string>(&colorsStatus)
-        ->default_value("unset", "auto")
+        cxxopts::value<std::string>(colorsStatus)
+        ->default_value("auto")
         ->implicit_value("yes"),
-        "colors,c",
+        "c,colors",
         "use colors on stdout and stderr (yes, no, auto)"
     );
     argParser->addArgument(
-        boost::program_options::value<std::string>(&messageHandler)
+        cxxopts::value<std::string>(messageHandler)
         ->default_value("auto"),
-        "formatting,f",
+        "f,formatting",
         "select the message formatting to use (auto, clang, sofa, rich, test)"
     );
     argParser->addArgument(
-        boost::program_options::value<bool>(&enableInteraction)
-        ->default_value(false)
-        ->implicit_value(true),
-        "interactive,i",
+        cxxopts::value<bool>(enableInteraction)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "i,interactive",
         "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
     );
     argParser->addArgument(
-        boost::program_options::value<std::vector<std::string> >()
-        ->multitoken(),
+        cxxopts::value<std::vector<std::string> >(),
         "argv",
         "forward extra args to the python interpreter"
-    );
-
-    // example of an option using lambda function which ensure the value passed is > 0
-    argParser->addArgument(
-        boost::program_options::value<unsigned int>(&nbMSSASamples)
-        ->default_value(1)
-        ->notifier([](unsigned int value) {
-            if (value < 1) {
-                msg_error("runSofa") << "msaa sample cannot be lower than 1";
-                exit( EXIT_FAILURE );
-            }
-        }),
-        "msaa,m",
-        "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled"
     );
 
     addGUIParameters(argParser);
     argParser->parse();
     files = argParser->getInputFileList();
+
+    argParser->showArgs();
+    std::cout << "GUI " << argParser->getMap().count("gui") << std::endl;
 
     if(showHelp)
     {

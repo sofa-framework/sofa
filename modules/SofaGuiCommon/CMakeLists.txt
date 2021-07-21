@@ -6,6 +6,24 @@ sofa_find_package(SofaUserInteraction REQUIRED)
 sofa_find_package(SofaGraphComponent REQUIRED)
 sofa_find_package(SofaSimulationCommon REQUIRED)
 sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
+
+include(FetchContent)
+FetchContent_Declare(cxxopts
+        GIT_REPOSITORY https://github.com/jarro2783/cxxopts
+        GIT_TAG        v2.2.1
+)
+
+FetchContent_GetProperties(cxxopts)
+if(NOT cxxopts_POPULATED)
+    FetchContent_Populate(cxxopts)
+
+    set(CXXOPTS_BUILD_EXAMPLES OFF CACHE INTERNAL "")
+    set(CXXOPTS_BUILD_TESTS OFF CACHE INTERNAL "")
+    set(CXXOPTS_ENABLE_INSTALL ON CACHE INTERNAL "")
+
+    add_subdirectory(${cxxopts_SOURCE_DIR} ${cxxopts_BINARY_DIR})
+endif()
+
 sofa_find_package(Boost REQUIRED COMPONENTS program_options)
 
 if(Sofa.GL_FOUND)
@@ -55,6 +73,7 @@ set (COMPAT_HEADER_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction SofaSimulationCommon)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::program_options)
+target_link_libraries(${PROJECT_NAME} PUBLIC cxxopts)
 
 if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
     sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
