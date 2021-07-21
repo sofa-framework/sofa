@@ -279,7 +279,6 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
         int newsize = arg->getAttributeAsInt("size", 1) ;
         if(newsize>=0)
         {
-            d_size.setValue(0); // This is to force vectorsCoord resize if mechanicalObject is only init only with d_size parameter.
             resize(newsize) ;
         }
         else
@@ -666,18 +665,18 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::type::vector< Inde
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(const Size size)
 {
-
-
     if(size>0)
     {
-        if (d_size.getValue() == static_cast<int>(size))
-            return;
+        if (d_size.getValue() != static_cast<int>(size))
+            d_size.setValue(size);
 
-        d_size.setValue( size );
         for (unsigned int i = 0; i < vectorsCoord.size(); i++)
         {
             if (vectorsCoord[i] != nullptr && vectorsCoord[i]->isSet())
             {
+                if (vectorsCoord[i]->getValue().size() == size)
+                    continue;
+
                 vectorsCoord[i]->beginEdit()->resize(size);
                 vectorsCoord[i]->endEdit();
             }
@@ -687,6 +686,9 @@ void MechanicalObject<DataTypes>::resize(const Size size)
         {
             if (vectorsDeriv[i] != nullptr && vectorsDeriv[i]->isSet())
             {
+                if (vectorsDeriv[i]->getValue().size() == size)
+                    continue;
+
                 vectorsDeriv[i]->beginEdit()->resize(size);
                 vectorsDeriv[i]->endEdit();
             }
