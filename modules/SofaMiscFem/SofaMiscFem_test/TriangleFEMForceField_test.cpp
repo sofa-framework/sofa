@@ -43,8 +43,6 @@ using std::string;
 #include <sofa/helper/system/thread/CTime.h>
 #include <limits>
 
-#define PERFORMANCE_TESTS 0
-
 namespace sofa
 {
 using namespace sofa::defaulttype;
@@ -592,27 +590,26 @@ TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_wrongAttributes
     this->checkWrongAttributes(1);
 }
 
-TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_init)
+TEST_F(TriangleFEMForceField3_test, DISABLED_checkTriangularFEMForceField_init)
 {
     this->checkInit(1);
 }
 
-TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_values)
+TEST_F(TriangleFEMForceField3_test, DISABLED_checkTriangularFEMForceField_values)
 {
     this->checkFEMValues(1);
 }
 
 
 /// Those tests should not be removed but can't be run on the CI
-#if(PERFORMANCE_TESTS)
-TEST_F(TriangleFEMForceField3_test, testTriangleFEMPerformance)
+TEST_F(TriangleFEMForceField3_test, DISABLED_testTriangleFEMPerformance)
 {
     this->testFEMPerformance(0);
 }
 
-TEST_F(TriangleFEMForceField3_test, testTriangularFEMPerformance)
+TEST_F(TriangleFEMForceField3_test, DISABLED_testTriangularFEMPerformance)
 {
     this->testFEMPerformance(1);
 }
-#endif
+
 } // namespace sofa
