@@ -82,6 +82,8 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     f_graphOrientation.setWidget("graph");
 #endif
 
+    f_poisson.setRequired(true);
+    f_young.setRequired(true);
     p_drawColorMap = new helper::ColorMap(256, "Blue to Red");
 }
 

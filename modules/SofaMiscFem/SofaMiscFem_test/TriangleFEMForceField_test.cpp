@@ -269,6 +269,8 @@ public:
             createObject(m_root, "TriangularFEMForceField");
         }
 
+        EXPECT_MSG_EMIT(Error);
+
         /// Init simulation
         sofa::simulation::getSimulation()->init(m_root.get());
         if (FEMType == 0)

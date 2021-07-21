@@ -50,13 +50,14 @@ TriangleFEMForceField()
 //    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
     , l_topology(initLink("topology", "link to the topology container"))    
-{}
+{
+    f_poisson.setRequired(true);
+    f_young.setRequired(true);
+}
 
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 {
-    f_poisson.setRequired(true);
-    f_young.setRequired(true);
 }
 
 
