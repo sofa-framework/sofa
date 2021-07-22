@@ -26,6 +26,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <cmath>
 #include <iostream>
@@ -39,7 +40,7 @@
 #include <thread>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/gui/OperationFactory.h>
