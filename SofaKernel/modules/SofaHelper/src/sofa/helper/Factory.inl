@@ -36,7 +36,7 @@ namespace helper
 {
 
 template<class TKey>
-void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string classname, TKey key, bool multi)
+void logFactoryRegister(std::string baseclass, std::string classname, TKey key, bool multi)
 {
     std::stringstream ss;
     ss << key;
