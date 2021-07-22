@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_FACTORY_H
-#define SOFA_HELPER_FACTORY_H
+#pragma once
 
 #include <map>
 #include <iostream>
@@ -30,10 +29,7 @@
 #include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 /// Allow us to use BaseCreator and Factory without using any Arguments
@@ -44,7 +40,7 @@ std::string SOFA_HELPER_API gettypename(const std::type_info& t);
 
 /// Log classes registered in the factory
 template<class TKey>
-void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string classname, TKey key, bool multi);
+void SOFA_HELPER_API logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi);
 
 std::string& getFactoryLog();
 
@@ -69,7 +65,6 @@ public:
     typedef TPtr      ObjectPtr;
     typedef TArgument Argument;
     typedef BaseCreator<Object, Argument, ObjectPtr> Creator;
-    typedef std::multimap<Key, Creator> Registry;
 
 protected:
     std::multimap<Key, Creator*> registry;
@@ -204,11 +199,7 @@ public:
 };
 
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 
 // Creator is often used without namespace qualifiers
 using sofa::helper::Creator;
-
-#endif

@@ -26,10 +26,7 @@
 #endif
 #include <cstdlib>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 /// Decode the type's name to a more readable form if possible
@@ -95,7 +92,5 @@ void SOFA_HELPER_API printFactoryLog(std::ostream& out)
 }
 
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 
