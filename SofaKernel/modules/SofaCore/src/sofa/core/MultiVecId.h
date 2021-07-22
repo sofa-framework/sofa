@@ -32,136 +32,6 @@ namespace sofa::core
 
 template<class DataTypes> class State;
 
-/// Identify a vector of a given type stored in multiple State instances
-/// This class is templated in order to create different variations (generic versus specific type, read-only vs write access)
-template <VecType vtype, VecAccess vaccess>
-class TMultiVecId;
-
-/// Helper class to access vectors of a given type in a given State
-template<class DataTypes, VecType vtype, VecAccess vaccess>
-struct StateVecAccessor;
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_COORD, V_READ>
-{
-public:
-    typedef TVecId<V_COORD, V_READ> MyVecId;
-
-    StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
-    operator MyVecId() const {  return id;  }
-    auto read()  const {  return state-> read(id);  }
-
-protected:
-    const State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_COORD, V_WRITE>
-{
-public:
-    typedef TVecId<V_COORD, V_WRITE> MyVecId;
-
-    StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
-    operator MyVecId() const {  return id;  }
-    auto read()  const {  return state-> read(id);  }
-    auto write() const {  return state->write(id);  }
-
-protected:
-    State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_DERIV, V_READ>
-{
-public:
-    typedef TVecId<V_DERIV, V_READ> MyVecId;
-
-    StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
-    operator MyVecId() const {  return id;  }
-    auto read()  const {  return state-> read(id);  }
-
-protected:
-    const State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_DERIV, V_WRITE>
-{
-public:
-    typedef TVecId<V_DERIV, V_WRITE> MyVecId;
-
-    StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
-    operator MyVecId() const {  return id;  }
-    auto read()  const {  return state-> read(id);  }
-    auto write() const {  return state->write(id);  }
-
-protected:
-    State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_MATDERIV, V_READ>
-{
-public:
-    typedef TVecId<V_MATDERIV, V_READ> MyVecId;
-
-    StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
-    operator MyVecId() const {  return id;  }
-    auto read()  const {  return state-> read(id);  }
-
-protected:
-    const State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_MATDERIV, V_WRITE>
-{
-public:
-    typedef TVecId<V_MATDERIV, V_WRITE> MyVecId;
-
-    StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
-    operator MyVecId() const {  return id;  }
-    auto read()  const {  return state-> read(id);  }
-    auto write() const {  return state->write(id);  }
-
-protected:
-    State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_ALL, V_READ>
-{
-public:
-    typedef TVecId<V_ALL, V_READ> MyVecId;
-
-    StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
-    operator MyVecId() const {  return id;  }
-
-protected:
-    const State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_ALL, V_WRITE>
-{
-public:
-    typedef TVecId<V_ALL, V_WRITE> MyVecId;
-
-    StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
-    operator MyVecId() const {  return id;  }
-
-protected:
-    State<DataTypes>* state;
-    MyVecId id;
-};
-
 template <VecType vtype, VecAccess vaccess>
 class SOFA_CORE_API TMultiVecId
 {
@@ -383,18 +253,6 @@ public:
                 if (!it->second.isNull()) return false;
         return true;
     }
-
-    template <class DataTypes>
-    StateVecAccessor<DataTypes,vtype,vaccess> operator[](State<DataTypes>* s) const
-    {
-        return StateVecAccessor<DataTypes,vtype,vaccess>(s,getId(s));
-    }
-
-    template <class DataTypes>
-    StateVecAccessor<DataTypes,vtype,V_READ> operator[](const State<DataTypes>* s) const
-    {
-        return StateVecAccessor<DataTypes,vtype,V_READ>(s,getId(s));
-    }
 };
 
 
@@ -582,19 +440,6 @@ public:
                 if (!it->second.isNull()) return false;
         return true;
     }
-
-    template <class DataTypes>
-    StateVecAccessor<DataTypes,V_ALL,vaccess> operator[](State<DataTypes>* s) const
-    {
-        return StateVecAccessor<DataTypes,V_ALL,vaccess>(s,getId(s));
-    }
-
-    template <class DataTypes>
-    StateVecAccessor<DataTypes,V_ALL,V_READ> operator[](const State<DataTypes>* s) const
-    {
-        return StateVecAccessor<DataTypes,V_ALL,V_READ>(s,getId(s));
-    }
-
 };
 
 typedef TMultiVecId<V_COORD, V_READ> ConstMultiVecCoordId;
