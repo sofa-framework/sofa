@@ -42,7 +42,7 @@ std::string SOFA_HELPER_API gettypename(const std::type_info& t);
 template<class TKey>
 void SOFA_HELPER_API logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi);
 
-std::string& getFactoryLog();
+std::string& SOFA_HELPER_API getFactoryLog();
 
 /// Print factory log
 void SOFA_HELPER_API printFactoryLog(std::ostream& out = std::cout);
