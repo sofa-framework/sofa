@@ -29,7 +29,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/ArgumentParser.h>
 
-#include <boost/program_options.hpp>
+#include <cxxopts.hpp>
 
 #include <fstream>
 #include <string>
