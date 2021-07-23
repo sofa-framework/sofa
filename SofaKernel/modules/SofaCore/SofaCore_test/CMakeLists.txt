@@ -20,6 +20,7 @@ set(SOURCE_FILES
     MultiVecId_test.cpp
     PathResolver_test.cpp
     TrackedData_test.cpp
+    VecId_test.cpp
 )
 
 set(HEADER_FILES
