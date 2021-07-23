@@ -213,21 +213,18 @@ public:
 
     /// Get/Set methods
     Real getPoisson() { return (f_poisson.getValue())[0]; }
-    void setPoisson(Real val)
-    {
-        type::vector<Real> newP(1, val);
-        f_poisson.setValue(newP);
-    }
+    void setPoisson(Real val);
+    void setPoissonArray(const type::vector<Real>& values);
+    
     Real getYoung() { return (f_young.getValue())[0]; }
-    void setYoung(Real val)
-    {
-        type::vector<Real> newY(1, val);
-        f_young.setValue(newY);
-    }
+    void setYoung(Real val);
+    void setYoungArray(const type::vector<Real>& values);
+
     Real getDamping() { return f_damping.getValue(); }
-    void setDamping(Real val) { f_damping.setValue(val); }
+    void setDamping(Real val);
     int  getMethod() { return method; }
-    void setMethod(int val) { method = val; }
+    
+    void setMethod(int val);
     void setMethod(const std::string& methodName);
 
 public:
