@@ -665,29 +665,32 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::type::vector< Inde
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(const Size size)
 {
-
-
     if(size>0)
     {
-        {
-            if (d_size.getValue() != static_cast<int>(size))
-                d_size.setValue( size );
-            for (unsigned int i = 0; i < vectorsCoord.size(); i++)
-            {
-                if (vectorsCoord[i] != nullptr && vectorsCoord[i]->isSet())
-                {
-                    vectorsCoord[i]->beginEdit()->resize(size);
-                    vectorsCoord[i]->endEdit();
-                }
-            }
+        if (d_size.getValue() != static_cast<int>(size))
+            d_size.setValue(size);
 
-            for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
+        for (unsigned int i = 0; i < vectorsCoord.size(); i++)
+        {
+            if (vectorsCoord[i] != nullptr && vectorsCoord[i]->isSet())
             {
-                if (vectorsDeriv[i] != nullptr && vectorsDeriv[i]->isSet())
-                {
-                    vectorsDeriv[i]->beginEdit()->resize(size);
-                    vectorsDeriv[i]->endEdit();
-                }
+                if (vectorsCoord[i]->getValue().size() == size)
+                    continue;
+
+                vectorsCoord[i]->beginEdit()->resize(size);
+                vectorsCoord[i]->endEdit();
+            }
+        }
+
+        for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
+        {
+            if (vectorsDeriv[i] != nullptr && vectorsDeriv[i]->isSet())
+            {
+                if (vectorsDeriv[i]->getValue().size() == size)
+                    continue;
+
+                vectorsDeriv[i]->beginEdit()->resize(size);
+                vectorsDeriv[i]->endEdit();
             }
         }
         this->forceMask.resize(size);
