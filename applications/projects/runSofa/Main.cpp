@@ -312,9 +312,6 @@ int main(int argc, char** argv)
     argParser->parse();
     files = argParser->getInputFileList();
 
-    argParser->showArgs();
-    std::cout << "GUI " << argParser->getMap().count("gui") << std::endl;
-
     if(showHelp)
     {
         argParser->showHelp();
