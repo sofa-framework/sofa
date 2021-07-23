@@ -17,8 +17,9 @@ set(SOURCE_FILES
     objectmodel/MultiLink_test.cpp
     objectmodel/SingleLink_test.cpp
     DataEngine_test.cpp
-    TrackedData_test.cpp
+    MultiVecId_test.cpp
     PathResolver_test.cpp
+    TrackedData_test.cpp
 )
 
 set(HEADER_FILES
