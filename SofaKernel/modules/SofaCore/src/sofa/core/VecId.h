@@ -49,6 +49,22 @@ enum VecAccess
     V_WRITE,
 };
 
+inline std::string toString(const VecType type)
+{
+    switch(type)
+    {
+    case V_COORD:
+        return "V_COORD";
+    case V_DERIV:
+        return "V_DERIV";
+    case V_MATDERIV:
+        return "V_MATDERIV";
+    case V_ALL:
+        return "V_ALL";
+    }
+    assert(false && "Invalid type, please fix");
+}
+
 template <VecType vtype, VecAccess vaccess>
 class TVecId;
 
@@ -67,29 +83,24 @@ public:
     static MyVecId resetPosition() { return MyVecId(4);}
     enum { V_FIRST_DYNAMIC_INDEX = 5 }; ///< This is the first index used for dynamically allocated vectors
 
-    static std::string getName(const MyVecId& v)
+    static std::string getIndexName(const MyVecId& v)
     {
-        std::string result;
         switch(v.getIndex())
         {
-        case 0: result+= "null";
-            break;
-        case 1: result+= "position";
-            break;
-        case 2: result+= "restPosition";
-            break;
-        case 3: result+= "freePosition";
-            break;
-        case 4: result+= "resetPosition";
-            break;
-        default:
-            std::ostringstream out;
-            out << v.getIndex();
-            result+= out.str();
-            break;
+        case 0: return "null";
+        case 1: return "position";
+        case 2: return "restPosition";
+        case 3: return "freePosition";
+        case 4: return "resetPosition";
         }
-        result+= "(V_COORD)";
-        return result;
+        std::ostringstream out;
+        out << v.getIndex();
+        return out.str();
+    }
+
+    static std::string getName(const MyVecId& v)
+    {
+        return getIndexName(v)+"("+toString(v.getType())+")";
     }
 };
 
@@ -109,37 +120,28 @@ public:
     static MyVecId dforce()         { return MyVecId(8); }
     enum { V_FIRST_DYNAMIC_INDEX = 9 }; ///< This is the first index used for dynamically allocated vectors
 
-    static std::string getName(const MyVecId& v)
+    static std::string getIndexName(const MyVecId& v)
     {
-        std::string result;
         switch(v.getIndex())
         {
-        case 0: result+= "null";
-            break;
-        case 1: result+= "velocity";
-            break;
-        case 2: result+= "resetVelocity";
-            break;
-        case 3: result+= "freeVelocity";
-            break;
-        case 4: result+= "normal";
-            break;
-        case 5: result+= "force";
-            break;
-        case 6: result+= "externalForce";
-            break;
-        case 7: result+= "dx";
-            break;
-        case 8: result+= "dforce";
-            break;
-        default:
-            std::ostringstream out;
-            out << v.getIndex();
-            result+= out.str();
-            break;
+        case 0: return "null";
+        case 1: return "velocity";
+        case 2: return "resetVelocity";
+        case 3: return "freeVelocity";
+        case 4: return "normal";
+        case 5: return "force";
+        case 6: return "externalForce";
+        case 7: return "dx";
+        case 8: return "dforce";
         }
-        result+= "(V_DERIV)";
-        return result;
+        std::ostringstream out;
+        out << v.getIndex();
+        return out.str();
+    }
+
+    static std::string getName(const MyVecId& v)
+    {
+        return getIndexName(v)+"("+toString(v.getType())+")";
     }
 };
 
@@ -156,33 +158,30 @@ public:
     static MyVecId holonomicC() = delete;
     enum { V_FIRST_DYNAMIC_INDEX = 3 }; ///< This is the first index used for dynamically allocated vectors
 
-    static std::string getName(const MyVecId& v)
+    static std::string getIndexName(const MyVecId& v)
     {
-        std::string result;
         switch(v.getIndex())
         {
-        case 0: result+= "null";
-            break;
-        case 1: result+= "holonomic";
-            break;
-        case 2: result+= "nonHolonomic";
-            break;
-        default:
-            std::ostringstream out;
-            out << v.getIndex();
-            result+= out.str();
-            break;
+        case 0: return "null";
+        case 1: return "holonomic";
+        case 2: return "nonHolonomic";
         }
-        result+= "(V_MATDERIV)";
-        return result;
+        std::ostringstream out;
+        out << v.getIndex();
+        return out.str();
+    }
+
+    static std::string getName(const MyVecId& v)
+    {
+        return getIndexName(v)+"("+toString(v.getType())+")";
     }
 };
 
 template <VecAccess vaccess>
 class TStandardVec<V_ALL, vaccess>
-    : public TStandardVec<V_COORD,vaccess>
-    , public TStandardVec<V_DERIV,vaccess>
-    , public TStandardVec<V_MATDERIV,vaccess>
+        : public TStandardVec<V_COORD,vaccess>
+        , public TStandardVec<V_DERIV,vaccess>
+        , public TStandardVec<V_MATDERIV,vaccess>
 {
 public:
     typedef TVecId<V_ALL, vaccess> MyVecId;
@@ -202,23 +201,34 @@ public:
         }
     }
 
-    static std::string getName(const MyVecId& v)
+    static std::string getIndexName(const MyVecId& v)
     {
+        if(v.getIndex()==0)
+            return "null";
+
         switch(v.getType())
         {
         case V_COORD:
-            return TStandardVec<V_COORD,vaccess>::getName(static_cast<TVecId<V_COORD,vaccess>>(v));
+            return TStandardVec<V_COORD,vaccess>::getIndexName(static_cast<TVecId<V_COORD,vaccess>>(v));
         case V_DERIV:
-            return TStandardVec<V_DERIV,vaccess>::getName(static_cast<TVecId<V_DERIV,vaccess>>(v));
+            return TStandardVec<V_DERIV,vaccess>::getIndexName(static_cast<TVecId<V_DERIV,vaccess>>(v));
         case V_MATDERIV:
-            return TStandardVec<V_MATDERIV,vaccess>::getName(static_cast<TVecId<V_MATDERIV,vaccess>>(v));
-        default:
-            std::string result;
+            return TStandardVec<V_MATDERIV,vaccess>::getIndexName(static_cast<TVecId<V_MATDERIV,vaccess>>(v));
+        case V_ALL:
             std::ostringstream out;
-            out << v.getIndex() << "(" << v.getType() << ")";
-            result = out.str();
-            return result;
+            out << v.getIndex();
+            return out.str();
         }
+    }
+
+    static std::string getName(const MyVecId& v)
+    {
+        std::ostringstream out;
+        if(v.getType() == V_ALL)
+            out << getIndexName(v) << "(" << toString(V_ALL) << ")";
+        else
+            out << getIndexName(v) << "(" << toString(V_ALL) << "->" << toString(v.getType()) << ")";
+        return out.str();
     }
 };
 
@@ -234,11 +244,11 @@ public:
     VecType getType() const { return type; }
     unsigned int getIndex() const { return index; }
 
-	VecType type;
+    VecType type;
     unsigned int index;
 
 protected:
-	BaseVecId(VecType t, unsigned int i) : type(t), index(i) {}
+    BaseVecId(VecType t, unsigned int i) : type(t), index(i) {}
 };
 
 /// This class is only here as fix for a VC2010 compiler otherwise padding TVecId<V_ALL,?> with 4 more bytes than TVecId<?,?>, 
@@ -253,6 +263,9 @@ template <VecType vtype, VecAccess vaccess>
 class TVecId : public BaseVecId, public TStandardVec<vtype, vaccess>, public VecIdAlignFix
 {
 public:
+    constexpr static auto Type {vtype};
+    constexpr static auto Access {vaccess};
+
     TVecId() : BaseVecId(vtype, 0) { }
     TVecId(unsigned int i) : BaseVecId(vtype, i) { }
 
@@ -268,13 +281,10 @@ public:
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
     }
 
-	template<VecAccess vaccess2>
+    template<VecAccess vaccess2>
     explicit TVecId(const TVecId<V_ALL, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
-#ifndef NDEBUG
-        assert(v.getType() == vtype);
-#endif
     }
 
     // Copy assignment
@@ -336,8 +346,12 @@ template<VecAccess vaccess>
 class TVecId<V_ALL, vaccess> : public BaseVecId, public TStandardVec<V_ALL, vaccess>
 {
 public:
+    constexpr static auto Type {V_ALL};
+    constexpr static auto Access {vaccess};
+
     TVecId() : BaseVecId(V_ALL, 0) { }
-    TVecId(VecType t, unsigned int i) : BaseVecId(t, i) { }
+    TVecId(unsigned int i) : BaseVecId(V_ALL, i) { }
+
     /// Create a generic VecId from a specific or generic one, with the
     /// constraint that the access must be compatible (i.e. cannot create
     /// a write-access VecId from a read-only VecId.
@@ -369,7 +383,7 @@ public:
         return getType() != v.getType() || getIndex() != v.getIndex();
     }
 
-    static TVecId null() { return TVecId(V_ALL, 0);}
+    static TVecId null() { return TVecId(0);}
     bool isNull() const { return this->index == 0; }
 
     std::string getName() const
