@@ -24,6 +24,7 @@
 
 #include <sofa/core/State.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <sofa/core/Mapping.h>
 #include <iostream>
 
@@ -151,8 +152,8 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId out
     State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
-        OutDataVecCoord* out = outPos[toModel].write();
-        const InDataVecCoord* in = inPos[fromModel].read();
+        OutDataVecCoord* out = sofa::core::getWrite(toModel, outPos);
+        const InDataVecCoord* in = sofa::core::getRead(fromModel,inPos);
         if(out && in)
         {
 
@@ -171,8 +172,8 @@ void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId ou
     State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
-        OutDataVecDeriv* out = outVel[toModel].write();
-        const InDataVecDeriv* in = inVel[fromModel].read();
+        OutDataVecDeriv* out = sofa::core::getWrite(toModel, outVel);
+        const InDataVecDeriv* in = sofa::core::getRead(fromModel, inVel);
         if(out && in)
         {
                 this->applyJ(mparams, *out, *in);
@@ -187,8 +188,8 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
     State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
-        InDataVecDeriv* out = inForce[fromModel].write();
-        const OutDataVecDeriv* in = outForce[toModel].read();
+        InDataVecDeriv* out = sofa::core::getWrite(fromModel, inForce);
+        const OutDataVecDeriv* in = sofa::core::getRead(toModel, outForce);
         if(out && in)
         {
             this->applyJT(mparams, *out, *in);
@@ -213,8 +214,8 @@ void Mapping<In,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivI
     State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
-        InDataMatrixDeriv* out = inConst[fromModel].write();
-        const OutDataMatrixDeriv* in = outConst[toModel].read();
+        InDataMatrixDeriv* out = sofa::core::getWrite(fromModel,inConst);
+        const OutDataMatrixDeriv* in = sofa::core::getRead(toModel,outConst);
         if(out && in)
         {
             this->applyJT(cparams, *out, *in);
@@ -237,9 +238,9 @@ void Mapping<In,Out>::computeAccFromMapping(const MechanicalParams* mparams, Mul
     State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
-        OutDataVecDeriv* out = outAcc[toModel].write();
-        const InDataVecDeriv* inV = inVel[fromModel].read();
-        const InDataVecDeriv* inA = inAcc[fromModel].read();
+        OutDataVecDeriv* out = sofa::core::getWrite(toModel, outAcc);
+        const InDataVecDeriv* inV = sofa::core::getRead(fromModel, inVel);
+        const InDataVecDeriv* inA = sofa::core::getRead(fromModel, inAcc);
         if(out && inV && inA)
             this->computeAccFromMapping(mparams, *out, *inV, *inA);
     }

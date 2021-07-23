@@ -24,6 +24,7 @@
 #include "SquareMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 
@@ -97,7 +98,7 @@ void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, c
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
     if( !geometricStiffness ) return;
 
-    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
+    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*sofa::core::getWrite(this->fromModel.get(),parentDfId));
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
     SReal kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
@@ -146,7 +147,7 @@ void SquareMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, co
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce(*sofa::core::getRead(this->toModel.get(),childForceId));
 
     unsigned int size = this->fromModel->getSize();
     K.resizeBlocks(size,size);

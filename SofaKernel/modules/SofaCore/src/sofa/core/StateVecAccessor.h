@@ -22,34 +22,44 @@
 #pragma once
 
 #include <sofa/core/fwd.h>
-#include <sofa/core/VecId.h>
-#include <memory>
-#include <map>
-#include <set>
+#include <sofa/core/State.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa::core
 {
 
-template<class State, class MultiId>
-auto getRead(State* state, MultiId& id)
+template<class Type, class DataType=typename State<Type>::VecCoord>
+const sofa::core::objectmodel::Data<DataType>* getRead(const State<Type>* state, const TMultiVecId<V_COORD, V_READ>& id)
 {
     return state->read(id.getId(state));
 }
 
-template<class State, class MultiId>
-auto getRead(State* state, const MultiId& id)
+template<class Type, class DataType=typename State<Type>::VecDeriv>
+const sofa::core::objectmodel::Data<DataType>* getRead(const State<Type>* state, const TMultiVecId<V_DERIV, V_READ>& id)
 {
     return state->read(id.getId(state));
 }
 
-template<class State, class MultiId>
-auto getWrite(State* state, MultiId& id)
+template<class Type, class DataType=typename State<Type>::MatrixDeriv>
+const sofa::core::objectmodel::Data<DataType>* getRead(const State<Type>* state, const TMultiVecId<V_MATDERIV, V_READ>& id)
+{
+    return state->read(id.getId(state));
+}
+
+template<class Type, class DataType=typename State<Type>::VecCoord>
+sofa::core::objectmodel::Data<DataType>* getWrite(State<Type>* state, const TMultiVecId<V_COORD, V_WRITE>& id)
 {
     return state->write(id.getId(state));
 }
 
-template<class State, class MultiId>
-auto getWrite(State* state, const MultiId& id)
+template<class Type, class DataType=typename State<Type>::VecDeriv>
+sofa::core::objectmodel::Data<DataType>* getWrite(State<Type>* state, const TMultiVecId<V_DERIV, V_WRITE>& id)
+{
+    return state->write(id.getId(state));
+}
+
+template<class Type, class DataType=typename State<Type>::MatrixDeriv>
+sofa::core::objectmodel::Data<DataType>* getWrite(State<Type>* state, const TMultiVecId<V_MATDERIV, V_WRITE>& id)
 {
     return state->write(id.getId(state));
 }

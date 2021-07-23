@@ -26,6 +26,7 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa::core::behavior
 {
@@ -58,7 +59,9 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 {
     if (mparams)
     {
-            addForce(mparams, *fId[mstate.get()].write() , *mparams->readX(mstate), *mparams->readV(mstate));
+            addForce(mparams,
+                     *sofa::core::getWrite(mstate.get(), fId),
+                    *mparams->readX(mstate), *mparams->readV(mstate));
             updateForceMask();
     }
 }
@@ -73,7 +76,7 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
             mparams->setKFactorUsed(false);
 #endif
 
-        addDForce(mparams, *dfId[mstate.get()].write(), *mparams->readDx(mstate.get()));
+        addDForce(mparams, *sofa::core::getWrite(mstate.get(), dfId), *mparams->readDx(mstate.get()));
 
 #ifndef NDEBUG
         if (!mparams->getKFactorUsed())
@@ -88,7 +91,7 @@ void ForceField<DataTypes>::addClambda(const MechanicalParams* mparams, MultiVec
 {
     if (mparams)
     {
-        addClambda(mparams, *resId[mstate.get()].write(), *lambdaId[mstate.get()].read(), cFactor);
+        addClambda(mparams, *sofa::core::getWrite(mstate.get(), resId), *sofa::core::getRead(mstate.get(), lambdaId), cFactor);
     }
 }
 

@@ -24,6 +24,7 @@
 
 #include "MixedInteractionConstraint.h"
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa
 {
@@ -76,7 +77,9 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(c
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[mstate1.get()].write(), *cId[mstate2.get()].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        buildConstraintMatrix(cParams,
+                              *sofa::core::getWrite(mstate1.get(), cId),
+                              *sofa::core::getWrite(mstate2.get(), cId), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
         updateForceMask();
     }
 }

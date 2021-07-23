@@ -25,6 +25,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.inl>
@@ -411,8 +412,8 @@ void UncoupledConstraintCorrection<DataTypes>::computeMotionCorrection(const cor
 {
     SOFA_UNUSED(cparams);
 
-    auto writeDx = sofa::helper::getWriteAccessor( *dx[this->getMState()].write() );
-    const Data<VecDeriv>& f_d = *f[this->getMState()].read();
+    auto writeDx = sofa::helper::getWriteAccessor( *sofa::core::getWrite(this->getMState(), dx) );
+    const Data<VecDeriv>& f_d = *sofa::core::getRead(this->getMState(), f);
     computeDx(f_d, writeDx.wref());
 }
 

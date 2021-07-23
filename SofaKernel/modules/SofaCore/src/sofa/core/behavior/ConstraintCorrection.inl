@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa
 {
@@ -78,10 +79,10 @@ void ConstraintCorrection< DataTypes >::applyMotionCorrection(const core::Constr
 {
     if (mstate)
     {
-        Data< VecCoord > *x_d  = x[mstate].write();
-        Data< VecDeriv > *v_d  = v[mstate].write();
-        Data< VecDeriv > *dx_d = dx[mstate].write();
-        const Data< VecDeriv > *correction_d = correction[mstate].read();
+        Data< VecCoord > *x_d  = sofa::core::getWrite(mstate, x);
+        Data< VecDeriv > *v_d  = sofa::core::getWrite(mstate, v);
+        Data< VecDeriv > *dx_d = sofa::core::getWrite(mstate, dx);
+        const Data< VecDeriv > *correction_d = sofa::core::getRead(mstate, correction);
 
         if (x_d && v_d && dx_d && correction_d)
         {
@@ -96,9 +97,9 @@ void ConstraintCorrection< DataTypes >::applyPositionCorrection(const core::Cons
 {
     if (mstate)
     {
-        Data< VecCoord > *x_d  = x[mstate].write();
-        Data< VecDeriv > *dx_d = dx[mstate].write();
-        const Data< VecDeriv > *correction_d = correction[mstate].read();
+        Data< VecCoord > *x_d  = sofa::core::getWrite(mstate, x);
+        Data< VecDeriv > *dx_d = sofa::core::getWrite(mstate, dx);;
+        const Data< VecDeriv > *correction_d = sofa::core::getRead(mstate,correction);
 
         if (x_d && dx_d && correction_d)
         {
@@ -113,9 +114,9 @@ void ConstraintCorrection< DataTypes >::applyVelocityCorrection(const core::Cons
 {
     if (mstate)
     {
-        Data< VecDeriv >* v_d  = v[mstate].write();
-        Data< VecDeriv >* dv_d = dv[mstate].write();
-        const Data< VecDeriv >* correction_d = correction[mstate].read();
+        Data< VecDeriv >* v_d  = sofa::core::getWrite(mstate, v);
+        Data< VecDeriv >* dv_d = sofa::core::getWrite(mstate, dv);
+        const Data< VecDeriv >* correction_d = sofa::core::getRead(mstate,correction);
 
         if (v_d && dv_d && correction_d)
         {
@@ -139,8 +140,8 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const co
 {
     if (mstate)
     {
-        Data< VecDeriv > *f_d = f[mstate].write();
-        const Data< MatrixDeriv > * j_d = j[mstate].read();
+        Data< VecDeriv > *f_d = sofa::core::getWrite(mstate, f);
+        const Data< MatrixDeriv > * j_d = sofa::core::getRead(mstate,j);
         if (f_d && j_d)
         {
             addConstraintForceInMotionSpace(cparams,*f_d, *j_d, lambda);

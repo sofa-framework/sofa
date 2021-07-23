@@ -26,6 +26,7 @@
 #include <sofa/core/config.h>
 #include <sofa/helper/fwd.h>
 #include <sofa/core/State.h>
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa
 {
@@ -259,30 +260,30 @@ public:
 protected:
 
     void getVecInCoord     (const MultiVecCoordId id,         type::vector<      InDataVecCoord* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(sofa::core::getWrite(fromModels[i],id)); }
     void getConstVecInCoord(const ConstMultiVecCoordId id,    type::vector<const InDataVecCoord* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].read());  }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(sofa::core::getRead(fromModels[i],id));  }
     void getVecInDeriv      (const MultiVecDerivId id,         type::vector<      InDataVecDeriv* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(sofa::core::getWrite(fromModels[i],id)); }
     void getConstVecInDeriv (const ConstMultiVecDerivId id,    type::vector<const InDataVecDeriv* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].read());  }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(sofa::core::getRead(fromModels[i],id));  }
     void getMatInDeriv      (const MultiMatrixDerivId id,      type::vector<      InDataMatrixDeriv* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(sofa::core::getWrite(fromModels[i],id)); }
     void getConstMatInDeriv (const ConstMultiMatrixDerivId id, type::vector<const InDataMatrixDeriv* > &v) const
-    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].read());  }
+    {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(sofa::core::getRead(fromModels[i],id));  }
 
     void getVecOutCoord     (const MultiVecCoordId id,         type::vector<      OutDataVecCoord* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write());    }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getWrite(toModels[i],id));    }
     void getConstVecOutCoord(const ConstMultiVecCoordId id,    type::vector<const OutDataVecCoord* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());     }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getRead(toModels[i],id));     }
     void getVecOutDeriv     (const MultiVecDerivId id,         type::vector<      OutDataVecDeriv* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write());    }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getWrite(toModels[i],id));    }
     void getConstVecOutDeriv(const ConstMultiVecDerivId id,    type::vector<const OutDataVecDeriv* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());     }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getRead(toModels[i],id));     }
     void getMatOutDeriv     (const MultiMatrixDerivId id,      type::vector<      OutDataMatrixDeriv* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write()); }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getWrite(toModels[i],id)); }
     void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, type::vector<const OutDataMatrixDeriv* > &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());  }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getRead(toModels[i],id));  }
 
     /// Useful when the mapping is applied only on a subset of parent dofs.
     /// It is automatically called by applyJT.

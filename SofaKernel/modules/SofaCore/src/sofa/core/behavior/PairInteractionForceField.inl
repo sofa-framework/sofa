@@ -26,6 +26,7 @@
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <iostream>
 
 namespace sofa
@@ -74,7 +75,9 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
 {
     if (mstate1 && mstate2)
     {
-        addForce(mparams, *fId[mstate1.get()].write(), *fId[mstate2.get()].write(),
+        addForce(mparams,
+                 *sofa::core::getWrite(mstate1.get(),fId),
+                 *sofa::core::getWrite(mstate2.get(),fId),
             *mparams->readX(mstate1), *mparams->readX(mstate2),
             *mparams->readV(mstate1), *mparams->readV(mstate2));
 
@@ -90,7 +93,7 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
     if (mstate1 && mstate2)
     {
         addDForce(
-            mparams, *dfId[mstate1.get()].write(), *dfId[mstate2.get()].write(),
+            mparams, *sofa::core::getWrite(mstate1.get(), dfId), *sofa::core::getWrite(mstate2.get(), dfId),
             *mparams->readDx(mstate1), *mparams->readDx(mstate2));
     }
     else

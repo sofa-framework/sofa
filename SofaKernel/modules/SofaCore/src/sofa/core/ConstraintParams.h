@@ -26,6 +26,7 @@
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa
 {
@@ -90,18 +91,18 @@ public:
     /// Read access to the free (unconstrained) position vector
     template<class S>
     const Data<typename S::VecCoord>* readX(const S* state) const
-    {   return m_x[state].read();    }
+    {   return sofa::core::getRead(state, m_x);    }
 
     /// Read access to the free (unconstrained) velocity vector
     template<class S>
     const Data<typename S::VecDeriv>* readV(const S* state) const
-    {   return m_v[state].read();    }
+    {   return sofa::core::getRead(state, m_v);    }
 
     /// Read access to the constraint jacobian matrix
     template<class S>
     const Data<typename S::MatrixDeriv>* readJ(const S* state) const
     {
-        return m_j[state].read();
+        return sofa::core::getRead(state, m_j);;
     }
 
     /// Read access to the constraint force vector
@@ -118,27 +119,24 @@ public:
         return m_dx[state].read();
     }
 
-
-
-
     /// @name Access to vectors from a given SingleLink to a state container (i.e. State or MechanicalState)
     /// @{
 
     /// Read access to the free (unconstrained) position
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecCoord>* readX(const SingleLink<Owner,S,flags>& state) const
-    {   return m_x[state.get()].read();    }
+    {   return sofa::core::getRead(state.get(), m_x);    }
 
     /// Read access to the free (unconstrained) velocity vector
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecDeriv>* readV(const SingleLink<Owner,S,flags>& state) const
-    {   return m_v[state.get()].read();    }
+    {   return sofa::core::getRead(state.get(), m_v); }
 
     /// Read access to the constraint jacobian matrix
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::MatrixDeriv>* readJ(const SingleLink<Owner, S, flags>& state) const
     {
-        return m_j[state.get()].read();
+        return sofa::core::getRead(state.get(), m_j); ;
     }
 
     /// Read access to the constraint force vector

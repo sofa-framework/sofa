@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <sofa/type/RGBAColor.h>
 #include <iostream>
 
@@ -204,7 +205,7 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
      if( !geometricStiffness ) return;
 
-    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
+    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*sofa::core::getWrite(this->fromModel.get(), parentDfId));
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
     const SReal kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
@@ -276,7 +277,7 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *sofa::core::getRead(this->toModel.get(),childForceId) );
     helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 

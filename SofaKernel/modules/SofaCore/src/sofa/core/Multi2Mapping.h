@@ -27,6 +27,7 @@
 #include <sofa/core/config.h>
 #include <sofa/core/State.h>
 #include <sofa/helper/StateMask.h>
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa
 {
@@ -256,44 +257,43 @@ public:
 
 protected:
     void getVecIn1Coord     (const MultiVecCoordId id,         type::vector<      In1DataVecCoord*> &v) const
-    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].write()); }
+    { for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(sofa::core::getWrite(fromModels1[i], id)); }
     void getConstVecIn1Coord(const ConstMultiVecCoordId id,    type::vector<const In1DataVecCoord*> &v) const
-    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].read());  }
+    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(sofa::core::getRead(fromModels1[i], id)); }
     void getVecIn1Deriv     (const MultiVecDerivId id,         type::vector<      In1DataVecDeriv*> &v) const
-    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].write()); }
+    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(sofa::core::getWrite(fromModels1[i], id)); }
     void getConstVecIn1Deriv(const ConstMultiVecDerivId id,    type::vector<const In1DataVecDeriv*> &v) const
-    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].read());  }
+    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(sofa::core::getRead(fromModels1[i], id));  }
     void getMatIn1Deriv     (const MultiMatrixDerivId id,      type::vector<      In1DataMatrixDeriv*> &v) const
-    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].write()); }
+    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(sofa::core::getWrite(fromModels1[i], id)); }
     void getConstMatIn1Deriv(const ConstMultiMatrixDerivId id, type::vector<const In1DataMatrixDeriv*> &v) const
-    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].read());  }
+    {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(sofa::core::getRead(fromModels1[i], id));  }
 
     void getVecIn2Coord     (const MultiVecCoordId id,         type::vector<      In2DataVecCoord*> &v) const
-    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].write()); }
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(sofa::core::getWrite(fromModels2[i], id)); }
     void getConstVecIn2Coord(const ConstMultiVecCoordId id,    type::vector<const In2DataVecCoord*> &v) const
-    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].read());  }
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(sofa::core::getRead(fromModels2[i], id));  }
     void getVecIn2Deriv     (const MultiVecDerivId id,         type::vector<      In2DataVecDeriv*> &v) const
-    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].write()); }
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(sofa::core::getWrite(fromModels2[i],id)); }
     void getConstVecIn2Deriv(const ConstMultiVecDerivId id,    type::vector<const In2DataVecDeriv*> &v) const
-    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].read());  }
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(sofa::core::getRead(fromModels2[i], id));  }
     void getMatIn2Deriv     (const MultiMatrixDerivId id,      type::vector<      In2DataMatrixDeriv*> &v) const
-    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].write()); }
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(sofa::core::getWrite(fromModels2[i],id)); }
     void getConstMatIn2Deriv(const ConstMultiMatrixDerivId id, type::vector<const In2DataMatrixDeriv*> &v) const
-    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].read());  }
+    {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(sofa::core::getRead(fromModels2[i],id));  }
 
     void getVecOutCoord     (const MultiVecCoordId id,         type::vector<      OutDataVecCoord*> &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getWrite(toModels[i],id));      }
     void getConstVecOutCoord(const ConstMultiVecCoordId id,    type::vector<const OutDataVecCoord*> &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getRead(toModels[i],id));       }
     void getVecOutDeriv     (const MultiVecDerivId id,         type::vector<      OutDataVecDeriv*> &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getWrite(toModels[i],id));      }
     void getConstVecOutDeriv(const ConstMultiVecDerivId id,    type::vector<const OutDataVecDeriv*> &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getRead(toModels[i],id));       }
     void getMatOutDeriv     (const MultiMatrixDerivId id,      type::vector<      OutDataMatrixDeriv*> &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getWrite(toModels[i],id));      }
     void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, type::vector<const OutDataMatrixDeriv*> &v) const
-    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
-
+    {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(sofa::core::getRead(toModels[i],id));       }
 
     /// Useful when the mapping is applied only on a subset of parent dofs.
     /// It is automatically called by applyJT.

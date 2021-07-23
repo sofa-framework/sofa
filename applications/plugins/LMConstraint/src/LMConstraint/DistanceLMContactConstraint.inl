@@ -23,6 +23,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <LMConstraint/BaseLMConstraint.h>
 #include <LMConstraint/DistanceLMContactConstraint.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
@@ -105,10 +106,10 @@ template<class DataTypes>
 void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     using namespace core::objectmodel;
-    Data<MatrixDeriv>* dC1 = cId[this->constrainedObject1].write();
+    Data<MatrixDeriv>* dC1 = sofa::core::getWrite(this->constrainedObject1,cId);
     helper::WriteAccessor<Data<MatrixDeriv> > c1 = *dC1;
 
-    Data<MatrixDeriv>* dC2 = cId[this->constrainedObject2].write();
+    Data<MatrixDeriv>* dC2 = sofa::core::getWrite(this->constrainedObject2,cId);
     helper::WriteAccessor<Data<MatrixDeriv> > c2 = *dC2;
 
     helper::ReadAccessor<Data<VecCoord> > x1 = *cParams->readX(this->constrainedObject1);

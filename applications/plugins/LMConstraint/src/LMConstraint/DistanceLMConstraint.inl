@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <LMConstraint/BaseLMConstraint.h>
 #include <LMConstraint/DistanceLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -124,10 +125,11 @@ typename DataTypes::Deriv DistanceLMConstraint<DataTypes>::getDirection(const Ed
 template<class DataTypes>
 void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex)
 {
-    Data<MatrixDeriv>* dC1 = cId[this->constrainedObject1].write();
+    Data<MatrixDeriv>* dC1 = sofa::core::getWrite(this->constrainedObject1, cId);
     helper::WriteAccessor<sofa::core::objectmodel::Data<MatrixDeriv> > c1 = *dC1;
 
-    Data<MatrixDeriv>* dC2 = cId[this->constrainedObject2].write();
+    Data<MatrixDeriv>* dC2 = sofa::core::getWrite(this->constrainedObject2, cId);
+
     helper::WriteAccessor<sofa::core::objectmodel::Data<MatrixDeriv> > c2 = *dC2;
 
     helper::ReadAccessor<sofa::core::objectmodel::Data<VecCoord> > x1 = *cParams->readX(this->constrainedObject1);

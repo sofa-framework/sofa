@@ -23,8 +23,8 @@
 #define SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_INL
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <iostream>
-
 
 namespace sofa
 {
@@ -70,7 +70,7 @@ void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalP
 
     if (mstate)
     {
-        projectJacobianMatrix(mparams, *cId[mstate.get()].write());
+        projectJacobianMatrix(mparams, *sofa::core::getWrite(mstate.get(), cId));
     }
 }
 
@@ -83,7 +83,7 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams*
         return;
     if (mstate)
     {
-            projectResponse(mparams, *dxId[mstate.get()].write());
+            projectResponse(mparams, *sofa::core::getWrite(mstate.get(), dxId));
     }
     msg_error_when(!mstate) << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName();
 }
@@ -97,7 +97,7 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
     if (mstate)
     {
 
-            projectVelocity(mparams, *vId[mstate.get()].write());
+            projectVelocity(mparams, *sofa::core::getWrite(mstate.get(), vId));
     }
     msg_error_when(!mstate) << "ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName();
 }
@@ -111,7 +111,7 @@ void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams*
     if (mstate)
     {
 
-            projectPosition(mparams, *xId[mstate.get()].write());
+            projectPosition(mparams, *sofa::core::getWrite(mstate.get(), xId));
     }
 }
 

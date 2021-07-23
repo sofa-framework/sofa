@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <LMConstraint/DOFBlockerLMConstraint.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/type/vector_algorithm.h>
@@ -92,7 +93,8 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(const core::Constr
     if(!idxEquations.empty() ) return;
 
     using namespace core::objectmodel;
-    Data<MatrixDeriv>* dC = cId[this->constrainedObject1].write();
+    Data<MatrixDeriv>* dC = sofa::core::getWrite(this->constrainedObject1,cId);
+
     helper::WriteAccessor<Data<MatrixDeriv> > c = *dC;
 
     const SetIndexArray &indices = f_indices.getValue();

@@ -396,8 +396,8 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     ///////////////////////    COPY J1 AND J2 IN EIGEN FORMAT //////////////////////////////////////
     double startTime= (double)timer->getTime();
     sofa::core::MultiMatrixDerivId c = sofa::core::MatrixDerivId::mappingJacobian();
-    const MatrixDeriv1 &J1 = c[ms1].read()->getValue();
-    const MatrixDeriv2 &J2 = c[ms2].read()->getValue();
+    const MatrixDeriv1 &J1 = sofa::core::getRead(ms1,c)->getValue();
+    const MatrixDeriv2 &J2 = sofa::core::getRead(ms2,c)->getValue();
 
     optimizeAndCopyMappingJacobianToEigenFormat1(J1, m_J1eig);
     if (bms1 != bms2)

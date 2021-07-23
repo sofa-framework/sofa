@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <LMConstraint/FixedLMConstraint.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/vector_algorithm.h>
 
@@ -113,7 +114,8 @@ template<class DataTypes>
 void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /* cParams*/, core::MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     using namespace core::objectmodel;
-    Data<MatrixDeriv>* dC = cId[this->constrainedObject1].write();
+    Data<MatrixDeriv>* dC = sofa::core::getWrite(this->constrainedObject1,cId);
+
     helper::WriteAccessor<Data<MatrixDeriv> > c = *dC;
     idxX.clear();
     idxY.clear();

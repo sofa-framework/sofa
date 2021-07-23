@@ -27,6 +27,7 @@
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <fstream>
 
 namespace sofa
@@ -62,7 +63,7 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fi
 {
     if (mparams)
     {
-            addMDx(mparams, *fid[this->mstate.get()].write(), *mparams->readDx(this->mstate), factor);
+            addMDx(mparams, *sofa::core::getWrite(this->mstate.get(), fid), *mparams->readDx(this->mstate), factor);
     }
 }
 
@@ -78,7 +79,7 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId 
 {
     if(mparams)
     {
-            accFromF(mparams, *aid[this->mstate.get()].write(), *mparams->readF(this->mstate));
+            accFromF(mparams, *sofa::core::getWrite(this->mstate.get(), aid), *mparams->readF(this->mstate));
     }
     else msg_error() <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam";
 }
@@ -111,7 +112,7 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId 
     this->ForceField<DataTypes>::addMBKdx(mparams, dfId);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
     {
-        addMDx(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
+        addMDx(mparams, *sofa::core::getWrite(this->mstate.get(), dfId), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
     }
 }
 
@@ -195,7 +196,7 @@ void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams, MultiVecDer
 {
     if(this->mstate)
     {
-        DataVecDeriv& v = *vid[this->mstate.get()].write();
+        DataVecDeriv& v = *sofa::core::getWrite(this->mstate.get(), vid);
         addGravityToV(mparams, v);
     }
 }

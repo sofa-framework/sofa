@@ -24,8 +24,8 @@
 #include "DistanceMapping.h"
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ConstraintParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
@@ -218,7 +218,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
     if( !geometricStiffness ) return;
 
-    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
+    helper::WriteAccessor<Data<InVecDeriv> > parentForce (*sofa::core::getWrite(this->fromModel.get(),parentDfId));
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
     const SReal& kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
@@ -302,7 +302,7 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
 
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *sofa::core::getRead(this->toModel.get(),childForceId) );
     const SeqEdges& links = m_edgeContainer->getEdges();
 
     unsigned int size = this->fromModel->getSize();
@@ -661,7 +661,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     for( unsigned i=0; i< size ; i++ )
     {
         core::State<In>* fromModel = this->getFromModels()[i];
-        parentForce[i] = parentDfId[fromModel].write()->beginEdit();
+        parentForce[i] = sofa::core::getWrite(fromModel, parentDfId)->beginEdit();
         parentDisplacement[i] = &mparams->readDx(fromModel)->getValue();
     }
 
@@ -716,7 +716,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     for( unsigned i=0; i< size ; i++ )
     {
         core::State<In>* fromModel = this->getFromModels()[i];
-        parentDfId[fromModel].write()->endEdit();
+        sofa::core::getWrite(fromModel, parentDfId)->endEdit();
     }
 }
 
@@ -735,7 +735,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[(const core::State<TOut>*)this->getToModels()[0]].read() );
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce(*sofa::core::getRead((const core::State<TOut>*)this->getToModels()[0], childForceId));
     const SeqEdges& links = m_edgeContainer->getEdges();
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 

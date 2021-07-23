@@ -24,6 +24,7 @@
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
+#include <sofa/core/StateVecAccessor.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 
@@ -100,7 +101,7 @@ public:
     /// Read access to current dx vector (for implicit schemes)
     template<class S>
     const Data<typename S::VecDeriv>* readDx(const S* state) const
-    {   return m_dx[state].read();    }
+    {   return sofa::core::getRead(state, m_dx);    }
 
     /// Read access to current df vector (for implicit schemes)
     template<class S>
@@ -115,22 +116,22 @@ public:
     /// Read access to current position vector
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecCoord>* readX(const SingleLink<Owner,S,flags>& state) const
-    {   return m_x[state.get()].read();    }
+    {  return sofa::core::getRead(state.get(), m_x);  }
 
     /// Read access to current velocity vector
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecDeriv>* readV(const SingleLink<Owner,S,flags>& state) const
-    {   return m_v[state.get()].read();    }
+    {   return sofa::core::getRead(state.get(), m_v); }
 
     /// Read access to current force vector
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecDeriv>* readF(const SingleLink<Owner,S,flags>& state) const
-    {   return m_f[state.get()].read();    }
+    {   return sofa::core::getRead(state.get(), m_f);  }
 
     /// Read access to current dx vector (for implicit schemes)
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecDeriv>* readDx(const SingleLink<Owner,S,flags>& state) const
-    {   return m_dx[state.get()].read();    }
+    {   return sofa::core::getRead(state.get(), m_dx);     }
 
     /// Read access to current df vector (for implicit schemes)
     template<class Owner, class S, unsigned int flags>

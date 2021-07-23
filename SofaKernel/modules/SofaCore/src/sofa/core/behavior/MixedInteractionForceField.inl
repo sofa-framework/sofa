@@ -24,7 +24,7 @@
 
 #include "MixedInteractionForceField.h"
 #include <sofa/core/MechanicalParams.h>
-
+#include <sofa/core/StateVecAccessor.h>
 namespace sofa
 {
 
@@ -72,10 +72,11 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const Mechanic
 
     if (mstate1 && mstate2)
     {
-
-            addForce( mparams, *fId[mstate1.get()].write()   , *fId[mstate2.get()].write()   ,
-                    *mparams->readX(mstate1), *mparams->readX(mstate2),
-                    *mparams->readV(mstate1), *mparams->readV(mstate2) );
+        addForce( mparams,
+                  *sofa::core::getWrite(mstate1.get(), fId),
+                  *sofa::core::getWrite(mstate2.get(), fId),
+                  *mparams->readX(mstate1), *mparams->readX(mstate2),
+                  *mparams->readV(mstate1), *mparams->readV(mstate2) );
 
         updateForceMask();
     }
@@ -86,8 +87,10 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const Mechani
 {
     if (mstate1 && mstate2)
     {
-            addDForce( mparams, *dfId[mstate1.get()].write()    , *dfId[mstate2.get()].write()   ,
-                    *mparams->readDx(mstate1) , *mparams->readDx(mstate2) );
+        addDForce( mparams,
+                   *sofa::core::getWrite(mstate1.get(), dfId),
+                   *sofa::core::getWrite(mstate2.get(), dfId),
+                   *mparams->readDx(mstate1) , *mparams->readDx(mstate2) );
     }
 }
 

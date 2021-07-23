@@ -24,6 +24,7 @@
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa
 {
@@ -83,7 +84,9 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[mstate1.get()].write(), *cId[mstate2.get()].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        buildConstraintMatrix(cParams, *sofa::core::getWrite(mstate1.get(), cId),
+                                       *sofa::core::getWrite(mstate2.get(), cId),
+                              cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
         updateForceMask();
     }
 }
@@ -93,7 +96,8 @@ void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* c
 {
     if (cParams)
     {
-        storeLambda(cParams, *res[mstate1.get()].write(), *res[mstate2.get()].write(), *cParams->readJ(mstate1), *cParams->readJ(mstate2), lambda);
+        storeLambda(cParams, *sofa::core::getWrite(mstate1.get(),res),
+                             *sofa::core::getWrite(mstate2.get(), res), *cParams->readJ(mstate1), *cParams->readJ(mstate2), lambda);
     }
 }
 

@@ -23,7 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_INL
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
-
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa
 {
@@ -87,8 +87,9 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const Me
     {
         this->mask1 = &mstate1->forceMask;
         this->mask2 = &mstate2->forceMask;
-
-            projectResponse(mparams, *dxId[mstate1.get()].write(), *dxId[mstate2.get()].write());
+        projectResponse(mparams,
+                        *sofa::core::getWrite(mstate1.get(), dxId),
+                        *sofa::core::getWrite(mstate2.get(), dxId));
     }
 }
 
@@ -100,8 +101,9 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const Me
     {
         this->mask1 = &mstate1->forceMask;
         this->mask2 = &mstate2->forceMask;
-
-            projectVelocity(mparams, *vId[mstate1.get()].write(), *vId[mstate2.get()].write());
+        projectVelocity(mparams,
+                        *sofa::core::getWrite(mstate1.get(), vId),
+                        *sofa::core::getWrite(mstate2.get(), vId));
     }
 }
 
@@ -113,7 +115,9 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const Me
     {
         this->mask1 = &mstate1->forceMask;
         this->mask2 = &mstate2->forceMask;
-            projectPosition(mparams, *xId[mstate1.get()].write(), *xId[mstate2.get()].write());
+        projectPosition(mparams,
+                        *sofa::core::getWrite(mstate1.get(), xId),
+                        *sofa::core::getWrite(mstate2.get(), xId));
     }
 }
 

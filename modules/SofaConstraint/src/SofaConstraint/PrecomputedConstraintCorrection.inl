@@ -33,7 +33,7 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/core/behavior/RotationFinder.h>
-
+#include <sofa/core/StateVecAccessor.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/type/Quat.h>
 
@@ -538,7 +538,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::computeMotionCorrection(const core::ConstraintParams* /*cparams*/, core::MultiVecDerivId dx, core::MultiVecDerivId f)
 {
-    computeDx(*dx[this->getMState()].write(), *f[this->getMState()].read(), m_activeDofs);
+    computeDx(*sofa::core::getWrite(this->getMState(), dx), *sofa::core::getRead(this->getMState(),f), m_activeDofs);
 }
 
 template<class DataTypes>

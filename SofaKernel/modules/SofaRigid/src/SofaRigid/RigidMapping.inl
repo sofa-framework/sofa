@@ -34,6 +34,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/StateVecAccessor.h>
 
 #include <Eigen/Dense>
 
@@ -363,7 +364,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
     if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
-                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get()].write();
+                  Data<InVecDeriv>& InF  = *sofa::core::getWrite(this->fromModel.get(), parentForceChangeId);
                   geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
     }
     else
@@ -373,7 +374,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
         {
             updateK( mparams, childForceId );
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
-                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get()].write();
+                  Data<InVecDeriv>& InF  = *sofa::core::getWrite(this->fromModel.get(), parentForceChangeId);
             geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
             geometricStiffnessMatrix.resize(0,0); // forgot about this matrix
         }
@@ -383,7 +384,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
             assert( !mparams->symmetricMatrix() );
 
             helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
-            helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get()].write());
+            helper::WriteAccessor<Data<InVecDeriv> > parentForces (*sofa::core::getWrite(this->fromModel.get(), parentForceChangeId));
             helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
             InReal kfactor = (InReal)mparams->kFactor();
 
@@ -579,7 +580,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
     dJ.resize( insize, insize );
     dJ.setZero(); // necessary ?
 
-    const VecDeriv& childForces = childForceId[this->toModel.get()].read()->getValue();
+    const VecDeriv& childForces = sofa::core::getRead(this->toModel.get(), childForceId)->getValue();
 
     // sorted in-out
     typedef std::map<unsigned, type::vector<unsigned> > in_out_type;

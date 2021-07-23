@@ -27,6 +27,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa::component::forcefield
 {
@@ -935,7 +936,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
     Real mFactor=(Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
     Real kFactor=(Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     helper::ReadAccessor < DataVecDeriv > dx = *mparams->readDx(this->mstate);
-    helper::WriteAccessor< DataVecDeriv > df = *dfId[this->mstate.get()].write();
+    helper::WriteAccessor< DataVecDeriv > df = *sofa::core::getWrite(this->mstate.get(), dfId);
     const VecElement& hexahedra = this->_topology->getHexahedra();
     const type::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = this->hexahedronInfo.getValue();
 

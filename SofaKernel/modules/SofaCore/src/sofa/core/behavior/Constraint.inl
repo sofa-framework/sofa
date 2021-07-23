@@ -24,6 +24,7 @@
 
 #include <sofa/core/behavior/Constraint.h>
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/core/StateVecAccessor.h>
 
 namespace sofa
 {
@@ -78,7 +79,7 @@ void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[mstate].write(), cIndex, *cParams->readX(mstate));
+        buildConstraintMatrix(cParams, *sofa::core::getWrite(mstate, cId), cIndex, *cParams->readX(mstate));
         updateForceMask();
     }
 }
@@ -89,7 +90,7 @@ void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVe
 {
     if (cParams)
     {
-        storeLambda(cParams, *res[mstate].write(), *cParams->readJ(mstate), lambda);
+        storeLambda(cParams, *sofa::core::getWrite(mstate, res), *cParams->readJ(mstate), lambda);
     }
 }
 
