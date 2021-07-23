@@ -23,6 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaUserInteraction/RayModel.h>
 #include <SofaMiscCollision/TetrahedronModel.h>
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
