@@ -36,16 +36,16 @@ namespace sofa::helper
 class NoArgument {} ;
 
 /// Decode the type's name to a more readable form if possible
-std::string SOFA_HELPER_API gettypename(const std::type_info& t);
+SOFA_HELPER_API std::string gettypename(const std::type_info& t);
 
 /// Log classes registered in the factory
 template<class TKey>
-void SOFA_HELPER_API logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi);
+SOFA_HELPER_API void logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi);
 
-std::string& SOFA_HELPER_API getFactoryLog();
+SOFA_HELPER_API std::string& getFactoryLog();
 
 /// Print factory log
-void SOFA_HELPER_API printFactoryLog(std::ostream& out = std::cout);
+SOFA_HELPER_API void printFactoryLog(std::ostream& out = std::cout);
 
 template <class Object, class Argument = NoArgument, class ObjectPtr = Object*>
 class BaseCreator

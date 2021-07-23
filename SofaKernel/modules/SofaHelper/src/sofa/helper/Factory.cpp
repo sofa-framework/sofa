@@ -30,7 +30,7 @@ namespace sofa::helper
 {
 
 /// Decode the type's name to a more readable form if possible
-std::string SOFA_HELPER_API gettypename(const std::type_info& t)
+SOFA_HELPER_API std::string gettypename(const std::type_info& t)
 {
     std::string name;
 #ifdef __GNUC__
@@ -79,14 +79,14 @@ std::string SOFA_HELPER_API gettypename(const std::type_info& t)
     return name;
 }
 
-std::string& getFactoryLog()
+SOFA_HELPER_API std::string& getFactoryLog()
 {
     static std::string s;
     return s;
 }
 
 /// Print factory log
-void SOFA_HELPER_API printFactoryLog(std::ostream& out)
+SOFA_HELPER_API void printFactoryLog(std::ostream& out)
 {
     out << getFactoryLog();
 }
