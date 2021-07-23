@@ -5,14 +5,7 @@ project(Sofa.Helper)
 # sofa_find_package(Sofa.Type REQUIRED)
 
 # Boost
-sofa_find_package(Boost REQUIRED
-    COMPONENTS filesystem
-    BOTH_SCOPES)
-if(SOFA_HELPER_HAVE_BOOST_FILESYSTEM)
-    sofa_set_01(SOFA_HELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
-else()
-    sofa_set_01(SOFA_HELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
-endif()
+sofa_find_package(Boost REQUIRED COMPONENTS filesystem BOTH_SCOPES)
 
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
