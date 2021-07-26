@@ -199,6 +199,35 @@ TEST_F(VecId_test, checkConversionTFromV_ALL)
     testConversion<TVecId<V_MATDERIV, V_READ>, TVecId<V_ALL, V_READ>>(2,V_MATDERIV);
 }
 
-TEST_F(VecId_test, checkConversionBetweenTypes)
+template<class SrcType, class DstType>
+void testCopyThroughVall(unsigned int i, sofa::core::VecType outType, bool valid)
 {
+    SrcType idSrc{i};
+    TVecId<V_ALL, SrcType::Access> inBetween {idSrc};
+
+    DstType idDst;
+    if(valid)
+        idDst = inBetween;
+    else
+        ASSERT_THROW(idDst = inBetween, std::invalid_argument);
+    ASSERT_EQ(idDst.getType(), outType);
+    ASSERT_EQ(idDst.getIndex(), i);
 }
+
+TEST_F(VecId_test, checkValidCopyFromV_ALL)
+{
+    testCopyThroughVall<TVecId<V_DERIV, V_READ>, TVecId<V_DERIV, V_READ>>(2,V_DERIV, true);
+    testCopyThroughVall<TVecId<V_COORD, V_READ>, TVecId<V_COORD, V_READ>>(2,V_COORD, true);
+    testCopyThroughVall<TVecId<V_MATDERIV, V_READ>, TVecId<V_MATDERIV, V_READ>>(2,V_MATDERIV, true);
+}
+
+TEST_F(VecId_test, checkMaybeInValidCopyFromV_ALL)
+{
+    /// I'm not sure this behavior should be the valid one...a TVecId on COORD is transformed into
+    /// a different type.
+    testCopyThroughVall<TVecId<V_COORD, V_READ>, TVecId<V_DERIV, V_READ>>(0, V_DERIV, false);
+    testCopyThroughVall<TVecId<V_COORD, V_READ>, TVecId<V_MATDERIV, V_READ>>(0, V_MATDERIV, false);
+    testCopyThroughVall<TVecId<V_DERIV, V_READ>, TVecId<V_COORD, V_READ>>(0, V_COORD, false);
+    testCopyThroughVall<TVecId<V_DERIV, V_READ>, TVecId<V_MATDERIV, V_READ>>(0, V_MATDERIV, false);
+}
+
