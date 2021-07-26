@@ -197,8 +197,8 @@ protected:
     class TempVectorContainer
     {
     public:
-        MatrixLinearSolver<Matrix,Vector>* parent;
-        TempVectorContainer(MatrixLinearSolver<Matrix,Vector>* p, const core::ExecParams* /*params*/, Matrix& /*M*/, Vector& /*x*/, Vector& /*b*/)
+        MatrixLinearSolver* parent;
+        TempVectorContainer(MatrixLinearSolver* p, const core::ExecParams* /*params*/, Matrix& /*M*/, Vector& /*x*/, Vector& /*b*/)
             : parent(p) {}
         Vector* createTempVector() { return parent->createPersistentVector(); }
         void deleteTempVector(Vector* v) { parent->deletePersistentVector(v); }

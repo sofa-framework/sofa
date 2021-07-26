@@ -29,6 +29,7 @@ template<typename T> class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix;
 
 template<typename T> class SOFA_SOFABASELINEARSOLVER_API SparseMatrix ;
 template<typename T> class SOFA_SOFABASELINEARSOLVER_API DiagonalMatrix;
+template<typename T> class SOFA_SOFABASELINEARSOLVER_API RotationMatrix;
 
 template<std::size_t LC, typename T = double>
 class SOFA_SOFABASELINEARSOLVER_API BlockDiagonalMatrix;

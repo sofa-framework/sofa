@@ -41,7 +41,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVis
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
-#include <sofa/core/behavior/RotationMatrix.h>
+#include <SofaBaseLinearSolver/RotationMatrix.h>
 
 #ifdef SOFA_SUPPORT_CRS_MATRIX
 #include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
@@ -533,7 +533,7 @@ Vector*  MatrixLinearSolver<Matrix,Vector>::getSystemLHVector() { return linearS
 
 /// Get the linear system matrix, or nullptr if this solver does not build it
 template<class Matrix, class Vector>
-defaulttype::BaseMatrix*   MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver<Matrix,Vector>::getSystemBaseMatrix() { return linearSystem->systemMatrix; }
+defaulttype::BaseMatrix* MatrixLinearSolver<Matrix,Vector>::getSystemBaseMatrix() { return linearSystem->systemMatrix; }
 
 /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
 template<class Matrix, class Vector>
