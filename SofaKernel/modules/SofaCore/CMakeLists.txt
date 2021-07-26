@@ -75,7 +75,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
-    ${SRC_ROOT}/behavior/RotationMatrix.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
     ${SRC_ROOT}/collision/CollisionAlgorithm.h

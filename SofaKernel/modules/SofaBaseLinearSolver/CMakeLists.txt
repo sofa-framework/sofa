@@ -22,6 +22,7 @@ set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/MatrixExpr.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.inl
+    ${SOFABASELINEARSOLVER_SRC}/RotationMatrix.h
     ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.h
     ${SOFABASELINEARSOLVER_SRC}/SparseMatrix.h
     ${SOFABASELINEARSOLVER_SRC}/matrix_bloc_traits.h
