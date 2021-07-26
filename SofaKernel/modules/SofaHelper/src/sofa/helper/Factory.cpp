@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFAHELPER_FACTORY_CPP
 #include <sofa/helper/Factory.inl>
 #include <typeinfo>
 #ifdef __GNUC__
@@ -91,6 +92,8 @@ SOFA_HELPER_API void printFactoryLog(std::ostream& out)
     out << getFactoryLog();
 }
 
+//explicit instantiation for std::string
+template SOFA_HELPER_API void logFactoryRegister<std::string>(const std::string& baseclass, const std::string& classname, std::string key, bool multi);
 
 } // namespace sofa::helper
 
