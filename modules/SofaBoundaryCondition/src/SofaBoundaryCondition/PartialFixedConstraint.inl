@@ -264,7 +264,55 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalPa
     core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
     if(r)
     {
-        applyConstraint(r.matrix, r.offset);
+        const unsigned int N = Deriv::size();
+        const VecBool& blockedDirection = d_fixedDirections.getValue();
+        const SetIndexArray & indices = this->d_indices.getValue();
+
+        if( this->d_fixAll.getValue() )
+        {
+            unsigned size = this->mstate->getSize();
+            for(unsigned int i=0; i<size; i++)
+            {
+                // Reset Fixed Row and Col
+                for (unsigned int c=0; c<N; ++c)
+                {
+                    if (blockedDirection[c])
+                    {
+                        r.matrix->clearRowCol(r.offset + N * i + c);
+                    }
+                }
+                // Set Fixed Vertex
+                for (unsigned int c=0; c<N; ++c)
+                {
+                    if (blockedDirection[c])
+                    {
+                        r.matrix->set(r.offset + N * i + c, r.offset + N * i + c, 1.0);
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            {
+                // Reset Fixed Row and Col
+                for (unsigned int c=0; c<N; ++c)
+                {
+                    if (blockedDirection[c])
+                    {
+                        r.matrix->clearRowCol(r.offset + N * (*it) + c);
+                    }
+                }
+                // Set Fixed Vertex
+                for (unsigned int c=0; c<N; ++c)
+                {
+                    if (blockedDirection[c])
+                    {
+                        r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+                    }
+                }
+            }
+        }
     }
 }
 
