@@ -54,6 +54,7 @@ typedef Kernel::Point_3 Point;
 namespace SMS = CGAL::Surface_mesh_simplification ;
 using namespace sofa;
 using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 namespace cgal
 {

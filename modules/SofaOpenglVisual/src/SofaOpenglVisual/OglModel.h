@@ -124,6 +124,9 @@ public:
 
     void updateBuffers() override;
 
+    void deleteBuffers() override;
+    void deleteTextures() override;
+
     bool hasTransparent() override;
     bool hasTexture();
 

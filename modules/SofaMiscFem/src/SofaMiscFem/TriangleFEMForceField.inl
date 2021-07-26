@@ -50,13 +50,14 @@ TriangleFEMForceField()
 //    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
     , l_topology(initLink("topology", "link to the topology container"))    
-{}
+{
+    f_poisson.setRequired(true);
+    f_young.setRequired(true);
+}
 
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 {
-    f_poisson.setRequired(true);
-    f_young.setRequired(true);
 }
 
 
@@ -64,10 +65,11 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::init()
 {
     this->Inherited::init();
-    if (f_method.getValue() == "small")
-        method = SMALL;
-    else if (f_method.getValue() == "large")
-        method = LARGE;
+
+    // checking inputs using setter
+    setMethod(f_method.getValue());
+    setPoisson(f_poisson.getValue());
+    setYoung(f_young.getValue());
 
     if (l_topology.empty())
     {
@@ -87,21 +89,17 @@ void TriangleFEMForceField<DataTypes>::init()
 
     if (m_topology->getTriangles().empty() && m_topology->getNbQuads() <= 0)
     {
-        msg_error() << "Need a MeshTopology with triangles or quads.";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
+        msg_warning() << "No triangles found in linked Topology.";
+        _indexedElements = &(m_topology->getTriangles());
     }
-    else
+    else if (!m_topology->getTriangles().empty())
     {
-        msg_info() << "TriangleFEMForceField<DataTypes>::init, mesh has " << m_topology->getTriangles().size() << " triangles and " << m_topology->getQuads().size() << " quads" << sendl;
+        msg_info() << "Init using triangles mesh: " << m_topology->getTriangles().size() << " triangles.";
+        _indexedElements = &(m_topology->getTriangles());
     }
-   
-    if (!m_topology->getTriangles().empty())
+    else if (!m_topology->getNbQuads() != 0)
     {
-        _indexedElements = & (m_topology->getTriangles());
-    }
-    else
-    {
+        msg_info() << "Init using quads mesh: " << m_topology->getNbQuads() * 2 << " triangles.";
         sofa::core::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::topology::BaseMeshTopology::SeqTriangles;
         int nbcubes = m_topology->getNbQuads();
         trias->reserve(nbcubes*2);
@@ -123,9 +121,15 @@ void TriangleFEMForceField<DataTypes>::init()
     _strainDisplacements.resize(_indexedElements->size());
     _rotations.resize(_indexedElements->size());
 
+    if (method == SMALL)
+    {
+        initSmall();
+    }
+    else
+    {
+        initLarge();
+    }
 
-    initSmall();
-    initLarge();
     computeMaterialStiffnesses();
 }
 
@@ -139,9 +143,15 @@ void TriangleFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
+    if (method == SMALL)
+    {
+        //    initSmall();  // useful ? The rotations are recomputed later
+    }
+    else
+    {
+        initLarge(); // compute the per-element strain-displacement matrices
+    }
 
-    //    initSmall();  // useful ? The rotations are recomputed later
-    initLarge();  // compute the per-element strain-displacement matrices
     computeMaterialStiffnesses();
 }
 
@@ -736,6 +746,108 @@ void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatri
         this->addToMatrix(mat,offset,(*_indexedElements)[i],RJKJtRt,-k);
     }
 }
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::setPoisson(Real val)
+{
+    if (val < 0)
+    {
+        msg_warning() << "Input Poisson Coefficient is not possible: " << val << ", setting default value: 0.3";
+        f_poisson.setValue(0.3);
+    }
+    else if (val != f_poisson.getValue())
+    {
+        f_poisson.setValue(val);
+    }
+}
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::setYoung(Real val)
+{
+    if (val < 0)
+    {
+        msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
+        f_young.setValue(1000);
+    }
+    else if (val != f_young.getValue())
+    {
+        f_young.setValue(val);
+    }
+}
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::setMethod(int val)
+{
+    if (val != 0 && val != 1)
+    {
+        msg_warning() << "Input Method is not possible: " << val << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
+        method = LARGE;
+    }
+    else if (method != val)
+    {
+        method = val;
+    }
+}
+
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::setMethod(std::string val)
+{
+    if (val == "small")
+        method = SMALL;
+    else if (val == "large")
+        method = LARGE;
+    else
+    {
+        msg_warning() << "Input Method is not possible: " << val << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
+        method = LARGE;
+    }
+}
+
+
+template<class DataTypes>
+const type::fixed_array <typename TriangleFEMForceField<DataTypes>::Coord, 3>& TriangleFEMForceField<DataTypes>::getRotatedInitialElement(Index elemId)
+{
+    if (elemId >= 0 && elemId < _rotatedInitialElements.size())
+        return _rotatedInitialElements[elemId];
+
+    msg_warning() << "Method getRotatedInitialElement called with element index: " << elemId 
+        << " which is out of bounds: [0, " << _rotatedInitialElements.size() << "]. Returning default empty array of coordinates.";
+    return InvalidCoords;
+}
+
+template<class DataTypes>
+const typename TriangleFEMForceField<DataTypes>::Transformation& TriangleFEMForceField<DataTypes>::getRotationMatrix(Index elemId)
+{
+    if (elemId >= 0 && elemId < _rotations.size())
+        return _rotations[elemId];
+
+    msg_warning() << "Method getRotationMatrix called with element index: " 
+        << elemId << " which is out of bounds: [0, " << _rotations.size() << "]. Returning default empty rotation.";
+    return InvalidTransform;
+}
+
+template<class DataTypes>
+const typename TriangleFEMForceField<DataTypes>::MaterialStiffness& TriangleFEMForceField<DataTypes>::getMaterialStiffness(Index elemId)
+{
+    if (elemId >= 0 && elemId < _materialsStiffnesses.size())
+        return _materialsStiffnesses[elemId];
+
+    msg_warning() << "Method getMaterialStiffness called with element index: " 
+        << elemId << " which is out of bounds: [0, " << _materialsStiffnesses.size() << "]. Returning default empty matrix.";
+    return InvalidTransform;
+}
+
+template<class DataTypes>
+const typename TriangleFEMForceField<DataTypes>::StrainDisplacement& TriangleFEMForceField<DataTypes>::getStrainDisplacements(Index elemId)
+{
+    if (elemId >= 0 && elemId < _strainDisplacements.size())
+        return _strainDisplacements[elemId];
+
+    msg_warning() << "Method getStrainDisplacements called with element index: "
+        << elemId << " which is out of bounds: [0, " << _strainDisplacements.size() << "]. Returning default empty displacements.";
+    return InvalidStrainDisplacement;
+}
+
 
 
 } // namespace sofa::component::forcefield

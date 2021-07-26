@@ -844,7 +844,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transform
 
 //HACK get rotation for fast contact handling with simplified compliance
 template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
+inline void TetrahedronFEMForceField<DataTypes>::getRotation(Mat33& R, unsigned int nodeIdx)
 { 
     if(method == SMALL)
     {
@@ -852,7 +852,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
         R[0][1] = 0.0 ; R[0][2] = 0.0 ;
         R[1][0] = 0.0 ; R[1][2] = 0.0 ;
         R[2][0] = 0.0 ; R[2][1] = 0.0 ;
-        msg_warning() << "getRotation called but no rotation comptued because case== SMALL";
+        msg_warning() << "getRotation called but no rotation computed because case== SMALL";
         return;
     }
 
@@ -1320,7 +1320,7 @@ TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
-    d_componentState.setValue(ComponentState::Invalid) ;
+    this->d_componentState.setValue(ComponentState::Invalid) ;
 
     const VecReal& youngModulus = _youngModulus.getValue();
     minYoung=youngModulus[0];
@@ -1442,7 +1442,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
        _indexedElements = tetrahedra;
     }
 
-    d_componentState.setValue(ComponentState::Valid) ;
+    this->d_componentState.setValue(ComponentState::Valid) ;
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
@@ -1463,7 +1463,7 @@ void TetrahedronFEMForceField<DataTypes>::reset()
 template <class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::reinit()
 {
-    if(d_componentState.getValue() == ComponentState::Invalid)
+    if(this->d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     if (!this->mstate || !m_topology){
@@ -1747,7 +1747,7 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, b
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(d_componentState.getValue() == ComponentState::Invalid)
+    if(this->d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     if (!vparams->displayFlags().getShowForceFields()) return;
@@ -1993,29 +1993,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
             else
                 computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
-            // find index of node 1
-            for (n1=0; n1<4; n1++)
-            {
-                noeud1 = (*it)[n1];
-
-                for(i=0; i<3; i++)
-                {
-                    ROW = offset+3*noeud1+i;
-                    row = 3*n1+i;
-                    // find index of node 2
-                    for (n2=0; n2<4; n2++)
-                    {
-                        noeud2 = (*it)[n2];
-
-                        for (j=0; j<3; j++)
-                        {
-                            COLUMN = offset+3*noeud2+j;
-                            column = 3*n2+j;
-                            mat->add(ROW, COLUMN, - tmp[row][column]*k);
-                        }
-                    }
-                }
-            }
+            Inherit1::addToMatrix(mat, offset, *it, tmp, -k);
         }
 
     }
@@ -2075,156 +2053,6 @@ void TetrahedronFEMForceField<DataTypes>::addKToBlocMatrix(
         *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[1],true) += tmpBlock[3][1];
         *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
         *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
-    }
-}
-
-template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const type::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) {
-    // Build Matrix Block for this ForceField
-    int i,j,n1, n2, row, column, ROW, COLUMN , IT;
-
-    Transformation Rot;
-    StiffnessMatrix JKJt,tmp;
-
-    typename VecElement::const_iterator it;
-
-    Index noeud1, noeud2;
-    int offd3 = offset/3;
-
-    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-    Rot[0][1]=Rot[0][2]=0;
-    Rot[1][0]=Rot[1][2]=0;
-    Rot[2][0]=Rot[2][1]=0;
-
-    type::vector<int> itTetraBuild;
-    for(unsigned e = 0;e< subMatrixIndex.size();e++) {
-        // search all the tetra connected to the point in subMatrixIndex
-        for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT) {
-            if ((*it)[0] == subMatrixIndex[e] || (*it)[1] == subMatrixIndex[e] || (*it)[2] == subMatrixIndex[e] || (*it)[3] == subMatrixIndex[e]) {
-
-                /// try to add the tetra in the set of point subMatrixIndex (add it only once)
-                unsigned i=0;
-                for (;i<itTetraBuild.size();i++) {
-                    if (itTetraBuild[i] == IT) break;
-                }
-                if (i == itTetraBuild.size()) itTetraBuild.push_back(IT);
-            }
-        }
-    }
-
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(mat)) {
-        for(unsigned e = 0;e< itTetraBuild.size();e++) {
-            IT = itTetraBuild[e];
-            it = _indexedElements->begin() + IT;
-
-           msg_info() << "1 compute for " << IT << " is " << (*it) ;
-
-            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
-            else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
-
-            type::Mat<3,3,double> tmpBlock[4][4];
-            // find index of node 1
-            for (n1=0; n1<4; n1++) {
-                for(i=0; i<3; i++) {
-                    for (n2=0; n2<4; n2++) {
-                        for (j=0; j<3; j++) {
-                            tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
-                        }
-                    }
-                }
-            }
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[3],true) += tmpBlock[0][3];
-
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[3],true) += tmpBlock[1][3];
-
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[3],true) += tmpBlock[2][3];
-
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[0],true) += tmpBlock[3][0];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[1],true) += tmpBlock[3][1];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
-        }
-    } else if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(mat)) {
-        for(unsigned e = 0;e< itTetraBuild.size();e++) {
-            IT = itTetraBuild[e];
-            it = _indexedElements->begin() + IT;
-
-            msg_info() << "2 compute for " << IT << " is " << (*it);
-
-            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
-            else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
-
-            type::Mat<3,3,double> tmpBlock[4][4];
-            // find index of node 1
-            for (n1=0; n1<4; n1++) {
-                for(i=0; i<3; i++) {
-                    for (n2=0; n2<4; n2++) {
-                        for (j=0; j<3; j++) {
-                            tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
-                        }
-                    }
-                }
-            }
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
-            *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[3],true) += tmpBlock[0][3];
-
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
-            *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[3],true) += tmpBlock[1][3];
-
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
-            *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[3],true) += tmpBlock[2][3];
-
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[0],true) += tmpBlock[3][0];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[1],true) += tmpBlock[3][1];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
-            *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
-        }
-    } else {
-        for(unsigned e = 0;e< itTetraBuild.size();e++) {
-            IT = itTetraBuild[e];
-            it = _indexedElements->begin() + IT;
-
-            msg_info() << "3 compute for " << IT << " is " << (*it) ;
-
-            if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
-            else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
-
-            // find index of node 1
-            for (n1=0; n1<4; n1++) {
-                noeud1 = (*it)[n1];
-
-                for(i=0; i<3; i++) {
-                    ROW = offset+3*noeud1+i;
-                    row = 3*n1+i;
-                    // find index of node 2
-                    for (n2=0; n2<4; n2++) {
-                        noeud2 = (*it)[n2];
-
-                        for (j=0; j<3; j++) {
-                            COLUMN = offset+3*noeud2+j;
-                            column = 3*n2+j;
-                            mat->add(ROW, COLUMN, - tmp[row][column]*k);
-                        }
-                    }
-                }
-            }
-        }
-
     }
 }
 
@@ -2314,6 +2142,22 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix *
             rotations->set(e+2,e+0,t[2][0]); rotations->set(e+2,e+1,t[2][1]); rotations->set(e+2,e+2,t[2][2]);
         }
     }
+}
+
+
+template<class DataTypes>
+const type::vector< typename TetrahedronFEMForceField<DataTypes>::Mat33 >& TetrahedronFEMForceField<DataTypes>::getRotations()
+{
+    const auto nbDOFs = this->mstate->getSize();
+
+    m_rotations.resize(nbDOFs);
+
+    for (auto i = 0; i < nbDOFs; ++i)
+    {
+        getRotation(m_rotations[i], i);
+    }
+
+    return m_rotations;
 }
 
 template<class DataTypes>

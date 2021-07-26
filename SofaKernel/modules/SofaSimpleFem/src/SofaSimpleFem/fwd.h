@@ -21,28 +21,10 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/MechanicalVisitor.h>
+#include <SofaSimpleFem/config.h>
 
-namespace sofa::simulation::mechanicalvisitor
+namespace sofa::component::linearsolver
 {
-
-/** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene ONLY ON THE subMatrixIndex */
-class SOFA_SIMULATION_CORE_API MechanicalAddSubMBK_ToMatrixVisitor : public MechanicalVisitor
-{
-public:
-    const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    const type::vector<unsigned> & subMatrixIndex; // index of the point where the matrix must be computed
-
-    MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix, const type::vector<unsigned> & Id);
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalAddSubMBK_ToMatrixVisitor"; }
-
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/) override;
-
-    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
-
-    //Masses are now added in the addMBKToMatrix call for all ForceFields
-};
+template<typename TBloc, typename TVecBloc, typename TVecIndex>
+class CompressedRowSparseMatrix;
 }

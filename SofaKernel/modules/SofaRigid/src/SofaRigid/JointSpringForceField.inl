@@ -23,6 +23,7 @@
 #include <SofaRigid/JointSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
+#include <SofaRigid/JointSpring.h>
 #include <fstream>
 
 namespace sofa::component::interactionforcefield

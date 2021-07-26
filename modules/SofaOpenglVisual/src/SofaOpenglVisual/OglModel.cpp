@@ -99,7 +99,7 @@ OglModel::OglModel()
     primitiveType.endEdit();
 }
 
-OglModel::~OglModel()
+void OglModel::deleteTextures()
 {
     if (tex!=nullptr) delete tex;
 
@@ -107,7 +107,10 @@ OglModel::~OglModel()
     {
         delete textures[i];
     }
+}
 
+void OglModel::deleteBuffers()
+{
     // NB fjourdes : I don t know why gDEBugger still reports
     // graphics memory leaks after destroying the GLContext
     // even if the vbos destruction is claimed with the following
@@ -128,7 +131,12 @@ OglModel::~OglModel()
     {
         glDeleteBuffers(1,&iboQuads);
     }
+}
 
+OglModel::~OglModel()
+{
+    deleteTextures();
+    deleteBuffers();
 }
 
 void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)

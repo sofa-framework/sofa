@@ -288,7 +288,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
         // The following operation traverses the BaseMechanicalState of the current context tree,
         // and accumulate the number of degrees of freedom to get the total number of degrees of
         // freedom, which is the size of the linear system.
-        // During the accumulation, it also prepare the indices to parts of the matrix associated
+        // During the accumulation, it also prepares the indices to parts of the matrix associated
         // to each BaseMechanicalState. Each BaseMechanicalState will then write to this submatrix
         // based on the provided index.
         mops.getMatrixDimension(&linearSystem->matrixAccessor);

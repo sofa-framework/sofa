@@ -69,7 +69,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/Task.h
     ${SRC_ROOT}/InitTasks.h
     ${SRC_ROOT}/Locks.h
-    ${SRC_ROOT}/VisitorAsync.h
     ${SRC_ROOT}/WorkerThread.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
     ${SRC_ROOT}/events/SimulationInitStartEvent.h
@@ -84,7 +83,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMDxVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyConstraintsVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h
@@ -205,7 +203,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMDxVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyConstraintsVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalBeginIntegrationVisitor.cpp

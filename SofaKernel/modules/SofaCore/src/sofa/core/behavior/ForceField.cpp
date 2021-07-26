@@ -22,13 +22,7 @@
 #define SOFA_CORE_BEHAVIOR_FORCEFIELD_CPP
 #include <sofa/core/behavior/ForceField.inl>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -39,8 +33,4 @@ template class SOFA_CORE_API ForceField<Vec6Types>;
 template class SOFA_CORE_API ForceField<Rigid3Types>;
 template class SOFA_CORE_API ForceField<Rigid2Types>;
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

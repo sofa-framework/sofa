@@ -44,15 +44,15 @@ bool solveLCP(const Vec<dim,real> &q, const Mat<dim,dim,real> &M, Vec<dim * 2, r
     const Size	dim_mult2 = 2 * dim;
     const Size	dim_mult2_plus1 = dim_mult2 + 1;
 
-    int         ii, jj;
+    Index       ii, jj;
     int         ligPiv;	// ligne du pivot
     int         colPiv;	// colonne du pivot
     double      pivot;	// pivot
     double      min;	// recherche du minimum pour le pivot
     double      coeff;	// valeur du coefficient de la combinaison lineaire
-    int         boucles;	// ii du nombre de passages dans la boucle
+    Index       boucles;	// ii du nombre de passages dans la boucle
     double      mat[dim][dim_mult2_plus1];
-    int         base[dim];		// base des variables non nulles
+    Index       base[dim];		// base des variables non nulles
 
     // matrix initialization
     for (ii = 0; ii < dim; ii++)
@@ -130,7 +130,7 @@ bool solveLCP(const Vec<dim,real> &q, const Mat<dim,dim,real> &M, Vec<dim * 2, r
             // combinaisons lineaires mettant la colonne du pivot a 0
             for (ii = 0; ii < dim; ii++)
             {
-                if (ii != ligPiv)
+                if (int(ii) != ligPiv)
                 {
                     coeff = mat[ii][colPiv];
                     for (jj = 0; jj < dim_mult2_plus1; jj++)
