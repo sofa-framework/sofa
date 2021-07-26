@@ -226,15 +226,15 @@ void ProjectToPlaneConstraint<DataTypes>::projectPosition(const core::Mechanical
 }
 
 template <class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
+void ProjectToPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     msg_error() << "applyConstraint is not implemented ";
 }
 
 template <class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
+void ProjectToPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    msg_error() << "ProjectToPlaneConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented ";
+    msg_error() << "ProjectToPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented ";
 }
 
 template <class DataTypes>

@@ -225,15 +225,15 @@ void ProjectDirectionConstraint<DataTypes>::projectPosition(const core::Mechanic
 }
 
 template <class DataTypes>
-void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
+void ProjectDirectionConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    msg_error() << "applyConstraint is not implemented ";
+    msg_error() << "applyConstraint is not implemented";
 }
 
 template <class DataTypes>
-void ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
+void ProjectDirectionConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    msg_error() << "ProjectDirectionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented ";
+    dmsg_error() << "ProjectDirectionConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented";
 }
 
 
