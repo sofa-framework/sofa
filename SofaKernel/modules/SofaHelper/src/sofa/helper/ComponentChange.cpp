@@ -35,6 +35,7 @@ std::map<std::string, Deprecated> deprecatedComponents = {
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
+    {"PointConstraint", Deprecated("v21.12", "v22.06")},
 };
 
 std::map<std::string, ComponentChange> uncreatableComponents = {
