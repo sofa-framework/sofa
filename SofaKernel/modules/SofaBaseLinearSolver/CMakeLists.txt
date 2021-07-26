@@ -38,6 +38,7 @@ set(SOURCE_FILES
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.cpp
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.cpp
     ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.cpp
+    ${SOFABASELINEARSOLVER_SRC}/RotationMatrix.cpp
 )
 
 sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
