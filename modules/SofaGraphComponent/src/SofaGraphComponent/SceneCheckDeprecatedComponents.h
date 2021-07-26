@@ -31,10 +31,7 @@ class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckDeprecatedComponents : public SceneC
 {
 public:
     virtual ~SceneCheckDeprecatedComponents() {}
-    static std::shared_ptr<SceneCheckDeprecatedComponents> newSPtr()
-    {
-        return std::shared_ptr<SceneCheckDeprecatedComponents>(new SceneCheckDeprecatedComponents());
-    }
+    static std::shared_ptr<SceneCheckDeprecatedComponents> newSPtr();
 
     const std::string getName() override;
     const std::string getDesc() override;
