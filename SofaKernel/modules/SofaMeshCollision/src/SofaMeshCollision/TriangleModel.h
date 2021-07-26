@@ -35,8 +35,6 @@ namespace sofa::component::collision
 template<class DataTypes>
 class TriangleCollisionModel;
 
-class TriangleLocalMinDistanceFilter;
-
 template<class DataTypes>
 class PointCollisionModel;
 
@@ -163,8 +161,6 @@ protected:
 
     PointCollisionModel<sofa::defaulttype::Vec3Types>* m_pointModels;
 
-    TriangleLocalMinDistanceFilter *m_lmdFilter;
-
 protected:
 
     TriangleCollisionModel();
@@ -196,10 +192,6 @@ public:
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *m_triangles; }
     const VecDeriv& getNormals() const { return m_normals; }
     int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
-
-    TriangleLocalMinDistanceFilter *getFilter() const;
-
-    void setFilter(TriangleLocalMinDistanceFilter * /*lmdFilter*/);
 
     Deriv velocity(Index index)const;
 

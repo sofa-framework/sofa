@@ -30,9 +30,15 @@
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaUserInteraction/RayModel.h>
+#include <map>
 
 namespace sofa::component::collision
 {
+
+class PointLocalMinDistanceFilter;
+class LineLocalMinDistanceFilter;
+class TriangleLocalMinDistanceFilter;
+
 /// I guess LMD is for Local Min Distance?
 /// What is the specificity of this approach?
 /// What are exactly doing the filters?
@@ -88,6 +94,8 @@ public:
     template< class TFilter1, class TFilter2 >
     static inline int doIntersectionTrianglePoint(double dist2, int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3, const type::Vector3& n, const type::Vector3& q, OutputVector* contacts, int id, Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems = false);
 
+    void beginNarrowPhase() override;
+
     /**
      * @brief Method called at the beginning of the collision detection between model1 and model2.
      * Checks if LMDFilters are associated to the CollisionModels.
@@ -95,6 +103,14 @@ public:
      */
 
 protected:
+    void initFilters();
+    sofa::core::sptr<PointLocalMinDistanceFilter> getPointFilter(PointCollisionModel<defaulttype::Vec3Types>::SPtr cm);
+    sofa::core::sptr<LineLocalMinDistanceFilter> getLineFilter(LineCollisionModel<defaulttype::Vec3Types>::SPtr cm);
+    sofa::core::sptr<TriangleLocalMinDistanceFilter> getTriangleFilter(TriangleCollisionModel<defaulttype::Vec3Types>::SPtr cm);
+
+    std::map<PointCollisionModel<sofa::defaulttype::Vec3Types>::SPtr, sofa::core::sptr<PointLocalMinDistanceFilter>> m_mapPointLMDFilters;
+    std::map<LineCollisionModel<sofa::defaulttype::Vec3Types>::SPtr, sofa::core::sptr<LineLocalMinDistanceFilter>> m_mapLineLMDFilters;
+    std::map<TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr, sofa::core::sptr<TriangleLocalMinDistanceFilter>> m_mapTriangleLMDFilters;
 };
 
 } // namespace sofa::component::collision

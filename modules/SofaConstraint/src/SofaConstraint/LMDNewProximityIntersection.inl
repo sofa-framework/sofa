@@ -27,7 +27,7 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <iostream>
+#include <sofa/helper/logging/Messaging.h>
 #include <algorithm>
 
 namespace sofa::component::collision
@@ -63,8 +63,7 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
 
         if (alpha < 0.000001 || alpha > 0.999999 || beta < 0.000001 || beta > 0.999999 )
         {
-            if(debug)
-                std::cout<<"rejected because of alpha= "<<alpha<<"  or beta= "<<beta<<std::endl;
+            msg_info_when(debug, "LMDNewProximityIntersection") << "rejected because of alpha= " << alpha << "  or beta= " << beta;
             return 0;
         }
     }
@@ -75,23 +74,20 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     pq = q-p;
     if (pq.norm2() >= dist2)
     {
-        if(debug)
-            std::cout<<"pq.norm2()= "<<pq.norm2()<<" >= dist2 = "<<dist2<<std::endl;
+        msg_info_when(debug, "LMDNewProximityIntersection") << "pq.norm2()= " << pq.norm2() << " >= dist2 = ";
         return 0;
     }
 
     if (!f1.validLine(indexLine1, pq))
     {
-        if(debug)
-            std::cout<<"rejected because of validLine= "<<indexLine1<<" with pq= "<<pq<<std::endl;
+        msg_info_when(debug, "LMDNewProximityIntersection") << "rejected because of validLine= " << indexLine1 << " with pq= ";
         return 0;
     }
 
     type::Vector3 qp = p-q;
     if (!f2.validLine(indexLine2, qp))
     {
-        if(debug)
-            std::cout<<"rejected because of validLine= "<<indexLine2<<" with qp= "<<pq<<std::endl;
+        msg_info_when(debug, "LMDNewProximityIntersection") << "rejected because of validLine= " << indexLine2 << " with qp= ";
         return 0;
     }
 
@@ -105,15 +101,13 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
 
-    if(debug)
-        std::cout<<" --------------------------------- ACCEPTED ! --------------------------------"<<pq<<std::endl;
+    msg_info_when(debug, "LMDNewProximityIntersection") << " --------------------------------- ACCEPTED ! --------------------------------";
     return 1;
 }
 
 template< class TFilter1, class TFilter2 >
 inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q, OutputVector* contacts, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
 {
-    std::cout<<"doIntersectionLinePoint is called"<<std::endl;
     const type::Vector3 AB = p2-p1;
     const type::Vector3 AQ = q -p1;
     double A;

@@ -75,6 +75,7 @@ void LineInfo::buildFilter(Index edge_index)
     if (trianglesAroundEdge.size() != 2)
     {
         m_twoTrianglesAroundEdge = false;
+        setValid(); // if it is not valid, there will be an infinite loop (??)
         return;
     }
 
@@ -202,8 +203,16 @@ void LineLocalMinDistanceFilter::init()
 
     if (bmt != nullptr)
     {
+        auto* mstateVec3d = dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3Types>*>(this->getContext()->getMechanicalState());
+
         type::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
+        for (Size i = 0; i < bmt->getNbPoints(); i++)
+        {
+            pInfo[i].setLMDFilters(this);
+            pInfo[i].setBaseMeshTopology(bmt);
+            pInfo[i].setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
+        }
         m_pointInfo.endEdit();
 
         pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);

@@ -213,11 +213,19 @@ void PointLocalMinDistanceFilter::init()
 
     if (bmt != nullptr)
     {
+        auto* mstateVec3d = dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3Types>*>(this->getContext()->getMechanicalState());
+
         type::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
+        for (Size i = 0; i < bmt->getNbPoints(); i++)
+        {
+            pInfo[i].setLMDFilters(this);
+            pInfo[i].setBaseMeshTopology(bmt);
+            pInfo[i].setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
+        }
         m_pointInfo.endEdit();
 
-        pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
+        pointInfoHandler = new PointInfoHandler(this, &m_pointInfo);
         m_pointInfo.createTopologyHandler(bmt, pointInfoHandler);
     }
     if(this->isRigid())
