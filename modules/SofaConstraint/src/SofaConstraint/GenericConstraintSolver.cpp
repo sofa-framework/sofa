@@ -620,13 +620,10 @@ void GenericConstraintProblem::clear(int nbC)
 
 void GenericConstraintProblem::freeConstraintResolutions()
 {
-    for(unsigned int i=0; i<constraintsResolutions.size(); i++)
+    for(auto*& constraintsResolution : constraintsResolutions)
     {
-        if (constraintsResolutions[i] != nullptr)
-        {
-            delete constraintsResolutions[i];
-            constraintsResolutions[i] = nullptr;
-        }
+        delete constraintsResolution;
+        constraintsResolution = nullptr;
     }
 }
 
