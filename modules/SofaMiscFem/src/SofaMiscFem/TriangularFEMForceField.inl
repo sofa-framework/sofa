@@ -541,9 +541,9 @@ void TriangularFEMForceField<DataTypes>::getRotations()
         r01=tinfo->initialTransformation;
         r21=tinfo->rotation*r01;
 
-        for(int j=0; j<3; j++)
+        const Triangle& tri = m_topology->getTriangle(i);
+        for(auto idx : tri)
         {
-            int idx=m_topology->getTriangle(i)[j];
             VertexInformation *vinfo= &vertexInf[idx];
             vinfo->rotation+=r21;
         }
@@ -671,9 +671,10 @@ void TriangularFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeDisplacementSmall(Displacement &D, Index elementIndex, const VecCoord &p)
 {
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     //Coord deforme_a = Coord(0,0,0);
     Coord deforme_b = p[b]-p[a];
@@ -695,9 +696,10 @@ void TriangularFEMForceField<DataTypes>::computeDisplacementSmall(Displacement &
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeDisplacementLarge(Displacement &D, Index elementIndex, const Transformation &R_0_2, const VecCoord &p)
 {
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     // positions of the deformed and displaced triangle in its frame
     Coord deforme_b = R_0_2 * (p[b]-p[a]);
@@ -1097,9 +1099,10 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
     type::Vec<3,Real> strain;
     Transformation R_0_2, R_2_0;
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
@@ -1170,9 +1173,10 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stres
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir, const type::Vec<3,Real> &stress)
 {
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b]-x[a],x[c]-x[a]);
     Coord dir_t = cross(dir,n);
@@ -1182,9 +1186,10 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stre
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir)
 {
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b]-x[a],x[c]-x[a]);
     Coord dir_t = cross(dir,n);
@@ -1218,9 +1223,10 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
 
     for(unsigned int i=0; i<nbTriangles; i++)
     {
-        Index a = m_topology->getTriangle(i)[0];
-        Index b = m_topology->getTriangle(i)[1];
-        Index c = m_topology->getTriangle(i)[2];
+        const Triangle& tri = m_topology->getTriangle(i);
+        Index a = tri[0];
+        Index b = tri[1];
+        Index c = tri[2];
 
         D[0] = x[a][0];
         D[1] = x[a][1];
@@ -1333,9 +1339,10 @@ void TriangularFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, cons
 {
     Displacement F;
 
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Element& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     // compute force on element
     computeForce(F, elementIndex, p);
@@ -1498,7 +1505,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         std::vector<sofa::type::Vector3> vertices;
         for(Size i=0; i< nbTriangles; ++i)
         {
-            Triangle tri = m_topology->getTriangle(i);
+            const Triangle& tri = m_topology->getTriangle(i);
             Index a = tri[0];
             Index b = tri[1];
             Index c = tri[2];
@@ -1544,9 +1551,10 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         helper::ColorMap::evaluator<double> evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
         for(Size i=0; i<nbTriangles; ++i)
         {
-            Index a = m_topology->getTriangle(i)[0];
-            Index b = m_topology->getTriangle(i)[1];
-            Index c = m_topology->getTriangle(i)[2];
+            const Triangle& tri = m_topology->getTriangle(i);
+            Index a = tri[0];
+            Index b = tri[1];
+            Index c = tri[2];
 
             colorVector.push_back(evalColor(vertexInf[a].stress));
             vertices.push_back(sofa::type::Vector3(x[a]));
@@ -1586,10 +1594,10 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             if (triangleInf[i].differenceToCriteria > 0)
             {
                 color = sofa::type::RGBAColor( float(0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference)) , 0.0f , 0.0f, 0.5f);
-
-                Index a = m_topology->getTriangle(i)[0];
-                Index b = m_topology->getTriangle(i)[1];
-                Index c = m_topology->getTriangle(i)[2];
+                const Triangle& tri = m_topology->getTriangle(i);
+                Index a = tri[0];
+                Index b = tri[1];
+                Index c = tri[2];
 
                 colorVector.push_back(color);
                 vertices.push_back(sofa::type::Vector3(x[a]));
