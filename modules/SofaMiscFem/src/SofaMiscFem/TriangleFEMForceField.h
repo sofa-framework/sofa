@@ -22,6 +22,7 @@
 #pragma once
 
 #include <SofaMiscFem/config.h>
+#include <SofaSimpleFem/TriangleFEMUtils.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -155,7 +156,6 @@ protected :
     sofa::type::vector< type::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
     sofa::type::vector< Transformation > _rotations;
     void initLarge();
-    void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex, bool implicit=false );
 //    void accumulateDampingLarge( VecCoord& f, Index elementIndex );
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
@@ -167,7 +167,9 @@ protected :
     type::Mat<3, 3, Real> InvalidTransform;
     type::fixed_array <Coord, 3> InvalidCoords;
     StrainDisplacement InvalidStrainDisplacement;
+
     /// Pointer to the utils class which store methods common to TriangleFEMForceField
+    TriangleFEMUtils<DataTypes>* m_triangleUtils;
 };
 
 

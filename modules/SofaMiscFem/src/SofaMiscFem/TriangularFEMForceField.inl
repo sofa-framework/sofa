@@ -73,6 +73,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     f_graphOrientation.setWidget("graph");
 #endif
 
+    m_triangleUtils = new TriangleFEMUtils<DataTypes>();
     f_poisson.setRequired(true);
     f_young.setRequired(true);
     p_drawColorMap = new helper::ColorMap(256, "Blue to Red");
@@ -185,10 +186,13 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c)
 {
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
-
-    msg_error_when((unsigned int)i >= triangleInf.size())
-            << "Try to access an element which indices bigger than the size of the vector: i=" << i << " and size=" << triangleInf.size() ;
-
+    if (sofa::Size(i) >= triangleInf.size())
+    {
+        msg_error() << "Try to access an element which indices bigger than the size of the vector: i=" << i << " and size=" << triangleInf.size();
+        triangleInfo.endEdit();
+        return;
+    }
+    
     TriangleInformation *tinfo = &triangleInf[i];
 
     if (m_initialTransformation.isSet() && m_rotatedInitialElements.isSet())
@@ -200,38 +204,35 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
     }
     else
     {
+        VecCoord initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+        tinfo->rotation = tinfo->initialTransformation;
+        if (a >= (initialPoints).size() || b >= (initialPoints).size() || c >= (initialPoints).size())
+        {
+            msg_error() << "Try to access an element which indices bigger than the size of the vector: a=" << a <<
+                " b=" << b << " and c=" << c << " and size=" << (initialPoints).size() << msgendl;
+            triangleInfo.endEdit();
+            return;
+        }
+
+        const Coord& pA = initialPoints[a];
+        const Coord& pB = initialPoints[b];
+        const Coord& pC = initialPoints[c];
+        Coord pAB = pB - pA;
+        Coord pAC = pC - pA;
+
         // Rotation matrix (initial triangle/world)
         // first vector on first edge
         // second vector in the plane of the two first edges
         // third vector orthogonal to first and second
         Transformation R_0_1;
-
-        VecCoord initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
-
-        computeRotationLarge( R_0_1, (initialPoints), a, b, c );
-
+        m_triangleUtils->computeRotationLarge(R_0_1, pA, pB, pC);
         tinfo->initialTransformation.transpose(R_0_1);
         tinfo->rotation = tinfo->initialTransformation;
 
-        if ( a >= (initialPoints).size() || b >= (initialPoints).size() || c >= (initialPoints).size() )
-        {
-            std::stringstream tmp;
-            tmp << "Try to access an element which indices bigger than the size of the vector: a=" <<a <<
-                   " b=" << b << " and c=" << c << " and size=" << (initialPoints).size() << msgendl;
-
-            //reset initialPoints in case of a new pointer of the initial points of the mechanical state
-            initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-            tmp << "Now it's: a=" <<a <<
-                   " b=" << b << " and c=" << c << " and size=" << (initialPoints).size() ;
-
-            msg_error() << tmp.str() ;
-        }
-
-
-        tinfo->rotatedInitialElements[0] = R_0_1 * ((initialPoints)[a] - (initialPoints)[a]);
-        tinfo->rotatedInitialElements[1] = R_0_1 * ((initialPoints)[b] - (initialPoints)[a]);
-        tinfo->rotatedInitialElements[2] = R_0_1 * ((initialPoints)[c] - (initialPoints)[a]);
+        // coordinates of the triangle vertices in their local frames with origin at vertex a
+        tinfo->rotatedInitialElements[0] = Coord(0, 0, 0);
+        tinfo->rotatedInitialElements[1] = R_0_1 * pAB;
+        tinfo->rotatedInitialElements[2] = R_0_1 * pAC;
     }
 
     computeStrainDisplacement(tinfo->strainDisplacementMatrix, i, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
@@ -589,49 +590,6 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
     }
 }
 
-
-// --------------------------------------------------------------------------------------
-// --- Computation methods
-// --------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c)
-{
-    /// check if a, b and c are < size of p
-    if (a >= p.size() || b >= p.size() || c >= p.size())
-    {
-        msg_error() <<  "Indices given in parameters are wrong>> a=" << a << " b=" << b << " and c=" << c <<
-                        " whereas the size of the vector p is " << p.size() ;
-        return;
-    }
-
-    /// first vector on first edge
-    /// second vector in the plane of the two first edges
-    /// third vector orthogonal to first and second
-    const Coord edgex = (p[b]-p[a]).normalized();
-          Coord edgey = p[c]-p[a];
-    const Coord edgez = cross( edgex, edgey ).normalized();
-                edgey = cross( edgez, edgex ); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
-
-    r[0][0] = edgex[0];
-    r[0][1] = edgex[1];
-    r[0][2] = edgex[2];
-    r[1][0] = edgey[0];
-    r[1][1] = edgey[1];
-    r[1][2] = edgey[2];
-    r[2][0] = edgez[0];
-    r[2][1] = edgez[1];
-    r[2][2] = edgez[2];
-
-    if ( r[0][0]!=r[0][0])
-    {
-        msg_info() << "computeRotationLarge::edgex " << edgex << msgendl
-                   << "computeRotationLarge::edgey " << edgey << msgendl
-                   << "computeRotationLarge::edgez " << edgez << msgendl
-                   << "computeRotationLarge::pa " << p[a] << msgendl
-                   << "computeRotationLarge::pb " << p[b] << msgendl
-                   << "computeRotationLarge::pc " <<  p[c] << msgendl;
-    }
-}
 
 // ---------------------------------------------------------------------------------------------------------------
 // ---	Compute displacement vector D as the difference between current current position 'p' and initial position
@@ -999,7 +957,7 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
     {
         // co-rotational method
         // first, compute rotation matrix into co-rotational frame
-        computeRotationLarge( R_0_2, p, a, b, c);
+        m_triangleUtils->computeRotationLarge(R_0_2, p[a], p[b], p[c]);
 
         // then compute displacement in this frame
         computeDisplacementLarge(D, elementIndex, R_0_2, p);
@@ -1069,7 +1027,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
     {
         // co-rotational method
         // first, compute rotation matrix into co-rotational frame
-        computeRotationLarge( R_0_2, p, a, b, c);
+        m_triangleUtils->computeRotationLarge(R_0_2, p[a], p[b], p[c]);
 
         // then compute displacement in this frame
         computeDisplacementLarge(D, elementIndex, R_0_2, p);

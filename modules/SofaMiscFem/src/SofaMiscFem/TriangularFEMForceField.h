@@ -22,6 +22,7 @@
 #pragma once
 
 #include <SofaMiscFem/config.h>
+#include <SofaSimpleFem/TriangleFEMUtils.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -245,7 +246,6 @@ protected :
 
     ////////////// large displacements method
     void initLarge(int i, Index&a, Index&b, Index&c);
-    void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
@@ -295,6 +295,8 @@ public:
 private:
     bool p_computeDrawInfo;
     sofa::helper::ColorMap* p_drawColorMap;
+
+    TriangleFEMUtils<DataTypes>* m_triangleUtils;
 };
 
 

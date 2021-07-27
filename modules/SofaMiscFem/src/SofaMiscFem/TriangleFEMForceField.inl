@@ -45,6 +45,7 @@ TriangleFEMForceField()
     , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
     , l_topology(initLink("topology", "link to the topology container"))    
 {
+    m_triangleUtils = new TriangleFEMUtils<DataTypes>();
     f_poisson.setRequired(true);
     f_young.setRequired(true);
 }
@@ -497,58 +498,34 @@ void TriangleFEMForceField<DataTypes>::initLarge()
 
     typename VecElement::const_iterator it;
     unsigned int i(0);
+    const VecCoord& pos = _initialPoints.getValue();
 
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
-        Index a = (*it)[0];
-        Index b = (*it)[1];
-        Index c = (*it)[2];
+        const Coord& pA = pos[(*it)[0]];
+        const Coord& pB = pos[(*it)[1]];
+        const Coord& pC = pos[(*it)[2]];
 
         // Rotation matrix (transpose of initial triangle/world)
         // first vector on first edge
         // second vector in the plane of the two first edges
         // third vector orthogonal to first and second
         Transformation R_0_1;
-        computeRotationLarge( R_0_1, _initialPoints.getValue(), a, b, c );
+        m_triangleUtils->computeRotationLarge(R_0_1, pA, pB, pC);
         _rotations[i].transpose(R_0_1);
 
         // coordinates of the triangle vertices in their local frames
-        _rotatedInitialElements[i][0] = R_0_1 * _initialPoints.getValue()[a];
-        _rotatedInitialElements[i][1] = R_0_1 * _initialPoints.getValue()[b];
-        _rotatedInitialElements[i][2] = R_0_1 * _initialPoints.getValue()[c];
+        _rotatedInitialElements[i][0] = R_0_1 * pA;
+        _rotatedInitialElements[i][1] = R_0_1 * pB;
+        _rotatedInitialElements[i][2] = R_0_1 * pC;
         // set the origin of the local frame at vertex a
         _rotatedInitialElements[i][1] -= _rotatedInitialElements[i][0];
         _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];
-        _rotatedInitialElements[i][0] = Coord(0,0,0);
+        _rotatedInitialElements[i][0] = Coord(0, 0, 0);
 
         computeStrainDisplacement(_strainDisplacements[i], _rotatedInitialElements[i][0], _rotatedInitialElements[i][1], _rotatedInitialElements[i][2]);
     }
 }
-
-
-template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c)
-{
-    // first vector on first edge
-    // second vector in the plane of the two first edges
-    // third vector orthogonal to first and second
-
-    const Coord edgex = (p[b]-p[a]).normalized();
-          Coord edgey = p[c]-p[a];
-    const Coord edgez = cross( edgex, edgey ).normalized();
-                edgey = cross( edgez, edgex ); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
-
-    r[0][0] = edgex[0];
-    r[0][1] = edgex[1];
-    r[0][2] = edgex[2];
-    r[1][0] = edgey[0];
-    r[1][1] = edgey[1];
-    r[1][2] = edgey[2];
-    r[2][0] = edgez[0];
-    r[2][1] = edgez[1];
-    r[2][2] = edgez[2];
-}
-
 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const VecCoord &p, Index elementIndex, bool implicit )
@@ -560,8 +537,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
 
     // Rotation matrix (deformed and displaced Triangle/world)
     Transformation R_2_0, R_0_2;
-    computeRotationLarge( R_0_2, p, a, b, c);
-
+    m_triangleUtils->computeRotationLarge(R_0_2, p[a], p[b], p[c]);
 
     // positions of the deformed points in the local frame
     Coord deforme_a, deforme_b, deforme_c;
