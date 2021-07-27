@@ -219,65 +219,6 @@ void TriangleFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, cons
     }
 }
 
-
-template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord /*a*/, Coord b, Coord c )
-{
-    //    //Coord ab_cross_ac = cross(b, c);
-    Real determinant = b[0] * c[1]; // Surface * 2
-
-    J[0][0] = J[1][2] = -c[1] / determinant;
-    J[0][2] = J[1][1] = (c[0] - b[0]) / determinant;
-    J[2][0] = J[3][2] = c[1] / determinant;
-    J[2][2] = J[3][1] = -c[0] / determinant;
-    J[4][0] = J[5][2] = 0;
-    J[4][2] = J[5][1] = b[0] / determinant;
-    J[1][0] = J[3][0] = J[5][0] = J[0][1] = J[2][1] = J[4][1] = 0;
-
-    /* The following formulation is actually equivalent:
-      Let
-      | alpha1 alpha2 alpha3 |                      | 1 xa ya |
-      | beta1  beta2  beta3  | = be the inverse of  | 1 xb yb |
-      | gamma1 gamma2 gamma3 |                      | 1 xc yc |
-      The strain-displacement matrix is:
-      | beta1  0       beta2  0        beta3  0      |
-      | 0      gamma1  0      gamma2   0      gamma3 | / (2*A)
-      | gamma1 beta1   gamma2 beta2    gamma3 beta3  |
-      where A is the area of the triangle and 2*A is the determinant of the matrix with the xa,ya,xb...
-      Since a0=a1=b1=0, the matrix is triangular and its inverse is:
-      |  1              0              0  |
-      | -1/xb           1/xb           0  |
-      | -(1-xc/xb)/yc  -xc/(xb*yc)   1/yc |
-      our strain-displacement matrix is:
-      | -1/xb           0             1/xb         0            0     0    |
-      | 0              -(1-xc/xb)/yc  0            -xc/(xb*yc)  0     1/yc |
-      | -(1-xc/xb)/yc  -1/xb          -xc/(xb*yc)  1/xb         1/yc  0    |
-      */
-
-    //    Real beta1  = -1/b[0];
-    //    Real beta2  =  1/b[0];
-    //    Real gamma1 = (c[0]/b[0]-1)/c[1];
-    //    Real gamma2 = -c[0]/(b[0]*c[1]);
-    //    Real gamma3 = 1/c[1];
-
-    //    // The transpose of the strain-displacement matrix is thus:
-    //    J[0][0] = J[1][2] = beta1;
-    //    J[0][1] = J[1][0] = 0;
-    //    J[0][2] = J[1][1] = gamma1;
-
-    //    J[2][0] = J[3][2] = beta2;
-    //    J[2][1] = J[3][0] = 0;
-    //    J[2][2] = J[3][1] = gamma2;
-
-    //    J[4][0] = J[5][2] = 0;
-    //    J[4][1] = J[5][0] = 0;
-    //    J[4][2] = J[5][1] = gamma3;
-
-
-
-}
-
-
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 {
@@ -441,7 +382,8 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const 
 
 
     StrainDisplacement J;
-    computeStrainDisplacement(J,deforme_a,deforme_b,deforme_c);
+    SReal area = 0.0;
+    m_triangleUtils->computeStrainDisplacementLocal(J, area, deforme_a, deforme_b, deforme_c);
     if (implicit)
         _strainDisplacements[elementIndex] = J;
 
@@ -523,7 +465,8 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];
         _rotatedInitialElements[i][0] = Coord(0, 0, 0);
 
-        computeStrainDisplacement(_strainDisplacements[i], _rotatedInitialElements[i][0], _rotatedInitialElements[i][1], _rotatedInitialElements[i][2]);
+        SReal area = 0.0;
+        m_triangleUtils->computeStrainDisplacementLocal(_strainDisplacements[i], area, _rotatedInitialElements[i][0], _rotatedInitialElements[i][1], _rotatedInitialElements[i][2]);
     }
 }
 
@@ -555,7 +498,8 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
 
     // Strain-displacement matrix
     StrainDisplacement B;
-    computeStrainDisplacement(B,deforme_a,deforme_b,deforme_c);
+    SReal area = 0.0;
+    m_triangleUtils->computeStrainDisplacementLocal(B, area, deforme_a, deforme_b, deforme_c);
 
     // compute force on element, in local frame
     Displacement F;

@@ -174,8 +174,9 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Inde
         tinfo->rotatedInitialElements[2] = (initialPoints)[c] - (initialPoints)[a];
     }
 
-    computeStrainDisplacement(tinfo->strainDisplacementMatrix, i, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
-
+    SReal area = 0.0;
+    m_triangleUtils->computeStrainDisplacementGlobal(tinfo->strainDisplacementMatrix, area, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
+    
     triangleInfo.endEdit();
 }
 
@@ -235,7 +236,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
         tinfo->rotatedInitialElements[2] = R_0_1 * pAC;
     }
 
-    computeStrainDisplacement(tinfo->strainDisplacementMatrix, i, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
+    m_triangleUtils->computeStrainDisplacementLocal(tinfo->strainDisplacementMatrix, tinfo->area, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
 
     triangleInfo.endEdit();
 }
@@ -649,90 +650,6 @@ void TriangularFEMForceField<DataTypes>::computeDisplacementLarge(Displacement &
     }
 }
 
-// ------------------------------------------------------------------------------------------------------------
-// --- Compute the strain-displacement matrix where (a, b, c) are the coordinates of the 3 nodes of a triangle
-// ------------------------------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStrainDisplacement(StrainDisplacement &J, Index elementIndex, Coord a, Coord b, Coord c )
-{
-    Real determinant;
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
-
-    if (method == SMALL)
-    {
-        Coord ab_cross_ac = cross(b-a, c-a);
-        determinant = ab_cross_ac.norm();
-        triangleInf[elementIndex].area = determinant*0.5f;
-
-        Real x13 = (a[0]-c[0]) / determinant;
-        Real x21 = (b[0]-a[0]) / determinant;
-        Real x32 = (c[0]-b[0]) / determinant;
-        Real y12 = (a[1]-b[1]) / determinant;
-        Real y23 = (b[1]-c[1]) / determinant;
-        Real y31 = (c[1]-a[1]) / determinant;
-
-        J[0][0] = y23;
-        J[0][1] = 0;
-        J[0][2] = x32;
-
-        J[1][0] = 0;
-        J[1][1] = x32;
-        J[1][2] = y23;
-
-        J[2][0] = y31;
-        J[2][1] = 0;
-        J[2][2] = x13;
-
-        J[3][0] = 0;
-        J[3][1] = x13;
-        J[3][2] = y31;
-
-        J[4][0] = y12;
-        J[4][1] = 0;
-        J[4][2] = x21;
-
-        J[5][0] = 0;
-        J[5][1] = x21;
-        J[5][2] = y12;
-    }
-    else
-    {
-        determinant = b[0] * c[1];
-        triangleInf[elementIndex].area = determinant*0.5f;
-
-        Real x13 = -c[0] / determinant; // since a=(0,0)
-        Real x21 = b[0] / determinant; // since a=(0,0)
-        Real x32 = (c[0]-b[0]) / determinant;
-        Real y12 = 0;	// since a=(0,0) and b[1] = 0
-        Real y23 = -c[1] / determinant; // since a=(0,0) and b[1] = 0
-        Real y31 = c[1] / determinant; // since a=(0,0)
-
-        J[0][0] = y23; // -cy   / det
-        J[0][1] = 0;   // 0
-        J[0][2] = x32; // cx-bx / det
-
-        J[1][0] = 0;   // 0
-        J[1][1] = x32; // cx-bx / det
-        J[1][2] = y23; // -cy   / det
-
-        J[2][0] = y31; // cy    / det
-        J[2][1] = 0;   // 0
-        J[2][2] = x13; // -cx   / det
-
-        J[3][0] = 0;   // 0
-        J[3][1] = x13; // -cx   / det
-        J[3][2] = y31; // cy    / det
-
-        J[4][0] = y12; // 0
-        J[4][1] = 0;   // 0
-        J[4][2] = x21; // bx    / det
-
-        J[5][0] = 0;   // 0
-        J[5][1] = x21; // bx    / det
-        J[5][2] = y12; // 0
-    }
-    triangleInfo.endEdit();
-}
 
 // --------------------------------------------------------------------------------------------------------
 // --- Stiffness = K = J*D*Jt
@@ -938,12 +855,12 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
     Index c = tri[2];
 
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
-
+    SReal area = 0.0;
     if (method == SMALL)
     {
         // classic linear elastic method
         computeDisplacementSmall(D, elementIndex, p);
-        computeStrainDisplacement(J, elementIndex, Coord(0,0,0), (p[b]-p[a]), (p[c]-p[a]));
+        m_triangleUtils->computeStrainDisplacementGlobal(J, area, Coord(0,0,0), (p[b]-p[a]), (p[c]-p[a]));
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
         F = J * stress;
@@ -967,7 +884,7 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         Coord B = R_0_2 * (p[b]-p[a]);
         Coord C = R_0_2 * (p[c]-p[a]);
 
-        computeStrainDisplacement(J, elementIndex, A, B, C);
+        m_triangleUtils->computeStrainDisplacementLocal(J, area, A, B, C);
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
         computeStiffness(J,K,triangleInf[elementIndex].materialMatrix);
@@ -1010,14 +927,14 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
     Index c = tri[2];
 
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-
+    SReal area = 0.0;
     if (method == SMALL)
     {
         // classic linear elastic method
         R_0_2.identity();
         computeDisplacementSmall(D, elementIndex, p);
         if (_anisotropicMaterial)
-            computeStrainDisplacement(J, elementIndex, Coord(0,0,0), (p[b]-p[a]), (p[c]-p[a]));
+            m_triangleUtils->computeStrainDisplacementLocal(J, area, Coord(0, 0, 0), (p[b] - p[a]), (p[c] - p[a]));
         else
             J = triangleInf[elementIndex].strainDisplacementMatrix;
         computeStrain(strain, J, D);
@@ -1037,7 +954,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
         Coord B = R_0_2 * (p[b]-p[a]);
         Coord C = R_0_2 * (p[c]-p[a]);
 
-        computeStrainDisplacement(J, elementIndex, A, B, C);
+        m_triangleUtils->computeStrainDisplacementLocal(J, area, A, B, C);
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
     }

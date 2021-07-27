@@ -48,21 +48,26 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::Index Index;
 
 
+    
+
+
     ////////////// small displacements method
     void initSmall(int i, Index& a, Index& b, Index& c) {}
-    void computeStrainDisplacementSmall(StrainDisplacement& J, Index elementIndex, Coord a, Coord b, Coord c) {}
     void computeDisplacementSmall(Displacement& D, Index elementIndex, const VecCoord& p) {}
     void accumulateForceSmall(VecCoord& f, const VecCoord& p, Index elementIndex) {}
     void applyStiffnessSmall(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor) {}
 
     ////////////// large displacements method
     void initLarge(int i, Index& a, Index& b, Index& c) {}
-    void computeStrainDisplacementLarge(StrainDisplacement& J, Index elementIndex, Coord a, Coord b, Coord c);
     void computeDisplacementLarge(Displacement& D, Index elementIndex, const Transformation& R_2_0, const VecCoord& p) {}
     void accumulateForceLarge(VecCoord& f, const VecCoord& p, Index elementIndex) {}
     void computeRotationLarge(Transformation& r, const Coord& pA, const Coord& pB, const Coord& pC);
     void applyStiffnessLarge(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor) {}
-
+    
+    // in global coordinate
+    void computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, Coord a, Coord b, Coord c);
+    // in local coordinate, a = Coord (0, 0, 0)
+    void computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, Coord a, Coord b, Coord c);
   
     
 };

@@ -142,7 +142,6 @@ protected :
 
     /// f += Kx where K is the stiffness matrix and x a displacement
     virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
-    void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c);
     void computeMaterialStiffnesses();
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
 

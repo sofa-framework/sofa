@@ -60,10 +60,101 @@ void TriangleFEMUtils<DataTypes>::computeRotationLarge(Transformation& r, const 
     r[2][2] = edgez[2];
 }
 
-template<class DataTypes>
-void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLarge(StrainDisplacement& J, Index elementIndex, Coord a, Coord b, Coord c)
-{
 
+template<class DataTypes>
+void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, Coord a, Coord b, Coord c)
+{
+    Coord ab_cross_ac = cross(b - a, c - a);
+    Real determinant = ab_cross_ac.norm();
+    area = determinant * 0.5f;
+
+    Real x13 = (a[0] - c[0]) / determinant;
+    Real x21 = (b[0] - a[0]) / determinant;
+    Real x32 = (c[0] - b[0]) / determinant;
+    Real y12 = (a[1] - b[1]) / determinant;
+    Real y23 = (b[1] - c[1]) / determinant;
+    Real y31 = (c[1] - a[1]) / determinant;
+
+    J[0][0] = y23;
+    J[0][1] = 0;
+    J[0][2] = x32;
+
+    J[1][0] = 0;
+    J[1][1] = x32;
+    J[1][2] = y23;
+
+    J[2][0] = y31;
+    J[2][1] = 0;
+    J[2][2] = x13;
+
+    J[3][0] = 0;
+    J[3][1] = x13;
+    J[3][2] = y31;
+
+    J[4][0] = y12;
+    J[4][1] = 0;
+    J[4][2] = x21;
+
+    J[5][0] = 0;
+    J[5][1] = x21;
+    J[5][2] = y12;
+}
+
+
+template<class DataTypes>
+void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, Coord a, Coord b, Coord c)
+{
+    SOFA_UNUSED(a); // [0, 0, 0]
+
+    Real determinant = b[0] * c[1]; // b = [x, 0, 0], c = [y, y, 0]
+    area = determinant*0.5f;
+
+    /* The following formulation is actually equivalent:
+      Let
+      | alpha1 alpha2 alpha3 |                      | 1 xa ya |
+      | beta1  beta2  beta3  | = be the inverse of  | 1 xb yb |
+      | gamma1 gamma2 gamma3 |                      | 1 xc yc |
+      The strain-displacement matrix is:
+      | beta1  0       beta2  0        beta3  0      |
+      | 0      gamma1  0      gamma2   0      gamma3 | / (2*A)
+      | gamma1 beta1   gamma2 beta2    gamma3 beta3  |
+      where A is the area of the triangle and 2*A is the determinant of the matrix with the xa,ya,xb...
+      Since a0=a1=b1=0, the matrix is triangular and its inverse is:
+      |  1              0              0  |
+      | -1/xb           1/xb           0  |
+      | -(1-xc/xb)/yc  -xc/(xb*yc)   1/yc |
+      our strain-displacement matrix is:
+      | -1/xb           0             1/xb         0            0     0    |
+      | 0              -(1-xc/xb)/yc  0            -xc/(xb*yc)  0     1/yc |
+      | -(1-xc/xb)/yc  -1/xb          -xc/(xb*yc)  1/xb         1/yc  0    |
+      */
+
+  //    Real beta1  = -1/b[0]; = -1 / b[0] * 1 / 2*A = -1 /(b[0] * (b[0] * c[1]))
+  //    Real beta2  =  1/b[0];
+  //    Real gamma1 = (c[0]/b[0]-1)/c[1];
+  //    Real gamma2 = -c[0]/(b[0]*c[1]);
+  //    Real gamma3 = 1/c[1];
+
+  //    // The transpose of the strain-displacement matrix is thus:
+  //    J[0][0] = J[1][2] = beta1;
+  //    J[0][1] = J[1][0] = 0;
+  //    J[0][2] = J[1][1] = gamma1;
+
+  //    J[2][0] = J[3][2] = beta2;
+  //    J[2][1] = J[3][0] = 0;
+  //    J[2][2] = J[3][1] = gamma2;
+
+  //    J[4][0] = J[5][2] = 0;
+  //    J[4][1] = J[5][0] = 0;
+  //    J[4][2] = J[5][1] = gamma3;
+
+    J[0][0] = J[1][2] = -c[1] / determinant;
+    J[0][2] = J[1][1] = (c[0] - b[0]) / determinant;
+    J[2][0] = J[3][2] = c[1] / determinant;
+    J[2][2] = J[3][1] = -c[0] / determinant;
+    J[4][0] = J[5][2] = 0;
+    J[4][2] = J[5][1] = b[0] / determinant;
+    J[1][0] = J[3][0] = J[5][0] = J[0][1] = J[2][1] = J[4][1] = 0;
 }
 
 
