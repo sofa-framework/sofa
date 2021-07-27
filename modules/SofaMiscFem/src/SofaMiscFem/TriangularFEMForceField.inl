@@ -168,10 +168,13 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Inde
     else
     {
         const  VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+        const Coord& pA = initialPoints[a];
+        const Coord& pB = initialPoints[b];
+        const Coord& pC = initialPoints[c];
 
-        tinfo->rotatedInitialElements[0] = (initialPoints)[a] - (initialPoints)[a]; // always (0,0,0)
-        tinfo->rotatedInitialElements[1] = (initialPoints)[b] - (initialPoints)[a];
-        tinfo->rotatedInitialElements[2] = (initialPoints)[c] - (initialPoints)[a];
+        tinfo->rotatedInitialElements[0] = Coord(0, 0, 0); // always (0,0,0): pA - pA
+        tinfo->rotatedInitialElements[1] = pB - pA;
+        tinfo->rotatedInitialElements[2] = pC - pA;
     }
 
     SReal area = 0.0;
