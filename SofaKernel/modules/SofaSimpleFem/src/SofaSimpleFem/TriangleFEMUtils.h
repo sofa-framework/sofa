@@ -65,9 +65,9 @@ public:
     void applyStiffnessLarge(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor) {}
     
     // in global coordinate
-    void computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, Coord a, Coord b, Coord c);
+    void computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, const Coord& pA, const Coord& pB, const Coord& pC);
     // in local coordinate, a = Coord (0, 0, 0)
-    void computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, Coord a, Coord b, Coord c);
+    void computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, const Coord& pB, const Coord& pC);
   
     
 };

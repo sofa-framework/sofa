@@ -62,18 +62,18 @@ void TriangleFEMUtils<DataTypes>::computeRotationLarge(Transformation& r, const 
 
 
 template<class DataTypes>
-void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, Coord a, Coord b, Coord c)
+void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, const Coord& pA, const Coord& pB, const Coord& pC)
 {
-    Coord ab_cross_ac = cross(b - a, c - a);
+    Coord ab_cross_ac = cross(pB - pA, pC - pA);
     Real determinant = ab_cross_ac.norm();
     area = determinant * 0.5f;
 
-    Real x13 = (a[0] - c[0]) / determinant;
-    Real x21 = (b[0] - a[0]) / determinant;
-    Real x32 = (c[0] - b[0]) / determinant;
-    Real y12 = (a[1] - b[1]) / determinant;
-    Real y23 = (b[1] - c[1]) / determinant;
-    Real y31 = (c[1] - a[1]) / determinant;
+    Real x13 = (pA[0] - pC[0]) / determinant;
+    Real x21 = (pB[0] - pA[0]) / determinant;
+    Real x32 = (pC[0] - pB[0]) / determinant;
+    Real y12 = (pA[1] - pB[1]) / determinant;
+    Real y23 = (pB[1] - pC[1]) / determinant;
+    Real y31 = (pC[1] - pA[1]) / determinant;
 
     J[0][0] = y23;
     J[0][1] = 0;
@@ -102,11 +102,10 @@ void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(StrainDisplace
 
 
 template<class DataTypes>
-void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, Coord a, Coord b, Coord c)
+void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, const Coord& pB, const Coord& pC)
 {
-    SOFA_UNUSED(a); // [0, 0, 0]
-
-    Real determinant = b[0] * c[1]; // b = [x, 0, 0], c = [y, y, 0]
+    // local computation taking into account that a = [0, 0, 0]
+    Real determinant = pB[0] * pC[1]; // b = [x, 0, 0], c = [y, y, 0]
     area = determinant*0.5f;
 
     /* The following formulation is actually equivalent:
@@ -129,11 +128,11 @@ void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacem
       | -(1-xc/xb)/yc  -1/xb          -xc/(xb*yc)  1/xb         1/yc  0    |
       */
 
-  //    Real beta1  = -1/b[0]; = -1 / b[0] * 1 / 2*A = -1 /(b[0] * (b[0] * c[1]))
-  //    Real beta2  =  1/b[0];
-  //    Real gamma1 = (c[0]/b[0]-1)/c[1];
-  //    Real gamma2 = -c[0]/(b[0]*c[1]);
-  //    Real gamma3 = 1/c[1];
+  //    Real beta1  = -1/pB[0]; = -1 / pB[0] * 1 / 2*A = -1 /(pB[0] * (pB[0] * pC[1]))
+  //    Real beta2  =  1/pB[0];
+  //    Real gamma1 = (pC[0]/pB[0]-1)/pC[1];
+  //    Real gamma2 = -pC[0]/(pB[0]*pC[1]);
+  //    Real gamma3 = 1/pC[1];
 
   //    // The transpose of the strain-displacement matrix is thus:
   //    J[0][0] = J[1][2] = beta1;
@@ -148,12 +147,12 @@ void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacem
   //    J[4][1] = J[5][0] = 0;
   //    J[4][2] = J[5][1] = gamma3;
 
-    J[0][0] = J[1][2] = -c[1] / determinant;
-    J[0][2] = J[1][1] = (c[0] - b[0]) / determinant;
-    J[2][0] = J[3][2] = c[1] / determinant;
-    J[2][2] = J[3][1] = -c[0] / determinant;
+    J[0][0] = J[1][2] = -pC[1] / determinant;
+    J[0][2] = J[1][1] = (pC[0] - pB[0]) / determinant;
+    J[2][0] = J[3][2] = pC[1] / determinant;
+    J[2][2] = J[3][1] = -pC[0] / determinant;
     J[4][0] = J[5][2] = 0;
-    J[4][2] = J[5][1] = b[0] / determinant;
+    J[4][2] = J[5][1] = pB[0] / determinant;
     J[1][0] = J[3][0] = J[5][0] = J[0][1] = J[2][1] = J[4][1] = 0;
 }
 

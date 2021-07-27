@@ -236,7 +236,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
         tinfo->rotatedInitialElements[2] = R_0_1 * pAC;
     }
 
-    m_triangleUtils->computeStrainDisplacementLocal(tinfo->strainDisplacementMatrix, tinfo->area, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
+    m_triangleUtils->computeStrainDisplacementLocal(tinfo->strainDisplacementMatrix, tinfo->area, tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
 
     triangleInfo.endEdit();
 }
@@ -884,7 +884,7 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         Coord B = R_0_2 * (p[b]-p[a]);
         Coord C = R_0_2 * (p[c]-p[a]);
 
-        m_triangleUtils->computeStrainDisplacementLocal(J, area, A, B, C);
+        m_triangleUtils->computeStrainDisplacementLocal(J, area, B, C);
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
         computeStiffness(J,K,triangleInf[elementIndex].materialMatrix);
@@ -934,7 +934,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
         R_0_2.identity();
         computeDisplacementSmall(D, elementIndex, p);
         if (_anisotropicMaterial)
-            m_triangleUtils->computeStrainDisplacementLocal(J, area, Coord(0, 0, 0), (p[b] - p[a]), (p[c] - p[a]));
+            m_triangleUtils->computeStrainDisplacementLocal(J, area, (p[b] - p[a]), (p[c] - p[a]));
         else
             J = triangleInf[elementIndex].strainDisplacementMatrix;
         computeStrain(strain, J, D);
@@ -954,7 +954,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
         Coord B = R_0_2 * (p[b]-p[a]);
         Coord C = R_0_2 * (p[c]-p[a]);
 
-        m_triangleUtils->computeStrainDisplacementLocal(J, area, A, B, C);
+        m_triangleUtils->computeStrainDisplacementLocal(J, area, B, C);
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
     }

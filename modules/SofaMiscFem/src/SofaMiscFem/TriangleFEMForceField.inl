@@ -383,7 +383,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const 
 
     StrainDisplacement J;
     SReal area = 0.0;
-    m_triangleUtils->computeStrainDisplacementLocal(J, area, deforme_a, deforme_b, deforme_c);
+    m_triangleUtils->computeStrainDisplacementLocal(J, area, deforme_b, deforme_c);
     if (implicit)
         _strainDisplacements[elementIndex] = J;
 
@@ -466,7 +466,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         _rotatedInitialElements[i][0] = Coord(0, 0, 0);
 
         SReal area = 0.0;
-        m_triangleUtils->computeStrainDisplacementLocal(_strainDisplacements[i], area, _rotatedInitialElements[i][0], _rotatedInitialElements[i][1], _rotatedInitialElements[i][2]);
+        m_triangleUtils->computeStrainDisplacementLocal(_strainDisplacements[i], area, _rotatedInitialElements[i][1], _rotatedInitialElements[i][2]);
     }
 }
 
@@ -499,7 +499,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
     // Strain-displacement matrix
     StrainDisplacement B;
     SReal area = 0.0;
-    m_triangleUtils->computeStrainDisplacementLocal(B, area, deforme_a, deforme_b, deforme_c);
+    m_triangleUtils->computeStrainDisplacementLocal(B, area, deforme_b, deforme_c);
 
     // compute force on element, in local frame
     Displacement F;
