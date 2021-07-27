@@ -43,12 +43,8 @@ using std::vector;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Node;
 
-#include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
 
-#include <SofaGeneralLoader/ReadState.h>
-#include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
@@ -58,7 +54,6 @@ using sofa::simulation::Node;
 #include <sofa/gui/GUIManager.h>
 using sofa::gui::GUIManager;
 
-#include <sofa/gui/Main.h>
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gl/gl.h>
 
