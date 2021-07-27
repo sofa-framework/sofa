@@ -842,7 +842,7 @@ void TriangularFEMForceField<DataTypes>::computeStrain(type::Vec<3,Real> &strain
 // --- Stress = K * Strain = KJtD = KBd
 // --------------------------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress, MaterialStiffness &K, type::Vec<3,Real> &strain)
+void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress, const MaterialStiffness &K, const type::Vec<3,Real> &strain)
 {
     if (_anisotropicMaterial || method == SMALL)
     {
