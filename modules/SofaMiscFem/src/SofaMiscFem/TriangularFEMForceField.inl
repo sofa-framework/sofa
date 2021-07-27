@@ -1023,9 +1023,10 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
     type::Vec<3,Real> stress;
     Transformation R_0_2, R_2_0;
 
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
@@ -1273,29 +1274,23 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
 
     for(unsigned int i=0; i<nbTriangles; i++)
     {
-        Index a = m_topology->getTriangle(i)[0];
-        Index b = m_topology->getTriangle(i)[1];
-        Index c = m_topology->getTriangle(i)[2];
+        const Element& tri = m_topology->getTriangle(i);
+        Index a = tri[0];
+        Index b = tri[1];
+        Index c = tri[2];
 
         Transformation R_0_2;
         R_0_2.transpose(triangleInf[i].rotation);
 
-        VecCoord disp;
-        disp.resize(3);
-
         x_2 = R_0_2 * x[a];
-        disp[0] = x_2;
-
         D[0] = x_2[0];
         D[1] = x_2[1];
 
         x_2 = R_0_2 * x[b];
-        disp[1] = x_2;
         D[2] = x_2[0];
         D[3] = x_2[1];
 
         x_2 = R_0_2 * x[c];
-        disp[2] = x_2;
         D[4] = x_2[0];
         D[5] = x_2[1];
 
@@ -1362,10 +1357,10 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const VecCoord &p, Index elementIndex )
 {
     Displacement F;
-
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     // compute force on element (in the co-rotational space)
     computeForce( F, elementIndex, p);
