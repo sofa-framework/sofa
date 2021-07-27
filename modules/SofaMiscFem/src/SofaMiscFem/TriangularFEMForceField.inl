@@ -955,7 +955,7 @@ void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index &
     tinfo->materialMatrix[2][1] = 0;
     tinfo->materialMatrix[2][2] = (1.0f - p) * 0.5f;//poissonArray[i]);
 
-    tinfo->materialMatrix *= (y / (1.0f - p * p));
+    tinfo->materialMatrix *= (y / (1.0f - p * p)) *tinfo->area;
 
     triangleInfo.endEdit();
 }
@@ -987,7 +987,7 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         computeStrainDisplacement(J, elementIndex, Coord(0,0,0), (p[b]-p[a]), (p[c]-p[a]));
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
-        F = J * stress * triangleInf[elementIndex].area;
+        F = J * stress;
 
         // store newly computed values for next time
         triangleInf[elementIndex].strainDisplacementMatrix = J;
@@ -1023,9 +1023,6 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         F[3] = /* J[3][0] * KJtD[0] + */ J[3][1] * stress[1] + J[3][2] * stress[2];
         F[4] = /* J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + */ J[4][2] * stress[2];
         F[5] = /* J[5][0] * KJtD[0] + */ J[5][1] * stress[1] /* + J[5][2] * KJtD[2] */ ;
-
-        // Since J has been "normalized" we need to multiply the force F by the area of the triangle to get the correct force
-        F *= triangleInf[elementIndex].area;
 
         // store newly computed values for next time
         R_2_0.transpose(R_0_2);
@@ -1260,7 +1257,6 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
         F[4] = /* J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + */ J[4][2] * stress[2];
         F[5] = /* J[5][0] * KJtD[0] + */ J[5][1] * stress[1] /* + J[5][2] * KJtD[2] */ ;
 
-        F *= triangleInf[i].area;
 
         v[a] += (triangleInf[i].rotation * Coord(-h*F[0], -h*F[1], 0)) * kFactor;
         v[b] += (triangleInf[i].rotation * Coord(-h*F[2], -h*F[3], 0)) * kFactor;
