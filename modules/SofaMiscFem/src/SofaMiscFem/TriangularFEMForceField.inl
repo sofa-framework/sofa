@@ -1365,14 +1365,13 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const
     // compute force on element (in the co-rotational space)
     computeForce( F, elementIndex, p);
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-
+    const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
+    const Transformation& rot = triangleInf[elementIndex].rotation;
     // transform force back into global ref. frame
-    f[a] += triangleInf[elementIndex].rotation * Coord(F[0], F[1], 0);
-    f[b] += triangleInf[elementIndex].rotation * Coord(F[2], F[3], 0);
-    f[c] += triangleInf[elementIndex].rotation * Coord(F[4], F[5], 0);
+    f[a] += rot * Coord(F[0], F[1], 0);
+    f[b] += rot * Coord(F[2], F[3], 0);
+    f[c] += rot * Coord(F[4], F[5], 0);
 
-    triangleInfo.endEdit();
 }
 
 // --------------------------------------------------------------------------------------
