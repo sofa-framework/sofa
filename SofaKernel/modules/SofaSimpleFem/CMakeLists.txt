@@ -6,10 +6,13 @@ set(SOFASIMPLEFEM_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFASIMPLEFEM_SRC}/config.h.in
     ${SOFASIMPLEFEM_SRC}/initSofaSimpleFem.h
+    ${SOFASIMPLEFEM_SRC}/TriangleFEMUtils.h
+    ${SOFASIMPLEFEM_SRC}/TriangleFEMUtils.inl
 )
 
 set(SOURCE_FILES
     ${SOFASIMPLEFEM_SRC}/initSofaSimpleFem.cpp
+    ${SOFASIMPLEFEM_SRC}/TriangleFEMUtils.cpp
 )
 
 sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
