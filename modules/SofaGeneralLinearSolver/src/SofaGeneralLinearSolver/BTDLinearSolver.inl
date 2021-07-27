@@ -706,7 +706,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
     // we need to compute all the Minv[i0][i0] (with i0>=i) till i0=i
     while (i0 > i)
     {
-        if (nBlockComputedMinv[i0] == 1) // only the bloc on the diagonal is computed : need of the the bloc [i0][i0-1]
+        if (nBlockComputedMinv[i0] == 1) // only the bloc on the diagonal is computed : need of the bloc [i0][i0-1]
         {
             // compute bloc (i0,i0-1)
             //Minv[i0][i0-1] = Minv[i0][i0]*-L[i0-1].t()
