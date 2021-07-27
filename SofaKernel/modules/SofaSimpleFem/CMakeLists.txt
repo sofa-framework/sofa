@@ -13,6 +13,8 @@ set(HEADER_FILES
     ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceField.inl
     ${SOFASIMPLEFEM_SRC}/TetrahedronDiffusionFEMForceField.h
     ${SOFASIMPLEFEM_SRC}/TetrahedronDiffusionFEMForceField.inl
+    ${SOFASIMPLEFEM_SRC}/TriangleFEMUtils.h
+    ${SOFASIMPLEFEM_SRC}/TriangleFEMUtils.inl
 )
 
 set(SOURCE_FILES
@@ -20,6 +22,7 @@ set(SOURCE_FILES
     ${SOFASIMPLEFEM_SRC}/HexahedronFEMForceField.cpp
     ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceField.cpp
     ${SOFASIMPLEFEM_SRC}/TetrahedronDiffusionFEMForceField.cpp
+    ${SOFASIMPLEFEM_SRC}/TriangleFEMUtils.cpp
 )
 
 sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
