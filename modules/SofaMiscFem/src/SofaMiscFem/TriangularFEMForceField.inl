@@ -196,7 +196,7 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Inde
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c)
 {
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     msg_error_when((unsigned int)i >= triangleInf.size())
             << "Try to access an element which indices bigger than the size of the vector: i=" << i << " and size=" << triangleInf.size() ;
@@ -261,9 +261,9 @@ void TriangularFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginWriteOnly());
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     /// prepare to store info in the triangle array
     triangleInf.resize(m_topology->getNbTriangles());
@@ -273,7 +273,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 
 
     unsigned int nbPoints = m_topology->getNbPoints();
-    type::vector<VertexInformation>& vi = *(vertexInfo.beginEdit());
+    type::vector<VertexInformation>& vi = *(vertexInfo.beginWriteOnly());
     vi.resize(nbPoints);
     vertexInfo.endEdit();
 
@@ -679,15 +679,13 @@ void TriangularFEMForceField<DataTypes>::computeDisplacementSmall(Displacement &
     Coord deforme_b = p[b]-p[a];
     Coord deforme_c = p[c]-p[a];
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-
+    const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
     D[0] = 0;
     D[1] = 0;
     D[2] = triangleInf[elementIndex].rotatedInitialElements[1][0] - deforme_b[0];
     D[3] = triangleInf[elementIndex].rotatedInitialElements[1][1] - deforme_b[1];
     D[4] = triangleInf[elementIndex].rotatedInitialElements[2][0] - deforme_c[0];
     D[5] = triangleInf[elementIndex].rotatedInitialElements[2][1] - deforme_c[1];
-    triangleInfo.endEdit();
 }
 
 // -------------------------------------------------------------------------------------------------------------
@@ -705,7 +703,7 @@ void TriangularFEMForceField<DataTypes>::computeDisplacementLarge(Displacement &
     Coord deforme_b = R_0_2 * (p[b]-p[a]);
     Coord deforme_c = R_0_2 * (p[c]-p[a]);
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
 
     // displacements
     D[0] = 0;
@@ -721,8 +719,6 @@ void TriangularFEMForceField<DataTypes>::computeDisplacementLarge(Displacement &
                    << "computeDisplacementLarge :: deforme_c = " <<  deforme_c << msgendl
                    << "computeDisplacementLarge :: R_0_2 = " <<  R_0_2 << msgendl;
     }
-
-    triangleInfo.endEdit();
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -732,7 +728,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStrainDisplacement(StrainDisplacement &J, Index elementIndex, Coord a, Coord b, Coord c )
 {
     Real determinant;
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     if (method == SMALL)
     {
@@ -887,7 +883,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     Coord v((Real)V(1,1), (Real)V(2,1), 0.0);
     v.normalize();
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     triangleInf[elementIndex].maxStrain = (Real)D(1,1);
 
@@ -1028,7 +1024,7 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
     Index b = tri[1];
     Index c = tri[2];
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     if (method == SMALL)
     {
@@ -1270,7 +1266,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
     Coord x_2;
     unsigned int nbTriangles = m_topology->getNbTriangles();
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     for(unsigned int i=0; i<nbTriangles; i++)
     {
