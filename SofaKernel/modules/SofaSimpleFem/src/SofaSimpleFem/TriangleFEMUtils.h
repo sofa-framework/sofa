@@ -42,6 +42,7 @@ public:
     typedef typename Coord::value_type   Real;
 
     typedef type::Vec<6, Real> Displacement;					    ///< the displacement vector
+    typedef type::Mat<3, 3, Real> MaterialStiffness;				    ///< the matrix of material stiffness
     typedef type::Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
     typedef type::Mat<6, 3, Real> StrainDisplacement;				    ///< the strain-displacement matrix
 
@@ -69,7 +70,10 @@ public:
     // in local coordinate, a = Coord (0, 0, 0)
     void computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, const Coord& pB, const Coord& pC);
   
-    
+    // Compute strain, if full is set to true, full matrix multiplication is performed not taking into account potential 0 values
+    void computeStrain(type::Vec<3, Real>& strain, const StrainDisplacement& J, const Displacement& D, bool fullMethod = false);
+    // Compute stress, if full is set to true, full matrix multiplication is performed not taking into account potential 0 values
+    void computeStress(type::Vec<3, Real>& stress, const MaterialStiffness& K, const type::Vec<3, Real>& strain, bool fullMethod = false);
 };
 
 } //namespace sofa::component::forcefield

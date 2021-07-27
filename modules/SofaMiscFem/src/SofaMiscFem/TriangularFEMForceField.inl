@@ -665,47 +665,6 @@ void TriangularFEMForceField<DataTypes>::computeStiffness(StrainDisplacement &J,
     K=J*D*Jt;
 }
 
-// --------------------------------------------------------------------------------------------------------
-// --- Strain = StrainDisplacement * Displacement = JtD = Bd
-// --------------------------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStrain(type::Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D)
-{
-    type::Mat<3,6,Real> Jt;
-    Jt.transpose(J);
-
-    if (_anisotropicMaterial || method == SMALL)
-    {
-        strain = Jt * D;
-    }
-    else
-    {
-        strain[0] = Jt[0][0] * D[0] + /* Jt[0][1] * Depl[1] + */ Jt[0][2] * D[2] /* + Jt[0][3] * Depl[3] + Jt[0][4] * Depl[4] + Jt[0][5] * Depl[5] */ ;
-        strain[1] = /* Jt[1][0] * Depl[0] + */ Jt[1][1] * D[1] + /* Jt[1][2] * Depl[2] + */ Jt[1][3] * D[3] + /* Jt[1][4] * Depl[4] + */ Jt[1][5] * D[5];
-        strain[2] = Jt[2][0] * D[0] + Jt[2][1] * D[1] + Jt[2][2] * D[2] +	Jt[2][3] * D[3] + Jt[2][4] * D[4] /* + Jt[2][5] * Depl[5] */ ;
-    }
-}
-
-// --------------------------------------------------------------------------------------------------------
-// --- Stress = K * Strain = KJtD = KBd
-// --------------------------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress, const MaterialStiffness &K, const type::Vec<3,Real> &strain)
-{
-    if (_anisotropicMaterial || method == SMALL)
-    {
-        stress = K * strain;
-    }
-    else
-    {
-        // Optimisations: The following values are 0 (per computeMaterialStiffnesses )
-        // K[0][2]  K[1][2]  K[2][0] K[2][1]
-        stress[0] = K[0][0] * strain[0] + K[0][1] * strain[1] + K[0][2] * strain[2];
-        stress[1] = K[1][0] * strain[0] + K[1][1] * strain[1] + K[1][2] * strain[2];
-        stress[2] = K[2][0] * strain[0] + K[2][1] * strain[1] + K[2][2] * strain[2];
-    }
-}
-
 // --------------------------------------------------------------------------------------
 // ---	Compute direction of maximum strain (strain = JtD = BD)
 // --------------------------------------------------------------------------------------
@@ -864,8 +823,8 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         // classic linear elastic method
         computeDisplacementSmall(D, elementIndex, p);
         m_triangleUtils->computeStrainDisplacementGlobal(J, area, Coord(0,0,0), (p[b]-p[a]), (p[c]-p[a]));
-        computeStrain(strain, J, D);
-        computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
+        m_triangleUtils->computeStrain(strain, J, D, true);
+        m_triangleUtils->computeStress(stress, triangleInf[elementIndex].materialMatrix, strain, true);
         F = J * stress;
 
         // store newly computed values for next time
@@ -888,8 +847,8 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         Coord C = R_0_2 * (p[c]-p[a]);
 
         m_triangleUtils->computeStrainDisplacementLocal(J, area, B, C);
-        computeStrain(strain, J, D);
-        computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
+        m_triangleUtils->computeStrain(strain, J, D, _anisotropicMaterial);
+        m_triangleUtils->computeStress(stress, triangleInf[elementIndex].materialMatrix, strain, _anisotropicMaterial);
         computeStiffness(J,K,triangleInf[elementIndex].materialMatrix);
 
         // Compute F = J * stress;
@@ -940,8 +899,8 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
             m_triangleUtils->computeStrainDisplacementLocal(J, area, (p[b] - p[a]), (p[c] - p[a]));
         else
             J = triangleInf[elementIndex].strainDisplacementMatrix;
-        computeStrain(strain, J, D);
-        computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
+        m_triangleUtils->computeStrain(strain, J, D, true);
+        m_triangleUtils->computeStress(stress, triangleInf[elementIndex].materialMatrix, strain, true);
     }
     else
     {
@@ -958,8 +917,8 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
         Coord C = R_0_2 * (p[c]-p[a]);
 
         m_triangleUtils->computeStrainDisplacementLocal(J, area, B, C);
-        computeStrain(strain, J, D);
-        computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
+        m_triangleUtils->computeStrain(strain, J, D, _anisotropicMaterial);
+        m_triangleUtils->computeStress(stress, triangleInf[elementIndex].materialMatrix, strain, _anisotropicMaterial);
     }
     // store newly computed values for next time
     R_2_0.transpose(R_0_2);
@@ -1063,8 +1022,8 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
         D[5] = x[c][1];
 
         J = triangleInf[i].strainDisplacementMatrix;
-        computeStrain(strain, J, D);
-        computeStress(stress, triangleInf[i].materialMatrix, strain);
+        m_triangleUtils->computeStrain(strain, J, D, true);
+        m_triangleUtils->computeStress(stress, triangleInf[i].materialMatrix, strain, true);
         F = J * stress;
 
         v[a] += (Coord(-h*F[0], -h*F[1], 0)) * kFactor;
@@ -1079,9 +1038,13 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, const VecCoord& x, const SReal &kFactor )
 {
     if (method == SMALL)
-        applyStiffnessSmall( v, h, x, kFactor );
+    {
+        applyStiffnessSmall(v, h, x, kFactor);
+    }
     else
-        applyStiffnessLarge( v, h, x, kFactor );
+    {
+        applyStiffnessLarge(v, h, x, kFactor);
+    }
 }
 
 // --------------------------------------------------------------------------------------
@@ -1126,8 +1089,8 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
         K = triangleInf[i].materialMatrix;
         J = triangleInf[i].strainDisplacementMatrix;
 
-        computeStrain(strain, J, D);
-        computeStress(stress, triangleInf[i].materialMatrix, strain);
+        m_triangleUtils->computeStrain(strain, J, D, _anisotropicMaterial);
+        m_triangleUtils->computeStress(stress, triangleInf[i].materialMatrix, strain, _anisotropicMaterial);
 
         F[0] = J[0][0] * stress[0] + /* J[0][1] * KJtD[1] + */ J[0][2] * stress[2];
         F[1] = /* J[1][0] * KJtD[0] + */ J[1][1] * stress[1] + J[1][2] * stress[2];

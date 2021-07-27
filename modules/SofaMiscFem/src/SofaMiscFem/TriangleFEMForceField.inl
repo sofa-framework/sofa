@@ -271,47 +271,15 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
     type::Mat<3,6,Real> Jt;
     Jt.transpose( J );
 
-    type::Vec<3,Real> JtD;
-
-    // Optimisations: The following values are 0 (per computeStrainDisplacement )
-
-    // Jt[0][1]
-    // Jt[0][3]
-    // Jt[0][4]
-    // Jt[0][5]
-    // Jt[1][0]
-    // Jt[1][2]
-    // Jt[1][4]
-    // Jt[2][5]
+    type::Vec<3,Real> JtD; // strain
+    bool fullMethod = (method == SMALL) ? true : false;
+    // compute strain
+    m_triangleUtils->computeStrain(JtD, J, Depl, fullMethod);
 
 
-    //	JtD = Jt * Depl;
+    type::Vec<3,Real> KJtD; // stress
+    m_triangleUtils->computeStress(KJtD, K, JtD, fullMethod);
 
-    JtD[0] = Jt[0][0] * Depl[0] + /* Jt[0][1] * Depl[1] + */ Jt[0][2] * Depl[2]
-            /* + Jt[0][3] * Depl[3] + Jt[0][4] * Depl[4] + Jt[0][5] * Depl[5] */ ;
-
-    JtD[1] = /* Jt[1][0] * Depl[0] + */ Jt[1][1] * Depl[1] + /* Jt[1][2] * Depl[2] + */
-            Jt[1][3] * Depl[3] + /* Jt[1][4] * Depl[4] + */ Jt[1][5] * Depl[5];
-
-    JtD[2] = Jt[2][0] * Depl[0] + Jt[2][1] * Depl[1] + Jt[2][2] * Depl[2] +
-            Jt[2][3] * Depl[3] + Jt[2][4] * Depl[4] /* + Jt[2][5] * Depl[5] */ ;
-
-    type::Vec<3,Real> KJtD;
-
-    //	KJtD = K * JtD;
-
-    // Optimisations: The following values are 0 (per computeMaterialStiffnesses )
-
-    // K[0][2]
-    // K[1][2]
-    // K[2][0]
-    // K[2][1]
-
-    KJtD[0] = K[0][0] * JtD[0] + K[0][1] * JtD[1] /* + K[0][2] * JtD[2] */;
-
-    KJtD[1] = K[1][0] * JtD[0] + K[1][1] * JtD[1] /* + K[1][2] * JtD[2] */;
-
-    KJtD[2] = /* K[2][0] * JtD[0] + K[2][1] * JtD[1] */ + K[2][2] * JtD[2];
 
     //	F = J * KJtD;
 

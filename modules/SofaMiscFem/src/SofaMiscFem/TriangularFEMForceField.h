@@ -227,8 +227,7 @@ protected :
     void computeDisplacementSmall(Displacement &D, Index elementIndex, const VecCoord &p);
     void computeDisplacementLarge(Displacement &D, Index elementIndex, const Transformation &R_2_0, const VecCoord &p);
     void computeStiffness(StrainDisplacement &J, Stiffness &K, MaterialStiffness &D);
-    void computeStrain(type::Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D);
-    void computeStress(type::Vec<3,Real> &stress, const MaterialStiffness &K, const type::Vec<3,Real> &strain);
+   
     void computeForce(Displacement &F, Index elementIndex, const VecCoord &p);
     void computePrincipalStrain(Index elementIndex, type::Vec<3,Real> &strain);
     void computePrincipalStress(Index elementIndex, type::Vec<3,Real> &stress);

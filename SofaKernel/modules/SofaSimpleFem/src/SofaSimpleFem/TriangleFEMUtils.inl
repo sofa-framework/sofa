@@ -157,5 +157,59 @@ void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacem
 }
 
 
+// --------------------------------------------------------------------------------------------------------
+// --- Strain = StrainDisplacement * Displacement = JtD = Bd
+// --------------------------------------------------------------------------------------------------------
+template<class DataTypes>
+void TriangleFEMUtils<DataTypes>::computeStrain(type::Vec<3, Real>& strain, const StrainDisplacement& J, const Displacement& D, bool fullMethod)
+{
+    type::Mat<3, 6, Real> Jt;
+    Jt.transpose(J);
+
+    if (fullMethod) // _anisotropicMaterial or SMALL case
+    {
+        strain = Jt * D;
+    }
+    else
+    {        
+        // Optimisations: The following values are 0 (per StrainDisplacement )
+        // \        0        1        2        3        4        5
+        // 0    Jt[0][0]     0    Jt[0][2]     0        0        0
+        // 1        0    Jt[1][1]     0     Jt[1][3]    0     Jt[1][5]
+        // 2    Jt[2][0] Jt[2][1] Jt[2][2]  Jt[2][3]  Jt[2][4]   0
+
+        // Strain = StrainDisplacement (Jt) * Displacement (D)
+        strain[0] = Jt[0][0] * D[0] + Jt[0][2] * D[2];
+        strain[1] = Jt[1][1] * D[1] + Jt[1][3] * D[3] + Jt[1][5] * D[5];
+        strain[2] = Jt[2][0] * D[0] + Jt[2][1] * D[1] + Jt[2][2] * D[2] + Jt[2][3] * D[3] + Jt[2][4] * D[4];
+    }
+}
+
+
+// --------------------------------------------------------------------------------------------------------
+// --- Stress = K * Strain = KJtD = KBd
+// --------------------------------------------------------------------------------------------------------
+template <class DataTypes>
+void TriangleFEMUtils<DataTypes>::computeStress(type::Vec<3, Real>& stress, const MaterialStiffness& K, const type::Vec<3, Real>& strain, bool fullMethod)
+{
+    if (fullMethod) // _anisotropicMaterial or SMALL case
+    {
+        stress = K * strain;
+    }
+    else
+    {
+        // Optimisations: The following values are 0 (per MaterialStiffnesses )
+        // \       0        1        2
+        // 0   K[0][0]    K[0][1]    0
+        // 1   K[1][0]    K[1][1]    0 
+        // 2       0        0      K[2][2]
+
+        // stress = MaterialStiffnesses (K) * strain
+        stress[0] = K[0][0] * strain[0] + K[0][1] * strain[1];
+        stress[1] = K[1][0] * strain[0] + K[1][1] * strain[1];
+        stress[2] = K[2][2] * strain[2];
+    }
+}
+
 
 } //namespace sofa::component::forcefield
