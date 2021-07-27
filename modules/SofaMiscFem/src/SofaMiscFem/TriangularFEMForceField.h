@@ -224,8 +224,6 @@ public:
 
 protected :
     /// Forcefield computations
-    void computeDisplacementSmall(Displacement &D, Index elementIndex, const VecCoord &p);
-    void computeDisplacementLarge(Displacement &D, Index elementIndex, const Transformation &R_2_0, const VecCoord &p);
     void computeStiffness(StrainDisplacement &J, Stiffness &K, MaterialStiffness &D);
    
     void computeForce(Displacement &F, Index elementIndex, const VecCoord &p);

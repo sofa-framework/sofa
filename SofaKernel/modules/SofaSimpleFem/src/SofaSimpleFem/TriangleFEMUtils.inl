@@ -28,8 +28,23 @@ namespace sofa::component::forcefield
 
 ////////////// small displacements method
 
+// ---------------------------------------------------------------------------------------------------------------
+// ---	Compute displacement vector D as the difference between current current position 'p' and initial position
+// ---------------------------------------------------------------------------------------------------------------
+template<class DataTypes>
+void TriangleFEMUtils<DataTypes>::computeDisplacementSmall(Displacement& D, const type::fixed_array<Coord, 3>& rotatedInitCoord, const Coord& pAB, const Coord& pAC)
+{
+    // First vector: deforme_a = pA - pA = Coord(0,0,0);
+    // deforme_b = pB - pA == pAB
+    // deforme_c = pB - pA == pAC
 
-
+    D[0] = 0;
+    D[1] = 0;
+    D[2] = rotatedInitCoord[1][0] - pAB[0];
+    D[3] = rotatedInitCoord[1][1] - pAB[1];
+    D[4] = rotatedInitCoord[2][0] - pAC[0];
+    D[5] = rotatedInitCoord[2][1] - pAC[1];
+}
 
 
 ////////////// large displacements method
@@ -61,6 +76,30 @@ void TriangleFEMUtils<DataTypes>::computeRotationLarge(Transformation& r, const 
 }
 
 
+// -------------------------------------------------------------------------------------------------------------
+// --- Compute displacement vector D as the difference between current current position 'p' and initial position
+// --- expressed in the co-rotational frame of reference
+// -------------------------------------------------------------------------------------------------------------
+template<class DataTypes>
+void TriangleFEMUtils<DataTypes>::computeDisplacementLarge(Displacement& D, const Transformation& R_0_2, const type::fixed_array<Coord, 3>& rotatedInitCoord, const Coord& pA, const Coord& pB, const Coord& pC)
+{
+    // positions of the deformed and displaced triangle in its local frame
+    Coord deforme_b = R_0_2 * (pB - pA);
+    Coord deforme_c = R_0_2 * (pC - pA);
+
+    // displacements in the local frame
+    D[0] = 0;
+    D[1] = 0;
+    D[2] = rotatedInitCoord[1][0] - deforme_b[0];
+    D[3] = 0;
+    D[4] = rotatedInitCoord[2][0] - deforme_c[0];
+    D[5] = rotatedInitCoord[2][1] - deforme_c[1];
+}
+
+
+// ------------------------------------------------------------------------------------------------------------
+// --- Compute the strain-displacement matrix where (pA, pB, pC) are the coordinates of the 3 nodes of a triangle
+// ------------------------------------------------------------------------------------------------------------
 template<class DataTypes>
 void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, const Coord& pA, const Coord& pB, const Coord& pC)
 {
@@ -101,6 +140,9 @@ void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(StrainDisplace
 }
 
 
+// --------------------------------------------------------------------------------------------------------------------------
+// --- Compute the strain-displacement matrix where (pB, pC) are the coordinates of the 2 nodes of a triangle in local space
+// --------------------------------------------------------------------------------------------------------------------------
 template<class DataTypes>
 void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, const Coord& pB, const Coord& pC)
 {
