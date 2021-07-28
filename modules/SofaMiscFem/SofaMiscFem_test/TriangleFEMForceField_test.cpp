@@ -24,6 +24,7 @@
 #include <SofaMiscFem/TriangleFEMForceField.h>
 #include <SofaMiscFem/TriangularFEMForceField.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -60,6 +61,7 @@ public:
     typedef MechanicalObject<DataTypes> MState;
     using TriangleFEM = sofa::component::forcefield::TriangleFEMForceField<DataTypes>;
     using TriangularFEM = sofa::component::forcefield::TriangularFEMForceField<DataTypes>;
+    using TriangularFEMOptim = sofa::component::forcefield::TriangularFEMForceFieldOptim<DataTypes>;
     using Vec3 = type::Vec<3, Real>;
     using Mat33 = type::Mat<3, 3, Real>;
     using Mat63 = type::Mat<6, 3, Real>;
@@ -98,12 +100,18 @@ public:
             createObject(m_root, "TriangleFEMForceField", {
                 {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
         }
-        else
+        else if (FEMType == 1)
         {
             createObject(m_root, "TriangularFEMForceField", {
                 {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
         }
-
+        else
+        {
+            createObject(m_root, "TriangularFEMForceFieldOptim", {
+                {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
+        }
+        createObject(m_root, "DiagonalMass", {
+            {"name","mass"}, {"massDensity","0.1"} });
         /// Init simulation
         sofa::simulation::getSimulation()->init(m_root.get());
     }
@@ -135,6 +143,10 @@ public:
         {
             addTriangleFEMNode(FEMType, fixP, "TriangularFEM");
         }
+        else
+        {
+            addTriangleFEMNode(FEMType, fixP, "TriangularFEMOptim");
+        }
 
         ASSERT_NE(m_root.get(), nullptr);
 
@@ -163,12 +175,16 @@ public:
             createObject(FEMNode, "TriangleFEMForceField", {
                 {"name","FEM"}, {"youngModulus","100"}, {"poissonRatio","0.3"}, {"method","large"} });
         }
-        else
+        else if (FEMType == 1)
         {
             createObject(FEMNode, "TriangularFEMForceField", {
                 {"name","FEM"}, {"youngModulus","100"}, {"poissonRatio","0.3"}, {"method","large"} });
         }
-
+        else
+        {
+            createObject(FEMNode, "TriangularFEMForceFieldOptim", {
+                {"name","FEM"}, {"youngModulus","100"}, {"poissonRatio","0.3"}, {"method","large"} });
+        }
 
         createObject(FEMNode, "DiagonalMass", {
             {"name","mass"}, {"massDensity","0.1"} });
@@ -181,7 +197,7 @@ public:
 
     void checkCreation(int FEMType)
     {
-        createSingleTriangleFEMScene(FEMType, 100, 0.3, "large");
+        createSingleTriangleFEMScene(FEMType, 100, 0.4, "large");
 
         typename MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
@@ -191,7 +207,7 @@ public:
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
+            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.4);
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
@@ -199,9 +215,16 @@ public:
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
+            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.4);
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
             ASSERT_EQ(triFEM->getMethod(), 0);
+        }
+        else
+        {
+            TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
+            ASSERT_TRUE(triFEM.get() != nullptr);
+            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.4);
+            ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
         }
     }
 
@@ -214,9 +237,14 @@ public:
             createObject(m_root, "TriangleFEMForceField", {
                 {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
         }
-        else
+        else if (FEMType == 1)
         {
             createObject(m_root, "TriangularFEMForceField", {
+                {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
+        }
+        else
+        {
+            createObject(m_root, "TriangularFEMForceFieldOptim", {
                 {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
         }
 
@@ -236,9 +264,14 @@ public:
             createObject(m_root, "TriangleFEMForceField", {
                 {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
         }
-        else
+        else if (FEMType == 1)
         {
             createObject(m_root, "TriangularFEMForceField", {
+                {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
+        }
+        else
+        {
+            createObject(m_root, "TriangularFEMForceFieldOptim", {
                 {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
         }
 
@@ -266,6 +299,10 @@ public:
         {
             createObject(m_root, "TriangularFEMForceField");
         }
+        else
+        {
+            createObject(m_root, "TriangularFEMForceFieldOptim");
+        }
 
         EXPECT_MSG_EMIT(Error);
 
@@ -286,6 +323,13 @@ public:
             ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3); // Not the same default values
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
             ASSERT_EQ(triFEM->getMethod(), 0);
+        }
+        else
+        {
+            TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
+            ASSERT_TRUE(triFEM.get() != nullptr);
+            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3); // Not the same default values
+            ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
         }
     }
 
@@ -599,6 +643,44 @@ TEST_F(TriangleFEMForceField3_test, DISABLED_checkTriangularFEMForceField_values
 {
     this->checkFEMValues(1);
 }
+
+
+/// Test TriangularOptim: TODO check where to put those tests
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceFieldOptim_Creation)
+{
+    this->checkCreation(2);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceFieldOptim_NoTopology)
+{
+    this->checkNoTopology(2);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceFieldOptim_emptyTopology)
+{
+    this->checkEmptyTopology(2);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceFieldOptim_defaultAttributes)
+{
+    this->checkDefaultAttributes(2);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceFieldOptim_wrongAttributess)
+{
+    this->checkWrongAttributes(2);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceFieldOptim_init)
+{
+    this->checkInit(2);
+}
+
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceFieldOptim_values)
+{
+    this->checkFEMValues(2);
+}
+
 
 
 /// Those tests should not be removed but can't be run on the CI
