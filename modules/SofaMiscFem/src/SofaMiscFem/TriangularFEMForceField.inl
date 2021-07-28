@@ -911,14 +911,10 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stres
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
-{
-    type::Mat<6,3,Real> J;
-    type::Vec<3,Real> strain, stress;
+{    
     Displacement D, F;
-    unsigned int nbTriangles=m_topology->getNbTriangles();
-
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-
+    unsigned int nbTriangles = m_topology->getNbTriangles();
     for(unsigned int i=0; i<nbTriangles; i++)
     {
         const Triangle& tri = m_topology->getTriangle(i);
@@ -935,10 +931,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
         D[4] = x[c][0];
         D[5] = x[c][1];
 
-        J = triangleInf[i].strainDisplacementMatrix;
-        m_triangleUtils->computeStrain(strain, J, D, true);
-        m_triangleUtils->computeStress(stress, triangleInf[i].materialMatrix, strain, true);
-        F = J * stress;
+        computeForce(F, i, D, triangleInf[i].strainDisplacementMatrix);
 
         v[a] += (Coord(-h*F[0], -h*F[1], 0)) * kFactor;
         v[b] += (Coord(-h*F[2], -h*F[3], 0)) * kFactor;
@@ -967,15 +960,11 @@ void TriangularFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, co
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
-    type::Mat<6,3,Real> J;
-    type::Vec<3,Real> strain, stress;
-    MaterialStiffness K;
-    Displacement D;
+    Displacement D, F;
     Coord x_2;
-    unsigned int nbTriangles = m_topology->getNbTriangles();
-
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
+    unsigned int nbTriangles = m_topology->getNbTriangles();
     for(unsigned int i=0; i<nbTriangles; i++)
     {
         const Element& tri = m_topology->getTriangle(i);
@@ -999,20 +988,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
         D[5] = x_2[1];
 
         Displacement F;
-
-        K = triangleInf[i].materialMatrix;
-        J = triangleInf[i].strainDisplacementMatrix;
-
-        m_triangleUtils->computeStrain(strain, J, D, _anisotropicMaterial);
-        m_triangleUtils->computeStress(stress, triangleInf[i].materialMatrix, strain, _anisotropicMaterial);
-
-        F[0] = J[0][0] * stress[0] + /* J[0][1] * KJtD[1] + */ J[0][2] * stress[2];
-        F[1] = /* J[1][0] * KJtD[0] + */ J[1][1] * stress[1] + J[1][2] * stress[2];
-        F[2] = J[2][0] * stress[0] + /* J[2][1] * KJtD[1] + */ J[2][2] * stress[2];
-        F[3] = /* J[3][0] * KJtD[0] + */ J[3][1] * stress[1] + J[3][2] * stress[2];
-        F[4] = /* J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + */ J[4][2] * stress[2];
-        F[5] = /* J[5][0] * KJtD[0] + */ J[5][1] * stress[1] /* + J[5][2] * KJtD[2] */ ;
-
+        computeForce(F, i, D, triangleInf[i].strainDisplacementMatrix);
 
         v[a] += (triangleInf[i].rotation * Coord(-h*F[0], -h*F[1], 0)) * kFactor;
         v[b] += (triangleInf[i].rotation * Coord(-h*F[2], -h*F[3], 0)) * kFactor;
