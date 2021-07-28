@@ -51,7 +51,6 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
     , f_poisson(initData(&f_poisson,type::vector<Real>(1,static_cast<Real>(0.3)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
     , f_young(initData(&f_young,type::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
-    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , m_rotatedInitialElements(initData(&m_rotatedInitialElements,"rotatedInitialElements","Flag activating rendering of stress directions within each triangle"))
     , m_initialTransformation(initData(&m_initialTransformation,"initialTransformation","Flag activating rendering of stress directions within each triangle"))
     , hosfordExponant(initData(&hosfordExponant, (Real)1.0, "hosfordExponant","Exponant in the Hosford yield criteria"))
@@ -429,12 +428,6 @@ void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>&
         }
         _young[id] = val;
     }
-}
-
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::setDamping(Real val) 
-{ 
-    f_damping.setValue(val); 
 }
 
 template <class DataTypes>
@@ -1315,16 +1308,6 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
 }
 
 
-
-// --------------------------------------------------------------------------------------
-// --- Accumulate functions
-// --------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index )
-{
-
-}
-
 // --------------------------------------------------------------------------------------
 // ---
 // --------------------------------------------------------------------------------------
@@ -1371,17 +1354,6 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const
 
 }
 
-// --------------------------------------------------------------------------------------
-// ---
-// --------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
-{
-
-}
-
-
-
 
 // --------------------------------------------------------------------------------------
 // --- AddForce and AddDForce methods
@@ -1396,40 +1368,18 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
 
     f1.resize(x1.size());
 
-    if(f_damping.getValue() != 0)
+    if (method == SMALL)
     {
-        if(method == SMALL)
+        for (int i = 0; i < nbTriangles; i += 1)
         {
-            for( int i=0; i<nbTriangles; i+=3 )
-            {
-                accumulateForceSmall( f1, x1, i/3 );
-                accumulateDampingSmall( f1, i/3 );
-            }
-        }
-        else
-        {
-            for ( int i=0; i<nbTriangles; i+=3 )
-            {
-                accumulateForceLarge( f1, x1, i/3);
-                accumulateDampingLarge( f1, i/3 );
-            }
+            accumulateForceSmall(f1, x1, i);
         }
     }
     else
     {
-        if (method==SMALL)
+        for (int i = 0; i < nbTriangles; i += 1)
         {
-            for(int i=0; i<nbTriangles; i+=1)
-            {
-                accumulateForceSmall( f1, x1, i );
-            }
-        }
-        else
-        {
-            for ( int i=0; i<nbTriangles; i+=1)
-            {
-                accumulateForceLarge( f1, x1, i);
-            }
+            accumulateForceLarge(f1, x1, i);
         }
     }
     f.endEdit();

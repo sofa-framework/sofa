@@ -219,10 +219,7 @@ public:
     void setYoung(Real val);
     void setYoungArray(const type::vector<Real>& values);
 
-    Real getDamping() { return f_damping.getValue(); }
-    void setDamping(Real val);
     int  getMethod() { return method; }
-    
     void setMethod(int val);
     void setMethod(const std::string& methodName);
 
@@ -263,16 +260,13 @@ protected :
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c);
     void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex);
-    void accumulateDampingSmall( VecCoord& f, Index elementIndex );
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
     ////////////// large displacements method
     void initLarge(int i, Index&a, Index&b, Index&c);
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
-    void accumulateDampingLarge( VecCoord& f, Index elementIndex );
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
-
 
     bool updateMatrix;
     int lastFracturedEdgeIndex;
@@ -284,7 +278,6 @@ public:
     Data<std::string> f_method; ///< large: large displacements, small: small displacements
     Data<type::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
     Data<type::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
-    Data<Real> f_damping; ///< Ratio damping/stiffness
 
     /// Initial strain parameters (if FEM is initialised with predefine values)
     Data< sofa::type::vector<type::fixed_array<Coord,3> > > m_rotatedInitialElements;
