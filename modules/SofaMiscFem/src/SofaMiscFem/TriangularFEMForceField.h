@@ -151,27 +151,6 @@ public:
         Real differenceToCriteria;
     };
 
-    /// Class to store FEM information on each edge, for topology modification handling
-    class EdgeInformation
-    {
-    public:
-        EdgeInformation()
-            :fracturable(false) {}
-
-        bool fracturable;
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*ei*/ )
-        {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*ei*/ )
-        {
-            return in;
-        }
-    };
 
     /// Class to store FEM information on each vertex, for topology modification handling
     class VertexInformation
@@ -201,7 +180,6 @@ public:
     /// Topology Data
     topology::TriangleData<sofa::type::vector<TriangleInformation> > triangleInfo;
     topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
-    topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     void createTriangleInformation(Index triangleIndex, TriangleInformation&,
         const core::topology::BaseMeshTopology::Triangle& t,
@@ -269,7 +247,6 @@ protected :
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
     bool updateMatrix;
-    int lastFracturedEdgeIndex;
 
 public:
 

@@ -45,7 +45,6 @@ template <class DataTypes>
 TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     : triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
     , vertexInfo(initData(&vertexInfo, "vertexInfo", "Internal point data"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
     , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
@@ -61,7 +60,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_computePrincipalStress(initData(&f_computePrincipalStress,false,"computePrincipalStress","Compute principal stress for each triangle"))
     , l_topology(initLink("topology", "link to the topology container"))
     #ifdef PLOT_CURVE
-    , elementID( initData(&elementID, (Real)0, "id","element id to follow for fracture criteria") )
+    , elementID( initData(&elementID, (Real)0, "id","element id to follow in the graphs") )
     , f_graphStress( initData(&f_graphStress,"graphMaxStress","Graph of max stress corresponding to the element id") )
     , f_graphCriteria( initData(&f_graphCriteria,"graphCriteria","Graph of the fracture criteria corresponding to the element id") )
     , f_graphOrientation( initData(&f_graphOrientation,"graphOrientation","Graph of the orientation of the principal stress direction corresponding to the element id"))
@@ -132,7 +131,6 @@ void TriangularFEMForceField<DataTypes>::init()
 
     // Create specific Engine for TriangleData
     triangleInfo.createTopologyHandler(m_topology);
-    edgeInfo.createTopologyHandler(m_topology);
     vertexInfo.createTopologyHandler(m_topology);
 
     triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInformation& triInfo,
@@ -148,8 +146,6 @@ void TriangularFEMForceField<DataTypes>::init()
         method = SMALL;
     else if (f_method.getValue() == "large")
         method = LARGE;
-
-      lastFracturedEdgeIndex = -1;
 
     reinit();
 }
@@ -254,16 +250,10 @@ void TriangularFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginWriteOnly());
-
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     /// prepare to store info in the triangle array
     triangleInf.resize(m_topology->getNbTriangles());
-
-    /// prepare to store info in the edge array
-    edgeInf.resize(m_topology->getNbEdges());
-
 
     unsigned int nbPoints = m_topology->getNbPoints();
     type::vector<VertexInformation>& vi = *(vertexInfo.beginWriteOnly());
@@ -276,7 +266,6 @@ void TriangularFEMForceField<DataTypes>::reinit()
         createTriangleInformation(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0, (const sofa::type::vector< double >)0);
     }
 
-    edgeInfo.endEdit();
     triangleInfo.endEdit();
 
 
