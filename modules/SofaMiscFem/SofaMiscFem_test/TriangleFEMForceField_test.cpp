@@ -731,12 +731,12 @@ TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_wrongAttributes
     this->checkWrongAttributes(1);
 }
 
-TEST_F(TriangleFEMForceField3_test, DISABLED_checkTriangularFEMForceField_init)
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_init)
 {
     this->checkInit(1);
 }
 
-TEST_F(TriangleFEMForceField3_test, DISABLED_checkTriangularFEMForceField_values)
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_values)
 {
     this->checkFEMValues(1);
 }
