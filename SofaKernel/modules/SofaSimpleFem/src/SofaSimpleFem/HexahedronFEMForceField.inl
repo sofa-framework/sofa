@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/core/behavior/RotationMatrix.h>
+#include <SofaBaseLinearSolver/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/decompose.h>
