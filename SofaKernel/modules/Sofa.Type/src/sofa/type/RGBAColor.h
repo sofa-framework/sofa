@@ -110,3 +110,17 @@ public:
 };
 
 } // namespace sofa::type
+
+namespace std
+{
+template<>
+struct tuple_size<::sofa::type::RGBAColor >
+{
+    static constexpr size_t value = 4;
+};
+template<::size_t Index>
+struct tuple_element<Index, ::sofa::type::RGBAColor >
+{
+    using type = float;
+};
+}

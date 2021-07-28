@@ -859,4 +859,15 @@ struct less< sofa::type::Vec<N,T> >
     }
 };
 
+template<sofa::Size N, class T>
+struct tuple_size<::sofa::type::Vec<N, T> >
+{
+    static constexpr size_t value = N;
+};
+template<::size_t Index, sofa::Size N, class T>
+struct tuple_element<Index, ::sofa::type::Vec<N, T> >
+{
+    using type = T;
+};
+
 } // namespace std

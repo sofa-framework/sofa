@@ -56,6 +56,7 @@
 #include <iostream>
 #include <type_traits>
 #include <algorithm>
+#include <utility>
 
 
 namespace sofa::type
@@ -143,6 +144,18 @@ public:
     {
         rangecheck(i);
         return elems[i];
+    }
+
+    template<std::size_t Index>
+    std::tuple_element_t<Index, fixed_array<T, N> >& get()
+    {
+        return at(Index);
+    }
+
+    template<std::size_t Index>
+    const std::tuple_element_t<Index, fixed_array<T, N> >& get() const
+    {
+        return at(Index);
     }
 
     // front() and back()
@@ -285,3 +298,17 @@ extern template class SOFA_TYPE_API fixed_array<double, 7>;
 #endif //FIXED_ARRAY_CPP
 
 } // namespace sofa::type
+
+namespace std
+{
+template<class T, sofa::Size N>
+struct tuple_size<::sofa::type::fixed_array<T, N> >
+{
+    static constexpr size_t value = N;
+};
+template<::size_t Index, class T, sofa::Size N>
+struct tuple_element<Index, ::sofa::type::fixed_array<T, N> >
+{
+    using type = T;
+};
+}

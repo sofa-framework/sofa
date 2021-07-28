@@ -145,20 +145,53 @@ void Color_Test::checkConstructors()
 
 void Color_Test::checkGetSet()
 {
-    RGBAColor a;
-    a.r(1);
-    EXPECT_EQ(a.r(), 1.0) ;
+    RGBAColor color;
+    color.r(1);
+    EXPECT_EQ(color.r(), 1.0) ;
 
-    a.g(2);
-    EXPECT_EQ(a.g(), 2.0) ;
+    color.g(2);
+    EXPECT_EQ(color.g(), 2.0) ;
 
-    a.b(3);
-    EXPECT_EQ(a.b(), 3.0) ;
+    color.b(3);
+    EXPECT_EQ(color.b(), 3.0) ;
 
-    a.a(4);
-    EXPECT_EQ(a.a(), 4.0) ;
+    color.a(4);
+    EXPECT_EQ(color.a(), 4.0) ;
 
-    EXPECT_EQ(a, RGBAColor(1.0,2.0,3.0,4.0)) ;
+    EXPECT_EQ(color, RGBAColor(1.0, 2.0, 3.0, 4.0)) ;
+
+    {
+        const auto [r, g, b, a] = color;
+        EXPECT_EQ(r, color.r());
+        EXPECT_EQ(g, color.g());
+        EXPECT_EQ(b, color.b());
+        EXPECT_EQ(a, color.a());
+    }
+
+    {
+        auto& [r, g, b, a] = color;
+        r = 10.f;
+        g = 11.f;
+        b = 12.f;
+        a = 13.f;
+        EXPECT_EQ(color, RGBAColor(10.f, 11.f, 12.f, 13.f)) ;
+    }
+
+    {
+        sofa::type::vector< sofa::type::RGBAColor > colors {
+            RGBAColor(1.f, 2.f, 3.f, 4.f),
+            RGBAColor(5.f, 6.f, 7.f, 8.f),
+            RGBAColor(9.f, 10.f, 11.f, 12.f)
+        };
+        float i = 0.f;
+        for (const auto& [r, g, b, a] : colors)
+        {
+            EXPECT_FLOAT_EQ(r, i += 1.f);
+            EXPECT_FLOAT_EQ(g, i += 1.f);
+            EXPECT_FLOAT_EQ(b, i += 1.f);
+            EXPECT_FLOAT_EQ(a, i += 1.f);
+        }
+    }
 }
 
 void Color_Test::checkStreamingOperator(const std::vector<std::string>& p)
@@ -257,6 +290,11 @@ TEST_F(Color_Test, checkCreateFromDouble)
 TEST_F(Color_Test, checkEquality)
 {
     this->checkEquality() ;
+}
+
+TEST_F(Color_Test, checkGetSet)
+{
+    this->checkGetSet() ;
 }
 
 TEST_F(Color_Test, checkEnlight)
