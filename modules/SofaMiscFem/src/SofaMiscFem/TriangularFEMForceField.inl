@@ -599,7 +599,7 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
 // --- Stiffness = K = J*D*Jt
 // --------------------------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStiffness(StrainDisplacement &J, Stiffness &K, MaterialStiffness &D)
+void TriangularFEMForceField<DataTypes>::computeStiffness(Stiffness& K, const StrainDisplacement& J, const MaterialStiffness& D)
 {
     type::Mat<3,6,Real> Jt;
     Jt.transpose(J);
@@ -743,78 +743,46 @@ void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index &
 // ---	Compute F = J * stress;
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index elementIndex, const VecCoord &p)
+void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index elementIndex, const Displacement& Depl, const StrainDisplacement& J)
 {
-    Displacement D;
-    StrainDisplacement J;
-    Stiffness K;
-    type::Vec<3,Real> strain;
-    type::Vec<3,Real> stress;
-    Transformation R_0_2, R_2_0;
-
-    const Triangle& tri = m_topology->getTriangle(elementIndex);
-    Index a = tri[0];
-    Index b = tri[1];
-    Index c = tri[2];
-
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
-    SReal area = 0.0;
+    bool fullMethod = false;
+    if (_anisotropicMaterial || method == SMALL)
+        fullMethod = true;
+
+    // compute strain
+    type::Vec<3, Real> strain;
+    m_triangleUtils->computeStrain(strain, J, Depl, fullMethod);
+
+    // compute stress
+    type::Vec<3, Real> stress;
+    m_triangleUtils->computeStress(stress, triangleInf[elementIndex].materialMatrix, strain, _anisotropicMaterial);
+    
     if (method == SMALL)
     {
-        // classic linear elastic method
-        Coord deforme_b = p[b] - p[a];
-        Coord deforme_c = p[c] - p[a];
-        Coord deforme_a = Coord(0, 0, 0);
-
-        m_triangleUtils->computeDisplacementSmall(D, triangleInf[elementIndex].rotatedInitialElements, deforme_b, deforme_c);
-        m_triangleUtils->computeStrainDisplacementGlobal(J, area, deforme_a, deforme_b, deforme_c);
-        m_triangleUtils->computeStrain(strain, J, D, true);
-        m_triangleUtils->computeStress(stress, triangleInf[elementIndex].materialMatrix, strain, true);
         F = J * stress;
-
-        // store newly computed values for next time
-        triangleInf[elementIndex].strainDisplacementMatrix = J;
-        triangleInf[elementIndex].strain = strain;
-        triangleInf[elementIndex].stress = stress;
     }
     else
     {
-        // co-rotational method
-        // first, compute rotation matrix into co-rotational frame
-        m_triangleUtils->computeRotationLarge(R_0_2, p[a], p[b], p[c]);
-
-        // then compute displacement in this frame
-        m_triangleUtils->computeDisplacementLarge(D, R_0_2, triangleInf[elementIndex].rotatedInitialElements, p[a], p[b], p[c]);
-
-        // and compute postions of a, b, c in the co-rotational frame
-        Coord A = Coord(0, 0, 0);
-        Coord B = R_0_2 * (p[b]-p[a]);
-        Coord C = R_0_2 * (p[c]-p[a]);
-
-        m_triangleUtils->computeStrainDisplacementLocal(J, area, B, C);
-        m_triangleUtils->computeStrain(strain, J, D, _anisotropicMaterial);
-        m_triangleUtils->computeStress(stress, triangleInf[elementIndex].materialMatrix, strain, _anisotropicMaterial);
-        computeStiffness(J,K,triangleInf[elementIndex].materialMatrix);
-
-        // Compute F = J * stress;
         // Optimisations: The following values are 0 (per computeStrainDisplacement )
-        // J[0][1] J[1][0] J[2][1] J[3][0] J[4][0] J[4][1] J[5][0] J[5][2]
-
-        F[0] = J[0][0] * stress[0] + /* J[0][1] * KJtD[1] + */ J[0][2] * stress[2];
-        F[1] = /* J[1][0] * KJtD[0] + */ J[1][1] * stress[1] + J[1][2] * stress[2];
-        F[2] = J[2][0] * stress[0] + /* J[2][1] * KJtD[1] + */ J[2][2] * stress[2];
-        F[3] = /* J[3][0] * KJtD[0] + */ J[3][1] * stress[1] + J[3][2] * stress[2];
-        F[4] = /* J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + */ J[4][2] * stress[2];
-        F[5] = /* J[5][0] * KJtD[0] + */ J[5][1] * stress[1] /* + J[5][2] * KJtD[2] */ ;
-
-        // store newly computed values for next time
-        R_2_0.transpose(R_0_2);
-        triangleInf[elementIndex].strainDisplacementMatrix = J;
-        triangleInf[elementIndex].rotation = R_2_0;
-        triangleInf[elementIndex].strain = strain;
-        triangleInf[elementIndex].stress = stress;
-        triangleInf[elementIndex].stiffness = K;
+        // \       0        1        2
+        // 0   J[0][0]      0      J[0][2]
+        // 1       0     J[1][1]   J[1][2]
+        // 2   J[2][0]      0      J[2][2]
+        // 3       0     J[3][1]   J[3][2]
+        // 4       0        0      J[4][2]
+        // 5       0     J[5][1]     0
+        F[0] = J[0][0] * stress[0] + J[0][2] * stress[2];
+        F[1] = J[1][1] * stress[1] + J[1][2] * stress[2];
+        F[2] = J[2][0] * stress[0] + J[2][2] * stress[2];
+        F[3] = J[3][1] * stress[1] + J[3][2] * stress[2];
+        F[4] = J[4][2] * stress[2];
+        F[5] = J[5][1] * stress[1];
     }
+    // store newly computed values for next time
+    triangleInf[elementIndex].strainDisplacementMatrix = J;
+    triangleInf[elementIndex].strain = strain;
+    triangleInf[elementIndex].stress = stress;
 
     triangleInfo.endEdit();
 }
@@ -1060,15 +1028,28 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const VecCoord &p, Index elementIndex )
 {
-    Displacement F;
-
+    const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
     const Element& tri = m_topology->getTriangle(elementIndex);
     Index a = tri[0];
     Index b = tri[1];
     Index c = tri[2];
 
+    Coord deforme_a, deforme_b, deforme_c;
+    deforme_b = p[b] - p[a];
+    deforme_c = p[c] - p[a];
+    deforme_a = Coord(0, 0, 0);
+
+    // displacements
+    Displacement D;
+    m_triangleUtils->computeDisplacementSmall(D, triangleInf[elementIndex].rotatedInitialElements, deforme_b, deforme_c);
+    
+    StrainDisplacement J;
+    SReal area = 0.0;
+    m_triangleUtils->computeStrainDisplacementGlobal(J, area, deforme_a, deforme_b, deforme_c);
+
     // compute force on element
-    computeForce(F, elementIndex, p);
+    Displacement F;
+    computeForce(F, elementIndex, D, J);
 
     f[a] += Coord( F[0], F[1], 0);
     f[b] += Coord( F[2], F[3], 0);
@@ -1081,23 +1062,50 @@ void TriangularFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, cons
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const VecCoord &p, Index elementIndex )
-{
-    Displacement F;
+{    
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
     const Triangle& tri = m_topology->getTriangle(elementIndex);
     Index a = tri[0];
     Index b = tri[1];
     Index c = tri[2];
 
+    // co-rotational method
+    // first, compute rotation matrix into co-rotational frame
+    Transformation R_2_0, R_0_2;
+    m_triangleUtils->computeRotationLarge(R_0_2, p[a], p[b], p[c]);
+
+    // then compute displacement in this frame
+    Displacement D;
+    m_triangleUtils->computeDisplacementLarge(D, R_0_2, triangleInf[elementIndex].rotatedInitialElements, p[a], p[b], p[c]);
+
+    // positions of the deformed points in the local frame
+    Coord deforme_a, deforme_b, deforme_c;
+    deforme_b = R_0_2 * (p[b] - p[a]);
+    deforme_c = R_0_2 * (p[c] - p[a]);
+
+    // Strain-displacement matrix
+    StrainDisplacement J;
+    SReal area = 0.0;
+    m_triangleUtils->computeStrainDisplacementLocal(J, area, deforme_b, deforme_c);
+
     // compute force on element (in the co-rotational space)
-    computeForce( F, elementIndex, p);
+    Displacement F;
+    computeForce( F, elementIndex, D, J);
 
-    const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
-    const Transformation& rot = triangleInf[elementIndex].rotation;
     // transform force back into global ref. frame
-    f[a] += rot * Coord(F[0], F[1], 0);
-    f[b] += rot * Coord(F[2], F[3], 0);
-    f[c] += rot * Coord(F[4], F[5], 0);
+    R_2_0.transpose(R_0_2);
+    f[a] += R_2_0 * Coord(F[0], F[1], 0);
+    f[b] += R_2_0 * Coord(F[2], F[3], 0);
+    f[c] += R_2_0 * Coord(F[4], F[5], 0);
 
+    Stiffness K;
+    computeStiffness(K, J, triangleInf[elementIndex].materialMatrix);
+
+    // store newly computed values for next time
+    triangleInf[elementIndex].rotation = R_2_0;
+    triangleInf[elementIndex].stiffness = K;
+
+    triangleInfo.endEdit();
 }
 
 

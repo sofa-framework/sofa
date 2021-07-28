@@ -268,9 +268,6 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J )
 {
-    type::Mat<3,6,Real> Jt;
-    Jt.transpose( J );
-
     type::Vec<3,Real> JtD; // strain
     bool fullMethod = (method == SMALL) ? true : false;
     // compute strain
@@ -282,30 +279,21 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
 
 
     //	F = J * KJtD;
-
-
     // Optimisations: The following values are 0 (per computeStrainDisplacement )
+    // \       0        1        2
+    // 0   J[0][0]      0      J[0][2]
+    // 1       0     J[1][1]   J[1][2]
+    // 2   J[2][0]      0      J[2][2]
+    // 3       0     J[3][1]   J[3][2]
+    // 4       0        0      J[4][2]
+    // 5       0     J[5][1]     0
 
-    // J[0][1]
-    // J[1][0]
-    // J[2][1]
-    // J[3][0]
-    // J[4][0]
-    // J[4][1]
-    // J[5][0]
-    // J[5][2]
-
-    F[0] = J[0][0] * KJtD[0] + /* J[0][1] * KJtD[1] + */ J[0][2] * KJtD[2];
-
-    F[1] = /* J[1][0] * KJtD[0] + */ J[1][1] * KJtD[1] + J[1][2] * KJtD[2];
-
-    F[2] = J[2][0] * KJtD[0] + /* J[2][1] * KJtD[1] + */ J[2][2] * KJtD[2];
-
-    F[3] = /* J[3][0] * KJtD[0] + */ J[3][1] * KJtD[1] + J[3][2] * KJtD[2];
-
-    F[4] = /* J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + */ J[4][2] * KJtD[2];
-
-    F[5] = /* J[5][0] * KJtD[0] + */ J[5][1] * KJtD[1] /* + J[5][2] * KJtD[2] */ ;
+    F[0] = J[0][0] * KJtD[0] + J[0][2] * KJtD[2];
+    F[1] = J[1][1] * KJtD[1] + J[1][2] * KJtD[2];
+    F[2] = J[2][0] * KJtD[0] + J[2][2] * KJtD[2];
+    F[3] = J[3][1] * KJtD[1] + J[3][2] * KJtD[2];
+    F[4] = J[4][2] * KJtD[2];
+    F[5] = J[5][1] * KJtD[1];
 }
 
 

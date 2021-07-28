@@ -48,21 +48,13 @@ public:
 
     typedef sofa::core::topology::BaseMeshTopology::Index Index;
 
-
-    
-
-
     ////////////// small displacements method
-    void initSmall(int i, Index& a, Index& b, Index& c) {}
     void computeDisplacementSmall(Displacement& D, const type::fixed_array<Coord, 3>& rotatedInitCoord, const Coord& pAB, const Coord& pAC);
-    void accumulateForceSmall(VecCoord& f, const VecCoord& p, Index elementIndex) {}
     void applyStiffnessSmall(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor) {}
 
     ////////////// large displacements method
-    void initLarge(int i, Index& a, Index& b, Index& c) {}
     void computeDisplacementLarge(Displacement& D, const Transformation& R_0_2, const type::fixed_array<Coord, 3>& rotatedInitCoord,const Coord& pA, const Coord& pB, const Coord& pC);
     
-    void accumulateForceLarge(VecCoord& f, const VecCoord& p, Index elementIndex) {}
     void computeRotationLarge(Transformation& r, const Coord& pA, const Coord& pB, const Coord& pC);
     void applyStiffnessLarge(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor) {}
     

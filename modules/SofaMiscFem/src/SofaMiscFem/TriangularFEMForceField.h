@@ -224,9 +224,9 @@ public:
 
 protected :
     /// Forcefield computations
-    void computeStiffness(StrainDisplacement &J, Stiffness &K, MaterialStiffness &D);
+    void computeStiffness(Stiffness &K, const StrainDisplacement& J, const MaterialStiffness &D);
    
-    void computeForce(Displacement &F, Index elementIndex, const VecCoord &p);
+    void computeForce(Displacement &F, Index elementIndex, const Displacement& Depl, const StrainDisplacement& J);
     void computePrincipalStrain(Index elementIndex, type::Vec<3,Real> &strain);
     void computePrincipalStress(Index elementIndex, type::Vec<3,Real> &stress);
 
