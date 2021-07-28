@@ -22,16 +22,15 @@
 #pragma once
 
 #include <SofaMiscFem/config.h>
-
-
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
+#ifdef PLOT_CURVE
 #include <map>
-#include <sofa/helper/map.h>
+#endif
 
 namespace sofa::helper
 {

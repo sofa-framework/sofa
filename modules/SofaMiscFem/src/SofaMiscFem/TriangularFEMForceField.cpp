@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP
 
-#include "TriangularFEMForceField.inl"
+#include <SofaMiscFem/TriangularFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -32,13 +32,12 @@ namespace sofa::component::forcefield
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-int TriangularFEMForceFieldClass = core::RegisterObject("Corotational Triangular finite elements")
+int TriangularFEMForceFieldClass = core::RegisterObject("Corotational Triangular finite elements for dynamic topology")
     .add< TriangularFEMForceField<Vec3Types> >()
 
     ;
 
 template class SOFA_SOFAMISCFEM_API TriangularFEMForceField<Vec3Types>;
-
 
 
 } // namespace sofa::component::forcefield

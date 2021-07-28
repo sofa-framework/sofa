@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 
-#include "TriangularFEMForceField.h"
+#include <SofaMiscFem/TriangularFEMForceField.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ColorMap.h>
@@ -30,13 +29,8 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 
-#include <sofa/helper/system/thread/debug.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
-#include <algorithm>
 #include <limits>
 
 namespace sofa::component::forcefield
@@ -1520,7 +1514,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (showStressValue.getValue())
     {
         type::vector<VertexInformation>& vertexInf = *(vertexInfo.beginEdit());
-        double minStress = numeric_limits<double>::max();
+        double minStress = std::numeric_limits<double>::max();
         double maxStress = 0.0;
         for ( unsigned int i = 0 ; i < vertexInf.size() ; i++)
         {
@@ -1575,8 +1569,8 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         std::vector<sofa::type::Vector3> vertices;
         sofa::type::RGBAColor color;
 
-        Real maxDifference = numeric_limits<Real>::min();
-        Real minDifference = numeric_limits<Real>::max();
+        Real maxDifference = std::numeric_limits<Real>::min();
+        Real minDifference = std::numeric_limits<Real>::max();
         for (Size i = 0 ; i < nbTriangles ; i++)
         {
             if (triangleInf[i].differenceToCriteria > 0)
