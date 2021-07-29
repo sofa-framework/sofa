@@ -11,6 +11,7 @@ set(SOURCE_FILES
     system/FileRepository_test.cpp
     system/FileSystem_test.cpp
     system/PluginManager_test.cpp
+    system/thread/CircularQueue_test.cpp
     logging/logging_test.cpp
 )
 
