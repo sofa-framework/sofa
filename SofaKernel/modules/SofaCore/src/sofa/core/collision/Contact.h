@@ -83,10 +83,10 @@ public:
     virtual void setKeepAlive(bool /* val */) {}
 
     //Todo adding TPtr parameter
-    class Factory : public helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*>, Contact::SPtr >
+    class SOFA_CORE_API Factory : public helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*>, Contact::SPtr >
     {
     public:
-        static Factory SOFA_CORE_API *getInstance();
+        static Factory *getInstance();
 
         static ObjectPtr CreateObject(Key key, Argument arg)
         {
