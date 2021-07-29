@@ -480,7 +480,10 @@ public:
     WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 
-/// Easy syntax for getting read/write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
+
+/// Returns a write only accessor from the provided Data<>
+/// Example of use:
+///   auto points = getWriteOnlyAccessor(d_points)
 template<class T>
 WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::Data<T>& data)
 { 
@@ -498,6 +501,11 @@ template<class T>
 SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
 WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
+
+
+/// Returns a read accessor from the provided Data<>
+/// Example of use:
+///   auto points = getReadAccessor(d_points)
 template<class T>
 ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmodel::Data<T>& data)
 {
@@ -515,13 +523,17 @@ template<class T>
 SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
 ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
-/// Easy syntax for getting write only access to a Data using operator ->. Example: writeOnly(someFlagData)->setFlagValue(true);
+/// Returns a write only accessor from the provided Data<>
+/// WriteOnly accessors are faster than WriteAccessor because
+/// as the data is only read this means there is no need to pull
+/// the data from the parents
+/// Example of use:
+///   auto points = getWriteOnlyAccessor(d_points)
 template<class T>
 WriteOnlyAccessor<core::objectmodel::Data<T> > getWriteOnlyAccessor(core::objectmodel::Data<T>& data)
 {
     return WriteOnlyAccessor<core::objectmodel::Data<T> >(data);
 }
-
 
 } // namespace helper
 
