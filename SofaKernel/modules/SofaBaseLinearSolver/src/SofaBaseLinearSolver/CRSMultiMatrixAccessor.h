@@ -46,7 +46,7 @@ public:
     static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
     static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
 
-    //Compute the contribution of all new created matrix to the the global system matrix
+    //Compute the contribution of all new created matrix to the global system matrix
     virtual void computeGlobalMatrix();
 };
 
