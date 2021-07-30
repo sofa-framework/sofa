@@ -49,24 +49,24 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::Index Index;
 
     ////////////// small displacements method
-    void computeDisplacementSmall(Displacement& D, const type::fixed_array<Coord, 3>& rotatedInitCoord, const Coord& pAB, const Coord& pAC);
-    void applyStiffnessSmall(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor) {}
+    constexpr void computeDisplacementSmall(Displacement& D, const type::fixed_array<Coord, 3>& rotatedInitCoord, const Coord& pAB, const Coord& pAC);
+    constexpr void applyStiffnessSmall(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor) {}
 
     ////////////// large displacements method
-    void computeDisplacementLarge(Displacement& D, const Transformation& R_0_2, const type::fixed_array<Coord, 3>& rotatedInitCoord,const Coord& pA, const Coord& pB, const Coord& pC);
+    constexpr void computeDisplacementLarge(Displacement& D, const Transformation& R_0_2, const type::fixed_array<Coord, 3>& rotatedInitCoord,const Coord& pA, const Coord& pB, const Coord& pC);
     
-    void computeRotationLarge(Transformation& r, const Coord& pA, const Coord& pB, const Coord& pC);
-    void applyStiffnessLarge(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor) {}
+    constexpr void computeRotationLarge(Transformation& r, const Coord& pA, const Coord& pB, const Coord& pC);
+    constexpr void applyStiffnessLarge(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor) {}
     
     // in global coordinate
-    void computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, const Coord& pA, const Coord& pB, const Coord& pC);
+    constexpr void computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, const Coord& pA, const Coord& pB, const Coord& pC);
     // in local coordinate, a = Coord (0, 0, 0)
-    void computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, const Coord& pB, const Coord& pC);
+    constexpr void computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, const Coord& pB, const Coord& pC);
   
     // Compute strain, if full is set to true, full matrix multiplication is performed not taking into account potential 0 values
-    void computeStrain(type::Vec<3, Real>& strain, const StrainDisplacement& J, const Displacement& D, bool fullMethod = false);
+    constexpr void computeStrain(type::Vec<3, Real>& strain, const StrainDisplacement& J, const Displacement& D, bool fullMethod = false);
     // Compute stress, if full is set to true, full matrix multiplication is performed not taking into account potential 0 values
-    void computeStress(type::Vec<3, Real>& stress, const MaterialStiffness& K, const type::Vec<3, Real>& strain, bool fullMethod = false);
+    constexpr void computeStress(type::Vec<3, Real>& stress, const MaterialStiffness& K, const type::Vec<3, Real>& strain, bool fullMethod = false);
 };
 
 } //namespace sofa::component::forcefield
