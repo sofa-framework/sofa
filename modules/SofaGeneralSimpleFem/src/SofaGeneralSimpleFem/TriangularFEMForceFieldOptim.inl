@@ -376,29 +376,33 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
         Deriv da  = dx[t[0]];
         Deriv dab = dx[t[1]]-da;
         Deriv dac = dx[t[2]]-da;
+
         Real dbx = ts.frame[0]*dab;
         Real dby = ts.frame[1]*dab;
         Real dcx = ts.frame[0]*dac;
         Real dcy = ts.frame[1]*dac;
 
-        type::Vec<3,Real> dstrain (
-            ti.cy  * dbx,                             // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
-            ti.bx * dcy - ti.cx * dby,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
-            ti.bx * dcx - ti.cx * dbx + ti.cy * dby); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
+        Real beta2 = ts.beta2;
+        Real gamma2 = ts.gamma2;
+        Real gamma3 = ts.gamma3;
+
+        type::Vec<3, Real> dstrain(
+            beta2 * dbx,                                // ( beta2,   0,  0,  0)       * (dbx, dby, dcx, dcy)
+            gamma2 * dby + gamma3 * dcy,                // (  0, gamma2,  0, gamma3)   * (dbx, dby, dcx, dcy)
+            gamma2 * dbx + beta2 * dby + gamma3 * dcx); // (gamma2, beta2, gamma3,  0) * (dbx, dby, dcx, dcy)
 
         Real gammaXY = gamma*(dstrain[0]+dstrain[1]);
-
         type::Vec<3,Real> dstress (
-            mu*dstrain[0] + gammaXY,    // (gamma+mu, gamma   ,    0) * dstrain
-            mu*dstrain[1] + gammaXY,    // (gamma   , gamma+mu,    0) * dstrain
-            (Real)(0.5)*mu*dstrain[2]); // (       0,        0, mu/2) * dstrain
+            mu*dstrain[0] + gammaXY,        // (gamma+mu, gamma   ,    0) * dstrain
+            mu*dstrain[1] + gammaXY,        // (gamma   , gamma+mu,    0) * dstrain
+            (Real)(0.5)*mu*dstrain[2]);     // (       0,        0, mu/2) * dstrain
+        
+        Deriv dfb = ts.frame[0] * (ts.beta2 * dstress[0] + ts.gamma2 * dstress[2])  // (beta2,   0, gamma2) * stress
+            + ts.frame[1] * (ts.gamma2 * dstress[1] + ts.beta2 * dstress[2]);       // ( 0, gamma2,  beta2) * stress
+        Deriv dfc = ts.frame[0] * (ts.gamma3 * dstress[2])                          // ( 0,   0,  gamma3) * stress
+            + ts.frame[1] * (ts.gamma3 * dstress[1]);                               // ( 0,  gamma3,   0) * stress
+        Deriv dfa = -dfb - dfc;
 
-        dstress *= ti.ss_factor * kFactor;
-        Deriv dfb = ts.frame[0] * (ti.cy * dstress[0] - ti.cx * dstress[2])  // (cy,   0, -cx) * dstress
-                + ts.frame[1] * (ti.cy * dstress[2] - ti.cx * dstress[1]); // ( 0, -cx,  cy) * dstress
-        Deriv dfc = ts.frame[0] * (ti.bx * dstress[2])                       // ( 0,   0,  bx) * dstress
-                + ts.frame[1] * (ti.bx * dstress[1]);                      // ( 0,  bx,   0) * dstress
-        Deriv dfa = -dfb-dfc;
         df[t[0]] -= dfa;
         df[t[1]] -= dfb;
         df[t[2]] -= dfc;
