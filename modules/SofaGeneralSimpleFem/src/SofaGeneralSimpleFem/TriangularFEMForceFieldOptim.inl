@@ -67,7 +67,7 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , d_triangleState(initData(&d_triangleState, "triangleState", "Internal triangle data (time-dependent)"))
     , d_vertexInfo(initData(&d_vertexInfo, "vertexInfo", "Internal point data"))
     , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
-    , d_poisson(initData(&d_poisson,(Real)(0.45),"poissonRatio","Poisson ratio in Hooke's law"))
+    , d_poisson(initData(&d_poisson,(Real)(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
     , d_young(initData(&d_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , d_damping(initData(&d_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , d_restScale(initData(&d_restScale,(Real)1.,"restScale","Scale factor applied to rest positions (to simulate pre-stretched materials)"))
@@ -123,9 +123,13 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
     d_edgeInfo.createTopologyHandler(m_topology);
     d_vertexInfo.createTopologyHandler(m_topology);
 
-    if (m_topology->getNbTriangles()==0 && m_topology->getNbQuads()!=0 )
+    if (m_topology->getNbTriangles() == 0)
     {
-        msg_warning() << "The topology only contains quads while this forcefield only supports triangles."<<msgendl;
+        msg_warning() << "No triangles found in linked Topology.";
+        if (m_topology->getNbQuads() != 0)
+        {
+            msg_warning() << "The topology only contains quads while this forcefield only supports triangles." << msgendl;
+        }        
     }
 
     reinit();
