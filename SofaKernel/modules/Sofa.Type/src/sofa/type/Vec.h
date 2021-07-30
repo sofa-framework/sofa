@@ -39,7 +39,7 @@ namespace sofa::type
 namespace // anonymous
 {
     template<typename real>
-    inline real rabs(const real r)
+    constexpr real rabs(const real r)
     {
         if constexpr (std::is_signed<real>())
             return std::abs(r);
