@@ -377,20 +377,29 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
         Deriv dab = dx[t[1]]-da;
         Deriv dac = dx[t[2]]-da;
 
-        Real dbx = ts.frame[0]*dab;
-        Real dby = ts.frame[1]*dab;
-        Real dcx = ts.frame[0]*dac;
-        Real dcy = ts.frame[1]*dac;
+        // recompute local frame as the velocity could be out of the plan define by B[x, 0], C[x, y]
+        Coord dframe0 = dab;
+        Coord n = dab.cross(dac);
+        Coord dframe1 = n.cross(dab);
+        dframe0.normalize();
+        dframe1.normalize();
+
+        Real dbx = dframe0 *dab;
+        //Real dby = dframe1 *dab; // 0 in this case
+        Real dcx = dframe0 *dac;
+        Real dcy = dframe1 *dac;
 
         Real beta2 = ts.beta2;
         Real gamma2 = ts.gamma2;
         Real gamma3 = ts.gamma3;
 
+        // Strain = StrainDisplacement * Displacement
         type::Vec<3, Real> dstrain(
-            beta2 * dbx,                                // ( beta2,   0,  0,  0)       * (dbx, dby, dcx, dcy)
-            gamma2 * dby + gamma3 * dcy,                // (  0, gamma2,  0, gamma3)   * (dbx, dby, dcx, dcy)
-            gamma2 * dbx + beta2 * dby + gamma3 * dcx); // (gamma2, beta2, gamma3,  0) * (dbx, dby, dcx, dcy)
+            beta2 * dbx,                                // ( beta2,   0,  0,  0)       * (dbx, dby(0), dcx, dcy)
+            gamma3 * dcy,                               // (  0, gamma2,  0, gamma3)   * (dbx, dby(0), dcx, dcy)
+            gamma2 * dbx + gamma3 * dcx);               // (gamma2, beta2, gamma3,  0) * (dbx, dby(0), dcx, dcy)
 
+        // Stress = K * Strain
         Real gammaXY = gamma*(dstrain[0]+dstrain[1]);
         type::Vec<3,Real> dstress (
             mu*dstrain[0] + gammaXY,        // (gamma+mu, gamma   ,    0) * dstrain
