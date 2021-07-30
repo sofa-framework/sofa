@@ -25,6 +25,48 @@
 namespace sofa::component::linearsolver
 {
 
+template <class TMatrix, class TBlocMatrix>
+void addBloc(TMatrix& self, Index row, Index col, const TBlocMatrix & _M)
+{
+    if (row % TBlocMatrix::nbLines == 0 && col % TBlocMatrix::nbCols == 0)
+    {
+        if (EMIT_EXTRA_MESSAGE)
+        {
+            dmsg_info(&self) << "(" << self.rowSize() << "," << self.colSize() << "): element(" << row << "," << col << ") += " << _M;
+        }
+
+        *self.wbloc(row / TBlocMatrix::nbLines, col / TBlocMatrix::nbCols, true) += _M;
+    }
+    else
+    {
+        self.BaseMatrix::add(row, col, _M);
+    }
+}
+
+template <>
+void CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3d & _M)
+{
+    addBloc(*this, row, col, _M);
+}
+
+template <>
+void CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3f & _M)
+{
+    addBloc(*this, row, col, _M);
+}
+
+template <>
+void CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3d & _M)
+{
+    addBloc(*this, row, col, _M);
+}
+
+template <>
+void CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3f & _M)
+{
+    addBloc(*this, row, col, _M);
+}
+
 template <> template <>
 inline void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
 {
