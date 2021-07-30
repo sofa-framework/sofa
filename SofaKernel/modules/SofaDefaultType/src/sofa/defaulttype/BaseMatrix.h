@@ -66,19 +66,19 @@ public:
     /// Write the value of the element at row i, column j (using 0-based indices)
     virtual void set(Index i, Index j, double v) = 0;
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(Index i, Index j, double v) = 0;
+    virtual void add(Index row, Index col, double v) = 0;
 
-    ///Adding values from a 3x3d matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const type::Mat3x3d & _M);
+    ///Adding values from a 3x3d matrix. This function may be overload to obtain better performances
+    virtual void add(Index row, Index col, const type::Mat3x3d & _M);
 
-    ///Adding values from a 3x3f matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const type::Mat3x3f & _M);
+    ///Adding values from a 3x3f matrix. This function may be overload to obtain better performances
+    virtual void add(Index row, Index col, const type::Mat3x3f & _M);
 
-    ///Adding values from a 2x2d matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const type::Mat2x2d & _M);
+    ///Adding values from a 2x2d matrix. This function may be overload to obtain better performances
+    virtual void add(Index row, Index col, const type::Mat2x2d & _M);
 
-    ///Adding values from a 2x2f matrix this function may be overload to obtain better performances
-    virtual void add(Index _i, Index _j, const type::Mat2x2f & _M);
+    ///Adding values from a 2x2f matrix. This function may be overload to obtain better performances
+    virtual void add(Index row, Index col, const type::Mat2x2f & _M);
 
     /*    /// Write the value of the element at row i, column j (using 0-based indices)
         virtual void set(Index i, Index j, float v) { set(i,j,(double)v); }
