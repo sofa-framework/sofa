@@ -178,7 +178,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, Triangle
         ab *= restScale;
         ac *= restScale;
     }
-    computeTriangleRotation(ti.init_frame, ab, ac);
+    // equivalent to computeRotationLarge but in 2D == do not store the ortogonal vector are framex ^ framey
+    computeTriangleRotation(ti.init_frame, ab, ac); 
+        
+    // compute initial position in local space A[0, 0] B[x, 0] C[x, y]
     ti.bx = ti.init_frame[0] * ab;
     ti.cx = ti.init_frame[0] * ac;
     ti.cy = ti.init_frame[1] * ac;
@@ -280,37 +283,69 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         Triangle t = triangles[i];
         const TriangleInfo& ti = triInfo[i];
         TriangleState& ts = triState[i];
-        Coord a  = x[t[0]];
-        Coord ab = x[t[1]]-a;
-        Coord ac = x[t[2]]-a;
+        Coord a = x[t[0]];
+        Coord ab = x[t[1]] -a;
+        Coord ac = x[t[2]] -a;
+
         computeTriangleRotation(ts.frame, ab, ac);
-        Real dbx = ti.bx - ts.frame[0]*ab;
-        Real dcx = ti.cx - ts.frame[0]*ac;
-        Real dcy = ti.cy - ts.frame[1]*ac;
+        // position in local space
+        Real bx = ts.frame[0] * ab;
+        Real cx = ts.frame[0] * ac;
+        Real cy = ts.frame[1] * ac;
 
+        // Displacement in local space (rest pos - current pos)
+        Real dbx = ti.bx - bx;
+        Real dcx = ti.cx - cx;
+        Real dcy = ti.cy - cy;
+                
+        /// Full StrainDisplacement matrix. 
+        // | beta1  0       beta2  0        beta3  0      |
+        // | 0      gamma1  0      gamma2   0      gamma3 | / (2 * A)
+        // | gamma1 beta1   gamma2 beta2    gamma3 beta3 |
+
+        // As no displacement for Pa nor in Pb[y], Beta1, gamma1 and beta3 are not considered. Therefor we obtain:
+        // | beta2  0        beta3  0      |
+        // | 0      gamma2   0      gamma3 | / (2 * A) 
+        // | gamma2 beta2    gamma3 beta3 |
+        
+        // Directly apply division by determinant(Area = det * 0.5 in local space; det = bx * cy)
+        // |   1/bx        0        0        0   |
+        // |   0       -cx/(bx*cy)  0       1/cy |
+        // | -cx/(bx*cy)  1/bx     1/cy      0   |
+
+        // StrainDisplacement: 
+        Real beta2 = 1 / bx;
+        Real gamma2 = -cx / (bx * cy);
+        Real gamma3 = 1 / cy;
+
+        // Strain = StrainDisplacement * Displacement
         type::Vec<3,Real> strain (
-            ti.cy * dbx,                // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
-            ti.bx * dcy,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
-            ti.bx * dcx - ti.cx * dbx); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
-
-        Real gammaXY = gamma*(strain[0]+strain[1]);
-
+            beta2 * dbx,                     // ( beta2,   0,  0,  0)       * (dbx, dby(0), dcx, dcy)
+            gamma3 * dcy,                    // (  0, gamma2,  0, gamma3)   * (dbx, dby(0), dcx, dcy)
+            gamma2 * dbx + gamma3 * dcx);    // (gamma2, beta2, gamma3,  0) * (dbx, dby(0), dcx, dcy)
+        
+        // Stress = K * Strain
+        Real gammaXY = gamma * (strain[0] + strain[1]);
         type::Vec<3,Real> stress (
-            mu*strain[0] + gammaXY,    // (gamma+mu, gamma   ,    0) * strain
-            mu*strain[1] + gammaXY,    // (gamma   , gamma+mu,    0) * strain
-            (Real)(0.5)*mu*strain[2]); // (       0,        0, mu/2) * strain
-
-        ts.stress = stress;
-
-        stress *= ti.ss_factor;
-        Deriv fb = ts.frame[0] * (ti.cy * stress[0] - ti.cx * stress[2])  // (cy,   0, -cx) * stress
-                + ts.frame[1] * (ti.cy * stress[2] - ti.cx * stress[1]); // ( 0, -cx,  cy) * stress
-        Deriv fc = ts.frame[0] * (ti.bx * stress[2])                      // ( 0,   0,  bx) * stress
-                + ts.frame[1] * (ti.bx * stress[1]);                     // ( 0,  bx,   0) * stress
+            mu*strain[0] + gammaXY,      // (gamma+mu, gamma   ,    0) * strain
+            mu*strain[1] + gammaXY,      // (gamma   , gamma+mu,    0) * strain
+            (Real)(0.5)*mu*strain[2]);   // (       0,        0, mu/2) * strain
+        
+        Deriv fb = ts.frame[0] * (beta2 * stress[0] + gamma2 * stress[2])  // (beta2,   0, gamma2) * stress
+                + ts.frame[1] * (gamma2 * stress[1] + beta2 * stress[2]); // ( 0, gamma2,  beta2) * stress
+        Deriv fc = ts.frame[0] * (gamma3 * stress[2])                      // ( 0,   0,  gamma3) * stress
+                + ts.frame[1] * (gamma3 * stress[1]);                     // ( 0,  gamma3,   0) * stress
         Deriv fa = -fb-fc;
+
         f[t[0]] += fa;
         f[t[1]] += fb;
         f[t[2]] += fc;
+
+        // store data for re-use
+        ts.stress = stress;
+        ts.beta2 = beta2;
+        ts.gamma2 = gamma2;
+        ts.gamma3 = gamma3;
     }
 }
 
