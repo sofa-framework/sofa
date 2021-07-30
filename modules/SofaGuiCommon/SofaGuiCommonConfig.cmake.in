@@ -9,7 +9,7 @@ find_package(SofaBase QUIET REQUIRED)
 find_package(SofaUserInteraction QUIET REQUIRED)
 find_package(SofaGraphComponent QUIET REQUIRED)
 find_package(SofaSimulationCommon QUIET REQUIRED)
-find_package(cxxopts QUIET REQUIRED)
+sofa_find_package(cxxopts QUIET REQUIRED)
 
 if(SOFAGUICOMMON_HAVE_SOFA_GL)
     find_package(Sofa.GL QUIET REQUIRED)
