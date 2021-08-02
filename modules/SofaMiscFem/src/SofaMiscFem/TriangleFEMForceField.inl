@@ -115,10 +115,12 @@ void TriangleFEMForceField<DataTypes>::init()
     _strainDisplacements.resize(_indexedElements->size());
     _rotations.resize(_indexedElements->size());
 
-    if (method == SMALL) {
+    if (method == SMALL) 
+    {
         initSmall();
     }
-    else {
+    else 
+    {
         initLarge();
     }
 
@@ -135,10 +137,12 @@ void TriangleFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    if (method == SMALL) {
+    if (method == SMALL) 
+    {
         //    initSmall();  // useful ? The rotations are recomputed later
     }
-    else {
+    else 
+    {
         initLarge(); // compute the per-element strain-displacement matrices
     }
 
@@ -232,7 +236,7 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
             _materialsStiffnesses[i][2][1] = 0;
             _materialsStiffnesses[i][2][2] = 0.5f - _p;
 
-            _materialsStiffnesses[i] *= Estrain;
+            _materialsStiffnesses[i] *= Estrain * triangleVolume;
         }
         else // plane stress
         {
@@ -246,7 +250,7 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
             _materialsStiffnesses[i][2][1] = 0;
             _materialsStiffnesses[i][2][2] = 0.5f * (_1_p);
 
-            _materialsStiffnesses[i] *= Estress;
+            _materialsStiffnesses[i] *= Estress * triangleVolume;
         }
     }
 }
