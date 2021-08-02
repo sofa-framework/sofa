@@ -79,9 +79,8 @@ public:
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
     virtual const sofa::defaulttype::BaseMatrix* getJ(const core::MechanicalParams* );
 
-    using core::behavior::ProjectiveConstraintSet<DataTypes>::applyConstraint;
-    void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
-    void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
+    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

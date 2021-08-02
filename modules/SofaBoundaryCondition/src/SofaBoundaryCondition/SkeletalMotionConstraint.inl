@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <iostream>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -304,7 +305,7 @@ void SkeletalMotionConstraint<DataTypes>::addChannel(unsigned int jointIndex , C
 
 // Matrix Integration interface
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
+void SkeletalMotionConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     if( !active.getValue() ) return;
 
@@ -323,7 +324,7 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
+void SkeletalMotionConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     if( !active.getValue() ) return;
 
