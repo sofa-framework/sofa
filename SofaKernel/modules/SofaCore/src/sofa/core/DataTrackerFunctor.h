@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/DataTracker.h>
-
+#include <sofa/core/objectmodel/DDGNode.h>
 namespace sofa::core
 {
 

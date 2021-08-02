@@ -67,5 +67,12 @@ protected:
     typedef std::map<const objectmodel::BaseData*,int> DataTrackers;
     DataTrackers m_dataTrackers;
 };
+
+
+SOFA_ATTRIBUTE_DISABLED("v20.06 (PR#1406)", "v21.06",
+                        "Use DataTrackerCallback instead. DataTrackerCallback only supports 1 callback at a time, \
+                        but multiple DataTrackerCallbacks can be created within a single component.")
+    typedef DeprecatedAndRemoved DataTrackerEngine;
+
 } // namespace sofa::core
 
