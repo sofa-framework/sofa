@@ -749,31 +749,6 @@ void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&/
 }
 
 
-// --------------------------------------------------------------------------------------
-// ---	Compute F = J * stress;
-// --------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeForceLarge(Displacement& F, const StrainDisplacement& J, const type::Vec<3, Real>& stress)
-{
-    // Optimisations: The following values are 0 (per computeStrainDisplacement )
-        // \       0        1        2
-        // 0   J[0][0]      0      J[0][2]
-        // 1       0     J[1][1]   J[1][2]
-        // 2   J[2][0]      0      J[2][2]
-        // 3       0     J[3][1]   J[3][2]
-        // 4       0        0      J[4][2]
-        // 5       0     J[5][1]     0
-    F[0] = J[0][0] * stress[0] + J[0][2] * stress[2];
-    F[1] = J[1][1] * stress[1] + J[1][2] * stress[2];
-    F[2] = J[2][0] * stress[0] + J[2][2] * stress[2];
-    F[3] = J[3][1] * stress[1] + J[3][2] * stress[2];
-    F[4] = J[4][2] * stress[2];
-    F[5] = J[5][1] * stress[1];
-}
-
-
-
-
 /// Compute current stress
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stress, Index elementIndex)
@@ -1000,7 +975,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h
         x_2 = R_0_2 * x[c];
         dX[4] = x_2[0];
         dX[5] = x_2[1];
-        
+
         // compute strain
         type::Vec<3, Real> strain;
         m_triangleUtils.computeStrain(strain, tInfo.strainDisplacementMatrix, dX, _anisotropicMaterial);

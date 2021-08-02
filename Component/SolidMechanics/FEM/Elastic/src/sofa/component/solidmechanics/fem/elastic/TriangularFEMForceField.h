@@ -238,7 +238,6 @@ public:
 protected :
     /// Forcefield computations
     void computeStiffness(Stiffness &K, const StrainDisplacement& J, const MaterialStiffness &D);
-    void computeForceLarge(Displacement& F, const StrainDisplacement& J, const type::Vec<3, Real>& stress);
     void computePrincipalStrain(Index elementIndex, type::Vec<3,Real> &strain);
     void computePrincipalStress(Index elementIndex, type::Vec<3,Real> &stress);
 
