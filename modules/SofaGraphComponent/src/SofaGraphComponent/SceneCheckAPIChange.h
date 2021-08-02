@@ -44,7 +44,7 @@ namespace sofa::core::objectmodel
 namespace sofa::simulation::_scenechecking_
 {
 
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction;
+typedef std::function<void(sofa::core::objectmodel::Base*)>     ChangeSetHookFunction;
 
 class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckAPIChange : public SceneCheck
 {
