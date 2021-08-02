@@ -94,6 +94,13 @@ public:
         this->set(r...);
     }
 
+    /// Specific constructor for 6-elements vectors, taking two 3-elements vectors
+    template<typename R, typename T, Size NN = N, typename std::enable_if<NN == 6, int>::type = 0 >
+    Vec(const Vec<3, R>& a, const Vec<3, T>& b)
+    {
+        set(a[0], a[1], a[2], b[0], b[1], b[2]);
+    }
+
     /// Specific set function for 1-element vectors.
     template<Size NN = N, typename std::enable_if<NN == 1, int>::type = 0>
     constexpr void set(const ValueType r1) noexcept
