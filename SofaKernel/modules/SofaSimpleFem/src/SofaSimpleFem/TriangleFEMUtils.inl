@@ -97,15 +97,39 @@ constexpr void TriangleFEMUtils<DataTypes>::computeDisplacementLarge(Displacemen
 }
 
 
+// --------------------------------------------------------------------------------------
+// ---	Compute F = J * stress;
+// --------------------------------------------------------------------------------------
+template<class DataTypes>
+constexpr void TriangleFEMUtils<DataTypes>::computeForceLarge(Displacement& F, const StrainDisplacement& J, const type::Vec<3, Real>& stress)
+{
+    //	F = J * stress;
+    // Optimisations: The following values are 0 (per computeStrainDisplacement )
+    // \       0        1        2
+    // 0   J[0][0]      0      J[0][2]
+    // 1       0     J[1][1]   J[1][2]
+    // 2   J[2][0]      0      J[2][2]
+    // 3       0     J[3][1]   J[3][2]
+    // 4       0        0      J[4][2]
+    // 5       0     J[5][1]     0
+
+    F[0] = J[0][0] * stress[0] + J[0][2] * stress[2];
+    F[1] = J[1][1] * stress[1] + J[1][2] * stress[2];
+    F[2] = J[2][0] * stress[0] + J[2][2] * stress[2];
+    F[3] = J[3][1] * stress[1] + J[3][2] * stress[2];
+    F[4] = J[4][2] * stress[2];
+    F[5] = J[5][1] * stress[1];
+}
+
+
 // ------------------------------------------------------------------------------------------------------------
 // --- Compute the strain-displacement matrix where (pA, pB, pC) are the coordinates of the 3 nodes of a triangle
 // ------------------------------------------------------------------------------------------------------------
 template<class DataTypes>
-constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(StrainDisplacement& J, SReal& area, const Coord& pA, const Coord& pB, const Coord& pC)
+constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(StrainDisplacement& J, const Coord& pA, const Coord& pB, const Coord& pC)
 {
     Coord ab_cross_ac = cross(pB - pA, pC - pA);
     Real determinant = ab_cross_ac.norm();
-    area = determinant * 0.5f;
 
     Real x13 = (pA[0] - pC[0]) / determinant;
     Real x21 = (pB[0] - pA[0]) / determinant;
@@ -144,11 +168,10 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(Stra
 // --- Compute the strain-displacement matrix where (pB, pC) are the coordinates of the 2 nodes of a triangle in local space
 // --------------------------------------------------------------------------------------------------------------------------
 template<class DataTypes>
-constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacement& J, SReal& area, const Coord& pB, const Coord& pC)
+constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacement& J, const Coord& pB, const Coord& pC)
 {
     // local computation taking into account that a = [0, 0, 0]
     Real determinant = pB[0] * pC[1]; // b = [x, 0, 0], c = [y, y, 0]
-    area = determinant*0.5f;
 
     /* The following formulation is actually equivalent:
       Let
@@ -204,10 +227,9 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(Strai
 // --------------------------------------------------------------------------------------------------------
 template<class DataTypes>
 constexpr void TriangleFEMUtils<DataTypes>::computeStrain(type::Vec<3, Real>& strain, const StrainDisplacement& J, const Displacement& D, bool fullMethod)
-{
+{    
     type::Mat<3, 6, Real> Jt;
     Jt.transpose(J);
-
     if (fullMethod) // _anisotropicMaterial or SMALL case
     {
         strain = Jt * D;
