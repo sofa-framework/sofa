@@ -847,7 +847,7 @@ constexpr Vec<N,real> diagonal(const Mat<N,N,real>& m)
 template<sofa::Size S, class real>
 [[nodiscard]] constexpr bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
-    sofa::Size i, j, k;
+    sofa::Size i{0}, j{0}, k{0};
     Vec<S, sofa::Size> r, c, row, col;
 
     Mat<S,S,real> m1 = from;

@@ -98,7 +98,7 @@ public:
     template<Size NN = N, typename std::enable_if<NN == 1, int>::type = 0>
     constexpr void set(const ValueType r1) noexcept
     {
-        elems[0] = r1;
+        this->elems[0] = r1;
     }
 
     template<typename... ArgsT,
@@ -293,7 +293,7 @@ public:
     constexpr void eqmulscalar(const ValueType f) noexcept
     {
         for (Size i=0; i<N; i++)
-            elems[i]*=f;
+            this->elems[i]*=f;
     }
 
     template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
@@ -333,7 +333,7 @@ public:
     constexpr void eqdivscalar(const ValueType f) noexcept
     {
         for (Size i = 0; i < N; i++)
-            elems[i] /= f;
+            this->elems[i] /= f;
     }
 
     template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
