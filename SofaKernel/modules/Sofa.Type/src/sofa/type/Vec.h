@@ -284,13 +284,13 @@ public:
     }
 
     /// Multiplication by a scalar f.
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr Vec<N,ValueType> mulscalar(const real2 f) const noexcept
     {
         return mulscalar(static_cast<ValueType>(f));
     }
 
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr Vec<N,ValueType> operator*(const real2 f) const noexcept
     {
         return mulscalar(static_cast<ValueType>(f));
@@ -303,13 +303,13 @@ public:
             this->elems[i]*=f;
     }
 
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr void eqmulscalar(const real2 f) noexcept
     {
         eqmulscalar(static_cast<ValueType>(f));
     }
 
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr void operator*=(const real2 f) noexcept
     {
         eqmulscalar(static_cast<ValueType>(f));
@@ -324,13 +324,13 @@ public:
         return r;
     }
 
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr Vec<N,ValueType> divscalar(const real2 f) const noexcept
     {
         return divscalar(static_cast<ValueType>(f));
     }
 
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr Vec<N, ValueType> operator/(const real2 f) const noexcept
     {
         return divscalar(static_cast<ValueType>(f));
@@ -343,20 +343,20 @@ public:
             this->elems[i] /= f;
     }
 
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr void eqdivscalar(const real2 f) noexcept
     {
         eqdivscalar(static_cast<ValueType>(f));
     }
 
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr void operator/=(const real2 f) noexcept
     {
         return eqdivscalar(static_cast<ValueType>(f));
     }
 
     /// Dot product.
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr ValueType operator*(const Vec<N,real2>& v) const noexcept
     {
         ValueType r = static_cast<ValueType>(this->elems[0]*v[0]);
@@ -366,7 +366,7 @@ public:
     }
 
     /// linear product.
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr Vec<N,ValueType> linearProduct(const Vec<N,real2>& v) const noexcept
     {
         Vec<N,ValueType> r(NOINIT);
@@ -377,7 +377,7 @@ public:
 
 
     /// linear division.
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr Vec<N,ValueType> linearDivision(const Vec<N,real2>& v) const noexcept
     {
         Vec<N,ValueType> r(NOINIT);
@@ -387,7 +387,7 @@ public:
     }
 
     /// Vector addition.
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr Vec<N,ValueType> operator+(const Vec<N,real2>& v) const noexcept
     {
         Vec<N,ValueType> r(NOINIT);
@@ -397,7 +397,7 @@ public:
     }
 
     /// In-place vector addition.
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr void operator+=(const Vec<N,real2>& v) noexcept
     {
         for (Size i=0; i<N; i++)
@@ -405,7 +405,7 @@ public:
     }
 
     /// Vector subtraction.
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr Vec<N,ValueType> operator-(const Vec<N,real2>& v) const noexcept
     {
         Vec<N,ValueType> r(NOINIT);
@@ -415,7 +415,7 @@ public:
     }
 
     /// In-place vector subtraction.
-    template<class real2, std::enable_if_t<std::is_arithmetic_v<real2>, bool> = true>
+    template<class real2, std::enable_if_t<std::is_convertible_v<real2, ValueType>, bool> = true>
     constexpr void operator-=(const Vec<N,real2>& v) noexcept
     {
         for (Size i=0; i<N; i++)
