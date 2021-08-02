@@ -243,7 +243,7 @@ protected :
 
     ////////////// large displacements method
     void initLarge(int i, Index&a, Index&b, Index&c);
-    void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
+    void accumulateForceLarge( VecCoord& f, const VecCoord & p);
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
     bool updateMatrix;
