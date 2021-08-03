@@ -264,7 +264,7 @@ void BaseObject::init()
                 }
                 else
                 {
-                    msg_error() << "Required data \"" << data->getName() << "\" has not been set and has not default value. ";
+                    msg_error() << "Required data \"" << data->getName() << "\" has not been set and has no default value. ";
                 }
             }
         }
