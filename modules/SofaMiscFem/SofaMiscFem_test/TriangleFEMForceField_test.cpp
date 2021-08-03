@@ -415,6 +415,50 @@ public:
                 }
             }
         }
+        else if (FEMType == 2)
+        {
+            typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
+            for (int id = 0; id < 2; id++)
+            {
+                type::fixed_array <Coord, 3> rotatedInitPos = triFEM->getRotatedInitialElement(id);                
+                Mat23 rotMat = triFEM->getRotationMatrix(id);
+                
+                Mat33 stiffnessMat = triFEM->getMaterialStiffness(id);
+                type::Vec< 3, Real> sDFactor = triFEM->getStrainDisplacementFactors(id); // beta2, gamma2, gamma3
+                                
+                // | beta2  0        0      0      |
+                // | 0      gamma2   0      gamma3 | 
+                // | gamma2 beta2    gamma3 0      |
+                Mat63 strainDispl;
+                strainDispl[0] = Vec3(0, 0, 0); strainDispl[1] = Vec3(0, 0, 0); strainDispl[2] = Vec3(sDFactor[0], 0, sDFactor[1]);
+                strainDispl[3] = Vec3(0, sDFactor[1], sDFactor[0]); strainDispl[4] = Vec3(0, 0, sDFactor[2]); strainDispl[5] = Vec3(0, sDFactor[2], 0);
+                
+                Real factor = triFEM->getTriangleFactor(id); // ((Real)0.5)/(ti.bx*ti.cy); -> 1/(2 * det) = 1/area                
+                Real correctiveFactorStiff = 1 / (4 * factor); // TODO: epernod 2021-08-03: there is a big diff here regarding the equation used in TriangleFEMForceField
+                Real correctiveFactorStrainD = factor * 2; // TODO: epernod 2021-08-03: there is a big diff here regarding the equation used in TriangleFEMForceField
+
+                for (int i = 0; i < 3; ++i)
+                {
+                    for (int j = 0; j < 3; ++j)
+                    {
+                        EXPECT_NEAR(rotatedInitPos[i][j], exp_rotatedInitPos[id][i][j], 1e-4);
+                        EXPECT_NEAR(stiffnessMat[i][j]* correctiveFactorStiff, exp_stiffnessMat[id][i][j], 1e-4);
+                    }
+                }
+
+                for (int i = 0; i < 2; ++i)
+                {
+                    for (int j = 0; j < 3; ++j)
+                    {
+                        EXPECT_NEAR(rotMat[i][j], exp_rotMat[id][j][i], 1e-4);
+                        // Do not test the 2 firts column of StrainDisplacement which are related to position A (ignored in optim version)
+                        EXPECT_NEAR(strainDispl[i + 2][j] * correctiveFactorStrainD, exp_strainDispl[id][i + 2][j], 1e-4);
+                        EXPECT_NEAR(strainDispl[i + 4][j] * correctiveFactorStrainD, exp_strainDispl[id][i + 4][j], 1e-4);
+                    }
+                }
+
+            }
+        }
     }
 
 
