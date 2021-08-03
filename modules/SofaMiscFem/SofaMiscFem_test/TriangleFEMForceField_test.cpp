@@ -63,6 +63,7 @@ public:
     using TriangularFEM = sofa::component::forcefield::TriangularFEMForceField<DataTypes>;
     using TriangularFEMOptim = sofa::component::forcefield::TriangularFEMForceFieldOptim<DataTypes>;
     using Vec3 = type::Vec<3, Real>;
+    using Mat23 = type::Mat<2, 3, Real>;
     using Mat33 = type::Mat<3, 3, Real>;
     using Mat63 = type::Mat<6, 3, Real>;
 
@@ -221,7 +222,7 @@ public:
         }
         else
         {
-            TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
+            typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
             ASSERT_TRUE(triFEM.get() != nullptr);
             ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.4);
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
@@ -326,7 +327,7 @@ public:
         }
         else
         {
-            TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
+            typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
             ASSERT_TRUE(triFEM.get() != nullptr);
             ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3); // Not the same default values
             ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
@@ -345,20 +346,20 @@ public:
     {
         createSingleTriangleFEMScene(FEMType, 100, 0.3, "large");
         
-        type::Vec<2, Mat33> exp_rotInit;
+        type::Vec<2, Mat33> exp_rotatedInitPos;
         type::Vec<2, Mat33> exp_rotMat;
         type::Vec<2, Mat33> exp_stiffnessMat;
         type::Vec<2, Mat63> exp_strainDispl;
 
         // 1st value expected values (square 2D triangle)
-        exp_rotInit[0] = Mat33(Vec3(0, 0, 0), Vec3(1, 0, 0), Vec3(0, 1, 0));
+        exp_rotatedInitPos[0] = Mat33(Vec3(0, 0, 0), Vec3(1, 0, 0), Vec3(0, 1, 0));
         exp_rotMat[0] = Mat33(Vec3(1, 0, 0), Vec3(0, 1, 0), Vec3(0, 0, 1));
         exp_stiffnessMat[0] = Mat33(Vec3(54.945053, 16.483517, 0), Vec3(16.483517, 54.945053, 0), Vec3(0, 0, 19.23077));
         exp_strainDispl[0][0] = Vec3(-1, 0, -1); exp_strainDispl[0][1] = Vec3(0, -1, -1); exp_strainDispl[0][2] = Vec3(1, 0, 0);
         exp_strainDispl[0][3] = Vec3(0, 0, 1); exp_strainDispl[0][4] = Vec3(0, 0, 1); exp_strainDispl[0][5] = Vec3(0, 1, 0);
 
         // 2nd value expected values (isosceles 3D triangle)
-        exp_rotInit[1] = Mat33(Vec3(0, 0, 0), Vec3(1.4142135, 0, 0), Vec3(0.707107, 1.2247449, 0));
+        exp_rotatedInitPos[1] = Mat33(Vec3(0, 0, 0), Vec3(1.4142135, 0, 0), Vec3(0.707107, 1.2247449, 0));
         exp_rotMat[1] = Mat33(Vec3(0, -0.81649661, -0.57735), Vec3(0.707107, 0.40824831, -0.57735), Vec3(0.707107, -0.40824831, 0.57735));
         exp_stiffnessMat[1] = Mat33(Vec3(95.1676, 28.550287, 0), Vec3(28.550287, 95.1676, 0), Vec3(0, 0, 33.30867));
         exp_strainDispl[1][0] = Vec3(-1, 0, -1); exp_strainDispl[1][1] = Vec3(0, -1, -1); exp_strainDispl[1][2] = Vec3(1, 0, 0);
@@ -370,7 +371,7 @@ public:
 
             for (int id = 0; id < 2; id++)
             {
-                const type::fixed_array <Coord, 3>& rotInit = triFEM->getRotatedInitialElement(id);
+                const type::fixed_array <Coord, 3>& rotatedInitPos = triFEM->getRotatedInitialElement(id);
                 const Mat33& rotMat = triFEM->getRotationMatrix(id);
                 const Mat33& stiffnessMat = triFEM->getMaterialStiffness(id);
                 const Mat63& strainDispl = triFEM->getStrainDisplacements(id);
@@ -379,7 +380,7 @@ public:
                 {
                     for (int j = 0; j < 3; ++j)
                     {
-                        EXPECT_NEAR(rotInit[i][j], exp_rotInit[id][i][j], 1e-4);
+                        EXPECT_NEAR(rotatedInitPos[i][j], exp_rotatedInitPos[id][i][j], 1e-4);
                         EXPECT_NEAR(rotMat[i][j], exp_rotMat[id][i][j], 1e-4);
                         EXPECT_NEAR(stiffnessMat[i][j], exp_stiffnessMat[id][i][j], 1e-4);
 
@@ -395,7 +396,7 @@ public:
             for (int id = 0; id < 2; id++)
             {
                 typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[id];
-                const type::fixed_array <Coord, 3>& rotInit = triangleInfo.rotatedInitialElements;
+                const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
                 const Mat33& rotMat = triangleInfo.initialTransformation;
                 const Mat33& stiffnessMat = triangleInfo.materialMatrix;
                 const Mat63& strainDispl = triangleInfo.strainDisplacementMatrix;
@@ -404,7 +405,7 @@ public:
                 {
                     for (int j = 0; j < 3; ++j)
                     {
-                        EXPECT_NEAR(rotInit[i][j], exp_rotInit[id][i][j], 1e-4);
+                        EXPECT_NEAR(rotatedInitPos[i][j], exp_rotatedInitPos[id][i][j], 1e-4);
                         EXPECT_NEAR(rotMat[i][j], exp_rotMat[id][i][j], 1e-4);
                         EXPECT_NEAR(stiffnessMat[i][j], exp_stiffnessMat[id][i][j], 1e-4);
 
@@ -450,7 +451,7 @@ public:
         EXPECT_NEAR(positions[1515][2], 0, 1e-4);
 
         // 1st value expected values (square 2D triangle)
-        static const Mat33 exp_rotInit = Mat33(Vec3(0, 0, 0), Vec3(0.25641, 0, 0), Vec3(0.25641, 0.25641, 0));
+        static const Mat33 exp_rotatedInitPos = Mat33(Vec3(0, 0, 0), Vec3(0.25641, 0, 0), Vec3(0.25641, 0.25641, 0));
         static const Mat33 exp_rotMat = Mat33(Vec3(0.99992, -0.0126608, 0), Vec3(0.0126608, 0.99992, 0), Vec3(0, 0, 1));
         static const Mat33 exp_stiffnessMat = Mat33(Vec3(3.61243, 1.08373, 0), Vec3(1.08373, 3.61243, 0), Vec3(0, 0, 1.26435));
         Mat63 exp_strainDispl;
@@ -461,7 +462,7 @@ public:
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
 
-            const type::fixed_array <Coord, 3>& rotInit = triFEM->getRotatedInitialElement(42);
+            const type::fixed_array <Coord, 3>& rotatedInitPos = triFEM->getRotatedInitialElement(42);
             const Mat33& rotMat = triFEM->getRotationMatrix(42);
             const Mat33& stiffnessMat = triFEM->getMaterialStiffness(42);
             const Mat63& strainDispl = triFEM->getStrainDisplacements(42);
@@ -470,7 +471,7 @@ public:
             {
                 for (int j = 0; j < 3; ++j)
                 {
-                    EXPECT_NEAR(rotInit[i][j], exp_rotInit[i][j], 1e-4);
+                    EXPECT_NEAR(rotatedInitPos[i][j], exp_rotatedInitPos[i][j], 1e-4);
                     EXPECT_NEAR(rotMat[i][j], exp_rotMat[i][j], 1e-4);
                     EXPECT_NEAR(stiffnessMat[i][j], exp_stiffnessMat[i][j], 1e-4);
 
@@ -484,7 +485,7 @@ public:
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             
             typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[42];
-            const type::fixed_array <Coord, 3>& rotInit = triangleInfo.rotatedInitialElements;
+            const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
             const Mat33& rotMat = triangleInfo.initialTransformation; // rotMat: [1 0 0,0 1 0,0 0 1]
             const Mat33& stiffnessMat = triangleInfo.materialMatrix;
             const Mat63& strainDispl = triangleInfo.strainDisplacementMatrix;
@@ -493,7 +494,7 @@ public:
             {
                 for (int j = 0; j < 3; ++j)
                 {
-                    EXPECT_NEAR(rotInit[i][j], exp_rotInit[i][j], 1e-4);
+                    EXPECT_NEAR(rotatedInitPos[i][j], exp_rotatedInitPos[i][j], 1e-4);
                     EXPECT_NEAR(rotMat[i][j], exp_rotMat[i][j], 1e-4);
                     EXPECT_NEAR(stiffnessMat[i][j], exp_stiffnessMat[i][j], 1e-4);
 
