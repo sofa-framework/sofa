@@ -90,6 +90,7 @@ public:
 
 protected:
     typedef type::Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
+    typedef type::Mat<3, 3, Real> MaterialStiffness;
     enum { DerivSize = DataTypes::deriv_total_size };
     typedef type::Mat<DerivSize, DerivSize, Real> MatBloc;
 
@@ -281,6 +282,13 @@ public:
 
     void getTriangleVonMisesStress(Index i, Real& stressValue);
     void getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2);
+
+    /// Public methods to access FEM information per element. Those method should not be used internally as they add check on element id.
+    type::fixed_array <Coord, 3> getRotatedInitialElement(Index elemId);
+    Transformation getRotationMatrix(Index elemId);
+    MaterialStiffness getMaterialStiffness(Index elemId);
+    type::Vec3 getStrainDisplacementFactors(Index elemId);
+    Real getTriangleFactor(Index elemId);
 
 public:
 

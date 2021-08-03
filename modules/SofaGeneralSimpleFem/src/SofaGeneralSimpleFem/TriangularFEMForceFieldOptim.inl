@@ -189,7 +189,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, Triangle
 }
 
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, TriangleState& ti, const Triangle t, const VecCoord& x)
+void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, TriangleState& ts, const Triangle t, const VecCoord& x)
 {
     if (t[0] >= x.size() || t[1] >= x.size() || t[2] >= x.size())
     {
@@ -202,8 +202,14 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, Triangl
     Coord a  = x[t[0]];
     Coord ab = x[t[1]]-a;
     Coord ac = x[t[2]]-a;
-    computeTriangleRotation(ti.frame, ab, ac);
-    ti.stress.clear();
+    computeTriangleRotation(ts.frame, ab, ac);
+
+    // StrainDisplacement: 
+    ts.beta2 = ts.frame[1] * ac;// cy
+    ts.gamma2 = -ts.frame[0] * ac;// -cx
+    ts.gamma3 = ts.frame[0] * ab;// bx
+    
+    ts.stress.clear();
 }
 
 // --------------------------------------------------------------------------------------
@@ -572,6 +578,96 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(Index i
         stressValue2 = eval1;  stressDirection2 = edir1;
     }
 }
+
+template<class DataTypes>
+type::fixed_array <typename TriangularFEMForceFieldOptim<DataTypes>::Coord, 3> TriangularFEMForceFieldOptim<DataTypes>::getRotatedInitialElement(Index elemId)
+{
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
+    type::fixed_array <Coord, 3> positions;
+    if (elemId < 0 && elemId >= triInfo.size())
+    {
+        msg_warning() << "Method getRotatedInitialElement called with element index: " << elemId
+            << " which is out of bounds: [0, " << triInfo.size() << "]. Returning default empty array of coordinates.";
+        return positions;
+    }
+
+    const TriangleInfo& ti = triInfo[elemId];
+    positions[0] = Coord(0, 0, 0);
+    positions[1] = Coord(ti.bx, 0, 0);
+    positions[2] = Coord(ti.cx, ti.cy, 0);
+ 
+    return positions;
+}
+
+
+template<class DataTypes>
+typename TriangularFEMForceFieldOptim<DataTypes>::Transformation TriangularFEMForceFieldOptim<DataTypes>::getRotationMatrix(Index elemId)
+{
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
+    if (elemId >= 0 && elemId < triState.size())
+        return triState[elemId].frame;
+
+    msg_warning() << "Method getRotationMatrix called with element index: "
+        << elemId << " which is out of bounds: [0, " << triState.size() << "]. Returning default empty rotation.";
+    return Transformation();
+}
+
+
+template<class DataTypes>
+typename TriangularFEMForceFieldOptim<DataTypes>::MaterialStiffness TriangularFEMForceFieldOptim<DataTypes>::getMaterialStiffness(Index elemId)
+{
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
+    if (elemId < 0 && elemId >= triInfo.size())
+    {
+        msg_warning() << "Method getMaterialStiffness called with element index: "
+            << elemId << " which is out of bounds: [0, " << triInfo.size() << "]. Returning default empty matrix.";
+        return MaterialStiffness();
+    }
+
+    // (gamma+mu, gamma   ,    0)
+    // (gamma   , gamma+mu,    0)  
+    // (       0,        0, mu/2)
+    const Real gamma = this->gamma;
+    const Real mu = this->mu;
+
+    MaterialStiffness mat; 
+    mat[0][0] = mat[1][1] = gamma + mu;
+    mat[0][1] = mat[1][0] = gamma;
+    mat[2][2] = (Real)(0.5) * mu;
+   
+    return mat;
+}
+
+
+template<class DataTypes>
+sofa::type::Vec3 TriangularFEMForceFieldOptim<DataTypes>::getStrainDisplacementFactors(Index elemId)
+{
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
+    if (elemId < 0 && elemId >= triState.size())
+    {
+        msg_warning() << "Method getStrainDisplacementFactors called with element index: "
+            << elemId << " which is out of bounds: [0, " << triState.size() << "]. Returning default empty displacements.";
+        return type::Vec< 3, Real>();
+    }
+
+    const TriangleState& ts = triState[elemId];
+    return type::Vec< 3, Real>(ts.beta2, ts.gamma2, ts.gamma3);
+}
+
+template<class DataTypes>
+typename TriangularFEMForceFieldOptim<DataTypes>::Real TriangularFEMForceFieldOptim<DataTypes>::getTriangleFactor(Index elemId)
+{
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
+    if (elemId < 0 && elemId >= triInfo.size())
+    {
+        msg_warning() << "Method getTriangleFactor called with element index: "
+            << elemId << " which is out of bounds: [0, " << triInfo.size() << "]. Returning 0.";
+        return Real(0);
+    }
+
+    return triInfo[elemId].ss_factor;
+}
+
 
 // --------------------------------------------------------------------------------------
 // --- Display methods
