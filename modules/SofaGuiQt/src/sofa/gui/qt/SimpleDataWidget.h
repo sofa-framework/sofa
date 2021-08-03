@@ -71,7 +71,7 @@ public:
 
     static void setNoValue(Widget* w)
     {
-        w->setText("<no-default value>");
+        w->setText("<no default value>");
     }
 
     static void readFromData(Widget* w, const data_type& d)
@@ -213,12 +213,12 @@ public:
     virtual void readFromData()
     {
         if(this->getData()->isRequired())
-            if(this->getData()->hasDefaultValue())
+            if(this->getData()->isSet() || this->getData()->hasDefaultValue())
                 container.readFromData(this->getData()->getValue());
             else
                 container.setMissingValue();
         else
-            if (this->getData()->isSet() || this->getData()->hasDefaultValue() )
+            if(this->getData()->isSet() || this->getData()->hasDefaultValue())
                 container.readFromData(this->getData()->getValue());
             else
                 container.setNoValue();
@@ -305,13 +305,12 @@ public:
 
     static void setMissingValue(Widget* w)
     {
-        std::cout << "FIX ME" << std::endl;
         w->setText("<missing value>");
     }
 
     static void setNoValue(Widget* w)
     {
-        w->setCheckState(Qt::PartiallyChecked);
+        w->setText("<no default value>");
     }
 
     static void readFromData(Widget* w, const data_type& d)
@@ -407,20 +406,19 @@ public:
         Widget* w = new Widget(parent);
         w->setMinimum(vmin);
         w->setMaximum(vmax);
-        w->setSingleStep(1);        
-        w->setSpecialValueText("<not-set>");
+        w->setSingleStep(1);
         w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
 
     static void setMissingValue(Widget* w)
     {
-        //w->set
+        w->setSpecialValueText("<missing value>");
     }
 
     static void setNoValue(Widget* w)
     {
-        w->setValue(vmin);
+        w->setSpecialValueText("<no default value>");
     }
 
     static void readFromData(Widget* w, const data_type& d)
@@ -907,14 +905,14 @@ public:
 
     static void setMissingValue(Widget* w)
     {
-        w->setText("<not-set>");
+        w->setText("<missing value>");
     }
 
 
 
     static void setNoValue(Widget* w)
     {
-        w->setText("<not-set>");
+        w->setText("<no default value>");
     }
 
     static void readFromData(Widget* w, const data_type& d)
