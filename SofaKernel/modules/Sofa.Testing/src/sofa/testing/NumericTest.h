@@ -304,4 +304,5 @@ void EXPECT_MAT_NEAR(sofa::type::Mat<L,C,real> const& expected, sofa::type::Mat<
 } // namespace sofa::testing
 
 
+extern template struct SOFA_TESTING_API sofa::testing::NumericTest<float>;
 extern template struct SOFA_TESTING_API sofa::testing::NumericTest<double>;
