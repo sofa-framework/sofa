@@ -106,18 +106,18 @@ public:
     template<Size L2, Size C2, typename real2>
     explicit constexpr Mat(const Mat<L2,C2,real2>& m) noexcept
     {
-        constexpr Size maxL = std::min( L, L2 );
-        constexpr Size maxC = std::min( C, C2 );
+        constexpr Size minL = std::min( L, L2 );
+        constexpr Size minC = std::min( C, C2 );
 
-        for( Size l=0 ; l<maxL ; ++l )
+        for( Size l=0 ; l<minL ; ++l )
         {
-            for( Size c=0 ; c<maxC ; ++c )
+            for( Size c=0 ; c< minC; ++c )
                 this->elems[l][c] = static_cast<real>(m[l][c]);
-            for( Size c=maxC ; c<C ; ++c )
+            for( Size c= minC; c<C ; ++c )
                 this->elems[l][c] = 0;
         }
 
-        for( Size l=maxL ; l<L ; ++l )
+        for( Size l= minL; l<L ; ++l )
             for( Size c=0 ; c<C ; ++c )
                 this->elems[l][c] = 0;
     }
